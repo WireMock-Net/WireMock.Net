@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -22,14 +24,14 @@ namespace WireMock
     public class RequestHeaderSpec : ISpecifyRequests
     {
         /// <summary>
-        /// The _name.
+        /// The name.
         /// </summary>
-        private readonly string _name;
+        private readonly string name;
 
         /// <summary>
-        /// The _pattern.
+        /// The patternRegex.
         /// </summary>
-        private readonly string _pattern;
+        private readonly Regex patternRegex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestHeaderSpec"/> class.
@@ -40,10 +42,11 @@ namespace WireMock
         /// <param name="pattern">
         /// The pattern.
         /// </param>
-        public RequestHeaderSpec(string name, string pattern)
+        /// <param name="ignoreCase">The ignoreCase.</param>
+        public RequestHeaderSpec([NotNull] string name, [NotNull, RegexPattern] string pattern, bool ignoreCase = true)
         {
-            _name = name.ToLower();
-            _pattern = pattern.ToLower();
+            this.name = name;
+            patternRegex = ignoreCase ? new Regex(pattern, RegexOptions.IgnoreCase) : new Regex(pattern);
         }
 
         /// <summary>
@@ -55,10 +58,10 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy(Request request)
+        public bool IsSatisfiedBy([NotNull] Request request)
         {
-            string headerValue = request.Headers[_name];
-            return WildcardPatternMatcher.MatchWildcardString(_pattern, headerValue);
+            string headerValue = request.Headers[name];
+            return patternRegex.IsMatch(headerValue);
         }
     }
 }

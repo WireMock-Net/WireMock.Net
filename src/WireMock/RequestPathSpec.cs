@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -24,17 +27,18 @@ namespace WireMock
         /// <summary>
         /// The _path.
         /// </summary>
-        private readonly string _path;
+        private readonly Regex _path;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestPathSpec"/> class.
         /// </summary>
         /// <param name="path">
-        /// The path.
+        /// The path Regex pattern.
         /// </param>
-        public RequestPathSpec(string path)
+        public RequestPathSpec([NotNull, RegexPattern] string path)
         {
-            _path = path;
+            Check.NotNull(path, nameof(path));
+            _path = new Regex(path);
         }
 
         /// <summary>
@@ -46,9 +50,9 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy(Request request)
+        public bool IsSatisfiedBy([NotNull] Request request)
         {
-            return WildcardPatternMatcher.MatchWildcardString(_path, request.Path);
+            return _path.IsMatch(request.Path);
         }
     }
 }

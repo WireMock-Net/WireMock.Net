@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 [module:
     SuppressMessage("StyleCop.CSharp.DocumentationRules",
@@ -21,6 +22,6 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        bool IsSatisfiedBy(Request request);
+        bool IsSatisfiedBy([NotNull] Request request);
     }
 }

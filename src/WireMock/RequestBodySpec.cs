@@ -1,4 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -22,19 +25,20 @@ namespace WireMock
     public class RequestBodySpec : ISpecifyRequests
     {
         /// <summary>
-        /// The _body.
+        /// The bodyRegex.
         /// </summary>
-        private readonly string _body;
+        private readonly Regex bodyRegex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
         /// </summary>
         /// <param name="body">
-        /// The body.
+        /// The body Regex pattern.
         /// </param>
-        public RequestBodySpec(string body)
+        public RequestBodySpec([NotNull, RegexPattern] string body)
         {
-            _body = body.Trim();
+            Check.NotNull(body, nameof(body));
+            bodyRegex = new Regex(body);
         }
 
         /// <summary>
@@ -48,7 +52,7 @@ namespace WireMock
         /// </returns>
         public bool IsSatisfiedBy(Request request)
         {
-            return WildcardPatternMatcher.MatchWildcardString(_body, request.Body.Trim());
+            return bodyRegex.IsMatch(request.Body);
         }
     }
 }

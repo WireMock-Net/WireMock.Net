@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
+using System.Text.RegularExpressions;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -22,19 +25,20 @@ namespace WireMock
     public class RequestUrlSpec : ISpecifyRequests
     {
         /// <summary>
-        /// The _url.
+        /// The urlRegex.
         /// </summary>
-        private readonly string _url;
+        private readonly Regex urlRegex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestUrlSpec"/> class.
         /// </summary>
         /// <param name="url">
-        /// The url.
+        /// The url Regex pattern.
         /// </param>
-        public RequestUrlSpec(string url)
+        public RequestUrlSpec([NotNull, RegexPattern] string url)
         {
-            _url = url;
+            Check.NotNull(url, nameof(url));
+            urlRegex = new Regex(url);
         }
 
         /// <summary>
@@ -48,7 +52,7 @@ namespace WireMock
         /// </returns>
         public bool IsSatisfiedBy(Request request)
         {
-            return WildcardPatternMatcher.MatchWildcardString(_url, request.Url);
+            return urlRegex.IsMatch(request.Url);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace WireMock
             }
 
             Path = path;
-            Headers = headers.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value.ToLower());
+            Headers = headers; //.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value.ToLower());
             Verb = verb.ToLower();
             Body = body?.Trim() ?? string.Empty;
         }

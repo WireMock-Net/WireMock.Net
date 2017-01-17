@@ -16,12 +16,12 @@ using System.Threading.Tasks;
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
 // ReSharper disable ArrangeThisQualifier
 // ReSharper disable InconsistentNaming
-namespace WireMock
+namespace WireMock.ResponseBuilders
 {
     /// <summary>
     /// The responses.
     /// </summary>
-    public class Responses : IHeadersResponseBuilder
+    public class ResponseBuilder : IHeadersResponseBuilder
     {
         /// <summary>
         /// The _response.
@@ -34,12 +34,12 @@ namespace WireMock
         private TimeSpan _delay = TimeSpan.Zero;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Responses"/> class.
+        /// Initializes a new instance of the <see cref="ResponseBuilder"/> class.
         /// </summary>
         /// <param name="response">
         /// The response.
         /// </param>
-        public Responses(Response response)
+        public ResponseBuilder(Response response)
         {
             _response = response;
         }
@@ -74,7 +74,7 @@ namespace WireMock
         public static IHeadersResponseBuilder WithStatusCode(int code)
         {
             var response = new Response { StatusCode = code };
-            return new Responses(response);
+            return new ResponseBuilder(response);
         }
 
         /// <summary>

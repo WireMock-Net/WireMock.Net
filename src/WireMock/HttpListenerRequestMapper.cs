@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using WireMock.RequestBuilders;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -26,7 +27,7 @@ namespace WireMock
         /// The listener request.
         /// </param>
         /// <returns>
-        /// The <see cref="Request"/>.
+        /// The <see cref="RequestBuilder"/>.
         /// </returns>
         public Request Map(HttpListenerRequest listenerRequest)
         {

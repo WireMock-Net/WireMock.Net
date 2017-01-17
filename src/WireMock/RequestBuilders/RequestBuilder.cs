@@ -20,12 +20,12 @@ using System.Linq;
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
 // ReSharper disable ArrangeThisQualifier
 // ReSharper disable InconsistentNaming
-namespace WireMock
+namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The requests.
     /// </summary>
-    public class Requests : CompositeRequestSpec, IVerbRequestBuilder, IHeadersRequestBuilder, IParamsRequestBuilder
+    public class RequestBuilder : CompositeRequestSpec, IVerbRequestBuilder, IHeadersRequestBuilder, IParamsRequestBuilder
     {
         /// <summary>
         /// The _request specs.
@@ -33,12 +33,12 @@ namespace WireMock
         private readonly IList<ISpecifyRequests> _requestSpecs;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Requests"/> class.
+        /// Initializes a new instance of the <see cref="RequestBuilder"/> class.
         /// </summary>
         /// <param name="requestSpecs">
         /// The request specs.
         /// </param>
-        private Requests(IList<ISpecifyRequests> requestSpecs) : base(requestSpecs)
+        private RequestBuilder(IList<ISpecifyRequests> requestSpecs) : base(requestSpecs)
         {
             _requestSpecs = requestSpecs;
         }
@@ -55,7 +55,7 @@ namespace WireMock
         public static IVerbRequestBuilder WithUrl(string url)
         {
             var specs = new List<ISpecifyRequests>();
-            var requests = new Requests(specs);
+            var requests = new RequestBuilder(specs);
             specs.Add(new RequestUrlSpec(url));
             return requests;
         }
@@ -72,7 +72,7 @@ namespace WireMock
         public static IVerbRequestBuilder WithPath(string path)
         {
             var specs = new List<ISpecifyRequests>();
-            var requests = new Requests(specs);
+            var requests = new RequestBuilder(specs);
             specs.Add(new RequestPathSpec(path));
             return requests;
         }
@@ -188,17 +188,18 @@ namespace WireMock
         /// The with header.
         /// </summary>
         /// <param name="name">
-        /// The name.
+        ///     The name.
         /// </param>
         /// <param name="value">
-        /// The value.
+        ///     The value.
         /// </param>
+        /// <param name="ignoreCase">ignore Case</param>
         /// <returns>
         /// The <see cref="IHeadersRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder WithHeader(string name, string value)
+        public IHeadersRequestBuilder WithHeader(string name, string value, bool ignoreCase = true)
         {
-            _requestSpecs.Add(new RequestHeaderSpec(name, value));
+            _requestSpecs.Add(new RequestHeaderSpec(name, value, ignoreCase));
             return this;
         }
     }

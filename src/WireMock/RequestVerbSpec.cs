@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -46,7 +47,7 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy(Request request)
+        public bool IsSatisfiedBy([NotNull] Request request)
         {
             return request.Verb == _verb;
         }

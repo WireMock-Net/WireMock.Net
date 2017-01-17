@@ -1,5 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -16,12 +19,12 @@ namespace WireMock.Net.ConsoleApplication
 
             server
               .Given(
-                Requests
+                RequestBuilder
                     .WithUrl("/*")
                     .UsingGet()
               )
               .RespondWith(
-                Responses
+                ResponseBuilder
                   .WithStatusCode(200)
                   .WithHeader("Content-Type", "application/json")
                   .WithBody(@"{ ""msg"": ""Hello world!""}")

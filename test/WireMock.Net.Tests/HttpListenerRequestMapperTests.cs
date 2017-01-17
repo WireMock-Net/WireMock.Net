@@ -94,7 +94,7 @@ namespace WireMock.Net.Tests
             // then
             Check.That(MapperServer.LastRequest).IsNotNull();
             Check.That(MapperServer.LastRequest.Headers).Not.IsNullOrEmpty();
-            Check.That(MapperServer.LastRequest.Headers.Contains(new KeyValuePair<string, string>("x-alex", "1706"))).IsTrue();
+            Check.That(MapperServer.LastRequest.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace WireMock.Net.Tests
 
             public static string UrlPrefix { get; private set; }
 
-            public static new MapperServer Start()
+            public new static MapperServer Start()
             {
                 var port = Ports.FindFreeTcpPort();
                 UrlPrefix = "http://localhost:" + port + "/";
