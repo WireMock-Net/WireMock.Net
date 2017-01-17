@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{197A0EE3-94E5-4807-BBCF-2F1BCA28A6AE}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WireMock", "src\WireMock\WireMock.xproj", "{D3804228-91F4-4502-9595-39584E5A01AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F0C22C47-DF71-463C-9B04-B4E0F3B8708A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.ConsoleApplication", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3804228-91F4-4502-9595-39584E5A01AD} = {D3804228-91F4-4502-9595-39584E5A01AD}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{890A1DED-C229-4FA1-969E-AAC3BBFC05E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Tests", "test\WireMock.Net.Tests\WireMock.Net.Tests.csproj", "{D8B56D28-33CE-4BEF-97D4-7DD546E37F25}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3804228-91F4-4502-9595-39584E5A01AD} = {D3804228-91F4-4502-9595-39584E5A01AD}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3804228-91F4-4502-9595-39584E5A01AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A01AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A01AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A01AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{668F689E-57B4-422E-8846-C0FF643CA268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{668F689E-57B4-422E-8846-C0FF643CA268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{668F689E-57B4-422E-8846-C0FF643CA268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{668F689E-57B4-422E-8846-C0FF643CA268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8B56D28-33CE-4BEF-97D4-7DD546E37F25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B56D28-33CE-4BEF-97D4-7DD546E37F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B56D28-33CE-4BEF-97D4-7DD546E37F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B56D28-33CE-4BEF-97D4-7DD546E37F25}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D3804228-91F4-4502-9595-39584E5A01AD} = {EF242EDF-7133-4277-9A0C-18744DE08707}
+		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{D8B56D28-33CE-4BEF-97D4-7DD546E37F25} = {890A1DED-C229-4FA1-969E-AAC3BBFC05E5}
+	EndGlobalSection
+EndGlobal

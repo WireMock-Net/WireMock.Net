@@ -1,0 +1,37 @@
+{
+    "version": "1.0.0.9",
+    "title": "WireMock.Net",
+    "description": "xxxx",
+    "authors": [ "Alexandre Victoor", "Stef Heyenrath" ],
+
+    "packOptions": {
+        "summary": "This is a .NET Core port of the the Microsoft assembly for the .Net 4.0 Dynamic language functionality.",
+        "tags": [ "system", "linq", "dynamic", "core" ],
+        "owners": [ "Stef Heyenrath" ],
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/StefH/WireMock.Net"
+        },
+        "projectUrl": "https://github.com/StefH/WireMock.Net",
+        "licenseUrl": "https://github.com/StefH/WireMock.Net/blob/master/licence.txt",
+        "releaseNotes": ""
+    },
+
+    "buildOptions": {
+        "xmlDoc": true
+    },
+
+    "dependencies": {
+        "JetBrains.Annotations": {
+            "version": "10.2.1",
+            "type": "build"
+        }
+    },
+
+    "frameworks": {
+        "net45": {
+            "frameworkAssemblies": {
+            }
+        }
+    }
+}
