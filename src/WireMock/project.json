@@ -1,11 +1,11 @@
 {
-    "version": "1.0.0.9",
+    "version": "1.0.0.0",
     "title": "WireMock.Net",
-    "description": "xxxx",
+    "description": "Lightweigth Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
     "authors": [ "Alexandre Victoor", "Stef Heyenrath" ],
 
     "packOptions": {
-        "summary": "This is a .NET Core port of the the Microsoft assembly for the .Net 4.0 Dynamic language functionality.",
+        "summary": "Lightweigth Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
         "tags": [ "system", "linq", "dynamic", "core" ],
         "owners": [ "Stef Heyenrath" ],
         "repository": {
@@ -13,8 +13,8 @@
             "url": "https://github.com/StefH/WireMock.Net"
         },
         "projectUrl": "https://github.com/StefH/WireMock.Net",
-        "licenseUrl": "https://github.com/StefH/WireMock.Net/blob/master/licence.txt",
-        "releaseNotes": ""
+        "licenseUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE",
+        "releaseNotes": "First version"
     },
 
     "buildOptions": {

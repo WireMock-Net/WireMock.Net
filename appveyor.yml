@@ -29,7 +29,7 @@ build_script:
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 - cmd: msbuild .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 
-- dotnet pack -c Release --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock\project.json
+- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock\project.json
 
 artifacts:
 - path: artifacts\**\*.*
