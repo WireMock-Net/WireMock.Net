@@ -12,7 +12,7 @@ WireMock allows to get an HTTP server in a glance.
 
 A fluent API allows to specify the behavior of the server and hence easily stub and mock webservices and REST ressources.
 ```csharp
-server = FluentMockServer.Start();
+var server = FluentMockServer.Start();
 server
   .Given(
     Requests.WithUrl("/*")
