@@ -22,6 +22,14 @@
         IHeadersRequestBuilder UsingPost();
 
         /// <summary>
+        /// The using delete.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// </returns>
+        IHeadersRequestBuilder UsingDelete();
+
+        /// <summary>
         /// The using put.
         /// </summary>
         /// <returns>

@@ -30,6 +30,20 @@ namespace WireMock.Net.ConsoleApplication
                   .WithBody(@"{ ""msg"": ""Hello world!""}")
               );
 
+            server
+                .Given(Request.WithUrl("/data").UsingPost())
+                .RespondWith(Response
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""data posted with 201""}"));
+
+            server
+                .Given(Request.WithUrl("/data").UsingDelete())
+                .RespondWith(Response
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""data deleted with 201""}"));
+
             Console.WriteLine("Press any key to stop the server");
             Console.ReadKey();
 

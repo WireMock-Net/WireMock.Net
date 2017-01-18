@@ -71,13 +71,65 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_url_and_method()
+        public void Should_specify_requests_matching_given_url_and_method_put()
         {
             // given
             var spec = Request.WithUrl("/foo").UsingPut();
 
             // when
             var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string>());
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_url_and_method_post()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingPost();
+
+            // when
+            var request = new RequestMessage("/foo", string.Empty, "POST", "whatever", new Dictionary<string, string>());
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_url_and_method_get()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingGet();
+
+            // when
+            var request = new RequestMessage("/foo", string.Empty, "GET", "whatever", new Dictionary<string, string>());
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_url_and_method_delete()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingDelete();
+
+            // when
+            var request = new RequestMessage("/foo", string.Empty, "DELETE", "whatever", new Dictionary<string, string>());
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_url_and_method_head()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingHead();
+
+            // when
+            var request = new RequestMessage("/foo", string.Empty, "HEAD", "whatever", new Dictionary<string, string>());
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -227,3 +279,4 @@ namespace WireMock.Net.Tests
         }
     }
 }
+

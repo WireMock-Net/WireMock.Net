@@ -114,6 +114,18 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
+        /// The using delete.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// </returns>
+        public IHeadersRequestBuilder UsingDelete()
+        {
+            _requestSpecs.Add(new RequestVerbSpec("delete"));
+            return this;
+        }
+
+        /// <summary>
         /// The using head.
         /// </summary>
         /// <returns>

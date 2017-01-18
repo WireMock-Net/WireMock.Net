@@ -19,7 +19,7 @@ namespace WireMock.Net.Tests.Http
     public class TinyHttpServerTests
     {
         [Test]
-        public void Should_Call_Handler_on_Request()
+        public void Should_call_handler_on_request()
         {
             // given
             var port = Ports.FindFreeTcpPort();
