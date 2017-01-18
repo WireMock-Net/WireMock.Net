@@ -18,6 +18,9 @@ install:
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
 
+before_build:
+- nuget restore
+
 build_script:
 - appveyor-retry dotnet restore .\src\WireMock -v Minimal
 
