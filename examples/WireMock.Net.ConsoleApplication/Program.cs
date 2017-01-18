@@ -24,12 +24,16 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""/x with FUNC 200""}"));
 
+            // http://localhost:8080/gffgfgf/sddsds?start=1000&stop=1&stop=2
             server
                 .Given(Request.WithUrl("/*").UsingGet())
                 .RespondWith(Response
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""msg"": ""Hello world!""}")
+                    .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
+                    .WithBody(@"{""msg"": ""Hello world! : {{request.url}} : {{request.path}} : {{request.query.start}} : {{request.query.stop.[0]}}""")
+                    .AfterDelay(TimeSpan.FromMilliseconds(100))
+                    .WithTransformer()
                 );
 
             server

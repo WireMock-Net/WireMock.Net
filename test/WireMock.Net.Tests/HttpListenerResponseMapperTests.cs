@@ -8,20 +8,20 @@ using NUnit.Framework;
 using WireMock.Http;
 
 [module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules", 
-        "SA1101:PrefixLocalCallsWithThis", 
+    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
+        "SA1101:PrefixLocalCallsWithThis",
         Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.NamingRules", 
-        "SA1309:FieldNamesMustNotBeginWithUnderscore", 
+    SuppressMessage("StyleCop.CSharp.NamingRules",
+        "SA1309:FieldNamesMustNotBeginWithUnderscore",
         Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules", 
-        "SA1600:ElementsMustBeDocumented", 
+    SuppressMessage("StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
         Justification = "Reviewed. Suppression is OK here, as it's a tests class.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules", 
-        "SA1633:FileMustHaveHeader", 
+    SuppressMessage("StyleCop.CSharp.DocumentationRules",
+        "SA1633:FileMustHaveHeader",
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
 // ReSharper disable ArrangeThisQualifier
 // ReSharper disable InconsistentNaming
@@ -68,8 +68,11 @@ namespace WireMock.Net.Tests
         public void Should_map_body_from_original_response()
         {
             // given
-            var response = new ResponseMessage();
-            response.Body = "Hello !!!";
+            var response = new ResponseMessage
+            {
+                Body = "Hello !!!"
+            };
+
             var httpListenerResponse = CreateHttpListenerResponse();
 
             // when
@@ -78,6 +81,7 @@ namespace WireMock.Net.Tests
             // then
             var responseMessage = ToResponseMessage(httpListenerResponse);
             Check.That(responseMessage).IsNotNull();
+
             var contentTask = responseMessage.Content.ReadAsStringAsync();
             Check.That(contentTask.Result).IsEqualTo("Hello !!!");
         }
@@ -104,7 +108,7 @@ namespace WireMock.Net.Tests
             var responseReady = new AutoResetEvent(false);
             HttpListenerResponse response = null;
             _server = new TinyHttpServer(
-                urlPrefix, 
+                urlPrefix,
                 context =>
                     {
                         response = context.Response;

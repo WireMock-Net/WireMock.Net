@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using HandlebarsDotNet;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -21,7 +23,7 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The responses.
     /// </summary>
-    public class Response : IHeadersResponseBuilder
+    public class Response : IResponseBuilder
     {
         /// <summary>
         /// The _response.
@@ -32,6 +34,8 @@ namespace WireMock.ResponseBuilders
         /// The _delay.
         /// </summary>
         private TimeSpan _delay = TimeSpan.Zero;
+
+        private bool _useTransformer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Response"/> class.
@@ -47,8 +51,8 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The with Success status code.
         /// </summary>
-        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
-        public static IHeadersResponseBuilder WithSuccess()
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        public static IResponseBuilder WithSuccess()
         {
             return WithStatusCode(200);
         }
@@ -56,8 +60,8 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The with NotFound status code.
         /// </summary>
-        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
-        public static IHeadersResponseBuilder WithNotFound()
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        public static IResponseBuilder WithNotFound()
         {
             return WithStatusCode(404);
         }
@@ -69,9 +73,9 @@ namespace WireMock.ResponseBuilders
         /// The code.
         /// </param>
         /// <returns>
-        /// The <see cref="IHeadersResponseBuilder"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        public static IHeadersResponseBuilder WithStatusCode(int code)
+        public static IResponseBuilder WithStatusCode(int code)
         {
             var response = new ResponseMessage { StatusCode = code };
             return new Response(response);
@@ -88,7 +92,28 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public async Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
         {
+            if (_useTransformer)
+            {
+                var template = new { request = requestMessage };
+
+                // Body
+                var templateBody = Handlebars.Compile(_responseMessage.Body);
+                _responseMessage.Body = templateBody(template);
+
+                // Headers
+                var newHeaders = new Dictionary<string, string>();
+                foreach (var header in _responseMessage.Headers)
+                {
+                    var templateHeaderKey = Handlebars.Compile(header.Key);
+                    var templateHeaderValue = Handlebars.Compile(header.Value);
+
+                    newHeaders.Add(templateHeaderKey(template), templateHeaderValue(template));
+                }
+                _responseMessage.Headers = newHeaders;
+            }
+
             await Task.Delay(_delay);
+
             return _responseMessage;
         }
 
@@ -102,9 +127,9 @@ namespace WireMock.ResponseBuilders
         /// The value.
         /// </param>
         /// <returns>
-        /// The <see cref="IHeadersResponseBuilder"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        public IHeadersResponseBuilder WithHeader(string name, string value)
+        public IResponseBuilder WithHeader(string name, string value)
         {
             _responseMessage.AddHeader(name, value);
             return this;
@@ -117,11 +142,23 @@ namespace WireMock.ResponseBuilders
         /// The body.
         /// </param>
         /// <returns>
-        /// The <see cref="IDelayResponseBuilder"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        public IDelayResponseBuilder WithBody(string body)
+        public IResponseBuilder WithBody(string body)
         {
             _responseMessage.Body = body;
+            return this;
+        }
+
+        /// <summary>
+        /// The with transformer.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IResponseBuilder"/>.
+        /// </returns>
+        public IResponseBuilder WithTransformer()
+        {
+            _useTransformer = true;
             return this;
         }
 
@@ -134,7 +171,7 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IProvideResponses"/>.
         /// </returns>
-        public IProvideResponses AfterDelay(TimeSpan delay)
+        public IResponseBuilder AfterDelay(TimeSpan delay)
         {
             _delay = delay;
             return this;

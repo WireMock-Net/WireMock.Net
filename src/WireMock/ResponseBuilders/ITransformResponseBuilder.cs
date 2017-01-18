@@ -3,17 +3,14 @@
     /// <summary>
     /// The BodyResponseBuilder interface.
     /// </summary>
-    public interface IBodyResponseBuilder : IDelayResponseBuilder
+    public interface ITransformResponseBuilder : IHeadersResponseBuilder
     {
         /// <summary>
-        /// The with body.
+        /// The with transformer.
         /// </summary>
-        /// <param name="body">
-        /// The body.
-        /// </param>
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithBody(string body);
+        IResponseBuilder WithTransformer();
     }
 }

@@ -64,8 +64,8 @@
     <Compile Include="HttpListenerResponseMapperTests.cs" />
     <Compile Include="Http\TinyHttpServerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestsTests.cs" />
     <Compile Include="RequestTests.cs" />
+    <Compile Include="RequestMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

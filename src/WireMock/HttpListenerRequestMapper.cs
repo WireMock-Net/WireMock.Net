@@ -31,10 +31,10 @@ namespace WireMock
         /// </returns>
         public RequestMessage Map(HttpListenerRequest listenerRequest)
         {
-            var path = listenerRequest.Url.AbsolutePath;
-            var query = listenerRequest.Url.Query;
-            var verb = listenerRequest.HttpMethod;
-            var body = GetRequestBody(listenerRequest);
+            string path = listenerRequest.Url.AbsolutePath;
+            string query = listenerRequest.Url.Query;
+            string verb = listenerRequest.HttpMethod;
+            string body = GetRequestBody(listenerRequest);
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
 

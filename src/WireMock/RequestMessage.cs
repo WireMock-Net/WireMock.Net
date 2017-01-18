@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using WireMock.Extensions;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -26,11 +28,6 @@ namespace WireMock
     /// </summary>
     public class RequestMessage
     {
-        /// <summary>
-        /// The _params.
-        /// </summary>
-        private readonly IDictionary<string, List<string>> _params = new Dictionary<string, List<string>>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
@@ -58,7 +55,7 @@ namespace WireMock
                     query = query.Substring(1);
                 }
 
-                _params = query.Split('&').Aggregate(
+                Parameters = query.Split('&').Aggregate(
                     new Dictionary<string, List<string>>(),
                     (dict, term) =>
                         {
@@ -72,7 +69,19 @@ namespace WireMock
                             return dict;
                         });
 
-                Parameters = _params;
+                var tmpDictionary = new Dictionary<string, object>();
+                foreach (var parameter in Parameters.Where(p => p.Value.Any()))
+                {
+                    if (parameter.Value.Count == 1)
+                    {
+                        tmpDictionary.Add(parameter.Key, parameter.Value.First());
+                    }
+                    else
+                    {
+                        tmpDictionary.Add(parameter.Key, parameter.Value);
+                    }
+                }
+                Query = tmpDictionary.ToExpandoObject();
             }
 
             Path = path;
@@ -88,12 +97,12 @@ namespace WireMock
         {
             get
             {
-                if (!_params.Any())
+                if (!Parameters.Any())
                 {
                     return Path;
                 }
 
-                return Path + "?" + string.Join("&", _params.SelectMany(kv => kv.Value.Select(value => kv.Key + "=" + value)));
+                return Path + "?" + string.Join("&", Parameters.SelectMany(kv => kv.Value.Select(value => kv.Key + "=" + value)));
             }
         }
 
@@ -113,9 +122,14 @@ namespace WireMock
         public IDictionary<string, string> Headers { get; }
 
         /// <summary>
-        /// Gets the parameters.
+        /// Gets the query parameters.
         /// </summary>
-        public IDictionary<string, List<string>> Parameters { get; }
+        public IDictionary<string, List<string>> Parameters { get; } = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        /// Gets the query as object.
+        /// </summary>
+        public dynamic Query { get; }
 
         /// <summary>
         /// Gets the body.
@@ -133,7 +147,7 @@ namespace WireMock
         /// </returns>
         public List<string> GetParameter(string key)
         {
-            return _params.ContainsKey(key) ? _params[key] : new List<string>();
+            return Parameters.ContainsKey(key) ? Parameters[key] : new List<string>();
         }
     }
 }

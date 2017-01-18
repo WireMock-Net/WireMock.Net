@@ -27,7 +27,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The requests.
     /// </summary>
-    public class Request : CompositeRequestSpec, IVerbRequestBuilder, IHeadersRequestBuilder, IParamsRequestBuilder
+    public class Request : CompositeRequestSpec, IVerbRequestBuilder
     {
         /// <summary>
         /// The _request specs.

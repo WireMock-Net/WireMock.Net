@@ -14,8 +14,8 @@ namespace WireMock.ResponseBuilders
         /// The delay.
         /// </param>
         /// <returns>
-        /// The <see cref="IProvideResponses"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IProvideResponses AfterDelay(TimeSpan delay);
+        IResponseBuilder AfterDelay(TimeSpan delay);
     }
 }

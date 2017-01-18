@@ -24,14 +24,9 @@ namespace WireMock
     public class ResponseMessage
     {
         /// <summary>
-        /// The _headers.
-        /// </summary>
-        private readonly IDictionary<string, string> _headers = new ConcurrentDictionary<string, string>();
-
-        /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string> Headers => _headers;
+        public IDictionary<string, string> Headers { get; set; } = new ConcurrentDictionary<string, string>();
 
         /// <summary>
         /// Gets or sets the status code.
@@ -54,7 +49,7 @@ namespace WireMock
         /// </param>
         public void AddHeader(string name, string value)
         {
-            _headers.Add(name, value);
+            Headers.Add(name, value);
         }
     }
 }

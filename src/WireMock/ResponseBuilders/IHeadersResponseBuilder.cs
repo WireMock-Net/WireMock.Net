@@ -15,8 +15,8 @@
         /// The value.
         /// </param>
         /// <returns>
-        /// The <see cref="IHeadersResponseBuilder"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IHeadersResponseBuilder WithHeader(string name, string value);
+        IResponseBuilder WithHeader(string name, string value);
     }
 }
