@@ -19,8 +19,8 @@ environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
 
 before_build:
-- nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj
-- nuget restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
+- nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
+- nuget restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -PackagesDirectory packages
 
 build_script:
 - appveyor-retry dotnet restore .\src\WireMock -v Minimal
@@ -35,4 +35,4 @@ artifacts:
 - path: artifacts\**\*.*
 
 cache:
-- '%USERPROFILE%\.nuget\packages'
+- packages
