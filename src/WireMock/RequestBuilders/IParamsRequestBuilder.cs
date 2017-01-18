@@ -1,4 +1,8 @@
-﻿namespace WireMock.RequestBuilders
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+
+namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The ParametersRequestBuilder interface.
@@ -17,6 +21,17 @@
         /// <returns>
         /// The <see cref="ISpecifyRequests"/>.
         /// </returns>
-        ISpecifyRequests WithParam(string key, params string[] values);
+        ISpecifyRequests WithParam([NotNull] string key, params string[] values);
+
+        /// <summary>
+        /// The with parameters.
+        /// </summary>
+        /// <param name="func">
+        /// The func.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        ISpecifyRequests WithParam([NotNull] Func<IDictionary<string, List<string>>, bool> func);
     }
 }

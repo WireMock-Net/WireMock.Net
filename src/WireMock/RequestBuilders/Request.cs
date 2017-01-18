@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using JetBrains.Annotations;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -54,10 +56,25 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public static IVerbRequestBuilder WithUrl(string url)
         {
-            var specs = new List<ISpecifyRequests>();
-            var requests = new Request(specs);
-            specs.Add(new RequestUrlSpec(url));
-            return requests;
+            var specs = new List<ISpecifyRequests> { new RequestUrlSpec(url) };
+
+            return new Request(specs);
+        }
+
+        /// <summary>
+        /// The with url.
+        /// </summary>
+        /// <param name="func">
+        /// The url func.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IVerbRequestBuilder"/>.
+        /// </returns>
+        public static IVerbRequestBuilder WithUrl(Func<string, bool> func)
+        {
+            var specs = new List<ISpecifyRequests> { new RequestUrlSpec(func) };
+
+            return new Request(specs);
         }
 
         /// <summary>
@@ -71,10 +88,25 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public static IVerbRequestBuilder WithPath(string path)
         {
-            var specs = new List<ISpecifyRequests>();
-            var requests = new Request(specs);
-            specs.Add(new RequestPathSpec(path));
-            return requests;
+            var specs = new List<ISpecifyRequests> { new RequestPathSpec(path) };
+
+            return new Request(specs);
+        }
+
+        /// <summary>
+        /// The with path.
+        /// </summary>
+        /// <param name="func">
+        /// The path func.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IVerbRequestBuilder"/>.
+        /// </returns>
+        public static IVerbRequestBuilder WithPath([NotNull] Func<string, bool> func)
+        {
+            var specs = new List<ISpecifyRequests> { new RequestPathSpec(func) };
+
+            return new Request(specs);
         }
 
         /// <summary>
@@ -179,6 +211,21 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
+        /// The with body.
+        /// </summary>
+        /// <param name="func">
+        /// The body function.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        public ISpecifyRequests WithBody(Func<string, bool> func)
+        {
+            _requestSpecs.Add(new RequestBodySpec(func));
+            return this;
+        }
+
+        /// <summary>
         /// The with parameters.
         /// </summary>
         /// <param name="key">
@@ -193,6 +240,21 @@ namespace WireMock.RequestBuilders
         public ISpecifyRequests WithParam(string key, params string[] values)
         {
             _requestSpecs.Add(new RequestParamSpec(key, values.ToList()));
+            return this;
+        }
+
+        /// <summary>
+        /// The with parameters.
+        /// </summary>
+        /// <param name="func">
+        /// The func.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        public ISpecifyRequests WithParam(Func<IDictionary<string, List<string>>, bool> func)
+        {
+            _requestSpecs.Add(new RequestParamSpec(func));
             return this;
         }
 
@@ -212,6 +274,21 @@ namespace WireMock.RequestBuilders
         public IHeadersRequestBuilder WithHeader(string name, string value, bool ignoreCase = true)
         {
             _requestSpecs.Add(new RequestHeaderSpec(name, value, ignoreCase));
+            return this;
+        }
+
+        /// <summary>
+        /// The with header.
+        /// </summary>
+        /// <param name="func">
+        ///     The func.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// </returns>
+        public IHeadersRequestBuilder WithHeader(Func<IDictionary<string, string>, bool> func)
+        {
+            _requestSpecs.Add(new RequestHeaderSpec(func));
             return this;
         }
     }

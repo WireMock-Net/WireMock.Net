@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using System.Text.RegularExpressions;
 using WireMock.Validation;
@@ -30,6 +31,11 @@ namespace WireMock
         private readonly Regex urlRegex;
 
         /// <summary>
+        /// The url function
+        /// </summary>
+        private readonly Func<string, bool> urlFunc;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RequestUrlSpec"/> class.
         /// </summary>
         /// <param name="url">
@@ -39,6 +45,18 @@ namespace WireMock
         {
             Check.NotNull(url, nameof(url));
             urlRegex = new Regex(url);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestUrlSpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The url func.
+        /// </param>
+        public RequestUrlSpec(Func<string, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            urlFunc = func;
         }
 
         /// <summary>
@@ -52,7 +70,7 @@ namespace WireMock
         /// </returns>
         public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return urlRegex.IsMatch(requestMessage.Url);
+            return urlRegex?.IsMatch(requestMessage.Url) ?? urlFunc(requestMessage.Url);
         }
     }
 }

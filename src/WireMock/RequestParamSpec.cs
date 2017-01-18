@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -15,8 +17,7 @@ using JetBrains.Annotations;
     SuppressMessage("StyleCop.CSharp.DocumentationRules",
         "SA1633:FileMustHaveHeader",
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
+
 namespace WireMock
 {
     /// <summary>
@@ -32,7 +33,9 @@ namespace WireMock
         /// <summary>
         /// The _values.
         /// </summary>
-        private readonly List<string> _values;
+        private readonly IEnumerable<string> _values;
+
+        private readonly Func<IDictionary<string, List<string>>, bool> _func;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestParamSpec"/> class.
@@ -43,10 +46,25 @@ namespace WireMock
         /// <param name="values">
         /// The values.
         /// </param>
-        public RequestParamSpec(string key, List<string> values)
+        public RequestParamSpec([NotNull] string key, [NotNull] IEnumerable<string> values)
         {
+            Check.NotNull(key, nameof(key));
+            Check.NotNull(values, nameof(values));
+
             _key = key;
             _values = values;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestParamSpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The func.
+        /// </param>
+        public RequestParamSpec([NotNull] Func<IDictionary<string, List<string>>, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            _func = func;
         }
 
         /// <summary>
@@ -58,9 +76,14 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy([NotNull] RequestMessage requestMessage)
+        public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return requestMessage.GetParameter(_key).Intersect(_values).Count() == _values.Count;
+            if (_func != null)
+            {
+                return _func(requestMessage.Parameters);
+            }
+
+            return requestMessage.GetParameter(_key).Intersect(_values).Count() == _values.Count();
         }
     }
 }

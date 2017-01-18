@@ -29,16 +29,6 @@ namespace WireMock
         private readonly IDictionary<string, string> _headers = new ConcurrentDictionary<string, string>();
 
         /// <summary>
-        /// The status code.
-        /// </summary>
-        private volatile int statusCode = 200;
-
-        /// <summary>
-        /// The body.
-        /// </summary>
-        private volatile string body;
-
-        /// <summary>
         /// Gets the headers.
         /// </summary>
         public IDictionary<string, string> Headers => _headers;
@@ -46,34 +36,12 @@ namespace WireMock
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        public int StatusCode
-        {
-            get
-            {
-                return statusCode;
-            }
-
-            set
-            {
-                statusCode = value;
-            }
-        }
+        public int StatusCode { get; set; } = 200;
 
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        public string Body
-        {
-            get
-            {
-                return body;
-            }
-
-            set
-            {
-                body = value;
-            }
-        }
+        public string Body { get; set; }
 
         /// <summary>
         /// The add header.

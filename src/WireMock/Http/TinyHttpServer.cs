@@ -53,13 +53,6 @@ namespace WireMock.Http
         {
             _httpHandler = httpHandler;
 
-            // .Net Framework is not supportted on XP or Server 2003, so no need for the check
-            /*if (!HttpListener.IsSupported)
-            {
-                Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
-                return;
-            }*/
-
             // Create a listener.
             _listener = new HttpListener();
             _listener.Prefixes.Add(urlPrefix);

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
@@ -15,8 +16,7 @@ using WireMock.Validation;
     SuppressMessage("StyleCop.CSharp.DocumentationRules",
         "SA1633:FileMustHaveHeader",
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
+
 namespace WireMock
 {
     /// <summary>
@@ -25,9 +25,14 @@ namespace WireMock
     public class RequestPathSpec : ISpecifyRequests
     {
         /// <summary>
-        /// The _path.
+        /// The pathRegex.
         /// </summary>
-        private readonly Regex _path;
+        private readonly Regex pathRegex;
+
+        /// <summary>
+        /// The url function
+        /// </summary>
+        private readonly Func<string, bool> pathFunc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestPathSpec"/> class.
@@ -38,7 +43,19 @@ namespace WireMock
         public RequestPathSpec([NotNull, RegexPattern] string path)
         {
             Check.NotNull(path, nameof(path));
-            _path = new Regex(path);
+            pathRegex = new Regex(path);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestPathSpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The url func.
+        /// </param>
+        public RequestPathSpec([NotNull] Func<string, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            pathFunc = func;
         }
 
         /// <summary>
@@ -50,9 +67,9 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy([NotNull] RequestMessage requestMessage)
+        public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return _path.IsMatch(requestMessage.Path);
+            return pathRegex?.IsMatch(requestMessage.Path) ?? pathFunc(requestMessage.Path);
         }
     }
 }

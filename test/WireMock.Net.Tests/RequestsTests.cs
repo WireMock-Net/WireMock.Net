@@ -266,6 +266,19 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void Should_specify_requests_matching_given_params_func()
+        {
+            // given
+            var spec = Request.WithPath("/foo").WithParam(p => p.ContainsKey("bar") && (p["bar"].Contains("1") || p["bar"].Contains("2")));
+
+            // when
+            var request = new RequestMessage("/foo", "bar=1&bar=2", "Get", "Hello world!", new Dictionary<string, string>());
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
         public void Should_exclude_requests_not_matching_given_params()
         {
             // given

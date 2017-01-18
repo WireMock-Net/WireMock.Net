@@ -18,8 +18,7 @@ using System.Linq;
     SuppressMessage("StyleCop.CSharp.DocumentationRules",
         "SA1650:ElementDocumentationMustBeSpelledCorrectly",
         Justification = "Reviewed. Suppression is OK here.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
+
 namespace WireMock
 {
     /// <summary>
@@ -30,7 +29,7 @@ namespace WireMock
         /// <summary>
         /// The _params.
         /// </summary>
-        private readonly Dictionary<string, List<string>> _params = new Dictionary<string, List<string>>();
+        private readonly IDictionary<string, List<string>> _params = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
@@ -50,7 +49,7 @@ namespace WireMock
         /// <param name="headers">
         /// The headers.
         /// </param>
-        public RequestMessage(string path, string query, string verb, string body, IDictionary<string, string> headers)
+        public RequestMessage(string path, string query, string verb, string body, IDictionary<string, string> headers = null)
         {
             if (!string.IsNullOrEmpty(query))
             {
@@ -72,12 +71,14 @@ namespace WireMock
                             dict[key].Add(term.Split('=')[1]);
                             return dict;
                         });
+
+                Parameters = _params;
             }
 
             Path = path;
-            Headers = headers; //.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value.ToLower());
+            Headers = headers;
             Verb = verb.ToLower();
-            Body = body?.Trim() ?? string.Empty;
+            Body = body;
         }
 
         /// <summary>
@@ -110,6 +111,11 @@ namespace WireMock
         /// Gets the headers.
         /// </summary>
         public IDictionary<string, string> Headers { get; }
+
+        /// <summary>
+        /// Gets the parameters.
+        /// </summary>
+        public IDictionary<string, List<string>> Parameters { get; }
 
         /// <summary>
         /// Gets the body.

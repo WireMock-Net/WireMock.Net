@@ -1,6 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -34,6 +37,11 @@ namespace WireMock
         private readonly Regex patternRegex;
 
         /// <summary>
+        /// The header function
+        /// </summary>
+        private readonly Func<IDictionary<string, string>, bool> headerFunc;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RequestHeaderSpec"/> class.
         /// </summary>
         /// <param name="name">
@@ -50,6 +58,18 @@ namespace WireMock
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RequestHeaderSpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The func.
+        /// </param>
+        public RequestHeaderSpec([NotNull] Func<IDictionary<string, string>, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            headerFunc = func;
+        }
+
+        /// <summary>
         /// The is satisfied by.
         /// </summary>
         /// <param name="requestMessage">
@@ -58,8 +78,11 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy([NotNull] RequestMessage requestMessage)
+        public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
+            if (patternRegex == null)
+                return headerFunc(requestMessage.Headers);
+
             string headerValue = requestMessage.Headers[name];
             return patternRegex.IsMatch(headerValue);
         }

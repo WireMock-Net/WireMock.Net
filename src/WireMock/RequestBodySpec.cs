@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -30,6 +31,11 @@ namespace WireMock
         private readonly Regex bodyRegex;
 
         /// <summary>
+        /// The body function
+        /// </summary>
+        private readonly Func<string, bool> bodyFunc;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
         /// </summary>
         /// <param name="body">
@@ -39,6 +45,18 @@ namespace WireMock
         {
             Check.NotNull(body, nameof(body));
             bodyRegex = new Regex(body);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The body func.
+        /// </param>
+        public RequestBodySpec([NotNull] Func<string, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            bodyFunc = func;
         }
 
         /// <summary>
@@ -52,7 +70,7 @@ namespace WireMock
         /// </returns>
         public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return bodyRegex.IsMatch(requestMessage.Body);
+            return bodyRegex?.IsMatch(requestMessage.Body) ?? bodyFunc(requestMessage.Body);
         }
     }
 }
