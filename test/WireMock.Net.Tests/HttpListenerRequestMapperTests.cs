@@ -49,8 +49,8 @@ namespace WireMock.Net.Tests
             await client.GetAsync(MapperServer.UrlPrefix + "toto");
 
             // then
-            Check.That(MapperServer.LastRequest).IsNotNull();
-            Check.That(MapperServer.LastRequest.Url).IsEqualTo("/toto");
+            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+            Check.That(MapperServer.LastRequestMessage.Url).IsEqualTo("/toto");
         }
 
         [Test]
@@ -63,8 +63,8 @@ namespace WireMock.Net.Tests
             await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
 
             // then
-            Check.That(MapperServer.LastRequest).IsNotNull();
-            Check.That(MapperServer.LastRequest.Verb).IsEqualTo("put");
+            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+            Check.That(MapperServer.LastRequestMessage.Verb).IsEqualTo("put");
         }
 
         [Test]
@@ -77,8 +77,8 @@ namespace WireMock.Net.Tests
             await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
 
             // then
-            Check.That(MapperServer.LastRequest).IsNotNull();
-            Check.That(MapperServer.LastRequest.Body).IsEqualTo("Hello!");
+            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+            Check.That(MapperServer.LastRequestMessage.Body).IsEqualTo("Hello!");
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace WireMock.Net.Tests
             await client.GetAsync(MapperServer.UrlPrefix);
 
             // then
-            Check.That(MapperServer.LastRequest).IsNotNull();
-            Check.That(MapperServer.LastRequest.Headers).Not.IsNullOrEmpty();
-            Check.That(MapperServer.LastRequest.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
+            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+            Check.That(MapperServer.LastRequestMessage.Headers).Not.IsNullOrEmpty();
+            Check.That(MapperServer.LastRequestMessage.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
         }
 
         [Test]
@@ -107,9 +107,9 @@ namespace WireMock.Net.Tests
             await client.GetAsync(MapperServer.UrlPrefix + "index.html?id=toto");
 
             // then
-            Check.That(MapperServer.LastRequest).IsNotNull();
-            Check.That(MapperServer.LastRequest.Path).EndsWith("/index.html");
-            Check.That(MapperServer.LastRequest.GetParameter("id")).HasSize(1);
+            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+            Check.That(MapperServer.LastRequestMessage.Path).EndsWith("/index.html");
+            Check.That(MapperServer.LastRequestMessage.GetParameter("id")).HasSize(1);
         }
 
         [TearDown]
@@ -120,22 +120,22 @@ namespace WireMock.Net.Tests
 
         private class MapperServer : TinyHttpServer
         {
-            private static volatile Request _lastRequest;
+            private static volatile RequestMessage _lastRequestMessage;
 
             private MapperServer(string urlPrefix, Action<HttpListenerContext> httpHandler) : base(urlPrefix, httpHandler)
             {
             }
 
-            public static Request LastRequest
+            public static RequestMessage LastRequestMessage
             {
                 get
                 {
-                    return _lastRequest;
+                    return _lastRequestMessage;
                 }
 
                 private set
                 {
-                    _lastRequest = value;
+                    _lastRequestMessage = value;
                 }
             }
 
@@ -149,7 +149,7 @@ namespace WireMock.Net.Tests
                     UrlPrefix, 
                     context =>
                         {
-                            LastRequest = new HttpListenerRequestMapper().Map(context.Request);
+                            LastRequestMessage = new HttpListenerRequestMapper().Map(context.Request);
                             context.Response.Close();
                         });
                 ((TinyHttpServer)server).Start();
@@ -159,7 +159,7 @@ namespace WireMock.Net.Tests
             public new void Stop()
             {
                 base.Stop();
-                LastRequest = null;
+                LastRequestMessage = null;
             }
         }
     }

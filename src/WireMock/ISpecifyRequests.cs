@@ -16,12 +16,12 @@ namespace WireMock
         /// <summary>
         /// The is satisfied by.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        bool IsSatisfiedBy([NotNull] Request request);
+        bool IsSatisfiedBy([NotNull] RequestMessage requestMessage);
     }
 }

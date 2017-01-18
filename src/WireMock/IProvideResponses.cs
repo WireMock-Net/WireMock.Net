@@ -16,12 +16,12 @@ namespace WireMock
         /// <summary>
         /// The provide response.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        Task<Response> ProvideResponse(Request request);
+        Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage);
     }
 }

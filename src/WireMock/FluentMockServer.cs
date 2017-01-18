@@ -43,7 +43,7 @@ namespace WireMock
         /// <summary>
         /// The _request logs.
         /// </summary>
-        private readonly IList<Request> _requestLogs = new List<Request>();
+        private readonly IList<RequestMessage> _requestLogs = new List<RequestMessage>();
 
         /// <summary>
         /// The _request mapper.
@@ -104,13 +104,13 @@ namespace WireMock
         /// <summary>
         /// Gets the request logs.
         /// </summary>
-        public IEnumerable<Request> RequestLogs
+        public IEnumerable<RequestMessage> RequestLogs
         {
             get
             {
                 lock (((ICollection)_requestLogs).SyncRoot)
                 {
-                    return new ReadOnlyCollection<Request>(_requestLogs);
+                    return new ReadOnlyCollection<RequestMessage>(_requestLogs);
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace WireMock
         /// <returns>
         /// The <see cref="IEnumerable"/>.
         /// </returns>
-        public IEnumerable<Request> SearchLogsFor(ISpecifyRequests spec)
+        public IEnumerable<RequestMessage> SearchLogsFor(ISpecifyRequests spec)
         {
             lock (((ICollection)_requestLogs).SyncRoot)
             {
@@ -223,14 +223,14 @@ namespace WireMock
         /// <summary>
         /// The log request.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
-        private void LogRequest(Request request)
+        private void LogRequest(RequestMessage requestMessage)
         {
             lock (((ICollection)_requestLogs).SyncRoot)
             {
-                _requestLogs.Add(request);
+                _requestLogs.Add(requestMessage);
             }
         }
 

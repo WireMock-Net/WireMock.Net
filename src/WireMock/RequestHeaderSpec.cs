@@ -52,15 +52,15 @@ namespace WireMock
         /// <summary>
         /// The is satisfied by.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy([NotNull] Request request)
+        public bool IsSatisfiedBy([NotNull] RequestMessage requestMessage)
         {
-            string headerValue = request.Headers[name];
+            string headerValue = requestMessage.Headers[name];
             return patternRegex.IsMatch(headerValue);
         }
     }

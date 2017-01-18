@@ -27,9 +27,9 @@ namespace WireMock
         /// The listener request.
         /// </param>
         /// <returns>
-        /// The <see cref="RequestBuilder"/>.
+        /// The <see cref="Request"/>.
         /// </returns>
-        public Request Map(HttpListenerRequest listenerRequest)
+        public RequestMessage Map(HttpListenerRequest listenerRequest)
         {
             var path = listenerRequest.Url.AbsolutePath;
             var query = listenerRequest.Url.Query;
@@ -38,7 +38,7 @@ namespace WireMock
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
 
-            return new Request(path, query, verb, body, headers);
+            return new RequestMessage(path, query, verb, body, headers);
         }
 
         /// <summary>

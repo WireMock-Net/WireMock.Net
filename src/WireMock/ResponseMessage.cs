@@ -21,7 +21,7 @@ namespace WireMock
     /// <summary>
     /// The response.
     /// </summary>
-    public class Response
+    public class ResponseMessage
     {
         /// <summary>
         /// The _headers.

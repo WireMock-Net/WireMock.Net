@@ -50,29 +50,29 @@ namespace WireMock
         /// <summary>
         /// The response to.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public Task<Response> ResponseTo(Request request)
+        public Task<ResponseMessage> ResponseTo(RequestMessage requestMessage)
         {
-            return _provider.ProvideResponse(request);
+            return _provider.ProvideResponse(requestMessage);
         }
 
         /// <summary>
         /// The is request handled.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsRequestHandled(Request request)
+        public bool IsRequestHandled(RequestMessage requestMessage)
         {
-            return _requestSpec.IsSatisfiedBy(request);
+            return _requestSpec.IsSatisfiedBy(requestMessage);
         }
     }
 }

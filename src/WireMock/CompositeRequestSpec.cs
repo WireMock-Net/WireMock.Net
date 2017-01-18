@@ -43,15 +43,15 @@ namespace WireMock
         /// <summary>
         /// The is satisfied by.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy(Request request)
+        public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return _requestSpecs.All(spec => spec.IsSatisfiedBy(request));
+            return _requestSpecs.All(spec => spec.IsSatisfiedBy(requestMessage));
         }
     }
 }

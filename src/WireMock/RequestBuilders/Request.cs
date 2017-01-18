@@ -25,7 +25,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The requests.
     /// </summary>
-    public class RequestBuilder : CompositeRequestSpec, IVerbRequestBuilder, IHeadersRequestBuilder, IParamsRequestBuilder
+    public class Request : CompositeRequestSpec, IVerbRequestBuilder, IHeadersRequestBuilder, IParamsRequestBuilder
     {
         /// <summary>
         /// The _request specs.
@@ -33,12 +33,12 @@ namespace WireMock.RequestBuilders
         private readonly IList<ISpecifyRequests> _requestSpecs;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBuilder"/> class.
+        /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         /// <param name="requestSpecs">
         /// The request specs.
         /// </param>
-        private RequestBuilder(IList<ISpecifyRequests> requestSpecs) : base(requestSpecs)
+        private Request(IList<ISpecifyRequests> requestSpecs) : base(requestSpecs)
         {
             _requestSpecs = requestSpecs;
         }
@@ -55,7 +55,7 @@ namespace WireMock.RequestBuilders
         public static IVerbRequestBuilder WithUrl(string url)
         {
             var specs = new List<ISpecifyRequests>();
-            var requests = new RequestBuilder(specs);
+            var requests = new Request(specs);
             specs.Add(new RequestUrlSpec(url));
             return requests;
         }
@@ -72,7 +72,7 @@ namespace WireMock.RequestBuilders
         public static IVerbRequestBuilder WithPath(string path)
         {
             var specs = new List<ISpecifyRequests>();
-            var requests = new RequestBuilder(specs);
+            var requests = new Request(specs);
             specs.Add(new RequestPathSpec(path));
             return requests;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -21,12 +21,12 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The responses.
     /// </summary>
-    public class ResponseBuilder : IHeadersResponseBuilder
+    public class Response : IHeadersResponseBuilder
     {
         /// <summary>
         /// The _response.
         /// </summary>
-        private readonly Response _response;
+        private readonly ResponseMessage _responseMessage;
 
         /// <summary>
         /// The _delay.
@@ -34,14 +34,14 @@ namespace WireMock.ResponseBuilders
         private TimeSpan _delay = TimeSpan.Zero;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResponseBuilder"/> class.
+        /// Initializes a new instance of the <see cref="Response"/> class.
         /// </summary>
-        /// <param name="response">
+        /// <param name="responseMessage">
         /// The response.
         /// </param>
-        public ResponseBuilder(Response response)
+        public Response(ResponseMessage responseMessage)
         {
-            _response = response;
+            _responseMessage = responseMessage;
         }
 
         /// <summary>
@@ -73,23 +73,23 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public static IHeadersResponseBuilder WithStatusCode(int code)
         {
-            var response = new Response { StatusCode = code };
-            return new ResponseBuilder(response);
+            var response = new ResponseMessage { StatusCode = code };
+            return new Response(response);
         }
 
         /// <summary>
         /// The provide response.
         /// </summary>
-        /// <param name="request">
+        /// <param name="requestMessage">
         /// The request.
         /// </param>
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task<Response> ProvideResponse(Request request)
+        public async Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
         {
             await Task.Delay(_delay);
-            return _response;
+            return _responseMessage;
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public IHeadersResponseBuilder WithHeader(string name, string value)
         {
-            _response.AddHeader(name, value);
+            _responseMessage.AddHeader(name, value);
             return this;
         }
 
@@ -121,7 +121,7 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public IDelayResponseBuilder WithBody(string body)
         {
-            _response.Body = body;
+            _responseMessage.Body = body;
             return this;
         }
 

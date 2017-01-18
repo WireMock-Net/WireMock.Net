@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests
         public void Should_map_status_code_from_original_response()
         {
             // given
-            var response = new Response { StatusCode = 404 };
+            var response = new ResponseMessage { StatusCode = 404 };
             var httpListenerResponse = CreateHttpListenerResponse();
 
             // when
@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests
         public void Should_map_headers_from_original_response()
         {
             // given
-            var response = new Response();
+            var response = new ResponseMessage();
             response.AddHeader("cache-control", "no-cache");
             var httpListenerResponse = CreateHttpListenerResponse();
 
@@ -68,7 +68,7 @@ namespace WireMock.Net.Tests
         public void Should_map_body_from_original_response()
         {
             // given
-            var response = new Response();
+            var response = new ResponseMessage();
             response.Body = "Hello !!!";
             var httpListenerResponse = CreateHttpListenerResponse();
 

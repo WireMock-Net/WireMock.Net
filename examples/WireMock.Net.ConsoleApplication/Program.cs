@@ -19,12 +19,12 @@ namespace WireMock.Net.ConsoleApplication
 
             server
               .Given(
-                RequestBuilder
+                Request
                     .WithUrl("/*")
                     .UsingGet()
               )
               .RespondWith(
-                ResponseBuilder
+                Response
                   .WithStatusCode(200)
                   .WithHeader("Content-Type", "application/json")
                   .WithBody(@"{ ""msg"": ""Hello world!""}")

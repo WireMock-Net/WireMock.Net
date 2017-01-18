@@ -21,7 +21,7 @@ namespace WireMock.Net.Tests
         public void Should_handle_empty_query()
         {
             // given
-            var request = new Request("/foo", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
+            var request = new RequestMessage("/foo", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
 
             // then
             Check.That(request.GetParameter("foo")).IsEmpty();
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests
         public void Should_parse_query_params()
         {
             // given
-            var request = new Request("/foo", "foo=bar&multi=1&multi=2", "blabla", "whatever", new Dictionary<string, string>());
+            var request = new RequestMessage("/foo", "foo=bar&multi=1&multi=2", "blabla", "whatever", new Dictionary<string, string>());
 
             // then
             Check.That(request.GetParameter("foo")).Contains("bar");

@@ -25,7 +25,7 @@ namespace WireMock
     /// <summary>
     /// The request.
     /// </summary>
-    public class Request
+    public class RequestMessage
     {
         /// <summary>
         /// The _params.
@@ -33,7 +33,7 @@ namespace WireMock
         private readonly Dictionary<string, List<string>> _params = new Dictionary<string, List<string>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
         /// <param name="path">
         /// The path.
@@ -50,7 +50,7 @@ namespace WireMock
         /// <param name="headers">
         /// The headers.
         /// </param>
-        public Request(string path, string query, string verb, string body, IDictionary<string, string> headers)
+        public RequestMessage(string path, string query, string verb, string body, IDictionary<string, string> headers)
         {
             if (!string.IsNullOrEmpty(query))
             {
@@ -127,12 +127,7 @@ namespace WireMock
         /// </returns>
         public List<string> GetParameter(string key)
         {
-            if (_params.ContainsKey(key))
-            {
-                return _params[key];
-            }
-
-            return new List<string>();
+            return _params.ContainsKey(key) ? _params[key] : new List<string>();
         }
     }
 }
