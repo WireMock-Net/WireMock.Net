@@ -1,12 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Text;
-
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
 
 namespace WireMock
 {
@@ -27,7 +21,9 @@ namespace WireMock
         public void Map(ResponseMessage responseMessage, HttpListenerResponse result)
         {
             result.StatusCode = responseMessage.StatusCode;
+
             responseMessage.Headers.ToList().ForEach(pair => result.AddHeader(pair.Key, pair.Value));
+
             if (responseMessage.Body != null)
             {
                 var content = Encoding.UTF8.GetBytes(responseMessage.Body);

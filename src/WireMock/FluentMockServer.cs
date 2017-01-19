@@ -249,21 +249,33 @@ namespace WireMock
 
             var request = _requestMapper.Map(ctx.Request);
             LogRequest(request);
-            var targetRoute = _routes.FirstOrDefault(route => route.IsRequestHandled(request));
-            if (targetRoute == null)
+            try
             {
-                ctx.Response.StatusCode = 404;
-                var content = Encoding.UTF8.GetBytes("<html><body>Mock Server: page not found</body></html>");
+                var targetRoute = _routes.FirstOrDefault(route => route.IsRequestHandled(request));
+                if (targetRoute == null)
+                {
+                    ctx.Response.StatusCode = 404;
+
+                    byte[] content = Encoding.UTF8.GetBytes("<html><body>Mock Server: page not found</body></html>");
+                    ctx.Response.OutputStream.Write(content, 0, content.Length);
+                }
+                else
+                {
+                    var response = await targetRoute.ResponseTo(request);
+                    _responseMapper.Map(response, ctx.Response);
+                }
+            }
+            catch (Exception ex)
+            {
+                ctx.Response.StatusCode = 500;
+
+                byte[] content = Encoding.UTF8.GetBytes(ex.ToString());
                 ctx.Response.OutputStream.Write(content, 0, content.Length);
             }
-            else
+            finally
             {
-                var response = await targetRoute.ResponseTo(request);
-
-                _responseMapper.Map(response, ctx.Response);
+                ctx.Response.Close();
             }
-
-            ctx.Response.Close();
         }
 
         /// <summary>

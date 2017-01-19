@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -49,6 +50,13 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data posted with 201""}"));
+
+            server
+                .Given(Request.WithUrl("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))
+                .RespondWith(Response
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""json posted with 201""}"));
 
             server
                 .Given(Request.WithUrl("/data").UsingDelete())
