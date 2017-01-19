@@ -17,16 +17,38 @@ namespace WireMock.RequestBuilders
         /// The <see cref="ISpecifyRequests"/>.
         /// </returns>
         ISpecifyRequests WithBody(string body);
-        
+
         /// <summary>
-        /// The with body.
+        /// The with body byte[].
         /// </summary>
         /// <param name="body">
-        /// The body function.
+        /// The body as byte[].
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        ISpecifyRequests WithBody(byte[] body);
+
+        /// <summary>
+        /// The with body string func.
+        /// </summary>
+        /// <param name="body">
+        /// The body string function.
         /// </param>
         /// <returns>
         /// The <see cref="ISpecifyRequests"/>.
         /// </returns>
         ISpecifyRequests WithBody(Func<string, bool> body);
+
+        /// <summary>
+        /// The with body byte[] func.
+        /// </summary>
+        /// <param name="body">
+        /// The body byte[] function.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        ISpecifyRequests WithBody(Func<byte[], bool> body);
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using NFluent;
 using NUnit.Framework;
 
@@ -21,7 +23,9 @@ namespace WireMock.Net.Tests
         public void Should_handle_empty_query()
         {
             // given
-            var request = new RequestMessage("/foo", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
 
             // then
             Check.That(request.GetParameter("foo")).IsEmpty();
@@ -31,7 +35,9 @@ namespace WireMock.Net.Tests
         public void Should_parse_query_params()
         {
             // given
-            var request = new RequestMessage("/foo", "foo=bar&multi=1&multi=2", "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost?foo=bar&multi=1&multi=2"), "POST", body, bodyAsString);
 
             // then
             Check.That(request.GetParameter("foo")).Contains("bar");

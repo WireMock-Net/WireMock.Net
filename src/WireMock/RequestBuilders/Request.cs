@@ -211,6 +211,21 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
+        /// The with body byte[].
+        /// </summary>
+        /// <param name="body">
+        /// The body as byte[].
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        public ISpecifyRequests WithBody(byte[] body)
+        {
+            _requestSpecs.Add(new RequestBodySpec(body));
+            return this;
+        }
+
+        /// <summary>
         /// The with body.
         /// </summary>
         /// <param name="func">
@@ -220,6 +235,21 @@ namespace WireMock.RequestBuilders
         /// The <see cref="ISpecifyRequests"/>.
         /// </returns>
         public ISpecifyRequests WithBody(Func<string, bool> func)
+        {
+            _requestSpecs.Add(new RequestBodySpec(func));
+            return this;
+        }
+
+        /// <summary>
+        /// The with body.
+        /// </summary>
+        /// <param name="func">
+        /// The body function.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        public ISpecifyRequests WithBody(Func<byte[], bool> func)
         {
             _requestSpecs.Add(new RequestBodySpec(func));
             return this;

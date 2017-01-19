@@ -28,12 +28,22 @@ namespace WireMock
         /// <summary>
         /// The bodyRegex.
         /// </summary>
+        private readonly byte[] bodyData;
+
+        /// <summary>
+        /// The bodyRegex.
+        /// </summary>
         private readonly Regex bodyRegex;
 
         /// <summary>
         /// The body function
         /// </summary>
         private readonly Func<string, bool> bodyFunc;
+
+        /// <summary>
+        /// The body data function
+        /// </summary>
+        private readonly Func<byte[], bool> bodyDataFunc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
@@ -50,6 +60,18 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
         /// </summary>
+        /// <param name="body">
+        /// The body Regex pattern.
+        /// </param>
+        public RequestBodySpec([NotNull] byte[] body)
+        {
+            Check.NotNull(body, nameof(body));
+            bodyData = body;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// </summary>
         /// <param name="func">
         /// The body func.
         /// </param>
@@ -57,6 +79,18 @@ namespace WireMock
         {
             Check.NotNull(func, nameof(func));
             bodyFunc = func;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// </summary>
+        /// <param name="func">
+        /// The body func.
+        /// </param>
+        public RequestBodySpec([NotNull] Func<byte[], bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            bodyDataFunc = func;
         }
 
         /// <summary>
@@ -70,7 +104,19 @@ namespace WireMock
         /// </returns>
         public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
-            return bodyRegex?.IsMatch(requestMessage.Body) ?? bodyFunc(requestMessage.Body);
+            if (bodyRegex != null)
+                return bodyRegex.IsMatch(requestMessage.BodyAsString);
+
+            if (bodyData != null)
+                return requestMessage.Body == bodyData;
+
+            if (bodyFunc != null)
+                return bodyFunc(requestMessage.BodyAsString);
+
+            if (bodyDataFunc != null)
+                return bodyDataFunc(requestMessage.Body);
+
+            return false;
         }
     }
 }

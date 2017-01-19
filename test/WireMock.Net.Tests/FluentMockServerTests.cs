@@ -11,20 +11,20 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
 [module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules", 
-        "SA1101:PrefixLocalCallsWithThis", 
+    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
+        "SA1101:PrefixLocalCallsWithThis",
         Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.NamingRules", 
-        "SA1309:FieldNamesMustNotBeginWithUnderscore", 
+    SuppressMessage("StyleCop.CSharp.NamingRules",
+        "SA1309:FieldNamesMustNotBeginWithUnderscore",
         Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules", 
-        "SA1600:ElementsMustBeDocumented", 
+    SuppressMessage("StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
         Justification = "Reviewed. Suppression is OK here, as it's a tests class.")]
 [module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules", 
-        "SA1633:FileMustHaveHeader", 
+    SuppressMessage("StyleCop.CSharp.DocumentationRules",
+        "SA1633:FileMustHaveHeader",
         Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
 // ReSharper disable ArrangeThisQualifier
 // ReSharper disable InconsistentNaming
@@ -100,10 +100,12 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/bar");
 
             // then
-            var result = _server.SearchLogsFor(Request.WithUrl("/b.*"));
+            var result = _server.SearchLogsFor(Request.WithUrl("/b.*")).ToList();
             Check.That(result).HasSize(1);
+
             var requestLogged = result.First();
-            Check.That(requestLogged.Url).IsEqualTo("/bar");
+            Check.That(requestLogged.Path).IsEqualTo("/bar");
+            Check.That(requestLogged.Url).IsEqualTo("http://localhost:" + _server.Port + "/bar");
         }
 
         [Test]

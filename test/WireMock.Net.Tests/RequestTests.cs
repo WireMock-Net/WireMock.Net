@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using NFluent;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
@@ -25,7 +27,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -38,7 +42,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo*");
 
             // when
-            var request = new RequestMessage("/foo/bar", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -51,7 +57,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo");
 
             // when
-            var request = new RequestMessage("/bar", string.Empty, "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -64,7 +72,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithPath("/foo");
 
             // when
-            var request = new RequestMessage("/foo", "?param=1", "blabla", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -77,7 +87,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -90,7 +102,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingPost();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "POST", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -103,7 +117,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingGet();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "GET", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -116,7 +132,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingDelete();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "DELETE", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -129,7 +147,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingHead();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "HEAD", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -142,7 +162,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "POST", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -155,7 +177,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/bar").UsingPut();
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string>());
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -168,7 +192,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string> { { "X-toto", "tata" } });
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -181,7 +207,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tatata");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string> { { "X-toto", "tata" } });
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -194,7 +222,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "abc", false);
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string> { { "X-toto", "ABC" } });
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "ABC" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -207,7 +237,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata*");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "whatever", new Dictionary<string, string> { { "X-toto", "TaTaTa" } });
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "TaTaTa" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -220,7 +252,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(".*Hello world!.*");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "Hello world!", new Dictionary<string, string> { { "X-toto", "tatata" } });
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -233,7 +267,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("H.*o");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "Hello world!", new Dictionary<string, string> { { "X-toto", "tatata" } });
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -246,7 +282,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("      Hello world!   ");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "XXXXXXXXXXX", new Dictionary<string, string> { { "X-toto", "tatata" } });
+            string bodyAsString = "xxx";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();
@@ -259,7 +297,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithPath("/foo").WithParam("bar", "1", "2");
 
             // when
-            var request = new RequestMessage("/foo", "bar=1&bar=2", "Get", "Hello world!", new Dictionary<string, string>());
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -272,7 +312,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithPath("/foo").WithParam(p => p.ContainsKey("bar") && (p["bar"].Contains("1") || p["bar"].Contains("2")));
 
             // when
-            var request = new RequestMessage("/foo", "bar=1&bar=2", "Get", "Hello world!", new Dictionary<string, string>());
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
@@ -285,7 +327,9 @@ namespace WireMock.Net.Tests
             var spec = Request.WithPath("/foo").WithParam("bar", "1");
 
             // when
-            var request = new RequestMessage("/foo", string.Empty, "PUT", "XXXXXXXXXXX", new Dictionary<string, string>());
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/test=7"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsFalse();

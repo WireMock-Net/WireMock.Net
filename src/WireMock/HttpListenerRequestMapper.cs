@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,14 +32,14 @@ namespace WireMock
         /// </returns>
         public RequestMessage Map(HttpListenerRequest listenerRequest)
         {
-            string path = listenerRequest.Url.AbsolutePath;
-            string query = listenerRequest.Url.Query;
+            Uri url = listenerRequest.Url;
             string verb = listenerRequest.HttpMethod;
-            string body = GetRequestBody(listenerRequest);
+            byte[] body = GetRequestBody(listenerRequest);
+            string bodyAsString = body != null ? listenerRequest.ContentEncoding.GetString(body) : null;
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
 
-            return new RequestMessage(path, query, verb, body, headers);
+            return new RequestMessage(url, verb, body, bodyAsString, headers);
         }
 
         /// <summary>
@@ -50,18 +51,20 @@ namespace WireMock
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        private string GetRequestBody(HttpListenerRequest request)
+        private byte[] GetRequestBody(HttpListenerRequest request)
         {
             if (!request.HasEntityBody)
             {
                 return null;
             }
 
-            using (var body = request.InputStream)
+            using (var bodyStream = request.InputStream)
             {
-                using (var reader = new StreamReader(body, request.ContentEncoding))
+                using (var memoryStream = new MemoryStream())
                 {
-                    return reader.ReadToEnd();
+                    bodyStream.CopyTo(memoryStream);
+
+                    return memoryStream.ToArray();
                 }
             }
         }

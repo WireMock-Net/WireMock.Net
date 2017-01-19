@@ -1,7 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using JetBrains.Annotations;
 using WireMock.Extensions;
 
 [module:
@@ -31,23 +32,31 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
-        /// <param name="path">
-        /// The path.
-        /// </param>
-        /// <param name="query">
-        /// The query.
+        /// <param name="url">
+        /// The original url.
         /// </param>
         /// <param name="verb">
         /// The verb.
         /// </param>
         /// <param name="body">
-        /// The body.
+        /// The body byte[].
+        /// </param>
+        /// <param name="bodyAsString">
+        /// The body string.
         /// </param>
         /// <param name="headers">
         /// The headers.
         /// </param>
-        public RequestMessage(string path, string query, string verb, string body, IDictionary<string, string> headers = null)
+        public RequestMessage(Uri url, string verb, byte[] body, string bodyAsString, IDictionary<string, string> headers = null)
         {
+            Url = url.ToString();
+            Path = url.AbsolutePath;
+            Verb = verb.ToLower();
+            Body = body;
+            BodyAsString = bodyAsString;
+            Headers = headers;
+
+            string query = url.Query;
             if (!string.IsNullOrEmpty(query))
             {
                 if (query.StartsWith("?"))
@@ -83,28 +92,12 @@ namespace WireMock
                 }
                 Query = tmpDictionary.ToExpandoObject();
             }
-
-            Path = path;
-            Headers = headers;
-            Verb = verb.ToLower();
-            Body = body;
         }
 
         /// <summary>
         /// Gets the url.
         /// </summary>
-        public string Url
-        {
-            get
-            {
-                if (!Parameters.Any())
-                {
-                    return Path;
-                }
-
-                return Path + "?" + string.Join("&", Parameters.SelectMany(kv => kv.Value.Select(value => kv.Key + "=" + value)));
-            }
-        }
+        public string Url { get; private set; }
 
         /// <summary>
         /// Gets the path.
@@ -129,12 +122,18 @@ namespace WireMock
         /// <summary>
         /// Gets the query as object.
         /// </summary>
+        [PublicAPI]
         public dynamic Query { get; }
 
         /// <summary>
         /// Gets the body.
         /// </summary>
-        public string Body { get; }
+        public byte[] Body { get; }
+
+        /// <summary>
+        /// Gets the body.
+        /// </summary>
+        public string BodyAsString { get; }
 
         /// <summary>
         /// The get parameter.
