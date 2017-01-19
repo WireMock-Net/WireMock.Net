@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using WireMock.Validation;
 
@@ -35,10 +36,17 @@ namespace WireMock.Matchers
             if (input == null)
                 return false;
 
-            JObject o = JObject.Parse(input);
-            JToken token = o.SelectToken(_pattern);
-
-            return token != null;
+            try
+            {
+                JObject o = JObject.Parse(input);
+                JToken token = o.SelectToken(_pattern);
+                
+                return token != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

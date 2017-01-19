@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -32,7 +33,17 @@ namespace WireMock.Matchers
         /// </returns>
         public bool IsMatch(string input)
         {
-            return input != null && _expression.IsMatch(input);
+            if (input == null)
+                return false;
+
+            try
+            {
+                return _expression.IsMatch(input);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

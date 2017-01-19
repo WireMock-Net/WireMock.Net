@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using JetBrains.Annotations;
 using WireMock.Validation;
 using Wmhelp.XPath2;
@@ -36,10 +37,17 @@ namespace WireMock.Matchers
             if (input == null)
                 return false;
 
-            var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
-            object result = nav.XPath2Evaluate($"boolean({_pattern})");
+            try
+            {
+                var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
+                object result = nav.XPath2Evaluate($"boolean({_pattern})");
 
-            return true.Equals(result);
+                return true.Equals(result);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
