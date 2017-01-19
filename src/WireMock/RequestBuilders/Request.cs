@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
+using WireMock.Matchers;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -252,6 +253,19 @@ namespace WireMock.RequestBuilders
         public ISpecifyRequests WithBody(Func<byte[], bool> func)
         {
             _requestSpecs.Add(new RequestBodySpec(func));
+            return this;
+        }
+
+        /// <summary>
+        /// The with body.
+        /// </summary>
+        /// <param name="matcher">The matcher.</param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests" />.
+        /// </returns>
+        public ISpecifyRequests WithBody(IMatcher matcher)
+        {
+            _requestSpecs.Add(new RequestBodySpec(matcher));
             return this;
         }
 

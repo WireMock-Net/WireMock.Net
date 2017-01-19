@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using NFluent;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
+using WireMock.Matchers;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1600:ElementsMustBeDocumented",
-        Justification = "Reviewed. Suppression is OK here, as it's a tests class.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable InconsistentNaming
 namespace WireMock.Net.Tests
 {
     [TestFixture]
@@ -249,7 +240,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(".*Hello world!.*");
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("Hello world!");
 
             // when
             string bodyAsString = "Hello world!";
@@ -261,7 +252,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_wildcard()
+        public void Should_specify_requests_matching_given_body_as_regex()
         {
             // given
             var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("H.*o");
@@ -273,6 +264,61 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_as_regexmatcher()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
+
+            // when
+            string bodyAsString = "Hello world!";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_as_xpathmatcher_true()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
+
+            // when
+            string xmlBodyAsString = @"
+                    <todo-list>
+                        <todo-item id='a1'>abc</todo-item>
+                        <todo-item id='a2'>def</todo-item>
+                        <todo-item id='a3'>xyz</todo-item>
+                    </todo-list>";
+            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_as_xpathmatcher_false()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
+
+            // when
+            string xmlBodyAsString = @"
+                    <todo-list>
+                        <todo-item id='a1'>abc</todo-item>
+                        <todo-item id='a2'>def</todo-item>
+                        <todo-item id='a3'>xyz</todo-item>
+                    </todo-list>";
+            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsFalse();
         }
 
         [Test]

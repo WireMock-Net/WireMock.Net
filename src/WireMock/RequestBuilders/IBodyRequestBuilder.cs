@@ -1,4 +1,6 @@
 ﻿using System;
+using JetBrains.Annotations;
+using WireMock.Matchers;
 
 namespace WireMock.RequestBuilders
 {
@@ -7,6 +9,17 @@ namespace WireMock.RequestBuilders
     /// </summary>
     public interface IBodyRequestBuilder
     {
+        /// <summary>
+        /// The with body.
+        /// </summary>
+        /// <param name="matcher">
+        /// The matcher.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ISpecifyRequests"/>.
+        /// </returns>
+        ISpecifyRequests WithBody([NotNull] IMatcher matcher);
+
         /// <summary>
         /// The with body.
         /// </summary>
