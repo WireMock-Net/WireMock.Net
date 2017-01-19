@@ -1,23 +1,22 @@
-﻿using System.Xml;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 using WireMock.Validation;
-using Wmhelp.XPath2;
 
 namespace WireMock.Matchers
 {
     /// <summary>
-    /// XPath2Matcher
+    /// JSONPathMatcher
     /// </summary>
     /// <seealso cref="WireMock.Matchers.IMatcher" />
-    public class XPathMatcher : IMatcher
+    public class JsonPathMatcher : IMatcher
     {
         private readonly string _pattern;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XPathMatcher"/> class.
+        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
-        public XPathMatcher([NotNull] string pattern)
+        public JsonPathMatcher([NotNull] string pattern)
         {
             Check.NotNull(pattern, nameof(pattern));
 
@@ -36,10 +35,10 @@ namespace WireMock.Matchers
             if (input == null)
                 return false;
 
-            var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
-            object result = nav.XPath2Evaluate($"boolean({_pattern})");
+            JObject o = JObject.Parse(input);
+            JToken token = o.SelectToken(_pattern);
 
-            return true.Equals(result);
+            return token != null;
         }
     }
 }

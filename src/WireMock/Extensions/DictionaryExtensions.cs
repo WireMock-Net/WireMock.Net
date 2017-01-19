@@ -9,6 +9,12 @@ namespace WireMock.Extensions
     /// </summary>
     public static class DictionaryExtensions
     {
+        /// <summary>
+        /// Converts IDictionary to an ExpandObject.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <returns></returns>
         public static dynamic ToExpandoObject<T>(this IDictionary<string, T> dictionary)
         {
             dynamic expando = new ExpandoObject();

@@ -26,13 +26,14 @@
             "version": "10.2.1",
             "type": "build"
         },
+        "Handlebars.Net": "1.8.0",
+        "Newtonsoft.Json": "9.0.1",
         "XPath2": "1.0.3.1"
     },
 
     "frameworks": {
         "net45": {
             "dependencies": {
-                "Handlebars.Net": "1.8.0"
             },
             "frameworkAssemblies": {
             }

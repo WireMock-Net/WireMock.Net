@@ -322,6 +322,36 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_true()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+
+            // when
+            string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_false()
+        {
+            // given
+            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+
+            // when
+            string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+
+            // then
+            Check.That(spec.IsSatisfiedBy(request)).IsFalse();
+        }
+
+        [Test]
         public void Should_exclude_requests_not_matching_given_body()
         {
             // given

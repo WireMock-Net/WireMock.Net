@@ -1,20 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using WireMock.Validation;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock
 {
     /// <summary>
@@ -33,8 +19,9 @@ namespace WireMock
         /// <param name="verb">
         /// The verb.
         /// </param>
-        public RequestVerbSpec(string verb)
+        public RequestVerbSpec([NotNull] string verb)
         {
+            Check.NotNull(verb, nameof(verb));
             _verb = verb.ToLower();
         }
 
@@ -47,7 +34,7 @@ namespace WireMock
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool IsSatisfiedBy([NotNull] RequestMessage requestMessage)
+        public bool IsSatisfiedBy(RequestMessage requestMessage)
         {
             return requestMessage.Verb == _verb;
         }

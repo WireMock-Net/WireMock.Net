@@ -50,6 +50,62 @@ server
   );
 ```
 
+### Request Matching
+WireMock supports matching of requests to stubs and verification queries using the following attributes:
+
+* URL
+* HTTP Method
+* Query parameters
+* Headers
+* Request body
+
+
+#### JSON Path
+Deems a match if the attribute value is valid JSON and matches the JSON Path expression supplied.
+A JSON body will be considered to match a path expression if the expression returns either a non-null single value (string, integer etc.), or a non-empty object or array.
+
+```csharp
+var server = FluentMockServer.Start();
+server
+  .Given(
+    Request.WithUrl("/some/thing").UsingGet()
+      .WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+  )
+  .RespondWith(Response.WithBody("Hello"));
+```
+
+```
+// matching
+{ "things": { "name": "RequiredThing" } }
+{ "things": [ { "name": "RequiredThing" }, { "name": "Wiremock" } ] }
+// not matching
+{ "price": 15 }
+{ "things": { "name": "Wiremock" } }
+```
+
+#### XPath
+Deems a match if the attribute value is valid XML and matches the XPath expression supplied.
+An XML document will be considered to match if any elements are returned by the XPath evaluation.
+WireMock delegates to [XPath2.Net](https://github.com/StefH/XPath2.Net), therefore it support up to XPath version 2.0.
+
+```csharp
+var server = FluentMockServer.Start();
+server
+  .Given(
+    Request.WithUrl("/some/thing").UsingGet()
+	  .WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
+  )
+  .RespondWith(Response.WithBody("Hello"));
+```
+
+Will match xml below:
+```xml
+<todo-list>
+  <todo-item id='a1'>abc</todo-item>
+  <todo-item id='a2'>def</todo-item>
+  <todo-item id='a3'>xyz</todo-item>
+</todo-list>
+```
 
 ### Response Templating
 Response headers and bodies can optionally be rendered using [Handlebars.Net](https://github.com/rexm/Handlebars.Net) templates.
