@@ -6,7 +6,7 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// The composite request matcher.
     /// </summary>
-    public class RequestMessageCompositeMatcher : IRequestMatcher
+    public abstract class RequestMessageCompositeMatcher : IRequestMatcher
     {
         private readonly IEnumerable<IRequestMatcher> _requestMatchers;
 

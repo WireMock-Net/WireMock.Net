@@ -28,7 +28,7 @@ namespace WireMock
         /// The listener request.
         /// </param>
         /// <returns>
-        /// The <see cref="Request"/>.
+        /// The <see cref="AndPathRequest"/>.
         /// </returns>
         public RequestMessage Map(HttpListenerRequest listenerRequest)
         {

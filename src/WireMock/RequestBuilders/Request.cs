@@ -1,47 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1126:PrefixCallsCorrectly",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The requests.
     /// </summary>
-    public class Request : RequestMessageCompositeMatcher, IVerbRequestBuilder
+    public class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
-        /// <summary>
-        /// The _request matchers.
-        /// </summary>
         private readonly IList<IRequestMatcher> _requestMatchers;
+
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public static IRequestBuilder Create()
+        {
+            return new Request(new List<IRequestMatcher>());
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
-        /// <param name="requestMatchers">
-        /// The request matchers.
-        /// </param>
+        /// <param name="requestMatchers">The request matchers.</param>
         private Request(IList<IRequestMatcher> requestMatchers) : base(requestMatchers)
         {
             _requestMatchers = requestMatchers;
@@ -50,65 +35,45 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="url">
-        /// The url.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IVerbRequestBuilder"/>.
-        /// </returns>
-        public static IVerbRequestBuilder WithUrl(string url)
+        /// <param name="url">The url.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithUrl(string url)
         {
-            var specs = new List<IRequestMatcher> { new RequestMessageUrlMatcher(url) };
-
-            return new Request(specs);
+            _requestMatchers.Add(new RequestMessageUrlMatcher(url));
+            return this;
         }
 
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="func">
-        /// The url func.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IVerbRequestBuilder"/>.
-        /// </returns>
-        public static IVerbRequestBuilder WithUrl(Func<string, bool> func)
+        /// <param name="func">The url func.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithUrl(Func<string, bool> func)
         {
-            var specs = new List<IRequestMatcher> { new RequestMessageUrlMatcher(func) };
-
-            return new Request(specs);
+            _requestMatchers.Add(new RequestMessageUrlMatcher(func));
+            return this;
         }
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="path">
-        /// The path.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IVerbRequestBuilder"/>.
-        /// </returns>
-        public static IVerbRequestBuilder WithPath(string path)
+        /// <param name="path">The path.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithPath(string path)
         {
-            var specs = new List<IRequestMatcher> { new RequestMessagePathMatcher(path) };
-
-            return new Request(specs);
+            _requestMatchers.Add(new RequestMessagePathMatcher(path));
+            return this;
         }
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="func">
-        /// The path func.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IVerbRequestBuilder"/>.
-        /// </returns>
-        public static IVerbRequestBuilder WithPath([NotNull] Func<string, bool> func)
+        /// <param name="func">The path func.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithPath(Func<string, bool> func)
         {
-            var specs = new List<IRequestMatcher> { new RequestMessagePathMatcher(func) };
-
-            return new Request(specs);
+            _requestMatchers.Add(new RequestMessagePathMatcher(func));
+            return this;
         }
 
         /// <summary>
@@ -179,6 +144,12 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersRequestBuilder UsingAnyVerb()
         {
+            var matchers = _requestMatchers.Where(m => m is RequestMessageVerbMatcher).ToList();
+            foreach (var matcher in matchers)
+            {
+                _requestMatchers.Remove(matcher);
+            }
+
             return this;
         }
 

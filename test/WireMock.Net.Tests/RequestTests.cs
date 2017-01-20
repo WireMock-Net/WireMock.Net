@@ -15,7 +15,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url()
         {
             // given
-            var spec = Request.WithUrl("/foo");
+            var spec = Request.Create().WithUrl("/foo");
 
             // when
             string bodyAsString = "whatever";
@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_prefix()
         {
             // given
-            var spec = Request.WithUrl("/foo*");
+            var spec = Request.Create().WithUrl("/foo*");
 
             // when
             string bodyAsString = "whatever";
@@ -45,7 +45,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_url()
         {
             // given
-            var spec = Request.WithUrl("/foo");
+            var spec = Request.Create().WithUrl("/foo");
 
             // when
             string bodyAsString = "whatever";
@@ -60,7 +60,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_path()
         {
             // given
-            var spec = Request.WithPath("/foo");
+            var spec = Request.Create().WithPath("/foo");
 
             // when
             string bodyAsString = "whatever";
@@ -75,7 +75,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_method_put()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingPut();
+            var spec = Request.Create().WithUrl("/foo").UsingPut();
 
             // when
             string bodyAsString = "whatever";
@@ -90,7 +90,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_method_post()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingPost();
+            var spec = Request.Create().WithUrl("/foo").UsingPost();
 
             // when
             string bodyAsString = "whatever";
@@ -105,7 +105,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_method_get()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingGet();
+            var spec = Request.Create().WithUrl("/foo").UsingGet();
 
             // when
             string bodyAsString = "whatever";
@@ -120,7 +120,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_method_delete()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingDelete();
+            var spec = Request.Create().WithUrl("/foo").UsingDelete();
 
             // when
             string bodyAsString = "whatever";
@@ -135,7 +135,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_method_head()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingHead();
+            var spec = Request.Create().WithUrl("/foo").UsingHead();
 
             // when
             string bodyAsString = "whatever";
@@ -150,7 +150,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_matching_given_url_but_not_http_method()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingPut();
+            var spec = Request.Create().WithUrl("/foo").UsingPut();
 
             // when
             string bodyAsString = "whatever";
@@ -165,7 +165,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_matching_given_http_method_but_not_url()
         {
             // given
-            var spec = Request.WithUrl("/bar").UsingPut();
+            var spec = Request.Create().WithUrl("/bar").UsingPut();
 
             // when
             string bodyAsString = "whatever";
@@ -180,7 +180,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_url_and_headers()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
 
             // when
             string bodyAsString = "whatever";
@@ -195,7 +195,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_headers()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tatata");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tatata");
 
             // when
             string bodyAsString = "whatever";
@@ -210,7 +210,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_headers_ignorecase()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "abc", false);
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "abc", false);
 
             // when
             string bodyAsString = "whatever";
@@ -225,7 +225,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_header_prefix()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata*");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithHeader("X-toto", "tata*");
 
             // when
             string bodyAsString = "whatever";
@@ -240,7 +240,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("Hello world!");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody("Hello world!");
 
             // when
             string bodyAsString = "Hello world!";
@@ -255,7 +255,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_regex()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("H.*o");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody("H.*o");
 
             // when
             string bodyAsString = "Hello world!";
@@ -270,7 +270,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_regexmatcher()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
 
             // when
             string bodyAsString = "Hello world!";
@@ -285,7 +285,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_xpathmatcher_true()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
 
             // when
             string xmlBodyAsString = @"
@@ -305,7 +305,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_xpathmatcher_false()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
 
             // when
             string xmlBodyAsString = @"
@@ -325,7 +325,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_true()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
             string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -340,7 +340,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_false()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
             string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
@@ -355,7 +355,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_body()
         {
             // given
-            var spec = Request.WithUrl("/foo").UsingAnyVerb().WithBody("      Hello world!   ");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody("      Hello world!   ");
 
             // when
             string bodyAsString = "xxx";
@@ -370,7 +370,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_params()
         {
             // given
-            var spec = Request.WithPath("/foo").WithParam("bar", "1", "2");
+            var spec = Request.Create().WithPath("/foo").WithParam("bar", "1", "2");
 
             // when
             string bodyAsString = "Hello world!";
@@ -385,7 +385,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_params_func()
         {
             // given
-            var spec = Request.WithPath("/foo").UsingAnyVerb().WithParam(p => p.ContainsKey("bar"));
+            var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithParam(p => p.ContainsKey("bar"));
 
             // when
             string bodyAsString = "Hello world!";
@@ -400,7 +400,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_params()
         {
             // given
-            var spec = Request.WithPath("/foo").WithParam("bar", "1");
+            var spec = Request.Create().WithPath("/foo").WithParam("bar", "1");
 
             // when
             string bodyAsString = "Hello world!";

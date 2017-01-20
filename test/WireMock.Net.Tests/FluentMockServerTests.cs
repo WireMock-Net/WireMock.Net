@@ -44,10 +44,10 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/foo")
                     .UsingGet())
-                .RespondWith(Response
+                .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
@@ -64,7 +64,7 @@ namespace WireMock.Net.Tests
             // given
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.WithUrl("/foo").UsingGet()).RespondWith(Response.WithSuccess().WithBodyAsBase64("SGVsbG8gV29ybGQ/"));
+            _server.Given(Request.Create().WithUrl("/foo").UsingGet()).RespondWith(Response.Create().WithBodyAsBase64("SGVsbG8gV29ybGQ/"));
 
             // when
             var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
@@ -114,7 +114,7 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/bar");
 
             // then
-            var result = _server.SearchLogsFor(Request.WithUrl("/b.*")).ToList();
+            var result = _server.SearchLogsFor(Request.Create().WithUrl("/b.*")).ToList();
             Check.That(result).HasSize(1);
 
             var requestLogged = result.First();
@@ -143,11 +143,10 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/foo")
                     .UsingGet())
-                .RespondWith(Response
-                    .WithStatusCode(200)
+                .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
@@ -165,17 +164,17 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/foo")
                     .UsingGet())
-                .RespondWith(Response
+                .RespondWith(Response.Create()
                     .WithStatusCode(307)
                     .WithHeader("Location", "/bar"));
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/bar")
                     .UsingGet())
-                .RespondWith(Response
+                .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithBody("REDIRECT SUCCESSFUL"));
 
@@ -193,12 +192,11 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/*"))
-                .RespondWith(Response
-                    .WithStatusCode(200)
+                .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}")
-                    .AfterDelay(TimeSpan.FromMilliseconds(2000)));
+                    .WithDelay(TimeSpan.FromMilliseconds(2000)));
 
             // when
             var watch = new Stopwatch();
@@ -217,10 +215,9 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
             _server.AddRequestProcessingDelay(TimeSpan.FromMilliseconds(2000));
             _server
-                .Given(Request
+                .Given(Request.Create()
                     .WithUrl("/*"))
-                .RespondWith(Response
-                    .WithStatusCode(200)
+                .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when

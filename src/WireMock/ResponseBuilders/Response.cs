@@ -1,45 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock.ResponseBuilders
 {
     /// <summary>
-    /// The responses.
+    /// The Response.
     /// </summary>
     public class Response : IResponseBuilder
     {
-        /// <summary>
-        /// The _response.
-        /// </summary>
         private readonly ResponseMessage _responseMessage;
+        private TimeSpan _delay = TimeSpan.Zero;
+        private bool _useTransformer;
 
         /// <summary>
-        /// The _delay.
+        /// Creates this instance.
         /// </summary>
-        private TimeSpan _delay = TimeSpan.Zero;
-
-        private bool _useTransformer;
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        [PublicAPI]
+        public static IResponseBuilder Create([CanBeNull] ResponseMessage responseMessage = null)
+        {
+            var message = responseMessage ?? new ResponseMessage { StatusCode = (int) HttpStatusCode.OK };
+            return new Response(message);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Response"/> class.
@@ -47,42 +35,120 @@ namespace WireMock.ResponseBuilders
         /// <param name="responseMessage">
         /// The response.
         /// </param>
-        public Response(ResponseMessage responseMessage)
+        private Response(ResponseMessage responseMessage)
         {
             _responseMessage = responseMessage;
         }
 
         /// <summary>
-        /// The with Success status code.
+        /// The with status code.
         /// </summary>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        public static IResponseBuilder WithSuccess()
+        /// <param name="code">The code.</param>
+        /// <returns>A <see cref="IHeadersResponseBuilder"/>.</returns>\
+        [PublicAPI]
+        public IHeadersResponseBuilder WithStatusCode(int code)
         {
-            return WithStatusCode(200);
-        }
-
-        /// <summary>
-        /// The with NotFound status code.
-        /// </summary>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        public static IResponseBuilder WithNotFound()
-        {
-            return WithStatusCode(404);
+            _responseMessage.StatusCode = code;
+            return this;
         }
 
         /// <summary>
         /// The with status code.
         /// </summary>
-        /// <param name="code">
-        /// The code.
-        /// </param>
+        /// <param name="code">The code.</param>
+        /// <returns>A <see cref="IHeadersResponseBuilder"/>.</returns>
+        [PublicAPI]
+        public IHeadersResponseBuilder WithStatusCode(HttpStatusCode code)
+        {
+            return WithStatusCode((int) code);
+        }
+
+        /// <summary>
+        /// The with Success status code (200).
+        /// </summary>
+        /// <returns></returns>
+        [PublicAPI]
+        public IHeadersResponseBuilder WithSuccess()
+        {
+            return WithStatusCode((int) HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// The with NotFound status code (404).
+        /// </summary>
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        [PublicAPI]
+        public IHeadersResponseBuilder WithNotFound()
+        {
+            return WithStatusCode((int)HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
+        /// The with header.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
+        public IHeadersResponseBuilder WithHeader(string name, string value)
+        {
+            Check.NotNull(name, nameof(name));
+
+            _responseMessage.AddHeader(name, value);
+            return this;
+        }
+
+        /// <summary>
+        /// The with body.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        /// <returns>A <see cref="ITransformResponseBuilder"/>.</returns>
+        public ITransformResponseBuilder WithBody(string body)
+        {
+            Check.NotNull(body, nameof(body));
+
+            _responseMessage.Body = body;
+            return this;
+        }
+
+        /// <summary>
+        /// The with body as base64.
+        /// </summary>
+        /// <param name="bodyAsbase64">The body asbase64.</param>
+        /// <param name="encoding">The Encoding.</param>
+        /// <returns>A <see cref="ITransformResponseBuilder"/>.</returns>
+        public ITransformResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
+        {
+            Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
+
+            _responseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
+            return this;
+        }
+
+        /// <summary>
+        /// The with transformer.
+        /// </summary>
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        public static IResponseBuilder WithStatusCode(int code)
+        public IDelayResponseBuilder WithTransformer()
         {
-            var response = new ResponseMessage { StatusCode = code };
-            return new Response(response);
+            _useTransformer = true;
+            return this;
+        }
+
+        /// <summary>
+        /// The after delay.
+        /// </summary>
+        /// <param name="delay">
+        /// The delay.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IProvideResponses"/>.
+        /// </returns>
+        public IResponseBuilder WithDelay(TimeSpan delay)
+        {
+            _delay = delay;
+            return this;
         }
 
         /// <summary>
@@ -119,82 +185,6 @@ namespace WireMock.ResponseBuilders
             await Task.Delay(_delay);
 
             return _responseMessage;
-        }
-
-        /// <summary>
-        /// The with header.
-        /// </summary>
-        /// <param name="name">
-        /// The name.
-        /// </param>
-        /// <param name="value">
-        /// The value.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        public IResponseBuilder WithHeader(string name, string value)
-        {
-            _responseMessage.AddHeader(name, value);
-            return this;
-        }
-
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="body">
-        /// The body.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        public IResponseBuilder WithBody(string body)
-        {
-            Check.NotNull(body, nameof(body));
-
-            _responseMessage.Body = body;
-            return this;
-        }
-
-        /// <summary>
-        /// The with body as base64.
-        /// </summary>
-        /// <param name="bodyAsbase64">The body asbase64.</param>
-        /// <param name="encoding"></param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
-        {
-            Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
-
-            _responseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
-            return this;
-        }
-
-        /// <summary>
-        /// The with transformer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        public IResponseBuilder WithTransformer()
-        {
-            _useTransformer = true;
-            return this;
-        }
-
-        /// <summary>
-        /// The after delay.
-        /// </summary>
-        /// <param name="delay">
-        /// The delay.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IProvideResponses"/>.
-        /// </returns>
-        public IResponseBuilder AfterDelay(TimeSpan delay)
-        {
-            _delay = delay;
-            return this;
         }
     }
 }

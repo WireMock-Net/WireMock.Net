@@ -20,48 +20,48 @@ namespace WireMock.Net.ConsoleApplication
             Console.WriteLine("FluentMockServer running at {0}", server.Port);
 
             server
-                .Given(Request.WithUrl(u => u.Contains("x")).UsingGet())
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl(u => u.Contains("x")).UsingGet())
+                .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""/x with FUNC 200""}"));
 
             // http://localhost:8080/gffgfgf/sddsds?start=1000&stop=1&stop=2
             server
-                .Given(Request.WithUrl("/*").UsingGet())
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl("/*").UsingGet())
+                .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world! : {{request.url}} : {{request.path}} : {{request.query.start}} : {{request.query.stop.[0]}}""")
-                    .AfterDelay(TimeSpan.FromMilliseconds(100))
                     .WithTransformer()
+                    .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
 
             server
-                .Given(Request.WithUrl("/data").UsingPost().WithBody(b => b.Contains("e")))
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl("/data").UsingPost().WithBody(b => b.Contains("e")))
+                .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
 
             server
-                .Given(Request.WithUrl("/data").UsingPost())
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl("/data").UsingPost())
+                .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data posted with 201""}"));
 
             server
-                .Given(Request.WithUrl("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))
+                .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""json posted with 201""}"));
 
             server
-                .Given(Request.WithUrl("/data").UsingDelete())
-                .RespondWith(Response
+                .Given(Request.Create().WithUrl("/data").UsingDelete())
+                .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data deleted with 200""}"));

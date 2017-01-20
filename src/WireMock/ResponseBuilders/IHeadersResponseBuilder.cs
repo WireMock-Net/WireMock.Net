@@ -1,4 +1,6 @@
-﻿namespace WireMock.ResponseBuilders
+﻿using JetBrains.Annotations;
+
+namespace WireMock.ResponseBuilders
 {
     /// <summary>
     /// The HeadersResponseBuilder interface.
@@ -8,15 +10,9 @@
         /// <summary>
         /// The with header.
         /// </summary>
-        /// <param name="name">
-        /// The name.
-        /// </param>
-        /// <param name="value">
-        /// The value.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        IResponseBuilder WithHeader(string name, string value);
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
+        IHeadersResponseBuilder WithHeader([NotNull] string name, string value);
     }
 }
