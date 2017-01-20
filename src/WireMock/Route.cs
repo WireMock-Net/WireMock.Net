@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using WireMock.Matchers.Request;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -23,9 +24,9 @@ namespace WireMock
     public class Route
     {
         /// <summary>
-        /// The _request spec.
+        /// The _request matcher.
         /// </summary>
-        private readonly ISpecifyRequests _requestSpec;
+        private readonly IRequestMatcher _requestSpec;
 
         /// <summary>
         /// The _provider.
@@ -36,12 +37,12 @@ namespace WireMock
         /// Initializes a new instance of the <see cref="Route"/> class.
         /// </summary>
         /// <param name="requestSpec">
-        /// The request spec.
+        /// The request matcher.
         /// </param>
         /// <param name="provider">
         /// The provider.
         /// </param>
-        public Route(ISpecifyRequests requestSpec, IProvideResponses provider)
+        public Route(IRequestMatcher requestSpec, IProvideResponses provider)
         {
             _requestSpec = requestSpec;
             _provider = provider;
@@ -72,7 +73,7 @@ namespace WireMock
         /// </returns>
         public bool IsRequestHandled(RequestMessage requestMessage)
         {
-            return _requestSpec.IsSatisfiedBy(requestMessage);
+            return _requestSpec.IsMatch(requestMessage);
         }
     }
 }

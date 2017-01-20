@@ -9,6 +9,7 @@ using NFluent;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",

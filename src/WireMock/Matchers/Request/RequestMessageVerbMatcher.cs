@@ -1,12 +1,12 @@
 ﻿using JetBrains.Annotations;
 using WireMock.Validation;
 
-namespace WireMock
+namespace WireMock.Matchers.Request
 {
     /// <summary>
-    /// The request verb spec.
+    /// The request verb matcher.
     /// </summary>
-    internal class RequestVerbSpec : ISpecifyRequests
+    internal class RequestMessageVerbMatcher : IRequestMatcher
     {
         /// <summary>
         /// The _verb.
@@ -14,27 +14,25 @@ namespace WireMock
         private readonly string _verb;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestVerbSpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageVerbMatcher"/> class.
         /// </summary>
         /// <param name="verb">
         /// The verb.
         /// </param>
-        public RequestVerbSpec([NotNull] string verb)
+        public RequestMessageVerbMatcher([NotNull] string verb)
         {
             Check.NotNull(verb, nameof(verb));
             _verb = verb.ToLower();
         }
 
         /// <summary>
-        /// The is satisfied by.
+        /// Determines whether the specified RequestMessage is match.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
+        /// <param name="requestMessage">The RequestMessage.</param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsSatisfiedBy(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage)
         {
             return requestMessage.Verb == _verb;
         }

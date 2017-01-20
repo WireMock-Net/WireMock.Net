@@ -1,23 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock.Http
 {
     /// <summary>
@@ -25,20 +10,19 @@ namespace WireMock.Http
     /// </summary>
     public class TinyHttpServer
     {
-        /// <summary>
-        /// The _http handler.
-        /// </summary>
         private readonly Action<HttpListenerContext> _httpHandler;
 
-        /// <summary>
-        /// The _listener.
-        /// </summary>
         private readonly HttpListener _listener;
 
-        /// <summary>
-        /// The cancellation token source.
-        /// </summary>
         private CancellationTokenSource _cts;
+
+        /// <summary>
+        /// Gets a value indicating whether this server is started.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this server is started; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsStarted { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TinyHttpServer"/> class.
@@ -59,11 +43,13 @@ namespace WireMock.Http
         }
 
         /// <summary>
-        /// The start.
+        /// Start the server.
         /// </summary>
         public void Start()
         {
             _listener.Start();
+            IsStarted = true;
+
             _cts = new CancellationTokenSource();
             Task.Run(
                 async () =>
@@ -81,7 +67,7 @@ namespace WireMock.Http
         }
 
         /// <summary>
-        /// The stop.
+        /// Stop the server.
         /// </summary>
         public void Stop()
         {

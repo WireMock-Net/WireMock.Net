@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The HeadersRequestBuilder interface.
     /// </summary>
-    public interface IHeadersRequestBuilder : IBodyRequestBuilder, ISpecifyRequests, IParamsRequestBuilder
+    public interface IHeadersRequestBuilder : IBodyRequestBuilder, IRequestMatcher, IParamsRequestBuilder
     {
         /// <summary>
         /// The with header.

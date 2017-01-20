@@ -1,14 +1,13 @@
 using System;
 using JetBrains.Annotations;
-using WireMock.Matchers;
 using WireMock.Validation;
 
-namespace WireMock
+namespace WireMock.Matchers.Request
 {
     /// <summary>
-    /// The request body spec.
+    /// The request body matcher.
     /// </summary>
-    public class RequestBodySpec : ISpecifyRequests
+    public class RequestMessageBodyMatcher : IRequestMatcher
     {
         /// <summary>
         /// The bodyRegex.
@@ -31,75 +30,73 @@ namespace WireMock
         private readonly Func<byte[], bool> _bodyDataFunc;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="body">
         /// The body Regex pattern.
         /// </param>
-        public RequestBodySpec([NotNull, RegexPattern] string body)
+        public RequestMessageBodyMatcher([NotNull, RegexPattern] string body)
         {
             Check.NotNull(body, nameof(body));
             _matcher = new RegexMatcher(body);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="body">
         /// The body Regex pattern.
         /// </param>
-        public RequestBodySpec([NotNull] byte[] body)
+        public RequestMessageBodyMatcher([NotNull] byte[] body)
         {
             Check.NotNull(body, nameof(body));
             _bodyData = body;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="func">
         /// The body func.
         /// </param>
-        public RequestBodySpec([NotNull] Func<string, bool> func)
+        public RequestMessageBodyMatcher([NotNull] Func<string, bool> func)
         {
             Check.NotNull(func, nameof(func));
             _bodyFunc = func;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="func">
         /// The body func.
         /// </param>
-        public RequestBodySpec([NotNull] Func<byte[], bool> func)
+        public RequestMessageBodyMatcher([NotNull] Func<byte[], bool> func)
         {
             Check.NotNull(func, nameof(func));
             _bodyDataFunc = func;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBodySpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="matcher">
         /// The body matcher.
         /// </param>
-        public RequestBodySpec([NotNull] IMatcher matcher)
+        public RequestMessageBodyMatcher([NotNull] IMatcher matcher)
         {
             Check.NotNull(matcher, nameof(matcher));
             _matcher = matcher;
         }
 
         /// <summary>
-        /// The is satisfied by.
+        /// Determines whether the specified RequestMessage is match.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
+        /// <param name="requestMessage">The RequestMessage.</param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsSatisfiedBy(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage)
         {
             if (_matcher != null)
                 return _matcher.IsMatch(requestMessage.BodyAsString);

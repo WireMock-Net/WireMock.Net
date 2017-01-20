@@ -3,7 +3,7 @@
     /// <summary>
     /// The VerbRequestBuilder interface.
     /// </summary>
-    public interface IVerbRequestBuilder : ISpecifyRequests, IHeadersRequestBuilder
+    public interface IVerbRequestBuilder : IHeadersRequestBuilder
     {
         /// <summary>
         /// The using get.

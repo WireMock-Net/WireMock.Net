@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using WireMock.Matchers;
+using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders
 {
@@ -16,9 +17,9 @@ namespace WireMock.RequestBuilders
         /// The matcher.
         /// </param>
         /// <returns>
-        /// The <see cref="ISpecifyRequests"/>.
+        /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        ISpecifyRequests WithBody([NotNull] IMatcher matcher);
+        IRequestMatcher WithBody([NotNull] IMatcher matcher);
 
         /// <summary>
         /// The with body.
@@ -27,9 +28,9 @@ namespace WireMock.RequestBuilders
         /// The body.
         /// </param>
         /// <returns>
-        /// The <see cref="ISpecifyRequests"/>.
+        /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        ISpecifyRequests WithBody(string body);
+        IRequestMatcher WithBody(string body);
 
         /// <summary>
         /// The with body byte[].
@@ -38,9 +39,9 @@ namespace WireMock.RequestBuilders
         /// The body as byte[].
         /// </param>
         /// <returns>
-        /// The <see cref="ISpecifyRequests"/>.
+        /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        ISpecifyRequests WithBody(byte[] body);
+        IRequestMatcher WithBody(byte[] body);
 
         /// <summary>
         /// The with body string func.
@@ -49,9 +50,9 @@ namespace WireMock.RequestBuilders
         /// The body string function.
         /// </param>
         /// <returns>
-        /// The <see cref="ISpecifyRequests"/>.
+        /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        ISpecifyRequests WithBody(Func<string, bool> body);
+        IRequestMatcher WithBody(Func<string, bool> body);
 
         /// <summary>
         /// The with body byte[] func.
@@ -60,8 +61,8 @@ namespace WireMock.RequestBuilders
         /// The body byte[] function.
         /// </param>
         /// <returns>
-        /// The <see cref="ISpecifyRequests"/>.
+        /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        ISpecifyRequests WithBody(Func<byte[], bool> body);
+        IRequestMatcher WithBody(Func<byte[], bool> body);
     }
 }

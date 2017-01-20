@@ -1,11 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-
-namespace WireMock
+﻿namespace WireMock
 {
     /// <summary>
     /// The registration callback.

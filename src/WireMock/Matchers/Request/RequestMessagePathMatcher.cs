@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
-namespace WireMock
+namespace WireMock.Matchers.Request
 {
     /// <summary>
-    /// The request path spec.
+    /// The request path matcher.
     /// </summary>
-    public class RequestPathSpec : ISpecifyRequests
+    public class RequestMessagePathMatcher : IRequestMatcher
     {
         /// <summary>
         /// The pathRegex.
@@ -21,39 +21,37 @@ namespace WireMock
         private readonly Func<string, bool> _pathFunc;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestPathSpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="path">
         /// The path Regex pattern.
         /// </param>
-        public RequestPathSpec([NotNull, RegexPattern] string path)
+        public RequestMessagePathMatcher([NotNull, RegexPattern] string path)
         {
             Check.NotNull(path, nameof(path));
             _pathRegex = new Regex(path);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestPathSpec"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="func">
         /// The url func.
         /// </param>
-        public RequestPathSpec([NotNull] Func<string, bool> func)
+        public RequestMessagePathMatcher([NotNull] Func<string, bool> func)
         {
             Check.NotNull(func, nameof(func));
             _pathFunc = func;
         }
 
         /// <summary>
-        /// The is satisfied by.
+        /// Determines whether the specified RequestMessage is match.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
+        /// <param name="requestMessage">The RequestMessage.</param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsSatisfiedBy(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage)
         {
             return _pathRegex?.IsMatch(requestMessage.Path) ?? _pathFunc(requestMessage.Path);
         }
