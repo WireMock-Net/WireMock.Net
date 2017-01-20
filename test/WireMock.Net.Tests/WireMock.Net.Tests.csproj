@@ -67,6 +67,7 @@
     <Compile Include="RequestTests.cs" />
     <Compile Include="RequestMessageTests.cs" />
     <Compile Include="ResponseTests.cs" />
+    <Compile Include="WildcardMatcherTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

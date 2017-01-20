@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NFluent;
 using NUnit.Framework;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -113,7 +114,7 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/bar");
 
             // then
-            var result = _server.SearchLogsFor(Request.Create().WithUrl("/b.*")).ToList();
+            var result = _server.SearchLogsFor(Request.Create().WithUrl(new RegexMatcher("^/b.*"))).ToList();
             Check.That(result).HasSize(1);
 
             var requestLogged = result.First();
@@ -195,7 +196,7 @@ namespace WireMock.Net.Tests
                     .WithUrl("/*"))
                 .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}")
-                    .WithDelay(TimeSpan.FromMilliseconds(2000)));
+                    .WithDelay(TimeSpan.FromMilliseconds(200)));
 
             // when
             var watch = new Stopwatch();
@@ -204,7 +205,7 @@ namespace WireMock.Net.Tests
             watch.Stop();
 
             // then
-            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(2000);
+            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(200);
         }
 
         [Test]
@@ -212,12 +213,10 @@ namespace WireMock.Net.Tests
         {
             // given
             _server = FluentMockServer.Start();
-            _server.AddRequestProcessingDelay(TimeSpan.FromMilliseconds(2000));
+            _server.AddRequestProcessingDelay(TimeSpan.FromMilliseconds(200));
             _server
-                .Given(Request.Create()
-                    .WithUrl("/*"))
-                .RespondWith(Response.Create()
-                    .WithBody(@"{ msg: ""Hello world!""}"));
+                .Given(Request.Create().WithUrl("/*"))
+                .RespondWith(Response.Create().WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
             var watch = new Stopwatch();
@@ -226,7 +225,7 @@ namespace WireMock.Net.Tests
             watch.Stop();
 
             // then
-            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(2000);
+            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(200);
         }
 
         [TearDown]

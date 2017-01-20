@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -11,9 +10,9 @@ namespace WireMock.Matchers.Request
     public class RequestMessageUrlMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The urlRegex.
+        /// The matcher.
         /// </summary>
-        private readonly Regex _urlRegex;
+        private readonly IMatcher _matcher;
 
         /// <summary>
         /// The url function
@@ -23,13 +22,20 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
-        /// <param name="url">
-        /// The url Regex pattern.
-        /// </param>
-        public RequestMessageUrlMatcher([NotNull, RegexPattern] string url)
+        /// <param name="url">The url.</param>
+        public RequestMessageUrlMatcher([NotNull] string url) : this(new WildcardMatcher(url))
         {
-            Check.NotNull(url, nameof(url));
-            _urlRegex = new Regex(url);
+            _matcher = new WildcardMatcher(url);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
+        /// </summary>
+        /// <param name="matcher">The matcher.</param>
+        public RequestMessageUrlMatcher([NotNull] IMatcher matcher)
+        {
+            Check.NotNull(matcher, nameof(matcher));
+            _matcher = matcher;
         }
 
         /// <summary>
@@ -38,7 +44,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">
         /// The url func.
         /// </param>
-        public RequestMessageUrlMatcher(Func<string, bool> func)
+        public RequestMessageUrlMatcher([NotNull] Func<string, bool> func)
         {
             Check.NotNull(func, nameof(func));
             _urlFunc = func;
@@ -53,7 +59,13 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return _urlRegex?.IsMatch(requestMessage.Url) ?? _urlFunc(requestMessage.Url);
+            if (_matcher != null)
+                return _matcher.IsMatch(requestMessage.Path);
+
+            if (_urlFunc != null)
+                return _urlFunc(requestMessage.Url);
+
+            return false;
         }
     }
 }

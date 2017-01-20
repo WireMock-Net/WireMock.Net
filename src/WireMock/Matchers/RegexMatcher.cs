@@ -17,7 +17,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
-        public RegexMatcher([NotNull] string pattern)
+        public RegexMatcher([NotNull, RegexPattern] string pattern)
         {
             Check.NotNull(pattern, nameof(pattern));
 

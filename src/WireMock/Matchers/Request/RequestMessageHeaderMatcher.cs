@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -17,9 +16,9 @@ namespace WireMock.Matchers.Request
         private readonly string _name;
 
         /// <summary>
-        /// The patternRegex.
+        /// The matcher.
         /// </summary>
-        private readonly Regex _patternRegex;
+        private readonly IMatcher _matcher;
 
         /// <summary>
         /// The header function
@@ -29,17 +28,16 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
-        /// <param name="name">
-        /// The name.
-        /// </param>
-        /// <param name="pattern">
-        /// The pattern.
-        /// </param>
+        /// <param name="name">The name.</param>
+        /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">The ignoreCase.</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull, RegexPattern] string pattern, bool ignoreCase = true)
+        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
         {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(pattern, nameof(pattern));
+
             _name = name;
-            _patternRegex = ignoreCase ? new Regex(pattern, RegexOptions.IgnoreCase) : new Regex(pattern);
+            _matcher = new WildcardMatcher(pattern, ignoreCase);
         }
 
         /// <summary>
@@ -63,11 +61,11 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_patternRegex == null)
+            if (_headerFunc != null)
                 return _headerFunc(requestMessage.Headers);
 
             string headerValue = requestMessage.Headers[_name];
-            return _patternRegex.IsMatch(headerValue);
+            return _matcher.IsMatch(headerValue);
         }
     }
 }

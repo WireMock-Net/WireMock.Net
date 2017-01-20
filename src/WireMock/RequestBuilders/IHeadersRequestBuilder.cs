@@ -34,6 +34,6 @@ namespace WireMock.RequestBuilders
         /// <returns>
         /// The <see cref="IHeadersRequestBuilder"/>.
         /// </returns>
-        IHeadersRequestBuilder WithHeader([NotNull] Func<IDictionary<string, string>, bool> func);
+        IHeadersRequestBuilder WithHeader([NotNull] params Func<IDictionary<string, string>, bool>[] func);
     }
 }

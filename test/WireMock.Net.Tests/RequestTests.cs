@@ -27,10 +27,24 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void Should_specify_requests_matching_given_urls()
+        {
+            var requestBuilder = Request.Create().WithUrl("/x1", "/x2");
+
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla", body, bodyAsString);
+            var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla", body, bodyAsString);
+
+            Check.That(requestBuilder.IsMatch(request1)).IsTrue();
+            Check.That(requestBuilder.IsMatch(request2)).IsTrue();
+        }
+
+        [Test]
         public void Should_specify_requests_matching_given_url_prefix()
         {
             // given
-            var spec = Request.Create().WithUrl("/foo*");
+            var spec = Request.Create().WithUrl(new RegexMatcher("^/foo"));
 
             // when
             string bodyAsString = "whatever";
@@ -230,7 +244,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "TaTaTa" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "TaTa" } });
 
             // then
             Check.That(spec.IsMatch(request)).IsTrue();
@@ -252,10 +266,10 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_regex()
+        public void Should_specify_requests_matching_given_body_as_wildcard()
         {
             // given
-            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody("H.*o");
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithBody(new WildcardMatcher("H*o*"));
 
             // when
             string bodyAsString = "Hello world!";

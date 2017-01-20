@@ -46,7 +46,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
 
             server
-                .Given(Request.Create().WithUrl("/data").UsingPost())
+                .Given(Request.Create().WithUrl("/data", "/ax").UsingPost())
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")

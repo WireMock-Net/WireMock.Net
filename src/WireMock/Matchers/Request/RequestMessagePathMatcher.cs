@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -11,32 +10,45 @@ namespace WireMock.Matchers.Request
     public class RequestMessagePathMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The pathRegex.
+        /// The matcher.
         /// </summary>
-        private readonly Regex _pathRegex;
+        private readonly string _path;
 
         /// <summary>
-        /// The url function
+        /// The matcher.
+        /// </summary>
+        private readonly IMatcher _matcher;
+
+        /// <summary>
+        /// The path function
         /// </summary>
         private readonly Func<string, bool> _pathFunc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
-        /// <param name="path">
-        /// The path Regex pattern.
-        /// </param>
-        public RequestMessagePathMatcher([NotNull, RegexPattern] string path)
+        /// <param name="path">The path.</param>
+        public RequestMessagePathMatcher([NotNull] string path)
         {
             Check.NotNull(path, nameof(path));
-            _pathRegex = new Regex(path);
+            _path = path;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
+        /// </summary>
+        /// <param name="matcher">The matcher.</param>
+        public RequestMessagePathMatcher([NotNull] IMatcher matcher)
+        {
+            Check.NotNull(matcher, nameof(matcher));
+            _matcher = matcher;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="func">
-        /// The url func.
+        /// The path func.
         /// </param>
         public RequestMessagePathMatcher([NotNull] Func<string, bool> func)
         {
@@ -53,7 +65,16 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return _pathRegex?.IsMatch(requestMessage.Path) ?? _pathFunc(requestMessage.Path);
+            if (_path != null)
+                return string.CompareOrdinal(_path, requestMessage.Path) == 0;
+
+            if (_matcher != null)
+                return _matcher.IsMatch(requestMessage.Path);
+
+            if (_pathFunc != null)
+                return _pathFunc(requestMessage.Path);
+
+            return false;
         }
     }
 }

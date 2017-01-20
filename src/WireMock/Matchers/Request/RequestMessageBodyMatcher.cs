@@ -10,7 +10,12 @@ namespace WireMock.Matchers.Request
     public class RequestMessageBodyMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The bodyRegex.
+        /// The body.
+        /// </summary>
+        private readonly string _body;
+
+        /// <summary>
+        /// The body as byte[].
         /// </summary>
         private readonly byte[] _bodyData;
 
@@ -35,10 +40,10 @@ namespace WireMock.Matchers.Request
         /// <param name="body">
         /// The body Regex pattern.
         /// </param>
-        public RequestMessageBodyMatcher([NotNull, RegexPattern] string body)
+        public RequestMessageBodyMatcher([NotNull] string body)
         {
             Check.NotNull(body, nameof(body));
-            _matcher = new RegexMatcher(body);
+            _body = body;
         }
 
         /// <summary>
@@ -100,6 +105,9 @@ namespace WireMock.Matchers.Request
         {
             if (_matcher != null)
                 return _matcher.IsMatch(requestMessage.Body);
+
+            if (_body != null)
+                return requestMessage.Body == _body;
 
             if (_bodyData != null)
                 return requestMessage.BodyAsBytes == _bodyData;

@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace WireMock.Matchers.Request
 {
     /// <summary>
     /// The composite request matcher.
     /// </summary>
-    public abstract class RequestMessageCompositeMatcher : IRequestMatcher
+    public class RequestMessageCompositeMatcher : IRequestMatcher
     {
+        private readonly CompositeMatcherType _type;
+
         /// <summary>
         /// Gets the request matchers.
         /// </summary>
@@ -17,14 +20,13 @@ namespace WireMock.Matchers.Request
         public IEnumerable<IRequestMatcher> RequestMatchers { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageCompositeMatcher"/> class. 
-        /// The constructor.
+        /// Initializes a new instance of the <see cref="RequestMessageCompositeMatcher"/> class.
         /// </summary>
-        /// <param name="requestMatchers">
-        /// The <see cref="IEnumerable&lt;IRequestMatcher&gt;"/> request matchers.
-        /// </param>
-        protected RequestMessageCompositeMatcher(IEnumerable<IRequestMatcher> requestMatchers)
+        /// <param name="requestMatchers">The request matchers.</param>
+        /// <param name="type">The CompositeMatcherType type (Defaults to 'And')</param>
+        public RequestMessageCompositeMatcher([NotNull] IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
         {
+            _type = type;
             RequestMatchers = requestMatchers;
         }
 
@@ -37,7 +39,9 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return RequestMatchers.All(spec => spec.IsMatch(requestMessage));
+            return _type == CompositeMatcherType.And ?
+                RequestMatchers.All(spec => spec.IsMatch(requestMessage)) :
+                RequestMatchers.Any(spec => spec.IsMatch(requestMessage));
         }
     }
 }

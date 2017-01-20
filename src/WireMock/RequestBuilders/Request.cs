@@ -34,44 +34,76 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="url">The url.</param>
+        /// <param name="matcher">The matcher.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithUrl(string url)
+        public IUrlAndPathRequestBuilder WithUrl(IMatcher matcher)
         {
-            _requestMatchers.Add(new RequestMessageUrlMatcher(url));
+            _requestMatchers.Add(new RequestMessageUrlMatcher(matcher));
+
             return this;
         }
 
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="func">The url func.</param>
+        /// <param name="urls">The urls.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithUrl(Func<string, bool> func)
+        public IUrlAndPathRequestBuilder WithUrl(params string[] urls)
         {
-            _requestMatchers.Add(new RequestMessageUrlMatcher(func));
+            var or = new RequestMessageCompositeMatcher(urls.Select(url => new RequestMessageUrlMatcher(url)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
+            return this;
+        }
+
+        /// <summary>
+        /// The with url.
+        /// </summary>
+        /// <param name="funcs">The url func.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithUrl(params Func<string, bool>[] funcs)
+        {
+            var or = new RequestMessageCompositeMatcher(funcs.Select(func => new RequestMessageUrlMatcher(func)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
+            return this;
+        }
+
+        /// <summary>
+        /// The with url.
+        /// </summary>
+        /// <param name="matcher">The matcher.</param>
+        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
+        public IUrlAndPathRequestBuilder WithPath(IMatcher matcher)
+        {
+            _requestMatchers.Add(new RequestMessagePathMatcher(matcher));
+
             return this;
         }
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="paths">The path.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithPath(string path)
+        public IUrlAndPathRequestBuilder WithPath(params string[] paths)
         {
-            _requestMatchers.Add(new RequestMessagePathMatcher(path));
+            var or = new RequestMessageCompositeMatcher(paths.Select(path => new RequestMessageUrlMatcher(path)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
             return this;
         }
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="func">The path func.</param>
+        /// <param name="funcs">The path func.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithPath(Func<string, bool> func)
+        public IUrlAndPathRequestBuilder WithPath(params Func<string, bool>[] funcs)
         {
-            _requestMatchers.Add(new RequestMessagePathMatcher(func));
+            var or = new RequestMessageCompositeMatcher(funcs.Select(func => new RequestMessageUrlMatcher(func)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
             return this;
         }
 
@@ -295,15 +327,15 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with header.
         /// </summary>
-        /// <param name="func">
-        ///     The func.
-        /// </param>
+        /// <param name="funcs">The func.</param>
         /// <returns>
         /// The <see cref="IHeadersRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder WithHeader(Func<IDictionary<string, string>, bool> func)
+        public IHeadersRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
         {
-            _requestMatchers.Add(new RequestMessageHeaderMatcher(func));
+            var or = new RequestMessageCompositeMatcher(funcs.Select(func => new RequestMessageHeaderMatcher(func)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
             return this;
         }
     }
