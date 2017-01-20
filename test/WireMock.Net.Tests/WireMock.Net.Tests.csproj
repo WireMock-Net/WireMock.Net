@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestTests.cs" />
     <Compile Include="RequestMessageTests.cs" />
+    <Compile Include="ResponseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

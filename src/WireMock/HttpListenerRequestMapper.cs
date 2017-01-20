@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
-using WireMock.RequestBuilders;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
 namespace WireMock
 {
     /// <summary>
@@ -24,12 +13,8 @@ namespace WireMock
         /// <summary>
         /// The map.
         /// </summary>
-        /// <param name="listenerRequest">
-        /// The listener request.
-        /// </param>
-        /// <returns>
-        /// The <see cref="AndPathRequest"/>.
-        /// </returns>
+        /// <param name="listenerRequest">The listener request.</param>
+        /// <returns>The <see cref="RequestMessage"/>.</returns>
         public RequestMessage Map(HttpListenerRequest listenerRequest)
         {
             Uri url = listenerRequest.Url;
@@ -45,12 +30,8 @@ namespace WireMock
         /// <summary>
         /// The get request body.
         /// </summary>
-        /// <param name="request">
-        /// The request.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
+        /// <param name="request">The request.</param>
+        /// <returns>The <see cref="string"/>.</returns>
         private byte[] GetRequestBody(HttpListenerRequest request)
         {
             if (!request.HasEntityBody)

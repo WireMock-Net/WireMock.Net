@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 

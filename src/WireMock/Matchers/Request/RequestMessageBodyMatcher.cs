@@ -99,16 +99,16 @@ namespace WireMock.Matchers.Request
         public bool IsMatch(RequestMessage requestMessage)
         {
             if (_matcher != null)
-                return _matcher.IsMatch(requestMessage.BodyAsString);
+                return _matcher.IsMatch(requestMessage.Body);
 
             if (_bodyData != null)
-                return requestMessage.Body == _bodyData;
+                return requestMessage.BodyAsBytes == _bodyData;
 
             if (_bodyFunc != null)
-                return _bodyFunc(requestMessage.BodyAsString);
+                return _bodyFunc(requestMessage.Body);
 
             if (_bodyDataFunc != null)
-                return _bodyDataFunc(requestMessage.Body);
+                return _bodyDataFunc(requestMessage.BodyAsBytes);
 
             return false;
         }

@@ -100,7 +100,7 @@ namespace WireMock.Net.Tests
             Check.That(_server.RequestLogs).HasSize(1);
             var requestLogged = _server.RequestLogs.First();
             Check.That(requestLogged.Verb).IsEqualTo("get");
-            Check.That(requestLogged.Body).IsNull();
+            Check.That(requestLogged.BodyAsBytes).IsNull();
         }
 
         [Test]

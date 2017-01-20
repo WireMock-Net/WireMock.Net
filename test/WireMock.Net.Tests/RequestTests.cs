@@ -245,7 +245,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "Hello world!";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
             Check.That(spec.IsMatch(request)).IsTrue();

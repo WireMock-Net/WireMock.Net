@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -11,6 +12,7 @@ using JetBrains.Annotations;
 // Copied from https://github.com/aspnet/EntityFramework/blob/dev/src/Shared/Check.cs
 namespace WireMock.Validation
 {
+    [ExcludeFromCodeCoverage]
     [DebuggerStepThrough]
     internal static class Check
     {

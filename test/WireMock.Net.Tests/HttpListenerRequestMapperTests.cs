@@ -8,23 +8,6 @@ using NFluent;
 using NUnit.Framework;
 using WireMock.Http;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1600:ElementsMustBeDocumented",
-        Justification = "Reviewed. Suppression is OK here, as it's a tests class.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-
 namespace WireMock.Net.Tests
 {
     [TestFixture]
@@ -77,7 +60,7 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.BodyAsString).IsEqualTo("Hello!");
+            Check.That(MapperServer.LastRequestMessage.Body).IsEqualTo("Hello!");
         }
 
         [Test]

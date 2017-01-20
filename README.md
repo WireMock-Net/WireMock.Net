@@ -25,10 +25,10 @@ The following code will configure a response with a status of 200 to be returned
 var server = FluentMockServer.Start();
 server
   .Given(
-    Request.WithUrl("/some/thing").UsingGet()
+    Request.Create().WithUrl("/some/thing").UsingGet()
   )
   .RespondWith(
-    Response
+    Response.Create()
       .WithStatusCode(200)
       .WithHeader("Content-Type", "text/plain")
       .WithBody("Hello world!")
@@ -42,10 +42,10 @@ A response body in binary format can be specified as a `byte[]` via an overloade
 var server = FluentMockServer.Start();
 server
   .Given(
-    Request.WithUrl("/some/thing").UsingGet()
+    Request.Create().WithUrl("/some/thing").UsingGet()
   )
   .RespondWith(
-    Response
+    Response.Create()
       .WithBody(new byte[] { 48, 65, 6c, 6c, 6f })
   );
 ```
@@ -68,10 +68,10 @@ A JSON body will be considered to match a path expression if the expression retu
 var server = FluentMockServer.Start();
 server
   .Given(
-    Request.WithUrl("/some/thing").UsingGet()
+    Request.Create().WithUrl("/some/thing").UsingGet()
       .WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
   )
-  .RespondWith(Response.WithBody("Hello"));
+  .RespondWith(Response.Create().WithBody("Hello"));
 ```
 
 ```
@@ -92,7 +92,7 @@ WireMock delegates to [XPath2.Net](https://github.com/StefH/XPath2.Net), therefo
 var server = FluentMockServer.Start();
 server
   .Given(
-    Request.WithUrl("/some/thing").UsingGet()
+    Request.Create().WithUrl("/some/thing").UsingGet()
 	  .WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
   )
   .RespondWith(Response.WithBody("Hello"));
@@ -116,10 +116,10 @@ Example:
 var server = FluentMockServer.Start();
 server
   .Given(
-    Request.WithUrl("/some/thing").UsingGet()
+    Request.Create().WithUrl("/some/thing").UsingGet()
   )
   .RespondWith(
-    Response
+    Response.Create()
       .WithStatusCode(200)
       .WithHeader("Content-Type", "text/plain")
       .WithBody("Hello world! Your path is {{request.path}.")
@@ -157,7 +157,7 @@ var allRequests = server.RequestLogs;
 If you need to be more specific on the requests that have been send to the server, you can use the very same fluent API that allows to define routes:
 ```csharp
 var customerReadRequests = server.SearchLogsFor(
-    Request.WithUrl("/api/customer*").UsingGet()
+    Request.Create().WithUrl("/api/customer*").UsingGet()
 ); 
 ```
 
@@ -174,12 +174,12 @@ Delays can also be configured at route level:
 ```csharp
 var server = FluentMockServer.Start();
 server
-  .Given(Request.WithUrl("/slow"))
+  .Given(Request.Create().WithUrl("/slow"))
   .RespondWith(
-    Responses
+    Responses.Create()
       .WithStatusCode(200)
       .WithBody(@"{ ""msg"": ""Hello I'm a little bit slow!"" }")
-      .AfterDelay(TimeSpan.FromSeconds(10)
+      .WithDelay(TimeSpan.FromSeconds(10)
     )
   );
 ```
@@ -211,9 +211,9 @@ public async void Should_respond_to_request()
    _sut = new SomeComponentDoingHttpCalls();
 
   _server
-    .Given(Request.WithUrl("/foo").UsingGet())
+    .Given(Request.Create().WithUrl("/foo").UsingGet())
     .RespondWith(
-      Response
+      Response.Create()
         .WithStatusCode(200)
         .WithBody(@"{ ""msg"": ""Hello world!"" }")
     );
@@ -251,37 +251,37 @@ static void Main(string[] args)
     Console.WriteLine("FluentMockServer running at {0}", server.Port);
 
     server
-        .Given(Request.WithUrl(u => u.Contains("x")).UsingGet())
-        .RespondWith(Response
+        .Given(Request.Create().WithUrl(u => u.Contains("x")).UsingGet())
+        .RespondWith(Response.Create()
             .WithStatusCode(200)
             .WithHeader("Content-Type", "application/json")
             .WithBody(@"{ ""result"": ""/x with FUNC 200""}"));
 
     server
-        .Given(Request.WithUrl("/*").UsingGet())
-        .RespondWith(Response
+        .Given(Request.Create().WithUrl("/*").UsingGet())
+        .RespondWith(Response.Create()
             .WithStatusCode(200)
             .WithHeader("Content-Type", "application/json")
             .WithBody(@"{ ""msg"": ""Hello world!""}")
         );
 
     server
-        .Given(Request.WithUrl("/data").UsingPost().WithBody(b => b.Contains("e")))
-        .RespondWith(Response
+        .Given(Request.Create().WithUrl("/data").UsingPost().WithBody(b => b.Contains("e")))
+        .RespondWith(Response.Create()
             .WithStatusCode(201)
             .WithHeader("Content-Type", "application/json")
             .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
 
     server
-        .Given(Request.WithUrl("/data").UsingPost())
-        .RespondWith(Response
+        .Given(Request.Create().WithUrl("/data").UsingPost())
+        .RespondWith(Response.Create()
             .WithStatusCode(201)
             .WithHeader("Content-Type", "application/json")
             .WithBody(@"{ ""result"": ""data posted with 201""}"));
 
     server
-        .Given(Request.WithUrl("/data").UsingDelete())
-        .RespondWith(Response
+        .Given(Request.Create().WithUrl("/data").UsingDelete())
+        .RespondWith(Response.Create()
             .WithStatusCode(200)
             .WithHeader("Content-Type", "application/json")
             .WithBody(@"{ ""result"": ""data deleted with 200""}"));

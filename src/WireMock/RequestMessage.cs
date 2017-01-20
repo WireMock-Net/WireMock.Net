@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Extensions;
+using WireMock.Validation;
 
 namespace WireMock
 {
@@ -14,28 +15,21 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
-        /// <param name="url">
-        /// The original url.
-        /// </param>
-        /// <param name="verb">
-        /// The verb.
-        /// </param>
-        /// <param name="body">
-        /// The body byte[].
-        /// </param>
-        /// <param name="bodyAsString">
-        /// The body string.
-        /// </param>
-        /// <param name="headers">
-        /// The headers.
-        /// </param>
-        public RequestMessage(Uri url, string verb, byte[] body, string bodyAsString, IDictionary<string, string> headers = null)
+        /// <param name="url">The original url.</param>
+        /// <param name="verb">The verb.</param>
+        /// <param name="bodyAsBytes">The bodyAsBytes byte[].</param>
+        /// <param name="body">The body string.</param>
+        /// <param name="headers">The headers.</param>
+        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes, [CanBeNull] string body, [CanBeNull] IDictionary<string, string> headers = null)
         {
+            Check.NotNull(url, nameof(url));
+            Check.NotNull(verb, nameof(verb));
+
             Url = url.ToString();
             Path = url.AbsolutePath;
             Verb = verb.ToLower();
+            BodyAsBytes = bodyAsBytes;
             Body = body;
-            BodyAsString = bodyAsString;
             Headers = headers;
 
             string query = url.Query;
@@ -108,24 +102,20 @@ namespace WireMock
         public dynamic Query { get; }
 
         /// <summary>
-        /// Gets the body.
+        /// Gets the bodyAsBytes.
         /// </summary>
-        public byte[] Body { get; }
+        public byte[] BodyAsBytes { get; }
 
         /// <summary>
         /// Gets the body.
         /// </summary>
-        public string BodyAsString { get; }
+        public string Body { get; }
 
         /// <summary>
         /// The get parameter.
         /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <returns>
-        /// The parameter.
-        /// </returns>
+        /// <param name="key">The key.</param>
+        /// <returns>The parameter.s</returns>
         public List<string> GetParameter(string key)
         {
             return Parameters.ContainsKey(key) ? Parameters[key] : new List<string>();
