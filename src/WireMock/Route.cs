@@ -1,21 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WireMock.Matchers.Request;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock
 {
     /// <summary>
@@ -26,54 +11,44 @@ namespace WireMock
         /// <summary>
         /// The _request matcher.
         /// </summary>
-        private readonly IRequestMatcher _requestSpec;
+        public IRequestMatcher RequestMatcher { get; }
 
         /// <summary>
         /// The _provider.
         /// </summary>
-        private readonly IProvideResponses _provider;
+        public IProvideResponses Provider { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Route"/> class.
         /// </summary>
-        /// <param name="requestSpec">
-        /// The request matcher.
-        /// </param>
-        /// <param name="provider">
-        /// The provider.
-        /// </param>
-        public Route(IRequestMatcher requestSpec, IProvideResponses provider)
+        /// <param name="requestMatcher">The request matcher.</param>
+        /// <param name="provider">The provider.</param>
+        public Route(IRequestMatcher requestMatcher, IProvideResponses provider)
         {
-            _requestSpec = requestSpec;
-            _provider = provider;
+            RequestMatcher = requestMatcher;
+            Provider = provider;
         }
 
         /// <summary>
         /// The response to.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Task"/>.
-        /// </returns>
-        public Task<ResponseMessage> ResponseTo(RequestMessage requestMessage)
+        /// <param name="requestMessage">The request message.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task<ResponseMessage> ResponseTo(RequestMessage requestMessage)
         {
-            return _provider.ProvideResponse(requestMessage);
+            return await Provider.ProvideResponse(requestMessage);
         }
 
         /// <summary>
-        /// The is request handled.
+        /// Determines whether the RequestMessage is handled.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
+        /// <param name="requestMessage">The request message.</param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///   <c>true</c> if RequestMessage is handled; otherwise, <c>false</c>.
         /// </returns>
         public bool IsRequestHandled(RequestMessage requestMessage)
         {
-            return _requestSpec.IsMatch(requestMessage);
+            return RequestMatcher.IsMatch(requestMessage);
         }
     }
 }

@@ -73,6 +73,20 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Gets the routes.
+        /// </summary>
+        public IEnumerable<Route> Routes
+        {
+            get
+            {
+                lock (((ICollection)_routes).SyncRoot)
+                {
+                    return new ReadOnlyCollection<Route>(_routes);
+                }
+            }
+        }
+
+        /// <summary>
         /// Start this FluentMockServer.
         /// </summary>
         /// <param name="port">
@@ -91,31 +105,6 @@ namespace WireMock.Server
 
             if (port == 0)
                 port = Ports.FindFreeTcpPort();
-
-            return new FluentMockServer(port, ssl);
-        }
-
-        /// <summary>
-        /// Create this FluentMockServer.
-        /// </summary>
-        /// <param name="port">
-        /// The port.
-        /// </param>
-        /// <param name="ssl">
-        /// The SSL support.
-        /// </param>
-        /// <returns>
-        /// The <see cref="FluentMockServer"/>.
-        /// </returns>
-        [PublicAPI]
-        public static FluentMockServer Create(int port = 0, bool ssl = false)
-        {
-            Check.Condition(port, p => p > 0, nameof(port));
-
-            if (port == 0)
-            {
-                port = Ports.FindFreeTcpPort();
-            }
 
             return new FluentMockServer(port, ssl);
         }
@@ -195,15 +184,15 @@ namespace WireMock.Server
         /// <summary>
         /// The given.
         /// </summary>
-        /// <param name="requestSpec">
+        /// <param name="requestMatcher">
         /// The request matcher.
         /// </param>
         /// <returns>
         /// The <see cref="IRespondWithAProvider"/>.
         /// </returns>
-        public IRespondWithAProvider Given(IRequestMatcher requestSpec)
+        public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
         {
-            return new RespondWithAProvider(RegisterRoute, requestSpec);
+            return new RespondWithAProvider(RegisterRoute, requestMatcher);
         }
 
         /// <summary>

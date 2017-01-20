@@ -8,7 +8,13 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public abstract class RequestMessageCompositeMatcher : IRequestMatcher
     {
-        private readonly IEnumerable<IRequestMatcher> _requestMatchers;
+        /// <summary>
+        /// Gets the request matchers.
+        /// </summary>
+        /// <value>
+        /// The request matchers.
+        /// </value>
+        public IEnumerable<IRequestMatcher> RequestMatchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCompositeMatcher"/> class. 
@@ -17,9 +23,9 @@ namespace WireMock.Matchers.Request
         /// <param name="requestMatchers">
         /// The <see cref="IEnumerable&lt;IRequestMatcher&gt;"/> request matchers.
         /// </param>
-        public RequestMessageCompositeMatcher(IEnumerable<IRequestMatcher> requestMatchers)
+        protected RequestMessageCompositeMatcher(IEnumerable<IRequestMatcher> requestMatchers)
         {
-            _requestMatchers = requestMatchers;
+            RequestMatchers = requestMatchers;
         }
 
         /// <summary>
@@ -31,7 +37,7 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return _requestMatchers.All(spec => spec.IsMatch(requestMessage));
+            return RequestMatchers.All(spec => spec.IsMatch(requestMessage));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,24 +10,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-[module:
-    SuppressMessage("StyleCop.CSharp.ReadabilityRules",
-        "SA1101:PrefixLocalCallsWithThis",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.NamingRules",
-        "SA1309:FieldNamesMustNotBeginWithUnderscore",
-        Justification = "Reviewed. Suppression is OK here, as it conflicts with internal naming rules.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1600:ElementsMustBeDocumented",
-        Justification = "Reviewed. Suppression is OK here, as it's a tests class.")]
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
-// ReSharper disable ArrangeThisQualifier
-// ReSharper disable InconsistentNaming
 namespace WireMock.Net.Tests
 {
     [TestFixture]
@@ -36,6 +17,24 @@ namespace WireMock.Net.Tests
     public class FluentMockServerTests
     {
         private FluentMockServer _server;
+
+        [Test]
+        public void FluentMockServer_get_routes()
+        {
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithUrl("/foo1").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
+
+            _server.Given(Request.Create().WithUrl("/foo2").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(202).WithBody("2"));
+
+            var routes = _server.Routes;
+
+            Check.That(routes).HasSize(2);
+            Check.That(routes.First().RequestMatcher).IsNotNull();
+            Check.That(routes.First().Provider).IsNotNull();
+        }
 
         [Test]
         public async Task Should_respond_to_request()
