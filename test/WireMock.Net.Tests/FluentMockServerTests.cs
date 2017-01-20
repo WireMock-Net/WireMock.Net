@@ -52,11 +52,25 @@ namespace WireMock.Net.Tests
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
-            var response
-                = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
 
             // then
             Check.That(response).IsEqualTo(@"{ msg: ""Hello world!""}");
+        }
+
+        [Test]
+        public async Task Should_respond_to_request_bodyAsBase64()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.WithUrl("/foo").UsingGet()).RespondWith(Response.WithSuccess().WithBodyAsBase64("SGVsbG8gV29ybGQ/"));
+
+            // when
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+
+            // then
+            Check.That(response).IsEqualTo("Hello World?");
         }
 
         [Test]
@@ -66,8 +80,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             // when
-            var response
-                = await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
@@ -167,8 +180,7 @@ namespace WireMock.Net.Tests
                     .WithBody("REDIRECT SUCCESSFUL"));
 
             // when
-            var response
-                = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
 
             // then
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");

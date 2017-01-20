@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using HandlebarsDotNet;
+using JetBrains.Annotations;
+using WireMock.Validation;
 
 [module:
     SuppressMessage("StyleCop.CSharp.ReadabilityRules",
@@ -146,7 +150,23 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public IResponseBuilder WithBody(string body)
         {
+            Check.NotNull(body, nameof(body));
+
             _responseMessage.Body = body;
+            return this;
+        }
+
+        /// <summary>
+        /// The with body as base64.
+        /// </summary>
+        /// <param name="bodyAsbase64">The body asbase64.</param>
+        /// <param name="encoding"></param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
+        {
+            Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
+
+            _responseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
             return this;
         }
 
