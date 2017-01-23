@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using WireMock.Matchers.Request;
+using WireMock.Util;
 
 namespace WireMock.RequestBuilders
 {
@@ -33,6 +34,6 @@ namespace WireMock.RequestBuilders
         /// <returns>
         /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        IRequestMatcher WithParam([NotNull] Func<IDictionary<string, List<string>>, bool> func);
+        IRequestMatcher WithParam([NotNull] Func<IDictionary<string, WireMockList<string>>, bool> func);
     }
 }

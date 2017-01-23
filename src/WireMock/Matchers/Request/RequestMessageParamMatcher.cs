@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -21,7 +22,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         private readonly IEnumerable<string> _values;
 
-        private readonly Func<IDictionary<string, List<string>>, bool> _func;
+        private readonly Func<IDictionary<string, WireMockList<string>>, bool> _func;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
@@ -47,7 +48,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">
         /// The func.
         /// </param>
-        public RequestMessageParamMatcher([NotNull] Func<IDictionary<string, List<string>>, bool> func)
+        public RequestMessageParamMatcher([NotNull] Func<IDictionary<string, WireMockList<string>>, bool> func)
         {
             Check.NotNull(func, nameof(func));
             _func = func;
@@ -64,7 +65,7 @@ namespace WireMock.Matchers.Request
         {
             if (_func != null)
             {
-                return _func(requestMessage.Parameters);
+                return _func(requestMessage.Query);
             }
 
             return requestMessage.GetParameter(_key).Intersect(_values).Count() == _values.Count();

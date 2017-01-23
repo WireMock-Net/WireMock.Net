@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Util;
 
 namespace WireMock.RequestBuilders
 {
@@ -299,7 +300,7 @@ namespace WireMock.RequestBuilders
         /// <returns>
         /// The <see cref="IRequestMatcher"/>.
         /// </returns>
-        public IRequestMatcher WithParam(Func<IDictionary<string, List<string>>, bool> func)
+        public IRequestMatcher WithParam(Func<IDictionary<string, WireMockList<string>>, bool> func)
         {
             _requestMatchers.Add(new RequestMessageParamMatcher(func));
             return this;

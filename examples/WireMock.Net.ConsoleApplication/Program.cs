@@ -33,7 +33,8 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world! : {{request.url}} : {{request.path}} : {{request.query.start}} : {{request.query.stop.[0]}}""")
+                    .WithBody(@"{""msg"": ""Hello world! : {{request.url}} : {{request.path}} :
+                                bykey={{request.query.start}} : bykey={{request.query.stop}} byidx0={{request.query.stop.[0]}} byidx1={{request.query.stop.[1]}}""")
                     .WithTransformer()
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
