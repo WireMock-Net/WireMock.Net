@@ -188,15 +188,13 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The using verb.
         /// </summary>
-        /// <param name="verb">
-        /// The verb.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
-        /// </returns>
-        public IHeadersRequestBuilder UsingVerb(string verb)
+        /// <param name="verbs">The verbs.</param>
+        /// <returns>The <see cref="IHeadersRequestBuilder"/>.</returns>
+        public IHeadersRequestBuilder UsingVerb(params string[] verbs)
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher(verb));
+            var or = new RequestMessageCompositeMatcher(verbs.Select(verb => new RequestMessageVerbMatcher(verb)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
             return this;
         }
 

@@ -1,4 +1,6 @@
-﻿namespace WireMock.RequestBuilders
+﻿using JetBrains.Annotations;
+
+namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The VerbRequestBuilder interface.
@@ -56,12 +58,8 @@
         /// <summary>
         /// The using verb.
         /// </summary>
-        /// <param name="verb">
-        /// The verb.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
-        /// </returns>
-        IHeadersRequestBuilder UsingVerb(string verb);
+        /// <param name="verbs">The verb.</param>
+        /// <returns>The <see cref="IHeadersRequestBuilder"/>.</returns>
+        IHeadersRequestBuilder UsingVerb([NotNull] params string[] verbs);
     }
 }
