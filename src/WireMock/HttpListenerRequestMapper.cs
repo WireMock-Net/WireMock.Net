@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,8 +24,11 @@ namespace WireMock
             string bodyAsString = body != null ? listenerRequest.ContentEncoding.GetString(body) : null;
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
+            var cookies = new Dictionary<string, string>();
+            foreach (Cookie cookie in listenerRequest.Cookies)
+                cookies.Add(cookie.Name, cookie.Value);
 
-            return new RequestMessage(url, verb, body, bodyAsString, headers);
+            return new RequestMessage(url, verb, body, bodyAsString, headers, cookies);
         }
 
         /// <summary>

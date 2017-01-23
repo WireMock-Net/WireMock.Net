@@ -251,6 +251,19 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void Should_specify_requests_matching_given_cookies()
+        {
+            // given
+            var spec = Request.Create().WithUrl("/foo").UsingAnyVerb().WithCookie("session", "a*");
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", null, null, null, new Dictionary<string, string> { { "session", "abc" } });
+
+            // then
+            Check.That(spec.IsMatch(request)).IsTrue();
+        }
+
+        [Test]
         public void Should_specify_requests_matching_given_body()
         {
             // given

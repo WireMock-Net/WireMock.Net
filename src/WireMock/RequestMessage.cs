@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Extensions;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -34,6 +33,11 @@ namespace WireMock
         public IDictionary<string, string> Headers { get; }
 
         /// <summary>
+        /// Gets the cookies.
+        /// </summary>
+        public IDictionary<string, string> Cookies { get; }
+
+        /// <summary>
         /// Gets the query.
         /// </summary>
         public IDictionary<string, WireMockList<string>> Query { get; } = new Dictionary<string, WireMockList<string>>();
@@ -56,7 +60,8 @@ namespace WireMock
         /// <param name="bodyAsBytes">The bodyAsBytes byte[].</param>
         /// <param name="body">The body string.</param>
         /// <param name="headers">The headers.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes, [CanBeNull] string body, [CanBeNull] IDictionary<string, string> headers = null)
+        /// <param name="cookies">The cookies.</param>
+        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes, [CanBeNull] string body, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
             Check.NotNull(verb, nameof(verb));
@@ -67,6 +72,7 @@ namespace WireMock
             BodyAsBytes = bodyAsBytes;
             Body = body;
             Headers = headers;
+            Cookies = cookies;
 
             string query = url.Query;
             if (!string.IsNullOrEmpty(query))

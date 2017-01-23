@@ -112,9 +112,9 @@ namespace WireMock.RequestBuilders
         /// The using get.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingGet()
+        public IHeadersAndCookiesRequestBuilder UsingGet()
         {
             _requestMatchers.Add(new RequestMessageVerbMatcher("get"));
             return this;
@@ -124,9 +124,9 @@ namespace WireMock.RequestBuilders
         /// The using post.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingPost()
+        public IHeadersAndCookiesRequestBuilder UsingPost()
         {
             _requestMatchers.Add(new RequestMessageVerbMatcher("post"));
             return this;
@@ -136,9 +136,9 @@ namespace WireMock.RequestBuilders
         /// The using put.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingPut()
+        public IHeadersAndCookiesRequestBuilder UsingPut()
         {
             _requestMatchers.Add(new RequestMessageVerbMatcher("put"));
             return this;
@@ -148,9 +148,9 @@ namespace WireMock.RequestBuilders
         /// The using delete.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingDelete()
+        public IHeadersAndCookiesRequestBuilder UsingDelete()
         {
             _requestMatchers.Add(new RequestMessageVerbMatcher("delete"));
             return this;
@@ -160,9 +160,9 @@ namespace WireMock.RequestBuilders
         /// The using head.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingHead()
+        public IHeadersAndCookiesRequestBuilder UsingHead()
         {
             _requestMatchers.Add(new RequestMessageVerbMatcher("head"));
             return this;
@@ -172,9 +172,9 @@ namespace WireMock.RequestBuilders
         /// The using any verb.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
+        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
         /// </returns>
-        public IHeadersRequestBuilder UsingAnyVerb()
+        public IHeadersAndCookiesRequestBuilder UsingAnyVerb()
         {
             var matchers = _requestMatchers.Where(m => m is RequestMessageVerbMatcher).ToList();
             foreach (var matcher in matchers)
@@ -189,8 +189,8 @@ namespace WireMock.RequestBuilders
         /// The using verb.
         /// </summary>
         /// <param name="verbs">The verbs.</param>
-        /// <returns>The <see cref="IHeadersRequestBuilder"/>.</returns>
-        public IHeadersRequestBuilder UsingVerb(params string[] verbs)
+        /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
+        public IHeadersAndCookiesRequestBuilder UsingVerb(params string[] verbs)
         {
             var or = new RequestMessageCompositeMatcher(verbs.Select(verb => new RequestMessageVerbMatcher(verb)), CompositeMatcherType.Or);
             _requestMatchers.Add(or);
@@ -305,34 +305,52 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
-        /// The with header.
+        /// With header.
         /// </summary>
-        /// <param name="name">
-        ///     The name.
-        /// </param>
-        /// <param name="value">
-        ///     The value.
-        /// </param>
-        /// <param name="ignoreCase">ignore Case</param>
-        /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
-        /// </returns>
-        public IHeadersRequestBuilder WithHeader(string name, string value, bool ignoreCase = true)
+        /// <param name="name">The name.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        /// <returns></returns>
+        public IHeadersAndCookiesRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
         {
-            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, value, ignoreCase));
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, pattern, ignoreCase));
             return this;
         }
 
         /// <summary>
-        /// The with header.
+        /// With header.
         /// </summary>
-        /// <param name="funcs">The func.</param>
-        /// <returns>
-        /// The <see cref="IHeadersRequestBuilder"/>.
-        /// </returns>
-        public IHeadersRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
+        /// <param name="funcs">The funcs.</param>
+        /// <returns></returns>
+        public IHeadersAndCookiesRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
         {
             var or = new RequestMessageCompositeMatcher(funcs.Select(func => new RequestMessageHeaderMatcher(func)), CompositeMatcherType.Or);
+            _requestMatchers.Add(or);
+
+            return this;
+        }
+
+        /// <summary>
+        /// With cookie.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        /// <returns></returns>
+        public IHeadersAndCookiesRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true)
+        {
+            _requestMatchers.Add(new RequestMessageCookieMatcher(name, pattern, ignoreCase));
+            return this;
+        }
+
+        /// <summary>
+        /// With header.
+        /// </summary>
+        /// <param name="funcs">The funcs.</param>
+        /// <returns></returns>
+        public IHeadersAndCookiesRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
+        {
+            var or = new RequestMessageCompositeMatcher(funcs.Select(func => new RequestMessageCookieMatcher(func)), CompositeMatcherType.Or);
             _requestMatchers.Add(or);
 
             return this;

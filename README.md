@@ -57,6 +57,7 @@ WireMock supports matching of requests to stubs and verification queries using t
 * HTTP Method
 * Query parameters
 * Headers
+* Cookies
 * Request body
 
 

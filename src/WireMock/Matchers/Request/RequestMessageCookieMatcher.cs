@@ -6,32 +6,23 @@ using WireMock.Validation;
 namespace WireMock.Matchers.Request
 {
     /// <summary>
-    /// The request header matcher.
+    /// The request cookie matcher.
     /// </summary>
-    public class RequestMessageHeaderMatcher : IRequestMatcher
+    public class RequestMessageCookieMatcher : IRequestMatcher
     {
-        /// <summary>
-        /// The name.
-        /// </summary>
         private readonly string _name;
 
-        /// <summary>
-        /// The matcher.
-        /// </summary>
         private readonly IMatcher _matcher;
 
-        /// <summary>
-        /// The header function
-        /// </summary>
-        private readonly Func<IDictionary<string, string>, bool> _headerFunc;
+        private readonly Func<IDictionary<string, string>, bool> _cookieFunc;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">The ignoreCase.</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
+        public RequestMessageCookieMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
@@ -41,15 +32,15 @@ namespace WireMock.Matchers.Request
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
         /// <param name="func">
         /// The func.
         /// </param>
-        public RequestMessageHeaderMatcher([NotNull] Func<IDictionary<string, string>, bool> func)
+        public RequestMessageCookieMatcher([NotNull] Func<IDictionary<string, string>, bool> func)
         {
             Check.NotNull(func, nameof(func));
-            _headerFunc = func;
+            _cookieFunc = func;
         }
 
         /// <summary>
@@ -61,13 +52,13 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_headerFunc != null)
-                return _headerFunc(requestMessage.Headers);
+            if (_cookieFunc != null)
+                return _cookieFunc(requestMessage.Cookies);
 
-            if (requestMessage.Headers == null)
+            if (requestMessage.Cookies == null)
                 return false;
 
-            string headerValue = requestMessage.Headers[_name];
+            string headerValue = requestMessage.Cookies[_name];
             return _matcher.IsMatch(headerValue);
         }
     }

@@ -40,12 +40,12 @@ namespace WireMock.Matchers
         /// <summary>
         /// Copy/paste from http://www.codeproject.com/Tips/57304/Use-wildcard-characters-and-to-compare-strings
         /// </summary>
-        private bool MatchWildcardString(string pattern, string input)
+        private bool MatchWildcardString([NotNull] string pattern, string input)
         {
             if (input != null && _ignoreCase)
                 input = input.ToLower();
 
-            if (pattern != null && _ignoreCase)
+            if (_ignoreCase)
                 pattern = pattern.ToLower();
 
             if (string.CompareOrdinal(pattern, input) == 0)
