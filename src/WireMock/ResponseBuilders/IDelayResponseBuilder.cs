@@ -5,7 +5,7 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The DelayResponseBuilder interface.
     /// </summary>
-    public interface IDelayResponseBuilder : IProvideResponses
+    public interface IDelayResponseBuilder : IResponseProvider
     {
         /// <summary>
         /// The after delay.

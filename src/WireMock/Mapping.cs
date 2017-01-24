@@ -6,24 +6,24 @@ namespace WireMock
     /// <summary>
     /// The route.
     /// </summary>
-    public class Route
+    public class Mapping
     {
         /// <summary>
-        /// The _request matcher.
+        /// The Request matcher.
         /// </summary>
         public IRequestMatcher RequestMatcher { get; }
 
         /// <summary>
-        /// The _provider.
+        /// The Provider.
         /// </summary>
-        public IProvideResponses Provider { get; }
+        public IResponseProvider Provider { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Route"/> class.
+        /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
-        public Route(IRequestMatcher requestMatcher, IProvideResponses provider)
+        public Mapping(IRequestMatcher requestMatcher, IResponseProvider provider)
         {
             RequestMatcher = requestMatcher;
             Provider = provider;

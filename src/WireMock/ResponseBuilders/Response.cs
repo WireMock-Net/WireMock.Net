@@ -14,19 +14,39 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private readonly ResponseMessage _responseMessage;
         private TimeSpan _delay = TimeSpan.Zero;
         private bool _useTransformer;
+
+        /// <summary>
+        /// Gets the response message.
+        /// </summary>
+        /// <value>
+        /// The response message.
+        /// </value>
+        public ResponseMessage ResponseMessage { get; }
+
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <param name="responseMessage">ResponseMessage</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        [PublicAPI]
+        public static IResponseBuilder Create([CanBeNull] ResponseMessage responseMessage = null)
+        {
+            var message = responseMessage ?? new ResponseMessage { StatusCode = (int)HttpStatusCode.OK };
+            return new Response(message);
+        }
 
         /// <summary>
         /// Creates this instance.
         /// </summary>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
-        public static IResponseBuilder Create([CanBeNull] ResponseMessage responseMessage = null)
+        public static IResponseBuilder Create([NotNull] Func<ResponseMessage> func)
         {
-            var message = responseMessage ?? new ResponseMessage { StatusCode = (int) HttpStatusCode.OK };
-            return new Response(message);
+            Check.NotNull(func, nameof(func));
+
+            return new Response(func());
         }
 
         /// <summary>
@@ -37,7 +57,7 @@ namespace WireMock.ResponseBuilders
         /// </param>
         private Response(ResponseMessage responseMessage)
         {
-            _responseMessage = responseMessage;
+            ResponseMessage = responseMessage;
         }
 
         /// <summary>
@@ -48,7 +68,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public IHeadersResponseBuilder WithStatusCode(int code)
         {
-            _responseMessage.StatusCode = code;
+            ResponseMessage.StatusCode = code;
             return this;
         }
 
@@ -60,7 +80,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public IHeadersResponseBuilder WithStatusCode(HttpStatusCode code)
         {
-            return WithStatusCode((int) code);
+            return WithStatusCode((int)code);
         }
 
         /// <summary>
@@ -70,7 +90,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public IHeadersResponseBuilder WithSuccess()
         {
-            return WithStatusCode((int) HttpStatusCode.OK);
+            return WithStatusCode((int)HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -93,7 +113,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(name, nameof(name));
 
-            _responseMessage.AddHeader(name, value);
+            ResponseMessage.AddHeader(name, value);
             return this;
         }
 
@@ -106,7 +126,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(body, nameof(body));
 
-            _responseMessage.Body = body;
+            ResponseMessage.Body = body;
             return this;
         }
 
@@ -120,7 +140,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
-            _responseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
+            ResponseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
             return this;
         }
 
@@ -143,7 +163,7 @@ namespace WireMock.ResponseBuilders
         /// The delay.
         /// </param>
         /// <returns>
-        /// The <see cref="IProvideResponses"/>.
+        /// The <see cref="IResponseProvider"/>.
         /// </returns>
         public IResponseBuilder WithDelay(TimeSpan delay)
         {
@@ -162,29 +182,36 @@ namespace WireMock.ResponseBuilders
         /// </returns>
         public async Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
         {
+            ResponseMessage responseMessage;
             if (_useTransformer)
             {
+                responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode };
+
                 var template = new { request = requestMessage };
 
                 // Body
-                var templateBody = Handlebars.Compile(_responseMessage.Body);
-                _responseMessage.Body = templateBody(template);
+                var templateBody = Handlebars.Compile(ResponseMessage.Body);
+                responseMessage.Body = templateBody(template);
 
                 // Headers
                 var newHeaders = new Dictionary<string, string>();
-                foreach (var header in _responseMessage.Headers)
+                foreach (var header in ResponseMessage.Headers)
                 {
                     var templateHeaderKey = Handlebars.Compile(header.Key);
                     var templateHeaderValue = Handlebars.Compile(header.Value);
 
                     newHeaders.Add(templateHeaderKey(template), templateHeaderValue(template));
                 }
-                _responseMessage.Headers = newHeaders;
+                responseMessage.Headers = newHeaders;
+            }
+            else
+            {
+                responseMessage = ResponseMessage;
             }
 
             await Task.Delay(_delay);
 
-            return _responseMessage;
+            return responseMessage;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -10,12 +11,21 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageCookieMatcher : IRequestMatcher
     {
-        private readonly string _name;
+        private readonly Func<IDictionary<string, string>, bool>[] _cookieFuncs;
 
-        private readonly IMatcher _matcher;
+        /// <summary>
+        /// The name
+        /// </summary>
+        public string Name { get; }
 
-        private readonly Func<IDictionary<string, string>, bool> _cookieFunc;
-
+        /// <summary>
+        /// Gets the matchers.
+        /// </summary>
+        /// <value>
+        /// The matchers.
+        /// </value>
+        public IMatcher[] Matchers { get; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
@@ -27,20 +37,18 @@ namespace WireMock.Matchers.Request
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
-            _name = name;
-            _matcher = new WildcardMatcher(pattern, ignoreCase);
+            Name = name;
+            Matchers = new IMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
-        /// <param name="func">
-        /// The func.
-        /// </param>
-        public RequestMessageCookieMatcher([NotNull] Func<IDictionary<string, string>, bool> func)
+        /// <param name="funcs">The funcs.</param>
+        public RequestMessageCookieMatcher([NotNull] params Func<IDictionary<string, string>, bool>[] funcs)
         {
-            Check.NotNull(func, nameof(func));
-            _cookieFunc = func;
+            Check.NotNull(funcs, nameof(funcs));
+            _cookieFuncs = funcs;
         }
 
         /// <summary>
@@ -52,14 +60,14 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_cookieFunc != null)
-                return _cookieFunc(requestMessage.Cookies);
+            if (_cookieFuncs != null)
+                return _cookieFuncs.Any(cf => cf(requestMessage.Cookies));
 
             if (requestMessage.Cookies == null)
                 return false;
 
-            string headerValue = requestMessage.Cookies[_name];
-            return _matcher.IsMatch(headerValue);
+            string headerValue = requestMessage.Cookies[Name];
+            return Matchers.Any(m => m.IsMatch(headerValue));
         }
     }
 }

@@ -11,6 +11,6 @@
         /// <param name="provider">
         /// The provider.
         /// </param>
-        void RespondWith(IProvideResponses provider);
+        void RespondWith(IResponseProvider provider);
     }
 }

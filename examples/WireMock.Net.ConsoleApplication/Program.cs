@@ -5,7 +5,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-
 namespace WireMock.Net.ConsoleApplication
 {
     static class Program
@@ -14,9 +13,9 @@ namespace WireMock.Net.ConsoleApplication
         {
             int port;
             if (args.Length == 0 || !int.TryParse(args[0], out port))
-                port = 8080;
+                port = 9090;
 
-            var server = FluentMockServer.Start(port);
+            var server = FluentMockServer.StartWithAdminInterface(port);
             Console.WriteLine("FluentMockServer running at {0}", server.Port);
 
             server
@@ -24,17 +23,17 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""result"": ""/x with FUNC 200""}"));
+                    .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
 
             // http://localhost:8080/gffgfgf/sddsds?start=1000&stop=1&stop=2
             server
-                .Given(Request.Create().WithUrl("/*").UsingGet())
+                .Given(Request.Create().WithUrl("/*").UsingGet().WithParam("start"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world! : {{request.url}} : {{request.path}} :
-                                bykey={{request.query.start}} : bykey={{request.query.stop}} byidx0={{request.query.stop.[0]}} byidx1={{request.query.stop.[1]}}""")
+                    .WithBody(@"{""msg"": ""Hello world, {{request.url}}, {{request.path}} :
+                                bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}""")
                     .WithTransformer()
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
@@ -47,7 +46,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
 
             server
-                .Given(Request.Create().WithUrl("/data", "/ax").UsingPost())
+                .Given(Request.Create().WithUrl("/data", "/ax").UsingPost().WithHeader("Content-Type", "application/json*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
@@ -61,11 +60,23 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody(@"{ ""result"": ""json posted with 201""}"));
 
             server
+                .Given(Request.Create().WithUrl("/json2").UsingPost().WithBody("x"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""json posted with x - 201""}"));
+
+            server
                 .Given(Request.Create().WithUrl("/data").UsingDelete())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data deleted with 200""}"));
+
+            server
+                .Given(Request.Create().WithUrl("/nobody").UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200));
 
             Console.WriteLine("Press any key to stop the server");
             Console.ReadKey();

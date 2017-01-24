@@ -13,5 +13,11 @@
         ///   <c>true</c> if the specified input is match; otherwise, <c>false</c>.
         /// </returns>
         bool IsMatch(string input);
+
+        /// <summary>
+        /// Gets the pattern.
+        /// </summary>
+        /// <returns>Pattern</returns>
+        string GetPattern();
     }
 }

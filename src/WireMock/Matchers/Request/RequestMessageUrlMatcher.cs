@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -12,42 +14,39 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matcher.
         /// </summary>
-        private readonly IMatcher _matcher;
+        public readonly IReadOnlyList<IMatcher> Matchers;
 
         /// <summary>
-        /// The url function
+        /// The url functions
         /// </summary>
-        private readonly Func<string, bool> _urlFunc;
+        private readonly Func<string, bool>[] _urlFuncs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
-        /// <param name="url">The url.</param>
-        public RequestMessageUrlMatcher([NotNull] string url) : this(new WildcardMatcher(url))
+        /// <param name="urls">The urls.</param>
+        public RequestMessageUrlMatcher([NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(url)).ToArray())
         {
-            _matcher = new WildcardMatcher(url);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        public RequestMessageUrlMatcher([NotNull] IMatcher matcher)
+        /// <param name="matchers">The matchers.</param>
+        public RequestMessageUrlMatcher([NotNull] params IMatcher[] matchers)
         {
-            Check.NotNull(matcher, nameof(matcher));
-            _matcher = matcher;
+            Check.NotNull(matchers, nameof(matchers));
+            Matchers = matchers;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
-        /// <param name="func">
-        /// The url func.
-        /// </param>
-        public RequestMessageUrlMatcher([NotNull] Func<string, bool> func)
+        /// <param name="funcs">The url functions.</param>
+        public RequestMessageUrlMatcher([NotNull] params Func<string, bool>[] funcs)
         {
-            Check.NotNull(func, nameof(func));
-            _urlFunc = func;
+            Check.NotNull(funcs, nameof(funcs));
+            _urlFuncs = funcs;
         }
 
         /// <summary>
@@ -59,11 +58,11 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_matcher != null)
-                return _matcher.IsMatch(requestMessage.Path);
+            if (Matchers != null)
+                return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Path));
 
-            if (_urlFunc != null)
-                return _urlFunc(requestMessage.Url);
+            if (_urlFuncs != null)
+                return _urlFuncs.Any(func => func(requestMessage.Url));
 
             return false;
         }

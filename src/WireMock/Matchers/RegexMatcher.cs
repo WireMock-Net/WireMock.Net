@@ -11,6 +11,7 @@ namespace WireMock.Matchers
     /// <seealso cref="WireMock.Matchers.IMatcher" />
     public class RegexMatcher : IMatcher
     {
+        private readonly string _pattern;
         private readonly Regex _expression;
 
         /// <summary>
@@ -21,7 +22,8 @@ namespace WireMock.Matchers
         {
             Check.NotNull(pattern, nameof(pattern));
 
-            _expression = new Regex(pattern, RegexOptions.Compiled);
+            _pattern = pattern;
+            _expression = new Regex(_pattern, RegexOptions.Compiled);
         }
 
         /// <summary>
@@ -44,6 +46,15 @@ namespace WireMock.Matchers
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Gets the pattern.
+        /// </summary>
+        /// <returns>Pattern</returns>
+        public string GetPattern()
+        {
+            return _pattern;
         }
     }
 }

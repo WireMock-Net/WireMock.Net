@@ -22,9 +22,9 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with header.
         /// </summary>
-        /// <param name="func">The headers func.</param>
+        /// <param name="funcs">The headers funcs.</param>
         /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
-        IHeadersAndCookiesRequestBuilder WithHeader([NotNull] params Func<IDictionary<string, string>, bool>[] func);
+        IHeadersAndCookiesRequestBuilder WithHeader([NotNull] params Func<IDictionary<string, string>, bool>[] funcs);
 
         /// <summary>
         /// The with header.
@@ -38,8 +38,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with header.
         /// </summary>
-        /// <param name="cookieFunc">The func.</param>
+        /// <param name="cookieFuncs">The funcs.</param>
         /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
-        IHeadersAndCookiesRequestBuilder WithCookie([NotNull] params Func<IDictionary<string, string>, bool>[] cookieFunc);
+        IHeadersAndCookiesRequestBuilder WithCookie([NotNull] params Func<IDictionary<string, string>, bool>[] cookieFuncs);
     }
 }

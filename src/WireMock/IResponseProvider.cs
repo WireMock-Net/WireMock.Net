@@ -1,17 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-
-[module:
-    SuppressMessage("StyleCop.CSharp.DocumentationRules",
-        "SA1633:FileMustHaveHeader",
-        Justification = "Reviewed. Suppression is OK here, as unknown copyright and company.")]
+﻿using System.Threading.Tasks;
 
 namespace WireMock
 {
     /// <summary>
-    /// The ProvideResponses interface.
+    /// The Response Provider interface.
     /// </summary>
-    public interface IProvideResponses
+    public interface IResponseProvider
     {
         /// <summary>
         /// The provide response.

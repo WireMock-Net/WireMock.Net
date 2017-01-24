@@ -48,5 +48,14 @@ namespace WireMock.Matchers
                 return false;
             }
         }
+
+        /// <summary>
+        /// Gets the pattern.
+        /// </summary>
+        /// <returns>Pattern</returns>
+        public string GetPattern()
+        {
+            return _pattern;
+        }
     }
 }

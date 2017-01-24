@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
 {
     /// <summary>
     /// The composite request matcher.
     /// </summary>
-    public class RequestMessageCompositeMatcher : IRequestMatcher
+    public abstract class RequestMessageCompositeMatcher : IRequestMatcher
     {
         private readonly CompositeMatcherType _type;
 
@@ -17,15 +18,17 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The request matchers.
         /// </value>
-        public IEnumerable<IRequestMatcher> RequestMatchers { get; }
+        private IEnumerable<IRequestMatcher> RequestMatchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCompositeMatcher"/> class.
         /// </summary>
         /// <param name="requestMatchers">The request matchers.</param>
         /// <param name="type">The CompositeMatcherType type (Defaults to 'And')</param>
-        public RequestMessageCompositeMatcher([NotNull] IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
+        protected RequestMessageCompositeMatcher([NotNull] IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
         {
+            Check.NotNull(requestMatchers, nameof(requestMatchers));
+
             _type = type;
             RequestMatchers = requestMatchers;
         }
@@ -37,11 +40,11 @@ namespace WireMock.Matchers.Request
         /// <returns>
         ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage)
+        public virtual bool IsMatch(RequestMessage requestMessage)
         {
             return _type == CompositeMatcherType.And ?
-                RequestMatchers.All(spec => spec.IsMatch(requestMessage)) :
-                RequestMatchers.Any(spec => spec.IsMatch(requestMessage));
+                RequestMatchers.All(matcher => matcher.IsMatch(requestMessage)) :
+                RequestMatchers.Any(matcher => matcher.IsMatch(requestMessage));
         }
     }
 }

@@ -61,7 +61,7 @@ namespace WireMock
         /// <param name="body">The body string.</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes, [CanBeNull] string body, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
             Check.NotNull(verb, nameof(verb));
@@ -85,16 +85,19 @@ namespace WireMock
                 Query = query.Split('&').Aggregate(
                     new Dictionary<string, WireMockList<string>>(),
                     (dict, term) =>
+                    {
+                        var parts = term.Split('=');
+                        var key = parts[0];
+                        if (!dict.ContainsKey(key))
                         {
-                            var key = term.Split('=')[0];
-                            if (!dict.ContainsKey(key))
-                            {
-                                dict.Add(key, new WireMockList<string>());
-                            }
+                            dict.Add(key, new WireMockList<string>());
+                        }
 
-                            dict[key].Add(term.Split('=')[1]);
-                            return dict;
-                        });
+                        if (parts.Length == 2)
+                            dict[key].Add(parts[1]);
+
+                        return dict;
+                    });
             }
         }
 
@@ -105,7 +108,7 @@ namespace WireMock
         /// <returns>The query parameter.</returns>
         public List<string> GetParameter(string key)
         {
-            return Query.ContainsKey(key) ? Query[key] : new WireMockList<string>();
+            return Query.ContainsKey(key) ? Query[key] : null;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests
             _server.Given(Request.Create().WithUrl("/foo2").UsingGet())
                 .RespondWith(Response.Create().WithStatusCode(202).WithBody("2"));
 
-            var routes = _server.Routes;
+            var routes = _server.Mappings;
 
             Check.That(routes).HasSize(2);
             Check.That(routes.First().RequestMatcher).IsNotNull();

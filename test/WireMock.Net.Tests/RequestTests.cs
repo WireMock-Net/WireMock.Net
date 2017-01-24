@@ -41,6 +41,19 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void Should_specify_requests_matching_given_urlFuncs()
+        {
+            // given
+            var spec = Request.Create().WithUrl(url => url.EndsWith("/foo"));
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla");
+
+            // then
+            Check.That(spec.IsMatch(request)).IsTrue();
+        }
+
+        [Test]
         public void Should_specify_requests_matching_given_url_prefix()
         {
             // given
@@ -394,7 +407,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_params()
+        public void Should_specify_requests_matching_given_param()
         {
             // given
             var spec = Request.Create().WithPath("/foo").WithParam("bar", "1", "2");
@@ -409,7 +422,20 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_params_func()
+        public void Should_specify_requests_matching_given_paramNoValue()
+        {
+            // given
+            var spec = Request.Create().WithPath("/foo").WithParam("bar");
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar"), "PUT");
+
+            // then
+            Check.That(spec.IsMatch(request)).IsTrue();
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_param_func()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithParam(p => p.ContainsKey("bar"));

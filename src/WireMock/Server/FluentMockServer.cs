@@ -16,7 +16,7 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public class FluentMockServer
+    public partial class FluentMockServer
     {
         /// <summary>
         /// The _http server.
@@ -24,9 +24,9 @@ namespace WireMock.Server
         private readonly TinyHttpServer _httpServer;
 
         /// <summary>
-        /// The _routes.
+        /// The _mappings.
         /// </summary>
-        private readonly IList<Route> _routes = new List<Route>();
+        private readonly IList<Mapping> _mappings = new List<Mapping>();
 
         /// <summary>
         /// The _request logs.
@@ -75,13 +75,13 @@ namespace WireMock.Server
         /// <summary>
         /// Gets the routes.
         /// </summary>
-        public IEnumerable<Route> Routes
+        public IEnumerable<Mapping> Mappings
         {
             get
             {
-                lock (((ICollection)_routes).SyncRoot)
+                lock (((ICollection)_mappings).SyncRoot)
                 {
-                    return new ReadOnlyCollection<Route>(_routes);
+                    return new ReadOnlyCollection<Mapping>(_mappings);
                 }
             }
         }
@@ -89,15 +89,9 @@ namespace WireMock.Server
         /// <summary>
         /// Start this FluentMockServer.
         /// </summary>
-        /// <param name="port">
-        /// The port.
-        /// </param>
-        /// <param name="ssl">
-        /// The SSL support.
-        /// </param>
-        /// <returns>
-        /// The <see cref="FluentMockServer"/>.
-        /// </returns>
+        /// <param name="port">The port.</param>
+        /// <param name="ssl">The SSL support.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
         public static FluentMockServer Start(int port = 0, bool ssl = false)
         {
@@ -106,24 +100,37 @@ namespace WireMock.Server
             if (port == 0)
                 port = Ports.FindFreeTcpPort();
 
-            return new FluentMockServer(port, ssl);
+            return new FluentMockServer(false, port, ssl);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FluentMockServer"/> class, and starts the server.
+        /// Start this FluentMockServer with the admin interface.
         /// </summary>
-        /// <param name="port">
-        /// The port.
-        /// </param>
-        /// <param name="ssl">
-        /// The SSL support.
-        /// </param>
-        private FluentMockServer(int port, bool ssl)
+        /// <param name="port">The port.</param>
+        /// <param name="ssl">The SSL support.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
+        [PublicAPI]
+        public static FluentMockServer StartWithAdminInterface(int port = 0, bool ssl = false)
+        {
+            Check.Condition(port, p => p >= 0, nameof(port));
+
+            if (port == 0)
+                port = Ports.FindFreeTcpPort();
+
+            return new FluentMockServer(true, port, ssl);
+        }
+
+        private FluentMockServer(bool startAdmin, int port, bool ssl)
         {
             string protocol = ssl ? "https" : "http";
-            _httpServer = new TinyHttpServer(protocol + "://localhost:" + port + "/", HandleRequest);
+            _httpServer = new TinyHttpServer(protocol + "://localhost:" + port + "/", HandleRequestAsync);
             Port = port;
             _httpServer.Start();
+
+            if (startAdmin)
+            {
+                InitAdmin();
+            }
         }
 
         /// <summary>
@@ -144,9 +151,9 @@ namespace WireMock.Server
                 _requestLogs.Clear();
             }
 
-            lock (((ICollection)_routes).SyncRoot)
+            lock (((ICollection)_mappings).SyncRoot)
             {
-                _routes.Clear();
+                _mappings.Clear();
             }
         }
 
@@ -184,28 +191,24 @@ namespace WireMock.Server
         /// <summary>
         /// The given.
         /// </summary>
-        /// <param name="requestMatcher">
-        /// The request matcher.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IRespondWithAProvider"/>.
-        /// </returns>
+        /// <param name="requestMatcher">The request matcher.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
         {
-            return new RespondWithAProvider(RegisterRoute, requestMatcher);
+            return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }
 
         /// <summary>
-        /// The register route.
+        /// The register mapping.
         /// </summary>
-        /// <param name="route">
-        /// The route.
+        /// <param name="mapping">
+        /// The mapping.
         /// </param>
-        private void RegisterRoute(Route route)
+        private void RegisterMapping(Mapping mapping)
         {
-            lock (((ICollection)_routes).SyncRoot)
+            lock (((ICollection)_mappings).SyncRoot)
             {
-                _routes.Add(route);
+                _mappings.Add(mapping);
             }
         }
 
@@ -226,10 +229,8 @@ namespace WireMock.Server
         /// <summary>
         /// The handle request.
         /// </summary>
-        /// <param name="ctx">
-        /// The context.
-        /// </param>
-        private async void HandleRequest(HttpListenerContext ctx)
+        /// <param name="ctx">The HttpListenerContext.</param>
+        private async void HandleRequestAsync(HttpListenerContext ctx)
         {
             lock (_syncRoot)
             {
@@ -241,7 +242,7 @@ namespace WireMock.Server
 
             try
             {
-                var targetRoute = _routes.FirstOrDefault(route => route.IsRequestHandled(request));
+                var targetRoute = _mappings.FirstOrDefault(route => route.IsRequestHandled(request));
                 if (targetRoute == null)
                 {
                     ctx.Response.StatusCode = 404;

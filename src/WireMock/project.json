@@ -6,13 +6,14 @@
 
     "packOptions": {
         "summary": "Lightweigth Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
-        "tags": [ "system", "linq", "dynamic", "core" ],
+        "tags": [ "tdd", "mock", "http", "wiremock", "test" ],
         "owners": [ "Stef Heyenrath" ],
         "repository": {
             "type": "git",
             "url": "https://github.com/StefH/WireMock.Net"
         },
         "projectUrl": "https://github.com/StefH/WireMock.Net",
+        "iconUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png",
         "licenseUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE",
         "releaseNotes": "First version"
     },

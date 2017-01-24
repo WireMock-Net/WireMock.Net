@@ -38,6 +38,15 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
+        /// Gets the pattern.
+        /// </summary>
+        /// <returns>Pattern</returns>
+        public string GetPattern()
+        {
+            return _pattern;
+        }
+
+        /// <summary>
         /// Copy/paste from http://www.codeproject.com/Tips/57304/Use-wildcard-characters-and-to-compare-strings
         /// </summary>
         private bool MatchWildcardString([NotNull] string pattern, string input)

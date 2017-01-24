@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -12,48 +14,39 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matcher.
         /// </summary>
-        private readonly string _path;
+        public IReadOnlyList<IMatcher> Matchers { get; }
 
         /// <summary>
-        /// The matcher.
+        /// The path functions
         /// </summary>
-        private readonly IMatcher _matcher;
-
-        /// <summary>
-        /// The path function
-        /// </summary>
-        private readonly Func<string, bool> _pathFunc;
+        private readonly Func<string, bool>[] _pathFuncs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
-        /// <param name="path">The path.</param>
-        public RequestMessagePathMatcher([NotNull] string path)
+        /// <param name="paths">The paths.</param>
+        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).ToArray())
         {
-            Check.NotNull(path, nameof(path));
-            _path = path;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        public RequestMessagePathMatcher([NotNull] IMatcher matcher)
+        /// <param name="matchers">The matchers.</param>
+        public RequestMessagePathMatcher([NotNull] params IMatcher[] matchers)
         {
-            Check.NotNull(matcher, nameof(matcher));
-            _matcher = matcher;
+            Check.NotNull(matchers, nameof(matchers));
+            Matchers = matchers;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
-        /// <param name="func">
-        /// The path func.
-        /// </param>
-        public RequestMessagePathMatcher([NotNull] Func<string, bool> func)
+        /// <param name="funcs">The path functions.</param>
+        public RequestMessagePathMatcher([NotNull] params Func<string, bool>[] funcs)
         {
-            Check.NotNull(func, nameof(func));
-            _pathFunc = func;
+            Check.NotNull(funcs, nameof(funcs));
+            _pathFuncs = funcs;
         }
 
         /// <summary>
@@ -65,14 +58,11 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_path != null)
-                return string.CompareOrdinal(_path, requestMessage.Path) == 0;
+            if (Matchers != null)
+                return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Path));
 
-            if (_matcher != null)
-                return _matcher.IsMatch(requestMessage.Path);
-
-            if (_pathFunc != null)
-                return _pathFunc(requestMessage.Path);
+            if (_pathFuncs != null)
+                return _pathFuncs.Any(func => func(requestMessage.Path));
 
             return false;
         }

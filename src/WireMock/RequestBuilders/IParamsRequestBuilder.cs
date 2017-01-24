@@ -28,12 +28,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with parameters.
         /// </summary>
-        /// <param name="func">
-        /// The func.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithParam([NotNull] Func<IDictionary<string, WireMockList<string>>, bool> func);
+        /// <param name="funcs">The funcs.</param>
+        /// <returns>The <see cref="IRequestMatcher"/>.</returns>
+        IRequestMatcher WithParam([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs);
     }
 }

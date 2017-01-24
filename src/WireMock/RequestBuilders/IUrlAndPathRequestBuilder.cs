@@ -12,37 +12,37 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="matcher">The matcher.</param>
+        /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        IUrlAndPathRequestBuilder WithUrl([NotNull] IMatcher matcher);
+        IUrlAndPathRequestBuilder WithUrl([NotNull] params IMatcher[] matchers);
 
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="url">The url.</param>
+        /// <param name="urls">The urls.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        IUrlAndPathRequestBuilder WithUrl([NotNull] params string[] url);
+        IUrlAndPathRequestBuilder WithUrl([NotNull] params string[] urls);
 
         /// <summary>
         /// The with url.
         /// </summary>
-        /// <param name="func">The url func.</param>
+        /// <param name="funcs">The url funcs.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        IUrlAndPathRequestBuilder WithUrl([NotNull] params Func<string, bool>[] func);
+        IUrlAndPathRequestBuilder WithUrl([NotNull] params Func<string, bool>[] funcs);
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="matcher">The matcher.</param>
+        /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        IUrlAndPathRequestBuilder WithPath([NotNull] IMatcher matcher);
+        IUrlAndPathRequestBuilder WithPath([NotNull] params IMatcher[] matchers);
 
         /// <summary>
         /// The with path.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="paths">The paths.</param>
         /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        IUrlAndPathRequestBuilder WithPath([NotNull] params string[] path);
+        IUrlAndPathRequestBuilder WithPath([NotNull] params string[] paths);
 
         /// <summary>
         /// The with path.

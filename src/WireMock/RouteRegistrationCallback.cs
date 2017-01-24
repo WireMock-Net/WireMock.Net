@@ -3,8 +3,8 @@
     /// <summary>
     /// The registration callback.
     /// </summary>
-    /// <param name="route">
+    /// <param name="mapping">
     /// The route.
     /// </param>
-    public delegate void RegistrationCallback(Route route);
+    public delegate void RegistrationCallback(Mapping mapping);
 }

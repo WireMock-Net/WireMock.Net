@@ -12,12 +12,10 @@ namespace WireMock.Net.Tests
         public void Should_handle_empty_query()
         {
             // given
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST");
 
             // then
-            Check.That(request.GetParameter("foo")).IsEmpty();
+            Check.That(request.GetParameter("not_there")).IsNull();
         }
 
         [Test]

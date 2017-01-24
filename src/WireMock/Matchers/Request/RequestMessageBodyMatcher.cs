@@ -20,11 +20,6 @@ namespace WireMock.Matchers.Request
         private readonly byte[] _bodyData;
 
         /// <summary>
-        /// The matcher.
-        /// </summary>
-        private readonly IMatcher _matcher;
-
-        /// <summary>
         /// The body function
         /// </summary>
         private readonly Func<string, bool> _bodyFunc;
@@ -33,6 +28,11 @@ namespace WireMock.Matchers.Request
         /// The body data function
         /// </summary>
         private readonly Func<byte[], bool> _bodyDataFunc;
+
+        /// <summary>
+        /// The matcher.
+        /// </summary>
+        public readonly IMatcher Matcher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
@@ -91,7 +91,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageBodyMatcher([NotNull] IMatcher matcher)
         {
             Check.NotNull(matcher, nameof(matcher));
-            _matcher = matcher;
+            Matcher = matcher;
         }
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_matcher != null)
-                return _matcher.IsMatch(requestMessage.Body);
+            if (Matcher != null)
+                return Matcher.IsMatch(requestMessage.Body);
 
             if (_body != null)
                 return requestMessage.Body == _body;

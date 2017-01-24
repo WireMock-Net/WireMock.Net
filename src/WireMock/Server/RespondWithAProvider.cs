@@ -15,21 +15,17 @@ namespace WireMock.Server
         /// <summary>
         /// The _request matcher.
         /// </summary>
-        private readonly IRequestMatcher _requestSpec;
+        private readonly IRequestMatcher _requestMatcher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
         /// </summary>
-        /// <param name="registrationCallback">
-        /// The registration callback.
-        /// </param>
-        /// <param name="requestSpec">
-        /// The request matcher.
-        /// </param>
-        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestSpec)
+        /// <param name="registrationCallback">The registration callback.</param>
+        /// <param name="requestMatcher">The request matcher.</param>
+        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher)
         {
             _registrationCallback = registrationCallback;
-            _requestSpec = requestSpec;
+            _requestMatcher = requestMatcher;
         }
 
         /// <summary>
@@ -38,9 +34,9 @@ namespace WireMock.Server
         /// <param name="provider">
         /// The provider.
         /// </param>
-        public void RespondWith(IProvideResponses provider)
+        public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Route(_requestSpec, provider));
+            _registrationCallback(new Mapping(_requestMatcher, provider));
         }
     }
 }

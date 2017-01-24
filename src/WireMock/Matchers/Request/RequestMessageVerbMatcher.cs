@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -9,20 +10,20 @@ namespace WireMock.Matchers.Request
     internal class RequestMessageVerbMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The _verb.
+        /// The verbs
         /// </summary>
-        private readonly string _verb;
+        public string[] Verbs { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageVerbMatcher"/> class.
         /// </summary>
-        /// <param name="verb">
+        /// <param name="verbs">
         /// The verb.
         /// </param>
-        public RequestMessageVerbMatcher([NotNull] string verb)
+        public RequestMessageVerbMatcher([NotNull] params string[] verbs)
         {
-            Check.NotNull(verb, nameof(verb));
-            _verb = verb.ToLower();
+            Check.NotNull(verbs, nameof(verbs));
+            Verbs = verbs.Select(v => v.ToLower()).ToArray();
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return requestMessage.Verb == _verb;
+            return Verbs.Contains(requestMessage.Verb);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -10,20 +11,20 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageHeaderMatcher : IRequestMatcher
     {
-        /// <summary>
-        /// The name.
-        /// </summary>
-        private readonly string _name;
+        private readonly Func<IDictionary<string, string>, bool>[] _headerFuncs;
 
         /// <summary>
-        /// The matcher.
+        /// The name
         /// </summary>
-        private readonly IMatcher _matcher;
+        public string Name { get; }
 
         /// <summary>
-        /// The header function
+        /// Gets the matchers.
         /// </summary>
-        private readonly Func<IDictionary<string, string>, bool> _headerFunc;
+        /// <value>
+        /// The matchers.
+        /// </value>
+        public IMatcher[] Matchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
@@ -36,20 +37,18 @@ namespace WireMock.Matchers.Request
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
-            _name = name;
-            _matcher = new WildcardMatcher(pattern, ignoreCase);
+            Name = name;
+            Matchers = new IMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
-        /// <param name="func">
-        /// The func.
-        /// </param>
-        public RequestMessageHeaderMatcher([NotNull] Func<IDictionary<string, string>, bool> func)
+        /// <param name="funcs">The funcs.</param>
+        public RequestMessageHeaderMatcher([NotNull] params Func<IDictionary<string, string>, bool>[] funcs)
         {
-            Check.NotNull(func, nameof(func));
-            _headerFunc = func;
+            Check.NotNull(funcs, nameof(funcs));
+            _headerFuncs = funcs;
         }
 
         /// <summary>
@@ -61,14 +60,14 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_headerFunc != null)
-                return _headerFunc(requestMessage.Headers);
+            if (_headerFuncs != null)
+                return _headerFuncs.Any(hf => hf(requestMessage.Headers));
 
             if (requestMessage.Headers == null)
                 return false;
 
-            string headerValue = requestMessage.Headers[_name];
-            return _matcher.IsMatch(headerValue);
+            string headerValue = requestMessage.Headers[Name];
+            return Matchers.Any(m => m.IsMatch(headerValue));
         }
     }
 }

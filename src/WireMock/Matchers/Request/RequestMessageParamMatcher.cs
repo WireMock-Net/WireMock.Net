@@ -12,17 +12,17 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageParamMatcher : IRequestMatcher
     {
-        /// <summary>
-        /// The _key.
-        /// </summary>
-        private readonly string _key;
+        private readonly Func<IDictionary<string, WireMockList<string>>, bool>[] _funcs;
 
         /// <summary>
-        /// The _values.
+        /// The key
         /// </summary>
-        private readonly IEnumerable<string> _values;
+        public string Key { get; }
 
-        private readonly Func<IDictionary<string, WireMockList<string>>, bool> _func;
+        /// <summary>
+        /// The values
+        /// </summary>
+        public IEnumerable<string> Values { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
@@ -38,20 +38,18 @@ namespace WireMock.Matchers.Request
             Check.NotNull(key, nameof(key));
             Check.NotNull(values, nameof(values));
 
-            _key = key;
-            _values = values;
+            Key = key;
+            Values = values;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
         /// </summary>
-        /// <param name="func">
-        /// The func.
-        /// </param>
-        public RequestMessageParamMatcher([NotNull] Func<IDictionary<string, WireMockList<string>>, bool> func)
+        /// <param name="funcs">The funcs.</param>
+        public RequestMessageParamMatcher([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
-            Check.NotNull(func, nameof(func));
-            _func = func;
+            Check.NotNull(funcs, nameof(funcs));
+            _funcs = funcs;
         }
 
         /// <summary>
@@ -63,12 +61,11 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_func != null)
-            {
-                return _func(requestMessage.Query);
-            }
+            if (_funcs != null)
+                return _funcs.Any(f => f(requestMessage.Query));
 
-            return requestMessage.GetParameter(_key).Intersect(_values).Count() == _values.Count();
+            var values = requestMessage.GetParameter(Key);
+            return values?.Intersect(Values).Count() == Values.Count();
         }
     }
 }

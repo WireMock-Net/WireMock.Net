@@ -21,6 +21,14 @@ namespace WireMock.Util
         /// Initializes a new instance of the <see cref="WireMockList{T}"/> class.
         /// </summary>
         /// <param name="collection">The collection whose elements are copied to the new list.</param>
+        public WireMockList(params T[] collection) : base(collection)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WireMockList{T}"/> class.
+        /// </summary>
+        /// <param name="collection">The collection whose elements are copied to the new list.</param>
         public WireMockList(IEnumerable<T> collection) : base(collection)
         {
         }
