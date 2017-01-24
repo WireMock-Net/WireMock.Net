@@ -55,7 +55,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WireMock.Net">
-      <HintPath>..\..\src\WireMock.Net\bin\$(Configuration)\net45\WireMock.dll</HintPath>
+      <HintPath>..\..\src\WireMock.Net\bin\$(Configuration)\net45\WireMock.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
