@@ -1,12 +1,12 @@
 {
     "version": "1.0.0.0",
     "title": "WireMock.Net",
-    "description": "Lightweigth Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
+    "description": "Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
     "authors": [ "Alexandre Victoor", "Stef Heyenrath" ],
 
     "packOptions": {
-        "summary": "Lightweigth Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
-        "tags": [ "tdd", "mock", "http", "wiremock", "test" ],
+        "summary": "Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
+        "tags": [ "tdd", "mock", "http", "wiremock", "test", "server", "unittest" ],
         "owners": [ "Stef Heyenrath" ],
         "repository": {
             "type": "git",
@@ -28,7 +28,7 @@
             "type": "build"
         },
         "Handlebars.Net": "1.8.0",
-        "Newtonsoft.Json": "9.0.1",
+        "Newtonsoft.Json": "6.0.8",
         "XPath2": "1.0.3.1"
     },
 

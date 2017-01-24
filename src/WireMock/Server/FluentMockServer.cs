@@ -247,7 +247,7 @@ namespace WireMock.Server
                 {
                     ctx.Response.StatusCode = 404;
 
-                    byte[] content = Encoding.UTF8.GetBytes("<html><body>Mock Server: page not found</body></html>");
+                    byte[] content = Encoding.UTF8.GetBytes("No mapping found");
                     ctx.Response.OutputStream.Write(content, 0, content.Length);
                 }
                 else
