@@ -1,3 +1,3 @@
 dotnet restore
-dotnet pack -c Release WireMock\project.json
+dotnet pack -c Release WireMock.Net\project.json
 pause
