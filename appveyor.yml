@@ -23,13 +23,13 @@ before_build:
 - nuget restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -PackagesDirectory packages
 
 build_script:
-- appveyor-retry dotnet restore .\src\WireMock -v Minimal
+- appveyor-retry dotnet restore .\src\WireMock.Net -v Minimal
 
-- dotnet build .\src\WireMock\project.json -c %CONFIGURATION%
+- dotnet build .\src\WireMock.Net\project.json -c %CONFIGURATION%
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 - cmd: msbuild .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 
-- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock\project.json
+- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock.Net\project.json
 
 artifacts:
 - path: artifacts\**\*.*
