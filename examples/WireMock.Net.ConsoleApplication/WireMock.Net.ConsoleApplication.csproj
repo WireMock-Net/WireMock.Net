@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="WireMock">
+    <Reference Include="WireMock.Net">
       <HintPath>..\..\src\WireMock.Net\bin\$(Configuration)\net45\WireMock.dll</HintPath>
     </Reference>
   </ItemGroup>
