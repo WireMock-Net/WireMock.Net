@@ -7,16 +7,16 @@ A C# .NET version based on https://github.com/alexvictoor/WireMock which tries t
 
 Based on class HttpListener from the .net framework, it is very lightweight and have no external dependencies. 
 
-## Start a server
+## Stubbing
+A core feature of WireMock is the ability to return canned HTTP responses for requests matching criteria.
+
+### Start a server
 First thing first, to start a server it is as easy as calling a static method, and your done!
 ```csharp
 var server = FluentMockServer.Start();
 ```
 You can pass as an argument a port number but if you do not an available port will be chosen for you. Hence the above line of code start aserver bounded to locahost a random port.
 To know on which port your server is listening, just use server property *Port*.
-
-## Stubbing
-A core feature of WireMock is the ability to return canned HTTP responses for requests matching criteria.
 
 ### Basic stubbing
 The following code will configure a response with a status of 200 to be returned when the relative URL exactly matches /some/thing (including query parameters). The body of the response will be “Hello world!” and a Content-Type header will be sent with a value of text-plain.
@@ -192,7 +192,6 @@ The WireMock server can be reset at any time, removing all stub mappings and del
 All stub mappings can be fetched in C# by calling `server.ListAllStubMappings()`.
 
 ## WireMock with your favourite test framework
-
 Obviously you can use your favourite test framework and use WireMock within your tests. In order to avoid flaky tests you should:
   - let WireMock choose dynamicaly ports. It might seem common sens, avoid hard coded ports in your tests!
   - clean up the request log or shutdown the server at the end of each test
@@ -236,8 +235,6 @@ public void ShutdownServer()
     _server.Stop();
 }
 ```
-  
-
 
 ## WireMock as a standalone process
 This is quite straight forward to launch a mock server within a console application. Below a simple "main" method that takes as a parameter from the commandline a port number and then start a mock server that will respond "Hello World" on every request:
@@ -299,13 +296,32 @@ static void Main(string[] args)
 }
 ```
 
-## SSL
+### SSL
 You can start a standalone mock server listening for HTTPS requests. To do so, there is just a flag to set when creating the server:
 ```csharp
 var server = FluentMockServer.Start(port: 8443, ssl: true);
 ```
 Obviously you need a certificate registered on your box, properly associated with your application and the port number that will be used. This is not really specific to WireMock, not very straightforward and hence the following stackoverflow thread might come handy: [Httplistener with https support](http://stackoverflow.com/questions/11403333/httplistener-with-https-support)
 
-## Simulating faults
+## Admin API Reference
+The WireMock admin API provides functionality to define the mappings via a http interface. The following interfaces are supported:
 
+### /__admin/mappings
+The mappings defined in the mock service.
+* `GET    /__admin/mappings` --> Gets all defined mappings.
+* `DELETE /__admin/mappings` --> TODO
+* `POST   /__admin/mappings` --> TODO
+* `DELETE /__admin/mappings` --> TODO
+
+### /__admin/requests
+Logged requests and responses received by the mock service.
+* `GET /__admin/requests` --> TODO
+* `GET /__admin/requests/{requestId}` --> TODO
+* `POST /__admin/requests/reset` --> TODO
+* `POST /__admin/requests/count` --> TODO
+* `POST /__admin/requests/find` --> TODO
+* `GET /__admin/requests/unmatched` --> TODO
+* `GET /__admin/requests/unmatched/near-misses` --> TODO
+
+## Simulating faults
 Currently not done - need to get rid of HttpListener and use lower level TcpListener in order to be able to implement this properly
