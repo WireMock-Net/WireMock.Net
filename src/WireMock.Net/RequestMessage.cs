@@ -18,14 +18,19 @@ namespace WireMock
         public string Url { get; private set; }
 
         /// <summary>
+        /// Gets the DateTime.
+        /// </summary>
+        public DateTime DateTime { get; set; }
+
+        /// <summary>
         /// Gets the path.
         /// </summary>
         public string Path { get; }
 
         /// <summary>
-        /// Gets the verb.
+        /// Gets the method.
         /// </summary>
-        public string Verb { get; }
+        public string Method { get; }
 
         /// <summary>
         /// Gets the headers.
@@ -68,7 +73,7 @@ namespace WireMock
 
             Url = url.ToString();
             Path = url.AbsolutePath;
-            Verb = verb.ToLower();
+            Method = verb.ToLower();
             BodyAsBytes = bodyAsBytes;
             Body = body;
             Headers = headers;

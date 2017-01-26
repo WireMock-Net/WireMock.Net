@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WireMock.Admin
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// MappingModel

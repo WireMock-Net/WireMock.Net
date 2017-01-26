@@ -20,6 +20,11 @@ namespace WireMock
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
+        public string BodyOriginal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
         public string Body { get; set; }
 
         /// <summary>

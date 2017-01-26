@@ -3,9 +3,9 @@
 namespace WireMock.RequestBuilders
 {
     /// <summary>
-    /// The VerbRequestBuilder interface.
+    /// The MethodRequestBuilder interface.
     /// </summary>
-    public interface IVerbRequestBuilder : IHeadersAndCookiesRequestBuilder
+    public interface IMethodRequestBuilder : IHeadersAndCookiesRequestBuilder
     {
         /// <summary>
         /// The using get.

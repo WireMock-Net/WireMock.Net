@@ -127,7 +127,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingGet()
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher("get"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
             return this;
         }
 
@@ -139,7 +139,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingPost()
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher("post"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
             return this;
         }
 
@@ -151,7 +151,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingPut()
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher("put"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
             return this;
         }
 
@@ -163,7 +163,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingDelete()
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher("delete"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher("delete"));
             return this;
         }
 
@@ -175,7 +175,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingHead()
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher("head"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher("head"));
             return this;
         }
 
@@ -187,7 +187,7 @@ namespace WireMock.RequestBuilders
         /// </returns>
         public IHeadersAndCookiesRequestBuilder UsingAnyVerb()
         {
-            var matchers = _requestMatchers.Where(m => m is RequestMessageVerbMatcher).ToList();
+            var matchers = _requestMatchers.Where(m => m is RequestMessageMethodMatcher).ToList();
             foreach (var matcher in matchers)
             {
                 _requestMatchers.Remove(matcher);
@@ -203,7 +203,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
         public IHeadersAndCookiesRequestBuilder UsingVerb(params string[] verbs)
         {
-            _requestMatchers.Add(new RequestMessageVerbMatcher(verbs));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(verbs));
             return this;
         }
 

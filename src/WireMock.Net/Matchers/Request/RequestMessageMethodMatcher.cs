@@ -7,23 +7,23 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// The request verb matcher.
     /// </summary>
-    internal class RequestMessageVerbMatcher : IRequestMatcher
+    internal class RequestMessageMethodMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The verbs
+        /// The methods
         /// </summary>
-        public string[] Verbs { get; }
+        public string[] Methods { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageVerbMatcher"/> class.
+        /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
         /// </summary>
-        /// <param name="verbs">
+        /// <param name="methods">
         /// The verb.
         /// </param>
-        public RequestMessageVerbMatcher([NotNull] params string[] verbs)
+        public RequestMessageMethodMatcher([NotNull] params string[] methods)
         {
-            Check.NotNull(verbs, nameof(verbs));
-            Verbs = verbs.Select(v => v.ToLower()).ToArray();
+            Check.NotNull(methods, nameof(methods));
+            Methods = methods.Select(v => v.ToLower()).ToArray();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            return Verbs.Contains(requestMessage.Verb);
+            return Methods.Contains(requestMessage.Method);
         }
     }
 }

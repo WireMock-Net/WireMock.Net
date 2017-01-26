@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin
+﻿namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// MatcherModel

@@ -97,10 +97,10 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
 
             // then
-            Check.That(_server.RequestLogs).HasSize(1);
-            var requestLogged = _server.RequestLogs.First();
-            Check.That(requestLogged.Verb).IsEqualTo("get");
-            Check.That(requestLogged.BodyAsBytes).IsNull();
+            Check.That(_server.LogEntries).HasSize(1);
+            var requestLogged = _server.LogEntries.First();
+            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
+            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
 
         [Test]
@@ -118,8 +118,8 @@ namespace WireMock.Net.Tests
             Check.That(result).HasSize(1);
 
             var requestLogged = result.First();
-            Check.That(requestLogged.Path).IsEqualTo("/bar");
-            Check.That(requestLogged.Url).IsEqualTo("http://localhost:" + _server.Port + "/bar");
+            Check.That(requestLogged.RequestMessage.Path).IsEqualTo("/bar");
+            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Port + "/bar");
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace WireMock.Net.Tests
             _server.Reset();
 
             // then
-            Check.That(_server.RequestLogs).IsEmpty();
+            Check.That(_server.LogEntries).IsEmpty();
         }
 
         [Test]

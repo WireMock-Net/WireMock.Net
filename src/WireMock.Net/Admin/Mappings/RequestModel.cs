@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WireMock.Admin
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// RequestModel
@@ -16,9 +16,9 @@ namespace WireMock.Admin
         public UrlModel Url { get; set; }
 
         /// <summary>
-        /// The verbs
+        /// The methods
         /// </summary>
-        public string[] Verbs { get; set; }
+        public string[] Methods { get; set; }
 
         /// <summary>
         /// Gets or sets the Headers.

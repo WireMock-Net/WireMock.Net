@@ -82,7 +82,7 @@ namespace WireMock.Net.ConsoleApplication
             Console.ReadKey();
 
             Console.WriteLine("Displaying all requests");
-            var allRequests = server.RequestLogs;
+            var allRequests = server.LogEntries;
             Console.WriteLine(JsonConvert.SerializeObject(allRequests, Formatting.Indented));
 
             Console.WriteLine("Press any key to quit");

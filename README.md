@@ -315,7 +315,7 @@ The mappings defined in the mock service.
 
 ### /__admin/requests
 Logged requests and responses received by the mock service.
-* `GET /__admin/requests` --> TODO
+* `GET /__admin/requests` --> Get received requests
 * `GET /__admin/requests/{requestId}` --> TODO
 * `POST /__admin/requests/reset` --> TODO
 * `POST /__admin/requests/count` --> TODO

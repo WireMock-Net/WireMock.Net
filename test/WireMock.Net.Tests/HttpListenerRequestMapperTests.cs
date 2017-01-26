@@ -46,7 +46,7 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Verb).IsEqualTo("put");
+            Check.That(MapperServer.LastRequestMessage.Method).IsEqualTo("put");
         }
 
         [Test]

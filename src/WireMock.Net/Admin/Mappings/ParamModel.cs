@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace WireMock.Admin
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
-    /// Header Model
+    /// Param Model
     /// </summary>
-    public class HeaderModel
+    public class ParamModel
     {
         /// <summary>
         /// Gets or sets the name.
@@ -16,11 +16,11 @@ namespace WireMock.Admin
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the matchers.
+        /// Gets or sets the values.
         /// </summary>
         /// <value>
-        /// The matchers.
+        /// The values.
         /// </value>
-        public IList<MatcherModel> Matchers { get; set; }
+        public IList<string> Values { get; set; }
     }
 }

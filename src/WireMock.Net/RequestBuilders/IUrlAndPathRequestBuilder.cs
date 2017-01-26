@@ -7,7 +7,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// IUrlAndPathRequestBuilder
     /// </summary>
-    public interface IUrlAndPathRequestBuilder : IVerbRequestBuilder
+    public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     {
         /// <summary>
         /// The with url.

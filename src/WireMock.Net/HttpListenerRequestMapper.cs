@@ -28,7 +28,9 @@ namespace WireMock
             foreach (Cookie cookie in listenerRequest.Cookies)
                 cookies.Add(cookie.Name, cookie.Value);
 
-            return new RequestMessage(url, verb, body, bodyAsString, headers, cookies);
+            var message = new RequestMessage(url, verb, body, bodyAsString, headers, cookies) { DateTime = DateTime.Now };
+
+            return message;
         }
 
         /// <summary>

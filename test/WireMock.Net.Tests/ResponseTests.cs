@@ -20,7 +20,7 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
 
             var response = Response.Create()
-                .WithBody("test {{request.url}} {{request.path}} {{request.verb}}")
+                .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
                 .WithTransformer();
             
             // act

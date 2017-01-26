@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Http;
+using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.Validation;
 
@@ -18,39 +18,18 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
-        /// <summary>
-        /// The _http server.
-        /// </summary>
         private readonly TinyHttpServer _httpServer;
 
-        /// <summary>
-        /// The _mappings.
-        /// </summary>
         private readonly IList<Mapping> _mappings = new List<Mapping>();
 
-        /// <summary>
-        /// The _request logs.
-        /// </summary>
-        private readonly IList<RequestMessage> _requestLogs = new List<RequestMessage>();
+        private readonly IList<LogEntry> _logEntries = new List<LogEntry>();
 
-        /// <summary>
-        /// The _request mapper.
-        /// </summary>
         private readonly HttpListenerRequestMapper _requestMapper = new HttpListenerRequestMapper();
 
-        /// <summary>
-        /// The _response mapper.
-        /// </summary>
         private readonly HttpListenerResponseMapper _responseMapper = new HttpListenerResponseMapper();
 
-        /// <summary>
-        /// The _sync root.
-        /// </summary>
         private readonly object _syncRoot = new object();
 
-        /// <summary>
-        /// The _request processing delay.
-        /// </summary>
         private TimeSpan _requestProcessingDelay = TimeSpan.Zero;
 
         /// <summary>
@@ -61,19 +40,19 @@ namespace WireMock.Server
         /// <summary>
         /// Gets the request logs.
         /// </summary>
-        public IEnumerable<RequestMessage> RequestLogs
+        public IEnumerable<LogEntry> LogEntries
         {
             get
             {
-                lock (((ICollection)_requestLogs).SyncRoot)
+                lock (((ICollection)_logEntries).SyncRoot)
                 {
-                    return new ReadOnlyCollection<RequestMessage>(_requestLogs);
+                    return new ReadOnlyCollection<LogEntry>(_logEntries);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the routes.
+        /// Gets the mappings.
         /// </summary>
         public IEnumerable<Mapping> Mappings
         {
@@ -146,9 +125,9 @@ namespace WireMock.Server
         /// </summary>
         public void Reset()
         {
-            lock (((ICollection)_requestLogs).SyncRoot)
+            lock (((ICollection)_logEntries).SyncRoot)
             {
-                _requestLogs.Clear();
+                _logEntries.Clear();
             }
 
             lock (((ICollection)_mappings).SyncRoot)
@@ -160,17 +139,13 @@ namespace WireMock.Server
         /// <summary>
         /// The search logs for.
         /// </summary>
-        /// <param name="spec">
-        /// The matcher.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IEnumerable"/>.
-        /// </returns>
-        public IEnumerable<RequestMessage> SearchLogsFor(IRequestMatcher spec)
+        /// <param name="matcher">The matcher.</param>
+        /// <returns>The <see cref="IEnumerable"/>.</returns>
+        public IEnumerable<LogEntry> SearchLogsFor(IRequestMatcher matcher)
         {
-            lock (((ICollection)_requestLogs).SyncRoot)
+            lock (((ICollection)_logEntries).SyncRoot)
             {
-                return _requestLogs.Where(spec.IsMatch);
+                return _logEntries.Where(log => matcher.IsMatch(log.RequestMessage));
             }
         }
 
@@ -215,14 +190,12 @@ namespace WireMock.Server
         /// <summary>
         /// The log request.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
-        private void LogRequest(RequestMessage requestMessage)
+        /// <param name="entry">The request.</param>
+        private void LogRequest(LogEntry entry)
         {
-            lock (((ICollection)_requestLogs).SyncRoot)
+            lock (((ICollection)_logEntries).SyncRoot)
             {
-                _requestLogs.Add(requestMessage);
+                _logEntries.Add(entry);
             }
         }
 
@@ -238,33 +211,44 @@ namespace WireMock.Server
             }
 
             var request = _requestMapper.Map(ctx.Request);
-            LogRequest(request);
+
+            ResponseMessage response = null;
 
             try
             {
                 var targetRoute = _mappings.FirstOrDefault(route => route.IsRequestHandled(request));
                 if (targetRoute == null)
                 {
-                    ctx.Response.StatusCode = 404;
-
-                    byte[] content = Encoding.UTF8.GetBytes("No mapping found");
-                    ctx.Response.OutputStream.Write(content, 0, content.Length);
+                    response = new ResponseMessage
+                    {
+                        StatusCode = 404,
+                        Body = "No mapping found"
+                    };
                 }
                 else
                 {
-                    var response = await targetRoute.ResponseTo(request);
-                    _responseMapper.Map(response, ctx.Response);
+                    response = await targetRoute.ResponseTo(request);
                 }
             }
             catch (Exception ex)
             {
-                ctx.Response.StatusCode = 500;
-
-                byte[] content = Encoding.UTF8.GetBytes(ex.ToString());
-                ctx.Response.OutputStream.Write(content, 0, content.Length);
+                response = new ResponseMessage
+                {
+                    StatusCode = 500,
+                    Body = ex.ToString()
+                };
             }
             finally
             {
+                var log = new LogEntry
+                {
+                    RequestMessage = request,
+                    ResponseMessage = response
+                };
+
+                LogRequest(log);
+
+                _responseMapper.Map(response, ctx.Response);
                 ctx.Response.Close();
             }
         }

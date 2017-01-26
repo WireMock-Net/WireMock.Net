@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using WireMock.Admin;
+using WireMock.Admin.Mappings;
+using WireMock.Admin.Requests;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -19,6 +20,42 @@ namespace WireMock.Server
         private void InitAdmin()
         {
             Given(Request.Create().WithUrl("/__admin/mappings").UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
+
+            Given(Request.Create().WithUrl("/__admin/requests").UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
+        }
+
+        private ResponseMessage RequestsGet()
+        {
+            var result = new List<LogEntryModel>();
+            foreach (var logEntry in LogEntries.Where(r => !r.RequestMessage.Path.StartsWith("/__admin/")))
+            {
+                var model = new LogEntryModel
+                {
+                    Request = new LogRequestModel
+                    {
+                        Guid = Guid.NewGuid(),
+                        DateTime = logEntry.RequestMessage.DateTime,
+                        Url = logEntry.RequestMessage.Path,
+                        AbsoleteUrl = logEntry.RequestMessage.Url,
+                        Query = logEntry.RequestMessage.Query,
+                        Method = logEntry.RequestMessage.Method,
+                        Body = logEntry.RequestMessage.Body,
+                        Headers = logEntry.RequestMessage.Headers,
+                        Cookies = logEntry.RequestMessage.Cookies
+                    },
+                    Response = new LogResponseModel
+                    {
+                        StatusCode = logEntry.ResponseMessage.StatusCode,
+                        Body = logEntry.ResponseMessage.Body,
+                        BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
+                        Headers = logEntry.ResponseMessage.Headers
+                    }
+                };
+
+                result.Add(model);
+            }
+
+            return ToJson(result);
         }
 
         private ResponseMessage MappingsGet()
@@ -32,7 +69,7 @@ namespace WireMock.Server
                 var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
                 var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
                 var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-                var verbMatcher = request.GetRequestMessageMatcher<RequestMessageVerbMatcher>();
+                var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
 
                 var response = (Response) mapping.Provider;
 
@@ -45,7 +82,7 @@ namespace WireMock.Server
                         {
                             Matchers = urlMatchers != null ? Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)) : null
                         },
-                        Verbs = verbMatcher != null ? verbMatcher.Verbs : new [] { "any" },
+                        Methods = methodMatcher != null ? methodMatcher.Methods : new [] { "any" },
                         Headers = headerMatchers?.Select(hm => new HeaderModel
                         {
                             Name = hm.Name,

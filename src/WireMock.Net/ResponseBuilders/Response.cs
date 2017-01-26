@@ -185,7 +185,7 @@ namespace WireMock.ResponseBuilders
             ResponseMessage responseMessage;
             if (_useTransformer)
             {
-                responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode };
+                responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode, BodyOriginal = ResponseMessage.Body };
 
                 var template = new { request = requestMessage };
 
