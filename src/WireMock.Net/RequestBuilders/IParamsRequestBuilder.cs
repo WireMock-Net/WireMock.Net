@@ -20,16 +20,14 @@ namespace WireMock.RequestBuilders
         /// <param name="values">
         /// The values.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithParam([NotNull] string key, params string[] values);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithParam([NotNull] string key, params string[] values);
 
         /// <summary>
         /// The with parameters.
         /// </summary>
         /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestMatcher"/>.</returns>
-        IRequestMatcher WithParam([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithParam([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs);
     }
 }

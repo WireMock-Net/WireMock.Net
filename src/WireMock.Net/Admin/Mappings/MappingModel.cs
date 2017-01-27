@@ -13,7 +13,7 @@ namespace WireMock.Admin.Mappings
         /// <value>
         /// The unique identifier.
         /// </value>
-        public Guid Guid { get; set; }
+        public Guid? Guid { get; set; }
 
         /// <summary>
         /// Gets or sets the request.

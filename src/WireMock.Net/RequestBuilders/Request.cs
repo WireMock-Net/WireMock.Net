@@ -57,8 +57,8 @@ namespace WireMock.RequestBuilders
         /// The with url.
         /// </summary>
         /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithUrl(params IMatcher[] matchers)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithUrl(params IMatcher[] matchers)
         {
             _requestMatchers.Add(new RequestMessageUrlMatcher(matchers));
             return this;
@@ -68,8 +68,8 @@ namespace WireMock.RequestBuilders
         /// The with url.
         /// </summary>
         /// <param name="urls">The urls.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithUrl(params string[] urls)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithUrl(params string[] urls)
         {
             _requestMatchers.Add(new RequestMessageUrlMatcher(urls));
             return this;
@@ -79,8 +79,8 @@ namespace WireMock.RequestBuilders
         /// The with url.
         /// </summary>
         /// <param name="funcs">The url func.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithUrl(params Func<string, bool>[] funcs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessageUrlMatcher(funcs));
             return this;
@@ -90,8 +90,8 @@ namespace WireMock.RequestBuilders
         /// The with url.
         /// </summary>
         /// <param name="matcher">The matcher.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithPath(params IMatcher[] matcher)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithPath(params IMatcher[] matcher)
         {
             _requestMatchers.Add(new RequestMessagePathMatcher(matcher));
             return this;
@@ -101,8 +101,8 @@ namespace WireMock.RequestBuilders
         /// The with path.
         /// </summary>
         /// <param name="paths">The path.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithPath(params string[] paths)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithPath(params string[] paths)
         {
             _requestMatchers.Add(new RequestMessagePathMatcher(paths));
             return this;
@@ -112,8 +112,8 @@ namespace WireMock.RequestBuilders
         /// The with path.
         /// </summary>
         /// <param name="funcs">The path func.</param>
-        /// <returns>The <see cref="IUrlAndPathRequestBuilder"/>.</returns>
-        public IUrlAndPathRequestBuilder WithPath(params Func<string, bool>[] funcs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
             return this;
@@ -123,9 +123,9 @@ namespace WireMock.RequestBuilders
         /// The using get.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingGet()
+        public IRequestBuilder UsingGet()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
             return this;
@@ -135,9 +135,9 @@ namespace WireMock.RequestBuilders
         /// The using post.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingPost()
+        public IRequestBuilder UsingPost()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
             return this;
@@ -147,9 +147,9 @@ namespace WireMock.RequestBuilders
         /// The using put.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingPut()
+        public IRequestBuilder UsingPut()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
             return this;
@@ -159,9 +159,9 @@ namespace WireMock.RequestBuilders
         /// The using delete.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingDelete()
+        public IRequestBuilder UsingDelete()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("delete"));
             return this;
@@ -170,10 +170,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The using head.
         /// </summary>
-        /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
-        /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingHead()
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder UsingHead()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("head"));
             return this;
@@ -183,9 +181,9 @@ namespace WireMock.RequestBuilders
         /// The using any verb.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        public IHeadersAndCookiesRequestBuilder UsingAnyVerb()
+        public IRequestBuilder UsingAnyVerb()
         {
             var matchers = _requestMatchers.Where(m => m is RequestMessageMethodMatcher).ToList();
             foreach (var matcher in matchers)
@@ -200,8 +198,8 @@ namespace WireMock.RequestBuilders
         /// The using verb.
         /// </summary>
         /// <param name="verbs">The verbs.</param>
-        /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
-        public IHeadersAndCookiesRequestBuilder UsingVerb(params string[] verbs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder UsingVerb(params string[] verbs)
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher(verbs));
             return this;
@@ -213,10 +211,8 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        public IRequestMatcher WithBody(string body)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithBody(string body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
@@ -228,10 +224,8 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body as byte[].
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        public IRequestMatcher WithBody(byte[] body)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithBody(byte[] body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
@@ -243,10 +237,8 @@ namespace WireMock.RequestBuilders
         /// <param name="func">
         /// The body function.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        public IRequestMatcher WithBody(Func<string, bool> func)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithBody(Func<string, bool> func)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(func));
             return this;
@@ -258,10 +250,8 @@ namespace WireMock.RequestBuilders
         /// <param name="func">
         /// The body function.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        public IRequestMatcher WithBody(Func<byte[], bool> func)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithBody(Func<byte[], bool> func)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(func));
             return this;
@@ -271,10 +261,8 @@ namespace WireMock.RequestBuilders
         /// The with body.
         /// </summary>
         /// <param name="matcher">The matcher.</param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher" />.
-        /// </returns>
-        public IRequestMatcher WithBody(IMatcher matcher)
+        /// <returns>The <see cref="IRequestBuilder" />.</returns>
+        public IRequestBuilder WithBody(IMatcher matcher)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(matcher));
             return this;
@@ -289,12 +277,10 @@ namespace WireMock.RequestBuilders
         /// <param name="values">
         /// The values.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        public IRequestMatcher WithParam(string key, params string[] values)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithParam(string key, params string[] values)
         {
-            _requestMatchers.Add(new RequestMessageParamMatcher(key, values.ToList()));
+            _requestMatchers.Add(new RequestMessageParamMatcher(key, values));
             return this;
         }
 
@@ -302,8 +288,8 @@ namespace WireMock.RequestBuilders
         /// The with parameters.
         /// </summary>
         /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestMatcher"/>.</returns>
-        public IRequestMatcher WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
             return this;
@@ -315,8 +301,8 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns></returns>
-        public IHeadersAndCookiesRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
         {
             _requestMatchers.Add(new RequestMessageHeaderMatcher(name, pattern, ignoreCase));
             return this;
@@ -325,9 +311,21 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// With header.
         /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithHeader(string name, params IMatcher[] matchers)
+        {
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, matchers));
+            return this;
+        }
+
+        /// <summary>
+        /// With header.
+        /// </summary>
         /// <param name="funcs">The funcs.</param>
-        /// <returns></returns>
-        public IHeadersAndCookiesRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessageHeaderMatcher(funcs));
             return this;
@@ -339,10 +337,22 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns></returns>
-        public IHeadersAndCookiesRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true)
         {
             _requestMatchers.Add(new RequestMessageCookieMatcher(name, pattern, ignoreCase));
+            return this;
+        }
+
+        /// <summary>
+        /// With cookie.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithCookie(string name, params IMatcher[] matchers)
+        {
+            _requestMatchers.Add(new RequestMessageCookieMatcher(name, matchers));
             return this;
         }
 
@@ -350,8 +360,8 @@ namespace WireMock.RequestBuilders
         /// With header.
         /// </summary>
         /// <param name="funcs">The funcs.</param>
-        /// <returns></returns>
-        public IHeadersAndCookiesRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessageCookieMatcher(funcs));
             return this;

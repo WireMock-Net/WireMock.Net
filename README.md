@@ -5,7 +5,29 @@ A C# .NET version based on https://github.com/alexvictoor/WireMock which tries t
 
 [![Version](https://img.shields.io/nuget/v/WireMock.Net.svg)](https://www.nuget.org/packages/WireMock.Net)
 
-Based on class HttpListener from the .net framework, it is very lightweight and have no external dependencies. 
+Based on class HttpListener from the .net framework, it is very lightweight and have no external dependencies.
+ 
+## Admin API Reference
+The WireMock admin API provides functionality to define the mappings via a http interface. The following interfaces are supported:
+
+### /__admin/mappings
+The mappings defined in the mock service.
+* `GET    /__admin/mappings` --> Gets all defined mappings
+* `DELETE /__admin/mappings` --> Create a new stub mapping
+* `POST   /__admin/mappings` --> TODO
+* `DELETE /__admin/mappings` --> TODO
+
+### /__admin/requests
+Logged requests and responses received by the mock service.
+* `GET /__admin/requests` --> Get received requests
+* `GET /__admin/requests/{requestId}` --> TODO
+* `POST /__admin/requests/reset` --> TODO
+* `POST /__admin/requests/count` --> TODO
+* `POST /__admin/requests/find` --> TODO
+* `GET /__admin/requests/unmatched` --> TODO
+* `GET /__admin/requests/unmatched/near-misses` --> TODO
+
+
 
 ## Stubbing
 A core feature of WireMock is the ability to return canned HTTP responses for requests matching criteria.
@@ -302,26 +324,6 @@ You can start a standalone mock server listening for HTTPS requests. To do so, t
 var server = FluentMockServer.Start(port: 8443, ssl: true);
 ```
 Obviously you need a certificate registered on your box, properly associated with your application and the port number that will be used. This is not really specific to WireMock, not very straightforward and hence the following stackoverflow thread might come handy: [Httplistener with https support](http://stackoverflow.com/questions/11403333/httplistener-with-https-support)
-
-## Admin API Reference
-The WireMock admin API provides functionality to define the mappings via a http interface. The following interfaces are supported:
-
-### /__admin/mappings
-The mappings defined in the mock service.
-* `GET    /__admin/mappings` --> Gets all defined mappings.
-* `DELETE /__admin/mappings` --> TODO
-* `POST   /__admin/mappings` --> TODO
-* `DELETE /__admin/mappings` --> TODO
-
-### /__admin/requests
-Logged requests and responses received by the mock service.
-* `GET /__admin/requests` --> Get received requests
-* `GET /__admin/requests/{requestId}` --> TODO
-* `POST /__admin/requests/reset` --> TODO
-* `POST /__admin/requests/count` --> TODO
-* `POST /__admin/requests/find` --> TODO
-* `GET /__admin/requests/unmatched` --> TODO
-* `GET /__admin/requests/unmatched/near-misses` --> TODO
 
 ## Simulating faults
 Currently not done - need to get rid of HttpListener and use lower level TcpListener in order to be able to implement this properly

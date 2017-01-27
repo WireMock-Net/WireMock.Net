@@ -28,6 +28,7 @@ namespace WireMock.Net.ConsoleApplication
             // http://localhost:8080/gffgfgf/sddsds?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithUrl("/*").UsingGet().WithParam("start"))
+                .WithGuid(Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Validation;
 
 namespace WireMock.ResponseBuilders
@@ -15,7 +18,14 @@ namespace WireMock.ResponseBuilders
     public class Response : IResponseBuilder
     {
         private TimeSpan _delay = TimeSpan.Zero;
-        private bool _useTransformer;
+
+        /// <summary>
+        /// Gets a value indicating whether [use transformer].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use transformer]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseTransformer { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -64,9 +74,9 @@ namespace WireMock.ResponseBuilders
         /// The with status code.
         /// </summary>
         /// <param name="code">The code.</param>
-        /// <returns>A <see cref="IHeadersResponseBuilder"/>.</returns>\
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>\
         [PublicAPI]
-        public IHeadersResponseBuilder WithStatusCode(int code)
+        public IResponseBuilder WithStatusCode(int code)
         {
             ResponseMessage.StatusCode = code;
             return this;
@@ -76,9 +86,9 @@ namespace WireMock.ResponseBuilders
         /// The with status code.
         /// </summary>
         /// <param name="code">The code.</param>
-        /// <returns>A <see cref="IHeadersResponseBuilder"/>.</returns>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
-        public IHeadersResponseBuilder WithStatusCode(HttpStatusCode code)
+        public IResponseBuilder WithStatusCode(HttpStatusCode code)
         {
             return WithStatusCode((int)code);
         }
@@ -86,9 +96,9 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The with Success status code (200).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
-        public IHeadersResponseBuilder WithSuccess()
+        public IResponseBuilder WithSuccess()
         {
             return WithStatusCode((int)HttpStatusCode.OK);
         }
@@ -98,7 +108,7 @@ namespace WireMock.ResponseBuilders
         /// </summary>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
-        public IHeadersResponseBuilder WithNotFound()
+        public IResponseBuilder WithNotFound()
         {
             return WithStatusCode((int)HttpStatusCode.NotFound);
         }
@@ -108,8 +118,8 @@ namespace WireMock.ResponseBuilders
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
-        public IHeadersResponseBuilder WithHeader(string name, string value)
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithHeader(string name, string value)
         {
             Check.NotNull(name, nameof(name));
 
@@ -118,11 +128,22 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
+        /// The with headers.
+        /// </summary>
+        /// <param name="headers">The headers.</param>
+        /// <returns></returns>
+        public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
+        {
+            ResponseMessage.Headers = headers;
+            return this;
+        }
+
+        /// <summary>
         /// The with body.
         /// </summary>
         /// <param name="body">The body.</param>
-        /// <returns>A <see cref="ITransformResponseBuilder"/>.</returns>
-        public ITransformResponseBuilder WithBody(string body)
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithBody(string body)
         {
             Check.NotNull(body, nameof(body));
 
@@ -131,12 +152,25 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
+        /// The with body (AsJson object).
+        /// </summary>
+        /// <param name="body">The body.</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithBodyAsJson(object body)
+        {
+            Check.NotNull(body, nameof(body));
+
+            ResponseMessage.Body = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting =  Formatting.None, NullValueHandling = NullValueHandling.Ignore } );
+            return this;
+        }
+
+        /// <summary>
         /// The with body as base64.
         /// </summary>
         /// <param name="bodyAsbase64">The body asbase64.</param>
         /// <param name="encoding">The Encoding.</param>
-        /// <returns>A <see cref="ITransformResponseBuilder"/>.</returns>
-        public ITransformResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
@@ -150,9 +184,9 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        public IDelayResponseBuilder WithTransformer()
+        public IResponseBuilder WithTransformer()
         {
-            _useTransformer = true;
+            UseTransformer = true;
             return this;
         }
 
@@ -183,7 +217,7 @@ namespace WireMock.ResponseBuilders
         public async Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
         {
             ResponseMessage responseMessage;
-            if (_useTransformer)
+            if (UseTransformer)
             {
                 responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode, BodyOriginal = ResponseMessage.Body };
 

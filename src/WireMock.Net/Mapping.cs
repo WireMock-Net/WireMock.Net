@@ -1,13 +1,22 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using WireMock.Matchers.Request;
 
 namespace WireMock
 {
     /// <summary>
-    /// The route.
+    /// The Mapping.
     /// </summary>
     public class Mapping
     {
+        /// <summary>
+        /// Gets the unique identifier.
+        /// </summary>
+        /// <value>
+        /// The unique identifier.
+        /// </value>
+        public Guid Guid { get; }
+
         /// <summary>
         /// The Request matcher.
         /// </summary>
@@ -21,10 +30,12 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
+        /// <param name="guid">The the unique identifier.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
-        public Mapping(IRequestMatcher requestMatcher, IResponseProvider provider)
+        public Mapping(Guid guid, IRequestMatcher requestMatcher, IResponseProvider provider)
         {
+            Guid = guid;
             RequestMatcher = requestMatcher;
             Provider = provider;
         }

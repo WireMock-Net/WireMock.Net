@@ -167,8 +167,8 @@ namespace WireMock.Server
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-        public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
+        /// <returns>The <see cref="IRespondWithAProviderGuid"/>.</returns>
+        public IRespondWithAProviderGuid Given(IRequestMatcher requestMatcher)
         {
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }

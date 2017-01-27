@@ -13,8 +13,8 @@ namespace WireMock.ResponseBuilders
         /// <param name="code">
         /// The code.
         /// </param>
-        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
-        IHeadersResponseBuilder WithStatusCode(int code);
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithStatusCode(int code);
 
         /// <summary>
         /// The with status code.
@@ -22,19 +22,19 @@ namespace WireMock.ResponseBuilders
         /// <param name="code">
         /// The code.
         /// </param>
-        /// <returns>The <see cref="IHeadersResponseBuilder"/>.</returns>
-        IHeadersResponseBuilder WithStatusCode(HttpStatusCode code);
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithStatusCode(HttpStatusCode code);
 
         /// <summary>
         /// The with Success status code (200).
         /// </summary>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        IHeadersResponseBuilder WithSuccess();
+        IResponseBuilder WithSuccess();
 
         /// <summary>
         /// The with NotFound status code (404).
         /// </summary>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        IHeadersResponseBuilder WithNotFound();
+        IResponseBuilder WithNotFound();
     }
 }

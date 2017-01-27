@@ -44,10 +44,25 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="matchers">The matchers.</param>
+        public RequestMessageCookieMatcher([NotNull] string name, [NotNull] params IMatcher[] matchers)
+        {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(matchers, nameof(matchers));
+
+            Name = name;
+            Matchers = matchers;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
+        /// </summary>
         /// <param name="funcs">The funcs.</param>
         public RequestMessageCookieMatcher([NotNull] params Func<IDictionary<string, string>, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
+
             _cookieFuncs = funcs;
         }
 

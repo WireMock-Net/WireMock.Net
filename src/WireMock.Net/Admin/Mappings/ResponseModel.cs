@@ -13,7 +13,7 @@ namespace WireMock.Admin.Mappings
         /// <value>
         /// The HTTP status.
         /// </value>
-        public int StatusCode { get; set; }
+        public int? StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the body.
@@ -22,6 +22,30 @@ namespace WireMock.Admin.Mappings
         /// The body.
         /// </value>
         public string Body { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        /// <value>
+        /// The body.
+        /// </value>
+        public string BodyAsBase64 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body (as JSON object).
+        /// </summary>
+        /// <value>
+        /// The body.
+        /// </value>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [use transformer].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use transformer]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseTransformer { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.

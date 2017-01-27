@@ -16,10 +16,8 @@ namespace WireMock.RequestBuilders
         /// <param name="matcher">
         /// The matcher.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithBody([NotNull] IMatcher matcher);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody([NotNull] IMatcher matcher);
 
         /// <summary>
         /// The with body.
@@ -27,10 +25,8 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithBody(string body);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody(string body);
 
         /// <summary>
         /// The with body byte[].
@@ -38,10 +34,8 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body as byte[].
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithBody(byte[] body);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody(byte[] body);
 
         /// <summary>
         /// The with body string func.
@@ -49,10 +43,8 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body string function.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithBody(Func<string, bool> body);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody(Func<string, bool> body);
 
         /// <summary>
         /// The with body byte[] func.
@@ -60,9 +52,7 @@ namespace WireMock.RequestBuilders
         /// <param name="body">
         /// The body byte[] function.
         /// </param>
-        /// <returns>
-        /// The <see cref="IRequestMatcher"/>.
-        /// </returns>
-        IRequestMatcher WithBody(Func<byte[], bool> body);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody(Func<byte[], bool> body);
     }
 }

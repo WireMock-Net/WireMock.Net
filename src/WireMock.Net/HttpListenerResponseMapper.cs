@@ -9,25 +9,28 @@ namespace WireMock
     /// </summary>
     public class HttpListenerResponseMapper
     {
+        private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
+
         /// <summary>
         /// The map.
         /// </summary>
         /// <param name="responseMessage">
         /// The response.
         /// </param>
-        /// <param name="result">
-        /// The result.
-        /// </param>
-        public void Map(ResponseMessage responseMessage, HttpListenerResponse result)
+        /// <param name="listenerResponse">The listenerResponse.</param>
+        public void Map(ResponseMessage responseMessage, HttpListenerResponse listenerResponse)
         {
-            result.StatusCode = responseMessage.StatusCode;
+            listenerResponse.StatusCode = responseMessage.StatusCode;
 
-            responseMessage.Headers.ToList().ForEach(pair => result.AddHeader(pair.Key, pair.Value));
+            responseMessage.Headers.ToList().ForEach(pair => listenerResponse.AddHeader(pair.Key, pair.Value));
 
             if (responseMessage.Body != null)
             {
-                var content = Encoding.UTF8.GetBytes(responseMessage.Body);
-                result.OutputStream.Write(content, 0, content.Length);
+                byte[] buffer = _utf8NoBom.GetBytes(responseMessage.Body);
+                listenerResponse.ContentEncoding = _utf8NoBom;
+                listenerResponse.ContentLength64 = buffer.Length;
+                listenerResponse.OutputStream.Write(buffer, 0, buffer.Length);
+                listenerResponse.OutputStream.Flush();
             }
         }
     }

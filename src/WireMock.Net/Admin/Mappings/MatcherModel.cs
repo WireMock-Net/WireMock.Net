@@ -20,5 +20,13 @@
         /// The pattern.
         /// </value>
         public string Pattern { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ignore case.
+        /// </summary>
+        /// <value>
+        /// The ignore case.
+        /// </value>
+        public bool? IgnoreCase { get; set; }
     }
 }

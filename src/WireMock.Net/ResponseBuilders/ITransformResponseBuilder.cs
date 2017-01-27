@@ -9,8 +9,8 @@
         /// The with transformer.
         /// </summary>
         /// <returns>
-        /// The <see cref="IDelayResponseBuilder"/>.
+        /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IDelayResponseBuilder WithTransformer();
+        IResponseBuilder WithTransformer();
     }
 }

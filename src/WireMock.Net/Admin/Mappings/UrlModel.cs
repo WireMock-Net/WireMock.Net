@@ -13,6 +13,6 @@ namespace WireMock.Admin.Mappings
         /// <value>
         /// The matchers.
         /// </value>
-        public IList<MatcherModel> Matchers { get; set; }
+        public MatcherModel[] Matchers { get; set; }
     }
 }

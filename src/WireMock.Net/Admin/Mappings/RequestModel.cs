@@ -8,12 +8,12 @@ namespace WireMock.Admin.Mappings
     public class RequestModel
     {
         /// <summary>
-        /// Gets or sets the URL.
+        /// Gets or sets the URL. (Can be a string or a UrlModel)
         /// </summary>
         /// <value>
         /// The URL.
         /// </value>
-        public UrlModel Url { get; set; }
+        public object Url { get; set; }
 
         /// <summary>
         /// The methods

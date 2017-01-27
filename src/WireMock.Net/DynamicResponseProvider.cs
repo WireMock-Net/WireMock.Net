@@ -7,9 +7,9 @@ namespace WireMock
 {
     internal class DynamicResponseProvider : IResponseProvider
     {
-        private readonly Func<ResponseMessage> _responseMessageFunc;
+        private readonly Func<RequestMessage, ResponseMessage> _responseMessageFunc;
 
-        public DynamicResponseProvider([NotNull] Func<ResponseMessage> responseMessageFunc)
+        public DynamicResponseProvider([NotNull] Func<RequestMessage, ResponseMessage> responseMessageFunc)
         {
             Check.NotNull(responseMessageFunc, nameof(responseMessageFunc));
 
@@ -18,7 +18,7 @@ namespace WireMock
 
         public Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
         {
-            return Task.FromResult(_responseMessageFunc());
+            return Task.FromResult(_responseMessageFunc(requestMessage));
         }
     }
 }

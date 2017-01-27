@@ -11,55 +11,55 @@ namespace WireMock.RequestBuilders
         /// The using get.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingGet();
+        IRequestBuilder UsingGet();
 
         /// <summary>
         /// The using post.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingPost();
+        IRequestBuilder UsingPost();
 
         /// <summary>
         /// The using delete.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingDelete();
+        IRequestBuilder UsingDelete();
 
         /// <summary>
         /// The using put.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingPut();
+        IRequestBuilder UsingPut();
 
         /// <summary>
         /// The using head.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingHead();
+        IRequestBuilder UsingHead();
 
         /// <summary>
         /// The using any verb.
         /// </summary>
         /// <returns>
-        /// The <see cref="IHeadersAndCookiesRequestBuilder"/>.
+        /// The <see cref="IRequestBuilder"/>.
         /// </returns>
-        IHeadersAndCookiesRequestBuilder UsingAnyVerb();
+        IRequestBuilder UsingAnyVerb();
 
         /// <summary>
         /// The using verb.
         /// </summary>
         /// <param name="verbs">The verb.</param>
-        /// <returns>The <see cref="IHeadersAndCookiesRequestBuilder"/>.</returns>
-        IHeadersAndCookiesRequestBuilder UsingVerb([NotNull] params string[] verbs);
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingVerb([NotNull] params string[] verbs);
     }
 }
