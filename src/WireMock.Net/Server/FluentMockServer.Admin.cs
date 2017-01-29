@@ -37,6 +37,7 @@ namespace WireMock.Server
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_guidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
             Given(Request.Create().WithPath(_guidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_guidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
 
             // __admin/requests
@@ -75,6 +76,15 @@ namespace WireMock.Server
                 .RespondWith(responseBuilder);
 
             return new ResponseMessage { Body = "Mapping updated" };
+        }
+
+        private ResponseMessage MappingDelete(RequestMessage requestMessage)
+        {
+            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+
+            DeleteMapping(guid);
+
+            return new ResponseMessage { Body = "Mapping removed" };
         }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)

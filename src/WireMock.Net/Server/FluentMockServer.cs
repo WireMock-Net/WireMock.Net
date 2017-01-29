@@ -145,6 +145,22 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Resets the mappings.
+        /// </summary>
+        public void DeleteMapping(Guid guid)
+        {
+            lock (((ICollection)_mappings).SyncRoot)
+            {
+                // Check a mapping exists with the same GUID, if so, remove it.
+                var existingMapping = _mappings.FirstOrDefault(m => m.Guid == guid);
+                if (existingMapping != null)
+                {
+                    _mappings.Remove(existingMapping);
+                }
+            }
+        }
+
+        /// <summary>
         /// The search logs for.
         /// </summary>
         /// <param name="matcher">The matcher.</param>
@@ -192,11 +208,7 @@ namespace WireMock.Server
             lock (((ICollection)_mappings).SyncRoot)
             {
                 // Check a mapping exists with the same GUID, if so, remove it first.
-                var existingMapping = _mappings.FirstOrDefault(m => m.Guid == mapping.Guid);
-                if (existingMapping != null)
-                {
-                    _mappings.Remove(existingMapping);
-                }
+                DeleteMapping(mapping.Guid);
 
                 _mappings.Add(mapping);
             }
