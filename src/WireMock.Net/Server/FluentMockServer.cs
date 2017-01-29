@@ -183,7 +183,7 @@ namespace WireMock.Server
         {
             lock (((ICollection)_mappings).SyncRoot)
             {
-                // Check a mapping exists with the same GUI, if so, remove it first.
+                // Check a mapping exists with the same GUID, if so, remove it first.
                 var existingMapping = _mappings.FirstOrDefault(m => m.Guid == mapping.Guid);
                 if (existingMapping != null)
                 {

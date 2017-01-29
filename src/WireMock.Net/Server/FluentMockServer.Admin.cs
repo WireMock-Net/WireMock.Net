@@ -19,6 +19,7 @@ namespace WireMock.Server
     {
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
+        private readonly RegexMatcher _guidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -33,8 +34,8 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
 
             // __admin/mappings/{guid}
-            var guidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
-            Given(Request.Create().WithPath(guidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
+            Given(Request.Create().WithPath(_guidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
+            Given(Request.Create().WithPath(_guidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
 
 
             // __admin/requests
@@ -46,9 +47,33 @@ namespace WireMock.Server
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
             var mapping = Mappings.FirstOrDefault(m => !(m.Provider is DynamicResponseProvider) && m.Guid == guid);
 
+            if (mapping == null)
+                return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
+
             var model = ToMappingModel(mapping);
 
             return ToJson(model);
+        }
+
+        private ResponseMessage MappingPut(RequestMessage requestMessage)
+        {
+            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+            var mappingModel = JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body);
+
+            if (mappingModel.Request == null)
+                return new ResponseMessage { StatusCode = 400, Body = "Request missing" };
+
+            if (mappingModel.Response == null)
+                return new ResponseMessage { StatusCode = 400, Body = "Response missing" };
+
+            var requestBuilder = InitRequestBuilder(mappingModel);
+            var responseBuilder = InitResponseBuilder(mappingModel);
+
+            Given(requestBuilder)
+                .WithGuid(guid)
+                .RespondWith(responseBuilder);
+
+            return new ResponseMessage { Body = "Mapping updated" };
         }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
