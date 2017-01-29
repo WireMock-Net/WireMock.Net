@@ -20,7 +20,7 @@ namespace WireMock.Server
     {
         private readonly TinyHttpServer _httpServer;
 
-        private readonly IList<Mapping> _mappings = new List<Mapping>();
+        private IList<Mapping> _mappings = new List<Mapping>();
 
         private readonly IList<LogEntry> _logEntries = new List<LogEntry>();
 
@@ -130,9 +130,17 @@ namespace WireMock.Server
                 _logEntries.Clear();
             }
 
+            ResetMappings();
+        }
+
+        /// <summary>
+        /// Resets the mappings.
+        /// </summary>
+        public void ResetMappings()
+        {
             lock (((ICollection)_mappings).SyncRoot)
             {
-                _mappings.Clear();
+                _mappings = _mappings.Where(m => m.Provider is DynamicResponseProvider).ToList();
             }
         }
 
