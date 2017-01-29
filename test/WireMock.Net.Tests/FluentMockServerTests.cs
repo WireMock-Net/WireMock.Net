@@ -20,7 +20,7 @@ namespace WireMock.Net.Tests
         private FluentMockServer _server;
 
         [Test]
-        public void FluentMockServer_get_routes()
+        public void FluentMockServer_Admin_Mappings_Get()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
@@ -32,16 +32,52 @@ namespace WireMock.Net.Tests
             _server.Given(Request.Create().WithUrl("/foo2").UsingGet())
                 .RespondWith(Response.Create().WithStatusCode(202).WithBody("2"));
 
-            var routes = _server.Mappings;
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(2);
 
-            var enumerable = routes.ToArray();
-            Check.That(enumerable).HasSize(2);
+            Check.That(mappings.First().RequestMatcher).IsNotNull();
+            Check.That(mappings.First().Provider).IsNotNull();
+            Check.That(mappings.First().Guid).Equals(guid);
 
-            Check.That(enumerable.First().RequestMatcher).IsNotNull();
-            Check.That(enumerable.First().Provider).IsNotNull();
-            Check.That(enumerable.First().Guid).Equals(guid);
+            Check.That(mappings[1].Guid).Not.Equals(guid);
+        }
 
-            Check.That(enumerable[1].Guid).Not.Equals(guid);
+        [Test]
+        public void FluentMockServer_Admin_Mappings_Add_SameGuid()
+        {
+            var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithUrl("/1").UsingGet())
+                .WithGuid(guid)
+                .RespondWith(Response.Create().WithStatusCode(500));
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
+            Check.That(mappings.First().Guid).Equals(guid);
+
+            _server.Given(Request.Create().WithUrl("/2").UsingGet())
+                .WithGuid(guid)
+                .RespondWith(Response.Create().WithStatusCode(500));
+
+            Check.That(mappings).HasSize(1);
+            Check.That(mappings.First().Guid).Equals(guid);
+        }
+
+        [Test]
+        public async Task FluentMockServer_Admin_Requests_Get()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            // when
+            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
+
+            // then
+            Check.That(_server.LogEntries).HasSize(1);
+            var requestLogged = _server.LogEntries.First();
+            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
+            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
 
         [Test]
@@ -92,22 +128,6 @@ namespace WireMock.Net.Tests
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
             Check.That((int)response.StatusCode).IsEqualTo(404);
-        }
-
-        [Test]
-        public async Task Should_record_requests_in_the_requestlogs()
-        {
-            // given
-            _server = FluentMockServer.Start();
-
-            // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
-
-            // then
-            Check.That(_server.LogEntries).HasSize(1);
-            var requestLogged = _server.LogEntries.First();
-            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
-            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
 
         [Test]

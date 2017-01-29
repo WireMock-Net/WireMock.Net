@@ -17,6 +17,9 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
+        private const string AdminMappings = "/__admin/mappings";
+        private const string AdminRequests = "/__admin/requests";
+
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             Formatting = Formatting.None,
@@ -25,10 +28,27 @@ namespace WireMock.Server
 
         private void InitAdmin()
         {
-            Given(Request.Create().WithUrl("/__admin/mappings").UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithUrl("/__admin/mappings").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
+            // __admin/mappings
+            Given(Request.Create().WithUrl(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
+            Given(Request.Create().WithUrl(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
 
-            Given(Request.Create().WithUrl("/__admin/requests").UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
+            // __admin/mappings/{guid}
+            var guidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+            Given(Request.Create().WithPath(guidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
+
+
+            // __admin/requests
+            Given(Request.Create().WithUrl(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
+        }
+
+        private ResponseMessage MappingGet(RequestMessage requestMessage)
+        {
+            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+            var mapping = Mappings.FirstOrDefault(m => !(m.Provider is DynamicResponseProvider) && m.Guid == guid);
+
+            var model = ToMappingModel(mapping);
+
+            return ToJson(model);
         }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
@@ -248,7 +268,7 @@ namespace WireMock.Server
 
             switch (matcher.Name)
             {
-                case "RegExMatcher":
+                case "RegexMatcher":
                     return new RegexMatcher(matcher.Pattern);
 
                 case "JsonPathMatcher":

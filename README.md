@@ -13,9 +13,12 @@ The WireMock admin API provides functionality to define the mappings via a http 
 ### /__admin/mappings
 The mappings defined in the mock service.
 * `GET    /__admin/mappings` --> Gets all defined mappings
-* `DELETE /__admin/mappings` --> Create a new stub mapping
-* `POST   /__admin/mappings` --> TODO
+* `POST   /__admin/mappings` --> Create a new stub mapping
 * `DELETE /__admin/mappings` --> TODO
+* `GET    /__admin/mappings/{guid}` --> Get a single stub mapping
+* `PUT    /__admin/mappings/{guid}` --> TODO
+* `POST   /__admin/mappings/{guid}` --> TODO
+* `DELETE /__admin/mappings/{guid}` --> TODO
 
 ### /__admin/requests
 Logged requests and responses received by the mock service.

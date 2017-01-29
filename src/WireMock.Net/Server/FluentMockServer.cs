@@ -183,6 +183,13 @@ namespace WireMock.Server
         {
             lock (((ICollection)_mappings).SyncRoot)
             {
+                // Check a mapping exists with the same GUI, if so, remove it first.
+                var existingMapping = _mappings.FirstOrDefault(m => m.Guid == mapping.Guid);
+                if (existingMapping != null)
+                {
+                    _mappings.Remove(existingMapping);
+                }
+
                 _mappings.Add(mapping);
             }
         }
@@ -216,8 +223,8 @@ namespace WireMock.Server
 
             try
             {
-                var targetRoute = _mappings.FirstOrDefault(route => route.IsRequestHandled(request));
-                if (targetRoute == null)
+                var targetMapping = _mappings.FirstOrDefault(route => route.IsRequestHandled(request));
+                if (targetMapping == null)
                 {
                     response = new ResponseMessage
                     {
@@ -227,7 +234,7 @@ namespace WireMock.Server
                 }
                 else
                 {
-                    response = await targetRoute.ResponseTo(request);
+                    response = await targetMapping.ResponseTo(request);
                 }
             }
             catch (Exception ex)
