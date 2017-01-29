@@ -29,8 +29,8 @@ namespace WireMock.Server
         private void InitAdmin()
         {
             // __admin/mappings
-            Given(Request.Create().WithUrl(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithUrl(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
 
             // __admin/mappings/{guid}
             var guidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
@@ -38,7 +38,7 @@ namespace WireMock.Server
 
 
             // __admin/requests
-            Given(Request.Create().WithUrl(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
+            Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
         }
 
         private ResponseMessage MappingGet(RequestMessage requestMessage)
@@ -89,14 +89,14 @@ namespace WireMock.Server
         private IRequestBuilder InitRequestBuilder(MappingModel mappingModel)
         {
             IRequestBuilder requestBuilder = Request.Create();
-            string url = mappingModel.Request.Url as string;
-            if (url != null)
-                requestBuilder = requestBuilder.WithUrl(url);
+            string path = mappingModel.Request.Path as string;
+            if (path != null)
+                requestBuilder = requestBuilder.WithPath(path);
             else
-                requestBuilder = requestBuilder.WithUrl("/*");
-            //UrlModel urlModel = mappingModel.Request.Url as UrlModel;
+                requestBuilder = requestBuilder.WithPath("/*");
+            //PathModel urlModel = mappingModel.Request.Path as PathModel;
             //if (urlModel?.Matchers != null)
-            //    builder = builder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
+            //    builder = builder.WithPath(urlModel.Matchers.Select(Map).ToArray());
 
             if (mappingModel.Request.Methods != null)
                 requestBuilder = requestBuilder.UsingVerb(mappingModel.Request.Methods);
@@ -209,7 +209,7 @@ namespace WireMock.Server
                 Guid = mapping.Guid,
                 Request = new RequestModel
                 {
-                    Url = new UrlModel
+                    Path = new PathModel
                     {
                         Matchers = urlMatchers != null ? Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)) : null
                     },

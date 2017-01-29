@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace WireMock.Admin.Mappings
+﻿namespace WireMock.Admin.Mappings
 {
     /// <summary>
-    /// UrlModel
+    /// PathModel
     /// </summary>
-    public class UrlModel
+    public class PathModel
     {
         /// <summary>
         /// Gets or sets the matchers.

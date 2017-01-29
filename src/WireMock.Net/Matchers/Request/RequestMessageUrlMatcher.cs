@@ -59,7 +59,7 @@ namespace WireMock.Matchers.Request
         public bool IsMatch(RequestMessage requestMessage)
         {
             if (Matchers != null)
-                return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Path));
+                return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Url));
 
             if (_urlFuncs != null)
                 return _urlFuncs.Any(func => func(requestMessage.Url));

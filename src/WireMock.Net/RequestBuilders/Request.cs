@@ -54,13 +54,46 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
-        /// The with url.
+        /// The with path.
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithUrl(params IMatcher[] matchers)
+        public IRequestBuilder WithPath(params IMatcher[] matchers)
         {
-            _requestMatchers.Add(new RequestMessageUrlMatcher(matchers));
+            _requestMatchers.Add(new RequestMessagePathMatcher(matchers));
+            return this;
+        }
+
+        /// <summary>
+        /// The with path.
+        /// </summary>
+        /// <param name="paths">The paths.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithPath(params string[] paths)
+        {
+            _requestMatchers.Add(new RequestMessagePathMatcher(paths));
+            return this;
+        }
+
+        /// <summary>
+        /// The with path.
+        /// </summary>
+        /// <param name="funcs">The path func.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
+        {
+            _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
+            return this;
+        }
+
+        /// <summary>
+        /// The with url.
+        /// </summary>
+        /// <param name="matcher">The matcher.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithUrl(params IMatcher[] matcher)
+        {
+            _requestMatchers.Add(new RequestMessageUrlMatcher(matcher));
             return this;
         }
 
@@ -83,39 +116,6 @@ namespace WireMock.RequestBuilders
         public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
         {
             _requestMatchers.Add(new RequestMessageUrlMatcher(funcs));
-            return this;
-        }
-
-        /// <summary>
-        /// The with url.
-        /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params IMatcher[] matcher)
-        {
-            _requestMatchers.Add(new RequestMessagePathMatcher(matcher));
-            return this;
-        }
-
-        /// <summary>
-        /// The with path.
-        /// </summary>
-        /// <param name="paths">The path.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params string[] paths)
-        {
-            _requestMatchers.Add(new RequestMessagePathMatcher(paths));
-            return this;
-        }
-
-        /// <summary>
-        /// The with path.
-        /// </summary>
-        /// <param name="funcs">The path func.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
-        {
-            _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
             return this;
         }
 
