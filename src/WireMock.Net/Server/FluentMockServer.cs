@@ -125,12 +125,20 @@ namespace WireMock.Server
         /// </summary>
         public void Reset()
         {
+            ResetLogEntries();
+
+            ResetMappings();
+        }
+
+        /// <summary>
+        /// Resets the log entries.
+        /// </summary>
+        public void ResetLogEntries()
+        {
             lock (((ICollection)_logEntries).SyncRoot)
             {
                 _logEntries.Clear();
             }
-
-            ResetMappings();
         }
 
         /// <summary>

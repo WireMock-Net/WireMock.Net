@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Matchers;
@@ -42,6 +43,7 @@ namespace WireMock.Server
 
             // __admin/requests
             Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
+            Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
         }
 
         private ResponseMessage MappingGet(RequestMessage requestMessage)
@@ -136,10 +138,12 @@ namespace WireMock.Server
             if (path != null)
                 requestBuilder = requestBuilder.WithPath(path);
             else
-                requestBuilder = requestBuilder.WithPath("/*");
-            //PathModel urlModel = mappingModel.Request.Path as PathModel;
-            //if (urlModel?.Matchers != null)
-            //    builder = builder.WithPath(urlModel.Matchers.Select(Map).ToArray());
+            {
+                JToken pathToken = (JToken) mappingModel.Request.Path;
+                PathModel pathModel = pathToken.ToObject<PathModel>();
+                if (pathModel?.Matchers != null)
+                    requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
+            }
 
             if (mappingModel.Request.Methods != null)
                 requestBuilder = requestBuilder.UsingVerb(mappingModel.Request.Methods);
@@ -175,9 +179,9 @@ namespace WireMock.Server
                 var bodyMatcher = Map(mappingModel.Request.Body.Matcher);
                 requestBuilder = requestBuilder.WithBody(bodyMatcher);
             }
+
             return requestBuilder;
         }
-
 
         private IResponseBuilder InitResponseBuilder(MappingModel mappingModel)
         {
@@ -235,12 +239,19 @@ namespace WireMock.Server
             return ToJson(result);
         }
 
+        private ResponseMessage RequestsDelete(RequestMessage requestMessage)
+        {
+            ResetLogEntries();
+
+            return new ResponseMessage { Body = "Requests deleted" };
+        }
+
         private MappingModel ToMappingModel(Mapping mapping)
         {
             var request = (Request)mapping.RequestMatcher;
             var response = (Response)mapping.Provider;
 
-            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
+            var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
@@ -254,7 +265,7 @@ namespace WireMock.Server
                 {
                     Path = new PathModel
                     {
-                        Matchers = urlMatchers != null ? Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)) : null
+                        Matchers = pathMatchers != null ? Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)) : null
                     },
                     Methods = methodMatcher != null ? methodMatcher.Methods : new[] { "any" },
                     Headers = headerMatchers?.Select(hm => new HeaderModel
