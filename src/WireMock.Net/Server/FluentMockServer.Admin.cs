@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
+using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -20,7 +21,8 @@ namespace WireMock.Server
     {
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
-        private readonly RegexMatcher _guidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -36,20 +38,23 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/{guid}
-            Given(Request.Create().WithPath(_guidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_guidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
-            Given(Request.Create().WithPath(_guidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
 
             // __admin/requests
             Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
             Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
+
+            // __admin/request/{guid}
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
         }
 
         #region Mapping
         private ResponseMessage MappingGet(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
             var mapping = Mappings.FirstOrDefault(m => !(m.Provider is DynamicResponseProvider) && m.Guid == guid);
 
             if (mapping == null)
@@ -83,7 +88,7 @@ namespace WireMock.Server
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
 
             DeleteMapping(guid);
 
@@ -135,39 +140,55 @@ namespace WireMock.Server
         }
         #endregion Mappings
 
+        #region Request
+        private ResponseMessage RequestGet(RequestMessage requestMessage)
+        {
+            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
+            var entry = LogEntries.FirstOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
+
+            if (entry == null)
+                return new ResponseMessage { StatusCode = 404, Body = "Request not found" };
+
+            var model = ToLogEntryModel(entry);
+
+            return ToJson(model);
+        }
+        #endregion Request
+
         #region Requests
         private ResponseMessage RequestsGet(RequestMessage requestMessage)
         {
-            var result = new List<LogEntryModel>();
-            foreach (var logEntry in LogEntries.Where(r => !r.RequestMessage.Path.StartsWith("/__admin/")))
-            {
-                var model = new LogEntryModel
-                {
-                    Guid = logEntry.Guid,
-                    Request = new LogRequestModel
-                    {
-                        DateTime = logEntry.RequestMessage.DateTime,
-                        Url = logEntry.RequestMessage.Path,
-                        AbsoleteUrl = logEntry.RequestMessage.Url,
-                        Query = logEntry.RequestMessage.Query,
-                        Method = logEntry.RequestMessage.Method,
-                        Body = logEntry.RequestMessage.Body,
-                        Headers = logEntry.RequestMessage.Headers,
-                        Cookies = logEntry.RequestMessage.Cookies
-                    },
-                    Response = new LogResponseModel
-                    {
-                        StatusCode = logEntry.ResponseMessage.StatusCode,
-                        Body = logEntry.ResponseMessage.Body,
-                        BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
-                        Headers = logEntry.ResponseMessage.Headers
-                    }
-                };
-
-                result.Add(model);
-            }
+            var result = LogEntries
+                .Where(r => !r.RequestMessage.Path.StartsWith("/__admin/"))
+                .Select(ToLogEntryModel);
 
             return ToJson(result);
+        }
+
+        private LogEntryModel ToLogEntryModel(LogEntry logEntry)
+        {
+            return new LogEntryModel
+            {
+                Guid = logEntry.Guid,
+                Request = new LogRequestModel
+                {
+                    DateTime = logEntry.RequestMessage.DateTime,
+                    Url = logEntry.RequestMessage.Path,
+                    AbsoleteUrl = logEntry.RequestMessage.Url,
+                    Query = logEntry.RequestMessage.Query,
+                    Method = logEntry.RequestMessage.Method,
+                    Body = logEntry.RequestMessage.Body,
+                    Headers = logEntry.RequestMessage.Headers,
+                    Cookies = logEntry.RequestMessage.Cookies
+                },
+                Response = new LogResponseModel
+                {
+                    StatusCode = logEntry.ResponseMessage.StatusCode,
+                    Body = logEntry.ResponseMessage.Body,
+                    BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
+                    Headers = logEntry.ResponseMessage.Headers
+                }
+            };
         }
 
         private ResponseMessage RequestsDelete(RequestMessage requestMessage)
