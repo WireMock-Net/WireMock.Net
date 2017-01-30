@@ -46,6 +46,7 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
         }
 
+        #region Mapping
         private ResponseMessage MappingGet(RequestMessage requestMessage)
         {
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
@@ -88,7 +89,9 @@ namespace WireMock.Server
 
             return new ResponseMessage { Body = "Mapping removed" };
         }
+        #endregion Mapping
 
+        #region Mappings
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
         {
             var result = new List<MappingModel>();
@@ -130,6 +133,50 @@ namespace WireMock.Server
 
             return new ResponseMessage { Body = "Mappings deleted" };
         }
+        #endregion Mappings
+
+        #region Requests
+        private ResponseMessage RequestsGet(RequestMessage requestMessage)
+        {
+            var result = new List<LogEntryModel>();
+            foreach (var logEntry in LogEntries.Where(r => !r.RequestMessage.Path.StartsWith("/__admin/")))
+            {
+                var model = new LogEntryModel
+                {
+                    Guid = logEntry.Guid,
+                    Request = new LogRequestModel
+                    {
+                        DateTime = logEntry.RequestMessage.DateTime,
+                        Url = logEntry.RequestMessage.Path,
+                        AbsoleteUrl = logEntry.RequestMessage.Url,
+                        Query = logEntry.RequestMessage.Query,
+                        Method = logEntry.RequestMessage.Method,
+                        Body = logEntry.RequestMessage.Body,
+                        Headers = logEntry.RequestMessage.Headers,
+                        Cookies = logEntry.RequestMessage.Cookies
+                    },
+                    Response = new LogResponseModel
+                    {
+                        StatusCode = logEntry.ResponseMessage.StatusCode,
+                        Body = logEntry.ResponseMessage.Body,
+                        BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
+                        Headers = logEntry.ResponseMessage.Headers
+                    }
+                };
+
+                result.Add(model);
+            }
+
+            return ToJson(result);
+        }
+
+        private ResponseMessage RequestsDelete(RequestMessage requestMessage)
+        {
+            ResetLogEntries();
+
+            return new ResponseMessage { Body = "Requests deleted" };
+        }
+        #endregion Requests
 
         private IRequestBuilder InitRequestBuilder(MappingModel mappingModel)
         {
@@ -139,7 +186,7 @@ namespace WireMock.Server
                 requestBuilder = requestBuilder.WithPath(path);
             else
             {
-                JToken pathToken = (JToken) mappingModel.Request.Path;
+                JToken pathToken = (JToken)mappingModel.Request.Path;
                 PathModel pathModel = pathToken.ToObject<PathModel>();
                 if (pathModel?.Matchers != null)
                     requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
@@ -203,47 +250,6 @@ namespace WireMock.Server
             if (mappingModel.Response.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
             return responseBuilder;
-        }
-
-        private ResponseMessage RequestsGet(RequestMessage requestMessage)
-        {
-            var result = new List<LogEntryModel>();
-            foreach (var logEntry in LogEntries.Where(r => !r.RequestMessage.Path.StartsWith("/__admin/")))
-            {
-                var model = new LogEntryModel
-                {
-                    Request = new LogRequestModel
-                    {
-                        Guid = Guid.NewGuid(),
-                        DateTime = logEntry.RequestMessage.DateTime,
-                        Url = logEntry.RequestMessage.Path,
-                        AbsoleteUrl = logEntry.RequestMessage.Url,
-                        Query = logEntry.RequestMessage.Query,
-                        Method = logEntry.RequestMessage.Method,
-                        Body = logEntry.RequestMessage.Body,
-                        Headers = logEntry.RequestMessage.Headers,
-                        Cookies = logEntry.RequestMessage.Cookies
-                    },
-                    Response = new LogResponseModel
-                    {
-                        StatusCode = logEntry.ResponseMessage.StatusCode,
-                        Body = logEntry.ResponseMessage.Body,
-                        BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
-                        Headers = logEntry.ResponseMessage.Headers
-                    }
-                };
-
-                result.Add(model);
-            }
-
-            return ToJson(result);
-        }
-
-        private ResponseMessage RequestsDelete(RequestMessage requestMessage)
-        {
-            ResetLogEntries();
-
-            return new ResponseMessage { Body = "Requests deleted" };
         }
 
         private MappingModel ToMappingModel(Mapping mapping)

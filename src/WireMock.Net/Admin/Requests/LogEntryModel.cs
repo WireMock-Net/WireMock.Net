@@ -1,10 +1,20 @@
-﻿namespace WireMock.Admin.Requests
+﻿using System;
+
+namespace WireMock.Admin.Requests
 {
     /// <summary>
     /// Request Log Model
     /// </summary>
     public class LogEntryModel
     {
+        /// <summary>
+        /// Gets or sets the unique identifier.
+        /// </summary>
+        /// <value>
+        /// The unique identifier.
+        /// </value>
+        public Guid Guid { get; set; }
+
         /// <summary>
         /// Gets or sets the request.
         /// </summary>

@@ -10,14 +10,6 @@ namespace WireMock.Admin.Requests
     public class LogRequestModel
     {
         /// <summary>
-        /// Gets or sets the unique identifier.
-        /// </summary>
-        /// <value>
-        /// The unique identifier.
-        /// </value>
-        public Guid Guid { get; set; }
-
-        /// <summary>
         /// Gets the DateTime.
         /// </summary>
         public DateTime DateTime { get; set; }

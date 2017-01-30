@@ -277,6 +277,7 @@ namespace WireMock.Server
             {
                 var log = new LogEntry
                 {
+                    Guid = Guid.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response
                 };

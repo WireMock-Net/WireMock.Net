@@ -1,10 +1,20 @@
-﻿namespace WireMock.Logging
+﻿using System;
+
+namespace WireMock.Logging
 {
     /// <summary>
     /// LogEntry
     /// </summary>
     public class LogEntry
     {
+        /// <summary>
+        /// Gets or sets the unique identifier.
+        /// </summary>
+        /// <value>
+        /// The unique identifier.
+        /// </value>
+        public Guid Guid { get; set; }
+
         /// <summary>
         /// Gets or sets the request message.
         /// </summary>
