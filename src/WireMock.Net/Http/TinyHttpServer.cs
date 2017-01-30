@@ -27,19 +27,18 @@ namespace WireMock.Http
         /// <summary>
         /// Initializes a new instance of the <see cref="TinyHttpServer"/> class.
         /// </summary>
-        /// <param name="urlPrefix">
-        /// The url prefix.
-        /// </param>
-        /// <param name="httpHandler">
-        /// The http handler.
-        /// </param>
-        public TinyHttpServer(string urlPrefix, Action<HttpListenerContext> httpHandler)
+        /// <param name="urls">The urls.</param>
+        /// <param name="httpHandler">The http handler.</param>
+        public TinyHttpServer(string[] urls, Action<HttpListenerContext> httpHandler)
         {
             _httpHandler = httpHandler;
 
             // Create a listener.
             _listener = new HttpListener();
-            _listener.Prefixes.Add(urlPrefix);
+            foreach (string urlPrefix in urls)
+            {
+                _listener.Prefixes.Add(urlPrefix);
+            }
         }
 
         /// <summary>

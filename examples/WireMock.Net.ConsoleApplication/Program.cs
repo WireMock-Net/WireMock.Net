@@ -9,14 +9,14 @@ namespace WireMock.Net.ConsoleApplication
 {
     static class Program
     {
-        static void Main(string[] args)
+        static void Main(params string[] args)
         {
-            int port;
-            if (args.Length == 0 || !int.TryParse(args[0], out port))
-                port = 9090;
+            string url1 = "http://localhost:9090/";
+            string url2 = "http://localhost:9091/";
+            string url3 = "https://localhost:9443/";
 
-            var server = FluentMockServer.StartWithAdminInterface(port);
-            Console.WriteLine("FluentMockServer running at {0}", server.Port);
+            var server = FluentMockServer.StartWithAdminInterface(url1, url2, url3);
+            Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 
             server
                 .Given(Request.Create().WithPath(u => u.Contains("x")).UsingGet())

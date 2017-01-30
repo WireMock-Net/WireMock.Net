@@ -33,9 +33,9 @@ namespace WireMock.Server
         private TimeSpan _requestProcessingDelay = TimeSpan.Zero;
 
         /// <summary>
-        /// Gets the port.
+        /// Gets the urls.
         /// </summary>
-        public int Port { get; }
+        public string[] Urls { get; }
 
         /// <summary>
         /// Gets the request logs.
@@ -83,6 +83,19 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Start this FluentMockServer.
+        /// </summary>
+        /// <param name="urls">The urls to listen on.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
+        [PublicAPI]
+        public static FluentMockServer Start(params string[] urls)
+        {
+            Check.NotEmpty(urls, nameof(urls));
+
+            return new FluentMockServer(false, urls);
+        }
+
+        /// <summary>
         /// Start this FluentMockServer with the admin interface.
         /// </summary>
         /// <param name="port">The port.</param>
@@ -99,18 +112,36 @@ namespace WireMock.Server
             return new FluentMockServer(true, port, ssl);
         }
 
-        private FluentMockServer(bool startAdmin, int port, bool ssl)
+        /// <summary>
+        /// Start this FluentMockServer with the admin interface.
+        /// </summary>
+        /// <param name="urls">The urls.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
+        [PublicAPI]
+        public static FluentMockServer StartWithAdminInterface(params string[] urls)
         {
-            string protocol = ssl ? "https" : "http";
-            _httpServer = new TinyHttpServer(protocol + "://localhost:" + port + "/", HandleRequestAsync);
-            Port = port;
+            Check.NotEmpty(urls, nameof(urls));
+
+            return new FluentMockServer(true, urls);
+        }
+
+        private FluentMockServer(bool startAdminInterface, int port, bool ssl) : this(startAdminInterface, (ssl ? "https" : "http") + "://localhost:" + port + "/")
+        {
+        }
+
+        private FluentMockServer(bool startAdminInterface, params string[] urls)
+        {
+            Urls = urls;
+
+            _httpServer = new TinyHttpServer(urls, HandleRequestAsync);
             _httpServer.Start();
 
-            if (startAdmin)
+            if (startAdminInterface)
             {
                 InitAdmin();
             }
         }
+
 
         /// <summary>
         /// Stop this server.
