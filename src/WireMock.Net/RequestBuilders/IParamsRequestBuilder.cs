@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using WireMock.Matchers.Request;
 using WireMock.Util;
 
 namespace WireMock.RequestBuilders
@@ -14,12 +13,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with parameters.
         /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <param name="values">
-        /// The values.
-        /// </param>
+        /// <param name="key">The key.</param>
+        /// <param name="values">The values.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithParam([NotNull] string key, params string[] values);
 

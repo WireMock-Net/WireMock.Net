@@ -54,5 +54,13 @@ namespace WireMock.Admin.Mappings
         /// The headers.
         /// </value>
         public IDictionary<string, string> Headers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delay in milliseconds.
+        /// </summary>
+        /// <value>
+        /// The delay in milliseconds.
+        /// </value>
+        public int? Delay { get; set; }
     }
 }

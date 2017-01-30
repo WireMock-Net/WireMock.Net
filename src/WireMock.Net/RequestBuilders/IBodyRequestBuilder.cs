@@ -1,7 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
 using WireMock.Matchers;
-using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders
 {
@@ -13,45 +12,35 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// The with body.
         /// </summary>
-        /// <param name="matcher">
-        /// The matcher.
-        /// </param>
+        /// <param name="matcher">The matcher.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] IMatcher matcher);
 
         /// <summary>
         /// The with body.
         /// </summary>
-        /// <param name="body">
-        /// The body.
-        /// </param>
+        /// <param name="body">The body.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(string body);
 
         /// <summary>
         /// The with body byte[].
         /// </summary>
-        /// <param name="body">
-        /// The body as byte[].
-        /// </param>
+        /// <param name="body">The body as byte[].</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(byte[] body);
 
         /// <summary>
         /// The with body string func.
         /// </summary>
-        /// <param name="body">
-        /// The body string function.
-        /// </param>
+        /// <param name="body">The body string function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(Func<string, bool> body);
 
         /// <summary>
         /// The with body byte[] func.
         /// </summary>
-        /// <param name="body">
-        /// The body byte[] function.
-        /// </param>
+        /// <param name="body">The body byte[] function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(Func<byte[], bool> body);
     }

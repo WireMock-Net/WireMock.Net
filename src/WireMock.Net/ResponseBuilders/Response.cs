@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +15,10 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private TimeSpan _delay = TimeSpan.Zero;
+        /// <summary>
+        /// The delay
+        /// </summary>
+        public TimeSpan? Delay { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether [use transformer].
@@ -160,7 +161,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(body, nameof(body));
 
-            ResponseMessage.Body = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting =  Formatting.None, NullValueHandling = NullValueHandling.Ignore } );
+            ResponseMessage.Body = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
             return this;
         }
 
@@ -191,18 +192,25 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
-        /// The after delay.
+        /// The with delay.
         /// </summary>
-        /// <param name="delay">
-        /// The delay.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IResponseProvider"/>.
-        /// </returns>
+        /// <param name="delay">The TimeSpan to delay.</param>
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         public IResponseBuilder WithDelay(TimeSpan delay)
         {
-            _delay = delay;
+            Check.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
+            Delay = delay;
             return this;
+        }
+
+        /// <summary>
+        /// The with delay.
+        /// </summary>
+        /// <param name="milliseconds">The milliseconds to delay.</param>
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithDelay(int milliseconds)
+        {
+            return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
         /// <summary>
@@ -243,7 +251,8 @@ namespace WireMock.ResponseBuilders
                 responseMessage = ResponseMessage;
             }
 
-            await Task.Delay(_delay);
+            if (Delay != null)
+                await Task.Delay(Delay.Value);
 
             return responseMessage;
         }

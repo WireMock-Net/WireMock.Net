@@ -282,6 +282,10 @@ namespace WireMock.Server
 
             if (mappingModel.Response.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
+
+            if (mappingModel.Response.Delay != null)
+                responseBuilder = responseBuilder.WithDelay(mappingModel.Response.Delay.Value);
+
             return responseBuilder;
         }
 
@@ -332,7 +336,8 @@ namespace WireMock.Server
                     StatusCode = response.ResponseMessage.StatusCode,
                     Headers = response.ResponseMessage.Headers,
                     Body = response.ResponseMessage.Body,
-                    UseTransformer = response.UseTransformer
+                    UseTransformer = response.UseTransformer,
+                    Delay = response.Delay?.Milliseconds
                 }
             };
         }

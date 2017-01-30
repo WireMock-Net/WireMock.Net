@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace WireMock.ResponseBuilders
 {
@@ -8,10 +9,17 @@ namespace WireMock.ResponseBuilders
     public interface IDelayResponseBuilder : IResponseProvider
     {
         /// <summary>
-        /// The after delay.
+        /// The with delay.
         /// </summary>
-        /// <param name="delay">The delay.</param>
+        /// <param name="delay">The TimeSpan to delay.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithDelay(TimeSpan delay);
+
+        /// <summary>
+        /// The with delay.
+        /// </summary>
+        /// <param name="milliseconds">The milliseconds to delay.</param>
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithDelay(int milliseconds);
     }
 }

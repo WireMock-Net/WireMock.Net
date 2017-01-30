@@ -35,6 +35,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
                     .WithTransformer()
+                    .WithDelay(1000)
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
 
@@ -75,7 +76,7 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create().WithPath("/nobody").UsingGet())
-                .RespondWith(Response.Create()
+                .RespondWith(Response.Create().WithDelay(TimeSpan.FromSeconds(1))
                     .WithStatusCode(200));
 
             Console.WriteLine("Press any key to stop the server");
