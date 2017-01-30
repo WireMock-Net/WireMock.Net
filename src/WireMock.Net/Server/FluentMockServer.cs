@@ -142,6 +142,27 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Deletes the mapping.
+        /// </summary>
+        /// <param name="guid">The unique identifier.</param>
+        [PublicAPI]
+        public bool DeleteLogEntry(Guid guid)
+        {
+            lock (((ICollection)_logEntries).SyncRoot)
+            {
+                // Check a logentry exists with the same GUID, if so, remove it.
+                var existing = _logEntries.FirstOrDefault(m => m.Guid == guid);
+                if (existing != null)
+                {
+                    _logEntries.Remove(existing);
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Resets the mappings.
         /// </summary>
         public void ResetMappings()
@@ -153,9 +174,11 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// Resets the mappings.
+        /// Deletes the mapping.
         /// </summary>
-        public void DeleteMapping(Guid guid)
+        /// <param name="guid">The unique identifier.</param>
+        [PublicAPI]
+        public bool DeleteMapping(Guid guid)
         {
             lock (((ICollection)_mappings).SyncRoot)
             {
@@ -164,7 +187,10 @@ namespace WireMock.Server
                 if (existingMapping != null)
                 {
                     _mappings.Remove(existingMapping);
+                    return true;
                 }
+
+                return false;
             }
         }
 

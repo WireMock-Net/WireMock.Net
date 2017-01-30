@@ -49,9 +49,10 @@ namespace WireMock.Server
 
             // __admin/request/{guid}
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestDelete));
         }
 
-        #region Mapping
+        #region Mapping/{guid}
         private ResponseMessage MappingGet(RequestMessage requestMessage)
         {
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
@@ -90,11 +91,12 @@ namespace WireMock.Server
         {
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
 
-            DeleteMapping(guid);
+            if (DeleteMapping(guid))
+                return new ResponseMessage { Body = "Mapping removed" };
 
-            return new ResponseMessage { Body = "Mapping removed" };
+            return new ResponseMessage { Body = "Mapping not found" };
         }
-        #endregion Mapping
+        #endregion Mapping/{guid}
 
         #region Mappings
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
@@ -140,7 +142,7 @@ namespace WireMock.Server
         }
         #endregion Mappings
 
-        #region Request
+        #region Request/{guid}
         private ResponseMessage RequestGet(RequestMessage requestMessage)
         {
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
@@ -153,7 +155,17 @@ namespace WireMock.Server
 
             return ToJson(model);
         }
-        #endregion Request
+
+        private ResponseMessage RequestDelete(RequestMessage requestMessage)
+        {
+            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
+
+            if (DeleteLogEntry(guid))
+                return new ResponseMessage { Body = "Request removed" };
+
+            return new ResponseMessage { Body = "Request not found" };
+        }
+        #endregion Request/{guid}
 
         #region Requests
         private ResponseMessage RequestsGet(RequestMessage requestMessage)
