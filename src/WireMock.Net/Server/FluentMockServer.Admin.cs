@@ -124,10 +124,13 @@ namespace WireMock.Server
             var requestBuilder = InitRequestBuilder(mappingModel);
             var responseBuilder = InitResponseBuilder(mappingModel);
 
-            IRespondWithAProviderGuid respondProvider = Given(requestBuilder);
+            IRespondWithAProvider respondProvider = Given(requestBuilder);
 
             if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
+
+            if (mappingModel.Priority != null)
+                respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
 
             respondProvider.RespondWith(responseBuilder);
 
@@ -304,6 +307,7 @@ namespace WireMock.Server
             return new MappingModel
             {
                 Guid = mapping.Guid,
+                Priority = mapping.Priority,
                 Request = new RequestModel
                 {
                     Path = new PathModel

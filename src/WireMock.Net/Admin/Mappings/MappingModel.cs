@@ -16,6 +16,14 @@ namespace WireMock.Admin.Mappings
         public Guid? Guid { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        /// <value>
+        /// The priority.
+        /// </value>
+        public int? Priority { get; set; }
+
+        /// <summary>
         /// Gets or sets the request.
         /// </summary>
         /// <value>

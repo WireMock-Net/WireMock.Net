@@ -10,6 +10,14 @@ namespace WireMock
     public class Mapping
     {
         /// <summary>
+        /// Gets the priority.
+        /// </summary>
+        /// <value>
+        /// The priority.
+        /// </value>
+        public int Priority { get; }
+
+        /// <summary>
         /// Gets the unique identifier.
         /// </summary>
         /// <value>
@@ -33,8 +41,10 @@ namespace WireMock
         /// <param name="guid">The the unique identifier.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
-        public Mapping(Guid guid, IRequestMatcher requestMatcher, IResponseProvider provider)
+        /// <param name="priority">The priority for this mapping.</param>
+        public Mapping(Guid guid, IRequestMatcher requestMatcher, IResponseProvider provider, int priority)
         {
+            Priority = priority;
             Guid = guid;
             RequestMatcher = requestMatcher;
             Provider = provider;

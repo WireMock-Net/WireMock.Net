@@ -6,8 +6,9 @@ namespace WireMock.Server
     /// <summary>
     /// The respond with a provider.
     /// </summary>
-    internal class RespondWithAProvider : IRespondWithAProviderGuid
+    internal class RespondWithAProvider : IRespondWithAProvider
     {
+        private int _priority;
         private Guid? _guid;
 
         /// <summary>
@@ -40,17 +41,29 @@ namespace WireMock.Server
         public void RespondWith(IResponseProvider provider)
         {
             var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _requestMatcher, provider));
+            _registrationCallback(new Mapping(mappingGuid, _requestMatcher, provider, _priority));
         }
 
         /// <summary>
         /// Define a unique identifier for this mapping.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
-        /// <returns>The <see cref="IRespondWithAProviderGuid"/>.</returns>
-        public IRespondWithAProviderGuid WithGuid(Guid guid)
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        public IRespondWithAProvider WithGuid(Guid guid)
         {
             _guid = guid;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Define the priority for this mapping.
+        /// </summary>
+        /// <param name="priority">The priority.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        public IRespondWithAProvider AtPriority(int priority)
+        {
+            _priority = priority;
 
             return this;
         }

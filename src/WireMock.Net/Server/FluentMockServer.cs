@@ -265,8 +265,8 @@ namespace WireMock.Server
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
-        /// <returns>The <see cref="IRespondWithAProviderGuid"/>.</returns>
-        public IRespondWithAProviderGuid Given(IRequestMatcher requestMatcher)
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
         {
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }
@@ -306,9 +306,12 @@ namespace WireMock.Server
         /// <param name="ctx">The HttpListenerContext.</param>
         private async void HandleRequestAsync(HttpListenerContext ctx)
         {
-            lock (_syncRoot)
+            if (_requestProcessingDelay > TimeSpan.Zero)
             {
-                Task.Delay(_requestProcessingDelay).Wait();
+                lock (_syncRoot)
+                {
+                    Task.Delay(_requestProcessingDelay).Wait();
+                }
             }
 
             var request = _requestMapper.Map(ctx.Request);
@@ -317,7 +320,10 @@ namespace WireMock.Server
 
             try
             {
-                var targetMapping = _mappings.FirstOrDefault(route => route.IsRequestHandled(request));
+                var targetMapping = _mappings
+                    .OrderBy(m => m.Priority)
+                    .FirstOrDefault(m => m.IsRequestHandled(request));
+
                 if (targetMapping == null)
                 {
                     response = new ResponseMessage

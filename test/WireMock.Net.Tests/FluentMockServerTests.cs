@@ -65,6 +65,32 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public async Task FluentMockServer_Admin_Mappings_AtPriority()
+        {
+            _server = FluentMockServer.Start();
+
+            // given
+            _server.Given(Request.Create().WithPath("/1").UsingGet())
+                .AtPriority(2)
+                .RespondWith(Response.Create().WithStatusCode(200));
+
+            _server.Given(Request.Create().WithPath("/1").UsingGet())
+                .AtPriority(1)
+                .RespondWith(Response.Create().WithStatusCode(400));
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(2);
+            Check.That(mappings[0].Priority).Equals(2);
+            Check.That(mappings[1].Priority).Equals(1);
+
+            // when
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/1");
+
+            // then
+            Check.That((int)response.StatusCode).IsEqualTo(400);
+        }
+
+        [Test]
         public async Task FluentMockServer_Admin_Requests_Get()
         {
             // given
