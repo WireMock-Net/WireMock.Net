@@ -70,10 +70,7 @@ namespace WireMock.Net.Tests
         [TearDown]
         public void StopServer()
         {
-            if (_server != null)
-            {
-                _server.Stop();
-            }
+            _server?.Stop();
         }
 
         /// <summary>
@@ -84,17 +81,16 @@ namespace WireMock.Net.Tests
         /// </returns>
         public HttpListenerResponse CreateHttpListenerResponse()
         {
-            var port = Ports.FindFreeTcpPort();
+            var port = PortUtil.FindFreeTcpPort();
             var urlPrefix = "http://localhost:" + port + "/";
             var responseReady = new AutoResetEvent(false);
             HttpListenerResponse response = null;
             _server = new TinyHttpServer(
-                urlPrefix,
                 context =>
                     {
                         response = context.Response;
                         responseReady.Set();
-                    });
+                    }, urlPrefix);
             _server.Start();
             _responseMsgTask = new HttpClient().GetAsync(urlPrefix);
             responseReady.WaitOne();

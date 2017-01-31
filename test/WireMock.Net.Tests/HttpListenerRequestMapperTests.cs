@@ -104,7 +104,7 @@ namespace WireMock.Net.Tests
         {
             private static volatile RequestMessage _lastRequestMessage;
 
-            private MapperServer(string urlPrefix, Action<HttpListenerContext> httpHandler) : base(urlPrefix, httpHandler)
+            private MapperServer(Action<HttpListenerContext> httpHandler, string urlPrefix) : base(httpHandler, urlPrefix)
             {
             }
 
@@ -125,16 +125,16 @@ namespace WireMock.Net.Tests
 
             public new static MapperServer Start()
             {
-                var port = Ports.FindFreeTcpPort();
+                int port = PortUtil.FindFreeTcpPort();
                 UrlPrefix = "http://localhost:" + port + "/";
                 var server = new MapperServer(
-                    UrlPrefix,
                     context =>
                         {
                             LastRequestMessage = new HttpListenerRequestMapper().Map(context.Request);
                             context.Response.Close();
-                        });
+                        }, UrlPrefix);
                 ((TinyHttpServer)server).Start();
+
                 return server;
             }
 

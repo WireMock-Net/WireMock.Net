@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using WireMock.Validation;
 
 namespace WireMock.Http
 {
@@ -25,19 +28,42 @@ namespace WireMock.Http
         public bool IsStarted { get; private set; }
 
         /// <summary>
+        /// Gets the url.
+        /// </summary>
+        /// <value>
+        /// The urls.
+        /// </value>
+        public List<Uri> Urls { get; } = new List<Uri>();
+
+        /// <summary>
+        /// Gets the ports.
+        /// </summary>
+        /// <value>
+        /// The ports.
+        /// </value>
+        public List<int> Ports { get; } = new List<int>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TinyHttpServer"/> class.
         /// </summary>
-        /// <param name="urls">The urls.</param>
+        /// <param name="uriPrefixes">The uriPrefixes.</param>
         /// <param name="httpHandler">The http handler.</param>
-        public TinyHttpServer(string[] urls, Action<HttpListenerContext> httpHandler)
+        public TinyHttpServer([NotNull] Action<HttpListenerContext> httpHandler, [NotNull] params string[] uriPrefixes)
         {
+            Check.NotNull(httpHandler, nameof(httpHandler));
+            Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+
             _httpHandler = httpHandler;
 
             // Create a listener.
             _listener = new HttpListener();
-            foreach (string urlPrefix in urls)
+            foreach (string uriPrefix in uriPrefixes)
             {
-                _listener.Prefixes.Add(urlPrefix);
+                var uri = new Uri(uriPrefix);
+                Urls.Add(uri);
+                Ports.Add(uri.Port);
+
+                _listener.Prefixes.Add(uriPrefix);
             }
         }
 

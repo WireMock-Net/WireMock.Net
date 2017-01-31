@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0.0",
+    "version": "1.0.1.0",
     "title": "WireMock.Net",
     "description": "Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
     "authors": [ "Alexandre Victoor", "Stef Heyenrath" ],
@@ -15,7 +15,7 @@
         "projectUrl": "https://github.com/StefH/WireMock.Net",
         "iconUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png",
         "licenseUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE",
-        "releaseNotes": "First version"
+        "releaseNotes": "Added Admin-Interface"
     },
 
     "buildOptions": {

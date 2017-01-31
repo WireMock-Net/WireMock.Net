@@ -22,10 +22,10 @@ namespace WireMock.Net.Tests.Http
         public void Should_call_handler_on_request()
         {
             // given
-            var port = Ports.FindFreeTcpPort();
+            var port = PortUtil.FindFreeTcpPort();
             bool called = false;
             var urlPrefix = "http://localhost:" + port + "/";
-            var server = new TinyHttpServer(urlPrefix, ctx => called = true);
+            var server = new TinyHttpServer(ctx => called = true, urlPrefix);
             server.Start();
 
             // when

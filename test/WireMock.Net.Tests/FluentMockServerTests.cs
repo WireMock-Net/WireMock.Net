@@ -71,7 +71,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
+            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(_server.LogEntries).HasSize(1);
@@ -95,7 +95,7 @@ namespace WireMock.Net.Tests
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(response).IsEqualTo(@"{ msg: ""Hello world!""}");
@@ -110,7 +110,7 @@ namespace WireMock.Net.Tests
             _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyAsBase64("SGVsbG8gV29ybGQ/"));
 
             // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(response).IsEqualTo("Hello World?");
@@ -123,7 +123,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
@@ -137,8 +137,8 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
-            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/bar");
+            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/bar");
 
             // then
             var result = _server.SearchLogsFor(Request.Create().WithPath(new RegexMatcher("^/b.*"))).ToList();
@@ -146,7 +146,7 @@ namespace WireMock.Net.Tests
 
             var requestLogged = result.First();
             Check.That(requestLogged.RequestMessage.Path).IsEqualTo("/bar");
-            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Port + "/bar");
+            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Ports[0] + "/bar");
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Port + "/foo");
+            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
             _server.Reset();
 
             // then
@@ -180,7 +180,7 @@ namespace WireMock.Net.Tests
             _server.Reset();
 
             // then
-            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo"))
+            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo"))
                 .ThrowsAny();
         }
 
@@ -206,7 +206,7 @@ namespace WireMock.Net.Tests
                     .WithBody("REDIRECT SUCCESSFUL"));
 
             // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
@@ -228,7 +228,7 @@ namespace WireMock.Net.Tests
             // when
             var watch = new Stopwatch();
             watch.Start();
-            await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
             watch.Stop();
 
             // then
@@ -248,7 +248,7 @@ namespace WireMock.Net.Tests
             // when
             var watch = new Stopwatch();
             watch.Start();
-            await new HttpClient().GetStringAsync("http://localhost:" + _server.Port + "/foo");
+            await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
             watch.Stop();
 
             // then

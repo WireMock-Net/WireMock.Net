@@ -33,6 +33,14 @@ namespace WireMock.Server
         private TimeSpan _requestProcessingDelay = TimeSpan.Zero;
 
         /// <summary>
+        /// Gets the ports.
+        /// </summary>
+        /// <value>
+        /// The ports.
+        /// </value>
+        public List<int> Ports { get; }
+
+        /// <summary>
         /// Gets the urls.
         /// </summary>
         public string[] Urls { get; }
@@ -77,7 +85,7 @@ namespace WireMock.Server
             Check.Condition(port, p => p >= 0, nameof(port));
 
             if (port == 0)
-                port = Ports.FindFreeTcpPort();
+                port = PortUtil.FindFreeTcpPort();
 
             return new FluentMockServer(false, port, ssl);
         }
@@ -107,7 +115,7 @@ namespace WireMock.Server
             Check.Condition(port, p => p >= 0, nameof(port));
 
             if (port == 0)
-                port = Ports.FindFreeTcpPort();
+                port = PortUtil.FindFreeTcpPort();
 
             return new FluentMockServer(true, port, ssl);
         }
@@ -133,7 +141,9 @@ namespace WireMock.Server
         {
             Urls = urls;
 
-            _httpServer = new TinyHttpServer(urls, HandleRequestAsync);
+            _httpServer = new TinyHttpServer(HandleRequestAsync, urls);
+            Ports = _httpServer.Ports;
+
             _httpServer.Start();
 
             if (startAdminInterface)
@@ -141,7 +151,6 @@ namespace WireMock.Server
                 InitAdmin();
             }
         }
-
 
         /// <summary>
         /// Stop this server.

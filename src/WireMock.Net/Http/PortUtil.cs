@@ -6,7 +6,7 @@ namespace WireMock.Http
     /// <summary>
     /// The ports.
     /// </summary>
-    public static class Ports
+    public static class PortUtil
     {
         /// <summary>
         /// The find free TCP port.

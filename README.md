@@ -1,9 +1,9 @@
 # WireMock.Net
-A C# .NET version based on https://github.com/alexvictoor/WireMock which tries to mimic the functionality from http://WireMock.org
+A C# .NET version based on https://github.com/alexvictoor/WireMock which mimics the functionality from http://WireMock.org
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
 
-[![Version](https://img.shields.io/nuget/v/WireMock.Net.svg)](https://www.nuget.org/packages/WireMock.Net)
+[![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net)
 
 Based on class HttpListener from the .net framework, it is very lightweight and have no external dependencies.
 
