@@ -19,7 +19,7 @@ namespace WireMock.Net.ConsoleApplication
             Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 
             server
-                .Given(Request.Create().WithPath(u => u.Contains("x")).UsingGet())
+                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)

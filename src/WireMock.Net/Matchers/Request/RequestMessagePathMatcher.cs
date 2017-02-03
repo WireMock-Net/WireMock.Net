@@ -19,7 +19,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The path functions
         /// </summary>
-        private readonly Func<string, bool>[] _pathFuncs;
+        public Func<string, bool>[] Funcs { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
@@ -46,7 +46,7 @@ namespace WireMock.Matchers.Request
         public RequestMessagePathMatcher([NotNull] params Func<string, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
-            _pathFuncs = funcs;
+            Funcs = funcs;
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace WireMock.Matchers.Request
             if (Matchers != null)
                 return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Path));
 
-            if (_pathFuncs != null)
-                return _pathFuncs.Any(func => func(requestMessage.Path));
+            if (Funcs != null)
+                return Funcs.Any(func => func(requestMessage.Path));
 
             return false;
         }

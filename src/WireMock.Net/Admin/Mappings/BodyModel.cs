@@ -12,5 +12,21 @@
         /// The matcher.
         /// </value>
         public MatcherModel Matcher { get; set; }
+
+        /// <summary>
+        /// Gets or sets the function.
+        /// </summary>
+        /// <value>
+        /// The function.
+        /// </value>
+        public string Func { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data function.
+        /// </summary>
+        /// <value>
+        /// The data function.
+        /// </value>
+        public string DataFunc { get; set; }
     }
 }

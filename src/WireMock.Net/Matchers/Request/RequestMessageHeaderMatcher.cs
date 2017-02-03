@@ -11,16 +11,16 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageHeaderMatcher : IRequestMatcher
     {
-        private readonly Func<IDictionary<string, string>, bool>[] _headerFuncs;
+        /// <summary>
+        /// The functions
+        /// </summary>
+        public Func<IDictionary<string, string>, bool>[] Funcs { get; }
 
         /// <summary>
         /// The name
         /// </summary>
         public string Name { get; }
 
-        /// <summary>
-        /// Gets the matchers.
-        /// </summary>
         /// <value>
         /// The matchers.
         /// </value>
@@ -63,7 +63,7 @@ namespace WireMock.Matchers.Request
         {
             Check.NotNull(funcs, nameof(funcs));
 
-            _headerFuncs = funcs;
+            Funcs = funcs;
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_headerFuncs != null)
-                return _headerFuncs.Any(hf => hf(requestMessage.Headers));
+            if (Funcs != null)
+                return Funcs.Any(hf => hf(requestMessage.Headers));
 
             if (requestMessage.Headers == null)
                 return false;

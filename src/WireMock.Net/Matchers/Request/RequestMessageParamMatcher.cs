@@ -12,7 +12,10 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageParamMatcher : IRequestMatcher
     {
-        private readonly Func<IDictionary<string, WireMockList<string>>, bool>[] _funcs;
+        /// <summary>
+        /// The funcs
+        /// </summary>
+        public Func<IDictionary<string, WireMockList<string>>, bool>[] Funcs { get; }
 
         /// <summary>
         /// The key
@@ -49,7 +52,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageParamMatcher([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
-            _funcs = funcs;
+            Funcs = funcs;
         }
 
         /// <summary>
@@ -61,8 +64,8 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public bool IsMatch(RequestMessage requestMessage)
         {
-            if (_funcs != null)
-                return _funcs.Any(f => f(requestMessage.Query));
+            if (Funcs != null)
+                return Funcs.Any(f => f(requestMessage.Query));
 
             var values = requestMessage.GetParameter(Key);
             return values?.Intersect(Values).Count() == Values.Count();

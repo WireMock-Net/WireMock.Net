@@ -14,12 +14,12 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matcher.
         /// </summary>
-        public readonly IReadOnlyList<IMatcher> Matchers;
+        public IReadOnlyList<IMatcher> Matchers { get; }
 
         /// <summary>
         /// The url functions
         /// </summary>
-        private readonly Func<string, bool>[] _urlFuncs;
+        public Func<string, bool>[] Funcs { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
@@ -46,7 +46,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageUrlMatcher([NotNull] params Func<string, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
-            _urlFuncs = funcs;
+            Funcs = funcs;
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace WireMock.Matchers.Request
             if (Matchers != null)
                 return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Url));
 
-            if (_urlFuncs != null)
-                return _urlFuncs.Any(func => func(requestMessage.Url));
+            if (Funcs != null)
+                return Funcs.Any(func => func(requestMessage.Url));
 
             return false;
         }

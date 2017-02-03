@@ -22,5 +22,13 @@ namespace WireMock.Admin.Mappings
         /// The values.
         /// </value>
         public IList<string> Values { get; set; }
+
+        /// <summary>
+        /// Gets or sets the functions.
+        /// </summary>
+        /// <value>
+        /// The functions.
+        /// </value>
+        public string[] Funcs { get; set; }
     }
 }

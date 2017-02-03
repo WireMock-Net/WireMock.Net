@@ -161,7 +161,7 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// The reset.
+        /// Resets LogEntries and Mappings.
         /// </summary>
         public void Reset()
         {
@@ -171,7 +171,7 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// Resets the log entries.
+        /// Resets the LogEntries.
         /// </summary>
         public void ResetLogEntries()
         {
@@ -203,7 +203,7 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// Resets the mappings.
+        /// Resets the Mappings.
         /// </summary>
         public void ResetMappings()
         {

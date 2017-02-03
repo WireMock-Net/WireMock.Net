@@ -16,6 +16,14 @@ namespace WireMock.Admin.Mappings
         public object Path { get; set; }
 
         /// <summary>
+        /// Gets or sets the Url. (Can be a string or a UrlModel)
+        /// </summary>
+        /// <value>
+        /// The URL.
+        /// </value>
+        public object Url { get; set; }
+
+        /// <summary>
         /// The methods
         /// </summary>
         public string[] Methods { get; set; }

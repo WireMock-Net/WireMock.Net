@@ -22,17 +22,17 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The body function
         /// </summary>
-        private readonly Func<string, bool> _bodyFunc;
+        public Func<string, bool> Func { get; }
 
         /// <summary>
         /// The body data function
         /// </summary>
-        private readonly Func<byte[], bool> _bodyDataFunc;
+        public Func<byte[], bool> DataFunc { get; }
 
         /// <summary>
         /// The matcher.
         /// </summary>
-        public readonly IMatcher Matcher;
+        public IMatcher Matcher { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
@@ -67,7 +67,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageBodyMatcher([NotNull] Func<string, bool> func)
         {
             Check.NotNull(func, nameof(func));
-            _bodyFunc = func;
+            Func = func;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageBodyMatcher([NotNull] Func<byte[], bool> func)
         {
             Check.NotNull(func, nameof(func));
-            _bodyDataFunc = func;
+            DataFunc = func;
         }
 
         /// <summary>
@@ -112,11 +112,11 @@ namespace WireMock.Matchers.Request
             if (_bodyData != null)
                 return requestMessage.BodyAsBytes == _bodyData;
 
-            if (_bodyFunc != null)
-                return _bodyFunc(requestMessage.Body);
+            if (Func != null)
+                return Func(requestMessage.Body);
 
-            if (_bodyDataFunc != null)
-                return _bodyDataFunc(requestMessage.BodyAsBytes);
+            if (DataFunc != null)
+                return DataFunc(requestMessage.BodyAsBytes);
 
             return false;
         }

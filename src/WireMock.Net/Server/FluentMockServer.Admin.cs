@@ -228,6 +228,17 @@ namespace WireMock.Server
                     requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
             }
 
+            string url = mappingModel.Request.Url as string;
+            if (url != null)
+                requestBuilder = requestBuilder.WithUrl(url);
+            else
+            {
+                JToken urlToken = (JToken)mappingModel.Request.Url;
+                UrlModel urlModel = urlToken.ToObject<UrlModel>();
+                if (urlModel?.Matchers != null)
+                    requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
+            }
+
             if (mappingModel.Request.Methods != null)
                 requestBuilder = requestBuilder.UsingVerb(mappingModel.Request.Methods);
             else
@@ -298,6 +309,7 @@ namespace WireMock.Server
             var response = (Response)mapping.Provider;
 
             var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
+            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
@@ -310,29 +322,46 @@ namespace WireMock.Server
                 Priority = mapping.Priority,
                 Request = new RequestModel
                 {
-                    Path = new PathModel
+                    Path = pathMatchers != null ? new PathModel
                     {
-                        Matchers = pathMatchers != null ? Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)) : null
-                    },
+                        Matchers = Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
+                        Funcs = Map(pathMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
+                    } : null,
+
+                    Url = urlMatchers != null ? new UrlModel
+                    {
+                        Matchers = Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
+                        Funcs = Map(urlMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
+                    } : null,
+
                     Methods = methodMatcher != null ? methodMatcher.Methods : new[] { "any" },
+
                     Headers = headerMatchers?.Select(hm => new HeaderModel
                     {
                         Name = hm.Name,
-                        Matchers = Map(hm.Matchers)
+                        Matchers = Map(hm.Matchers),
+                        Funcs = Map(hm.Funcs)
                     }).ToList(),
-                    Cookies = cookieMatchers?.Select(hm => new CookieModel
+
+                    Cookies = cookieMatchers?.Select(cm => new CookieModel
                     {
-                        Name = hm.Name,
-                        Matchers = Map(hm.Matchers)
+                        Name = cm.Name,
+                        Matchers = Map(cm.Matchers),
+                        Funcs = Map(cm.Funcs)
                     }).ToList(),
-                    Params = paramsMatchers?.Select(hm => new ParamModel
+
+                    Params = paramsMatchers?.Select(pm => new ParamModel
                     {
-                        Name = hm.Key,
-                        Values = hm.Values?.ToList()
+                        Name = pm.Key,
+                        Values = pm.Values?.ToList(),
+                        Funcs = Map(pm.Funcs)
                     }).ToList(),
+
                     Body = new BodyModel
                     {
-                        Matcher = bodyMatcher != null ? Map(bodyMatcher.Matcher) : null
+                        Matcher = bodyMatcher != null ? Map(bodyMatcher.Matcher) : null,
+                        Func = bodyMatcher != null ? Map(bodyMatcher.Func) : null,
+                        DataFunc = bodyMatcher != null ? Map(bodyMatcher.DataFunc) : null
                     }
                 },
                 Response = new ResponseModel
@@ -361,6 +390,16 @@ namespace WireMock.Server
                 Name = matcher.GetType().Name,
                 Pattern = matcher.GetPattern()
             };
+        }
+
+        private string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
+        {
+            return funcs?.Select(Map).Where(x => x != null).ToArray();
+        }
+
+        private string Map<T>([CanBeNull] Func<T, bool> func)
+        {
+            return func?.ToString();
         }
 
         private IMatcher Map([CanBeNull] MatcherModel matcher)
