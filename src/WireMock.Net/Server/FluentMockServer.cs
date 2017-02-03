@@ -32,6 +32,8 @@ namespace WireMock.Server
 
         private TimeSpan _requestProcessingDelay = TimeSpan.Zero;
 
+        private bool _allowPartialMapping;
+
         /// <summary>
         /// Gets the ports.
         /// </summary>
@@ -258,6 +260,17 @@ namespace WireMock.Server
             lock (_syncRoot)
             {
                 _requestProcessingDelay = delay;
+            }
+        }
+
+        /// <summary>
+        /// Allows the partial mapping.
+        /// </summary>
+        public void AllowPartialMapping()
+        {
+            lock (_syncRoot)
+            {
+                _allowPartialMapping = true;
             }
         }
 

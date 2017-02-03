@@ -66,31 +66,5 @@ namespace WireMock.Admin.Requests
         /// The body.
         /// </value>
         public string Body { get; set; }
-
-        /*
-        "id" : "45760a03-eebb-4387-ad0d-bb89b5d3d662",
-        "request" : {
-            "url" : "/received-request/9",
-            "absoluteUrl" : "http://localhost:56715/received-request/9",
-            "method" : "GET",
-            "clientIp" : "127.0.0.1",
-            "headers" : {
-                "Connection" : "keep-alive",
-                "Host" : "localhost:56715",
-                "User-Agent" : "Apache-HttpClient/4.5.1 (Java/1.7.0_51)"
-            },
-            "cookies" : { },
-            "browserProxyRequest" : false,
-            "loggedDate" : 1471442494809,
-            "bodyAsBase64" : "",
-            "body" : "",
-            "loggedDateString" : "2016-08-17T14:01:34Z"
-        },
-        "responseDefinition" : {
-            "status" : 404,
-            "transformers" : [ ],
-            "fromConfiguredStub" : false,
-            "transformerParameters" : { }
-        }*/
     }
 }
