@@ -183,14 +183,14 @@ namespace WireMock.Net.Tests
 
             // when
             await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
-            _server.Reset();
+            _server.ResetLogEntries();
 
             // then
             Check.That(_server.LogEntries).IsEmpty();
         }
 
         [Test]
-        public void Should_reset_routes()
+        public void Should_reset_mappings()
         {
             // given
             _server = FluentMockServer.Start();
@@ -203,9 +203,10 @@ namespace WireMock.Net.Tests
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
-            _server.Reset();
+            _server.ResetMappings();
 
             // then
+            Check.That(_server.Mappings).IsEmpty();
             Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo"))
                 .ThrowsAny();
         }

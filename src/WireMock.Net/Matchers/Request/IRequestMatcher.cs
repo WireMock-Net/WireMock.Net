@@ -11,9 +11,10 @@ namespace WireMock.Matchers.Request
         /// Determines whether the specified RequestMessage is match.
         /// </summary>
         /// <param name="requestMessage">The RequestMessage.</param>
+        /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
         ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        bool IsMatch([NotNull] RequestMessage requestMessage);
+        bool IsMatch([NotNull] RequestMessage requestMessage, [NotNull] RequestMatchResult requestMatchResult);
     }
 }

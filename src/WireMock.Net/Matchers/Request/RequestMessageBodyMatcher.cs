@@ -98,10 +98,22 @@ namespace WireMock.Matchers.Request
         /// Determines whether the specified RequestMessage is match.
         /// </summary>
         /// <param name="requestMessage">The RequestMessage.</param>
+        /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
         ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        {
+            bool isMatch = IsMatch(requestMessage);
+            if (isMatch)
+                requestMatchResult.Matched++;
+
+            requestMatchResult.Total++;
+
+            return isMatch;
+        }
+
+        private bool IsMatch(RequestMessage requestMessage)
         {
             if (Matcher != null)
                 return Matcher.IsMatch(requestMessage.Body);
@@ -113,10 +125,10 @@ namespace WireMock.Matchers.Request
                 return requestMessage.BodyAsBytes == _bodyData;
 
             if (Func != null)
-                return Func(requestMessage.Body);
+                return requestMessage.Body != null && Func(requestMessage.Body);
 
-            if (DataFunc != null)
-                return DataFunc(requestMessage.BodyAsBytes);
+            if (DataFunc != null && requestMessage.BodyAsBytes != null)
+                return requestMessage.BodyAsBytes != null && DataFunc(requestMessage.BodyAsBytes);
 
             return false;
         }

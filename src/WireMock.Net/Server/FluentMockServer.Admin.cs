@@ -202,6 +202,11 @@ namespace WireMock.Server
                     Body = logEntry.ResponseMessage.Body,
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
                     Headers = logEntry.ResponseMessage.Headers
+                },
+                RequestMatchResult = new LogRequestMatchModel
+                {
+                    Matched = logEntry.RequestMatchResult.Matched,
+                    Total = logEntry.RequestMatchResult.Total
                 }
             };
         }

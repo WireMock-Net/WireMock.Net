@@ -5,6 +5,7 @@ using NFluent;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.Matchers;
+using WireMock.Matchers.Request;
 
 namespace WireMock.Net.Tests
 {
@@ -21,7 +22,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -32,8 +34,9 @@ namespace WireMock.Net.Tests
             var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla");
             var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla");
 
-            Check.That(requestBuilder.IsMatch(request1)).IsTrue();
-            Check.That(requestBuilder.IsMatch(request2)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.IsMatch(request1, requestMatchResult)).IsTrue();
+            Check.That(requestBuilder.IsMatch(request2, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -46,7 +49,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -59,7 +63,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -72,7 +77,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla");
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -85,7 +91,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -98,7 +105,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -111,7 +119,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "POST");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -124,7 +133,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "GET");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -139,7 +149,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", body, bodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -152,7 +163,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -165,7 +177,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD");
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -178,7 +191,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -193,7 +207,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -208,7 +223,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -223,7 +239,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "ABC" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -238,7 +255,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "TaTa" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -251,7 +269,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", null, null, null, new Dictionary<string, string> { { "session", "abc" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -266,7 +285,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -281,7 +301,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -296,7 +317,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -316,7 +338,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -336,7 +359,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -351,7 +375,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -366,7 +391,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -381,7 +407,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
 
         [Test]
@@ -394,7 +421,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -407,7 +435,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo?bar"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -420,7 +449,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsTrue();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
         }
 
         [Test]
@@ -433,7 +463,8 @@ namespace WireMock.Net.Tests
             var request = new RequestMessage(new Uri("http://localhost/test=7"), "PUT");
 
             // then
-            Check.That(spec.IsMatch(request)).IsFalse();
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
         }
     }
 }

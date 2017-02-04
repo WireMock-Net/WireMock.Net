@@ -37,14 +37,32 @@ namespace WireMock.Matchers.Request
         /// Determines whether the specified RequestMessage is match.
         /// </summary>
         /// <param name="requestMessage">The RequestMessage.</param>
+        /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
         ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public virtual bool IsMatch(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            return _type == CompositeMatcherType.And ?
-                RequestMatchers.All(matcher => matcher.IsMatch(requestMessage)) :
-                RequestMatchers.Any(matcher => matcher.IsMatch(requestMessage));
+            var list = new List<bool>();
+            if (_type == CompositeMatcherType.And)
+            {
+                foreach (var requestMatcher in RequestMatchers)
+                {
+                    bool isMatch = requestMatcher.IsMatch(requestMessage, requestMatchResult);
+                    list.Add(isMatch);
+                }
+
+                return list.All(match => match);
+            }
+            
+            //var orRequestMatchResult = new RequestMatchResult();
+            foreach (var requestMatcher in RequestMatchers)
+            {
+                bool isMatch = requestMatcher.IsMatch(requestMessage, requestMatchResult);
+                list.Add(isMatch);
+            }
+
+            return list.Any(match => match);
         }
     }
 }

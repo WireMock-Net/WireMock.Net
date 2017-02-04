@@ -70,15 +70,30 @@ namespace WireMock.Matchers.Request
         /// Determines whether the specified RequestMessage is match.
         /// </summary>
         /// <param name="requestMessage">The RequestMessage.</param>
+        /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
         ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage)
+        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        {
+            bool isMatch = IsMatch(requestMessage);
+            if (isMatch)
+                requestMatchResult.Matched++;
+
+            requestMatchResult.Total++;
+
+            return isMatch;
+        }
+
+        private bool IsMatch(RequestMessage requestMessage)
         {
             if (Funcs != null)
-                return Funcs.Any(hf => hf(requestMessage.Headers));
+                return requestMessage.Headers != null && Funcs.Any(hf => hf(requestMessage.Headers));
 
             if (requestMessage.Headers == null)
+                return false;
+
+            if (!requestMessage.Headers.ContainsKey(Name))
                 return false;
 
             string headerValue = requestMessage.Headers[Name];

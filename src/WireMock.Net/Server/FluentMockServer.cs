@@ -245,7 +245,8 @@ namespace WireMock.Server
         {
             lock (((ICollection)_logEntries).SyncRoot)
             {
-                return _logEntries.Where(log => matcher.IsMatch(log.RequestMessage));
+                var requestMatchResult = new RequestMatchResult();
+                return _logEntries.Where(log => matcher.IsMatch(log.RequestMessage, requestMatchResult));
             }
         }
 
@@ -330,12 +331,34 @@ namespace WireMock.Server
             var request = _requestMapper.Map(ctx.Request);
 
             ResponseMessage response = null;
-
+            RequestMatchResult requestMatchResult = null;
             try
             {
-                var targetMapping = _mappings
-                    .OrderBy(m => m.Priority)
-                    .FirstOrDefault(m => m.IsRequestHandled(request));
+                var possibleMatchingMappings = _mappings
+                    .Select(m => new { Mapping = m, MatchResult = m.IsRequestHandled(request) })
+                    .ToList();
+
+                Mapping targetMapping;
+                if (_allowPartialMapping)
+                {
+                    var orderedMappings = possibleMatchingMappings
+                        .OrderBy(m => m.Mapping.Priority)
+                        .ThenBy(m => m.MatchResult)
+                        .ToList();
+
+                    var bestPartialMatch = orderedMappings.FirstOrDefault();
+                    targetMapping = bestPartialMatch?.Mapping;
+                    requestMatchResult = bestPartialMatch?.MatchResult;
+                }
+                else
+                {
+                    var perfectMatch = possibleMatchingMappings
+                        .OrderBy(m => m.Mapping.Priority)
+                        .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
+
+                    targetMapping = perfectMatch?.Mapping;
+                    requestMatchResult = perfectMatch?.MatchResult;
+                }
 
                 if (targetMapping == null)
                 {
@@ -364,7 +387,8 @@ namespace WireMock.Server
                 {
                     Guid = Guid.NewGuid(),
                     RequestMessage = request,
-                    ResponseMessage = response
+                    ResponseMessage = response,
+                    RequestMatchResult = requestMatchResult
                 };
 
                 LogRequest(log);

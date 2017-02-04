@@ -1,4 +1,5 @@
 ﻿using System;
+using WireMock.Matchers.Request;
 
 namespace WireMock.Logging
 {
@@ -30,5 +31,13 @@ namespace WireMock.Logging
         /// The response message.
         /// </value>
         public ResponseMessage ResponseMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request match result.
+        /// </summary>
+        /// <value>
+        /// The request match result.
+        /// </value>
+        public RequestMatchResult RequestMatchResult { get; set; }
     }
 }

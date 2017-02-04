@@ -64,12 +64,14 @@ namespace WireMock
         /// Determines whether the RequestMessage is handled.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>
-        ///   <c>true</c> if RequestMessage is handled; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsRequestHandled(RequestMessage requestMessage)
+        /// <returns>The <see cref="RequestMatchResult"/>.</returns>
+        public RequestMatchResult IsRequestHandled(RequestMessage requestMessage)
         {
-            return RequestMatcher.IsMatch(requestMessage);
+            var result = new RequestMatchResult();
+
+            RequestMatcher.IsMatch(requestMessage, result);
+
+            return result;
         }
     }
 }

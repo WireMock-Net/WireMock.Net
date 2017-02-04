@@ -30,5 +30,13 @@ namespace WireMock.Admin.Requests
         /// The response.
         /// </value>
         public LogResponseModel Response { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request match result.
+        /// </summary>
+        /// <value>
+        /// The request match result.
+        /// </value>
+        public LogRequestMatchModel RequestMatchResult { get; set; }
     }
 }
