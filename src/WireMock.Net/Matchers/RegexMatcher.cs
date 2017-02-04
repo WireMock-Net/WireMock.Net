@@ -18,12 +18,18 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
-        public RegexMatcher([NotNull, RegexPattern] string pattern)
+        /// <param name="ignoreCase">IgnoreCase</param>
+        public RegexMatcher([NotNull, RegexPattern] string pattern, bool ignoreCase = false)
         {
             Check.NotNull(pattern, nameof(pattern));
 
             _pattern = pattern;
-            _expression = new Regex(_pattern, RegexOptions.Compiled);
+
+            RegexOptions options = RegexOptions.Compiled;
+            if (ignoreCase)
+                options |= RegexOptions.IgnoreCase;
+            
+            _expression = new Regex(_pattern, options);
         }
 
         /// <summary>
