@@ -29,6 +29,7 @@
         },
         "Handlebars.Net": "1.8.0",
         "Newtonsoft.Json": "6.0.8",
+        "SimMetrics.Net": "1.0.1",
         "XPath2": "1.0.3.1"
     },
 

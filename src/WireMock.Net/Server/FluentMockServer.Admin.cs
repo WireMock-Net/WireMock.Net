@@ -205,7 +205,7 @@ namespace WireMock.Server
                 },
                 RequestMatchResult = new LogRequestMatchModel
                 {
-                    Matched = logEntry.RequestMatchResult.Matched,
+                    MatchScore = logEntry.RequestMatchResult.MatchScore,
                     Total = logEntry.RequestMatchResult.Total
                 }
             };
@@ -392,7 +392,7 @@ namespace WireMock.Server
 
             return new MatcherModel
             {
-                Name = matcher.GetType().Name,
+                Name = matcher.GetName(),
                 Pattern = matcher.GetPattern()
             };
         }

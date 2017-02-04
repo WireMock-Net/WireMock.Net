@@ -8,7 +8,7 @@ namespace WireMock.Matchers
     /// <summary>
     /// Regular Expression Matcher
     /// </summary>
-    /// <seealso cref="WireMock.Matchers.IMatcher" />
+    /// <seealso cref="IMatcher" />
     public class RegexMatcher : IMatcher
     {
         private readonly string _pattern;
@@ -35,22 +35,20 @@ namespace WireMock.Matchers
         /// <summary>
         /// Determines whether the specified input is match.
         /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified input is match; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsMatch(string input)
+        /// <param name="input">The input string</param>
+        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        public double IsMatch(string input)
         {
             if (input == null)
-                return false;
+                return MatchScores.Mismatch;
 
             try
             {
-                return _expression.IsMatch(input);
+                return MatchScores.ToScore(_expression.IsMatch(input));
             }
             catch (Exception)
             {
-                return false;
+                return MatchScores.Mismatch;
             }
         }
 
@@ -61,6 +59,17 @@ namespace WireMock.Matchers
         public string GetPattern()
         {
             return _pattern;
+        }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <returns>
+        /// Name
+        /// </returns>
+        public virtual string GetName()
+        {
+            return "RegexMatcher";
         }
     }
 }

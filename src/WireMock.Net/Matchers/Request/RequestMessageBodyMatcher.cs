@@ -10,11 +10,6 @@ namespace WireMock.Matchers.Request
     public class RequestMessageBodyMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The body.
-        /// </summary>
-        private readonly string _body;
-
-        /// <summary>
         /// The body as byte[].
         /// </summary>
         private readonly byte[] _bodyData;
@@ -40,10 +35,8 @@ namespace WireMock.Matchers.Request
         /// <param name="body">
         /// The body Regex pattern.
         /// </param>
-        public RequestMessageBodyMatcher([NotNull] string body)
+        public RequestMessageBodyMatcher([NotNull] string body) : this(new SimMetricsMatcher(body))
         {
-            Check.NotNull(body, nameof(body));
-            _body = body;
         }
 
         /// <summary>
@@ -100,37 +93,33 @@ namespace WireMock.Matchers.Request
         /// <param name="requestMessage">The RequestMessage.</param>
         /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
-        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
+        /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            bool isMatch = IsMatch(requestMessage);
-            if (isMatch)
-                requestMatchResult.Matched++;
+            double score = IsMatch(requestMessage);
+            requestMatchResult.MatchScore += score;
 
             requestMatchResult.Total++;
 
-            return isMatch;
+            return score;
         }
 
-        private bool IsMatch(RequestMessage requestMessage)
+        private double IsMatch(RequestMessage requestMessage)
         {
             if (Matcher != null)
                 return Matcher.IsMatch(requestMessage.Body);
 
-            if (_body != null)
-                return requestMessage.Body == _body;
-
             if (_bodyData != null)
-                return requestMessage.BodyAsBytes == _bodyData;
+                return MatchScores.ToScore(requestMessage.BodyAsBytes == _bodyData);
 
             if (Func != null)
-                return requestMessage.Body != null && Func(requestMessage.Body);
+                return MatchScores.ToScore(requestMessage.Body != null && Func(requestMessage.Body));
 
             if (DataFunc != null && requestMessage.BodyAsBytes != null)
-                return requestMessage.BodyAsBytes != null && DataFunc(requestMessage.BodyAsBytes);
+                return MatchScores.ToScore(requestMessage.BodyAsBytes != null && DataFunc(requestMessage.BodyAsBytes));
 
-            return false;
+            return MatchScores.Mismatch;
         }
     }
 }

@@ -8,12 +8,12 @@ namespace WireMock.Matchers.Request
     public class RequestMatchResult : IComparable
     {
         /// <summary>
-        /// Gets or sets the number of matches.
+        /// Gets or sets the matches score.
         /// </summary>
         /// <value>
         /// The number of matches.
         /// </value>
-        public int Matched { get; set; }
+        public double MatchScore { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of matches.
@@ -29,7 +29,7 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// <c>true</c> if this instance is perfect match; otherwise, <c>false</c>.
         /// </value>
-        public bool IsPerfectMatch => Matched == Total;
+        public bool IsPerfectMatch => Math.Abs(MatchScore - Total) < MatchScores.Tolerance;
 
         /// <summary>
         /// Gets the match percentage.
@@ -37,7 +37,7 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The match percentage.
         /// </value>
-        public double MatchPercentage => Total == 0 ? 100 : 100.0 * Matched / Total;
+        public double MatchPercentage => Total == 0 ? 1.0 : MatchScore / Total;
 
         /// <summary>
         /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.

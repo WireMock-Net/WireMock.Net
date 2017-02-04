@@ -11,7 +11,7 @@
         /// <value>
         /// The number of matches.
         /// </value>
-        public int Matched { get; set; }
+        public double MatchScore { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of matches.
@@ -27,7 +27,7 @@
         /// <value>
         /// <c>true</c> if this instance is perfect match; otherwise, <c>false</c>.
         /// </value>
-        public bool IsPerfectMatch => Matched == Total;
+        public bool IsPerfectMatch => MatchScore == Total;
 
         /// <summary>
         /// Gets the match percentage.
@@ -35,6 +35,6 @@
         /// <value>
         /// The match percentage.
         /// </value>
-        public double MatchPercentage => Total == 0 ? 100 : 100.0 * Matched / Total;
+        public double MatchPercentage => Total == 0 ? 100 : 100.0 * MatchScore / Total;
     }
 }

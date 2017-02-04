@@ -28,25 +28,23 @@ namespace WireMock.Matchers
         /// <summary>
         /// Determines whether the specified input is match.
         /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified input is match; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsMatch(string input)
+        /// <param name="input">The input string</param>
+        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        public double IsMatch(string input)
         {
             if (input == null)
-                return false;
+                return MatchScores.Mismatch;
 
             try
             {
                 var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
                 object result = nav.XPath2Evaluate($"boolean({_pattern})");
 
-                return true.Equals(result);
+                return MatchScores.ToScore(true.Equals(result));
             }
             catch (Exception)
             {
-                return false;
+                return MatchScores.Mismatch;
             }
         }
 
@@ -57,6 +55,17 @@ namespace WireMock.Matchers
         public string GetPattern()
         {
             return _pattern;
+        }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <returns>
+        /// Name
+        /// </returns>
+        public string GetName()
+        {
+            return "XPathMatcher";
         }
     }
 }

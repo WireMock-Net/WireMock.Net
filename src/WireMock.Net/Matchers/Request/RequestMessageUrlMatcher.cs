@@ -55,28 +55,27 @@ namespace WireMock.Matchers.Request
         /// <param name="requestMessage">The RequestMessage.</param>
         /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
-        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
+        /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            bool isMatch = IsMatch(requestMessage);
-            if (isMatch)
-                requestMatchResult.Matched++;
+            double score = IsMatch(requestMessage);
+            requestMatchResult.MatchScore += score;
 
             requestMatchResult.Total++;
 
-            return isMatch;
+            return score;
         }
 
-        private bool IsMatch(RequestMessage requestMessage)
+        private double IsMatch(RequestMessage requestMessage)
         {
             if (Matchers != null)
-                return Matchers.Any(matcher => matcher.IsMatch(requestMessage.Url));
+                return Matchers.Max(matcher => matcher.IsMatch(requestMessage.Url));
 
             if (Funcs != null)
-                return requestMessage.Url != null && Funcs.Any(func => func(requestMessage.Url));
+                return MatchScores.ToScore(requestMessage.Url != null && Funcs.Any(func => func(requestMessage.Url)));
 
-            return false;
+            return MatchScores.Mismatch;
         }
     }
 }

@@ -9,15 +9,19 @@
         /// Determines whether the specified input is match.
         /// </summary>
         /// <param name="input">The input.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified input is match; otherwise, <c>false</c>.
-        /// </returns>
-        bool IsMatch(string input);
+        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        double IsMatch(string input);
 
         /// <summary>
         /// Gets the pattern.
         /// </summary>
         /// <returns>Pattern</returns>
         string GetPattern();
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <returns>Name</returns>
+        string GetName();
     }
 }

@@ -39,30 +39,29 @@ namespace WireMock.Matchers.Request
         /// <param name="requestMessage">The RequestMessage.</param>
         /// <param name="requestMatchResult">The RequestMatchResult.</param>
         /// <returns>
-        ///   <c>true</c> if the specified RequestMessage is match; otherwise, <c>false</c>.
+        /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        public bool IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            var list = new List<bool>();
+            var list = new List<double>();
             if (_type == CompositeMatcherType.And)
             {
                 foreach (var requestMatcher in RequestMatchers)
                 {
-                    bool isMatch = requestMatcher.IsMatch(requestMessage, requestMatchResult);
-                    list.Add(isMatch);
+                    double score = requestMatcher.IsMatch(requestMessage, requestMatchResult);
+                    list.Add(score);
                 }
 
-                return list.All(match => match);
+                return list.Sum() / list.Count;
             }
             
-            //var orRequestMatchResult = new RequestMatchResult();
             foreach (var requestMatcher in RequestMatchers)
             {
-                bool isMatch = requestMatcher.IsMatch(requestMessage, requestMatchResult);
-                list.Add(isMatch);
+                double score = requestMatcher.IsMatch(requestMessage, requestMatchResult);
+                list.Add(score);
             }
 
-            return list.Any(match => match);
+            return list.Max();
         }
     }
 }

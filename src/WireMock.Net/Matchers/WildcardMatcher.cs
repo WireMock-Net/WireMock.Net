@@ -17,5 +17,16 @@ namespace WireMock.Matchers
         public WildcardMatcher([NotNull] string pattern, bool ignoreCase = false) : base("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", ignoreCase)
         {
         }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <returns>
+        /// Name
+        /// </returns>
+        public new string GetName()
+        {
+            return "WildcardMatcher";
+        }
     }
 }
