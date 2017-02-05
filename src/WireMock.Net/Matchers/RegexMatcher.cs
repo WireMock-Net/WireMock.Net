@@ -56,7 +56,7 @@ namespace WireMock.Matchers
         /// Gets the pattern.
         /// </summary>
         /// <returns>Pattern</returns>
-        public string GetPattern()
+        public virtual string GetPattern()
         {
             return _pattern;
         }

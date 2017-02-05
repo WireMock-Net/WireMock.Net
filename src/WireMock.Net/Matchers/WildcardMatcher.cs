@@ -9,6 +9,8 @@ namespace WireMock.Matchers
     /// <seealso cref="IMatcher" />
     public class WildcardMatcher : RegexMatcher
     {
+        private readonly string _pattern;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
         /// </summary>
@@ -16,6 +18,16 @@ namespace WireMock.Matchers
         /// <param name="ignoreCase">IgnoreCase</param>
         public WildcardMatcher([NotNull] string pattern, bool ignoreCase = false) : base("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", ignoreCase)
         {
+            _pattern = pattern;
+        }
+
+        /// <summary>
+        /// Gets the pattern.
+        /// </summary>
+        /// <returns>Pattern</returns>
+        public override string GetPattern()
+        {
+            return _pattern;
         }
 
         /// <summary>
@@ -24,7 +36,7 @@ namespace WireMock.Matchers
         /// <returns>
         /// Name
         /// </returns>
-        public new string GetName()
+        public override string GetName()
         {
             return "WildcardMatcher";
         }
