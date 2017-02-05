@@ -290,7 +290,55 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_wildcard()
+        public void Should_specify_requests_matching_given_body_using_ExactMatcher_true()
+        {
+            // given
+            var requestBuilder = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new ExactMatcher("cat"));
+
+            // when
+            string bodyAsString = "cat";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_using_ExactMatcher_false()
+        {
+            // given
+            var requestBuilder = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new ExactMatcher("cat"));
+
+            // when
+            string bodyAsString = "caR";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(1.0);
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher()
+        {
+            // given
+            var requestBuilder = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody("The cat walks in the street.");
+
+            // when
+            string bodyAsString = "The car drives in the street.";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(1.0).And.IsGreaterThan(0.5);
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_using_WildcardMatcher()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new WildcardMatcher("H*o*"));
@@ -306,7 +354,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_regexmatcher()
+        public void Should_specify_requests_matching_given_body_using_RegexMatcher()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
@@ -322,7 +370,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_xpathmatcher_true()
+        public void Should_specify_requests_matching_given_body_using_XPathMatcher_true()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
@@ -343,7 +391,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_xpathmatcher_false()
+        public void Should_specify_requests_matching_given_body_using_XPathMatcher_false()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
@@ -364,7 +412,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_true()
+        public void Should_specify_requests_matching_given_body_using_JsonPathMatcher_true()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
@@ -380,7 +428,7 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_as_jsonpathmatcher_false()
+        public void Should_specify_requests_matching_given_body_using_JsonPathMatcher_false()
         {
             // given
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
