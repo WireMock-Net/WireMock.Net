@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests
             foreach (var test in tests)
             {
                 var matcher = new WildcardMatcher(test.p);
-                Assert.IsTrue(matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
+                Assert.AreEqual(1.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
             }
         }
 
@@ -52,7 +52,7 @@ namespace WireMock.Net.Tests
             foreach (var test in tests)
             {
                 var matcher = new WildcardMatcher(test.p);
-                Assert.IsFalse(matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
+                Assert.AreEqual(0.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
             }
         }
     }

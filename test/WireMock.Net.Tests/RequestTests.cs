@@ -23,7 +23,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -35,8 +35,8 @@ namespace WireMock.Net.Tests
             var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla");
 
             var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.IsMatch(request1, requestMatchResult)).IsTrue();
-            Check.That(requestBuilder.IsMatch(request2, requestMatchResult)).IsTrue();
+            Check.That(requestBuilder.IsMatch(request1, requestMatchResult)).IsEqualTo(1.0);
+            Check.That(requestBuilder.IsMatch(request2, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -192,7 +192,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -224,7 +224,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -256,7 +256,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -286,7 +286,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -302,7 +302,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -318,7 +318,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -339,7 +339,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -360,7 +360,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -376,7 +376,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -392,7 +392,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -408,7 +408,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -436,7 +436,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -450,7 +450,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsTrue();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Test]
@@ -464,7 +464,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.IsMatch(request, requestMatchResult)).IsFalse();
+            Check.That(spec.IsMatch(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
     }
 }
