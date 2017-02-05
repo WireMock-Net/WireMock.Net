@@ -5,11 +5,8 @@ A C# .NET version based on https://github.com/alexvictoor/WireMock which mimics 
 
 [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net)
 
-Based on class HttpListener from the .net framework, it is very lightweight and have no external dependencies.
-
 ## Stubbing
-A core feature of WireMock is the ability to return canned HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
-
+A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
 
 ## Using WireMock in UnitTest framework
 You can use your favorite test framework and use WireMock within your tests, see
