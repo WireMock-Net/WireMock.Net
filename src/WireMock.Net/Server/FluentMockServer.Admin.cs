@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
@@ -390,7 +389,10 @@ namespace WireMock.Server
 
         private MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
-            return matchers?.Select(Map).Where(x => x != null).ToArray();
+            if (matchers == null || !matchers.Any())
+                return null;
+
+            return matchers.Select(Map).Where(x => x != null).ToArray();
         }
 
         private MatcherModel Map([CanBeNull] IMatcher matcher)
@@ -407,7 +409,10 @@ namespace WireMock.Server
 
         private string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
         {
-            return funcs?.Select(Map).Where(x => x != null).ToArray();
+            if (funcs == null || !funcs.Any())
+                return null;
+
+            return funcs.Select(Map).Where(x => x != null).ToArray();
         }
 
         private string Map<T>([CanBeNull] Func<T, bool> func)
