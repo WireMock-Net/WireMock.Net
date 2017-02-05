@@ -108,7 +108,7 @@ namespace WireMock.Matchers
         /// <returns>Name</returns>
         public string GetName()
         {
-            return $"SimMetricsMatcher ({_simMetricType})";
+            return $"SimMetricsMatcher.{_simMetricType}";
         }
     }
 }

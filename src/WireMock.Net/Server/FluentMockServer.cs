@@ -331,6 +331,7 @@ namespace WireMock.Server
             var request = _requestMapper.Map(ctx.Request);
 
             ResponseMessage response = null;
+            Mapping targetMapping = null;
             RequestMatchResult requestMatchResult = null;
             try
             {
@@ -338,15 +339,19 @@ namespace WireMock.Server
                     .Select(m => new { Mapping = m, MatchResult = m.IsRequestHandled(request) })
                     .ToList();
 
-                Mapping targetMapping;
                 if (_allowPartialMapping)
                 {
                     var orderedMappings = possibleMatchingMappings
-                        .OrderBy(m => m.Mapping.Priority)
-                        .ThenBy(m => m.MatchResult)
+                        .Where(pm =>
+                            (pm.Mapping.Provider is DynamicResponseProvider && pm.MatchResult.IsPerfectMatch) ||
+                            !(pm.Mapping.Provider is DynamicResponseProvider)
+                        )
+                        .OrderBy(m => m.MatchResult)
+                        .ThenBy(m => m.Mapping.Priority)
                         .ToList();
 
                     var bestPartialMatch = orderedMappings.FirstOrDefault();
+
                     targetMapping = bestPartialMatch?.Mapping;
                     requestMatchResult = bestPartialMatch?.MatchResult;
                 }
@@ -388,6 +393,7 @@ namespace WireMock.Server
                     Guid = Guid.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
+                    MappingGuid = targetMapping?.Guid,
                     RequestMatchResult = requestMatchResult
                 };
 

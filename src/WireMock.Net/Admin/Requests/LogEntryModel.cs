@@ -32,6 +32,14 @@ namespace WireMock.Admin.Requests
         public LogResponseModel Response { get; set; }
 
         /// <summary>
+        /// Gets or sets the mapping unique identifier.
+        /// </summary>
+        /// <value>
+        /// The mapping unique identifier.
+        /// </value>
+        public Guid? MappingGuid { get; set; }
+
+        /// <summary>
         /// Gets or sets the request match result.
         /// </summary>
         /// <value>

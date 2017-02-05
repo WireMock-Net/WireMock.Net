@@ -39,5 +39,13 @@ namespace WireMock.Logging
         /// The request match result.
         /// </value>
         public RequestMatchResult RequestMatchResult { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mapping unique identifier.
+        /// </summary>
+        /// <value>
+        /// The mapping unique identifier.
+        /// </value>
+        public Guid? MappingGuid { get; set; }
     }
 }

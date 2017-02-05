@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
@@ -11,6 +12,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
 
 namespace WireMock.Server
 {
@@ -203,11 +205,12 @@ namespace WireMock.Server
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
                     Headers = logEntry.ResponseMessage.Headers
                 },
-                RequestMatchResult = new LogRequestMatchModel
+                MappingGuid = logEntry.MappingGuid,
+                RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
                 {
                     MatchScore = logEntry.RequestMatchResult.MatchScore,
                     Total = logEntry.RequestMatchResult.Total
-                }
+                } : null
             };
         }
 
@@ -222,26 +225,31 @@ namespace WireMock.Server
         private IRequestBuilder InitRequestBuilder(MappingModel mappingModel)
         {
             IRequestBuilder requestBuilder = Request.Create();
-            string path = mappingModel.Request.Path as string;
-            if (path != null)
-                requestBuilder = requestBuilder.WithPath(path);
-            else
+
+            if (mappingModel.Request.Path != null)
             {
-                JToken pathToken = (JToken)mappingModel.Request.Path;
-                PathModel pathModel = pathToken.ToObject<PathModel>();
-                if (pathModel?.Matchers != null)
-                    requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
+                string path = mappingModel.Request.Path as string;
+                if (path != null)
+                    requestBuilder = requestBuilder.WithPath(path);
+                else
+                {
+                    var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(mappingModel.Request.Path);
+                    if (pathModel?.Matchers != null)
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
+                }
             }
 
-            string url = mappingModel.Request.Url as string;
-            if (url != null)
-                requestBuilder = requestBuilder.WithUrl(url);
-            else
+            if (mappingModel.Request.Url != null)
             {
-                JToken urlToken = (JToken)mappingModel.Request.Url;
-                UrlModel urlModel = urlToken.ToObject<UrlModel>();
-                if (urlModel?.Matchers != null)
-                    requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
+                string url = mappingModel.Request.Url as string;
+                if (url != null)
+                    requestBuilder = requestBuilder.WithUrl(url);
+                else
+                {
+                    var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(mappingModel.Request.Url);
+                    if (urlModel?.Matchers != null)
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
+                }
             }
 
             if (mappingModel.Request.Methods != null)
@@ -412,7 +420,11 @@ namespace WireMock.Server
             if (matcher == null)
                 return null;
 
-            switch (matcher.Name)
+            var parts = matcher.Name.Split('.');
+            string matcherName = parts[0];
+            string matcherType = parts.Length > 1 ? parts[1] : null;
+
+            switch (matcherName)
             {
                 case "RegexMatcher":
                     return new RegexMatcher(matcher.Pattern);
@@ -423,8 +435,18 @@ namespace WireMock.Server
                 case "XPathMatcher":
                     return new XPathMatcher(matcher.Pattern);
 
-                default:
+                case "WildcardMatcher":
                     return new WildcardMatcher(matcher.Pattern, matcher.IgnoreCase == true);
+
+                case "SimMetricsMatcher":
+                    SimMetricType type = SimMetricType.Levenstein;
+                    if (!string.IsNullOrEmpty(matcherType) && !Enum.TryParse(matcherType, out type))
+                        throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
+
+                    return new SimMetricsMatcher(matcher.Pattern, type);
+
+                default:
+                    throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
         }
 

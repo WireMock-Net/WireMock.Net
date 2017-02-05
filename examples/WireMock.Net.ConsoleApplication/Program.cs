@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -20,62 +21,64 @@ namespace WireMock.Net.ConsoleApplication
 
             server.AllowPartialMapping();
 
-            //server
-            //    .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
-            //    .AtPriority(4)
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(200)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(201)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/data", "/ax").UsingPost().WithHeader("Content-Type", "application/json*"))
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(201)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""data posted with 201""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(201)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""json posted with 201""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/json2").UsingPost().WithBody("x"))
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(201)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""json posted with x - 201""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/data").UsingDelete())
-            //    .RespondWith(Response.Create()
-            //        .WithStatusCode(200)
-            //        .WithHeader("Content-Type", "application/json")
-            //        .WithBody(@"{ ""result"": ""data deleted with 200""}"));
-
-            //server
-            //    .Given(Request.Create().WithPath("/nobody").UsingGet())
-            //    .RespondWith(Response.Create().WithDelay(TimeSpan.FromSeconds(1))
-            //        .WithStatusCode(200));
+            server
+                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
+                .AtPriority(4)
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
 
             server
-                .Given(Request.Create().WithPath("/partial").UsingGet().WithHeader("p", "p"))
+                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
+                .AtPriority(999)
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
+
+            server
+                .Given(Request.Create().WithPath("/data", "/ax").UsingPost().WithHeader("Content-Type", "application/json*"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""data posted with 201""}"));
+
+            server
+                .Given(Request.Create().WithPath("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""json posted with 201""}"));
+
+            server
+                .Given(Request.Create().WithPath("/json2").UsingPost().WithBody("x"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""json posted with x - 201""}"));
+
+            server
+                .Given(Request.Create().WithPath("/data").UsingDelete())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""data deleted with 200""}"));
+
+            server
+                .Given(Request.Create().WithPath("/nobody").UsingGet())
+                .RespondWith(Response.Create().WithDelay(TimeSpan.FromSeconds(1))
+                    .WithStatusCode(200));
+
+            server
+                .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher("cat")))
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
             // http://localhost:8080/any/any?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithPath("/*").UsingGet())
                 .WithGuid(Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05"))
+                .AtPriority(server.Mappings.Count() + 1)
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
