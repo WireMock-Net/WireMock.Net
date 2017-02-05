@@ -69,7 +69,7 @@ namespace WireMock
         {
             var result = new RequestMatchResult();
 
-            RequestMatcher.IsMatch(requestMessage, result);
+            RequestMatcher.GetMatchingScore(requestMessage, result);
 
             return result;
         }

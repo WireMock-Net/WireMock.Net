@@ -246,7 +246,7 @@ namespace WireMock.Server
             lock (((ICollection)_logEntries).SyncRoot)
             {
                 var requestMatchResult = new RequestMatchResult();
-                return _logEntries.Where(log => matcher.IsMatch(log.RequestMessage, requestMatchResult) > 0.99);
+                return _logEntries.Where(log => matcher.GetMatchingScore(log.RequestMessage, requestMatchResult) > 0.99);
             }
         }
 

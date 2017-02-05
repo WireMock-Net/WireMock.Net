@@ -95,7 +95,7 @@ namespace WireMock.Matchers.Request
         /// <returns>
         /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        public double IsMatch(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
             requestMatchResult.MatchScore += score;
