@@ -12,7 +12,9 @@
                 <ModulePath>.*\.dll$</ModulePath>
               </Include>
               <Exclude>
-                <ModulePath>.*\.tests.dll</ModulePath>
+                <ModulePath>.*Validation.*</ModulePath>
+                <ModulePath>.*\.tests.dll$</ModulePath>
+                <ModulePath>.*simmetrics.*</ModulePath>
               </Exclude>
             </ModulePaths>
             <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
