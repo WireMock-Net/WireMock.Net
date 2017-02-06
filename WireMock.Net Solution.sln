@@ -29,6 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Tests", "test\
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone", "src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj", "{668F689E-57B4-422E-8846-C0FF643CA999}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3804228-91F4-4502-9595-39584E5A01AD} = {D3804228-91F4-4502-9595-39584E5A01AD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

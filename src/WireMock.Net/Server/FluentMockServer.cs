@@ -335,13 +335,13 @@ namespace WireMock.Server
             RequestMatchResult requestMatchResult = null;
             try
             {
-                var possibleMatchingMappings = _mappings
+                var mappings = _mappings
                     .Select(m => new { Mapping = m, MatchResult = m.IsRequestHandled(request) })
                     .ToList();
 
                 if (_allowPartialMapping)
                 {
-                    var orderedMappings = possibleMatchingMappings
+                    var partialMappings = mappings
                         .Where(pm =>
                             (pm.Mapping.Provider is DynamicResponseProvider && pm.MatchResult.IsPerfectMatch) ||
                             !(pm.Mapping.Provider is DynamicResponseProvider)
@@ -350,14 +350,14 @@ namespace WireMock.Server
                         .ThenBy(m => m.Mapping.Priority)
                         .ToList();
 
-                    var bestPartialMatch = orderedMappings.FirstOrDefault();
+                    var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.MatchPercentage > 0.0);
 
                     targetMapping = bestPartialMatch?.Mapping;
                     requestMatchResult = bestPartialMatch?.MatchResult;
                 }
                 else
                 {
-                    var perfectMatch = possibleMatchingMappings
+                    var perfectMatch = mappings
                         .OrderBy(m => m.Mapping.Priority)
                         .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
 
