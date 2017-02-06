@@ -431,6 +431,9 @@ namespace WireMock.Server
 
             switch (matcherName)
             {
+                case "ExactMatcher":
+                    return new ExactMatcher(matcher.Pattern);
+
                 case "RegexMatcher":
                     return new RegexMatcher(matcher.Pattern);
 
