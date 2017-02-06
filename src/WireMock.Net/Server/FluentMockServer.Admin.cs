@@ -189,7 +189,7 @@ namespace WireMock.Server
                 Request = new LogRequestModel
                 {
                     DateTime = logEntry.RequestMessage.DateTime,
-                    Url = logEntry.RequestMessage.Path,
+                    Path = logEntry.RequestMessage.Path,
                     AbsoleteUrl = logEntry.RequestMessage.Url,
                     Query = logEntry.RequestMessage.Query,
                     Method = logEntry.RequestMessage.Method,

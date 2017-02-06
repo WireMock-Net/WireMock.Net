@@ -15,12 +15,12 @@ namespace WireMock.Admin.Requests
         public DateTime DateTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL.
+        /// Gets or sets the Path.
         /// </summary>
         /// <value>
-        /// The URL.
+        /// The Path.
         /// </value>
-        public string Url { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// Gets or sets the absolete URL.
