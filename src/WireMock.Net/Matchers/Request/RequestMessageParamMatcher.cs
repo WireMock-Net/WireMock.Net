@@ -36,10 +36,9 @@ namespace WireMock.Matchers.Request
         /// <param name="values">
         /// The values.
         /// </param>
-        public RequestMessageParamMatcher([NotNull] string key, [NotNull] IEnumerable<string> values)
+        public RequestMessageParamMatcher([NotNull] string key, [CanBeNull] IEnumerable<string> values)
         {
             Check.NotNull(key, nameof(key));
-            Check.NotNull(values, nameof(values));
 
             Key = key;
             Values = values;

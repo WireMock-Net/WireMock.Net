@@ -86,17 +86,19 @@ namespace WireMock.Matchers.Request
 
         private double IsMatch(RequestMessage requestMessage)
         {
-            if (Funcs != null)
-                return MatchScores.ToScore(requestMessage.Cookies != null && Funcs.Any(cf => cf(requestMessage.Cookies)));
-
             if (requestMessage.Cookies == null)
+                return MatchScores.Mismatch;
+
+            if (Funcs != null)
+                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Cookies)));
+
+            if (Matchers == null)
                 return MatchScores.Mismatch;
 
             if (!requestMessage.Cookies.ContainsKey(Name))
                 return MatchScores.Mismatch;
 
             string value = requestMessage.Cookies[Name];
-
             return Matchers.Max(m => m.IsMatch(value));
         }
     }

@@ -86,18 +86,20 @@ namespace WireMock.Matchers.Request
 
         private double IsMatch(RequestMessage requestMessage)
         {
-            if (Funcs != null)
-                return MatchScores.ToScore(requestMessage.Headers != null && Funcs.Any(hf => hf(requestMessage.Headers)));
-
             if (requestMessage.Headers == null)
+                return MatchScores.Mismatch;
+
+            if (Funcs != null)
+                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers)));
+
+            if (Matchers == null)
                 return MatchScores.Mismatch;
 
             if (!requestMessage.Headers.ContainsKey(Name))
                 return MatchScores.Mismatch;
 
-            string headerValue = requestMessage.Headers[Name];
-
-            return Matchers.Max(m => m.IsMatch(headerValue));
+            string value = requestMessage.Headers[Name];
+            return Matchers.Max(m => m.IsMatch(value));
         }
     }
 }

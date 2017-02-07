@@ -16,7 +16,7 @@ namespace WireMock.RequestBuilders
         /// <param name="key">The key.</param>
         /// <param name="values">The values.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithParam([NotNull] string key, params string[] values);
+        IRequestBuilder WithParam([NotNull] string key, [CanBeNull] params string[] values);
 
         /// <summary>
         /// The with parameters.

@@ -35,13 +35,13 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="body">The body string function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody(Func<string, bool> body);
+        IRequestBuilder WithBody([NotNull] Func<string, bool> body);
 
         /// <summary>
         /// The with body byte[] func.
         /// </summary>
         /// <param name="body">The body byte[] function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody(Func<byte[], bool> body);
+        IRequestBuilder WithBody([NotNull] Func<byte[], bool> body);
     }
 }

@@ -85,7 +85,7 @@ namespace WireMock.Server
                 .WithGuid(guid)
                 .RespondWith(responseBuilder);
 
-            return new ResponseMessage { Body = "Mapping updated" };
+            return new ResponseMessage { Body = "Mapping added or updated" };
         }
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
