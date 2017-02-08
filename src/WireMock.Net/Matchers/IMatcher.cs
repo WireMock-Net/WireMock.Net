@@ -13,10 +13,10 @@
         double IsMatch(string input);
 
         /// <summary>
-        /// Gets the pattern.
+        /// Gets the patterns.
         /// </summary>
-        /// <returns>Pattern</returns>
-        string GetPattern();
+        /// <returns>Patterns</returns>
+        string[] GetPatterns();
 
         /// <summary>
         /// Gets the name.

@@ -1,5 +1,7 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 using SimMetrics.Net;
+using SimMetrics.Net.API;
 using SimMetrics.Net.Metric;
 using WireMock.Validation;
 
@@ -11,7 +13,7 @@ namespace WireMock.Matchers
     /// <seealso cref="IMatcher" />
     public class SimMetricsMatcher : IMatcher
     {
-        private readonly string _pattern;
+        private readonly string[] _patterns;
         private readonly SimMetricType _simMetricType;
 
         /// <summary>
@@ -19,11 +21,20 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher([NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein)
+        public SimMetricsMatcher([NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(new [] { pattern }, simMetricType)
         {
-            Check.NotNull(pattern, nameof(pattern));
+        }
 
-            _pattern = pattern;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="simMetricType">The SimMetric Type</param>
+        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein)
+        {
+            Check.NotEmpty(patterns, nameof(patterns));
+
+            _patterns = patterns;
             _simMetricType = simMetricType;
         }
 
@@ -34,62 +45,51 @@ namespace WireMock.Matchers
         /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
         public double IsMatch(string input)
         {
+            IStringMetric m = GetStringMetricType();
+
+            return MatchScores.ToScore(_patterns.Select(p => m.GetSimilarity(p, input)));
+        }
+
+        private IStringMetric GetStringMetricType()
+        {
             switch (_simMetricType)
             {
                 case SimMetricType.BlockDistance:
-                    var sim2 = new BlockDistance();
-                    return sim2.GetSimilarity(_pattern, input);
+                    return new BlockDistance();
                 case SimMetricType.ChapmanLengthDeviation:
-                    var sim3 = new ChapmanLengthDeviation();
-                    return sim3.GetSimilarity(_pattern, input);
+                    return new ChapmanLengthDeviation();
                 case SimMetricType.CosineSimilarity:
-                    var sim4 = new CosineSimilarity();
-                    return sim4.GetSimilarity(_pattern, input);
+                    return new CosineSimilarity();
                 case SimMetricType.DiceSimilarity:
-                    var sim5 = new DiceSimilarity();
-                    return sim5.GetSimilarity(_pattern, input);
+                    return new DiceSimilarity();
                 case SimMetricType.EuclideanDistance:
-                    var sim6 = new EuclideanDistance();
-                    return sim6.GetSimilarity(_pattern, input);
+                    return new EuclideanDistance();
                 case SimMetricType.JaccardSimilarity:
-                    var sim7 = new JaccardSimilarity();
-                    return sim7.GetSimilarity(_pattern, input);
+                    return new JaccardSimilarity();
                 case SimMetricType.Jaro:
-                    var sim8 = new Jaro();
-                    return sim8.GetSimilarity(_pattern, input);
+                    return new Jaro();
                 case SimMetricType.JaroWinkler:
-                    var sim9 = new JaroWinkler();
-                    return sim9.GetSimilarity(_pattern, input);
+                    return new JaroWinkler();
                 case SimMetricType.MatchingCoefficient:
-                    var sim10 = new MatchingCoefficient();
-                    return sim10.GetSimilarity(_pattern, input);
+                    return new MatchingCoefficient();
                 case SimMetricType.MongeElkan:
-                    var sim11 = new MongeElkan();
-                    return sim11.GetSimilarity(_pattern, input);
+                    return new MongeElkan();
                 case SimMetricType.NeedlemanWunch:
-                    var sim12 = new NeedlemanWunch();
-                    return sim12.GetSimilarity(_pattern, input);
+                    return new NeedlemanWunch();
                 case SimMetricType.OverlapCoefficient:
-                    var sim13 = new OverlapCoefficient();
-                    return sim13.GetSimilarity(_pattern, input);
+                    return new OverlapCoefficient();
                 case SimMetricType.QGramsDistance:
-                    var sim14 = new QGramsDistance();
-                    return sim14.GetSimilarity(_pattern, input);
+                    return new QGramsDistance();
                 case SimMetricType.SmithWaterman:
-                    var sim15 = new SmithWaterman();
-                    return sim15.GetSimilarity(_pattern, input);
+                    return new SmithWaterman();
                 case SimMetricType.SmithWatermanGotoh:
-                    var sim16 = new SmithWatermanGotoh();
-                    return sim16.GetSimilarity(_pattern, input);
+                    return new SmithWatermanGotoh();
                 case SimMetricType.SmithWatermanGotohWindowedAffine:
-                    var sim17 = new SmithWatermanGotohWindowedAffine();
-                    return sim17.GetSimilarity(_pattern, input);
+                    return new SmithWatermanGotohWindowedAffine();
                 case SimMetricType.ChapmanMeanLength:
-                    var sim18 = new ChapmanMeanLength();
-                    return sim18.GetSimilarity(_pattern, input);
+                    return new ChapmanMeanLength();
                 default:
-                    var sim1 = new Levenstein();
-                    return sim1.GetSimilarity(_pattern, input);
+                    return new Levenstein();
             }
         }
 
@@ -97,9 +97,9 @@ namespace WireMock.Matchers
         /// Gets the pattern.
         /// </summary>
         /// <returns>Pattern</returns>
-        public string GetPattern()
+        public string[] GetPatterns()
         {
-            return _pattern;
+            return _patterns;
         }
 
         /// <summary>

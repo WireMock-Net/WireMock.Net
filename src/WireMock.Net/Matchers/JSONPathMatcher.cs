@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using WireMock.Validation;
@@ -11,17 +12,17 @@ namespace WireMock.Matchers
     /// <seealso cref="IMatcher" />
     public class JsonPathMatcher : IMatcher
     {
-        private readonly string _pattern;
+        private readonly string[] _patterns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
-        /// <param name="pattern">The pattern.</param>
-        public JsonPathMatcher([NotNull] string pattern)
+        /// <param name="patterns">The patterns.</param>
+        public JsonPathMatcher([NotNull] params string[] patterns)
         {
-            Check.NotNull(pattern, nameof(pattern));
+            Check.NotNull(patterns, nameof(patterns));
 
-            _pattern = pattern;
+            _patterns = patterns;
         }
 
         /// <summary>
@@ -37,9 +38,8 @@ namespace WireMock.Matchers
             try
             {
                 JObject o = JObject.Parse(input);
-                JToken token = o.SelectToken(_pattern);
-                
-                return MatchScores.ToScore(token != null);
+
+                return MatchScores.ToScore(_patterns.Select(p => o.SelectToken(p) != null));
             }
             catch (Exception)
             {
@@ -48,12 +48,12 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Gets the pattern.
+        /// Gets the patterns.
         /// </summary>
         /// <returns>Pattern</returns>
-        public string GetPattern()
+        public string[] GetPatterns()
         {
-            return _pattern;
+            return _patterns;
         }
 
         /// <summary>

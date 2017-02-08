@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using WireMock.Validation;
@@ -12,17 +13,17 @@ namespace WireMock.Matchers
     /// <seealso cref="WireMock.Matchers.IMatcher" />
     public class XPathMatcher : IMatcher
     {
-        private readonly string _pattern;
+        private readonly string[] _patterns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XPathMatcher"/> class.
         /// </summary>
-        /// <param name="pattern">The pattern.</param>
-        public XPathMatcher([NotNull] string pattern)
+        /// <param name="patterns">The patterns.</param>
+        public XPathMatcher([NotNull] params string[] patterns)
         {
-            Check.NotNull(pattern, nameof(pattern));
+            Check.NotNull(patterns, nameof(patterns));
 
-            _pattern = pattern;
+            _patterns = patterns;
         }
 
         /// <summary>
@@ -38,9 +39,8 @@ namespace WireMock.Matchers
             try
             {
                 var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
-                object result = nav.XPath2Evaluate($"boolean({_pattern})");
 
-                return MatchScores.ToScore(true.Equals(result));
+                return MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p})"))));
             }
             catch (Exception)
             {
@@ -49,12 +49,12 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Gets the pattern.
+        /// Gets the patterns.
         /// </summary>
-        /// <returns>Pattern</returns>
-        public string GetPattern()
+        /// <returns>Patterns</returns>
+        public string[] GetPatterns()
         {
-            return _pattern;
+            return _patterns;
         }
 
         /// <summary>

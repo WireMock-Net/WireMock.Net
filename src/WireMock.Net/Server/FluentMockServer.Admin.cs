@@ -334,40 +334,40 @@ namespace WireMock.Server
                 Priority = mapping.Priority,
                 Request = new RequestModel
                 {
-                    Path = pathMatchers != null ? new PathModel
+                    Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
                     {
                         Matchers = Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
                         Funcs = Map(pathMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
                     } : null,
 
-                    Url = urlMatchers != null ? new UrlModel
+                    Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
                     {
                         Matchers = Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
                         Funcs = Map(urlMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
                     } : null,
 
-                    Methods = methodMatcher != null ? methodMatcher.Methods : new[] { "any" },
+                    Methods = methodMatcher?.Methods,
 
-                    Headers = headerMatchers?.Select(hm => new HeaderModel
+                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers?.Select(hm => new HeaderModel
                     {
                         Name = hm.Name,
                         Matchers = Map(hm.Matchers),
                         Funcs = Map(hm.Funcs)
-                    }).ToList(),
+                    }).ToList() : null,
 
-                    Cookies = cookieMatchers?.Select(cm => new CookieModel
+                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers?.Select(cm => new CookieModel
                     {
                         Name = cm.Name,
                         Matchers = Map(cm.Matchers),
                         Funcs = Map(cm.Funcs)
-                    }).ToList(),
+                    }).ToList() : null,
 
-                    Params = paramsMatchers?.Select(pm => new ParamModel
+                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers?.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
                         Values = pm.Values?.ToList(),
                         Funcs = Map(pm.Funcs)
-                    }).ToList(),
+                    }).ToList() : null,
 
                     Body = new BodyModel
                     {
@@ -400,10 +400,13 @@ namespace WireMock.Server
             if (matcher == null)
                 return null;
 
+            var patterns = matcher.GetPatterns();
+
             return new MatcherModel
             {
                 Name = matcher.GetName(),
-                Pattern = matcher.GetPattern()
+                Pattern = patterns.Length == 1 ? patterns.First() : null,
+                Patterns = patterns.Length > 1 ? patterns : null
             };
         }
 
@@ -429,22 +432,24 @@ namespace WireMock.Server
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
+            string[] patterns = matcher.Patterns ?? new[] { matcher.Pattern };
+
             switch (matcherName)
             {
                 case "ExactMatcher":
-                    return new ExactMatcher(matcher.Pattern);
+                    return new ExactMatcher(patterns);
 
                 case "RegexMatcher":
-                    return new RegexMatcher(matcher.Pattern);
+                    return new RegexMatcher(patterns);
 
                 case "JsonPathMatcher":
-                    return new JsonPathMatcher(matcher.Pattern);
+                    return new JsonPathMatcher(patterns);
 
                 case "XPathMatcher":
                     return new XPathMatcher(matcher.Pattern);
 
                 case "WildcardMatcher":
-                    return new WildcardMatcher(matcher.Pattern, matcher.IgnoreCase == true);
+                    return new WildcardMatcher(patterns, matcher.IgnoreCase == true);
 
                 case "SimMetricsMatcher":
                     SimMetricType type = SimMetricType.Levenstein;

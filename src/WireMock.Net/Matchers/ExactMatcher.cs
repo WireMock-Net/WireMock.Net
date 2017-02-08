@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -9,17 +10,17 @@ namespace WireMock.Matchers
     /// <seealso cref="IMatcher" />
     public class ExactMatcher : IMatcher
     {
-        private readonly string _value;
+        private readonly string[] _values;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
         /// </summary>
-        /// <param name="value">The value.</param>
-        public ExactMatcher([NotNull] string value)
+        /// <param name="values">The values.</param>
+        public ExactMatcher([NotNull] params string[] values)
         {
-            Check.NotNull(value, nameof(value));
+            Check.NotNull(values, nameof(values));
 
-            _value = value;
+            _values = values;
         }
 
         /// <summary>
@@ -29,16 +30,16 @@ namespace WireMock.Matchers
         /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
         public double IsMatch(string input)
         {
-            return MatchScores.ToScore(_value.Equals(input));
+            return MatchScores.ToScore(_values.Select(value => value.Equals(input)));
         }
 
         /// <summary>
         /// Gets the value.
         /// </summary>
-        /// <returns>Pattern</returns>
-        public string GetPattern()
+        /// <returns>Patterns</returns>
+        public string[] GetPatterns()
         {
-            return _value;
+            return _values;
         }
 
         /// <summary>

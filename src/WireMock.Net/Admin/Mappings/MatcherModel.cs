@@ -22,6 +22,14 @@
         public string Pattern { get; set; }
 
         /// <summary>
+        /// Gets or sets the patterns.
+        /// </summary>
+        /// <value>
+        /// The patterns.
+        /// </value>
+        public string[] Patterns { get; set; }
+
+        /// <summary>
         /// Gets or sets the ignore case.
         /// </summary>
         /// <value>

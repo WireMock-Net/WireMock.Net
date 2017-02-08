@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace WireMock.Matchers
@@ -9,25 +10,34 @@ namespace WireMock.Matchers
     /// <seealso cref="IMatcher" />
     public class WildcardMatcher : RegexMatcher
     {
-        private readonly string _pattern;
+        private readonly string[] _patterns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">IgnoreCase</param>
-        public WildcardMatcher([NotNull] string pattern, bool ignoreCase = false) : base("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", ignoreCase)
+        public WildcardMatcher([NotNull] string pattern, bool ignoreCase = false) : this(new [] { pattern }, ignoreCase)
         {
-            _pattern = pattern;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">IgnoreCase</param>
+        public WildcardMatcher([NotNull] string[] patterns, bool ignoreCase = false) : base(patterns.Select(pattern => "^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$").ToArray(), ignoreCase)
+        {
+            _patterns = patterns;
         }
 
         /// <summary>
         /// Gets the pattern.
         /// </summary>
         /// <returns>Pattern</returns>
-        public override string GetPattern()
+        public override string[] GetPatterns()
         {
-            return _pattern;
+            return _patterns;
         }
 
         /// <summary>

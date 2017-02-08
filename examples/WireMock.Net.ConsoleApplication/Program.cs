@@ -71,7 +71,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200));
 
             server
-                .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher("cat")))
+                .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher(new [] { "cat", "dog" })))
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
             // http://localhost:8080/any/any?start=1000&stop=1&stop=2

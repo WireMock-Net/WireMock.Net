@@ -1,4 +1,8 @@
-﻿namespace WireMock.Matchers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace WireMock.Matchers
 {
     /// <summary>
     /// MatchScores
@@ -28,6 +32,28 @@
         public static double ToScore(bool value)
         {
             return value ? Perfect : Mismatch;
+        }
+
+        /// <summary>
+        /// Calculates the score from multiple funcs.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <returns>score</returns>
+        public static double ToScore(IEnumerable<bool> values)
+        {
+            var list = values.Select(ToScore).ToList();
+            return list.Sum() / list.Count;
+        }
+
+        /// <summary>
+        /// Calculates the score from multiple funcs.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <returns>score</returns>
+        public static double ToScore(IEnumerable<double> values)
+        {
+            var list = values.ToList();
+            return list.Sum() / list.Count;
         }
     }
 }
