@@ -1,5 +1,5 @@
 # WireMock.Net
-A C# .NET version based on https://github.com/alexvictoor/WireMock which mimics the functionality from http://WireMock.org
+A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based http://WireMock.org
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
 
