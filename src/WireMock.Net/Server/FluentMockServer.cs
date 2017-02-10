@@ -152,6 +152,8 @@ namespace WireMock.Server
             {
                 InitAdmin();
             }
+
+            ReadStaticMappings();
         }
 
         /// <summary>

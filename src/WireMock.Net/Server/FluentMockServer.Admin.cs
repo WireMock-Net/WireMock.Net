@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Server
 {
@@ -20,6 +22,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
+        private const string AdminMappingsFolder = @"\__admin\mappings";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
@@ -30,6 +33,18 @@ namespace WireMock.Server
             Formatting = Formatting.None,
             NullValueHandling = NullValueHandling.Ignore
         };
+
+        private void ReadStaticMappings()
+        {
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + AdminMappingsFolder))
+                return;
+
+            foreach (string filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + AdminMappingsFolder))
+            {
+                var json = File.OpenText(filename).ReadToEnd();
+                DeserializeAndAddMapping(json, Guid.Parse(Path.GetFileNameWithoutExtension(filename)));
+            }
+        }
 
         private void InitAdmin()
         {
@@ -114,28 +129,48 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsPost(RequestMessage requestMessage)
         {
-            var mappingModel = JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body);
+            try
+            {
+                DeserializeAndAddMapping(requestMessage.Body);
+            }
+            catch (ArgumentException a)
+            {
+                return new ResponseMessage { StatusCode = 400, Body = a.Message };
+            }
+            catch (Exception e)
+            {
+                return new ResponseMessage { StatusCode = 500, Body = e.ToString() };
+            }
 
-            if (mappingModel.Request == null)
-                return new ResponseMessage { StatusCode = 400, Body = "Request missing" };
+            return new ResponseMessage { Body = "Mapping added" };
+        }
 
-            if (mappingModel.Response == null)
-                return new ResponseMessage { StatusCode = 400, Body = "Response missing" };
+        private void DeserializeAndAddMapping(string json, Guid? guid = null)
+        {
+            var mappingModel = JsonConvert.DeserializeObject<MappingModel>(json);
+
+            Check.NotNull(mappingModel, nameof(mappingModel));
+            Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
+            Check.NotNull(mappingModel.Response, nameof(mappingModel.Response));
 
             var requestBuilder = InitRequestBuilder(mappingModel);
             var responseBuilder = InitResponseBuilder(mappingModel);
 
             IRespondWithAProvider respondProvider = Given(requestBuilder);
 
-            if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
+            if (guid != null)
+            {
+                respondProvider = respondProvider.WithGuid(guid.Value);
+            }
+            else if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
+            {
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
+            }
 
             if (mappingModel.Priority != null)
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
 
             respondProvider.RespondWith(responseBuilder);
-
-            return new ResponseMessage { Body = "Mapping added" };
         }
 
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
