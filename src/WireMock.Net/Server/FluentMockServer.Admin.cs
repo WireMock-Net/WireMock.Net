@@ -142,7 +142,7 @@ namespace WireMock.Server
                 return new ResponseMessage { StatusCode = 500, Body = e.ToString() };
             }
 
-            return new ResponseMessage { Body = "Mapping added" };
+            return new ResponseMessage { StatusCode = 201, Body = "Mapping added" };
         }
 
         private void DeserializeAndAddMapping(string json, Guid? guid = null)

@@ -19,6 +19,8 @@ namespace WireMock.Net.ConsoleApplication
             var server = FluentMockServer.StartWithAdminInterface(url1, url2, url3);
             Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 
+            server.SetBasicAuthentication("a", "b");
+
             server.AllowPartialMapping();
 
             server

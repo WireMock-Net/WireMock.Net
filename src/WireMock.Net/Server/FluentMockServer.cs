@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Logging;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Validation;
 
@@ -34,22 +36,27 @@ namespace WireMock.Server
 
         private bool _allowPartialMapping;
 
+        private IMatcher _authorizationMatcher;
+
         /// <summary>
         /// Gets the ports.
         /// </summary>
         /// <value>
         /// The ports.
         /// </value>
+        [PublicAPI]
         public List<int> Ports { get; }
 
         /// <summary>
         /// Gets the urls.
         /// </summary>
+        [PublicAPI]
         public string[] Urls { get; }
 
         /// <summary>
         /// Gets the request logs.
         /// </summary>
+        [PublicAPI]
         public IEnumerable<LogEntry> LogEntries
         {
             get
@@ -64,6 +71,7 @@ namespace WireMock.Server
         /// <summary>
         /// Gets the mappings.
         /// </summary>
+        [PublicAPI]
         public IEnumerable<Mapping> Mappings
         {
             get
@@ -159,6 +167,7 @@ namespace WireMock.Server
         /// <summary>
         /// Stop this server.
         /// </summary>
+        [PublicAPI]
         public void Stop()
         {
             _httpServer.Stop();
@@ -167,6 +176,7 @@ namespace WireMock.Server
         /// <summary>
         /// Resets LogEntries and Mappings.
         /// </summary>
+        [PublicAPI]
         public void Reset()
         {
             ResetLogEntries();
@@ -177,6 +187,7 @@ namespace WireMock.Server
         /// <summary>
         /// Resets the LogEntries.
         /// </summary>
+        [PublicAPI]
         public void ResetLogEntries()
         {
             lock (((ICollection)_logEntries).SyncRoot)
@@ -209,6 +220,7 @@ namespace WireMock.Server
         /// <summary>
         /// Resets the Mappings.
         /// </summary>
+        [PublicAPI]
         public void ResetMappings()
         {
             lock (((ICollection)_mappings).SyncRoot)
@@ -243,6 +255,7 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="matcher">The matcher.</param>
         /// <returns>The <see cref="IEnumerable"/>.</returns>
+        [PublicAPI]
         public IEnumerable<LogEntry> SearchLogsFor(IRequestMatcher matcher)
         {
             lock (((ICollection)_logEntries).SyncRoot)
@@ -258,6 +271,7 @@ namespace WireMock.Server
         /// <param name="delay">
         /// The delay.
         /// </param>
+        [PublicAPI]
         public void AddRequestProcessingDelay(TimeSpan delay)
         {
             lock (_syncRoot)
@@ -269,6 +283,7 @@ namespace WireMock.Server
         /// <summary>
         /// Allows the partial mapping.
         /// </summary>
+        [PublicAPI]
         public void AllowPartialMapping()
         {
             lock (_syncRoot)
@@ -278,10 +293,26 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Sets the basic authentication.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        [PublicAPI]
+        public void SetBasicAuthentication([NotNull] string username, [NotNull] string password)
+        {
+            Check.NotNull(username, nameof(username));
+            Check.NotNull(password, nameof(password));
+
+            string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
+            _authorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
+        }
+
+        /// <summary>
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        [PublicAPI]
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
         {
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
@@ -344,10 +375,7 @@ namespace WireMock.Server
                 if (_allowPartialMapping)
                 {
                     var partialMappings = mappings
-                        .Where(pm =>
-                            (pm.Mapping.Provider is DynamicResponseProvider && pm.MatchResult.IsPerfectMatch) ||
-                            !(pm.Mapping.Provider is DynamicResponseProvider)
-                        )
+                        .Where(pm => pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch || !pm.Mapping.IsAdminInterface)
                         .OrderBy(m => m.MatchResult)
                         .ThenBy(m => m.Mapping.Priority)
                         .ToList();
@@ -369,24 +397,26 @@ namespace WireMock.Server
 
                 if (targetMapping == null)
                 {
-                    response = new ResponseMessage
-                    {
-                        StatusCode = 404,
-                        Body = "No mapping found"
-                    };
+                    response = new ResponseMessage { StatusCode = 404, Body = "No mapping found" };
+                    return;
                 }
-                else
+
+                if (targetMapping.IsAdminInterface && _authorizationMatcher != null)
                 {
-                    response = await targetMapping.ResponseTo(request);
+                    string authorization;
+                    bool present = request.Headers.TryGetValue("Authorization", out authorization);
+                    if (!present || _authorizationMatcher.IsMatch(authorization) < 1.0)
+                    {
+                        response = new ResponseMessage { StatusCode = 401 };
+                        return;
+                    }
                 }
+
+                response = await targetMapping.ResponseTo(request);
             }
             catch (Exception ex)
             {
-                response = new ResponseMessage
-                {
-                    StatusCode = 500,
-                    Body = ex.ToString()
-                };
+                response = new ResponseMessage { StatusCode = 500, Body = ex.ToString() };
             }
             finally
             {

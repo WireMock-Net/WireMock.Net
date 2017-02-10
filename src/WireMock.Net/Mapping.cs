@@ -73,5 +73,13 @@ namespace WireMock
 
             return result;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether this mapping is an Admin Interface.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAdminInterface => Provider is DynamicResponseProvider;
     }
 }
