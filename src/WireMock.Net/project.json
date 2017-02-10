@@ -15,7 +15,7 @@
         "projectUrl": "https://github.com/StefH/WireMock.Net",
         "iconUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png",
         "licenseUrl": "https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE",
-        "releaseNotes": "Added static mapping.json file support"
+        "releaseNotes": "Added Admin-Interface with static mapping.json file support"
     },
 
     "buildOptions": {
