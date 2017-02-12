@@ -22,7 +22,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
-        private const string AdminMappingsFolder = @"\__admin\mappings";
+        private const string AdminMappingsFolder = @"\__admin\mappings\";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
@@ -30,8 +30,8 @@ namespace WireMock.Server
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
-            Formatting = Formatting.None,
-            NullValueHandling = NullValueHandling.Ignore
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
         };
 
         private void ReadStaticMappings()
@@ -41,7 +41,7 @@ namespace WireMock.Server
 
             foreach (string filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + AdminMappingsFolder))
             {
-                var json = File.OpenText(filename).ReadToEnd();
+                var json = File.ReadAllText(filename);
                 DeserializeAndAddMapping(json, Guid.Parse(Path.GetFileNameWithoutExtension(filename)));
             }
         }
@@ -59,6 +59,9 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
 
+            // __admin/mappings/save
+            Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsSave));
+
             // __admin/requests
             Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
             Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
@@ -72,7 +75,7 @@ namespace WireMock.Server
         private ResponseMessage MappingGet(RequestMessage requestMessage)
         {
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
-            var mapping = Mappings.FirstOrDefault(m => !(m.Provider is DynamicResponseProvider) && m.Guid == guid);
+            var mapping = Mappings.FirstOrDefault(m => !m.IsAdminInterface && m.Guid == guid);
 
             if (mapping == null)
                 return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
@@ -115,10 +118,27 @@ namespace WireMock.Server
         #endregion Mapping/{guid}
 
         #region Mappings
+        private ResponseMessage MappingsSave(RequestMessage requestMessage)
+        {
+            string folder = Directory.GetCurrentDirectory() + AdminMappingsFolder;
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
+            {
+                var model = ToMappingModel(mapping);
+                string json = JsonConvert.SerializeObject(model, _settings);
+
+                File.WriteAllText(Path.Combine(folder, mapping.Guid + ".json"), json);
+            }
+
+            return new ResponseMessage { Body = "Mappings saved to disk" };
+        }
+
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
         {
             var result = new List<MappingModel>();
-            foreach (var mapping in Mappings.Where(m => !(m.Provider is DynamicResponseProvider)))
+            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
             {
                 var model = ToMappingModel(mapping);
                 result.Add(model);
@@ -288,8 +308,6 @@ namespace WireMock.Server
 
             if (mappingModel.Request.Methods != null)
                 requestBuilder = requestBuilder.UsingVerb(mappingModel.Request.Methods);
-            else
-                requestBuilder = requestBuilder.UsingAnyVerb();
 
             if (mappingModel.Request.Headers != null)
             {
@@ -383,14 +401,14 @@ namespace WireMock.Server
 
                     Methods = methodMatcher?.Methods,
 
-                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers?.Select(hm => new HeaderModel
+                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
                     {
                         Name = hm.Name,
                         Matchers = Map(hm.Matchers),
                         Funcs = Map(hm.Funcs)
                     }).ToList() : null,
 
-                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers?.Select(cm => new CookieModel
+                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
                     {
                         Name = cm.Name,
                         Matchers = Map(cm.Matchers),
