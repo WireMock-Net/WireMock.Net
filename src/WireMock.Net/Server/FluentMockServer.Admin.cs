@@ -53,18 +53,24 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
+            // __admin/mappings/reset
+            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsDelete));
+
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
-
             // __admin/mappings/save
             Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsSave));
+
 
             // __admin/requests
             Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
             Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
+
+            // __admin/requests/reset
+            Given(Request.Create().WithPath(AdminRequests + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsDelete));
 
             // __admin/request/{guid}
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
@@ -362,7 +368,7 @@ namespace WireMock.Server
             if (mappingModel.Response.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
 
-            if (mappingModel.Response.Delay != null)
+            if (mappingModel.Response.Delay > 0)
                 responseBuilder = responseBuilder.WithDelay(mappingModel.Response.Delay.Value);
 
             return responseBuilder;

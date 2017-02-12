@@ -87,7 +87,6 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
                     .WithTransformer()
-                    .WithDelay(1000)
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
 
