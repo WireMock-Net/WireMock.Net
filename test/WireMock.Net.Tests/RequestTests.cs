@@ -338,10 +338,10 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
-        public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher()
+        public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher1()
         {
             // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody("The cat walks in the street.");
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
 
             // when
             string bodyAsString = "The car drives in the street.";
@@ -351,6 +351,22 @@ namespace WireMock.Net.Tests
             // then
             var requestMatchResult = new RequestMatchResult();
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(1.0).And.IsGreaterThan(0.5);
+        }
+
+        [Test]
+        public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher2()
+        {
+            // given
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
+
+            // when
+            string bodyAsString = "Hello";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(0.1).And.IsGreaterThan(0.05);
         }
 
         [Test]
