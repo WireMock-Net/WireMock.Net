@@ -267,7 +267,7 @@ namespace WireMock.Net.Tests
         {
             // given
             _server = FluentMockServer.Start();
-            _server.AddRequestProcessingDelay(TimeSpan.FromMilliseconds(200));
+            _server.AddGlobalProcessingDelay(TimeSpan.FromMilliseconds(200));
             _server
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create().WithBody(@"{ msg: ""Hello world!""}"));

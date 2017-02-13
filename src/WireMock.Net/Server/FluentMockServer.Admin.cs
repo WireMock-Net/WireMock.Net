@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
+using WireMock.Admin.Settings;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -25,6 +26,7 @@ namespace WireMock.Server
         private const string AdminMappingsFolder = @"\__admin\mappings\";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
+        private const string AdminSettings = "/__admin/settings";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
@@ -48,6 +50,11 @@ namespace WireMock.Server
 
         private void InitAdmin()
         {
+            // __admin/settings
+            Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
+            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST")).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+
+
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
             Given(Request.Create().WithPath(AdminMappings).UsingPost()).RespondWith(new DynamicResponseProvider(MappingsPost));
@@ -76,6 +83,32 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestDelete));
         }
+
+        #region Settings
+        private ResponseMessage SettingsGet(RequestMessage requestMessage)
+        {
+            var model = new SettingsModel
+            {
+                AllowPartialMapping = _allowPartialMapping,
+                GlobalProcessingDelay = _requestProcessingDelay?.Milliseconds
+            };
+
+            return ToJson(model);
+        }
+
+        private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
+        {
+            var settings = JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body);
+
+            if (settings.AllowPartialMapping != null)
+                _allowPartialMapping = settings.AllowPartialMapping.Value;
+
+            if (settings.GlobalProcessingDelay != null)
+                _requestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+
+            return new ResponseMessage { Body = "Settings updated" };
+        }
+        #endregion Settings
 
         #region Mapping/{guid}
         private ResponseMessage MappingGet(RequestMessage requestMessage)

@@ -32,7 +32,7 @@ namespace WireMock.Server
 
         private readonly object _syncRoot = new object();
 
-        private TimeSpan _requestProcessingDelay = TimeSpan.Zero;
+        private TimeSpan? _requestProcessingDelay;
 
         private bool _allowPartialMapping;
 
@@ -272,7 +272,7 @@ namespace WireMock.Server
         /// The delay.
         /// </param>
         [PublicAPI]
-        public void AddRequestProcessingDelay(TimeSpan delay)
+        public void AddGlobalProcessingDelay(TimeSpan delay)
         {
             lock (_syncRoot)
             {
@@ -357,7 +357,7 @@ namespace WireMock.Server
             {
                 lock (_syncRoot)
                 {
-                    Task.Delay(_requestProcessingDelay).Wait();
+                    Task.Delay(_requestProcessingDelay.Value).Wait();
                 }
             }
 
