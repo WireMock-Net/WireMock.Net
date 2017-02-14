@@ -301,8 +301,10 @@ namespace WireMock.Server
                 MappingGuid = logEntry.MappingGuid,
                 RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
                 {
-                    MatchScore = logEntry.RequestMatchResult.MatchScore,
-                    Total = logEntry.RequestMatchResult.Total
+                    TotalScore = logEntry.RequestMatchResult.TotalScore,
+                    TotalNumber = logEntry.RequestMatchResult.TotalNumber,
+                    IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
+                    AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore
                 } : null
             };
         }

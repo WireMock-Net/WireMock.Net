@@ -79,7 +79,7 @@ namespace WireMock.Net.ConsoleApplication
             // http://localhost:8080/any/any?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithPath("/*").UsingGet())
-                .WithGuid(Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05"))
+                .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
                 .AtPriority(server.Mappings.Count() + 1)
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)

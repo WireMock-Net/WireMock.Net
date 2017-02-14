@@ -65,9 +65,9 @@ namespace WireMock.Matchers.Request
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
-            requestMatchResult.MatchScore += score;
+            requestMatchResult.TotalScore += score;
 
-            requestMatchResult.Total++;
+            requestMatchResult.TotalNumber++;
 
             return score;
         }

@@ -49,6 +49,16 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        public IRespondWithAProvider WithGuid(string guid)
+        {
+            return WithGuid(Guid.Parse(guid));
+        }
+
+        /// <summary>
+        /// Define a unique identifier for this mapping.
+        /// </summary>
+        /// <param name="guid">The unique identifier.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         public IRespondWithAProvider WithGuid(Guid guid)
         {
             _guid = guid;

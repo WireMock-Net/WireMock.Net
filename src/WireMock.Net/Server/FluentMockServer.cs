@@ -11,6 +11,7 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.RequestBuilders;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -141,6 +142,18 @@ namespace WireMock.Server
             Check.NotEmpty(urls, nameof(urls));
 
             return new FluentMockServer(true, urls);
+        }
+
+        /// <summary>
+        /// Adds the catch all mapping.
+        /// </summary>
+        [PublicAPI]
+        public void AddCatchAllMapping()
+        {
+            Given(Request.Create().WithPath("/*").UsingAnyVerb())
+                .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
+                .AtPriority(1000)
+                .RespondWith(new DynamicResponseProvider(request => new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" }));
         }
 
         private FluentMockServer(bool startAdminInterface, int port, bool ssl) : this(startAdminInterface, (ssl ? "https" : "http") + "://localhost:" + port + "/")
@@ -380,7 +393,7 @@ namespace WireMock.Server
                         .ThenBy(m => m.Mapping.Priority)
                         .ToList();
 
-                    var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.MatchPercentage > 0.0);
+                    var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.AverageTotalScore > 0.0);
 
                     targetMapping = bestPartialMatch?.Mapping;
                     requestMatchResult = bestPartialMatch?.MatchResult;
@@ -397,7 +410,7 @@ namespace WireMock.Server
 
                 if (targetMapping == null)
                 {
-                    response = new ResponseMessage { StatusCode = 404, Body = "No mapping found" };
+                    response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
                     return;
                 }
 
