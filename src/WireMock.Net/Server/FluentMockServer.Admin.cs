@@ -82,6 +82,9 @@ namespace WireMock.Server
             // __admin/request/{guid}
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
             Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestDelete));
+
+            // __admin/requests/find
+            Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
         }
 
         #region Settings
@@ -135,8 +138,8 @@ namespace WireMock.Server
             if (mappingModel.Response == null)
                 return new ResponseMessage { StatusCode = 400, Body = "Response missing" };
 
-            var requestBuilder = InitRequestBuilder(mappingModel);
-            var responseBuilder = InitResponseBuilder(mappingModel);
+            var requestBuilder = InitRequestBuilder(mappingModel.Request);
+            var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
             Given(requestBuilder)
                 .WithGuid(guid)
@@ -212,8 +215,8 @@ namespace WireMock.Server
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
             Check.NotNull(mappingModel.Response, nameof(mappingModel.Response));
 
-            var requestBuilder = InitRequestBuilder(mappingModel);
-            var responseBuilder = InitResponseBuilder(mappingModel);
+            var requestBuilder = InitRequestBuilder(mappingModel.Request);
+            var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
             IRespondWithAProvider respondProvider = Given(requestBuilder);
 
@@ -317,94 +320,115 @@ namespace WireMock.Server
         }
         #endregion Requests
 
-        private IRequestBuilder InitRequestBuilder(MappingModel mappingModel)
+        #region Requests/find
+        private ResponseMessage RequestsFind(RequestMessage requestMessage)
+        {
+            var requestModel = JsonConvert.DeserializeObject<RequestModel>(requestMessage.Body);
+
+            var request = (Request)InitRequestBuilder(requestModel);
+
+            var dict = new Dictionary<LogEntry, RequestMatchResult>();
+            foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
+            {
+                var requestMatchResult = new RequestMatchResult();
+                if (request.GetMatchingScore(logEntry.RequestMessage, requestMatchResult) > 0.99)
+                    dict.Add(logEntry, requestMatchResult);
+            }
+
+            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key);
+
+            return ToJson(result);
+        }
+        #endregion Requests/find
+
+        private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
         {
             IRequestBuilder requestBuilder = Request.Create();
 
-            if (mappingModel.Request.Path != null)
+            if (requestModel.Path != null)
             {
-                string path = mappingModel.Request.Path as string;
+                string path = requestModel.Path as string;
                 if (path != null)
                     requestBuilder = requestBuilder.WithPath(path);
                 else
                 {
-                    var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(mappingModel.Request.Path);
+                    var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
                         requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
                 }
             }
 
-            if (mappingModel.Request.Url != null)
+            if (requestModel.Url != null)
             {
-                string url = mappingModel.Request.Url as string;
+                string url = requestModel.Url as string;
                 if (url != null)
                     requestBuilder = requestBuilder.WithUrl(url);
                 else
                 {
-                    var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(mappingModel.Request.Url);
+                    var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
                         requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
                 }
             }
 
-            if (mappingModel.Request.Methods != null)
-                requestBuilder = requestBuilder.UsingVerb(mappingModel.Request.Methods);
+            if (requestModel.Methods != null)
+                requestBuilder = requestBuilder.UsingVerb(requestModel.Methods);
 
-            if (mappingModel.Request.Headers != null)
+            if (requestModel.Headers != null)
             {
-                foreach (var headerModel in mappingModel.Request.Headers.Where(h => h.Matchers != null))
+                foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
                     requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(Map).ToArray());
                 }
             }
 
-            if (mappingModel.Request.Cookies != null)
+            if (requestModel.Cookies != null)
             {
-                foreach (var cookieModel in mappingModel.Request.Cookies.Where(c => c.Matchers != null))
+                foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
                     requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(Map).ToArray());
                 }
             }
 
-            if (mappingModel.Request.Params != null)
+            if (requestModel.Params != null)
             {
-                foreach (var paramModel in mappingModel.Request.Params.Where(p => p.Values != null))
+                foreach (var paramModel in requestModel.Params.Where(p => p.Values != null))
                 {
                     requestBuilder = requestBuilder.WithParam(paramModel.Name, paramModel.Values.ToArray());
                 }
             }
 
-            if (mappingModel.Request.Body?.Matcher != null)
+            if (requestModel.Body?.Matcher != null)
             {
-                var bodyMatcher = Map(mappingModel.Request.Body.Matcher);
+                var bodyMatcher = Map(requestModel.Body.Matcher);
                 requestBuilder = requestBuilder.WithBody(bodyMatcher);
             }
 
             return requestBuilder;
         }
 
-        private IResponseBuilder InitResponseBuilder(MappingModel mappingModel)
+        private IResponseBuilder InitResponseBuilder(ResponseModel responseModel)
         {
             IResponseBuilder responseBuilder = Response.Create();
 
-            if (mappingModel.Response.StatusCode.HasValue)
-                responseBuilder = responseBuilder.WithStatusCode(mappingModel.Response.StatusCode.Value);
+            if (responseModel.StatusCode.HasValue)
+                responseBuilder = responseBuilder.WithStatusCode(responseModel.StatusCode.Value);
 
-            if (mappingModel.Response.Headers != null)
-                responseBuilder = responseBuilder.WithHeaders(mappingModel.Response.Headers);
+            if (responseModel.Headers != null)
+                responseBuilder = responseBuilder.WithHeaders(responseModel.Headers);
 
-            if (mappingModel.Response.Body != null)
-                responseBuilder = responseBuilder.WithBody(mappingModel.Response.Body);
-            else if (mappingModel.Response.BodyAsJson != null)
-                responseBuilder = responseBuilder.WithBodyAsJson(mappingModel.Response.BodyAsJson);
-            else if (mappingModel.Response.BodyAsBase64 != null)
-                responseBuilder = responseBuilder.WithBodyAsBase64(mappingModel.Response.BodyAsBase64);
+            if (responseModel.Body != null)
+                responseBuilder = responseBuilder.WithBody(responseModel.Body);
+            else if (responseModel.BodyAsJson != null)
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson);
+            else if (responseModel.BodyAsBase64 != null)
+                responseBuilder = responseBuilder.WithBodyAsBase64(responseModel.BodyAsBase64);
 
-            if (mappingModel.Response.UseTransformer)
+            if (responseModel.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
 
-            if (mappingModel.Response.Delay > 0)
-                responseBuilder = responseBuilder.WithDelay(mappingModel.Response.Delay.Value);
+            if (responseModel.Delay > 0)
+                responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
 
             return responseBuilder;
         }

@@ -70,6 +70,34 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// The search log-entries based on matchers.
+        /// </summary>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IEnumerable"/>.</returns>
+        [PublicAPI]
+        public IEnumerable<LogEntry> FindLogEntries([NotNull] params IRequestMatcher[] matchers)
+        {
+            lock (((ICollection)_logEntries).SyncRoot)
+            {
+                var results = new Dictionary<LogEntry, RequestMatchResult>();
+
+                foreach (var log in _logEntries)
+                {
+                    var requestMatchResult = new RequestMatchResult();
+                    foreach (var matcher in matchers)
+                    {
+                        matcher.GetMatchingScore(log.RequestMessage, requestMatchResult);
+                    }
+
+                    if (requestMatchResult.AverageTotalScore > 0.99)
+                        results.Add(log, requestMatchResult);
+                }
+
+                return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());
+            }
+        }
+
+        /// <summary>
         /// Gets the mappings.
         /// </summary>
         [PublicAPI]
@@ -260,21 +288,6 @@ namespace WireMock.Server
                 }
 
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// The search logs for.
-        /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        /// <returns>The <see cref="IEnumerable"/>.</returns>
-        [PublicAPI]
-        public IEnumerable<LogEntry> SearchLogsFor(IRequestMatcher matcher)
-        {
-            lock (((ICollection)_logEntries).SyncRoot)
-            {
-                var requestMatchResult = new RequestMatchResult();
-                return _logEntries.Where(log => matcher.GetMatchingScore(log.RequestMessage, requestMatchResult) > 0.99);
             }
         }
 

@@ -167,7 +167,7 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/bar");
 
             // then
-            var result = _server.SearchLogsFor(Request.Create().WithPath(new RegexMatcher("^/b.*"))).ToList();
+            var result = _server.FindLogEntries(Request.Create().WithPath(new RegexMatcher("^/b.*"))).ToList();
             Check.That(result).HasSize(1);
 
             var requestLogged = result.First();
