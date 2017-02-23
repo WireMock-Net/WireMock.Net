@@ -15,9 +15,9 @@ namespace WireMock.Net.Tests
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "abc";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             var response = Response.Create()
                 .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
@@ -34,9 +34,9 @@ namespace WireMock.Net.Tests
         public async Task Response_ProvideResponse_Handlebars_Query()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo?a=1&a=2&b=5"), "POST", body, bodyAsString);
+            var bodyAsString = "abc";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo?a=1&a=2&b=5"), "POST", body, bodyAsString, Encoding.UTF8);
 
             var response = Response.Create()
                 .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
@@ -53,9 +53,9 @@ namespace WireMock.Net.Tests
         public async Task Response_ProvideResponse_Handlebars_Headers()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, new Dictionary<string, string> { { "Content-Type", "text/plain" } });
+            var bodyAsString = "abc";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "Content-Type", "text/plain" } });
 
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
@@ -65,6 +65,42 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseMessage.Body).Equals("test");
             Check.That(responseMessage.Headers).Contains(new KeyValuePair<string,string>("x", "text/plain"));
+        }
+
+        [Test]
+        public async Task Response_ProvideResponse_Encoding_Body()
+        {
+            // given
+            var bodyAsString = "abc";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create().WithBody("test", Encoding.ASCII);
+
+            // act
+            var responseMessage = await response.ProvideResponse(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test");
+            Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
+        }
+
+        [Test]
+        public async Task Response_ProvideResponse_Encoding_JsonBody()
+        {
+            // given
+            var bodyAsString = "abc";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create().WithBodyAsJson(new { value = "test" }, Encoding.ASCII);
+
+            // act
+            var responseMessage = await response.ProvideResponse(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("{\"value\":\"test\"}");
+            Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
         }
     }
 }

@@ -24,14 +24,16 @@ namespace WireMock
 
             responseMessage.Headers.ToList().ForEach(pair => listenerResponse.AddHeader(pair.Key, pair.Value));
 
-            if (responseMessage.Body != null)
-            {
-                byte[] buffer = _utf8NoBom.GetBytes(responseMessage.Body);
-                listenerResponse.ContentEncoding = _utf8NoBom;
-                listenerResponse.ContentLength64 = buffer.Length;
-                listenerResponse.OutputStream.Write(buffer, 0, buffer.Length);
-                listenerResponse.OutputStream.Flush();
-            }
+            if (responseMessage.Body == null)
+                return;
+
+            var encoding = responseMessage.BodyEncoding ?? _utf8NoBom;
+            var buffer = encoding.GetBytes(responseMessage.Body);
+
+            listenerResponse.ContentEncoding = encoding;
+            listenerResponse.ContentLength64 = buffer.Length;
+            listenerResponse.OutputStream.Write(buffer, 0, buffer.Length);
+            listenerResponse.OutputStream.Flush();
         }
     }
 }

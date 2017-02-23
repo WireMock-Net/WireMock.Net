@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Util;
 using WireMock.Validation;
+using System.Text;
 
 namespace WireMock
 {
@@ -58,15 +59,21 @@ namespace WireMock
         public string Body { get; }
 
         /// <summary>
+        /// Gets the body encoding.
+        /// </summary>
+        public Encoding BodyEncoding { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
         /// <param name="url">The original url.</param>
         /// <param name="verb">The verb.</param>
         /// <param name="bodyAsBytes">The bodyAsBytes byte[].</param>
         /// <param name="body">The body string.</param>
+        /// <param name="bodyEncoding">The body encoding</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
             Check.NotNull(verb, nameof(verb));
@@ -76,6 +83,7 @@ namespace WireMock
             Method = verb.ToLower();
             BodyAsBytes = bodyAsBytes;
             Body = body;
+            BodyEncoding = bodyEncoding;
             Headers = headers;
             Cookies = cookies;
 

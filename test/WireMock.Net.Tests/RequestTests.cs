@@ -144,9 +144,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingDelete();
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", body, bodyAsString);
+            var bodyAsString = "whatever";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -202,9 +202,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
+            var bodyAsString = "whatever";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary <string, string> { { "X-toto", "tata" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -218,9 +218,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "tatata");
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tata" } });
+            var bodyAsString = "whatever";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary <string, string> { { "X-toto", "tata" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -234,9 +234,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "abc", false);
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "ABC" } });
+            var bodyAsString = "whatever";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary <string, string> { { "X-toto", "ABC" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -250,9 +250,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "tata*");
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "TaTa" } });
+            var bodyAsString = "whatever";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "TaTa" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -266,7 +266,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithCookie("session", "a*");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", null, null, null, new Dictionary<string, string> { { "session", "abc" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", null, null, null, null, new Dictionary<string, string> { { "session", "abc" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -280,9 +280,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithBody("Hello world!");
 
             // when
-            string bodyAsString = "Hello world!";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+            var bodyAsString = "Hello world!";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -296,9 +296,9 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat"));
 
             // when
-            string bodyAsString = "cat";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "cat";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -312,9 +312,9 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat", "dog"));
 
             // when
-            string bodyAsString = "cat";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "cat";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -328,9 +328,9 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat"));
 
             // when
-            string bodyAsString = "caR";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "caR";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -344,9 +344,9 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
 
             // when
-            string bodyAsString = "The car drives in the street.";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "The car drives in the street.";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -360,9 +360,9 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
 
             // when
-            string bodyAsString = "Hello";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString);
+            var bodyAsString = "Hello";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -376,9 +376,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new WildcardMatcher("H*o*"));
 
             // when
-            string bodyAsString = "Hello world!";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
+            var bodyAsString = "Hello world!";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -392,9 +392,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
 
             // when
-            string bodyAsString = "Hello world!";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+            var bodyAsString = "Hello world!";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -414,8 +414,8 @@ namespace WireMock.Net.Tests
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>";
-            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
+            var body = Encoding.UTF8.GetBytes(xmlBodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -435,8 +435,8 @@ namespace WireMock.Net.Tests
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>";
-            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString);
+            var body = Encoding.UTF8.GetBytes(xmlBodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, xmlBodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -450,9 +450,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
-            string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+            var bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -466,9 +466,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
-            string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString);
+            var bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -482,9 +482,9 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithBody("      Hello world!   ");
 
             // when
-            string bodyAsString = "xxx";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, new Dictionary<string, string> { { "X-toto", "tatata" } });
+            var bodyAsString = "xxx";
+            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tatata" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();

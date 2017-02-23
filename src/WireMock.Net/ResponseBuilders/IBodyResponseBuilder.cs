@@ -12,15 +12,17 @@ namespace WireMock.ResponseBuilders
         /// The with body.
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] string body);
+        IResponseBuilder WithBody([NotNull] string body, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
         /// The with body.
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBodyAsJson([NotNull] object body);
+        IResponseBuilder WithBodyAsJson([NotNull] object body, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
         /// The with body as base64.
