@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 
 namespace WireMock
 {
@@ -18,11 +19,11 @@ namespace WireMock
         /// <returns>The <see cref="RequestMessage"/>.</returns>
         public RequestMessage Map(HttpListenerRequest listenerRequest)
         {
-            var url = listenerRequest.Url;
-            var verb = listenerRequest.HttpMethod;
-            var body = GetRequestBody(listenerRequest);
-            var bodyEncoding = body != null ? listenerRequest.ContentEncoding : null;
-            var bodyAsString = bodyEncoding?.GetString(body);
+            Uri url = listenerRequest.Url;
+            string verb = listenerRequest.HttpMethod;
+            byte[] body = GetRequestBody(listenerRequest);
+            Encoding bodyEncoding = body != null ? listenerRequest.ContentEncoding : null;
+            string bodyAsString = bodyEncoding?.GetString(body);
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
             var cookies = new Dictionary<string, string>();

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text;
+using WireMock.Admin.Mappings;
 
 namespace WireMock.Admin.Requests
 {
@@ -26,5 +28,10 @@ namespace WireMock.Admin.Requests
         /// Gets or sets the original body.
         /// </summary>
         public string BodyOriginal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        public EncodingModel BodyEncoding { get; set; }
     }
 }

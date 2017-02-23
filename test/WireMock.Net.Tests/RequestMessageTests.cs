@@ -22,8 +22,8 @@ namespace WireMock.Net.Tests
         public void Should_parse_query_params()
         {
             // given
-            var bodyAsString = "whatever";
-            var body = Encoding.UTF8.GetBytes(bodyAsString);
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
             var request = new RequestMessage(new Uri("http://localhost?foo=bar&multi=1&multi=2"), "POST", body, bodyAsString, Encoding.UTF8);
 
             // then

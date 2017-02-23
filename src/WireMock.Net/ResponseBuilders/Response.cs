@@ -165,7 +165,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(body, nameof(body));
 
-            var jsonBody = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
+            string jsonBody = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
 
             if (encoding != null && !encoding.Equals(Encoding.UTF8))
             {

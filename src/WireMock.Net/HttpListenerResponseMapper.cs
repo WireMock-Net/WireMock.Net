@@ -28,7 +28,7 @@ namespace WireMock
                 return;
 
             var encoding = responseMessage.BodyEncoding ?? _utf8NoBom;
-            var buffer = encoding.GetBytes(responseMessage.Body);
+            byte[] buffer = encoding.GetBytes(responseMessage.Body);
 
             listenerResponse.ContentEncoding = encoding;
             listenerResponse.ContentLength64 = buffer.Length;
