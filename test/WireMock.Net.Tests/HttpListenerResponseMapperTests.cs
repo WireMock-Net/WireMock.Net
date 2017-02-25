@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
@@ -60,6 +61,31 @@ namespace WireMock.Net.Tests
             new HttpListenerResponseMapper().Map(response, httpListenerResponse);
 
             // then
+            var responseMessage = ToResponseMessage(httpListenerResponse);
+            Check.That(responseMessage).IsNotNull();
+
+            var contentTask = responseMessage.Content.ReadAsStringAsync();
+            Check.That(contentTask.Result).IsEqualTo("Hello !!!");
+        }
+
+        [Test]
+        public void Should_map_encoded_body_from_original_response()
+        {
+            // given
+            var response = new ResponseMessage
+            {
+                Body = "Hello !!!",
+                BodyEncoding = Encoding.ASCII
+            };
+
+            var httpListenerResponse = CreateHttpListenerResponse();
+
+            // when
+            new HttpListenerResponseMapper().Map(response, httpListenerResponse);
+
+            // then
+            Check.That(httpListenerResponse.ContentEncoding).Equals(Encoding.ASCII);
+
             var responseMessage = ToResponseMessage(httpListenerResponse);
             Check.That(responseMessage).IsNotNull();
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SimMetrics.Net;
@@ -292,14 +293,26 @@ namespace WireMock.Server
                     Method = logEntry.RequestMessage.Method,
                     Body = logEntry.RequestMessage.Body,
                     Headers = logEntry.RequestMessage.Headers,
-                    Cookies = logEntry.RequestMessage.Cookies
+                    Cookies = logEntry.RequestMessage.Cookies,
+                    BodyEncoding = logEntry.RequestMessage.BodyEncoding != null ? new EncodingModel
+                    {
+                        EncodingName = logEntry.RequestMessage.BodyEncoding.EncodingName,
+                        CodePage = logEntry.RequestMessage.BodyEncoding.CodePage,
+                        WebName = logEntry.RequestMessage.BodyEncoding.WebName
+                    } : null
                 },
                 Response = new LogResponseModel
                 {
                     StatusCode = logEntry.ResponseMessage.StatusCode,
                     Body = logEntry.ResponseMessage.Body,
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
-                    Headers = logEntry.ResponseMessage.Headers
+                    Headers = logEntry.ResponseMessage.Headers,
+                    BodyEncoding = logEntry.ResponseMessage.BodyEncoding != null ? new EncodingModel
+                    {
+                        EncodingName = logEntry.ResponseMessage.BodyEncoding.EncodingName,
+                        CodePage = logEntry.ResponseMessage.BodyEncoding.CodePage,
+                        WebName = logEntry.ResponseMessage.BodyEncoding.WebName
+                    } : null
                 },
                 MappingGuid = logEntry.MappingGuid,
                 RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
@@ -418,11 +431,11 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithHeaders(responseModel.Headers);
 
             if (responseModel.Body != null)
-                responseBuilder = responseBuilder.WithBody(responseModel.Body);
+                responseBuilder = responseBuilder.WithBody(responseModel.Body, ToEncoding(responseModel.BodyEncoding));
             else if (responseModel.BodyAsJson != null)
-                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson);
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding));
             else if (responseModel.BodyAsBase64 != null)
-                responseBuilder = responseBuilder.WithBodyAsBase64(responseModel.BodyAsBase64);
+                responseBuilder = responseBuilder.WithBodyAsBase64(responseModel.BodyAsBase64, ToEncoding(responseModel.BodyEncoding));
 
             if (responseModel.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
@@ -500,7 +513,14 @@ namespace WireMock.Server
                     Headers = response.ResponseMessage.Headers,
                     Body = response.ResponseMessage.Body,
                     UseTransformer = response.UseTransformer,
-                    Delay = response.Delay?.Milliseconds
+                    Delay = response.Delay?.Milliseconds,
+
+                    BodyEncoding = response.ResponseMessage.BodyEncoding != null ? new EncodingModel
+                    {
+                        EncodingName = response.ResponseMessage.BodyEncoding.EncodingName,
+                        CodePage = response.ResponseMessage.BodyEncoding.CodePage,
+                        WebName = response.ResponseMessage.BodyEncoding.WebName
+                    } : null
                 }
             };
         }
@@ -589,6 +609,11 @@ namespace WireMock.Server
                 StatusCode = 200,
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
+        }
+
+        private Encoding ToEncoding(EncodingModel encodingModel)
+        {
+            return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
         }
     }
 }

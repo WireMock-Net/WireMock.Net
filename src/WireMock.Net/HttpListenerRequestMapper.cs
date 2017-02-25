@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 
 namespace WireMock
 {
@@ -21,16 +22,16 @@ namespace WireMock
             Uri url = listenerRequest.Url;
             string verb = listenerRequest.HttpMethod;
             byte[] body = GetRequestBody(listenerRequest);
-            string bodyAsString = body != null ? listenerRequest.ContentEncoding.GetString(body) : null;
+            Encoding bodyEncoding = body != null ? listenerRequest.ContentEncoding : null;
+            string bodyAsString = bodyEncoding?.GetString(body);
             var listenerHeaders = listenerRequest.Headers;
             var headers = listenerHeaders.AllKeys.ToDictionary(k => k, k => listenerHeaders[k]);
             var cookies = new Dictionary<string, string>();
+
             foreach (Cookie cookie in listenerRequest.Cookies)
                 cookies.Add(cookie.Name, cookie.Value);
 
-            var message = new RequestMessage(url, verb, body, bodyAsString, headers, cookies) { DateTime = DateTime.Now };
-
-            return message;
+            return new RequestMessage(url, verb, body, bodyAsString, bodyEncoding, headers, cookies) { DateTime = DateTime.Now };
         }
 
         /// <summary>

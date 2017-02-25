@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using WireMock.Admin.Mappings;
 using WireMock.Util;
 
 namespace WireMock.Admin.Requests
@@ -66,5 +68,13 @@ namespace WireMock.Admin.Requests
         /// The body.
         /// </value>
         public string Body { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body encoding.
+        /// </summary>
+        /// <value>
+        /// The body encoding.
+        /// </value>
+        public EncodingModel BodyEncoding { get; set; }
     }
 }

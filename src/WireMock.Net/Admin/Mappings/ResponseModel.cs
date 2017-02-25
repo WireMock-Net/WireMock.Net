@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace WireMock.Admin.Mappings
 {
@@ -38,6 +39,14 @@ namespace WireMock.Admin.Mappings
         /// The body.
         /// </value>
         public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body encoding.
+        /// </summary>
+        /// <value>
+        /// The body encoding.
+        /// </value>
+        public EncodingModel BodyEncoding { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [use transformer].

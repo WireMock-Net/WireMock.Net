@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text;
+
 namespace WireMock
 {
     /// <summary>
@@ -26,6 +28,11 @@ namespace WireMock
         /// Gets or sets the body.
         /// </summary>
         public string Body { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body encoding.
+        /// </summary>
+        public Encoding BodyEncoding { get; set; } = new UTF8Encoding(false);
 
         /// <summary>
         /// The add header.

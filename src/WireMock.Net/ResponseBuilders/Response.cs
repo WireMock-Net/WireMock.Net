@@ -143,12 +143,15 @@ namespace WireMock.ResponseBuilders
         /// The with body.
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBody(string body)
+        public IResponseBuilder WithBody(string body, Encoding encoding = null)
         {
             Check.NotNull(body, nameof(body));
 
             ResponseMessage.Body = body;
+            ResponseMessage.BodyEncoding = encoding ?? Encoding.UTF8;
+
             return this;
         }
 
@@ -156,12 +159,22 @@ namespace WireMock.ResponseBuilders
         /// The with body (AsJson object).
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBodyAsJson(object body)
+        public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null)
         {
             Check.NotNull(body, nameof(body));
 
-            ResponseMessage.Body = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
+            string jsonBody = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
+
+            if (encoding != null && !encoding.Equals(Encoding.UTF8))
+            {
+                jsonBody = encoding.GetString(Encoding.UTF8.GetBytes(jsonBody));
+                ResponseMessage.BodyEncoding = encoding;
+            }
+
+            ResponseMessage.Body = jsonBody;
+
             return this;
         }
 
@@ -175,7 +188,11 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
-            ResponseMessage.Body = (encoding ?? Encoding.UTF8).GetString(Convert.FromBase64String(bodyAsbase64));
+            encoding = encoding ?? Encoding.UTF8;
+
+            ResponseMessage.Body = encoding.GetString(Convert.FromBase64String(bodyAsbase64));
+            ResponseMessage.BodyEncoding = encoding;
+
             return this;
         }
 
