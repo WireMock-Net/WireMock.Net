@@ -42,7 +42,7 @@ test_script:
 after_test:
   - nuget.exe install OpenCover -ExcludeVersion
   - nuget.exe install coveralls.net -ExcludeVersion
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:"\".\tests\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -returntargetcode -filter:"+[WireMock.Net]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:"\".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -returntargetcode -filter:"+[WireMock.Net]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
   - codecov -f "coverage.xml"
