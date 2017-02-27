@@ -18,7 +18,7 @@ install:
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
   COVERALLS_REPO_TOKEN:
-    secure: yA+thkwcQZ8mPdWYI/juXUgCCX1CDhs1XHT8p6G7eL9k+K22XwZPQiLSCwJgPNo6
+    secure: Eq/3VV5DVAeQAlQhe6hvy21IYPo5uY4fWKxvC4pxdq3giJzcwFp1QxBvRpXJ8Wkw
 
 before_build:
 - appveyor-retry dotnet restore .\src\WireMock.Net -v Minimal
