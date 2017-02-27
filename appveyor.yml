@@ -19,20 +19,28 @@ environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
 
 before_build:
+- appveyor-retry dotnet restore .\src\WireMock.Net -v Minimal
+- appveyor-retry dotnet restore .\test\WireMock.Net.Tests -v Minimal
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
-- nuget restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -PackagesDirectory packages
 
 build_script:
-- appveyor-retry dotnet restore .\src\WireMock.Net -v Minimal
-
 - dotnet build .\src\WireMock.Net\project.json -c %CONFIGURATION%
+- dotnet build .\test\WireMock.Net.Tests\project.json -c %CONFIGURATION%
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
-- cmd: msbuild .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 
 - dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock.Net\project.json
 
 test_script:
 - dotnet test -c %CONFIGURATION% --no-build .\test\WireMock.Net.Tests
+
+after_test:
+  - nuget.exe install OpenCover -ExcludeVersion
+  - nuget.exe install coveralls.net -ExcludeVersion
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:"\".\tests\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -returntargetcode -filter:"+[WireMock.Net]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
+  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+  - pip install codecov
+  - codecov -f "coverage.xml"
+  - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
 
 artifacts:
 - path: artifacts\**\*.*
