@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using WireMock.Admin.Mappings;
 using WireMock.Util;
 

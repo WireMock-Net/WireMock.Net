@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using WireMock.Admin.Mappings;
 
 namespace WireMock.Admin.Requests
