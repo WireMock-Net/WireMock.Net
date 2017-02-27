@@ -2,7 +2,7 @@
 A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based http://WireMock.org
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
-
+[![codecov](https://codecov.io/gh/StefH/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/StefH/WireMock.Net)
 [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net)
 
 ## Stubbing
