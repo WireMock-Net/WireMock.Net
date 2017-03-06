@@ -429,6 +429,16 @@ namespace WireMock.Server
 
             if (responseModel.Headers != null)
                 responseBuilder = responseBuilder.WithHeaders(responseModel.Headers);
+            else if (responseModel.HeadersRaw != null)
+            {
+                foreach (string headerLine in responseModel.HeadersRaw.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    int indexColon = headerLine.IndexOf(":", StringComparison.Ordinal);
+                    string key = headerLine.Substring(0, indexColon).TrimStart(' ', '\t');
+                    string value = headerLine.Substring(indexColon + 1).TrimStart(' ', '\t');
+                    responseBuilder = responseBuilder.WithHeader(key, value);
+                }
+            }
 
             if (responseModel.Body != null)
                 responseBuilder = responseBuilder.WithBody(responseModel.Body, ToEncoding(responseModel.BodyEncoding));

@@ -64,6 +64,14 @@ namespace WireMock.Admin.Mappings
         public IDictionary<string, string> Headers { get; set; }
 
         /// <summary>
+        /// Gets or sets the Headers (Raw).
+        /// </summary>
+        /// <value>
+        /// The Headers (Raw).
+        /// </value>
+        public string HeadersRaw { get; set; }
+
+        /// <summary>
         /// Gets or sets the delay in milliseconds.
         /// </summary>
         /// <value>
