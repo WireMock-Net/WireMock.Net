@@ -10,6 +10,7 @@ namespace WireMock.Server
     {
         private int _priority;
         private Guid? _guid;
+        private string _title;
 
         /// <summary>
         /// The _registration callback.
@@ -41,7 +42,7 @@ namespace WireMock.Server
         public void RespondWith(IResponseProvider provider)
         {
             var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _requestMatcher, provider, _priority));
+            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority));
         }
 
         /// <summary>
@@ -62,6 +63,18 @@ namespace WireMock.Server
         public IRespondWithAProvider WithGuid(Guid guid)
         {
             _guid = guid;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Define a unique identifier for this mapping.
+        /// </summary>
+        /// <param name="title">The unique identifier.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        public IRespondWithAProvider WithTitle(string title)
+        {
+            _title = title;
 
             return this;
         }

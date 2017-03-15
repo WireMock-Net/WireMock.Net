@@ -40,6 +40,14 @@ namespace WireMock.Admin.Requests
         public Guid? MappingGuid { get; set; }
 
         /// <summary>
+        /// Gets or sets the mapping unique title.
+        /// </summary>
+        /// <value>
+        /// The mapping unique title.
+        /// </value>
+        public string MappingTitle { get; set; }
+
+        /// <summary>
         /// Gets or sets the request match result.
         /// </summary>
         /// <value>

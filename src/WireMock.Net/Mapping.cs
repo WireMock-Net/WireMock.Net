@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 
 namespace WireMock
@@ -10,20 +11,28 @@ namespace WireMock
     public class Mapping
     {
         /// <summary>
-        /// Gets the priority.
-        /// </summary>
-        /// <value>
-        /// The priority.
-        /// </value>
-        public int Priority { get; }
-
-        /// <summary>
         /// Gets the unique identifier.
         /// </summary>
         /// <value>
         /// The unique identifier.
         /// </value>
         public Guid Guid { get; }
+
+        /// <summary>
+        /// Gets the unique title.
+        /// </summary>
+        /// <value>
+        /// The unique title.
+        /// </value>
+        public string Title { get; }
+
+        /// <summary>
+        /// Gets the priority.
+        /// </summary>
+        /// <value>
+        /// The priority.
+        /// </value>
+        public int Priority { get; }
 
         /// <summary>
         /// The Request matcher.
@@ -38,14 +47,16 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
-        /// <param name="guid">The the unique identifier.</param>
+        /// <param name="guid">The unique identifier.</param>
+        /// <param name="title">The unique title (can be null_.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
-        public Mapping(Guid guid, IRequestMatcher requestMatcher, IResponseProvider provider, int priority)
+        public Mapping(Guid guid, [CanBeNull] string title, IRequestMatcher requestMatcher, IResponseProvider provider, int priority)
         {
             Priority = priority;
             Guid = guid;
+            Title = title;
             RequestMatcher = requestMatcher;
             Provider = provider;
         }

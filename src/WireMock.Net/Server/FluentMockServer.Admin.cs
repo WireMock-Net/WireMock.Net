@@ -44,8 +44,12 @@ namespace WireMock.Server
 
             foreach (string filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + AdminMappingsFolder))
             {
-                var json = File.ReadAllText(filename);
-                DeserializeAndAddMapping(json, Guid.Parse(Path.GetFileNameWithoutExtension(filename)));
+                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+                Guid guid;
+                if (!Guid.TryParse(filenameWithoutExtension, out guid))
+                    guid = Guid.NewGuid();
+
+                DeserializeAndAddMapping(File.ReadAllText(filename), guid);
             }
         }
 
@@ -142,9 +146,12 @@ namespace WireMock.Server
             var requestBuilder = InitRequestBuilder(mappingModel.Request);
             var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
-            Given(requestBuilder)
-                .WithGuid(guid)
-                .RespondWith(responseBuilder);
+            IRespondWithAProvider respondProvider = Given(requestBuilder).WithGuid(guid);
+
+            if (!string.IsNullOrEmpty(mappingModel.Title))
+                respondProvider = respondProvider.WithTitle(mappingModel.Title);
+
+            respondProvider.RespondWith(responseBuilder);
 
             return new ResponseMessage { Body = "Mapping added or updated" };
         }
@@ -171,11 +178,17 @@ namespace WireMock.Server
             {
                 var model = ToMappingModel(mapping);
                 string json = JsonConvert.SerializeObject(model, _settings);
+                string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
 
-                File.WriteAllText(Path.Combine(folder, mapping.Guid + ".json"), json);
+                File.WriteAllText(Path.Combine(folder, filename + ".json"), json);
             }
 
             return new ResponseMessage { Body = "Mappings saved to disk" };
+        }
+
+        private static string SanitizeFileName(string name, char replaceChar = '_')
+        {
+            return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
         }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
@@ -229,6 +242,9 @@ namespace WireMock.Server
             {
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
             }
+
+            if (!string.IsNullOrEmpty(mappingModel.Title))
+                respondProvider = respondProvider.WithTitle(mappingModel.Title);
 
             if (mappingModel.Priority != null)
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
@@ -315,6 +331,7 @@ namespace WireMock.Server
                     } : null
                 },
                 MappingGuid = logEntry.MappingGuid,
+                MappingTitle = logEntry.MappingTitle,
                 RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
                 {
                     TotalScore = logEntry.RequestMatchResult.TotalScore,
@@ -472,6 +489,7 @@ namespace WireMock.Server
             return new MappingModel
             {
                 Guid = mapping.Guid,
+                Title = mapping.Title,
                 Priority = mapping.Priority,
                 Request = new RequestModel
                 {
@@ -503,7 +521,7 @@ namespace WireMock.Server
                         Funcs = Map(cm.Funcs)
                     }).ToList() : null,
 
-                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers?.Select(pm => new ParamModel
+                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
                         Values = pm.Values?.ToList(),

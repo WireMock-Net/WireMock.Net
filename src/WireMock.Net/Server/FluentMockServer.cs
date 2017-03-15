@@ -452,6 +452,7 @@ namespace WireMock.Server
                     RequestMessage = request,
                     ResponseMessage = response,
                     MappingGuid = targetMapping?.Guid,
+                    MappingTitle = targetMapping?.Title,
                     RequestMatchResult = requestMatchResult
                 };
 

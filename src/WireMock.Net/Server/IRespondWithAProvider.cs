@@ -15,6 +15,13 @@ namespace WireMock.Server
         IRespondWithAProvider WithGuid(Guid guid);
 
         /// <summary>
+        /// Define a unique title for this mapping.
+        /// </summary>
+        /// <param name="title">The unique title.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithTitle(string title);
+
+        /// <summary>
         /// Define a unique identifier for this mapping.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>

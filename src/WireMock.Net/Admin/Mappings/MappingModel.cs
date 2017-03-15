@@ -16,6 +16,14 @@ namespace WireMock.Admin.Mappings
         public Guid? Guid { get; set; }
 
         /// <summary>
+        /// Gets or sets the unique title.
+        /// </summary>
+        /// <value>
+        /// The unique title.
+        /// </value>
+        public string Title { get; set; }
+
+        /// <summary>
         /// Gets or sets the priority.
         /// </summary>
         /// <value>
