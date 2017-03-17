@@ -37,20 +37,40 @@ namespace WireMock.Server
             NullValueHandling = NullValueHandling.Ignore,
         };
 
-        private void ReadStaticMappings()
+        /// <summary>
+        /// Reads the static mappings from a folder.
+        /// </summary>
+        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
+        [PublicAPI]
+        public void ReadStaticMappings([CanBeNull] string folder = null)
         {
-            if (!Directory.Exists(Directory.GetCurrentDirectory() + AdminMappingsFolder))
+            if (folder == null)
+                folder = Directory.GetCurrentDirectory() + AdminMappingsFolder;
+
+            if (!Directory.Exists(folder))
                 return;
 
             foreach (string filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + AdminMappingsFolder))
             {
-                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
-                Guid guid;
-                if (!Guid.TryParse(filenameWithoutExtension, out guid))
-                    guid = Guid.NewGuid();
-
-                DeserializeAndAddMapping(File.ReadAllText(filename), guid);
+                ReadStaticMapping(filename);
             }
+        }
+
+        /// <summary>
+        /// Reads the static mapping.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        [PublicAPI]
+        public void ReadStaticMapping([NotNull] string filename)
+        {
+            Check.NotNull(filename, nameof(filename));
+
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+            Guid guid;
+            if (!Guid.TryParse(filenameWithoutExtension, out guid))
+                guid = Guid.NewGuid();
+
+            DeserializeAndAddMapping(File.ReadAllText(filename), guid);
         }
 
         private void InitAdmin()
