@@ -3,7 +3,7 @@ os: Visual Studio 2015
 version: 1.0.0.{build}
 
 configuration:
-- Release
+- Debug
 
 platform: Any CPU
 
