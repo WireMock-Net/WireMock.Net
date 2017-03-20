@@ -24,7 +24,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
-        private const string AdminMappingsFolder = @"\__admin\mappings\";
+        private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
@@ -45,12 +45,12 @@ namespace WireMock.Server
         public void ReadStaticMappings([CanBeNull] string folder = null)
         {
             if (folder == null)
-                folder = Directory.GetCurrentDirectory() + AdminMappingsFolder;
+                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
 
             if (!Directory.Exists(folder))
                 return;
 
-            foreach (string filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + AdminMappingsFolder))
+            foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
             {
                 ReadStaticMapping(filename);
             }

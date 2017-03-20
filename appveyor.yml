@@ -3,7 +3,6 @@ os: Visual Studio 2015
 version: 1.0.0.{build}
 
 configuration:
-- Debug
 - Release
 
 platform: Any CPU
@@ -39,7 +38,8 @@ build_script:
 
 test_script:
 # test WireMock.Net.Tests
-- dotnet test -c %CONFIGURATION% --no-build .\test\WireMock.Net.Tests
+- cd .\test\WireMock.Net.Tests
+- dotnet test -c %CONFIGURATION% --no-build
 
 after_test:
   - nuget.exe install OpenCover -ExcludeVersion

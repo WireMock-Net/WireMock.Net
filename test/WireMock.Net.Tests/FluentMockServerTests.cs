@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -27,7 +28,8 @@ namespace WireMock.Net.Tests
 
             _server = FluentMockServer.Start();
 
-            _server.ReadStaticMapping("./__admin/mappings/documentdb_root.json");
+            string folder = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", "documentdb_root.json");
+            _server.ReadStaticMapping(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
@@ -44,7 +46,8 @@ namespace WireMock.Net.Tests
             string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
 
             _server = FluentMockServer.Start();
-            _server.ReadStaticMapping("./__admin/mappings/" + guid + ".json");
+            string folder = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", guid + ".json");
+            _server.ReadStaticMapping(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
