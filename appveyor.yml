@@ -11,8 +11,8 @@ init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
 install:
-- ps: Start-FileDownload 'https://download.microsoft.com/download/0/A/3/0A372822-205D-4A86-BFA7-084D2CBE9EDF/DotNetCore.1.0.1-SDK.1.0.0.Preview2-003133-x64.exe'
-- cmd: DotNetCore.1.0.1-SDK.1.0.0.Preview2-003133-x64 /quiet
+- ps: Start-FileDownload 'https://download.microsoft.com/download/8/F/9/8F9659B9-E628-4D1A-B6BF-C3004C8C954B/dotnet-1.1.1-sdk-win-x64.exe'
+- cmd: dotnet-1.1.1-sdk-win-x64.exe /quiet
 
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
