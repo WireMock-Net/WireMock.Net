@@ -20,6 +20,51 @@ namespace WireMock.Net.Tests
         private FluentMockServer _server;
 
         [Test]
+        public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
+        {
+            var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
+            string title = "documentdb_root_title";
+
+            _server = FluentMockServer.Start();
+
+            _server.ReadStaticMapping("./__admin/mappings/documentdb_root.json");
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
+
+            Check.That(mappings.First().RequestMatcher).IsNotNull();
+            Check.That(mappings.First().Provider).IsNotNull();
+            Check.That(mappings.First().Guid).Equals(guid);
+            Check.That(mappings.First().Title).Equals(title);
+        }
+
+        [Test]
+        public void FluentMockServer_ReadStaticMapping_WithGuidFilename()
+        {
+            string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
+
+            _server = FluentMockServer.Start();
+            _server.ReadStaticMapping("./__admin/mappings/" + guid + ".json");
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
+
+            Check.That(mappings.First().RequestMatcher).IsNotNull();
+            Check.That(mappings.First().Provider).IsNotNull();
+            Check.That(mappings.First().Guid).Equals(Guid.Parse(guid));
+            Check.That(mappings.First().Title).IsNullOrEmpty();
+        }
+
+        [Test]
+        public void FluentMockServer_ReadStaticMappings()
+        {
+            _server = FluentMockServer.Start(new FluentMockServerSettings { ReadStaticMappings = true });
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(2);
+        }
+
+        [Test]
         public void FluentMockServer_Admin_Mappings_Get()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");

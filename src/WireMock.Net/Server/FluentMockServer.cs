@@ -19,7 +19,7 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public partial class FluentMockServer
+    public partial class FluentMockServer : IDisposable
     {
         private readonly TinyHttpServer _httpServer;
 
@@ -113,20 +113,32 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Starts the specified settings.
+        /// </summary>
+        /// <param name="settings">The FluentMockServerSettings.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
+        [PublicAPI]
+        public static FluentMockServer Start(FluentMockServerSettings settings)
+        {
+            Check.NotNull(settings, nameof(settings));
+
+            return new FluentMockServer(settings);
+        }
+
+        /// <summary>
         /// Start this FluentMockServer.
         /// </summary>
         /// <param name="port">The port.</param>
         /// <param name="ssl">The SSL support.</param>
         /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
-        public static FluentMockServer Start(int port = 0, bool ssl = false)
+        public static FluentMockServer Start([CanBeNull] int? port = 0, bool ssl = false)
         {
-            Check.Condition(port, p => p >= 0, nameof(port));
-
-            if (port == 0)
-                port = PortUtil.FindFreeTcpPort();
-
-            return new FluentMockServer(false, port, ssl);
+            return new FluentMockServer(new FluentMockServerSettings
+            {
+                Port = port,
+                UseSSL = ssl
+            });
         }
 
         /// <summary>
@@ -139,7 +151,10 @@ namespace WireMock.Server
         {
             Check.NotEmpty(urls, nameof(urls));
 
-            return new FluentMockServer(false, urls);
+            return new FluentMockServer(new FluentMockServerSettings
+            {
+                Urls = urls
+            });
         }
 
         /// <summary>
@@ -149,14 +164,14 @@ namespace WireMock.Server
         /// <param name="ssl">The SSL support.</param>
         /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
-        public static FluentMockServer StartWithAdminInterface(int port = 0, bool ssl = false)
+        public static FluentMockServer StartWithAdminInterface(int? port = 0, bool ssl = false)
         {
-            Check.Condition(port, p => p >= 0, nameof(port));
-
-            if (port == 0)
-                port = PortUtil.FindFreeTcpPort();
-
-            return new FluentMockServer(true, port, ssl);
+            return new FluentMockServer(new FluentMockServerSettings
+            {
+                Port = port,
+                UseSSL = ssl,
+                StartAdminInterface = true
+            });
         }
 
         /// <summary>
@@ -169,7 +184,57 @@ namespace WireMock.Server
         {
             Check.NotEmpty(urls, nameof(urls));
 
-            return new FluentMockServer(true, urls);
+            return new FluentMockServer(new FluentMockServerSettings
+            {
+                Urls = urls,
+                StartAdminInterface = true
+            });
+        }
+
+        /// <summary>
+        /// Start this FluentMockServer with the admin interface and read static mappings.
+        /// </summary>
+        /// <param name="urls">The urls.</param>
+        /// <returns>The <see cref="FluentMockServer"/>.</returns>
+        [PublicAPI]
+        public static FluentMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
+        {
+            Check.NotEmpty(urls, nameof(urls));
+
+            return new FluentMockServer(new FluentMockServerSettings
+            {
+                Urls = urls,
+                StartAdminInterface = true,
+                ReadStaticMappings = true
+            });
+        }
+
+        private FluentMockServer(FluentMockServerSettings settings)
+        {
+            if (settings.Urls != null)
+            {
+                Urls = settings.Urls;
+            }
+            else
+            {
+                int port = settings.Port > 0 ? settings.Port.Value : PortUtil.FindFreeTcpPort();
+                Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
+            }
+
+            _httpServer = new TinyHttpServer(HandleRequestAsync, Urls);
+            Ports = _httpServer.Ports;
+
+            _httpServer.Start();
+
+            if (settings.StartAdminInterface == true)
+            {
+                InitAdmin();
+            }
+
+            if (settings.ReadStaticMappings == true)
+            {
+                ReadStaticMappings();
+            }
         }
 
         /// <summary>
@@ -184,27 +249,6 @@ namespace WireMock.Server
                 .RespondWith(new DynamicResponseProvider(request => new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" }));
         }
 
-        private FluentMockServer(bool startAdminInterface, int port, bool ssl) : this(startAdminInterface, (ssl ? "https" : "http") + "://localhost:" + port + "/")
-        {
-        }
-
-        private FluentMockServer(bool startAdminInterface, params string[] urls)
-        {
-            Urls = urls;
-
-            _httpServer = new TinyHttpServer(HandleRequestAsync, urls);
-            Ports = _httpServer.Ports;
-
-            _httpServer.Start();
-
-            if (startAdminInterface)
-            {
-                InitAdmin();
-            }
-
-            ReadStaticMappings();
-        }
-
         /// <summary>
         /// Stop this server.
         /// </summary>
@@ -212,6 +256,17 @@ namespace WireMock.Server
         public void Stop()
         {
             _httpServer.Stop();
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_httpServer != null && _httpServer.IsStarted)
+            {
+                _httpServer.Stop();
+            }
         }
 
         /// <summary>

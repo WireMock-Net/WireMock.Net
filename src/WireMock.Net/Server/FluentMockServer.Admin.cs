@@ -66,11 +66,16 @@ namespace WireMock.Server
             Check.NotNull(filename, nameof(filename));
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
-            Guid guid;
-            if (!Guid.TryParse(filenameWithoutExtension, out guid))
-                guid = Guid.NewGuid();
+            Guid guidFromFilename;
 
-            DeserializeAndAddMapping(File.ReadAllText(filename), guid);
+            if (Guid.TryParse(filenameWithoutExtension, out guidFromFilename))
+            {
+                DeserializeAndAddMapping(File.ReadAllText(filename), guidFromFilename);
+            }
+            else
+            {
+                DeserializeAndAddMapping(File.ReadAllText(filename));
+            }
         }
 
         private void InitAdmin()

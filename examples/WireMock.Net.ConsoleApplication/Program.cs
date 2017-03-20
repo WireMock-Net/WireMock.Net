@@ -16,7 +16,12 @@ namespace WireMock.Net.ConsoleApplication
             string url2 = "http://localhost:9091/";
             string url3 = "https://localhost:9443/";
 
-            var server = FluentMockServer.StartWithAdminInterface(url1, url2, url3);
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                Urls = new [] { url1, url2, url3 },
+                StartAdminInterface = true,
+                ReadStaticMappings = true
+            });
             Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
