@@ -71,7 +71,10 @@ namespace WireMock.Net.Tests
         [Test]
         public void FluentMockServer_ReadStaticMappings()
         {
-            _server = FluentMockServer.Start(new FluentMockServerSettings { ReadStaticMappings = true });
+            _server = FluentMockServer.Start();
+
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
+            _server.ReadStaticMappings(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
