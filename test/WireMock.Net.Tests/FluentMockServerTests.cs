@@ -20,6 +20,16 @@ namespace WireMock.Net.Tests
     {
         private FluentMockServer _server;
 
+        // For for AppVeyor + OpenCover
+        private string GetCurrentFolder()
+        {
+            string current = Directory.GetCurrentDirectory();
+            if (!current.EndsWith("WireMock.Net.Tests"))
+                return Path.Combine(current, "test", "WireMock.Net.Tests");
+
+            return current;
+        }
+
         [Test]
         public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
         {
@@ -28,7 +38,7 @@ namespace WireMock.Net.Tests
 
             _server = FluentMockServer.Start();
 
-            string folder = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", "documentdb_root.json");
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "documentdb_root.json");
             _server.ReadStaticMapping(folder);
 
             var mappings = _server.Mappings.ToArray();
@@ -46,7 +56,7 @@ namespace WireMock.Net.Tests
             string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
 
             _server = FluentMockServer.Start();
-            string folder = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", guid + ".json");
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
             _server.ReadStaticMapping(folder);
 
             var mappings = _server.Mappings.ToArray();
@@ -307,7 +317,7 @@ namespace WireMock.Net.Tests
             watch.Stop();
 
             // then
-            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(200);
+            Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
         }
 
         [Test]
@@ -327,7 +337,7 @@ namespace WireMock.Net.Tests
             watch.Stop();
 
             // then
-            Check.That(watch.ElapsedMilliseconds).IsGreaterThan(200);
+            Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
         }
 
         [TearDown]

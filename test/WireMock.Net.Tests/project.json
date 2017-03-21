@@ -2,19 +2,24 @@
     "version": "1.0.0-*",
     "authors": [ "Stef Heyenrath" ],
 
+    "buildOptions": { "debugType": "portable" },
+
+    "dependencies": {
+        "Microsoft.Extensions.Testing.Abstractions": "1.0.0-preview2-003121",
+        "Moq": "4.7.1",
+        "NUnit": "3.6.1",
+        "dotnet-test-nunit": "3.4.0-beta-3",
+        "NFluent": "2.0.0-alpha",
+        "SimMetrics.Net": "1.0.1.0",
+        "WireMock.Net": { "target": "project" }
+    },
+
     "frameworks": {
         "net452": {
             "frameworkAssemblies": {
                 "System.Net.Http": { "type": "build" }
             },
-
             "dependencies": {
-                "dotnet-test-nunit": "3.4.0-beta-3",
-                "Moq": "4.7.0",
-                "NFluent": "1.3.1",
-                "NUnit": "3.6.0",
-                "SimMetrics.Net": "1.0.1.0",
-                "WireMock.Net": { "target": "project" }
             }
         }
     },

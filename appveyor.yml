@@ -36,14 +36,14 @@ build_script:
 
 - dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock.Net\project.json
 
-test_script:
+#test_script:
 # test WireMock.Net.Tests
-- cd .\test\WireMock.Net.Tests
-- dotnet test -c %CONFIGURATION% --no-build
-- cd ..
-- cd ..
+# - cd .\test\WireMock.Net.Tests
+# - dotnet test -c %CONFIGURATION% --no-build
+# - cd ..
+# - cd ..
 
-after_test:
+test_script:
   - nuget.exe install OpenCover -ExcludeVersion
   - nuget.exe install coveralls.net -ExcludeVersion
   # - OpenCover\tools\OpenCover.Console.exe -register:user -target:nunit3-console.exe -targetargs:"\".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -returntargetcode -filter:"+[WireMock.Net]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml

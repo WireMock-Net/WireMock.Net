@@ -334,7 +334,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(1.0);
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0);
         }
 
         [Test]
@@ -350,7 +350,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(1.0).And.IsGreaterThan(0.5);
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0).And.IsStrictlyGreaterThan(0.5);
         }
 
         [Test]
@@ -366,7 +366,7 @@ namespace WireMock.Net.Tests
 
             // then
             var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsLessThan(0.1).And.IsGreaterThan(0.05);
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
         }
 
         [Test]
