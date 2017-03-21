@@ -38,7 +38,10 @@ build_script:
 
 test_script:
 # test WireMock.Net.Tests
-- dotnet test .\test\WireMock.Net.Tests\project.json -c %CONFIGURATION% --no-build
+- cd .\test\WireMock.Net.Tests
+- dotnet test -c %CONFIGURATION% --no-build
+- cd ..
+- cd ..
 
 after_test:
   - nuget.exe install OpenCover -ExcludeVersion
