@@ -112,7 +112,7 @@ namespace WireMock.Net.Tests
             var responseReady = new AutoResetEvent(false);
             HttpListenerResponse response = null;
             _server = new TinyHttpServer(
-                context =>
+                (context, token) =>
                     {
                         response = context.Response;
                         responseReady.Set();

@@ -13,11 +13,11 @@ namespace WireMock.Http
     /// </summary>
     public class TinyHttpServer
     {
-        private readonly Action<HttpListenerContext> _httpHandler;
+        private readonly Action<HttpListenerContext, CancellationToken> _httpHandler;
 
         private readonly HttpListener _listener;
 
-        private CancellationTokenSource _cts;
+        private readonly CancellationTokenSource _cts;
 
         /// <summary>
         /// Gets a value indicating whether this server is started.
@@ -33,6 +33,7 @@ namespace WireMock.Http
         /// <value>
         /// The urls.
         /// </value>
+        [PublicAPI]
         public List<Uri> Urls { get; } = new List<Uri>();
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace WireMock.Http
         /// <value>
         /// The ports.
         /// </value>
+        [PublicAPI]
         public List<int> Ports { get; } = new List<int>();
 
         /// <summary>
@@ -48,10 +50,12 @@ namespace WireMock.Http
         /// </summary>
         /// <param name="uriPrefixes">The uriPrefixes.</param>
         /// <param name="httpHandler">The http handler.</param>
-        public TinyHttpServer([NotNull] Action<HttpListenerContext> httpHandler, [NotNull] params string[] uriPrefixes)
+        public TinyHttpServer([NotNull] Action<HttpListenerContext, CancellationToken> httpHandler, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(httpHandler, nameof(httpHandler));
             Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+
+            _cts = new CancellationTokenSource();
 
             _httpHandler = httpHandler;
 
@@ -70,22 +74,26 @@ namespace WireMock.Http
         /// <summary>
         /// Start the server.
         /// </summary>
+        [PublicAPI]
         public void Start()
         {
             _listener.Start();
+
             IsStarted = true;
 
-            _cts = new CancellationTokenSource();
             Task.Run(
                 async () =>
                     {
-                        using (_listener)
+                        //using (_listener)
                         {
                             while (!_cts.Token.IsCancellationRequested)
                             {
                                 HttpListenerContext context = await _listener.GetContextAsync();
-                                _httpHandler(context);
+                                _httpHandler(context, _cts.Token);
                             }
+
+                            _listener.Stop();
+                            IsStarted = false;
                         }
                     },
                 _cts.Token);
@@ -94,8 +102,11 @@ namespace WireMock.Http
         /// <summary>
         /// Stop the server.
         /// </summary>
+        [PublicAPI]
         public void Stop()
         {
+            _listener?.Stop();
+
             _cts.Cancel();
         }
     }

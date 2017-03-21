@@ -31,6 +31,16 @@ namespace WireMock.Net.Tests
         }
 
         [Test]
+        public void FluentMockServer_StartStop()
+        {
+            var server1 = FluentMockServer.Start("http://localhost:9090/");
+            server1.Stop();
+
+            var server2 = FluentMockServer.Start("http://localhost:9090/");
+            server2.Stop();
+        }
+
+        [Test]
         public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
         {
             var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
@@ -346,7 +356,7 @@ namespace WireMock.Net.Tests
         [TearDown]
         public void ShutdownServer()
         {
-            _server.Stop();
+            _server?.Stop();
         }
     }
 }

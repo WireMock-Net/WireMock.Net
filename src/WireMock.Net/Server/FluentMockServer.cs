@@ -13,6 +13,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.Validation;
+using System.Threading;
 
 namespace WireMock.Server
 {
@@ -255,7 +256,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void Stop()
         {
-            _httpServer.Stop();
+            _httpServer?.Stop();
         }
 
         /// <summary>
@@ -432,13 +433,17 @@ namespace WireMock.Server
         /// The handle request.
         /// </summary>
         /// <param name="ctx">The HttpListenerContext.</param>
-        private async void HandleRequestAsync(HttpListenerContext ctx)
+        /// <param name="cancel">The CancellationToken.</param>
+        private async void HandleRequestAsync(HttpListenerContext ctx, CancellationToken cancel)
         {
+            if (cancel.IsCancellationRequested)
+                return;
+
             if (_requestProcessingDelay > TimeSpan.Zero)
             {
                 lock (_syncRoot)
                 {
-                    Task.Delay(_requestProcessingDelay.Value).Wait();
+                    Task.Delay(_requestProcessingDelay.Value, cancel).Wait(cancel);
                 }
             }
 

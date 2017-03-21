@@ -25,7 +25,7 @@ namespace WireMock.Net.Tests.Http
             var port = PortUtil.FindFreeTcpPort();
             bool called = false;
             var urlPrefix = "http://localhost:" + port + "/";
-            var server = new TinyHttpServer(ctx => called = true, urlPrefix);
+            var server = new TinyHttpServer((ctx, token) => called = true, urlPrefix);
             server.Start();
 
             // when

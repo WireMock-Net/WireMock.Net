@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
 using NUnit.Framework;
@@ -103,7 +104,7 @@ namespace WireMock.Net.Tests
         {
             private static volatile RequestMessage _lastRequestMessage;
 
-            private MapperServer(Action<HttpListenerContext> httpHandler, string urlPrefix) : base(httpHandler, urlPrefix)
+            private MapperServer(Action<HttpListenerContext, CancellationToken> httpHandler, string urlPrefix) : base(httpHandler, urlPrefix)
             {
             }
 
@@ -127,7 +128,7 @@ namespace WireMock.Net.Tests
                 int port = PortUtil.FindFreeTcpPort();
                 UrlPrefix = "http://localhost:" + port + "/";
                 var server = new MapperServer(
-                    context =>
+                    (context, token) =>
                         {
                             LastRequestMessage = new HttpListenerRequestMapper().Map(context.Request);
                             context.Response.Close();
