@@ -195,7 +195,7 @@ namespace WireMock.Server
         #region Mappings
         private ResponseMessage MappingsSave(RequestMessage requestMessage)
         {
-            string folder = Directory.GetCurrentDirectory() + AdminMappingsFolder;
+            string folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 

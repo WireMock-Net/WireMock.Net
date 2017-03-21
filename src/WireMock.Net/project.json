@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1.3",
+    "version": "1.0.1.4",
     "title": "WireMock.Net",
     "description": "Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.",
     "authors": [ "Alexandre Victoor", "Stef Heyenrath" ],
@@ -24,7 +24,7 @@
 
     "dependencies": {
         "JetBrains.Annotations": {
-            "version": "10.2.1",
+            "version": "10.4.0",
             "type": "build"
         },
         "Handlebars.Net": "1.8.0",
