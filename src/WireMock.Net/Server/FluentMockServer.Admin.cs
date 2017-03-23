@@ -553,7 +553,7 @@ namespace WireMock.Server
                         Funcs = Map(pm.Funcs)
                     }).ToList() : null,
 
-                    Body = new BodyModel
+                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Count(m => m == "get") == 1 ? null : new BodyModel
                     {
                         Matcher = bodyMatcher != null ? Map(bodyMatcher.Matcher) : null,
                         Func = bodyMatcher != null ? Map(bodyMatcher.Func) : null,
