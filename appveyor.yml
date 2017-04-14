@@ -20,8 +20,8 @@ environment:
 
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
+- nuget restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -PackagesDirectory packages
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
-- nuget restore .\examples\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -PackagesDirectory packages
 
 build_script:
 # build WireMock.Net
@@ -33,7 +33,7 @@ build_script:
 
 # build WireMock.Net.ConsoleApplication and WireMock.Net.Standalone
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION%
-- cmd: msbuild .\examples\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj /p:Configuration=%CONFIGURATION%
+- cmd: msbuild .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj /p:Configuration=%CONFIGURATION%
 
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion
