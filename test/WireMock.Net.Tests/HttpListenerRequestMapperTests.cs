@@ -5,23 +5,23 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.Http;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
-    public class HttpListenerRequestMapperTests
+    //[TestFixture]
+    public class HttpListenerRequestMapperTests : IDisposable
     {
         private MapperServer _server;
 
-        [SetUp]
-        public void StartListenerServer()
+        //[SetUp]
+        public HttpListenerRequestMapperTests()
         {
             _server = MapperServer.Start();
         }
 
-        [Test]
+        [Fact]
         public async Task Should_map_uri_from_listener_request()
         {
             // given
@@ -35,7 +35,7 @@ namespace WireMock.Net.Tests
             Check.That(MapperServer.LastRequestMessage.Path).IsEqualTo("/toto");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_map_verb_from_listener_request()
         {
             // given
@@ -49,7 +49,7 @@ namespace WireMock.Net.Tests
             Check.That(MapperServer.LastRequestMessage.Method).IsEqualTo("put");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_map_body_from_listener_request()
         {
             // given
@@ -63,7 +63,7 @@ namespace WireMock.Net.Tests
             Check.That(MapperServer.LastRequestMessage.Body).IsEqualTo("Hello!");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_map_headers_from_listener_request()
         {
             // given
@@ -79,7 +79,7 @@ namespace WireMock.Net.Tests
             Check.That(MapperServer.LastRequestMessage.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
         }
 
-        [Test]
+        [Fact]
         public async Task Should_map_params_from_listener_request()
         {
             // given
@@ -94,8 +94,8 @@ namespace WireMock.Net.Tests
             Check.That(MapperServer.LastRequestMessage.GetParameter("id")).HasSize(1);
         }
 
-        [TearDown]
-        public void StopListenerServer()
+        //[TearDown]
+        public void Dispose()
         {
             _server.Stop();
         }

@@ -1,21 +1,22 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.Http;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
-    public class HttpListenerResponseMapperTests
+    //[TestFixture]
+    public class HttpListenerResponseMapperTests : IDisposable
     {
         private TinyHttpServer _server;
         private Task<HttpResponseMessage> _responseMsgTask;
 
-        [Test]
+        [Fact]
         public void Should_map_status_code_from_original_response()
         {
             // given
@@ -29,7 +30,7 @@ namespace WireMock.Net.Tests
             Check.That(httpListenerResponse.StatusCode).IsEqualTo(404);
         }
 
-        [Test]
+        [Fact]
         public void Should_map_headers_from_original_response()
         {
             // given
@@ -46,7 +47,7 @@ namespace WireMock.Net.Tests
             Check.That(httpListenerResponse.Headers.Get("cache-control")).Contains("no-cache");
         }
 
-        [Test]
+        [Fact]
         public void Should_map_body_from_original_response()
         {
             // given
@@ -68,7 +69,7 @@ namespace WireMock.Net.Tests
             Check.That(contentTask.Result).IsEqualTo("Hello !!!");
         }
 
-        [Test]
+        [Fact]
         public void Should_map_encoded_body_from_original_response()
         {
             // given
@@ -93,8 +94,8 @@ namespace WireMock.Net.Tests
             Check.That(contentTask.Result).IsEqualTo("Hello !!!");
         }
 
-        [TearDown]
-        public void StopServer()
+        //[TearDown]
+        public void Dispose()
         {
             _server?.Stop();
         }

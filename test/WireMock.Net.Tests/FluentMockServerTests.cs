@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -14,9 +14,9 @@ using WireMock.Server;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
-    [Timeout(5000)]
-    public class FluentMockServerTests
+    //[TestFixture]
+    //[Timeout(5000)]
+    public class FluentMockServerTests : IDisposable
     {
         private FluentMockServer _server;
 
@@ -24,13 +24,13 @@ namespace WireMock.Net.Tests
         private string GetCurrentFolder()
         {
             string current = Directory.GetCurrentDirectory();
-            if (!current.EndsWith("WireMock.Net.Tests"))
-                return Path.Combine(current, "test", "WireMock.Net.Tests");
+            //if (!current.EndsWith("WireMock.Net.Tests"))
+            //    return Path.Combine(current, "test", "WireMock.Net.Tests");
 
             return current;
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_StartStop()
         {
             var server1 = FluentMockServer.Start("http://localhost:9090/");
@@ -40,7 +40,7 @@ namespace WireMock.Net.Tests
             server2.Stop();
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
         {
             var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
@@ -60,7 +60,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Title).Equals(title);
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_ReadStaticMapping_WithGuidFilename()
         {
             string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
@@ -78,7 +78,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Title).IsNullOrEmpty();
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_ReadStaticMappings()
         {
             _server = FluentMockServer.Start();
@@ -90,7 +90,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings).HasSize(2);
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_Admin_Mappings_Get()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
@@ -113,7 +113,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings[1].Guid).Not.Equals(guid);
         }
 
-        [Test]
+        [Fact]
         public void FluentMockServer_Admin_Mappings_Add_SameGuid()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
@@ -135,7 +135,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Guid).Equals(guid);
         }
 
-        [Test]
+        [Fact]
         public async Task FluentMockServer_Admin_Mappings_AtPriority()
         {
             _server = FluentMockServer.Start();
@@ -161,7 +161,7 @@ namespace WireMock.Net.Tests
             Check.That((int)response.StatusCode).IsEqualTo(400);
         }
 
-        [Test]
+        [Fact]
         public async Task FluentMockServer_Admin_Requests_Get()
         {
             // given
@@ -177,7 +177,7 @@ namespace WireMock.Net.Tests
             Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
 
-        [Test]
+        [Fact]
         public async Task Should_respond_to_request()
         {
             // given
@@ -198,7 +198,7 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo(@"{ msg: ""Hello world!""}");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_respond_to_request_bodyAsBase64()
         {
             // given
@@ -213,7 +213,7 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("Hello World?");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_respond_404_for_unexpected_request()
         {
             // given
@@ -227,7 +227,7 @@ namespace WireMock.Net.Tests
             Check.That((int)response.StatusCode).IsEqualTo(404);
         }
 
-        [Test]
+        [Fact]
         public async Task Should_find_a_request_satisfying_a_request_spec()
         {
             // given
@@ -246,7 +246,7 @@ namespace WireMock.Net.Tests
             Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Ports[0] + "/bar");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_reset_requestlogs()
         {
             // given
@@ -260,7 +260,7 @@ namespace WireMock.Net.Tests
             Check.That(_server.LogEntries).IsEmpty();
         }
 
-        [Test]
+        [Fact]
         public void Should_reset_mappings()
         {
             // given
@@ -282,7 +282,7 @@ namespace WireMock.Net.Tests
                 .ThrowsAny();
         }
 
-        [Test]
+        [Fact]
         public async Task Should_respond_a_redirect_without_body()
         {
             // given
@@ -310,7 +310,7 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
         }
 
-        [Test]
+        [Fact]
         public async Task Should_delay_responses_for_a_given_route()
         {
             // given
@@ -333,7 +333,7 @@ namespace WireMock.Net.Tests
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
         }
 
-        [Test]
+        [Fact]
         public async Task Should_delay_responses()
         {
             // given
@@ -353,8 +353,8 @@ namespace WireMock.Net.Tests
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
         }
 
-        [TearDown]
-        public void ShutdownServer()
+        //[TearDown]
+        public void Dispose()
         {
             _server?.Stop();
         }

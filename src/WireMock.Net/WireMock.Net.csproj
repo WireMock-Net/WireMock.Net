@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
+    <AssemblyTitle>WireMock.Net</AssemblyTitle>
+    <VersionPrefix>1.0.1.5</VersionPrefix>
+    <Authors>Alexandre Victoor;Stef Heyenrath</Authors>
+    <TargetFramework>net45</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>WireMock.Net</AssemblyName>
+    <PackageId>WireMock.Net</PackageId>
+    <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
+    <PackageReleaseNotes>Fix StartAndStop from listener.</PackageReleaseNotes>
+    <PackageIconUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/StefH/WireMock.Net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/StefH/WireMock.Net</RepositoryUrl>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <DebugType>full</DebugType>
+    <ApplicationIcon>WireMock.Net-Logo.ico</ApplicationIcon>
+    <Version>1.0.2.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Handlebars.Net" Version="1.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
+    <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
+    <PackageReference Include="XPath2" Version="1.0.3.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

@@ -1,12 +1,13 @@
-﻿using NUnit.Framework;
+﻿using NFluent;
+using Xunit;
 using WireMock.Matchers;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
+    //[TestFixture]
     public class WildcardMatcherTest
     {
-        [Test]
+        [Fact]
         public void WildcardMatcher_patterns_positive()
         {
             var tests = new[]
@@ -25,14 +26,16 @@ namespace WireMock.Net.Tests
                 new { p = "*a*bc*", i = "abc" },
                 new { p = "*a*b?", i = "aXXXbc" }
             };
+
             foreach (var test in tests)
             {
                 var matcher = new WildcardMatcher(test.p);
-                Assert.AreEqual(1.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
+                Check.That(matcher.IsMatch(test.i)).Equals(1.0);
+                //Assert.AreEqual(1.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
             }
         }
 
-        [Test]
+        [Fact]
         public void WildcardMatcher_patterns_negative()
         {
             var tests = new[]
@@ -49,10 +52,12 @@ namespace WireMock.Net.Tests
                 new { p = "*abc*", i = "Xbc"},
                 new { p = "*a*bc*", i = "ac"}
             };
+
             foreach (var test in tests)
             {
                 var matcher = new WildcardMatcher(test.p);
-                Assert.AreEqual(0.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
+                //Assert.AreEqual(0.0, matcher.IsMatch(test.i), "p = " + test.p + ", i = " + test.i);
+                Check.That(matcher.IsMatch(test.i)).Equals(0.0);
             }
         }
     }

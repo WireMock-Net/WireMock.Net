@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.Http;
 
 [module:
@@ -15,10 +15,10 @@ using WireMock.Http;
 
 namespace WireMock.Net.Tests.Http
 {
-    [TestFixture]
+    //[TestFixture]
     public class TinyHttpServerTests
     {
-        [Test]
+        [Fact]
         public void Should_call_handler_on_request()
         {
             // given
