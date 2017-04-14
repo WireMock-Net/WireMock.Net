@@ -1,6 +1,6 @@
-os: Visual Studio 2015
+os: Visual Studio 2017
 
-version: 1.0.1.{build}
+version: 1.0.2.{build}
 
 configuration:
 - Debug
@@ -11,8 +11,9 @@ init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
 install:
-- ps: Start-FileDownload 'https://download.microsoft.com/download/0/A/3/0A372822-205D-4A86-BFA7-084D2CBE9EDF/DotNetCore.1.0.1-SDK.1.0.0.Preview2-003133-x64.exe'
-- cmd: DotNetCore.1.0.1-SDK.1.0.0.Preview2-003133-x64 /quiet
+  - ps: Start-FileDownload 'https://download.microsoft.com/download/8/F/9/8F9659B9-E628-4D1A-B6BF-C3004C8C954B/dotnet-1.1.1-sdk-win-x64.exe'
+  - cmd: dotnet-1.1.1-sdk-win-x64.exe /quiet
+  - ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
 
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
@@ -20,42 +21,27 @@ environment:
     secure: Eq/3VV5DVAeQAlQhe6hvy21IYPo5uY4fWKxvC4pxdq3giJzcwFp1QxBvRpXJ8Wkw
 
 before_build:
-- appveyor-retry dotnet restore .\src\WireMock.Net -v Minimal
+- dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
 
 build_script:
 # build WireMock.Net
-- dotnet build .\src\WireMock.Net\project.json -c %CONFIGURATION%
+- dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
 
 # restore and build WireMock.Net.Tests
-- appveyor-retry dotnet restore .\test\WireMock.Net.Tests -v Minimal
-- dotnet build .\test\WireMock.Net.Tests\project.json -c %CONFIGURATION%
+- dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
+- dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
 
 # build WireMock.Net.ConsoleApplication
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
 
-- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\src\WireMock.Net\project.json
-
-#test_script:
-# test WireMock.Net.Tests
-# - cd .\test\WireMock.Net.Tests
-# - dotnet test -c %CONFIGURATION% --no-build
-# - cd ..
-# - cd ..
-
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion
   - nuget.exe install coveralls.net -ExcludeVersion
-  # - OpenCover\tools\OpenCover.Console.exe -register:user -target:nunit3-console.exe -targetargs:"\".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -returntargetcode -filter:"+[WireMock.Net]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
-  # - OpenCover\tools\OpenCover.Console.exe -register:user -target:xunit.console.clr4.exe "-targetargs:"\".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64\WireMock.Net.Tests.dll\" --result=myresults.xml;format=AppVeyor" -filter:"+[WireMock.Net]*" -output:coverage.xml
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452\win7-x64" -oldstyle -targetargs:"test .\test\WireMock.Net.Tests" -returntargetcode -filter:"+[WireMock.Net]*" -output:coverage.xml
-  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
+
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test .\test\WireMock.Net.Tests" -returntargetcode -filter:"+[WireMock.Net]*" -output:coverage.xml -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452" 
+  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+
   - codecov -f "coverage.xml"
   - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
-
-artifacts:
-- path: artifacts\**\*.*
-
-cache:
-- packages

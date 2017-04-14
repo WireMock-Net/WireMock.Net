@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.RequestBuilders;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
+    //[TestFixture]
     public class RequestTests
     {
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path()
         {
             // given
@@ -26,7 +26,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_paths()
         {
             var requestBuilder = Request.Create().WithPath("/x1", "/x2");
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request2, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_pathFuncs()
         {
             // given
@@ -53,7 +53,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_prefix()
         {
             // given
@@ -67,7 +67,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_not_matching_given_path()
         {
             // given
@@ -81,7 +81,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_url()
         {
             // given
@@ -95,7 +95,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_method_put()
         {
             // given
@@ -109,7 +109,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_method_post()
         {
             // given
@@ -123,7 +123,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_method_get()
         {
             // given
@@ -137,7 +137,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_method_delete()
         {
             // given
@@ -153,7 +153,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_method_head()
         {
             // given
@@ -167,7 +167,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_matching_given_path_but_not_http_method()
         {
             // given
@@ -181,7 +181,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_matching_given_http_method_but_not_url()
         {
             // given
@@ -195,7 +195,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_path_and_headers()
         {
             // given
@@ -211,7 +211,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_not_matching_given_headers()
         {
             // given
@@ -227,7 +227,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_not_matching_given_headers_ignorecase()
         {
             // given
@@ -243,7 +243,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_header_prefix()
         {
             // given
@@ -259,7 +259,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_cookies()
         {
             // given
@@ -273,7 +273,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body()
         {
             // given
@@ -289,7 +289,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_ExactMatcher_true()
         {
             // given
@@ -305,7 +305,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_ExactMatcher_multiplePatterns()
         {
             // given
@@ -321,7 +321,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.5);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_ExactMatcher_false()
         {
             // given
@@ -337,7 +337,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher1()
         {
             // given
@@ -353,7 +353,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0).And.IsStrictlyGreaterThan(0.5);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_SimMetricsMatcher2()
         {
             // given
@@ -369,7 +369,7 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_WildcardMatcher()
         {
             // given
@@ -385,7 +385,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_RegexMatcher()
         {
             // given
@@ -401,7 +401,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_XPathMatcher_true()
         {
             // given
@@ -422,7 +422,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_XPathMatcher_false()
         {
             // given
@@ -443,7 +443,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_JsonPathMatcher_true()
         {
             // given
@@ -459,7 +459,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_body_using_JsonPathMatcher_false()
         {
             // given
@@ -475,7 +475,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_not_matching_given_body()
         {
             // given
@@ -491,7 +491,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_param()
         {
             // given
@@ -505,7 +505,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_paramNoValue()
         {
             // given
@@ -519,7 +519,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_specify_requests_matching_given_param_func()
         {
             // given
@@ -533,7 +533,7 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Test]
+        [Fact]
         public void Should_exclude_requests_not_matching_given_params()
         {
             // given

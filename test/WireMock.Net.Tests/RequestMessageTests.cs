@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Text;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
+    //[TestFixture]
     public class RequestMessageTests
     {
-        [Test]
+        [Fact]
         public void Should_handle_empty_query()
         {
             // given
@@ -18,7 +18,7 @@ namespace WireMock.Net.Tests
             Check.That(request.GetParameter("not_there")).IsNull();
         }
 
-        [Test]
+        [Fact]
         public void Should_parse_query_params()
         {
             // given

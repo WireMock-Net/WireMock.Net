@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using NFluent;
-using NUnit.Framework;
+using Xunit;
 using WireMock.ResponseBuilders;
 
 namespace WireMock.Net.Tests
 {
-    [TestFixture]
+    //[TestFixture]
     public class ResponseTests
     {
-        [Test]
+        [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {
             // given
@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo post");
         }
 
-        [Test]
+        [Fact]
         public async Task Response_ProvideResponse_Handlebars_Query()
         {
             // given
@@ -49,7 +49,7 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.Body).Equals("test keya=1 idx=1 idx=2 keyb=5");
         }
 
-        [Test]
+        [Fact]
         public async Task Response_ProvideResponse_Handlebars_Headers()
         {
             // given
@@ -67,7 +67,7 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.Headers).Contains(new KeyValuePair<string,string>("x", "text/plain"));
         }
 
-        [Test]
+        [Fact]
         public async Task Response_ProvideResponse_Encoding_Body()
         {
             // given
@@ -85,7 +85,7 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
         }
 
-        [Test]
+        [Fact]
         public async Task Response_ProvideResponse_Encoding_JsonBody()
         {
             // given
