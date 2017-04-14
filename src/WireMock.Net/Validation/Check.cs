@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 // Copied from https://github.com/aspnet/EntityFramework/blob/dev/src/Shared/Check.cs
 namespace WireMock.Validation
 {
-    [ExcludeFromCodeCoverage]
+    // [ExcludeFromCodeCoverage]
     [DebuggerStepThrough]
     internal static class Check
     {

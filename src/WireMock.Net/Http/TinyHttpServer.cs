@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET45
 using System.Net;
+#else
+using System.Net.Http;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;

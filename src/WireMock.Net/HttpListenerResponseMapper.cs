@@ -1,6 +1,10 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Text;
+#if NET45
+using System.Net;
+#else
+using System.Net.Http;
+#endif
 
 namespace WireMock
 {

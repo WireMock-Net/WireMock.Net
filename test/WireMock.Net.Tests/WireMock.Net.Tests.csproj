@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <!--<PackageReference Include="Microsoft.Extensions.Testing.Abstractions" Version="1.0.0-preview2-1-003177" />-->
     <PackageReference Include="Moq" Version="4.7.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
     <!--<PackageReference Include="NUnit" Version="3.6.1" />
     <PackageReference Include="dotnet-test-nunit" Version="3.4.0-beta-3" />-->
     <PackageReference Include="NFluent" Version="2.0.0-alpha" />

@@ -31,6 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Tests", "test\WireMock.Net.Tests\WireMock.Net.Tests.csproj", "{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{A35E57CD-1BC2-48F9-AAD6-919C5C9F108E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETStandard.HttpListener", "..\NETStandard.HttpListener\src\NETStandard.HttpListener\NETStandard.HttpListener.csproj", "{CC4C657B-3BD7-4BEB-972B-0830C8256439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,10 @@ Global
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC4C657B-3BD7-4BEB-972B-0830C8256439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC4C657B-3BD7-4BEB-972B-0830C8256439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC4C657B-3BD7-4BEB-972B-0830C8256439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC4C657B-3BD7-4BEB-972B-0830C8256439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +70,6 @@ Global
 		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA999} = {EF242EDF-7133-4277-9A0C-18744DE08707}
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E} = {890A1DED-C229-4FA1-969E-AAC3BBFC05E5}
+		{CC4C657B-3BD7-4BEB-972B-0830C8256439} = {A35E57CD-1BC2-48F9-AAD6-919C5C9F108E}
 	EndGlobalSection
 EndGlobal

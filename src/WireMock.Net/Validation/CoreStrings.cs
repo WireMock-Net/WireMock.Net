@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 // copied from https://github.com/aspnet/EntityFramework/blob/dev/src/Microsoft.EntityFrameworkCore/Properties/CoreStrings.resx
 namespace WireMock.Validation
 {
-    [ExcludeFromCodeCoverage]
+    // [ExcludeFromCodeCoverage]
     internal static class CoreStrings
     {
         /// <summary>

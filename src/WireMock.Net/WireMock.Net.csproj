@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
     <AssemblyTitle>WireMock.Net</AssemblyTitle>
-    <VersionPrefix>1.0.1.5</VersionPrefix>
+    <VersionPrefix>1.0.2.0</VersionPrefix>
     <Authors>Alexandre Victoor;Stef Heyenrath</Authors>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net</AssemblyName>
     <PackageId>WireMock.Net</PackageId>
@@ -20,21 +20,33 @@
     <DebugType>full</DebugType>
     <ApplicationIcon>WireMock.Net-Logo.ico</ApplicationIcon>
     <Version>1.0.2.0</Version>
+    <RootNamespace>WireMock</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Handlebars.Net" Version="1.8.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
+    
     <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
-    <PackageReference Include="XPath2" Version="1.0.3.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Handlebars.Net" Version="1.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
+    <PackageReference Include="XPath2" Version="1.0.3.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="Handlebars.NetStandard" Version="1.8.1" />
+    <!--<ProjectReference Include="..\..\..\NETStandard.HttpListener\src\NETStandard.HttpListener\NETStandard.HttpListener.csproj" />-->
+    <ProjectReference Include="NETStandard.HttpListener" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

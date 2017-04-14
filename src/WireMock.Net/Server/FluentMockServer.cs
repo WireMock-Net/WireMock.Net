@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -14,6 +13,11 @@ using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.Validation;
 using System.Threading;
+#if NET45
+using System.Net;
+#else
+using System.Net.Http;
+#endif
 
 namespace WireMock.Server
 {
