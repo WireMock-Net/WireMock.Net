@@ -5,8 +5,6 @@ version: 1.0.2.{build}
 configuration:
 - Debug
 
-platform: Any CPU
-
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
