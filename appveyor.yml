@@ -21,6 +21,7 @@ environment:
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
+- nuget restore .\examples\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -PackagesDirectory packages
 
 build_script:
 # build WireMock.Net
@@ -30,16 +31,15 @@ build_script:
 - dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
 - dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
 
-# build WireMock.Net.ConsoleApplication
-- cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION% /p:Platform=AnyCPU
+# build WireMock.Net.ConsoleApplication and WireMock.Net.Standalone
+- cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION%
+- cmd: msbuild .\examples\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj /p:Configuration=%CONFIGURATION%
 
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion
   - nuget.exe install coveralls.net -ExcludeVersion
   - pip install codecov
 
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test .\test\WireMock.Net.Tests" -returntargetcode -filter:"+[WireMock.Net]*" -output:coverage.xml -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452" 
-  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-
+  - cmd: '"OpenCover\tools\OpenCover.Console.exe" -register:user -target:dotnet.exe -targetargs:"test test\WireMock.Net.Tests\WireMock.Net.Tests.csproj --no-build" -returntargetcode -filter:"+[WireMock.Net]* -[WireMock.Net.Tests*]*" -output:coverage.xml -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452"'
   - codecov -f "coverage.xml"
   - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
