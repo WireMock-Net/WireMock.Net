@@ -27,9 +27,9 @@ namespace WireMock.Admin.Requests
         /// Gets or sets the absolete URL.
         /// </summary>
         /// <value>
-        /// The absolete URL.
+        /// The absolute URL.
         /// </value>
-        public string AbsoleteUrl { get; set; }
+        public string AbsoluteUrl { get; set; }
 
         /// <summary>
         /// Gets the query.
