@@ -1,148 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using NFluent;
-using Xunit;
-using WireMock.Http;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Net;
+//using System.Net.Http;
+//using System.Threading;
+//using System.Threading.Tasks;
+//using NFluent;
+//using Xunit;
+//using WireMock.Matchers;
+//using WireMock.RequestBuilders;
+//using WireMock.ResponseBuilders;
+//using WireMock.Server;
 
-namespace WireMock.Net.Tests
-{
-    //[TestFixture]
-    public class HttpListenerRequestMapperTests : IDisposable
-    {
-        private MapperServer _server;
+//namespace WireMock.Net.Tests
+//{
+//    //[TestFixture]
+//    public class HttpListenerRequestMapperTests : IDisposable
+//    {
+//        private FluentMockServer _server;
 
-        //[SetUp]
-        public HttpListenerRequestMapperTests()
-        {
-            _server = MapperServer.Start();
-        }
+//        public HttpListenerRequestMapperTests()
+//        {
+//            _server = FluentMockServer.Start();
+//        }
 
-        [Fact]
-        public async Task Should_map_uri_from_listener_request()
-        {
-            // given
-            var client = new HttpClient();
+//        [Fact]
+//        public async Task Should_map_uri_from_listener_request()
+//        {
+//            // given
+//            var client = new HttpClient();
 
-            // when 
-            await client.GetAsync(MapperServer.UrlPrefix + "toto");
+//            // when 
+//            await client.GetAsync(MapperServer.UrlPrefix + "toto");
 
-            // then
-            Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Path).IsEqualTo("/toto");
-        }
+//            // then
+//            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+//            Check.That(MapperServer.LastRequestMessage.Path).IsEqualTo("/toto");
+//        }
 
-        [Fact]
-        public async Task Should_map_verb_from_listener_request()
-        {
-            // given
-            var client = new HttpClient();
+//        [Fact]
+//        public async Task Should_map_verb_from_listener_request()
+//        {
+//            // given
+//            var client = new HttpClient();
 
-            // when 
-            await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
+//            // when 
+//            await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
 
-            // then
-            Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Method).IsEqualTo("put");
-        }
+//            // then
+//            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+//            Check.That(MapperServer.LastRequestMessage.Method).IsEqualTo("put");
+//        }
 
-        [Fact]
-        public async Task Should_map_body_from_listener_request()
-        {
-            // given
-            var client = new HttpClient();
+//        [Fact]
+//        public async Task Should_map_body_from_listener_request()
+//        {
+//            // given
+//            var client = new HttpClient();
 
-            // when 
-            await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
+//            // when 
+//            await client.PutAsync(MapperServer.UrlPrefix, new StringContent("Hello!"));
 
-            // then
-            Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Body).IsEqualTo("Hello!");
-        }
+//            // then
+//            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+//            Check.That(MapperServer.LastRequestMessage.Body).IsEqualTo("Hello!");
+//        }
 
-        [Fact]
-        public async Task Should_map_headers_from_listener_request()
-        {
-            // given
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("X-Alex", "1706");
+//        [Fact]
+//        public async Task Should_map_headers_from_listener_request()
+//        {
+//            // given
+//            var client = new HttpClient();
+//            client.DefaultRequestHeaders.Add("X-Alex", "1706");
 
-            // when 
-            await client.GetAsync(MapperServer.UrlPrefix);
+//            // when 
+//            await client.GetAsync(MapperServer.UrlPrefix);
 
-            // then
-            Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Headers).Not.IsNullOrEmpty();
-            Check.That(MapperServer.LastRequestMessage.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
-        }
+//            // then
+//            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+//            Check.That(MapperServer.LastRequestMessage.Headers).Not.IsNullOrEmpty();
+//            Check.That(MapperServer.LastRequestMessage.Headers.Contains(new KeyValuePair<string, string>("X-Alex", "1706"))).IsTrue();
+//        }
 
-        [Fact]
-        public async Task Should_map_params_from_listener_request()
-        {
-            // given
-            var client = new HttpClient();
+//        [Fact]
+//        public async Task Should_map_params_from_listener_request()
+//        {
+//            // given
+//            var client = new HttpClient();
 
-            // when 
-            await client.GetAsync(MapperServer.UrlPrefix + "index.html?id=toto");
+//            // when 
+//            await client.GetAsync(MapperServer.UrlPrefix + "index.html?id=toto");
 
-            // then
-            Check.That(MapperServer.LastRequestMessage).IsNotNull();
-            Check.That(MapperServer.LastRequestMessage.Path).EndsWith("/index.html");
-            Check.That(MapperServer.LastRequestMessage.GetParameter("id")).HasSize(1);
-        }
+//            // then
+//            Check.That(MapperServer.LastRequestMessage).IsNotNull();
+//            Check.That(MapperServer.LastRequestMessage.Path).EndsWith("/index.html");
+//            Check.That(MapperServer.LastRequestMessage.GetParameter("id")).HasSize(1);
+//        }
 
-        //[TearDown]
-        public void Dispose()
-        {
-            _server.Stop();
-        }
-
-        private class MapperServer : TinyHttpServer
-        {
-            private static volatile RequestMessage _lastRequestMessage;
-
-            private MapperServer(Action<HttpListenerContext, CancellationToken> httpHandler, string urlPrefix) : base(httpHandler, urlPrefix)
-            {
-            }
-
-            public static RequestMessage LastRequestMessage
-            {
-                get
-                {
-                    return _lastRequestMessage;
-                }
-
-                private set
-                {
-                    _lastRequestMessage = value;
-                }
-            }
-
-            public static string UrlPrefix { get; private set; }
-
-            public new static MapperServer Start()
-            {
-                int port = PortUtil.FindFreeTcpPort();
-                UrlPrefix = "http://localhost:" + port + "/";
-                var server = new MapperServer(
-                    (context, token) =>
-                        {
-                            LastRequestMessage = new HttpListenerRequestMapper().Map(context.Request);
-                            context.Response.Close();
-                        }, UrlPrefix);
-                ((TinyHttpServer)server).Start();
-
-                return server;
-            }
-
-            public new void Stop()
-            {
-                base.Stop();
-                LastRequestMessage = null;
-            }
-        }
-    }
-}
+//        public void Dispose()
+//        {
+//            _server.Stop().Wait();
+//        }
+//    }
+//}

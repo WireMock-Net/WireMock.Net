@@ -19,6 +19,7 @@
         /// <value>
         /// The use SSL.
         /// </value>
+        // ReSharper disable once InconsistentNaming
         public bool? UseSSL { get; set; }
 
         /// <summary>

@@ -97,6 +97,7 @@ namespace WireMock.Net.ConsoleApplication
 
             Console.WriteLine("Press any key to stop the server");
             Console.ReadKey();
+            server.Stop();
 
             Console.WriteLine("Displaying all requests");
             var allRequests = server.LogEntries;

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Logging;
@@ -12,12 +11,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.Validation;
-using System.Threading;
-#if NET45
-using System.Net;
-#else
-using System.Net.Http;
-#endif
+using WireMock.Owin;
 
 namespace WireMock.Server
 {
@@ -26,23 +20,11 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
-        private readonly TinyHttpServer _httpServer;
-
-        private IList<Mapping> _mappings = new List<Mapping>();
-
-        private readonly IList<LogEntry> _logEntries = new List<LogEntry>();
-
-        private readonly HttpListenerRequestMapper _requestMapper = new HttpListenerRequestMapper();
-
-        private readonly HttpListenerResponseMapper _responseMapper = new HttpListenerResponseMapper();
+        private readonly OwinSelfHost _httpServer;
 
         private readonly object _syncRoot = new object();
 
-        private TimeSpan? _requestProcessingDelay;
-
-        private bool _allowPartialMapping;
-
-        private IMatcher _authorizationMatcher;
+        private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
         /// Gets the ports.
@@ -67,9 +49,9 @@ namespace WireMock.Server
         {
             get
             {
-                lock (((ICollection)_logEntries).SyncRoot)
+                lock (((ICollection)_options.LogEntries).SyncRoot)
                 {
-                    return new ReadOnlyCollection<LogEntry>(_logEntries);
+                    return new ReadOnlyCollection<LogEntry>(_options.LogEntries);
                 }
             }
         }
@@ -82,11 +64,11 @@ namespace WireMock.Server
         [PublicAPI]
         public IEnumerable<LogEntry> FindLogEntries([NotNull] params IRequestMatcher[] matchers)
         {
-            lock (((ICollection)_logEntries).SyncRoot)
+            lock (((ICollection)_options.LogEntries).SyncRoot)
             {
                 var results = new Dictionary<LogEntry, RequestMatchResult>();
 
-                foreach (var log in _logEntries)
+                foreach (var log in _options.LogEntries)
                 {
                     var requestMatchResult = new RequestMatchResult();
                     foreach (var matcher in matchers)
@@ -110,9 +92,9 @@ namespace WireMock.Server
         {
             get
             {
-                lock (((ICollection)_mappings).SyncRoot)
+                lock (((ICollection)_options.Mappings).SyncRoot)
                 {
-                    return new ReadOnlyCollection<Mapping>(_mappings);
+                    return new ReadOnlyCollection<Mapping>(_options.Mappings);
                 }
             }
         }
@@ -226,7 +208,7 @@ namespace WireMock.Server
                 Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
             }
 
-            _httpServer = new TinyHttpServer(HandleRequestAsync, Urls);
+            _httpServer = new OwinSelfHost(_options, Urls);
             Ports = _httpServer.Ports;
 
             _httpServer.Start();
@@ -260,7 +242,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void Stop()
         {
-            _httpServer?.Stop();
+            _httpServer?.Stop().Wait();
         }
 
         /// <summary>
@@ -270,7 +252,7 @@ namespace WireMock.Server
         {
             if (_httpServer != null && _httpServer.IsStarted)
             {
-                _httpServer.Stop();
+                _httpServer.Stop().Wait();
             }
         }
 
@@ -291,9 +273,9 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetLogEntries()
         {
-            lock (((ICollection)_logEntries).SyncRoot)
+            lock (((ICollection)_options.LogEntries).SyncRoot)
             {
-                _logEntries.Clear();
+                _options.LogEntries.Clear();
             }
         }
 
@@ -304,13 +286,13 @@ namespace WireMock.Server
         [PublicAPI]
         public bool DeleteLogEntry(Guid guid)
         {
-            lock (((ICollection)_logEntries).SyncRoot)
+            lock (((ICollection)_options.LogEntries).SyncRoot)
             {
                 // Check a logentry exists with the same GUID, if so, remove it.
-                var existing = _logEntries.FirstOrDefault(m => m.Guid == guid);
+                var existing = _options.LogEntries.FirstOrDefault(m => m.Guid == guid);
                 if (existing != null)
                 {
-                    _logEntries.Remove(existing);
+                    _options.LogEntries.Remove(existing);
                     return true;
                 }
 
@@ -324,9 +306,9 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetMappings()
         {
-            lock (((ICollection)_mappings).SyncRoot)
+            lock (((ICollection)_options.Mappings).SyncRoot)
             {
-                _mappings = _mappings.Where(m => m.Provider is DynamicResponseProvider).ToList();
+                _options.Mappings = _options.Mappings.Where(m => m.Provider is DynamicResponseProvider).ToList();
             }
         }
 
@@ -337,13 +319,13 @@ namespace WireMock.Server
         [PublicAPI]
         public bool DeleteMapping(Guid guid)
         {
-            lock (((ICollection)_mappings).SyncRoot)
+            lock (((ICollection)_options.Mappings).SyncRoot)
             {
                 // Check a mapping exists with the same GUID, if so, remove it.
-                var existingMapping = _mappings.FirstOrDefault(m => m.Guid == guid);
+                var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
                 if (existingMapping != null)
                 {
-                    _mappings.Remove(existingMapping);
+                    _options.Mappings.Remove(existingMapping);
                     return true;
                 }
 
@@ -362,7 +344,7 @@ namespace WireMock.Server
         {
             lock (_syncRoot)
             {
-                _requestProcessingDelay = delay;
+                _options.RequestProcessingDelay = delay;
             }
         }
 
@@ -374,7 +356,7 @@ namespace WireMock.Server
         {
             lock (_syncRoot)
             {
-                _allowPartialMapping = true;
+                _options.AllowPartialMapping = true;
             }
         }
 
@@ -390,7 +372,7 @@ namespace WireMock.Server
             Check.NotNull(password, nameof(password));
 
             string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
-            _authorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
+            _options.AuthorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
         }
 
         /// <summary>
@@ -412,119 +394,99 @@ namespace WireMock.Server
         /// </param>
         private void RegisterMapping(Mapping mapping)
         {
-            lock (((ICollection)_mappings).SyncRoot)
+            lock (((ICollection)_options.Mappings).SyncRoot)
             {
                 // Check a mapping exists with the same GUID, if so, remove it first.
                 DeleteMapping(mapping.Guid);
 
-                _mappings.Add(mapping);
+                _options.Mappings.Add(mapping);
             }
         }
 
-        /// <summary>
-        /// The log request.
-        /// </summary>
-        /// <param name="entry">The request.</param>
-        private void LogRequest(LogEntry entry)
-        {
-            lock (((ICollection)_logEntries).SyncRoot)
-            {
-                _logEntries.Add(entry);
-            }
-        }
+        //private async void HandleRequestOld(IOwinContext ctx)
+        //{
+        //    if (_requestProcessingDelay > TimeSpan.Zero)
+        //    {
+        //        lock (_syncRoot)
+        //        {
+        //            Task.Delay(_requestProcessingDelay.Value).Wait();
+        //        }
+        //    }
 
-        /// <summary>
-        /// The handle request.
-        /// </summary>
-        /// <param name="ctx">The HttpListenerContext.</param>
-        /// <param name="cancel">The CancellationToken.</param>
-        private async void HandleRequestAsync(HttpListenerContext ctx, CancellationToken cancel)
-        {
-            if (cancel.IsCancellationRequested)
-                return;
+        //    var request = _requestMapper.MapAsync(ctx.Request);
 
-            if (_requestProcessingDelay > TimeSpan.Zero)
-            {
-                lock (_syncRoot)
-                {
-                    Task.Delay(_requestProcessingDelay.Value, cancel).Wait(cancel);
-                }
-            }
+        //    ResponseMessage response = null;
+        //    Mapping targetMapping = null;
+        //    RequestMatchResult requestMatchResult = null;
+        //    try
+        //    {
+        //        var mappings = _mappings
+        //            .Select(m => new { Mapping = m, MatchResult = m.IsRequestHandled(request) })
+        //            .ToList();
 
-            var request = _requestMapper.Map(ctx.Request);
+        //        if (_allowPartialMapping)
+        //        {
+        //            var partialMappings = mappings
+        //                .Where(pm => pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch || !pm.Mapping.IsAdminInterface)
+        //                .OrderBy(m => m.MatchResult)
+        //                .ThenBy(m => m.Mapping.Priority)
+        //                .ToList();
 
-            ResponseMessage response = null;
-            Mapping targetMapping = null;
-            RequestMatchResult requestMatchResult = null;
-            try
-            {
-                var mappings = _mappings
-                    .Select(m => new { Mapping = m, MatchResult = m.IsRequestHandled(request) })
-                    .ToList();
+        //            var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.AverageTotalScore > 0.0);
 
-                if (_allowPartialMapping)
-                {
-                    var partialMappings = mappings
-                        .Where(pm => pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch || !pm.Mapping.IsAdminInterface)
-                        .OrderBy(m => m.MatchResult)
-                        .ThenBy(m => m.Mapping.Priority)
-                        .ToList();
+        //            targetMapping = bestPartialMatch?.Mapping;
+        //            requestMatchResult = bestPartialMatch?.MatchResult;
+        //        }
+        //        else
+        //        {
+        //            var perfectMatch = mappings
+        //                .OrderBy(m => m.Mapping.Priority)
+        //                .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
 
-                    var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.AverageTotalScore > 0.0);
+        //            targetMapping = perfectMatch?.Mapping;
+        //            requestMatchResult = perfectMatch?.MatchResult;
+        //        }
 
-                    targetMapping = bestPartialMatch?.Mapping;
-                    requestMatchResult = bestPartialMatch?.MatchResult;
-                }
-                else
-                {
-                    var perfectMatch = mappings
-                        .OrderBy(m => m.Mapping.Priority)
-                        .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
+        //        if (targetMapping == null)
+        //        {
+        //            response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
+        //            return;
+        //        }
 
-                    targetMapping = perfectMatch?.Mapping;
-                    requestMatchResult = perfectMatch?.MatchResult;
-                }
+        //        if (targetMapping.IsAdminInterface && _authorizationMatcher != null)
+        //        {
+        //            string authorization;
+        //            bool present = request.Headers.TryGetValue("Authorization", out authorization);
+        //            if (!present || _authorizationMatcher.IsMatch(authorization) < 1.0)
+        //            {
+        //                response = new ResponseMessage { StatusCode = 401 };
+        //                return;
+        //            }
+        //        }
 
-                if (targetMapping == null)
-                {
-                    response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
-                    return;
-                }
+        //        response = await targetMapping.ResponseTo(request);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response = new ResponseMessage { StatusCode = 500, Body = ex.ToString() };
+        //    }
+        //    finally
+        //    {
+        //        var log = new LogEntry
+        //        {
+        //            Guid = Guid.NewGuid(),
+        //            RequestMessage = request,
+        //            ResponseMessage = response,
+        //            MappingGuid = targetMapping?.Guid,
+        //            MappingTitle = targetMapping?.Title,
+        //            RequestMatchResult = requestMatchResult
+        //        };
 
-                if (targetMapping.IsAdminInterface && _authorizationMatcher != null)
-                {
-                    string authorization;
-                    bool present = request.Headers.TryGetValue("Authorization", out authorization);
-                    if (!present || _authorizationMatcher.IsMatch(authorization) < 1.0)
-                    {
-                        response = new ResponseMessage { StatusCode = 401 };
-                        return;
-                    }
-                }
+        //        LogRequest(log);
 
-                response = await targetMapping.ResponseTo(request);
-            }
-            catch (Exception ex)
-            {
-                response = new ResponseMessage { StatusCode = 500, Body = ex.ToString() };
-            }
-            finally
-            {
-                var log = new LogEntry
-                {
-                    Guid = Guid.NewGuid(),
-                    RequestMessage = request,
-                    ResponseMessage = response,
-                    MappingGuid = targetMapping?.Guid,
-                    MappingTitle = targetMapping?.Title,
-                    RequestMatchResult = requestMatchResult
-                };
-
-                LogRequest(log);
-
-                _responseMapper.Map(response, ctx.Response);
-                ctx.Response.Close();
-            }
-        }
+        //        _responseMapper.MapAsync(response, ctx.Response);
+        //        ctx.Response.Close();
+        //    }
+        //}
     }
 }

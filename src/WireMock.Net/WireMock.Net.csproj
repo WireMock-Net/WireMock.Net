@@ -10,7 +10,7 @@
     <AssemblyName>WireMock.Net</AssemblyName>
     <PackageId>WireMock.Net</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <PackageReleaseNotes>Fix StartAndStop from listener.</PackageReleaseNotes>
+    <PackageReleaseNotes>Support for NETStandard by replacing HttpListener by Owin</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/StefH/WireMock.Net</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE</PackageLicenseUrl>
@@ -27,22 +27,19 @@
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.3" />
     <PackageReference Include="Handlebars.Net" Version="1.8.0" />
     <PackageReference Include="XPath2" Version="1.0.3.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="1.1.1" />
     <PackageReference Include="Handlebars.NetStandard" Version="1.8.1" />
-    <!--<ProjectReference Include="..\..\..\NETStandard.HttpListener\src\NETStandard.HttpListener\NETStandard.HttpListener.csproj" />-->
-    <ProjectReference Include="NETStandard.HttpListener" Version="1.0.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
