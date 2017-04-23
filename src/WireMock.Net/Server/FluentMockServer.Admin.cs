@@ -329,7 +329,7 @@ namespace WireMock.Server
                 {
                     DateTime = logEntry.RequestMessage.DateTime,
                     Path = logEntry.RequestMessage.Path,
-                    AbsoleteUrl = logEntry.RequestMessage.Url,
+                    AbsoluteUrl = logEntry.RequestMessage.Url,
                     Query = logEntry.RequestMessage.Query,
                     Method = logEntry.RequestMessage.Method,
                     Body = logEntry.RequestMessage.Body,
