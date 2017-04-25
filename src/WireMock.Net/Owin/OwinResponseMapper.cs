@@ -2,7 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if NET45
 using Microsoft.Owin;
+#else
+using Microsoft.AspNetCore.Http;
+#endif
 
 namespace WireMock.Owin
 {
@@ -18,22 +22,18 @@ namespace WireMock.Owin
         /// </summary>
         /// <param name="responseMessage"></param>
         /// <param name="response"></param>
-        public async Task MapAsync(ResponseMessage responseMessage, IOwinResponse response)
+        public async Task MapAsync(ResponseMessage responseMessage
+#if NET45
+            , IOwinResponse response
+#else
+            , HttpResponse response
+#endif
+            )
         {
             response.StatusCode = responseMessage.StatusCode;
 
-            WriteHeaders(responseMessage, response);
-
-            await WriteBodyAsync(responseMessage, response);
-        }
-
-        private void WriteHeaders(ResponseMessage responseMessage, IOwinResponse response)
-        {
             responseMessage.Headers.ToList().ForEach(pair => response.Headers.Append(pair.Key, pair.Value));
-        }
 
-        private async Task WriteBodyAsync(ResponseMessage responseMessage, IOwinResponse response)
-        {
             if (responseMessage.Body == null)
                 return;
 

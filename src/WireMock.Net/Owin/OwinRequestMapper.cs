@@ -4,7 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if NET45
 using Microsoft.Owin;
+#else
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.Features;
+#endif
 
 namespace WireMock.Owin
 {
@@ -18,20 +24,30 @@ namespace WireMock.Owin
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<RequestMessage> MapAsync(IOwinRequest request)
+        public async Task<RequestMessage> MapAsync(
+#if NET45
+            IOwinRequest request
+#else
+            HttpRequest request
+#endif
+            )
         {
+#if NET45
             Uri url = request.Uri;
+#else
+            Uri url = new Uri(request.GetEncodedUrl());
+#endif
             string verb = request.Method;
 
             string bodyAsString = null;
             byte[] body = null;
             Encoding bodyEncoding = null;
-            if (request.Body != null && request.Body.Length > 0)
+            if (request.Body != null)
             {
-                using (var sr = new StreamReader(request.Body))
+                using (var streamReader = new StreamReader(request.Body))
                 {
-                    bodyEncoding = sr.CurrentEncoding;
-                    bodyAsString = await sr.ReadToEndAsync();
+                    bodyAsString = await streamReader.ReadToEndAsync();
+                    bodyEncoding = streamReader.CurrentEncoding;
                 }
 
                 body = bodyEncoding.GetBytes(bodyAsString);

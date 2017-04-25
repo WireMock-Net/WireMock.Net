@@ -1,9 +1,9 @@
-﻿namespace WireMock.Server
+﻿namespace WireMock.Net
 {
     /// <summary>
-    /// FluentMockServerSettings
+    /// WireMockSettings
     /// </summary>
-    public class FluentMockServerSettings
+    public class WireMockSettings
     {
         /// <summary>
         /// Gets or sets the port.
@@ -45,10 +45,5 @@
         /// The urls.
         /// </value>
         public string[] Urls { get; set; }
-
-        /// <summary>
-        /// StartTimeout
-        /// </summary>
-        public int StartTimeout { get; set; } = 10000;
     }
 }

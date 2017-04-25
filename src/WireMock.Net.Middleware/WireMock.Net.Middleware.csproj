@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
+    <Description>WireMock.Net Owin Middleware.</Description>
+    <Version>1.0.0.0</Version>
     <AssemblyTitle>WireMock.Net</AssemblyTitle>
-    <Version>1.0.2.0</Version>
-    <Authors>Alexandre Victoor;Stef Heyenrath</Authors>
+    <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>WireMock.Net</AssemblyName>
-    <PackageId>WireMock.Net</PackageId>
+    <AssemblyName>WireMock.Net.Middleware</AssemblyName>
+    <PackageId>WireMock.Net.Middleware</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <PackageReleaseNotes>Support for NETStandard by replacing HttpListener by Owin</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/StefH/WireMock.Net</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE</PackageLicenseUrl>
@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/StefH/WireMock.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <DebugType>full</DebugType>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
+    <ApplicationIcon>../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
   </PropertyGroup>
 
@@ -27,11 +27,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
+    <!--<PackageReference Include="SimMetrics.Net" Version="1.0.3" />-->
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
@@ -39,17 +43,16 @@
     <PackageReference Include="Handlebars.Net" Version="1.8.0" />
     <PackageReference Include="XPath2" Version="1.0.3.1" />
   </ItemGroup>
-  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
-    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
-    <PackageReference Include="Handlebars.Net" Version="1.8.0" />
-    <PackageReference Include="XPath2" Version="1.0.3.1" />
-  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="1.1.1" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="1.1.1" />-->
     <PackageReference Include="Handlebars.NetStandard" Version="1.8.1" />
+    <PackageReference Include="System.Threading" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Thread">
+      <Version>4.3.0</Version>
+    </PackageReference>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>

@@ -174,7 +174,7 @@ namespace WireMock.Net.Tests
             Check.That(_server.LogEntries).HasSize(1);
             var requestLogged = _server.LogEntries.First();
             Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
-            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
+            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsEmpty();
         }
 
         [Fact]

@@ -22,6 +22,7 @@
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="2.5.6" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
+    <PackageReference Include="System.Threading" Version="4.3.0" />
 	  <PackageReference Include="xunit" Version="2.3.0-beta1-build3642" /> 
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta1-build1309" /> 
   </ItemGroup>

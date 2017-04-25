@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
-#if NET45
-using Microsoft.Owin;
-#else
+#if NETSTANDARD
 using Microsoft.AspNetCore.Http;
+#else
+using Microsoft.Owin;
 #endif
 
 namespace WireMock.Owin
 {
-#if NET45
-    internal class WireMockMiddleware : OwinMiddleware
-#else
+#if NETSTANDARD
     internal class WireMockMiddleware
+#else
+    internal class WireMockMiddleware : OwinMiddleware
 #endif
     {
         private static readonly Task CompletedTask = Task.FromResult(false);
@@ -24,22 +24,22 @@ namespace WireMock.Owin
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
-#if NET45
-        public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
+#if NETSTANDARD
+        public WireMockMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
         {
             _options = options;
         }
 #else
-        public WireMockMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
+        public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
         }
 #endif
 
-#if NET45
-        public override async Task Invoke(IOwinContext ctx)
-#else
+#if NETSTANDARD
         public async Task Invoke(HttpContext ctx)
+#else
+        public override async Task Invoke(IOwinContext ctx)
 #endif
         {
             if (_options.RequestProcessingDelay > TimeSpan.Zero)

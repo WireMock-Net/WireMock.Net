@@ -1,23 +1,24 @@
-﻿using System;
+﻿#if NET45
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Microsoft.Owin.Hosting;
 using WireMock.Validation;
 using Owin;
+using Microsoft.Owin.Hosting;
 
 namespace WireMock.Owin
 {
-    internal class OwinSelfHost
+    internal class OwinSelfHost : IOwinSelfHost
     {
         private readonly WireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private Thread _internalThread;
+        private System.Threading.Thread _internalThread;
 
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
-            _options = options;
+            Check.NotNull(options, nameof(options));
             Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
 
             foreach (string uriPrefix in uriPrefixes)
@@ -26,71 +27,33 @@ namespace WireMock.Owin
                 Urls.Add(uri);
                 Ports.Add(uri.Port);
             }
+
+            _options = options;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this server is started.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this server is started; otherwise, <c>false</c>.
-        /// </value>
         public bool IsStarted { get; private set; }
 
-        /// <summary>
-        /// Gets the url.
-        /// </summary>
-        /// <value>
-        /// The urls.
-        /// </value>
-        [PublicAPI]
         public List<Uri> Urls { get; } = new List<Uri>();
 
-        /// <summary>
-        /// Gets the ports.
-        /// </summary>
-        /// <value>
-        /// The ports.
-        /// </value>
-        [PublicAPI]
         public List<int> Ports { get; } = new List<int>();
 
         [PublicAPI]
-        public void Start()
+        public Task StartAsync()
         {
-            //Task.Run(() =>
-            //{
-            //    Action<IAppBuilder> startup = app =>
-            //    {
-            //        app.UseWireMockMiddleware(_options);
-            //    };
+            return Task.Run(() =>
+            {
+                StartServers();
+            }, _cts.Token);
 
-            //    var servers = new List<IDisposable>();
-            //    foreach (var url in Urls)
-            //    {
-            //        servers.Add(WebApp.Start(url.ToString(), startup));
-            //    }
+            //if (_internalThread != null)
+            //    throw new InvalidOperationException("Cannot start a multiple threads.");
 
-            //    IsStarted = true;
-
-            //    while (!_cts.IsCancellationRequested)
-            //        Thread.Sleep(1000);
-
-            //    IsStarted = false;
-
-            //    foreach (var server in servers)
-            //        server.Dispose();
-            //},
-            //_cts.Token);
-
-            if (_internalThread != null)
-                throw new InvalidOperationException("Cannot start a multiple threads.");
-
-            _internalThread = new Thread(ThreadWorkInternal);
-            _internalThread.Start();
+            //_internalThread = new Thread(ThreadWorkInternal);
+            //_internalThread.Start();
         }
 
         [PublicAPI]
-        public Task Stop()
+        public Task StopAsync()
         {
             _cts.Cancel();
 
@@ -113,26 +76,7 @@ namespace WireMock.Owin
         {
             try
             {
-                Action<IAppBuilder> startup = app =>
-                {
-                    app.UseWireMockMiddleware(_options);
-                };
-
-                var servers = new List<IDisposable>();
-                foreach (var url in Urls)
-                {
-                    servers.Add(WebApp.Start(url.ToString(), startup));
-                }
-
-                IsStarted = true;
-
-                while (!_cts.IsCancellationRequested)
-                    Thread.Sleep(1000);
-
-                IsStarted = false;
-
-                foreach (var server in servers)
-                    server.Dispose();
+                StartServers();
             }
             catch (Exception ex)
             {
@@ -143,5 +87,30 @@ namespace WireMock.Owin
                 _internalThread = null;
             }
         }
+
+        private void StartServers()
+        {
+            Action<IAppBuilder> startup = app =>
+            {
+                app.Use<WireMockMiddleware>(_options);
+            };
+
+            var servers = new List<IDisposable>();
+            foreach (var url in Urls)
+            {
+                servers.Add(WebApp.Start(url.ToString(), startup));
+            }
+
+            IsStarted = true;
+
+            while (!_cts.IsCancellationRequested)
+                Thread.Sleep(1000);
+
+            IsStarted = false;
+
+            foreach (var server in servers)
+                server.Dispose();
+        }
     }
 }
+#endif

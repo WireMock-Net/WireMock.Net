@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Logging;
@@ -20,7 +21,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
-        private readonly OwinSelfHost _httpServer;
+        private readonly IOwinSelfHost _httpServer;
 
         private readonly object _syncRoot = new object();
 
@@ -208,10 +209,19 @@ namespace WireMock.Server
                 Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
             }
 
+#if NET45
             _httpServer = new OwinSelfHost(_options, Urls);
+#else
+            _httpServer = new AspNetCoreSelfHost(_options, Urls);
+#endif
             Ports = _httpServer.Ports;
 
-            _httpServer.Start();
+            _httpServer.StartAsync();
+
+            while (!_httpServer.IsStarted)
+            {
+                Task.Delay(999).Wait();
+            }
 
             if (settings.StartAdminInterface == true)
             {
@@ -242,7 +252,12 @@ namespace WireMock.Server
         [PublicAPI]
         public void Stop()
         {
-            _httpServer?.Stop().Wait();
+            _httpServer?.StopAsync();
+
+            //while (_httpServer != null && _httpServer.IsStarted)
+            //{
+            //    Task.Delay(999).Wait();
+            //}
         }
 
         /// <summary>
@@ -252,7 +267,12 @@ namespace WireMock.Server
         {
             if (_httpServer != null && _httpServer.IsStarted)
             {
-                _httpServer.Stop().Wait();
+                _httpServer.StopAsync();
+
+                //while (_httpServer != null && _httpServer.IsStarted)
+                //{
+                //    Task.Delay(999).Wait();
+                //}
             }
         }
 
