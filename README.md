@@ -6,6 +6,11 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 [![Coverage Status](https://coveralls.io/repos/github/StefH/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/StefH/WireMock.Net?branch=master)
 [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net)
 
+### Frameworks
+The following frameworks are supported:
+- net45 and up
+- netstandard 1.3
+
 ## Stubbing
 A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
 
