@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Http;
@@ -218,11 +219,6 @@ namespace WireMock.Server
 
             _httpServer.StartAsync();
 
-            while (!_httpServer.IsStarted)
-            {
-                Task.Delay(999).Wait();
-            }
-
             if (settings.StartAdminInterface == true)
             {
                 InitAdmin();
@@ -253,11 +249,6 @@ namespace WireMock.Server
         public void Stop()
         {
             _httpServer?.StopAsync();
-
-            //while (_httpServer != null && _httpServer.IsStarted)
-            //{
-            //    Task.Delay(999).Wait();
-            //}
         }
 
         /// <summary>
@@ -268,11 +259,6 @@ namespace WireMock.Server
             if (_httpServer != null && _httpServer.IsStarted)
             {
                 _httpServer.StopAsync();
-
-                //while (_httpServer != null && _httpServer.IsStarted)
-                //{
-                //    Task.Delay(999).Wait();
-                //}
             }
         }
 
