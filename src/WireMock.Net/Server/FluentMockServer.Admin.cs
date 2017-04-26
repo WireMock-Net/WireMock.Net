@@ -122,8 +122,8 @@ namespace WireMock.Server
         {
             var model = new SettingsModel
             {
-                AllowPartialMapping = _allowPartialMapping,
-                GlobalProcessingDelay = _requestProcessingDelay?.Milliseconds
+                AllowPartialMapping = _options.AllowPartialMapping,
+                GlobalProcessingDelay = _options.RequestProcessingDelay?.Milliseconds
             };
 
             return ToJson(model);
@@ -134,10 +134,10 @@ namespace WireMock.Server
             var settings = JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body);
 
             if (settings.AllowPartialMapping != null)
-                _allowPartialMapping = settings.AllowPartialMapping.Value;
+                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
 
             if (settings.GlobalProcessingDelay != null)
-                _requestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+                _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
 
             return new ResponseMessage { Body = "Settings updated" };
         }

@@ -25,6 +25,3 @@ You can start a standalone mock server listening for HTTPS requests. To do so, t
 var server = FluentMockServer.Start(port: 8443, ssl: true);
 ```
 Obviously you need a certificate registered on your box, properly associated with your application and the port number that will be used. This is not really specific to WireMock, not very straightforward and hence the following stackoverflow thread might come handy: [Httplistener with https support](http://stackoverflow.com/questions/11403333/httplistener-with-https-support)
-
-## Simulating faults
-Currently not done - need to get rid of HttpListener and use lower level TcpListener in order to be able to implement this properly

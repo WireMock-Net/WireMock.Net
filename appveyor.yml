@@ -20,6 +20,7 @@ environment:
 
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
+- dotnet restore .\src\WireMock.Net.StandAlone.NETCoreApp\WireMock.Net.StandAlone.NETCoreApp.csproj
 - nuget restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -PackagesDirectory packages
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
 
@@ -31,7 +32,8 @@ build_script:
 - dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
 - dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
 
-# build WireMock.Net.ConsoleApplication and WireMock.Net.Standalone
+# build WireMock.Net.ConsoleApplication, WireMock.Net.StandAlone.NETCoreApp and WireMock.Net.Standalone
+- dotnet build .\src\WireMock.Net.StandAlone.NETCoreApp\WireMock.Net.StandAlone.NETCoreApp.csproj -c %CONFIGURATION%
 - cmd: msbuild .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj /p:Configuration=%CONFIGURATION%
 - cmd: msbuild .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj /p:Configuration=%CONFIGURATION%
 

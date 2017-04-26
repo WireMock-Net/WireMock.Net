@@ -36,8 +36,11 @@
     <ApplicationIcon>..\..\WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLineArgumentsParser, Version=3.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommandLineArgumentsParser.3.0.7\lib\net45\CommandLineArgumentsParser.dll</HintPath>
+    <Reference Include="CommandLineArgumentsParser, Version=3.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineArgumentsParser.3.0.9\lib\net45\CommandLineArgumentsParser.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.Host.HttpListener.3.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

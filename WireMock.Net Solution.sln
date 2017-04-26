@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
@@ -31,6 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Tests", "test\WireMock.Net.Tests\WireMock.Net.Tests.csproj", "{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.NETCoreApp", "src\WireMock.Net.StandAlone.NETCoreApp\WireMock.Net.StandAlone.NETCoreApp.csproj", "{14D7298C-2BE5-42C3-A3D5-9433E77218F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NETCoreApp", "examples\WireMock.Net.Console.NETCoreApp\WireMock.Net.Console.NETCoreApp.csproj", "{FE281639-B014-4C8A-96FA-141164A74713}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,14 @@ Global
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14D7298C-2BE5-42C3-A3D5-9433E77218F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D7298C-2BE5-42C3-A3D5-9433E77218F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D7298C-2BE5-42C3-A3D5-9433E77218F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D7298C-2BE5-42C3-A3D5-9433E77218F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE281639-B014-4C8A-96FA-141164A74713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE281639-B014-4C8A-96FA-141164A74713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE281639-B014-4C8A-96FA-141164A74713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE281639-B014-4C8A-96FA-141164A74713}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +74,7 @@ Global
 		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA999} = {EF242EDF-7133-4277-9A0C-18744DE08707}
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E} = {890A1DED-C229-4FA1-969E-AAC3BBFC05E5}
+		{14D7298C-2BE5-42C3-A3D5-9433E77218F9} = {EF242EDF-7133-4277-9A0C-18744DE08707}
+		{FE281639-B014-4C8A-96FA-141164A74713} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 EndGlobal

@@ -3,7 +3,9 @@ using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using WireMock.Validation;
+#if NET45
 using Wmhelp.XPath2;
+#endif
 
 namespace WireMock.Matchers
 {
@@ -39,8 +41,11 @@ namespace WireMock.Matchers
             try
             {
                 var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
-
+#if NET45
                 return MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p})"))));
+#else
+                return MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p})"))));
+#endif
             }
             catch (Exception)
             {

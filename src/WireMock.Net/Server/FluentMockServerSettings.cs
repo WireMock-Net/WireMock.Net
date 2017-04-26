@@ -19,6 +19,7 @@
         /// <value>
         /// The use SSL.
         /// </value>
+        // ReSharper disable once InconsistentNaming
         public bool? UseSSL { get; set; }
 
         /// <summary>
@@ -44,5 +45,10 @@
         /// The urls.
         /// </value>
         public string[] Urls { get; set; }
+
+        /// <summary>
+        /// StartTimeout
+        /// </summary>
+        public int StartTimeout { get; set; } = 10000;
     }
 }
