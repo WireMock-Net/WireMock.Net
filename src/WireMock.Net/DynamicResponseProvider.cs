@@ -16,7 +16,7 @@ namespace WireMock
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
+        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
         {
             return Task.FromResult(_responseMessageFunc(requestMessage));
         }

@@ -65,10 +65,10 @@ namespace WireMock
         /// The response to.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        public async Task<ResponseMessage> ResponseTo(RequestMessage requestMessage)
+        /// <returns>The <see cref="ResponseMessage"/>.</returns>
+        public async Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage)
         {
-            return await Provider.ProvideResponse(requestMessage);
+            return await Provider.ProvideResponseAsync(requestMessage);
         }
 
         /// <summary>

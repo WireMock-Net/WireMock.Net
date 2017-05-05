@@ -10,18 +10,14 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The with status code.
         /// </summary>
-        /// <param name="code">
-        /// The code.
-        /// </param>
+        /// <param name="code">The code.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithStatusCode(int code);
 
         /// <summary>
         /// The with status code.
         /// </summary>
-        /// <param name="code">
-        /// The code.
-        /// </param>
+        /// <param name="code">The code.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithStatusCode(HttpStatusCode code);
 

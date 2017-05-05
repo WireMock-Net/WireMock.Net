@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace WireMock
 {
@@ -10,12 +11,8 @@ namespace WireMock
         /// <summary>
         /// The provide response.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Task"/>.
-        /// </returns>
-        Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage);
+        /// <param name="requestMessage">The request.</param>
+        /// <returns>The <see cref="ResponseMessage"/>.</returns>
+        Task<ResponseMessage> ProvideResponseAsync([NotNull] RequestMessage requestMessage);
     }
 }

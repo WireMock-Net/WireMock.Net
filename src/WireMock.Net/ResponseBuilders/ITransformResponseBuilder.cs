@@ -1,7 +1,7 @@
 ﻿namespace WireMock.ResponseBuilders
 {
     /// <summary>
-    /// The BodyResponseBuilder interface.
+    /// The TransformResponseBuilder interface.
     /// </summary>
     public interface ITransformResponseBuilder : IDelayResponseBuilder
     {

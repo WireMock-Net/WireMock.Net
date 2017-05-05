@@ -353,6 +353,22 @@ namespace WireMock.Net.Tests
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
         }
 
+        [Fact]
+        public async Task Should_proxy_responses()
+        {
+            // given
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().FromProxyUrl("http://www.google.com"));
+
+            // when
+            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // then
+            Check.That(result).Contains("google");
+        }
+
         //[TearDown]
         public void Dispose()
         {

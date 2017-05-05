@@ -17,7 +17,7 @@ namespace WireMock.ResponseBuilders
         IResponseBuilder WithBody([NotNull] string body, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
-        /// The with body.
+        /// The with body as Json.
         /// </summary>
         /// <param name="body">The body.</param>
         /// <param name="encoding">The body encoding.</param>

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using HandlebarsDotNet;
@@ -27,6 +30,11 @@ namespace WireMock.ResponseBuilders
         ///   <c>true</c> if [use transformer]; otherwise, <c>false</c>.
         /// </value>
         public bool UseTransformer { get; private set; }
+
+        /// <summary>
+        /// The Proxy URL to use.
+        /// </summary>
+        public string ProxyUrl { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -184,7 +192,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="bodyAsbase64">The body asbase64.</param>
         /// <param name="encoding">The Encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
+        public IResponseBuilder WithBodyAsBase64([NotNull] string bodyAsbase64, Encoding encoding = null)
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
@@ -231,18 +239,71 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
+        /// From Proxy URL.
+        /// </summary>
+        /// <param name="proxyUrl">The proxy url.</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        [PublicAPI]
+        public IResponseBuilder FromProxyUrl(string proxyUrl)
+        {
+            Check.NotEmpty(proxyUrl, nameof(proxyUrl));
+
+            ProxyUrl = proxyUrl;
+            return this;
+        }
+
+        /// <summary>
         /// The provide response.
         /// </summary>
-        /// <param name="requestMessage">
-        /// The request.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Task"/>.
-        /// </returns>
-        public async Task<ResponseMessage> ProvideResponse(RequestMessage requestMessage)
+        /// <param name="requestMessage">The request.</param>
+        /// <returns>The <see cref="ResponseMessage"/>.</returns>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
         {
+            Check.NotNull(requestMessage, nameof(requestMessage));
+
             ResponseMessage responseMessage;
-            if (UseTransformer)
+
+            if (ProxyUrl != null)
+            {
+                using (var client = new HttpClient())
+                {
+                    var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), ProxyUrl);
+
+                    // Overwrite the host header
+                    httpRequestMessage.Headers.Host = new Uri(ProxyUrl).Authority;
+
+                    // Set headers if present
+                    if (requestMessage.Headers != null)
+                    {
+                        foreach (var headerName in requestMessage.Headers.Keys.Where(k => k.ToUpper() != "HOST"))
+                        {
+                            httpRequestMessage.Headers.Add(headerName, new[] { requestMessage.Headers[headerName] });
+                        }
+                    }
+
+                    // Set Body if present
+                    if (requestMessage.BodyAsBytes != null && requestMessage.BodyAsBytes.Length > 0)
+                    {
+                        httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
+                    }
+
+                    // Call the URL
+                    var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
+
+                    // Transform response
+                    responseMessage = new ResponseMessage
+                    {
+                        StatusCode = (int)httpResponseMessage.StatusCode,
+                        Body = await httpResponseMessage.Content.ReadAsStringAsync()
+                    };
+
+                    foreach (var header in httpResponseMessage.Headers)
+                    {
+                        responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
+                    }
+                }
+            }
+            else if (UseTransformer)
             {
                 responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode, BodyOriginal = ResponseMessage.Body };
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// The ResponseBuilder interface.
     /// </summary>
-    public interface IResponseBuilder : IStatusCodeResponseBuilder
+    public interface IResponseBuilder : IProxyResponseBuilder
     {
     }
 }

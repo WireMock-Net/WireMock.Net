@@ -466,6 +466,14 @@ namespace WireMock.Server
         {
             IResponseBuilder responseBuilder = Response.Create();
 
+            if (responseModel.Delay > 0)
+                responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
+
+            if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
+            {
+                return responseBuilder.FromProxyUrl(responseModel.ProxyUrl);
+            }
+
             if (responseModel.StatusCode.HasValue)
                 responseBuilder = responseBuilder.WithStatusCode(responseModel.StatusCode.Value);
 
@@ -492,9 +500,6 @@ namespace WireMock.Server
             if (responseModel.UseTransformer)
                 responseBuilder = responseBuilder.WithTransformer();
 
-            if (responseModel.Delay > 0)
-                responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
-
             return responseBuilder;
         }
 
@@ -511,7 +516,7 @@ namespace WireMock.Server
             var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
             var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
 
-            return new MappingModel
+            var mappingModel = new MappingModel
             {
                 Guid = mapping.Guid,
                 Title = mapping.Title,
@@ -562,20 +567,36 @@ namespace WireMock.Server
                 },
                 Response = new ResponseModel
                 {
-                    StatusCode = response.ResponseMessage.StatusCode,
-                    Headers = response.ResponseMessage.Headers,
-                    Body = response.ResponseMessage.Body,
-                    UseTransformer = response.UseTransformer,
-                    Delay = response.Delay?.Milliseconds,
+                    Delay = response.Delay?.Milliseconds
+                }
+            };
 
-                    BodyEncoding = response.ResponseMessage.BodyEncoding != null ? new EncodingModel
+            if (!string.IsNullOrEmpty(response.ProxyUrl))
+            {
+                mappingModel.Response.StatusCode = null;
+                mappingModel.Response.Headers = null;
+                mappingModel.Response.Body = null;
+                mappingModel.Response.UseTransformer = false;
+                mappingModel.Response.BodyEncoding = null;
+                mappingModel.Response.ProxyUrl = response.ProxyUrl;
+            }
+            else
+            {
+                mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
+                mappingModel.Response.Headers = response.ResponseMessage.Headers;
+                mappingModel.Response.Body = response.ResponseMessage.Body;
+                mappingModel.Response.UseTransformer = response.UseTransformer;
+                mappingModel.Response.BodyEncoding = response.ResponseMessage.BodyEncoding != null
+                    ? new EncodingModel
                     {
                         EncodingName = response.ResponseMessage.BodyEncoding.EncodingName,
                         CodePage = response.ResponseMessage.BodyEncoding.CodePage,
                         WebName = response.ResponseMessage.BodyEncoding.WebName
-                    } : null
-                }
-            };
+                    }
+                    : null;
+            }
+
+            return mappingModel;
         }
 
         private MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)

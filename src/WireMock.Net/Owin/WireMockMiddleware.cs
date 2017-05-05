@@ -103,7 +103,7 @@ namespace WireMock.Owin
                     }
                 }
 
-                response = await targetMapping.ResponseTo(request);
+                response = await targetMapping.ResponseToAsync(request);
             }
             catch (Exception ex)
             {

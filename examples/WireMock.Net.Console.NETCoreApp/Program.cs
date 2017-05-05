@@ -29,6 +29,14 @@ namespace WireMock.Net.Console.NETCoreApp
             server.AllowPartialMapping();
 
             server
+                .Given(Request.Create().WithPath("/bbc").UsingGet())
+                .RespondWith(Response.Create().FromProxyUrl("http://www.bbc.com"));
+
+            server
+                .Given(Request.Create().WithPath("/google").UsingGet())
+                .RespondWith(Response.Create().FromProxyUrl("http://www.google.com"));
+
+            server
                 .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
                 .RespondWith(Response.Create()

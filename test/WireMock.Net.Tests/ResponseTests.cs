@@ -24,7 +24,7 @@ namespace WireMock.Net.Tests
                 .WithTransformer();
             
             // act
-            var responseMessage = await response.ProvideResponse(request);
+            var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
             Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo post");
@@ -43,7 +43,7 @@ namespace WireMock.Net.Tests
                 .WithTransformer();
 
             // act
-            var responseMessage = await response.ProvideResponse(request);
+            var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
             Check.That(responseMessage.Body).Equals("test keya=1 idx=1 idx=2 keyb=5");
@@ -60,7 +60,7 @@ namespace WireMock.Net.Tests
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
             // act
-            var responseMessage = await response.ProvideResponse(request);
+            var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
             Check.That(responseMessage.Body).Equals("test");
@@ -78,7 +78,7 @@ namespace WireMock.Net.Tests
             var response = Response.Create().WithBody("test", Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponse(request);
+            var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
             Check.That(responseMessage.Body).Equals("test");
@@ -96,7 +96,7 @@ namespace WireMock.Net.Tests
             var response = Response.Create().WithBodyAsJson(new { value = "test" }, Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponse(request);
+            var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
             Check.That(responseMessage.Body).Equals("{\"value\":\"test\"}");

@@ -78,5 +78,11 @@ namespace WireMock.Admin.Mappings
         /// The delay in milliseconds.
         /// </value>
         public int? Delay { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Proxy URL.
+        /// </summary>
+        /// <value>ProxyUrl</value>
+        public string ProxyUrl { get; set; }
     }
 }

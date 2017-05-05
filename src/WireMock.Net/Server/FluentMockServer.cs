@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using WireMock.Http;
-using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -21,9 +20,7 @@ namespace WireMock.Server
     public partial class FluentMockServer : IDisposable
     {
         private readonly IOwinSelfHost _httpServer;
-
         private readonly object _syncRoot = new object();
-
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
@@ -56,6 +53,7 @@ namespace WireMock.Server
             }
         }
 
+        #region Start/Stop
         /// <summary>
         /// Starts the specified settings.
         /// </summary>
@@ -186,6 +184,16 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Stop this server.
+        /// </summary>
+        [PublicAPI]
+        public void Stop()
+        {
+            _httpServer?.StopAsync();
+        }
+        #endregion
+
+        /// <summary>
         /// Adds the catch all mapping.
         /// </summary>
         [PublicAPI]
@@ -195,15 +203,6 @@ namespace WireMock.Server
                 .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
                 .AtPriority(1000)
                 .RespondWith(new DynamicResponseProvider(request => new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" }));
-        }
-
-        /// <summary>
-        /// Stop this server.
-        /// </summary>
-        [PublicAPI]
-        public void Stop()
-        {
-            _httpServer?.StopAsync();
         }
 
         /// <summary>
@@ -264,9 +263,7 @@ namespace WireMock.Server
         /// <summary>
         /// The add request processing delay.
         /// </summary>
-        /// <param name="delay">
-        /// The delay.
-        /// </param>
+        /// <param name="delay">The delay.</param>
         [PublicAPI]
         public void AddGlobalProcessingDelay(TimeSpan delay)
         {
