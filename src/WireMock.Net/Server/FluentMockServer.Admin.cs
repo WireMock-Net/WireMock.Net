@@ -471,7 +471,7 @@ namespace WireMock.Server
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
-                return responseBuilder.FromProxyUrl(responseModel.ProxyUrl);
+                return responseBuilder.WithProxy(responseModel.ProxyUrl);
             }
 
             if (responseModel.StatusCode.HasValue)

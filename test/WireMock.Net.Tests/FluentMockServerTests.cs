@@ -360,7 +360,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
             _server
                 .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().FromProxyUrl("http://www.google.com"));
+                .RespondWith(Response.Create().WithProxy("http://www.google.com"));
 
             // when
             var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");

@@ -244,7 +244,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="proxyUrl">The proxy url.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
-        public IResponseBuilder FromProxyUrl(string proxyUrl)
+        public IResponseBuilder WithProxy(string proxyUrl)
         {
             Check.NotEmpty(proxyUrl, nameof(proxyUrl));
 
