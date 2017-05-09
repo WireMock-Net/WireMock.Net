@@ -1,4 +1,4 @@
-﻿namespace WireMock.Server
+﻿namespace WireMock.Settings
 {
     /// <summary>
     /// FluentMockServerSettings
@@ -31,12 +31,16 @@
         public bool? StartAdminInterface { get; set; }
 
         /// <summary>
-        /// Gets or sets the read static mappings.
+        /// Gets or sets if the static mappings should be read at startup.
         /// </summary>
-        /// <value>
-        /// The read static mappings.
-        /// </value>
+        /// <value>true/false</value>
         public bool? ReadStaticMappings { get; set; }
+
+        /// <summary>
+        /// Gets or sets if the server should record and save requests and responses.
+        /// </summary>
+        /// <value>true/false</value>
+        public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the urls.

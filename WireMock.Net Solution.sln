@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.NET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NETCoreApp", "examples\WireMock.Net.Console.NETCoreApp\WireMock.Net.Console.NETCoreApp.csproj", "{FE281639-B014-4C8A-96FA-141164A74713}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.Record.NETCoreApp", "examples\WireMock.Net.Console.Record.NETCoreApp\WireMock.Net.Console.Record.NETCoreApp.csproj", "{1995E414-F197-4AB4-90C2-68D806B5AF59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{FE281639-B014-4C8A-96FA-141164A74713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE281639-B014-4C8A-96FA-141164A74713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE281639-B014-4C8A-96FA-141164A74713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1995E414-F197-4AB4-90C2-68D806B5AF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1995E414-F197-4AB4-90C2-68D806B5AF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1995E414-F197-4AB4-90C2-68D806B5AF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1995E414-F197-4AB4-90C2-68D806B5AF59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,5 +82,6 @@ Global
 		{31DC2EF8-C3FE-467D-84BE-FB5D956E612E} = {890A1DED-C229-4FA1-969E-AAC3BBFC05E5}
 		{14D7298C-2BE5-42C3-A3D5-9433E77218F9} = {EF242EDF-7133-4277-9A0C-18744DE08707}
 		{FE281639-B014-4C8A-96FA-141164A74713} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{1995E414-F197-4AB4-90C2-68D806B5AF59} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 EndGlobal

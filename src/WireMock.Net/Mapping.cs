@@ -91,6 +91,6 @@ namespace WireMock
         /// <value>
         /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAdminInterface => Provider is DynamicResponseProvider;
+        public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
     }
 }

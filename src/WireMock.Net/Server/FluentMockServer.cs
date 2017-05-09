@@ -9,6 +9,7 @@ using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
+using WireMock.Settings;
 using WireMock.Validation;
 using WireMock.Owin;
 
@@ -181,6 +182,11 @@ namespace WireMock.Server
             {
                 ReadStaticMappings();
             }
+
+            if (settings.ProxyAndRecordSettings != null)
+            {
+                InitProxyAndRecord(settings.ProxyAndRecordSettings);
+            }
         }
 
         /// <summary>
@@ -235,7 +241,7 @@ namespace WireMock.Server
         {
             lock (((ICollection)_options.Mappings).SyncRoot)
             {
-                _options.Mappings = _options.Mappings.Where(m => m.Provider is DynamicResponseProvider).ToList();
+                _options.Mappings = _options.Mappings.Where(m => m.IsAdminInterface).ToList();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace WireMock.Server
 {
@@ -38,9 +39,13 @@ namespace WireMock.Server
         /// <summary>
         /// The respond with.
         /// </summary>
-        /// <param name="provider">
-        /// The provider.
-        /// </param>
+        /// <param name="provider">The provider.</param>
         void RespondWith(IResponseProvider provider);
+
+        ///// <summary>
+        ///// The respond with.
+        ///// </summary>
+        ///// <param name="provider">The provider.</param>
+        //Task RespondWithAsync(IResponseProvider provider);
     }
 }

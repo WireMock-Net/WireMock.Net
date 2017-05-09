@@ -5,6 +5,7 @@ using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 
 namespace WireMock.Net.Console.NETCoreApp
 {

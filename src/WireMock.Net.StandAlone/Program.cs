@@ -4,6 +4,7 @@ using System.Linq;
 using CommandLineParser.Arguments;
 using CommandLineParser.Exceptions;
 using WireMock.Server;
+using WireMock.Settings;
 
 namespace WireMock.Net.StandAlone
 {

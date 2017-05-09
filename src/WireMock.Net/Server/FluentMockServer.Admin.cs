@@ -16,6 +16,9 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using WireMock.Validation;
+using WireMock.Http;
+using System.Threading.Tasks;
+using WireMock.Settings;
 
 namespace WireMock.Server
 {
@@ -116,6 +119,20 @@ namespace WireMock.Server
             // __admin/requests/find
             Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
         }
+
+        private void InitProxyAndRecord(ProxyAndRecordSettings settings)
+        {
+            Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
+        }
+
+        #region Proxy and Record
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
+        {
+            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, settings.Url);
+
+            return responseMessage;
+        }
+        #endregion
 
         #region Settings
         private ResponseMessage SettingsGet(RequestMessage requestMessage)
