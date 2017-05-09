@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using HandlebarsDotNet;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Validation;
+using WireMock.Http;
+using WireMock.Transformers;
 
 namespace WireMock.ResponseBuilders
 {
@@ -261,78 +259,19 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
 
-            ResponseMessage responseMessage;
-
-            if (ProxyUrl != null)
-            {
-                using (var client = new HttpClient())
-                {
-                    var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), ProxyUrl);
-
-                    // Overwrite the host header
-                    httpRequestMessage.Headers.Host = new Uri(ProxyUrl).Authority;
-
-                    // Set headers if present
-                    if (requestMessage.Headers != null)
-                    {
-                        foreach (var headerName in requestMessage.Headers.Keys.Where(k => k.ToUpper() != "HOST"))
-                        {
-                            httpRequestMessage.Headers.Add(headerName, new[] { requestMessage.Headers[headerName] });
-                        }
-                    }
-
-                    // Set Body if present
-                    if (requestMessage.BodyAsBytes != null && requestMessage.BodyAsBytes.Length > 0)
-                    {
-                        httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
-                    }
-
-                    // Call the URL
-                    var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
-
-                    // Transform response
-                    responseMessage = new ResponseMessage
-                    {
-                        StatusCode = (int)httpResponseMessage.StatusCode,
-                        Body = await httpResponseMessage.Content.ReadAsStringAsync()
-                    };
-
-                    foreach (var header in httpResponseMessage.Headers)
-                    {
-                        responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
-                    }
-                }
-            }
-            else if (UseTransformer)
-            {
-                responseMessage = new ResponseMessage { StatusCode = ResponseMessage.StatusCode, BodyOriginal = ResponseMessage.Body };
-
-                var template = new { request = requestMessage };
-
-                // Body
-                var templateBody = Handlebars.Compile(ResponseMessage.Body);
-                responseMessage.Body = templateBody(template);
-
-                // Headers
-                var newHeaders = new Dictionary<string, string>();
-                foreach (var header in ResponseMessage.Headers)
-                {
-                    var templateHeaderKey = Handlebars.Compile(header.Key);
-                    var templateHeaderValue = Handlebars.Compile(header.Value);
-
-                    newHeaders.Add(templateHeaderKey(template), templateHeaderValue(template));
-                }
-                responseMessage.Headers = newHeaders;
-            }
-            else
-            {
-                responseMessage = ResponseMessage;
-            }
-
             if (Delay != null)
                 await Task.Delay(Delay.Value);
 
-            return responseMessage;
+            if (ProxyUrl != null)
+            {
+                return await HttpClientHelper.SendAsync(requestMessage, ProxyUrl);
+            }
+            else if (UseTransformer)
+            {
+                return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
+            }
+
+            return ResponseMessage;
         }
     }
 }
