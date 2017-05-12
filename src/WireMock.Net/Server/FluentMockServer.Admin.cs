@@ -130,7 +130,21 @@ namespace WireMock.Server
         {
             var responseMessage = await HttpClientHelper.SendAsync(requestMessage, settings.Url);
 
+            var mapping = ToMapping(requestMessage, responseMessage);
+            SaveMappingToFile(mapping);
+
             return responseMessage;
+        }
+
+        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage)
+        {
+            var request = (Request)Request.Create();
+            request.WithPath(requestMessage.Path);
+            request.UsingVerb(requestMessage.Method);
+
+            var response = (Response)Response.Create(responseMessage);
+
+            return new Mapping(Guid.NewGuid(), string.Empty, request, response, 0);
         }
         #endregion
 
@@ -212,20 +226,25 @@ namespace WireMock.Server
         #region Mappings
         private ResponseMessage MappingsSave(RequestMessage requestMessage)
         {
+            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
+            {
+                SaveMappingToFile(mapping);
+            }
+
+            return new ResponseMessage { Body = "Mappings saved to disk" };
+        }
+
+        private void SaveMappingToFile(Mapping mapping)
+        {
             string folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
-            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-            {
-                var model = ToMappingModel(mapping);
-                string json = JsonConvert.SerializeObject(model, _settings);
-                string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
+            var model = ToMappingModel(mapping);
+            string json = JsonConvert.SerializeObject(model, _settings);
+            string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
 
-                File.WriteAllText(Path.Combine(folder, filename + ".json"), json);
-            }
-
-            return new ResponseMessage { Body = "Mappings saved to disk" };
+            File.WriteAllText(Path.Combine(folder, filename + ".json"), json);
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')
