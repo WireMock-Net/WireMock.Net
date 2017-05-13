@@ -12,17 +12,23 @@ namespace WireMock.Net.StandAlone.NETCoreApp
     {
         private class Options
         {
-            [ValueArgument(typeof(string), 'u', "Urls", Description = "URL(s) to listen on.", Optional = true, AllowMultiple = true)]
+            [ValueArgument(typeof(string), "Urls", Description = "URL(s) to listen on.", Optional = true, AllowMultiple = true)]
             public List<string> Urls { get; set; }
 
-            [SwitchArgument('p', "AllowPartialMapping", true, Description = "Allow Partial Mapping (default set to true).", Optional = true)]
+            [SwitchArgument("AllowPartialMapping", true, Description = "Allow Partial Mapping (default set to true).", Optional = true)]
             public bool AllowPartialMapping { get; set; }
 
-            [SwitchArgument('s', "StartAdminInterface", true, Description = "Start the AdminInterface (default set to true).", Optional = true)]
+            [SwitchArgument("StartAdminInterface", true, Description = "Start the AdminInterface (default set to true).", Optional = true)]
             public bool StartAdminInterface { get; set; }
 
-            [SwitchArgument('r', "ReadStaticMappings", true, Description = "Read StaticMappings from ./__admin/mappings (default set to true).", Optional = true)]
+            [SwitchArgument("ReadStaticMappings", true, Description = "Read StaticMappings from ./__admin/mappings (default set to true).", Optional = true)]
             public bool ReadStaticMappings { get; set; }
+
+            [ValueArgument(typeof(string), "ProxyURL", Description = "The ProxyURL to use.", Optional = true)]
+            public string ProxyURL { get; set; }
+
+            [SwitchArgument("SaveProxyMapping", false, Description = "Save the proxied request and response mapping files in ./__admin/mappings.  (default set to false).", Optional = true)]
+            public bool SaveMapping { get; set; }
         }
 
         static void Main(string[] args)
@@ -40,13 +46,23 @@ namespace WireMock.Net.StandAlone.NETCoreApp
                     options.Urls.Add("http://localhost:9090/");
                 }
 
-                var server = FluentMockServer.Start(new FluentMockServerSettings
+                var settings = new FluentMockServerSettings
                 {
                     Urls = options.Urls.ToArray(),
                     StartAdminInterface = options.StartAdminInterface,
-                    ReadStaticMappings = options.ReadStaticMappings
-                });
+                    ReadStaticMappings = options.ReadStaticMappings,
+                };
 
+                if (!string.IsNullOrEmpty(options.ProxyURL))
+                {
+                    settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
+                    {
+                        Url = options.ProxyURL,
+                        SaveMapping = options.SaveMapping
+                    };
+                }
+
+                var server = FluentMockServer.Start(settings);
                 if (options.AllowPartialMapping)
                 {
                     server.AllowPartialMapping();

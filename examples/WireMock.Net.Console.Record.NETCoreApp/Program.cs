@@ -8,13 +8,17 @@ namespace WireMock.Net.Console.NETCoreApp
     {
         static void Main(params string[] args)
         {
-            string url1 = "http://localhost:9095/";
+            string url = "http://localhost:9095/";
 
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                Urls = new[] { url1 },
+                Urls = new[] { url },
                 StartAdminInterface = true,
-                ProxyAndRecordSettings = new ProxyAndRecordSettings { Url = "http://www.bbc.com" }
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.bbc.com",
+                    SaveMapping = true
+                }
             });
 
             System.Console.WriteLine("Press any key to stop the server");

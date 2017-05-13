@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineArgumentsParser" Version="3.0.9" />
+    <PackageReference Include="CommandLineArgumentsParser" Version="3.0.10" />
   </ItemGroup>
 
   <ItemGroup>

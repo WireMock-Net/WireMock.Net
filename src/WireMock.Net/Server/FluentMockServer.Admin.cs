@@ -120,18 +120,21 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
         }
 
+        #region Proxy and Record
         private void InitProxyAndRecord(ProxyAndRecordSettings settings)
         {
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
-
-        #region Proxy and Record
+        
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
         {
             var responseMessage = await HttpClientHelper.SendAsync(requestMessage, settings.Url);
 
-            var mapping = ToMapping(requestMessage, responseMessage);
-            SaveMappingToFile(mapping);
+            if (settings.SaveMapping)
+            {
+                var mapping = ToMapping(requestMessage, responseMessage);
+                SaveMappingToFile(mapping);
+            }
 
             return responseMessage;
         }
