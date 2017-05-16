@@ -4,12 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if NET45
+#if !NETSTANDARD
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.Features;
 #endif
 
 namespace WireMock.Owin
@@ -25,14 +24,14 @@ namespace WireMock.Owin
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<RequestMessage> MapAsync(
-#if NET45
+#if !NETSTANDARD
             IOwinRequest request
 #else
             HttpRequest request
 #endif
             )
         {
-#if NET45
+#if !NETSTANDARD
             Uri url = request.Uri;
 #else
             Uri url = new Uri(request.GetEncodedUrl());

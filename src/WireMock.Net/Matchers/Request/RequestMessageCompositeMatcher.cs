@@ -43,25 +43,12 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            var list = new List<double>();
             if (_type == CompositeMatcherType.And)
             {
-                foreach (var requestMatcher in RequestMatchers)
-                {
-                    double score = requestMatcher.GetMatchingScore(requestMessage, requestMatchResult);
-                    list.Add(score);
-                }
-
-                return list.Sum() / list.Count;
-            }
-            
-            foreach (var requestMatcher in RequestMatchers)
-            {
-                double score = requestMatcher.GetMatchingScore(requestMessage, requestMatchResult);
-                list.Add(score);
+                return RequestMatchers.Average(requestMatcher => requestMatcher.GetMatchingScore(requestMessage, requestMatchResult));
             }
 
-            return list.Max();
+            return RequestMatchers.Max(requestMatcher => requestMatcher.GetMatchingScore(requestMessage, requestMatchResult));
         }
     }
 }

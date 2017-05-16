@@ -27,8 +27,11 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             [ValueArgument(typeof(string), "ProxyURL", Description = "The ProxyURL to use.", Optional = true)]
             public string ProxyURL { get; set; }
 
-            [SwitchArgument("SaveProxyMapping", false, Description = "Save the proxied request and response mapping files in ./__admin/mappings.  (default set to false).", Optional = true)]
+            [SwitchArgument("SaveProxyMapping", true, Description = "Save the proxied request and response mapping files in ./__admin/mappings.  (default set to true).", Optional = true)]
             public bool SaveMapping { get; set; }
+
+            [ValueArgument(typeof(string), "X509Certificate2", Description = "The X509Certificate2 Filename to use.", Optional = true)]
+            public string X509Certificate2Filename { get; set; }
         }
 
         static void Main(string[] args)
@@ -58,7 +61,8 @@ namespace WireMock.Net.StandAlone.NETCoreApp
                     settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
                     {
                         Url = options.ProxyURL,
-                        SaveMapping = options.SaveMapping
+                        SaveMapping = options.SaveMapping,
+                        X509Certificate2Filename = options.X509Certificate2Filename
                     };
                 }
 

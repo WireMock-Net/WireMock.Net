@@ -14,5 +14,10 @@
         /// Save the mapping for each request/response.
         /// </summary>
         public bool SaveMapping { get; set; } = true;
+
+        /// <summary>
+        /// The clientCertificateFilename to use. Example : "C:\certificates\cert.pfx"
+        /// </summary>
+        public string X509Certificate2Filename { get; set; }
     }
 }

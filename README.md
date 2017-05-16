@@ -8,7 +8,8 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 ### Frameworks
 The following frameworks are supported:
-- net45 and up
+- net 4.5
+- net 4.5.2 and up
 - netstandard 1.3
 
 ## Stubbing

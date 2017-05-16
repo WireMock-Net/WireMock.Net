@@ -35,6 +35,11 @@ namespace WireMock.ResponseBuilders
         public string ProxyUrl { get; private set; }
 
         /// <summary>
+        /// The client X509Certificate2Filename to use.
+        /// </summary>
+        public string X509Certificate2Filename { get; private set; } = null;
+
+        /// <summary>
         /// Gets the response message.
         /// </summary>
         /// <value>
@@ -190,7 +195,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="bodyAsbase64">The body asbase64.</param>
         /// <param name="encoding">The Encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBodyAsBase64([NotNull] string bodyAsbase64, Encoding encoding = null)
+        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
@@ -237,7 +242,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
-        /// From Proxy URL.
+        /// With Proxy URL.
         /// </summary>
         /// <param name="proxyUrl">The proxy url.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
@@ -247,6 +252,22 @@ namespace WireMock.ResponseBuilders
             Check.NotEmpty(proxyUrl, nameof(proxyUrl));
 
             ProxyUrl = proxyUrl;
+            return this;
+        }
+
+        /// <summary>
+        /// With Proxy URL.
+        /// </summary>
+        /// <param name="proxyUrl">The proxy url.</param>
+        /// <param name="clientX509Certificate2Filename">The X509Certificate2 file to use for client authentication.</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2Filename)
+        {
+            Check.NotEmpty(proxyUrl, nameof(proxyUrl));
+            Check.NotEmpty(clientX509Certificate2Filename, nameof(clientX509Certificate2Filename));
+
+            ProxyUrl = proxyUrl;
+            X509Certificate2Filename = clientX509Certificate2Filename;
             return this;
         }
 
@@ -264,9 +285,10 @@ namespace WireMock.ResponseBuilders
 
             if (ProxyUrl != null)
             {
-                return await HttpClientHelper.SendAsync(requestMessage, ProxyUrl);
+                return await HttpClientHelper.SendAsync(requestMessage, ProxyUrl, X509Certificate2Filename);
             }
-            else if (UseTransformer)
+
+            if (UseTransformer)
             {
                 return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }

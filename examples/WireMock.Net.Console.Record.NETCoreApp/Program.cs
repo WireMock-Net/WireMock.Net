@@ -2,21 +2,19 @@
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace WireMock.Net.Console.NETCoreApp
+namespace WireMock.Net.Console.Record.NETCoreApp
 {
     static class Program
     {
         static void Main(params string[] args)
         {
-            string url = "http://localhost:9095/";
-
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                Urls = new[] { url },
+                Urls = new[] { "http://localhost:9095/", "https://localhost:9096/" },
                 StartAdminInterface = true,
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = "http://www.bbc.com",
+                    Url = "https://www.msn.com",
                     SaveMapping = true
                 }
             });

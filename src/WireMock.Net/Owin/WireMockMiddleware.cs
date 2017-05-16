@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
-#if NET45
+#if !NETSTANDARD
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WireMock.Owin
 {
-#if NET45
+#if !NETSTANDARD
     internal class WireMockMiddleware : OwinMiddleware
 #else
     internal class WireMockMiddleware
@@ -24,7 +24,7 @@ namespace WireMock.Owin
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
-#if NET45
+#if !NETSTANDARD
         public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
@@ -36,7 +36,7 @@ namespace WireMock.Owin
         }
 #endif
 
-#if NET45
+#if !NETSTANDARD
         public override async Task Invoke(IOwinContext ctx)
 #else
         public async Task Invoke(HttpContext ctx)

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if NET45
+#if !NETSTANDARD
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -23,7 +23,7 @@ namespace WireMock.Owin
         /// <param name="responseMessage"></param>
         /// <param name="response"></param>
         public async Task MapAsync(ResponseMessage responseMessage
-#if NET45
+#if !NETSTANDARD
             , IOwinResponse response
 #else
             , HttpResponse response

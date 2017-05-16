@@ -164,10 +164,10 @@ namespace WireMock.Server
                 Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
             }
 
-#if NET45
-            _httpServer = new OwinSelfHost(_options, Urls);
-#else
+#if NETSTANDARD
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
+#else
+            _httpServer = new OwinSelfHost(_options, Urls);
 #endif
             Ports = _httpServer.Ports;
 
