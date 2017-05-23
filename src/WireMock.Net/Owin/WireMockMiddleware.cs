@@ -42,12 +42,6 @@ namespace WireMock.Owin
         public async Task Invoke(HttpContext ctx)
 #endif
         {
-            if (_options.RequestProcessingDelay > TimeSpan.Zero)
-            {
-                await Task.Delay(_options.RequestProcessingDelay.Value);
-                // Thread.Sleep(_options.RequestProcessingDelay.Value);
-            }
-
             var request = await _requestMapper.MapAsync(ctx.Request);
 
             ResponseMessage response = null;
@@ -101,6 +95,11 @@ namespace WireMock.Owin
                         response = new ResponseMessage { StatusCode = 401 };
                         return;
                     }
+                }
+
+                if (!targetMapping.IsAdminInterface && _options.RequestProcessingDelay > TimeSpan.Zero)
+                {
+                    await Task.Delay(_options.RequestProcessingDelay.Value);
                 }
 
                 response = await targetMapping.ResponseToAsync(request);
