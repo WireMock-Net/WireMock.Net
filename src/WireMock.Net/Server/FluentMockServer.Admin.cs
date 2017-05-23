@@ -19,6 +19,7 @@ using WireMock.Validation;
 using WireMock.Http;
 using System.Threading.Tasks;
 using WireMock.Settings;
+using WireMock.Serialization;
 
 namespace WireMock.Server
 {
@@ -125,7 +126,7 @@ namespace WireMock.Server
         {
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
-        
+
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
         {
             var responseMessage = await HttpClientHelper.SendAsync(requestMessage, settings.Url);
@@ -157,7 +158,7 @@ namespace WireMock.Server
             var model = new SettingsModel
             {
                 AllowPartialMapping = _options.AllowPartialMapping,
-                GlobalProcessingDelay = _options.RequestProcessingDelay?.Milliseconds
+                GlobalProcessingDelay = (int?) _options.RequestProcessingDelay?.TotalMilliseconds
             };
 
             return ToJson(model);
@@ -186,7 +187,7 @@ namespace WireMock.Server
             if (mapping == null)
                 return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
 
-            var model = ToMappingModel(mapping);
+            var model = MappingConverter.ToMappingModel(mapping);
 
             return ToJson(model);
         }
@@ -243,7 +244,7 @@ namespace WireMock.Server
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
-            var model = ToMappingModel(mapping);
+            var model = MappingConverter.ToMappingModel(mapping);
             string json = JsonConvert.SerializeObject(model, _settings);
             string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
 
@@ -260,7 +261,7 @@ namespace WireMock.Server
             var result = new List<MappingModel>();
             foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
             {
-                var model = ToMappingModel(mapping);
+                var model = MappingConverter.ToMappingModel(mapping);
                 result.Add(model);
             }
 
@@ -448,7 +449,7 @@ namespace WireMock.Server
                 {
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
-                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(Map).ToArray());
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
@@ -461,7 +462,7 @@ namespace WireMock.Server
                 {
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
-                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(Map).ToArray());
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
@@ -472,7 +473,7 @@ namespace WireMock.Server
             {
                 foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(Map).ToArray());
+                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
@@ -480,7 +481,7 @@ namespace WireMock.Server
             {
                 foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(Map).ToArray());
+                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
@@ -494,7 +495,7 @@ namespace WireMock.Server
 
             if (requestModel.Body?.Matcher != null)
             {
-                var bodyMatcher = Map(requestModel.Body.Matcher);
+                var bodyMatcher = MappingConverter.Map(requestModel.Body.Matcher);
                 requestBuilder = requestBuilder.WithBody(bodyMatcher);
             }
 
@@ -506,7 +507,9 @@ namespace WireMock.Server
             IResponseBuilder responseBuilder = Response.Create();
 
             if (responseModel.Delay > 0)
+            {
                 responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
+            }
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
@@ -514,10 +517,14 @@ namespace WireMock.Server
             }
 
             if (responseModel.StatusCode.HasValue)
+            {
                 responseBuilder = responseBuilder.WithStatusCode(responseModel.StatusCode.Value);
+            }
 
             if (responseModel.Headers != null)
+            {
                 responseBuilder = responseBuilder.WithHeaders(responseModel.Headers);
+            }
             else if (responseModel.HeadersRaw != null)
             {
                 foreach (string headerLine in responseModel.HeadersRaw.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
@@ -530,188 +537,24 @@ namespace WireMock.Server
             }
 
             if (responseModel.Body != null)
+            {
                 responseBuilder = responseBuilder.WithBody(responseModel.Body, ToEncoding(responseModel.BodyEncoding));
+            }
             else if (responseModel.BodyAsJson != null)
+            {
                 responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding));
+            }
             else if (responseModel.BodyAsBase64 != null)
+            {
                 responseBuilder = responseBuilder.WithBodyAsBase64(responseModel.BodyAsBase64, ToEncoding(responseModel.BodyEncoding));
+            }
 
             if (responseModel.UseTransformer)
+            {
                 responseBuilder = responseBuilder.WithTransformer();
+            }
 
             return responseBuilder;
-        }
-
-        private MappingModel ToMappingModel(Mapping mapping)
-        {
-            var request = (Request)mapping.RequestMatcher;
-            var response = (Response)mapping.Provider;
-
-            var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
-            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
-            var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
-            var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
-            var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
-            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-            var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
-
-            var mappingModel = new MappingModel
-            {
-                Guid = mapping.Guid,
-                Title = mapping.Title,
-                Priority = mapping.Priority,
-                Request = new RequestModel
-                {
-                    Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
-                    {
-                        Matchers = Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
-                        Funcs = Map(pathMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
-                    } : null,
-
-                    Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
-                    {
-                        Matchers = Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
-                        Funcs = Map(urlMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
-                    } : null,
-
-                    Methods = methodMatcher?.Methods,
-
-                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
-                    {
-                        Name = hm.Name,
-                        Matchers = Map(hm.Matchers),
-                        Funcs = Map(hm.Funcs)
-                    }).ToList() : null,
-
-                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
-                    {
-                        Name = cm.Name,
-                        Matchers = Map(cm.Matchers),
-                        Funcs = Map(cm.Funcs)
-                    }).ToList() : null,
-
-                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
-                    {
-                        Name = pm.Key,
-                        Values = pm.Values?.ToList(),
-                        Funcs = Map(pm.Funcs)
-                    }).ToList() : null,
-
-                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Count(m => m == "get") == 1 ? null : new BodyModel
-                    {
-                        Matcher = bodyMatcher != null ? Map(bodyMatcher.Matcher) : null,
-                        Func = bodyMatcher != null ? Map(bodyMatcher.Func) : null,
-                        DataFunc = bodyMatcher != null ? Map(bodyMatcher.DataFunc) : null
-                    }
-                },
-                Response = new ResponseModel
-                {
-                    Delay = response.Delay?.Milliseconds
-                }
-            };
-
-            if (!string.IsNullOrEmpty(response.ProxyUrl))
-            {
-                mappingModel.Response.StatusCode = null;
-                mappingModel.Response.Headers = null;
-                mappingModel.Response.Body = null;
-                mappingModel.Response.UseTransformer = false;
-                mappingModel.Response.BodyEncoding = null;
-                mappingModel.Response.ProxyUrl = response.ProxyUrl;
-            }
-            else
-            {
-                mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
-                mappingModel.Response.Headers = response.ResponseMessage.Headers;
-                mappingModel.Response.Body = response.ResponseMessage.Body;
-                mappingModel.Response.UseTransformer = response.UseTransformer;
-                mappingModel.Response.BodyEncoding = response.ResponseMessage.BodyEncoding != null
-                    ? new EncodingModel
-                    {
-                        EncodingName = response.ResponseMessage.BodyEncoding.EncodingName,
-                        CodePage = response.ResponseMessage.BodyEncoding.CodePage,
-                        WebName = response.ResponseMessage.BodyEncoding.WebName
-                    }
-                    : null;
-            }
-
-            return mappingModel;
-        }
-
-        private MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
-        {
-            if (matchers == null || !matchers.Any())
-                return null;
-
-            return matchers.Select(Map).Where(x => x != null).ToArray();
-        }
-
-        private MatcherModel Map([CanBeNull] IMatcher matcher)
-        {
-            if (matcher == null)
-                return null;
-
-            var patterns = matcher.GetPatterns();
-
-            return new MatcherModel
-            {
-                Name = matcher.GetName(),
-                Pattern = patterns.Length == 1 ? patterns.First() : null,
-                Patterns = patterns.Length > 1 ? patterns : null
-            };
-        }
-
-        private string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
-        {
-            if (funcs == null || !funcs.Any())
-                return null;
-
-            return funcs.Select(Map).Where(x => x != null).ToArray();
-        }
-
-        private string Map<T>([CanBeNull] Func<T, bool> func)
-        {
-            return func?.ToString();
-        }
-
-        private IMatcher Map([CanBeNull] MatcherModel matcher)
-        {
-            if (matcher == null)
-                return null;
-
-            var parts = matcher.Name.Split('.');
-            string matcherName = parts[0];
-            string matcherType = parts.Length > 1 ? parts[1] : null;
-
-            string[] patterns = matcher.Patterns ?? new[] { matcher.Pattern };
-
-            switch (matcherName)
-            {
-                case "ExactMatcher":
-                    return new ExactMatcher(patterns);
-
-                case "RegexMatcher":
-                    return new RegexMatcher(patterns);
-
-                case "JsonPathMatcher":
-                    return new JsonPathMatcher(patterns);
-
-                case "XPathMatcher":
-                    return new XPathMatcher(matcher.Pattern);
-
-                case "WildcardMatcher":
-                    return new WildcardMatcher(patterns, matcher.IgnoreCase == true);
-
-                case "SimMetricsMatcher":
-                    SimMetricType type = SimMetricType.Levenstein;
-                    if (!string.IsNullOrEmpty(matcherType) && !Enum.TryParse(matcherType, out type))
-                        throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
-
-                    return new SimMetricsMatcher(matcher.Pattern, type);
-
-                default:
-                    throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
-            }
         }
 
         private ResponseMessage ToJson<T>(T result)
