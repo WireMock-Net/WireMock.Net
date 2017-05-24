@@ -37,6 +37,12 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyAsJson(new { access_token = "AT", refresh_token = "RT" }));
 
             server
+                .Given(Request.Create().WithPath("/helloworld").UsingGet().WithHeader("Authorization", new RegexMatcher("^(?i)Bearer AT$")))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("hi"));
+
+            server
                 .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
                 .RespondWith(Response.Create()
