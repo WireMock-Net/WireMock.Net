@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\WireMock.Net.ConsoleApplication\MainApp.cs" Link="MainApp.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="__admin\mappings\11111110-a633-40e8-a244-5cb80bc0ab66.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
