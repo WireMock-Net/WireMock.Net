@@ -15,7 +15,7 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             [ValueArgument(typeof(string), "Urls", Description = "URL(s) to listen on.", Optional = true, AllowMultiple = true)]
             public List<string> Urls { get; set; }
 
-            [SwitchArgument("AllowPartialMapping", true, Description = "Allow Partial Mapping (default set to true).", Optional = true)]
+            [SwitchArgument("AllowPartialMapping", false, Description = "Allow Partial Mapping (default set to false).", Optional = true)]
             public bool AllowPartialMapping { get; set; }
 
             [SwitchArgument("StartAdminInterface", true, Description = "Start the AdminInterface (default set to true).", Optional = true)]
