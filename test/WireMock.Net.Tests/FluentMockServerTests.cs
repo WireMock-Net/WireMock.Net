@@ -363,11 +363,28 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithProxy("http://www.google.com"));
 
             // when
-            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/search?q=test");
 
             // then
             Check.That(result).Contains("google");
         }
+
+        //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate
+        [Fact]
+        //public async Task Should_proxy_responses_with_client_certificate()
+        //{
+        //    // given
+        //    _server = FluentMockServer.Start();
+        //    _server
+        //        .Given(Request.Create().WithPath("/*"))
+        //        .RespondWith(Response.Create().WithProxy("https://server-that-expects-a-client-certificate", @"\\yourclientcertificatecontainingprivatekey.pfx", "yourclientcertificatepassword"));
+
+        //    // when
+        //    var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/someurl?someQuery=someValue");
+
+        //    // then
+        //    Check.That(result).Contains("google");
+        //}
 
         //[TearDown]
         public void Dispose()
