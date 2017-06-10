@@ -4,9 +4,13 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 [![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
 [![codecov](https://codecov.io/gh/StefH/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/StefH/WireMock.Net)
 [![Coverage Status](https://coveralls.io/repos/github/StefH/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/StefH/WireMock.Net?branch=master)
-[![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net)
 [![GitHub issues](https://img.shields.io/github/issues/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/issues)
 [![GitHub stars](https://img.shields.io/github/stars/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/stargazers)
+
+| Name | NuGet |
+| ---- | ----- |
+| WireMock.Net | [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |
+| WireMock.Net.StandAlone | [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |
 
 ### Frameworks
 The following frameworks are supported:
