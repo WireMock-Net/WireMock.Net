@@ -16,8 +16,13 @@
         public bool SaveMapping { get; set; } = true;
 
         /// <summary>
-        /// The clientCertificateFilename to use. Example : "C:\certificates\cert.pfx"
+        /// The clientCertificateFilename to use. Example : "C:\certificates\cert.pfx. Must be in .pfx format and include the private key"
         /// </summary>
         public string X509Certificate2Filename { get; set; }
+
+        /// <summary>
+        /// The X509Certificate2 password.
+        /// </summary>
+        public string X509Certificate2Password { get; set; }
     }
 }

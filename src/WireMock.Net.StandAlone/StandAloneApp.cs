@@ -37,6 +37,9 @@ namespace WireMock.Net.StandAlone
 
             [ValueArgument(typeof(string), "X509Certificate2", Description = "The X509Certificate2 Filename to use.", Optional = true)]
             public string X509Certificate2Filename { get; set; }
+
+            [ValueArgument(typeof(string), "X509Certificate2Password", Description = "The X509Certificate2 password to use.", Optional = true)]
+            public string X509Certificate2Password { get; set; }
         }
 
         /// <summary>
@@ -91,7 +94,8 @@ namespace WireMock.Net.StandAlone
                     {
                         Url = options.ProxyURL,
                         SaveMapping = options.SaveMapping,
-                        X509Certificate2Filename = options.X509Certificate2Filename
+                        X509Certificate2Filename = options.X509Certificate2Filename,
+                        X509Certificate2Password = options.X509Certificate2Password
                     };
                 }
 
