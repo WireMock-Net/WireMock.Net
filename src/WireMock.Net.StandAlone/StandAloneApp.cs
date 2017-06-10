@@ -6,9 +6,12 @@ using CommandLineParser.Exceptions;
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace WireMock.Net.StandAlone.NETCoreApp
+namespace WireMock.Net.StandAlone
 {
-    class Program
+    /// <summary>
+    /// The StandAloneApp
+    /// </summary>
+    public static class StandAloneApp
     {
         private class Options
         {
@@ -34,7 +37,11 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             public string X509Certificate2Filename { get; set; }
         }
 
-        static void Main(string[] args)
+        /// <summary>
+        /// Start WireMock.Net standalone bases on the commandline arguments.
+        /// </summary>
+        /// <param name="args">The commandline arguments</param>
+        public static FluentMockServer Start(string[] args)
         {
             var options = new Options();
             var parser = new CommandLineParser.CommandLineParser();
@@ -73,15 +80,16 @@ namespace WireMock.Net.StandAlone.NETCoreApp
                 }
 
                 Console.WriteLine("WireMock.Net server listening at {0}", string.Join(" and ", server.Urls));
+
+                return server;
             }
             catch (CommandLineException e)
             {
                 Console.WriteLine(e.Message);
                 parser.ShowUsage();
-            }
 
-            Console.WriteLine("Press any key to stop the server");
-            Console.ReadKey();
+                throw;
+            }
         }
     }
 }
