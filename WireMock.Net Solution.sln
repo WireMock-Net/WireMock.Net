@@ -38,6 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.StandAlone.NET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.Net452", "examples\WireMock.Net.StandAlone.Net452\WireMock.Net.StandAlone.Net452.csproj", "{668F689E-57B4-422E-8846-C0FF643CA999}"
 	ProjectSection(ProjectDependencies) = postProject
+		{058D4B6C-C03E-49D0-91DB-A535B058FA0D} = {058D4B6C-C03E-49D0-91DB-A535B058FA0D}
 		{B6269AAC-170A-43D5-8B9A-579DED3D9A95} = {B6269AAC-170A-43D5-8B9A-579DED3D9A95}
 	EndProjectSection
 EndProject
