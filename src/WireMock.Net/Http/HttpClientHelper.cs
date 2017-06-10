@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-        private static HttpClient CreateHttpClient(string clientX509Certificate2Filename = null)
+        private static HttpClient CreateHttpClient(string clientX509Certificate2Filename = null, string clientX509Certificate2Password = null)
         {
             if (!string.IsNullOrEmpty(clientX509Certificate2Filename))
             {
@@ -19,16 +21,34 @@ namespace WireMock.Http
                     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                 };
 
-                handler.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(clientX509Certificate2Filename));
+                X509Certificate2 x509Certificate2;
+                if (String.IsNullOrEmpty(clientX509Certificate2Password)) {
+                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename);
+                }
+                else
+                {
+                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Password);
+                }
+                handler.ClientCertificates.Add(x509Certificate2);
                 return new HttpClient(handler);
 #else
                 var handler = new WebRequestHandler
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
+                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                 };
 
-                handler.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(clientX509Certificate2Filename));
+                X509Certificate2 x509Certificate2;
+                if (String.IsNullOrEmpty(clientX509Certificate2Password))
+                {
+                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename);
+                }
+                else
+                {
+                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename, clientX509Certificate2Password);
+                }
+                handler.ClientCertificates.Add(x509Certificate2);
                 return new HttpClient(handler);
 #endif
             }
@@ -36,9 +56,9 @@ namespace WireMock.Http
             return new HttpClient();
         }
 
-        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2Filename = null)
+        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2Filename = null, string clientX509Certificate2Password = null)
         {
-            var client = CreateHttpClient(clientX509Certificate2Filename);
+            var client = CreateHttpClient(clientX509Certificate2Filename, clientX509Certificate2Password);
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
