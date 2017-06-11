@@ -27,7 +27,7 @@ namespace WireMock.Http
                 }
                 else
                 {
-                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Password);
+                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename, clientX509Certificate2Password);
                 }
                 handler.ClientCertificates.Add(x509Certificate2);
                 return new HttpClient(handler);
