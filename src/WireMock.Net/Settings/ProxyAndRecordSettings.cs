@@ -16,13 +16,8 @@
         public bool SaveMapping { get; set; } = true;
 
         /// <summary>
-        /// The clientCertificateFilename to use. Example : "C:\certificates\cert.pfx. Must be in .pfx format and include the private key"
+        /// The clientCertificate thumbprint or subject name fragment to use. Example thumbprint : "D2DBF135A8D06ACCD0E1FAD9BFB28678DF7A9818". Example subject name: "www.google.com""
         /// </summary>
-        public string X509Certificate2Filename { get; set; }
-
-        /// <summary>
-        /// The X509Certificate2 password.
-        /// </summary>
-        public string X509Certificate2Password { get; set; }
+        public string X509Certificate2ThumbprintOrSubjectName { get; set; }
     }
 }
