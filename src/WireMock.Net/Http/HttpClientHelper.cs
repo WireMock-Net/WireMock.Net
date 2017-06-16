@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-        private static HttpClient CreateHttpClient(string clientX509Certificate2Filename = null)
+        
+        private static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            if (!string.IsNullOrEmpty(clientX509Certificate2Filename))
+            if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
             {
 #if NETSTANDARD || NET46
                 var handler = new HttpClientHandler
@@ -19,16 +23,20 @@ namespace WireMock.Http
                     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                 };
 
-                handler.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(clientX509Certificate2Filename));
-                return new HttpClient(handler);
+                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
+                handler.ClientCertificates.Add(x509Certificate2);
+
+
 #else
                 var handler = new WebRequestHandler
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
+                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                 };
 
-                handler.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(clientX509Certificate2Filename));
+                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
+                handler.ClientCertificates.Add(x509Certificate2);
                 return new HttpClient(handler);
 #endif
             }
@@ -36,9 +44,9 @@ namespace WireMock.Http
             return new HttpClient();
         }
 
-        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2Filename = null)
+        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            var client = CreateHttpClient(clientX509Certificate2Filename);
+            var client = CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
@@ -61,21 +69,29 @@ namespace WireMock.Http
             }
 
             // Call the URL
-            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
-
-            // Transform response
-            var responseMessage = new ResponseMessage
+            try
             {
-                StatusCode = (int)httpResponseMessage.StatusCode,
-                Body = await httpResponseMessage.Content.ReadAsStringAsync()
-            };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-            foreach (var header in httpResponseMessage.Headers)
-            {
-                responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
+
+                // Transform response
+                var responseMessage = new ResponseMessage
+                {
+                    StatusCode = (int)httpResponseMessage.StatusCode,
+                    Body = await httpResponseMessage.Content.ReadAsStringAsync()
+                };
+
+                foreach (var header in httpResponseMessage.Headers)
+                {
+                    responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
+                }
+
+                return responseMessage;
             }
-
-            return responseMessage;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -129,7 +129,11 @@ namespace WireMock.Server
 
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
         {
-            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, settings.Url);
+            var requestUri = new Uri(requestMessage.Url);
+            var proxyUri = new Uri(settings.Url);
+            var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
+
+            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, settings.X509Certificate2ThumbprintOrSubjectName);
 
             if (settings.SaveMapping)
             {
@@ -158,7 +162,7 @@ namespace WireMock.Server
             var model = new SettingsModel
             {
                 AllowPartialMapping = _options.AllowPartialMapping,
-                GlobalProcessingDelay = (int?) _options.RequestProcessingDelay?.TotalMilliseconds
+                GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds
             };
 
             return ToJson(model);
@@ -513,7 +517,13 @@ namespace WireMock.Server
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
-                return responseBuilder.WithProxy(responseModel.ProxyUrl);
+                if (string.IsNullOrEmpty(responseModel.X509Certificate2ThumbprintOrSubjectName))
+                {
+                    return responseBuilder.WithProxy(responseModel.ProxyUrl);
+                }
+
+                return responseBuilder.WithProxy(responseModel.ProxyUrl, responseModel.X509Certificate2ThumbprintOrSubjectName);
+
             }
 
             if (responseModel.StatusCode.HasValue)

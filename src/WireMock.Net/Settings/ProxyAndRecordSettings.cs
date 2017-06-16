@@ -16,8 +16,8 @@
         public bool SaveMapping { get; set; } = true;
 
         /// <summary>
-        /// The clientCertificateFilename to use. Example : "C:\certificates\cert.pfx"
+        /// The clientCertificate thumbprint or subject name fragment to use. Example thumbprint : "D2DBF135A8D06ACCD0E1FAD9BFB28678DF7A9818". Example subject name: "www.google.com""
         /// </summary>
-        public string X509Certificate2Filename { get; set; }
+        public string X509Certificate2ThumbprintOrSubjectName { get; set; }
     }
 }

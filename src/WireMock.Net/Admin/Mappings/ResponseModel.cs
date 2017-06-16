@@ -84,5 +84,10 @@ namespace WireMock.Admin.Mappings
         /// </summary>
         /// <value>ProxyUrl</value>
         public string ProxyUrl { get; set; }
+
+        /// <summary>
+        /// The client X509Certificate2 Thumbprint or SubjectName to use.
+        /// </summary>
+        public string X509Certificate2ThumbprintOrSubjectName { get; set; }
     }
 }
