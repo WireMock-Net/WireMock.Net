@@ -133,7 +133,7 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, settings.X509Certificate2Filename, settings.X509Certificate2Password);
+            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, settings.X509Certificate2ThumbprintOrSubjectName);
 
             if (settings.SaveMapping)
             {
@@ -517,12 +517,12 @@ namespace WireMock.Server
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
-                if (string.IsNullOrEmpty(responseModel.X509Certificate2Filename))
+                if (string.IsNullOrEmpty(responseModel.X509Certificate2ThumbprintOrSubjectName))
                 {
                     return responseBuilder.WithProxy(responseModel.ProxyUrl);
                 }
 
-                return responseBuilder.WithProxy(responseModel.ProxyUrl, responseModel.X509Certificate2Filename, responseModel.X509Certificate2Password);
+                return responseBuilder.WithProxy(responseModel.ProxyUrl, responseModel.X509Certificate2ThumbprintOrSubjectName);
 
             }
 

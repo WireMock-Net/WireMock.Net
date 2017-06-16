@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -9,9 +10,10 @@ namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-        private static HttpClient CreateHttpClient(string clientX509Certificate2Filename = null, string clientX509Certificate2Password = null)
+        
+        private static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            if (!string.IsNullOrEmpty(clientX509Certificate2Filename))
+            if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
             {
 #if NETSTANDARD || NET46
                 var handler = new HttpClientHandler
@@ -21,16 +23,10 @@ namespace WireMock.Http
                     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                 };
 
-                X509Certificate2 x509Certificate2;
-                if (String.IsNullOrEmpty(clientX509Certificate2Password)) {
-                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename);
-                }
-                else
-                {
-                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename, clientX509Certificate2Password);
-                }
+                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
-                return new HttpClient(handler);
+
+
 #else
                 var handler = new WebRequestHandler
                 {
@@ -39,15 +35,7 @@ namespace WireMock.Http
                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                 };
 
-                X509Certificate2 x509Certificate2;
-                if (String.IsNullOrEmpty(clientX509Certificate2Password))
-                {
-                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename);
-                }
-                else
-                {
-                    x509Certificate2 = new X509Certificate2(clientX509Certificate2Filename, clientX509Certificate2Password);
-                }
+                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
                 return new HttpClient(handler);
 #endif
@@ -56,9 +44,9 @@ namespace WireMock.Http
             return new HttpClient();
         }
 
-        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2Filename = null, string clientX509Certificate2Password = null)
+        public static async Task<ResponseMessage> SendAsync(RequestMessage requestMessage, string url, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            var client = CreateHttpClient(clientX509Certificate2Filename, clientX509Certificate2Password);
+            var client = CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
@@ -81,21 +69,29 @@ namespace WireMock.Http
             }
 
             // Call the URL
-            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
-
-            // Transform response
-            var responseMessage = new ResponseMessage
+            try
             {
-                StatusCode = (int)httpResponseMessage.StatusCode,
-                Body = await httpResponseMessage.Content.ReadAsStringAsync()
-            };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-            foreach (var header in httpResponseMessage.Headers)
-            {
-                responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
+
+                // Transform response
+                var responseMessage = new ResponseMessage
+                {
+                    StatusCode = (int)httpResponseMessage.StatusCode,
+                    Body = await httpResponseMessage.Content.ReadAsStringAsync()
+                };
+
+                foreach (var header in httpResponseMessage.Headers)
+                {
+                    responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
+                }
+
+                return responseMessage;
             }
-
-            return responseMessage;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
