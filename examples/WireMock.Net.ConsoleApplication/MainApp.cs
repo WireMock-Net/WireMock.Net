@@ -96,17 +96,23 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
             // http://localhost:8080/any/any?start=1000&stop=1&stop=2
+            //server
+            //    .Given(Request.Create().WithPath("/*").UsingGet())
+            //    .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+            //    .AtPriority(server.Mappings.Count() + 1)
+            //    .RespondWith(Response.Create()
+            //        .WithStatusCode(200)
+            //        .WithHeader("Content-Type", "application/json")
+            //        .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
+            //        .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
+            //        .WithTransformer()
+            //        .WithDelay(TimeSpan.FromMilliseconds(100))
+            //    );
             server
                 .Given(Request.Create().WithPath("/*").UsingGet())
                 .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
-                .AtPriority(server.Mappings.Count() + 1)
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
-                    .WithTransformer()
-                    .WithDelay(TimeSpan.FromMilliseconds(100))
+                .WithProxy("https://semhub-test.lbtest.anznb.co.nz:5200", "D2DBF134A8D06ACCD0E1FAD9B8B28678DF7A9816")
                 );
 
             System.Console.WriteLine("Press any key to stop the server");
