@@ -30,9 +30,24 @@ namespace WireMock.Net.Client
             var mappings = api.GetMappingsAsync().Result;
             Console.WriteLine($"mappings = {JsonConvert.SerializeObject(mappings)}");
 
-            var guid = Guid.Parse("11111110-a633-40e8-a244-5cb80bc0ab66");
-            var mapping = api.GetMappingAsync(guid).Result;
-            Console.WriteLine($"mapping = {JsonConvert.SerializeObject(mapping)}");
+            try
+            {
+                var guid = Guid.Parse("11111110-a633-40e8-a244-5cb80bc0ab66");
+                var mapping = api.GetMappingAsync(guid).Result;
+                Console.WriteLine($"mapping = {JsonConvert.SerializeObject(mapping)}");
+            }
+            catch (Exception e)
+            {
+            }
+
+            var request = api.GetRequestsAsync().Result;
+            Console.WriteLine($"request = {JsonConvert.SerializeObject(request)}");
+
+            string deleteRequestsAsync = api.DeleteRequestsAsync().Result;
+            Console.WriteLine($"deleteRequestsAsync = {deleteRequestsAsync}");
+
+            string resetRequestsAsync = api.ResetRequestsAsync().Result;
+            Console.WriteLine($"resetRequestsAsync = {resetRequestsAsync}");
 
             Console.WriteLine("Press any key to quit");
             Console.ReadKey();

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
+using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
 
 namespace WireMock.Client
@@ -96,5 +97,39 @@ namespace WireMock.Client
         /// </summary>
         [Post("__admin/mappings/save")]
         Task<string> SaveMappingAsync();
+
+        /// <summary>
+        /// Get the requests.
+        /// </summary>
+        /// <returns>LogRequestModels</returns>
+        [Get("__admin/requests")]
+        Task<IList<LogRequestModel>> GetRequestsAsync();
+
+        /// <summary>
+        /// Delete all requests.
+        /// </summary>
+        [Delete("__admin/requests")]
+        Task<string> DeleteRequestsAsync();
+
+        /// <summary>
+        /// Delete (reset) all requests.
+        /// </summary>
+        [Post("__admin/requests/reset")]
+        Task<string> ResetRequestsAsync();
+
+        /// <summary>
+        /// Get a request based on the guid
+        /// </summary>
+        /// <param name="guid">The Guid</param>
+        /// <returns>MappingModel</returns>
+        [Get("__admin/requests/{guid}")]
+        Task<LogRequestModel> GetRequestAsync([Path] Guid guid);
+
+        /// <summary>
+        /// Delete a request based on the guid
+        /// </summary>
+        /// <param name="guid">The Guid</param>
+        [Delete("__admin/requests/{guid}")]
+        Task<string> DeleteRequestAsync([Path] Guid guid);
     }
 }

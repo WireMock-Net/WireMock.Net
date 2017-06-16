@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.2.0</Version>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net45;net452;net46;netstandard1.3</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.StandAlone</AssemblyName>
     <PackageId>WireMock.Net.StandAlone</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed dependency</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/StefH/WireMock.Net</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE</PackageLicenseUrl>
@@ -27,6 +27,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="CommandLineArgumentsParser" Version="3.0.11" />
   </ItemGroup>
 

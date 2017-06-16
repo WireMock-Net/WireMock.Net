@@ -5,6 +5,8 @@ using CommandLineParser.Arguments;
 using CommandLineParser.Exceptions;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Validation;
+using JetBrains.Annotations;
 
 namespace WireMock.Net.StandAlone
 {
@@ -38,11 +40,31 @@ namespace WireMock.Net.StandAlone
         }
 
         /// <summary>
+        /// Start WireMock.Net standalone bases on the FluentMockServerSettings.
+        /// </summary>
+        /// <param name="settings">The FluentMockServerSettings</param>
+        /// <param name="allowPartialMapping">Allow Partial Mapping (default set to false).</param>
+        public static FluentMockServer Start([NotNull] FluentMockServerSettings settings, bool allowPartialMapping = false)
+        {
+            Check.NotNull(settings, nameof(settings));
+
+            var server = FluentMockServer.Start(settings);
+            if (allowPartialMapping)
+            {
+                server.AllowPartialMapping();
+            }
+
+            return server;
+        }
+
+        /// <summary>
         /// Start WireMock.Net standalone bases on the commandline arguments.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
-        public static FluentMockServer Start(string[] args)
+        public static FluentMockServer Start([NotNull] string[] args)
         {
+            Check.NotNull(args, nameof(args));
+
             var options = new Options();
             var parser = new CommandLineParser.CommandLineParser();
             parser.ExtractArgumentAttributes(options);
@@ -73,11 +95,7 @@ namespace WireMock.Net.StandAlone
                     };
                 }
 
-                var server = FluentMockServer.Start(settings);
-                if (options.AllowPartialMapping)
-                {
-                    server.AllowPartialMapping();
-                }
+                FluentMockServer server = Start(settings, options.AllowPartialMapping);
 
                 Console.WriteLine("WireMock.Net server listening at {0}", string.Join(" and ", server.Urls));
 
