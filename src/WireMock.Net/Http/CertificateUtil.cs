@@ -22,14 +22,12 @@ namespace WireMock.Http
                     if (matchingCertificates.Count == 0)
                     {
                         // No certificates matched the search criteria.
-                        throw new Exception("no cert fount");
+                        throw new Exception($"No certificate found with Thumbprint or SubjectName '{thumbprintOrSubjectName}'");
                     }
                 }
-
                 // Use the first matching certificate.
                 return matchingCertificates[0];
             }
-
             finally
             {
                 if (certStore != null)
