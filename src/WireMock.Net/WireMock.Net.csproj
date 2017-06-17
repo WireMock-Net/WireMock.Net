@@ -11,11 +11,11 @@
     <PackageId>WireMock.Net</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/StefH/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/StefH/WireMock.Net/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/StefH/WireMock.Net</RepositoryUrl>
+    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <DebugType>full</DebugType>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
