@@ -10,7 +10,7 @@ namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-        
+
         private static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
             if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
@@ -69,29 +69,22 @@ namespace WireMock.Http
             }
 
             // Call the URL
-            try
+            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
+
+
+            // Transform response
+            var responseMessage = new ResponseMessage
             {
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
+                StatusCode = (int)httpResponseMessage.StatusCode,
+                Body = await httpResponseMessage.Content.ReadAsStringAsync()
+            };
 
-
-                // Transform response
-                var responseMessage = new ResponseMessage
-                {
-                    StatusCode = (int)httpResponseMessage.StatusCode,
-                    Body = await httpResponseMessage.Content.ReadAsStringAsync()
-                };
-
-                foreach (var header in httpResponseMessage.Headers)
-                {
-                    responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
-                }
-
-                return responseMessage;
-            }
-            catch(Exception ex)
+            foreach (var header in httpResponseMessage.Headers)
             {
-                throw ex;
+                responseMessage.AddHeader(header.Key, header.Value.FirstOrDefault());
             }
+
+            return responseMessage;
         }
     }
 }

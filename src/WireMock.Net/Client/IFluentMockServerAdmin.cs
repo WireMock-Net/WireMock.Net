@@ -131,5 +131,12 @@ namespace WireMock.Client
         /// <param name="guid">The Guid</param>
         [Delete("__admin/requests/{guid}")]
         Task<string> DeleteRequestAsync([Path] Guid guid);
+
+        /// <summary>
+        /// Find a request based on the criteria
+        /// </summary>
+        /// <param name="model">The RequestModel</param>
+        [Post("__admin/requests/find")]
+        Task<IList<LogRequestModel>> FindRequestsAsync([Body] RequestModel model);
     }
 }

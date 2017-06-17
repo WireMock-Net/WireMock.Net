@@ -30,14 +30,11 @@ namespace WireMock.Http
             }
             finally
             {
-                if (certStore != null)
-                {
 #if NETSTANDARD || NET46
-                    certStore.Dispose();
+                certStore.Dispose();
 #else
-                    certStore.Close();
+                certStore.Close();
 #endif
-                }
             }
         }
     }

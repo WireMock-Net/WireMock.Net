@@ -37,7 +37,7 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The client X509Certificate2 Thumbprint or SubjectName to use.
         /// </summary>
-        public string X509Certificate2ThumbprintOrSubjectName { get; private set; } 
+        public string X509Certificate2ThumbprintOrSubjectName { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -245,26 +245,11 @@ namespace WireMock.ResponseBuilders
         /// With Proxy URL.
         /// </summary>
         /// <param name="proxyUrl">The proxy url.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        [PublicAPI]
-        public IResponseBuilder WithProxy([NotNull] string proxyUrl)
-        {
-            Check.NotEmpty(proxyUrl, nameof(proxyUrl));
-
-            ProxyUrl = proxyUrl;
-            return this;
-        }
-
-        /// <summary>
-        /// With Proxy URL.
-        /// </summary>
-        /// <param name="proxyUrl">The proxy url.</param>
         /// <param name="clientX509Certificate2ThumbprintOrSubjectName">The X509Certificate2 file to use for client authentication.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithProxy([NotNull] string proxyUrl, [NotNull] string clientX509Certificate2ThumbprintOrSubjectName)
+        public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
             Check.NotEmpty(proxyUrl, nameof(proxyUrl));
-            Check.NotEmpty(clientX509Certificate2ThumbprintOrSubjectName, nameof(clientX509Certificate2ThumbprintOrSubjectName));
 
             ProxyUrl = proxyUrl;
             X509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;

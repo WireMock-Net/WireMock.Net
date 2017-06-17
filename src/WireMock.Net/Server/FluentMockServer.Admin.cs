@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
@@ -431,7 +430,9 @@ namespace WireMock.Server
             {
                 var requestMatchResult = new RequestMatchResult();
                 if (request.GetMatchingScore(logEntry.RequestMessage, requestMatchResult) > 0.99)
+                {
                     dict.Add(logEntry, requestMatchResult);
+                }
             }
 
             var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key);

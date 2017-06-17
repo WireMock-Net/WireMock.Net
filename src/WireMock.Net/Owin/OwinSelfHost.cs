@@ -44,12 +44,6 @@ namespace WireMock.Owin
             {
                 StartServers();
             }, _cts.Token);
-
-            //if (_internalThread != null)
-            //    throw new InvalidOperationException("Cannot start a multiple threads.");
-
-            //_internalThread = new Thread(ThreadWorkInternal);
-            //_internalThread.Start();
         }
 
         [PublicAPI]
@@ -70,22 +64,6 @@ namespace WireMock.Owin
             timer.Start();
 
             return tcs.Task;
-        }
-
-        private void ThreadWorkInternal()
-        {
-            try
-            {
-                StartServers();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            finally
-            {
-                _internalThread = null;
-            }
         }
 
         private void StartServers()
