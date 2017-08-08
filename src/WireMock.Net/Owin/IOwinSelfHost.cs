@@ -15,12 +15,12 @@ namespace WireMock.Owin
         bool IsStarted { get; }
 
         /// <summary>
-        /// Gets the url.
+        /// Gets the urls.
         /// </summary>
         /// <value>
         /// The urls.
         /// </value>
-        List<Uri> Urls { get; }
+        List<string> Urls { get; }
 
         /// <summary>
         /// Gets the ports.

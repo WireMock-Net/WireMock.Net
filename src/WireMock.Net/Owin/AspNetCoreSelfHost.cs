@@ -1,5 +1,4 @@
 ﻿#if NETSTANDARD
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WireMock.Http;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -20,7 +20,7 @@ namespace WireMock.Owin
 
         public bool IsStarted { get; private set; }
 
-        public List<Uri> Urls { get; } = new List<Uri>();
+        public List<string> Urls { get; } = new List<string>();
 
         public List<int> Ports { get; } = new List<int>();
 
@@ -31,9 +31,12 @@ namespace WireMock.Owin
 
             foreach (string uriPrefix in uriPrefixes)
             {
-                var uri = new Uri(uriPrefix);
-                Urls.Add(uri);
-                Ports.Add(uri.Port);
+                Urls.Add(uriPrefix);
+
+                int port;
+                string host;
+                PortUtil.TryExtractProtocolAndPort(uriPrefix, out host, out port);
+                Ports.Add(port);
             }
 
             _options = options;

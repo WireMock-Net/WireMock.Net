@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using WireMock.Validation;
 using Owin;
 using Microsoft.Owin.Hosting;
+using WireMock.Http;
 
 namespace WireMock.Owin
 {
@@ -14,7 +15,7 @@ namespace WireMock.Owin
     {
         private readonly WireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private System.Threading.Thread _internalThread;
+        private Thread _internalThread;
 
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
@@ -23,9 +24,12 @@ namespace WireMock.Owin
 
             foreach (string uriPrefix in uriPrefixes)
             {
-                var uri = new Uri(uriPrefix);
-                Urls.Add(uri);
-                Ports.Add(uri.Port);
+                Urls.Add(uriPrefix);
+
+                int port;
+                string host;
+                PortUtil.TryExtractProtocolAndPort(uriPrefix, out host, out port);
+                Ports.Add(port);
             }
 
             _options = options;
@@ -33,7 +37,7 @@ namespace WireMock.Owin
 
         public bool IsStarted { get; private set; }
 
-        public List<Uri> Urls { get; } = new List<Uri>();
+        public List<string> Urls { get; } = new List<string>();
 
         public List<int> Ports { get; } = new List<int>();
 
@@ -76,7 +80,7 @@ namespace WireMock.Owin
             var servers = new List<IDisposable>();
             foreach (var url in Urls)
             {
-                servers.Add(WebApp.Start(url.ToString(), startup));
+                servers.Add(WebApp.Start(url, startup));
             }
 
             IsStarted = true;
