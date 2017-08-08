@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WireMock.Net.StandAlone.NETCoreApp": {
+      "commandName": "Project",
+      "commandLineArgs": "--Urls http://*:9090"
+    }
+  }
+}

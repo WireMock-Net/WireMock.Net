@@ -1,13 +1,16 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace WireMock.Http
 {
     /// <summary>
-    /// The ports.
+    /// Utility class
     /// </summary>
     public static class PortUtil
     {
+        private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)?/", RegexOptions.Compiled);
+
         /// <summary>
         /// The find free TCP port.
         /// </summary>
@@ -29,6 +32,25 @@ namespace WireMock.Http
             {
                 tcpListener?.Stop();
             }
+        }
+
+        /// <summary>
+        /// Extract a proto and port from a URL.
+        /// </summary>
+        public static bool TryExtractProtocolAndPort(string url, out string proto, out int port)
+        {
+            proto = null;
+            port = -1;
+
+            Match m = UrlDetailsRegex.Match(url);
+            if (m.Success)
+            {
+                proto = m.Groups["proto"].Value;
+
+                return int.TryParse(m.Groups["port"].Value, out port);
+            }
+
+            return false;
         }
     }
 }
