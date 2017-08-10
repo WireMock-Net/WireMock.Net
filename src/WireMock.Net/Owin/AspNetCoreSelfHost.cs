@@ -48,17 +48,17 @@ namespace WireMock.Owin
             return Task.Run(() =>
             {
                 var host = new WebHostBuilder()
-                    .ConfigureLogging(factory => factory.AddConsole(LogLevel.None))
-                    .Configure(appBuilder =>
-                    {
-                        // appBuilder.UseExceptionHandler(builder => )
-                        appBuilder.UseMiddleware<WireMockMiddleware>(_options);
-                    })
+                    // .ConfigureLogging(factory => factory.AddConsole(LogLevel.None))
+                    .UseStartup<Startup>()
                     .UseKestrel()
                     .UseUrls(_uriPrefixes)
                     .Build();
 
+                #if NETSTANDARD1_3
                 host.Run(_cts.Token);
+                #else
+                host.RunAsync(_cts.Token);
+                #endif
 
                 IsStarted = true;
             }, _cts.Token);
@@ -94,7 +94,7 @@ namespace WireMock.Owin
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMiddleware<WireMockMiddleware>();
         }

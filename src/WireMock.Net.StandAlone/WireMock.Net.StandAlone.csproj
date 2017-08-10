@@ -3,9 +3,10 @@
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
-    <Version>1.0.2.1</Version>
+    <Version>1.0.2.3-preview2-final-01</Version>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net45;net452;net46;netstandard1.3</TargetFrameworks>
+    <!-- <TargetFrameworks>net45;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks> -->
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.StandAlone</AssemblyName>
     <PackageId>WireMock.Net.StandAlone</PackageId>
@@ -22,7 +23,7 @@
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
@@ -30,7 +31,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="CommandLineArgumentsParser" Version="3.0.11" />
+    <PackageReference Include="CommandLineArgumentsParser" Version="3.0.13" />
   </ItemGroup>
 
   <ItemGroup>
