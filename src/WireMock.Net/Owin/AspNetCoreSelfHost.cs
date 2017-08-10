@@ -45,23 +45,28 @@ namespace WireMock.Owin
 
         public Task StartAsync()
         {
-            return Task.Run(() =>
-            {
-                var host = new WebHostBuilder()
+            IWebHost host = new WebHostBuilder()
                     // .ConfigureLogging(factory => factory.AddConsole(LogLevel.None))
-                    .UseStartup<Startup>()
+                    .Configure(appBuilder =>
+                    {
+                        appBuilder.UseMiddleware<WireMockMiddleware>(_options);
+                    })
                     .UseKestrel()
                     .UseUrls(_uriPrefixes)
                     .Build();
 
-                #if NETSTANDARD1_3
+#if NETSTANDARD1_3
+            System.Console.WriteLine("WireMock.Net server using netstandard1.3");
+            return Task.Run(() =>
+            {
                 host.Run(_cts.Token);
-                #else
-                host.RunAsync(_cts.Token);
-                #endif
-
                 IsStarted = true;
             }, _cts.Token);
+#else
+            System.Console.WriteLine("WireMock.Net server using netstandard2.0");
+            IsStarted = true;
+            return host.RunAsync(_cts.Token);
+#endif
         }
 
         public Task StopAsync()
@@ -71,32 +76,6 @@ namespace WireMock.Owin
             IsStarted = false;
 
             return Task.FromResult(true);
-        }
-    }
-
-    internal class Startup
-    {
-        public Startup(IHostingEnvironment env)
-        {
-            //var builder = new ConfigurationBuilder()
-            //    .SetBasePath(env.ContentRootPath)
-            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            //    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-            //    .AddEnvironmentVariables();
-            //Configuration = builder.Build();
-        }
-
-        // public IConfigurationRoot Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.UseMiddleware<WireMockMiddleware>();
         }
     }
 }
