@@ -9,8 +9,8 @@ init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
 install:
-  - ps: Start-FileDownload 'https://download.microsoft.com/download/8/F/9/8F9659B9-E628-4D1A-B6BF-C3004C8C954B/dotnet-1.1.1-sdk-win-x64.exe'
-  - cmd: dotnet-1.1.1-sdk-win-x64.exe /quiet
+  - ps: Start-FileDownload 'https://download.microsoft.com/download/6/1/B/61B3E81F-5509-48D2-BB4F-5189E23CD29A/dotnet-sdk-2.0.0-preview2-006497-win-x64.exe'
+  - cmd: dotnet-sdk-2.0.0-preview2-006497-win-x64.exe /quiet
   - ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
 
 environment:
@@ -20,7 +20,6 @@ environment:
 
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
-- dotnet restore .\src\WireMock.Net.Client\WireMock.Net.Client.csproj
 - dotnet restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj
 - nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
 
@@ -28,12 +27,12 @@ build_script:
 # build WireMock.Net
 - dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
 
+# build WireMock.Net.Standalone
+- dotnet build .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -c %CONFIGURATION%
+
 # restore and build WireMock.Net.Tests
 - dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
 - dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
-
-# build WireMock.Net.Standalone
-- dotnet build .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -c %CONFIGURATION%
 
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion

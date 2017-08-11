@@ -14,9 +14,18 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 ### Frameworks
 The following frameworks are supported:
-- net 4.5
 - net 4.5.2 and up
+- net 4.6 and up
 - netstandard 1.3
+- netstandard 2.0
+
+## Build info
+To build you need:
+- Microsoft .NET Framework 4.5.2 Developer Pack (https://www.microsoft.com/en-us/download/details.aspx?id=42637)
+- Microsoft .NET Framework 4.6 Targeting Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=48136)
+- Microsoft .NET Framework 4.6.2 Developer Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
+* .NET Core 2.0 Preview 2 (https://www.microsoft.com/net/core/preview#windowscmd)
+
 
 ## Stubbing
 A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
