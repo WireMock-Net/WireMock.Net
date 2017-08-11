@@ -15,7 +15,6 @@ namespace WireMock.Owin
     {
         private readonly WireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private Thread _internalThread;
 
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
@@ -55,23 +54,13 @@ namespace WireMock.Owin
         {
             _cts.Cancel();
 
-            var tcs = new TaskCompletionSource<bool>();
-            var timer = new System.Timers.Timer(999);
-            timer.Elapsed += (sender, e) =>
-            {
-                if (_internalThread == null)
-                {
-                    timer.Stop();
-                    tcs.SetResult(true);
-                }
-            };
-            timer.Start();
-
-            return tcs.Task;
+            return Task.FromResult(true);
         }
 
         private void StartServers()
         {
+            System.Console.WriteLine("WireMock.Net server using .net 4.5.x or .net 4.6.x");
+
             Action<IAppBuilder> startup = app =>
             {
                 app.Use<WireMockMiddleware>(_options);
@@ -86,12 +75,16 @@ namespace WireMock.Owin
             IsStarted = true;
 
             while (!_cts.IsCancellationRequested)
-                Thread.Sleep(1000);
+            {
+                Thread.Sleep(30000);
+            }
 
             IsStarted = false;
 
             foreach (var server in servers)
+            {
                 server.Dispose();
+            }
         }
     }
 }
