@@ -37,30 +37,31 @@ namespace WireMock.Net.StandAlone
 
             [ValueArgument(typeof(string), "X509Certificate2ThumbprintOrSubjectName", Description = "The X509Certificate2 Thumbprint or SubjectName to use.", Optional = true)]
             public string X509Certificate2ThumbprintOrSubjectName { get; set; }
+
+            [ValueArgument(typeof(string), "AdminUsername", Description = "The username needed for __admin access.", Optional = true)]
+            public string AdminUsername { get; set; }
+
+            [ValueArgument(typeof(string), "AdminPassword", Description = "The password needed for __admin access.", Optional = true)]
+            public string AdminPassword { get; set; }
         }
 
         /// <summary>
-        /// Start WireMock.Net standalone bases on the FluentMockServerSettings.
+        /// Start WireMock.Net standalone based on the FluentMockServerSettings.
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
-        /// <param name="allowPartialMapping">Allow Partial Mapping (default set to false).</param>
-        public static FluentMockServer Start([NotNull] FluentMockServerSettings settings, bool allowPartialMapping = false)
+        [PublicAPI]
+        public static FluentMockServer Start([NotNull] FluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
-            var server = FluentMockServer.Start(settings);
-            if (allowPartialMapping)
-            {
-                server.AllowPartialMapping();
-            }
-
-            return server;
+            return FluentMockServer.Start(settings);
         }
 
         /// <summary>
         /// Start WireMock.Net standalone bases on the commandline arguments.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
+        [PublicAPI]
         public static FluentMockServer Start([NotNull] string[] args)
         {
             Check.NotNull(args, nameof(args));
@@ -83,6 +84,9 @@ namespace WireMock.Net.StandAlone
                     Urls = options.Urls.ToArray(),
                     StartAdminInterface = options.StartAdminInterface,
                     ReadStaticMappings = options.ReadStaticMappings,
+                    AllowPartialMapping = options.AllowPartialMapping,
+                    AdminUsername = options.AdminUsername,
+                    AdminPassword = options.AdminPassword
                 };
 
                 if (!string.IsNullOrEmpty(options.ProxyURL))
@@ -95,7 +99,7 @@ namespace WireMock.Net.StandAlone
                     };
                 }
 
-                FluentMockServer server = Start(settings, options.AllowPartialMapping);
+                FluentMockServer server = Start(settings);
 
                 Console.WriteLine("WireMock.Net server listening at {0}", string.Join(" and ", server.Urls));
 

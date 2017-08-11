@@ -54,5 +54,20 @@
         /// StartTimeout
         /// </summary>
         public int StartTimeout { get; set; } = 10000;
+
+        /// <summary>
+        /// Allow Partial Mapping (default set to false).
+        /// </summary>
+        public bool? AllowPartialMapping { get; set; }
+
+        /// <summary>
+        /// The username needed for __admin access.
+        /// </summary>
+        public string AdminUsername { get; set; }
+
+        /// <summary>
+        /// The password needed for __admin access.
+        /// </summary>
+        public string AdminPassword { get; set; }
     }
 }
