@@ -173,8 +173,18 @@ namespace WireMock.Server
 
             _httpServer.StartAsync();
 
+            if (settings.AllowPartialMapping == true)
+            {
+                AllowPartialMapping();
+            }
+
             if (settings.StartAdminInterface == true)
             {
+                if (!string.IsNullOrEmpty(settings.AdminUsername) && !string.IsNullOrEmpty(settings.AdminPassword))
+                {
+                    SetBasicAuthentication(settings.AdminUsername, settings.AdminPassword);
+                }
+
                 InitAdmin();
             }
 
