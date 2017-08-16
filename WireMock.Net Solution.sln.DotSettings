@@ -1,6 +1,0 @@
-﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=FBE2016FCEACD34DB66E1CC40B87F9F2/AbsolutePath/@EntryValue">C:\Users\azureuser\Documents\Github\WireMock.Net\ReSharper_WireMock.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=FBE2016FCEACD34DB66E1CC40B87F9F2/RelativePath/@EntryValue">..\ReSharper_WireMock.DotSettings</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=FBE2016FCEACD34DB66E1CC40B87F9F2/@KeyIndexDefined">True</s:Boolean>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileFBE2016FCEACD34DB66E1CC40B87F9F2/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileFBE2016FCEACD34DB66E1CC40B87F9F2/RelativePriority/@EntryValue">1</s:Double></wpf:ResourceDictionary>

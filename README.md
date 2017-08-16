@@ -24,7 +24,7 @@ To build you need:
 - Microsoft .NET Framework 4.5.2 Developer Pack (https://www.microsoft.com/en-us/download/details.aspx?id=42637)
 - Microsoft .NET Framework 4.6 Targeting Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=48136)
 - Microsoft .NET Framework 4.6.2 Developer Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
-* .NET Core 2.0 Preview 2 (https://www.microsoft.com/net/core/preview#windowscmd)
+- .NET Core 2.0 (https://www.microsoft.com/net/core)
 
 
 ## Stubbing
