@@ -161,6 +161,8 @@ namespace WireMock.Server
             var model = new SettingsModel
             {
                 AllowPartialMapping = _options.AllowPartialMapping,
+                MaxRequestLogCount = _options.MaxRequestLogCount,
+                RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
                 GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds
             };
 
@@ -173,6 +175,10 @@ namespace WireMock.Server
 
             if (settings.AllowPartialMapping != null)
                 _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
+
+            _options.MaxRequestLogCount = settings.MaxRequestLogCount;
+
+            _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
 
             if (settings.GlobalProcessingDelay != null)
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);

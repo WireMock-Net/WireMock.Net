@@ -1,0 +1,17 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "build_WireMock.Net.StandAlone.NETCoreApp",
+            "command": "dotnet build ${workspaceRoot}/examples/WireMock.Net.StandAlone.NETCoreApp/WireMock.Net.StandAlone.NETCoreApp.csproj -f netcoreapp2.0 ",
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

@@ -69,5 +69,15 @@
         /// The password needed for __admin access.
         /// </summary>
         public string AdminPassword { get; set; }
+
+        /// <summary>
+        /// The RequestLog expiration in hours (optional).
+        /// </summary>
+        public int? RequestLogExpirationDuration { get; set; }
+
+        /// <summary>
+        /// The MaxRequestLog count (optional).
+        /// </summary>
+        public int? MaxRequestLogCount { get; set; }
     }
 }

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
-    <RuntimeFrameworkVersion>1.0.1</RuntimeFrameworkVersion>
+    <TargetFrameworks>netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
+    <!-- <RuntimeFrameworkVersion>1.0.1</RuntimeFrameworkVersion> -->
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
