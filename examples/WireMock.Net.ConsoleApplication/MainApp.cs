@@ -13,8 +13,8 @@ namespace WireMock.Net.ConsoleApplication
     {
         public static void Run()
         {
-            string url1 = "http://localhost:9090/";
-            string url2 = "http://localhost:9091/";
+            string url1 = "http://localhost:9091/";
+            string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
 
             var server = FluentMockServer.Start(new FluentMockServerSettings

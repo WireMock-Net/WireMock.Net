@@ -16,6 +16,10 @@ namespace WireMock.Owin
         public IList<Mapping> Mappings { get; set; }
 
         public IList<LogEntry> LogEntries { get; set; }
+        
+        public int? RequestLogExpirationDuration { get; set; }
+
+        public int? MaxRequestLogCount { get; set; }
 
         public WireMockMiddlewareOptions()
         {

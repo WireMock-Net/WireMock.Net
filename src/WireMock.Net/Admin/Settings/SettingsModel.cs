@@ -14,5 +14,15 @@
         /// Gets or sets if partial mapping is allowed.
         /// </summary>
         public bool? AllowPartialMapping { get; set; }
+
+        /// <summary>
+        /// Gets or sets the RequestLog expiration in hours
+        /// </summary>
+        public int? RequestLogExpirationDuration { get; set; }
+
+        /// <summary>
+        /// Gets or sets the MaxRequestLog count.
+        /// </summary>
+        public int? MaxRequestLogCount { get; set; }
     }
 }

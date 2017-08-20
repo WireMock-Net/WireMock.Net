@@ -197,6 +197,11 @@ namespace WireMock.Server
             {
                 InitProxyAndRecord(settings.ProxyAndRecordSettings);
             }
+
+            if (settings.MaxRequestLogCount != null)
+            {
+                SetMaxRequestLogCount(settings.MaxRequestLogCount);
+            }
         }
 
         /// <summary>
@@ -314,6 +319,35 @@ namespace WireMock.Server
 
             string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
             _options.AuthorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
+        }
+
+        /// <summary>
+        /// Removes the basic authentication.
+        /// </summary>
+        [PublicAPI]
+        public void RemoveBasicAuthentication()
+        {
+            _options.AuthorizationMatcher = null;
+        }
+
+        /// <summary>
+        /// Sets the maximum RequestLog count.
+        /// </summary>
+        /// <param name="maxRequestLogCount">The maximum RequestLog count.</param>
+        [PublicAPI]
+        public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
+        {
+            _options.MaxRequestLogCount = maxRequestLogCount;
+        }
+
+        /// <summary>
+        /// Sets RequestLog expiration in hours.
+        /// </summary>
+        /// <param name="requestLogExpirationDuration">The RequestLog expiration in hours.</param>
+        [PublicAPI]
+        public void SetRequestLogExpirationDuration([CanBeNull] int? requestLogExpirationDuration)
+        {
+            _options.RequestLogExpirationDuration = requestLogExpirationDuration;
         }
 
         /// <summary>

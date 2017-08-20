@@ -44,6 +44,7 @@ namespace WireMock.Owin
         {
             var request = await _requestMapper.MapAsync(ctx.Request);
 
+            bool logRequest = false;
             ResponseMessage response = null;
             Mapping targetMapping = null;
             RequestMatchResult requestMatchResult = null;
@@ -82,9 +83,12 @@ namespace WireMock.Owin
 
                 if (targetMapping == null)
                 {
+                    logRequest = true;
                     response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
                     return;
                 }
+                
+                logRequest = !targetMapping.IsAdminInterface;
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
@@ -120,7 +124,7 @@ namespace WireMock.Owin
                     RequestMatchResult = requestMatchResult
                 };
 
-                LogRequest(log);
+                LogRequest(log, logRequest);
 
                 await _responseMapper.MapAsync(response, ctx.Response);
             }
@@ -128,15 +132,25 @@ namespace WireMock.Owin
             await CompletedTask;
         }
 
-        /// <summary>
-        /// The log request.
-        /// </summary>
-        /// <param name="entry">The request.</param>
-        private void LogRequest(LogEntry entry)
+        private void LogRequest(LogEntry entry, bool addRequest)
         {
             lock (((ICollection)_options.LogEntries).SyncRoot)
             {
-                _options.LogEntries.Add(entry);
+                if (addRequest)
+                {
+                    _options.LogEntries.Add(entry);
+                }
+
+                if (_options.MaxRequestLogCount != null)
+                {
+                    _options.LogEntries = _options.LogEntries.Skip(_options.LogEntries.Count - _options.MaxRequestLogCount.Value).ToList();
+                }
+
+                if (_options.RequestLogExpirationDuration != null)
+                {
+                    var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
+                    _options.LogEntries = _options.LogEntries.Where(le => le.RequestMessage.DateTime > checkTime).ToList();
+                }
             }
         }
     }

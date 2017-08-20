@@ -18,7 +18,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
   </PropertyGroup>

@@ -43,6 +43,12 @@ namespace WireMock.Net.StandAlone
 
             [ValueArgument(typeof(string), "AdminPassword", Description = "The password needed for __admin access.", Optional = true)]
             public string AdminPassword { get; set; }
+
+            [ValueArgument(typeof(int?), "RequestLogExpirationDuration", Description = "The RequestLog expiration in hours (optional).", Optional = true)]
+            public int? RequestLogExpirationDuration { get; set; }
+
+            [ValueArgument(typeof(int?), "MaxRequestLogCount", Description = "The MaxRequestLog count (optional).", Optional = true)]
+            public int? MaxRequestLogCount { get; set; }
         }
 
         /// <summary>
@@ -76,7 +82,7 @@ namespace WireMock.Net.StandAlone
 
                 if (!options.Urls.Any())
                 {
-                    options.Urls.Add("http://localhost:9090/");
+                    options.Urls.Add("http://localhost:9091/");
                 }
 
                 var settings = new FluentMockServerSettings
@@ -86,7 +92,9 @@ namespace WireMock.Net.StandAlone
                     ReadStaticMappings = options.ReadStaticMappings,
                     AllowPartialMapping = options.AllowPartialMapping,
                     AdminUsername = options.AdminUsername,
-                    AdminPassword = options.AdminPassword
+                    AdminPassword = options.AdminPassword,
+                    RequestLogExpirationDuration = options.RequestLogExpirationDuration,
+                    MaxRequestLogCount = options.MaxRequestLogCount
                 };
 
                 if (!string.IsNullOrEmpty(options.ProxyURL))

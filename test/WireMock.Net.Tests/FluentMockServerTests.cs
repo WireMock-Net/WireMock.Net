@@ -33,10 +33,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void FluentMockServer_StartStop()
         {
-            var server1 = FluentMockServer.Start("http://localhost:9090/");
+            var server1 = FluentMockServer.Start("http://localhost:9091/");
             server1.Stop();
 
-            var server2 = FluentMockServer.Start("http://localhost:9090/");
+            var server2 = FluentMockServer.Start("http://localhost:9091/");
             server2.Stop();
         }
 
@@ -370,7 +370,7 @@ namespace WireMock.Net.Tests
         }
 
         //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate
-        [Fact]
+        //[Fact]
         //public async Task Should_proxy_responses_with_client_certificate()
         //{
         //    // given
@@ -386,7 +386,29 @@ namespace WireMock.Net.Tests
         //    Check.That(result).Contains("google");
         //}
 
-        //[TearDown]
+        [Fact]
+        public async Task FluentMockServer_Logging_SetMaxRequestLogCount()
+        {
+            // Assign
+            var client = new HttpClient();
+            // Act
+            _server = FluentMockServer.Start();
+            _server.SetMaxRequestLogCount(2);
+
+            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo1");
+            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo2");
+            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo3");
+            
+            // Assert
+            Check.That(_server.LogEntries).HasSize(2);
+            
+            var requestLoggedA = _server.LogEntries.First();
+            Check.That(requestLoggedA.RequestMessage.Path).EndsWith("/foo2");
+
+            var requestLoggedB = _server.LogEntries.Last();
+            Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
+        }
+
         public void Dispose()
         {
             _server?.Stop();

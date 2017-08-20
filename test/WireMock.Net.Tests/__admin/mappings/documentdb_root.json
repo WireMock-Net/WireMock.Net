@@ -18,7 +18,7 @@
   },
   "Response": {
     "StatusCode": 200,
-    "Body": "{\"_self\":\"\",\"id\":\"abc\",\"_rid\":\"abc.documents.azure.com\",\"media\":\"//media/\",\"addresses\":\"//addresses/\",\"_dbs\":\"//dbs/\",\"writableLocations\":[{\"name\":\"West Europe\",\"databaseAccountEndpoint\":\"http://localhost:9090/\"}],\"readableLocations\":[{\"name\":\"West Europe\",\"databaseAccountEndpoint\":\"http://localhost:9090/\"}],\"userReplicationPolicy\":{\"asyncReplication\":false,\"minReplicaSetSize\":3,\"maxReplicasetSize\":4},\"userConsistencyPolicy\":{\"defaultConsistencyLevel\":\"Session\"},\"systemReplicationPolicy\":{\"minReplicaSetSize\":3,\"maxReplicasetSize\":4},\"readPolicy\":{\"primaryReadCoefficient\":1,\"secondaryReadCoefficient\":1},\"queryEngineConfiguration\":\"{\\\"maxSqlQueryInputLength\\\":30720,\\\"maxJoinsPerSqlQuery\\\":5,\\\"maxLogicalAndPerSqlQuery\\\":500,\\\"maxLogicalOrPerSqlQuery\\\":500,\\\"maxUdfRefPerSqlQuery\\\":2,\\\"maxInExpressionItemsCount\\\":8000,\\\"queryMaxInMemorySortDocumentCount\\\":500,\\\"maxQueryRequestTimeoutFraction\\\":0.9,\\\"sqlAllowNonFiniteNumbers\\\":false,\\\"sqlAllowAggregateFunctions\\\":true,\\\"sqlAllowSubQuery\\\":false,\\\"allowNewKeywords\\\":true,\\\"sqlAllowLike\\\":false,\\\"maxSpatialQueryCells\\\":12,\\\"spatialMaxGeometryPointCount\\\":256,\\\"sqlAllowTop\\\":true,\\\"enableSpatialIndexing\\\":true}\"}",
+    "Body": "{\"_self\":\"\",\"id\":\"abc\",\"_rid\":\"abc.documents.azure.com\",\"media\":\"//media/\",\"addresses\":\"//addresses/\",\"_dbs\":\"//dbs/\",\"writableLocations\":[{\"name\":\"West Europe\",\"databaseAccountEndpoint\":\"http://localhost:9091/\"}],\"readableLocations\":[{\"name\":\"West Europe\",\"databaseAccountEndpoint\":\"http://localhost:9091/\"}],\"userReplicationPolicy\":{\"asyncReplication\":false,\"minReplicaSetSize\":3,\"maxReplicasetSize\":4},\"userConsistencyPolicy\":{\"defaultConsistencyLevel\":\"Session\"},\"systemReplicationPolicy\":{\"minReplicaSetSize\":3,\"maxReplicasetSize\":4},\"readPolicy\":{\"primaryReadCoefficient\":1,\"secondaryReadCoefficient\":1},\"queryEngineConfiguration\":\"{\\\"maxSqlQueryInputLength\\\":30720,\\\"maxJoinsPerSqlQuery\\\":5,\\\"maxLogicalAndPerSqlQuery\\\":500,\\\"maxLogicalOrPerSqlQuery\\\":500,\\\"maxUdfRefPerSqlQuery\\\":2,\\\"maxInExpressionItemsCount\\\":8000,\\\"queryMaxInMemorySortDocumentCount\\\":500,\\\"maxQueryRequestTimeoutFraction\\\":0.9,\\\"sqlAllowNonFiniteNumbers\\\":false,\\\"sqlAllowAggregateFunctions\\\":true,\\\"sqlAllowSubQuery\\\":false,\\\"allowNewKeywords\\\":true,\\\"sqlAllowLike\\\":false,\\\"maxSpatialQueryCells\\\":12,\\\"spatialMaxGeometryPointCount\\\":256,\\\"sqlAllowTop\\\":true,\\\"enableSpatialIndexing\\\":true}\"}",
     "BodyEncoding": {
       "CodePage": 65001,
       "EncodingName": "Unicode (UTF-8)",
@@ -33,7 +33,7 @@
       "x-ms-gatewayversion": "version=1.11.164.3",
       "x-ms-media-storage-usage-mb": "0",
       "x-ms-databaseaccount-provisioned-mb": "0",
-      "Content-Location": "http://localhost:9090/",
+      "Content-Location": "http://localhost:9091/",
       "Date": "Mon, 06 Mar 2017 10:56:40 GMT",
       "Content-Type": "application/json",
       "Server": "Microsoft-HTTPAPI/2.0"
