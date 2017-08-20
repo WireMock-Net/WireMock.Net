@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using WireMock.Validation;
-#if !NETSTANDARD
+#if !NETSTANDARD1_3
 using Wmhelp.XPath2;
 #endif
 
@@ -41,7 +41,7 @@ namespace WireMock.Matchers
             try
             {
                 var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
-#if NETSTANDARD
+#if NETSTANDARD1_3
                 return MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p})"))));
 #else
                 return MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p})"))));
