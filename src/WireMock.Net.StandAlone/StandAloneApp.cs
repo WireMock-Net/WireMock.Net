@@ -7,6 +7,7 @@ using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Validation;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace WireMock.Net.StandAlone
 {
@@ -17,6 +18,9 @@ namespace WireMock.Net.StandAlone
     {
         private class Options
         {
+            [ValueArgument(typeof(int), "Port", Description = "Port to listen on.", Optional = true)]
+            public int? Port { get; set; }
+
             [ValueArgument(typeof(string), "Urls", Description = "URL(s) to listen on.", Optional = true, AllowMultiple = true)]
             public List<string> Urls { get; set; }
 
@@ -87,15 +91,34 @@ namespace WireMock.Net.StandAlone
 
                 var settings = new FluentMockServerSettings
                 {
-                    Urls = options.Urls.ToArray(),
                     StartAdminInterface = options.StartAdminInterface,
                     ReadStaticMappings = options.ReadStaticMappings,
                     AllowPartialMapping = options.AllowPartialMapping,
                     AdminUsername = options.AdminUsername,
                     AdminPassword = options.AdminPassword,
-                    RequestLogExpirationDuration = options.RequestLogExpirationDuration,
-                    MaxRequestLogCount = options.MaxRequestLogCount
+                    MaxRequestLogCount = options.MaxRequestLogCount,
+                    RequestLogExpirationDuration = options.RequestLogExpirationDuration
+
                 };
+
+                if (options.Port != null)
+                {
+                    settings.Port = options.Port;
+                }
+                else if (options.Urls != null)
+                {
+                    settings.Urls = options.Urls.ToArray();
+                }
+
+                // if (options.MaxRequestLogCount > 0)
+                // {
+                //     settings.MaxRequestLogCount = options.MaxRequestLogCount;
+                // }
+
+                // if (options.RequestLogExpirationDuration > 0)
+                // {
+                //     settings.RequestLogExpirationDuration = options.RequestLogExpirationDuration;
+                // }
 
                 if (!string.IsNullOrEmpty(options.ProxyURL))
                 {
@@ -106,6 +129,8 @@ namespace WireMock.Net.StandAlone
                         X509Certificate2ThumbprintOrSubjectName = options.X509Certificate2ThumbprintOrSubjectName
                     };
                 }
+
+                Console.WriteLine("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
                 FluentMockServer server = Start(settings);
 
