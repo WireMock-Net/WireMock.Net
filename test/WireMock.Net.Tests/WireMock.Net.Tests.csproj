@@ -20,7 +20,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NFluent" Version="2.0.0" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="2.5.10" />
+    <PackageReference Include="ReportGenerator" Version="2.5.11" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.3" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
 	  <PackageReference Include="xunit" Version="2.3.0-beta1-build3642" /> 
