@@ -11,6 +11,11 @@ namespace WireMock.Admin.Requests
     public class LogRequestModel
     {
         /// <summary>
+        /// Gets the Client IP Address.
+        /// </summary>
+        public string ClientIP { get; set; }
+
+        /// <summary>
         /// Gets the DateTime.
         /// </summary>
         public DateTime DateTime { get; set; }

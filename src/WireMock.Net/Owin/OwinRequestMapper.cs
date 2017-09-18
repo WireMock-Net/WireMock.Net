@@ -33,10 +33,15 @@ namespace WireMock.Owin
         {
 #if !NETSTANDARD
             Uri url = request.Uri;
+            string clientIP = request.RemoteIpAddress;
 #else
             Uri url = new Uri(request.GetEncodedUrl());
+            var connection = request.HttpContext.Connection;
+            string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
+                ? connection.RemoteIpAddress.MapToIPv4().ToString()
+                : connection.RemoteIpAddress.ToString();
 #endif
-            string verb = request.Method;
+            string method = request.Method;
 
             string bodyAsString = null;
             byte[] body = null;
@@ -63,7 +68,7 @@ namespace WireMock.Owin
             foreach (var cookie in request.Cookies)
                 cookies.Add(cookie.Key, cookie.Value);
 
-            return new RequestMessage(url, verb, body, bodyAsString, bodyEncoding, headers, cookies) { DateTime = DateTime.Now };
+            return new RequestMessage(url, method, clientIP, body, bodyAsString, bodyEncoding, headers, cookies) { DateTime = DateTime.Now };
         }
     }
 }

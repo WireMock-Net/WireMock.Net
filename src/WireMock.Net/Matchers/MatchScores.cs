@@ -37,22 +37,20 @@ namespace WireMock.Matchers
         /// Calculates the score from multiple funcs.
         /// </summary>
         /// <param name="values">The values.</param>
-        /// <returns>score</returns>
+        /// <returns>average score</returns>
         public static double ToScore(IEnumerable<bool> values)
         {
-            var list = values.Select(ToScore).ToList();
-            return list.Sum() / list.Count;
+            return values.Any() ? values.Select(ToScore).Average() : Mismatch;
         }
 
         /// <summary>
         /// Calculates the score from multiple funcs.
         /// </summary>
         /// <param name="values">The values.</param>
-        /// <returns>score</returns>
+        /// <returns>average score</returns>
         public static double ToScore(IEnumerable<double> values)
         {
-            var list = values.ToList();
-            return list.Sum() / list.Count;
+            return values.Any() ? values.Average() : Mismatch;
         }
     }
 }

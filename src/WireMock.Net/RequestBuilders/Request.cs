@@ -55,6 +55,45 @@ namespace WireMock.RequestBuilders
         }
 
         /// <summary>
+        /// The with clientIP.
+        /// </summary>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithClientIP(params IMatcher[] matchers)
+        {
+            Check.NotEmpty(matchers, nameof(matchers));
+
+            _requestMatchers.Add(new RequestMessageClientIPMatcher(matchers));
+            return this;
+        }
+
+        /// <summary>
+        /// The with clientIP.
+        /// </summary>
+        /// <param name="clientIPs">The ClientIPs.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithClientIP(params string[] clientIPs)
+        {
+            Check.NotEmpty(clientIPs, nameof(clientIPs));
+
+            _requestMatchers.Add(new RequestMessageClientIPMatcher(clientIPs));
+            return this;
+        }
+
+        /// <summary>
+        /// The with clientIP.
+        /// </summary>
+        /// <param name="funcs">The clientIP funcs.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        public IRequestBuilder WithClientIP(params Func<string, bool>[] funcs)
+        {
+            Check.NotEmpty(funcs, nameof(funcs));
+
+            _requestMatchers.Add(new RequestMessageClientIPMatcher(funcs));
+            return this;
+        }
+
+        /// <summary>
         /// The with path.
         /// </summary>
         /// <param name="matchers">The matchers.</param>

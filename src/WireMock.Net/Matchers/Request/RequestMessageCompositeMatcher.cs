@@ -43,6 +43,11 @@ namespace WireMock.Matchers.Request
         /// </returns>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
+            if (!RequestMatchers.Any())
+            {
+                return MatchScores.Mismatch;
+            }
+
             if (_type == CompositeMatcherType.And)
             {
                 return RequestMatchers.Average(requestMatcher => requestMatcher.GetMatchingScore(requestMessage, requestMatchResult));

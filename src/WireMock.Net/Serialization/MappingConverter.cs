@@ -18,6 +18,7 @@ namespace WireMock.Serialization
             var request = (Request)mapping.RequestMatcher;
             var response = (Response)mapping.Provider;
 
+            var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>();
             var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
             var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
@@ -33,6 +34,12 @@ namespace WireMock.Serialization
                 Priority = mapping.Priority,
                 Request = new RequestModel
                 {
+                    ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel
+                    {
+                        Matchers = Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
+                        Funcs = Map(clientIPMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
+                    } : null,
+
                     Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
                     {
                         Matchers = Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers)),
@@ -184,6 +191,5 @@ namespace WireMock.Serialization
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
         }
-
     }
 }

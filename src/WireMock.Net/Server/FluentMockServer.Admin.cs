@@ -377,6 +377,7 @@ namespace WireMock.Server
                 Request = new LogRequestModel
                 {
                     DateTime = logEntry.RequestMessage.DateTime,
+                    ClientIP = logEntry.RequestMessage.ClientIP,
                     Path = logEntry.RequestMessage.Path,
                     AbsoluteUrl = logEntry.RequestMessage.Url,
                     Query = logEntry.RequestMessage.Query,
@@ -450,6 +451,23 @@ namespace WireMock.Server
         private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
         {
             IRequestBuilder requestBuilder = Request.Create();
+
+            if (requestModel.ClientIP != null)
+            {
+                string clientIP = requestModel.ClientIP as string;
+                if (clientIP != null)
+                {
+                    requestBuilder = requestBuilder.WithClientIP(clientIP);
+                }
+                else
+                {
+                    var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
+                    if (clientIPModel?.Matchers != null)
+                    {
+                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    }
+                }
+            }
 
             if (requestModel.Path != null)
             {

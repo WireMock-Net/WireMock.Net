@@ -8,10 +8,18 @@ namespace WireMock.Admin.Mappings
     public class RequestModel
     {
         /// <summary>
+        /// Gets or sets the ClientIP. (Can be a string or a ClientIPModel)
+        /// </summary>
+        /// <value>
+        /// The ClientIP.
+        /// </value>
+        public object ClientIP { get; set; }
+
+        /// <summary>
         /// Gets or sets the Path. (Can be a string or a PathModel)
         /// </summary>
         /// <value>
-        /// The URL.
+        /// The Path.
         /// </value>
         public object Path { get; set; }
 

@@ -14,6 +14,11 @@ namespace WireMock
     public class RequestMessage
     {
         /// <summary>
+        /// Gets the Client IP Address.
+        /// </summary>
+        public string ClientIP { get; }
+
+        /// <summary>
         /// Gets the url.
         /// </summary>
         public string Url { get; }
@@ -67,20 +72,23 @@ namespace WireMock
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
         /// <param name="url">The original url.</param>
-        /// <param name="verb">The verb.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="clientIP">The client IP Address.</param>
         /// <param name="bodyAsBytes">The bodyAsBytes byte[].</param>
         /// <param name="body">The body string.</param>
         /// <param name="bodyEncoding">The body encoding</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string verb, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
-            Check.NotNull(verb, nameof(verb));
+            Check.NotNull(method, nameof(method));
+            Check.NotNull(clientIP, nameof(clientIP));
 
             Url = url.ToString();
             Path = url.AbsolutePath;
-            Method = verb.ToLower();
+            Method = method.ToLower();
+            ClientIP = clientIP;
             BodyAsBytes = bodyAsBytes;
             Body = body;
             BodyEncoding = bodyEncoding;
@@ -100,14 +108,16 @@ namespace WireMock
                     (dict, term) =>
                     {
                         var parts = term.Split('=');
-                        var key = parts[0];
+                        string key = parts[0];
                         if (!dict.ContainsKey(key))
                         {
                             dict.Add(key, new WireMockList<string>());
                         }
 
                         if (parts.Length == 2)
+                        {
                             dict[key].Add(parts[1]);
+                        }
 
                         return dict;
                     });

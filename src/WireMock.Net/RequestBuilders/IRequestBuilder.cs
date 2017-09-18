@@ -3,7 +3,7 @@
     /// <summary>
     /// IRequestBuilder
     /// </summary>
-    public interface IRequestBuilder : IUrlAndPathRequestBuilder
+    public interface IRequestBuilder : IClientIPRequestBuilder
     {
     }
 }
