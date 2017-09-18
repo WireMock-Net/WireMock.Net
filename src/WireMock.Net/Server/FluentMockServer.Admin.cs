@@ -412,7 +412,12 @@ namespace WireMock.Server
                     TotalScore = logEntry.RequestMatchResult.TotalScore,
                     TotalNumber = logEntry.RequestMatchResult.TotalNumber,
                     IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
-                    AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore
+                    AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore,
+                    MatchDetails = logEntry.RequestMatchResult.MatchDetails.Select(x => new
+                    {
+                        Name = x.Key.Name.Replace("RequestMessage", string.Empty),
+                        Score = x.Value
+                    } as object).ToList()
                 } : null
             };
         }

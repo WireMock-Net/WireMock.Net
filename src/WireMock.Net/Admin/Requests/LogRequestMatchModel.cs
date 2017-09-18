@@ -1,4 +1,6 @@
-﻿namespace WireMock.Admin.Requests
+﻿using System.Collections.Generic;
+
+namespace WireMock.Admin.Requests
 {
     /// <summary>
     /// LogRequestMatchModel
@@ -36,5 +38,13 @@
         /// The match percentage.
         /// </value>
         public double AverageTotalScore { get; set; }
+
+        /// <summary>
+        /// Gets the match details.
+        /// </summary>
+        /// <value>
+        /// The match details.
+        /// </value>
+        public IList<object> MatchDetails { get; set; }
     }
 }
