@@ -7,8 +7,8 @@
     <ProjectGuid>{668F689E-57B4-422E-8846-C0FF643CA999}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
-    <AssemblyName>WireMock.Net.StandAlone</AssemblyName>
+    <RootNamespace>WireMock.Net.StandAlone.Net452</RootNamespace>
+    <AssemblyName>WireMock.Net.StandAlone.Net452</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,38 +35,15 @@
   <PropertyGroup>
     <ApplicationIcon>..\..\WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WireMock.Net.StandAlone.Net452.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Handlebars, Version=1.8.1.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.1.9.0\lib\net40\Handlebars.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Owin.Host.HttpListener.3.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RestEase, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestEase.1.4.1\lib\net45\RestEase.dll</HintPath>
-    </Reference>
-    <Reference Include="SimMetrics.Net, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimMetrics.Net.1.0.3\lib\net45\SimMetrics.Net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WireMock.Net, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\src\WireMock.Net.StandAlone\bin\$(Configuration)\net452\WireMock.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="WireMock.Net.StandAlone, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\src\WireMock.Net.StandAlone\bin\$(Configuration)\net452\WireMock.Net.StandAlone.dll</HintPath>
-    </Reference>
-    <Reference Include="XPath2, Version=1.0.3.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\XPath2.1.0.3.1\lib\net452\XPath2.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -74,6 +51,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj">
+      <Project>{b6269aac-170a-43d5-8b9a-579ded3d9a95}</Project>
+      <Name>WireMock.Net.StandAlone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
+      <Project>{d3804228-91f4-4502-9595-39584e5a01ad}</Project>
+      <Name>WireMock.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

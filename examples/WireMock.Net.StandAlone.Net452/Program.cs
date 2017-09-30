@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WireMock.Net.StandAlone
+namespace WireMock.Net.StandAlone.Net452
 {
     public class Program
     {
