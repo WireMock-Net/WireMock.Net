@@ -112,7 +112,8 @@ namespace WireMock.Owin
                 }
 
                 response = await targetMapping.ResponseToAsync(request);
-                State = targetMapping.NextState;
+                if (targetMapping.NextState != null)
+                    State = targetMapping.NextState;
             }
             catch (Exception ex)
             {

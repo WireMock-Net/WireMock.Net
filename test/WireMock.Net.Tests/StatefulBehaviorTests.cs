@@ -69,6 +69,41 @@ namespace WireMock.Net.Tests
             Check.That(responseWithState).Equals("Test state msg");
         }
 
+        [Fact]
+        public async Task Should_not_change_state_if_next_state_is_not_defined()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/foo")
+                    .UsingGet())
+                .WillSetStateTo("Test state")
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody(@"No state msg"));
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/foo")
+                    .UsingGet())
+                .WhenStateIs("Test state")
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody(@"Test state msg"));
+
+            // when
+            var responseNoState = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var responseWithState = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var responseWithStateNotChanged = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // then
+            Check.That(responseNoState).Equals("No state msg");
+            Check.That(responseWithState).Equals("Test state msg");
+            Check.That(responseWithStateNotChanged).Equals("Test state msg");
+        }
+
         public void Dispose()
         {
             _server?.Dispose();
