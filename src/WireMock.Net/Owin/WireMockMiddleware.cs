@@ -24,15 +24,19 @@ namespace WireMock.Owin
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
+        public object State { get; private set; }
+
 #if !NETSTANDARD
         public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
+            State = null;
         }
 #else
         public WireMockMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
         {
             _options = options;
+            State = null;
         }
 #endif
 
@@ -51,6 +55,7 @@ namespace WireMock.Owin
             try
             {
                 var mappings = _options.Mappings
+                    .Where(m => object.Equals(m.ExecutionConditionState, State))
                     .Select(m => new
                     {
                         Mapping = m,
@@ -107,6 +112,7 @@ namespace WireMock.Owin
                 }
 
                 response = await targetMapping.ResponseToAsync(request);
+                State = targetMapping.NextState;
             }
             catch (Exception ex)
             {
