@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 
 namespace WireMock.Server
@@ -54,8 +55,11 @@ namespace WireMock.Server
             return this;
         }
 
-        public IRespondWithAProvider WillSetStateTo(object state)
+        public IRespondWithAProvider WillSetStateTo([NotNull] object state)
         {
+            if (state == null)
+                throw new ArgumentException("The next state is not expected to be null", nameof(state));
+
             _nextState = state;
             return this;
         }
