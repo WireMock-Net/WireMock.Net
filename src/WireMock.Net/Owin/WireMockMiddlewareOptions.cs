@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
 
@@ -15,7 +16,7 @@ namespace WireMock.Owin
 
         public IList<Mapping> Mappings { get; set; }
 
-        public IList<LogEntry> LogEntries { get; set; }
+        public ObservableCollection<LogEntry> LogEntries { get; set; }
         
         public int? RequestLogExpirationDuration { get; set; }
 
@@ -24,7 +25,7 @@ namespace WireMock.Owin
         public WireMockMiddlewareOptions()
         {
             Mappings = new List<Mapping>();
-            LogEntries = new List<LogEntry>();
+            LogEntries = new ObservableCollection<LogEntry>();
         }
     }
 }

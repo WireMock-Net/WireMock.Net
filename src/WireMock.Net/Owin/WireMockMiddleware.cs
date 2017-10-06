@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
@@ -143,13 +144,20 @@ namespace WireMock.Owin
 
                 if (_options.MaxRequestLogCount != null)
                 {
-                    _options.LogEntries = _options.LogEntries.Skip(_options.LogEntries.Count - _options.MaxRequestLogCount.Value).ToList();
+                    var amount = _options.LogEntries.Count - _options.MaxRequestLogCount.Value;
+                    for (var i = 0; i < amount; i++, _options.LogEntries.RemoveAt(0)) ;
                 }
 
                 if (_options.RequestLogExpirationDuration != null)
                 {
                     var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
-                    _options.LogEntries = _options.LogEntries.Where(le => le.RequestMessage.DateTime > checkTime).ToList();
+
+                    for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
+                    {
+                        var le = _options.LogEntries[i];
+                        if (le.RequestMessage.DateTime <= checkTime)
+                            _options.LogEntries.RemoveAt(i);
+                    }
                 }
             }
         }
