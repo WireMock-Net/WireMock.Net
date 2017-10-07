@@ -32,6 +32,22 @@ namespace WireMock.Admin.Mappings
         public int? Priority { get; set; }
 
         /// <summary>
+        /// Scenario.
+        /// </summary>
+        public string Scenario { get; set; }
+
+        /// <summary>
+        /// Execution state condition for the current mapping.
+        /// </summary>
+        public object WhenStateIs { get; set; }
+
+        /// <summary>
+        /// The next state which will be signaled after the current mapping execution.
+        /// In case the value is null state will not be changed.
+        /// </summary>
+        public object SetStateTo { get; set; }
+
+        /// <summary>
         /// Gets or sets the request.
         /// </summary>
         /// <value>

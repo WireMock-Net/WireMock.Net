@@ -322,6 +322,13 @@ namespace WireMock.Server
             if (mappingModel.Priority != null)
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
 
+            if (mappingModel.Scenario != null)
+            {
+                respondProvider = respondProvider.InScenario(mappingModel.Scenario);
+                respondProvider = respondProvider.WhenStateIs(mappingModel.WhenStateIs);
+                respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
+            }
+
             respondProvider.RespondWith(responseBuilder);
         }
 

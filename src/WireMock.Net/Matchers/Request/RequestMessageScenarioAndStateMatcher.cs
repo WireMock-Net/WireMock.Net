@@ -5,7 +5,7 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// The scenario and state matcher.
     /// </summary>
-    public class RequestMessageScenarioAndStateMatcher : IRequestMatcher
+    internal class RequestMessageScenarioAndStateMatcher : IRequestMatcher
     {
         ///// <summary>
         ///// Scenario.
