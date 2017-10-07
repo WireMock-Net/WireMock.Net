@@ -7,7 +7,7 @@ namespace WireMock.Net.StandAlone
     // Based on http://blog.gauffin.org/2014/12/simple-command-line-parser/
     internal class SimpleCommandLineParser
     {
-        public IDictionary<string, string[]> Arguments { get; private set; } = new Dictionary<string, string[]>();
+        private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>();
 
         public void Parse(string[] args)
         {
@@ -58,7 +58,7 @@ namespace WireMock.Net.StandAlone
 
         public bool GetBoolValue(string name, bool defaultValue = false)
         {
-            return GetValue<bool>(name, (values) =>
+            return GetValue(name, values =>
             {
                 string value = values.FirstOrDefault();
                 return !string.IsNullOrEmpty(value) ? bool.Parse(value) : defaultValue;
@@ -67,7 +67,7 @@ namespace WireMock.Net.StandAlone
 
         public int? GetIntValue(string name, int? defaultValue = null)
         {
-            return GetValue<int?>(name, (values) =>
+            return GetValue(name, values =>
             {
                 string value = values.FirstOrDefault();
                 return !string.IsNullOrEmpty(value) ? int.Parse(value) : defaultValue;
@@ -76,10 +76,7 @@ namespace WireMock.Net.StandAlone
 
         public string GetStringValue(string name, string defaultValue = null)
         {
-            return GetValue<string>(name, (values) =>
-            {
-                return values.FirstOrDefault() ?? defaultValue;
-            }, defaultValue);
+            return GetValue(name, values => values.FirstOrDefault() ?? defaultValue, defaultValue);
         }
     }
 }
