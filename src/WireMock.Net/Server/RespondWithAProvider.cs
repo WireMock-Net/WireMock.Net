@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 
 namespace WireMock.Server
@@ -11,6 +12,9 @@ namespace WireMock.Server
         private int _priority;
         private Guid? _guid;
         private string _title;
+
+        private object _executionConditionState = null;
+        private object _nextState = null;
 
         /// <summary>
         /// The _registration callback.
@@ -42,7 +46,22 @@ namespace WireMock.Server
         public void RespondWith(IResponseProvider provider)
         {
             var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority));
+            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority, _executionConditionState, _nextState));
+        }
+
+        public IRespondWithAProvider WhenStateIs(object state)
+        {
+            _executionConditionState = state;
+            return this;
+        }
+
+        public IRespondWithAProvider WillSetStateTo([NotNull] object state)
+        {
+            if (state == null)
+                throw new ArgumentException("The next state is not expected to be null", nameof(state));
+
+            _nextState = state;
+            return this;
         }
 
         /// <summary>
