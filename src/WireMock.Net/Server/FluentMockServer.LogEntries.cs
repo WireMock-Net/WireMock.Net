@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
+using WireMock.Matchers;
 
 namespace WireMock.Server
 {
@@ -20,7 +21,7 @@ namespace WireMock.Server
         {
             add
             {
-                lock (((ICollection) _options.LogEntries).SyncRoot)
+                lock (((ICollection)_options.LogEntries).SyncRoot)
                 {
                     _options.LogEntries.CollectionChanged += value;
                 }
@@ -69,8 +70,10 @@ namespace WireMock.Server
                         matcher.GetMatchingScore(log.RequestMessage, requestMatchResult);
                     }
 
-                    if (requestMatchResult.AverageTotalScore > 0.99)
+                    if (requestMatchResult.AverageTotalScore > MatchScores.AlmostPerfect)
+                    {
                         results.Add(log, requestMatchResult);
+                    }
                 }
 
                 return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());

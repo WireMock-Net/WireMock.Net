@@ -163,7 +163,10 @@ namespace WireMock.Owin
                 if (_options.MaxRequestLogCount != null)
                 {
                     var amount = _options.LogEntries.Count - _options.MaxRequestLogCount.Value;
-                    for (var i = 0; i < amount; i++, _options.LogEntries.RemoveAt(0)) ;
+                    for (int i = 0; i < amount; i++)
+                    {
+                        _options.LogEntries.RemoveAt(0);
+                    }
                 }
 
                 if (_options.RequestLogExpirationDuration != null)
@@ -174,7 +177,9 @@ namespace WireMock.Owin
                     {
                         var le = _options.LogEntries[i];
                         if (le.RequestMessage.DateTime <= checkTime)
+                        {
                             _options.LogEntries.RemoveAt(i);
+                        }
                     }
                 }
             }

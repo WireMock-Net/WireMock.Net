@@ -16,7 +16,7 @@ namespace WireMock.Owin
 
         public IList<Mapping> Mappings { get; set; }
 
-        public ObservableCollection<LogEntry> LogEntries { get; set; }
+        public ObservableCollection<LogEntry> LogEntries { get; }
         
         public int? RequestLogExpirationDuration { get; set; }
 

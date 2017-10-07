@@ -24,6 +24,11 @@ namespace WireMock.Matchers
         public const double Perfect = 1.0;
 
         /// <summary>
+        /// The almost perfect match score
+        /// </summary>
+        public const double AlmostPerfect = 0.99;
+
+        /// <summary>
         /// Convert a bool to the score.
         /// </summary>
         /// <param name="value">if set to <c>true</c> [value].</param>

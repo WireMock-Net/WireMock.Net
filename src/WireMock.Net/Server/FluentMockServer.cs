@@ -23,7 +23,6 @@ namespace WireMock.Server
     {
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
-        private readonly object _syncRoot = new object();
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
@@ -293,10 +292,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void AddGlobalProcessingDelay(TimeSpan delay)
         {
-            lock (_syncRoot)
-            {
-                _options.RequestProcessingDelay = delay;
-            }
+            _options.RequestProcessingDelay = delay;
         }
 
         /// <summary>
@@ -305,10 +301,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void AllowPartialMapping()
         {
-            lock (_syncRoot)
-            {
-                _options.AllowPartialMapping = true;
-            }
+            _options.AllowPartialMapping = true;
         }
 
         /// <summary>
@@ -323,10 +316,7 @@ namespace WireMock.Server
             Check.NotNull(password, nameof(password));
 
             string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
-            lock (_syncRoot)
-            {
-                _options.AuthorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
-            }
+            _options.AuthorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
         }
 
         /// <summary>
@@ -335,10 +325,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void RemoveBasicAuthentication()
         {
-            lock (_syncRoot)
-            {
-                _options.AuthorizationMatcher = null;
-            }
+            _options.AuthorizationMatcher = null;
         }
 
         /// <summary>
@@ -348,10 +335,8 @@ namespace WireMock.Server
         [PublicAPI]
         public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
         {
-            lock (_syncRoot)
-            {
-                _options.MaxRequestLogCount = maxRequestLogCount;
-            }
+            _options.MaxRequestLogCount = maxRequestLogCount;
+
         }
 
         /// <summary>
@@ -361,10 +346,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void SetRequestLogExpirationDuration([CanBeNull] int? requestLogExpirationDuration)
         {
-            lock (_syncRoot)
-            {
-                _options.RequestLogExpirationDuration = requestLogExpirationDuration;
-            }
+            _options.RequestLogExpirationDuration = requestLogExpirationDuration;
         }
 
         /// <summary>

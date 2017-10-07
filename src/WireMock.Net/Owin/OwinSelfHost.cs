@@ -25,9 +25,7 @@ namespace WireMock.Owin
             {
                 Urls.Add(uriPrefix);
 
-                int port;
-                string host;
-                PortUtil.TryExtractProtocolAndPort(uriPrefix, out host, out port);
+                PortUtil.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
                 Ports.Add(port);
             }
 

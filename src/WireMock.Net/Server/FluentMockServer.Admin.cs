@@ -447,7 +447,7 @@ namespace WireMock.Server
             foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
             {
                 var requestMatchResult = new RequestMatchResult();
-                if (request.GetMatchingScore(logEntry.RequestMessage, requestMatchResult) > 0.99)
+                if (request.GetMatchingScore(logEntry.RequestMessage, requestMatchResult) > MatchScores.AlmostPerfect)
                 {
                     dict.Add(logEntry, requestMatchResult);
                 }
@@ -559,7 +559,6 @@ namespace WireMock.Server
                 }
 
                 return responseBuilder.WithProxy(responseModel.ProxyUrl, responseModel.X509Certificate2ThumbprintOrSubjectName);
-
             }
 
             if (responseModel.StatusCode.HasValue)
