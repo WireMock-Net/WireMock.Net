@@ -7,6 +7,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WireMock.Net.Tests
 {
@@ -66,6 +67,52 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseNoState).Equals("No state msg");
             Check.That(responseWithState).Equals("Test state msg");
+        }
+
+        [Fact]
+        public async Task Scenario_and_State_TodoList_Example()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/todo/items")
+                    .UsingGet())
+                .InScenario("To do list")
+                .WillSetStateTo("TodoList State Started")
+                .RespondWith(Response.Create()
+                    .WithBody("Buy milk"));
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/todo/items")
+                    .UsingPost())
+                .InScenario("To do list")
+                .WhenStateIs("TodoList State Started")
+                .WillSetStateTo("Cancel newspaper item added")
+                .RespondWith(Response.Create()
+                    .WithStatusCode(201));
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/todo/items")
+                    .UsingGet())
+                .InScenario("To do list")
+                .WhenStateIs("Cancel newspaper item added")
+                .RespondWith(Response.Create()
+                    .WithBody("Buy milk;Cancel newspaper subscription"));
+
+            // Act and Assert
+            string url = "http://localhost:" + _server.Ports[0];
+            string getResponse1 = await new HttpClient().GetStringAsync(url + "/todo/items");
+            Check.That(getResponse1).Equals("Buy milk");
+
+            var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription"));
+            Check.That(postResponse.StatusCode).Equals(HttpStatusCode.Created);
+
+            string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items");
+            Check.That(getResponse2).Equals("Buy milk;Cancel newspaper subscription");
         }
 
         [Fact]
