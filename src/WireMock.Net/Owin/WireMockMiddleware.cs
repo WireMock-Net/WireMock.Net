@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
+using WireMock.Matchers;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -24,6 +27,8 @@ namespace WireMock.Owin
 
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
+
+        private readonly IDictionary<string, object> _states = new ConcurrentDictionary<string, object>();
 
 #if !NETSTANDARD
         public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
@@ -51,11 +56,20 @@ namespace WireMock.Owin
             RequestMatchResult requestMatchResult = null;
             try
             {
+                foreach (var mapping in _options.Mappings.Where(m => m.Scenario != null))
+                {
+                    // Set start
+                    if (!_states.ContainsKey(mapping.Scenario) && mapping.IsStartState)
+                    {
+                        _states.Add(mapping.Scenario, null);
+                    }
+                }
+
                 var mappings = _options.Mappings
                     .Select(m => new
                     {
                         Mapping = m,
-                        MatchResult = m.IsRequestHandled(request)
+                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _states.ContainsKey(m.Scenario) ? _states[m.Scenario] : null)
                     })
                     .ToList();
 
@@ -88,14 +102,13 @@ namespace WireMock.Owin
                     response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
                     return;
                 }
-                
+
                 logRequest = !targetMapping.IsAdminInterface;
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
-                    string authorization;
-                    bool present = request.Headers.TryGetValue("Authorization", out authorization);
-                    if (!present || _options.AuthorizationMatcher.IsMatch(authorization) < 1.0)
+                    bool present = request.Headers.TryGetValue("Authorization", out var authorization);
+                    if (!present || _options.AuthorizationMatcher.IsMatch(authorization) < MatchScores.Perfect)
                     {
                         response = new ResponseMessage { StatusCode = 401 };
                         return;
@@ -108,6 +121,11 @@ namespace WireMock.Owin
                 }
 
                 response = await targetMapping.ResponseToAsync(request);
+
+                if (targetMapping.Scenario != null)
+                {
+                    _states[targetMapping.Scenario] = targetMapping.NextState;
+                }
             }
             catch (Exception ex)
             {

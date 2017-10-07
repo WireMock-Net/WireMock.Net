@@ -27,7 +27,7 @@ namespace WireMock.Net.ConsoleApplication
 
             server.SetBasicAuthentication("a", "b");
 
-            server.AllowPartialMapping();
+            // server.AllowPartialMapping();
 
             server
                 .Given(Request.Create().WithPath("/oauth2/access").UsingPost().WithBody("grant_type=password;username=u;password=p"))
@@ -95,19 +95,55 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher(new[] { "cat", "dog" })))
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
-            http://localhost:8080/any/any?start=1000&stop=1&stop=2
+            // http://localhost:8080/any/any?start=1000&stop=1&stop=2
+            //server
+            //    .Given(Request.Create().WithPath("/*").UsingGet())
+            //    .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+            //    .AtPriority(server.Mappings.Count() + 1)
+            //    .RespondWith(Response.Create()
+            //        .WithStatusCode(200)
+            //        .WithHeader("Content-Type", "application/json")
+            //        .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
+            //        .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
+            //        .WithTransformer()
+            //        .WithDelay(TimeSpan.FromMilliseconds(100))
+            //    );
+
             server
-                .Given(Request.Create().WithPath("/*").UsingGet())
-                .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
-                .AtPriority(server.Mappings.Count() + 1)
+                .Given(Request.Create()
+                    .WithPath("/state1")
+                    .UsingGet())
+                .InScenario("s1")
+                .WillSetStateTo("Test state 1")
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
-                    .WithTransformer()
-                    .WithDelay(TimeSpan.FromMilliseconds(100))
-                );
+                    .WithBody("No state msg 1"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/foostate1")
+                    .UsingGet())
+                .InScenario("s1")
+                .WhenStateIs("Test state 1")
+                .RespondWith(Response.Create()
+                    .WithBody("Test state msg 1"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/state2")
+                    .UsingGet())
+                .InScenario("s2")
+                .WillSetStateTo("Test state 2")
+                .RespondWith(Response.Create()
+                    .WithBody("No state msg 2"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/foostate2")
+                    .UsingGet())
+                .InScenario("s2")
+                .WhenStateIs("Test state 2")
+                .RespondWith(Response.Create()
+                    .WithBody("Test state msg 2"));
 
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();

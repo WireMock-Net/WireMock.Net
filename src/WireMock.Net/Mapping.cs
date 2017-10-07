@@ -35,6 +35,25 @@ namespace WireMock
         public int Priority { get; }
 
         /// <summary>
+        /// Scenario.
+        /// </summary>
+        [CanBeNull]
+        public string Scenario { get; }
+
+        /// <summary>
+        /// Execution state condition for the current mapping.
+        /// </summary>
+        [CanBeNull]
+        public object ExecutionConditionState { get; }
+
+        /// <summary>
+        /// The next state which will be signaled after the current mapping execution.
+        /// In case the value is null state will not be changed.
+        /// </summary>
+        [CanBeNull]
+        public object NextState { get; }
+
+        /// <summary>
         /// The Request matcher.
         /// </summary>
         public IRequestMatcher RequestMatcher { get; }
@@ -45,6 +64,11 @@ namespace WireMock
         public IResponseProvider Provider { get; }
 
         /// <summary>
+        /// Is State started ?
+        /// </summary>
+        public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
@@ -52,13 +76,19 @@ namespace WireMock
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
-        public Mapping(Guid guid, [CanBeNull] string title, IRequestMatcher requestMatcher, IResponseProvider provider, int priority)
+        /// <param name="scenario">The scenario. [Optional]</param>
+        /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
+        /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
+        public Mapping(Guid guid, [CanBeNull] string title, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] object executionConditionState, [CanBeNull] object nextState)
         {
-            Priority = priority;
             Guid = guid;
             Title = title;
             RequestMatcher = requestMatcher;
             Provider = provider;
+            Priority = priority;
+            Scenario = scenario;
+            ExecutionConditionState = executionConditionState;
+            NextState = nextState;
         }
 
         /// <summary>
@@ -72,15 +102,30 @@ namespace WireMock
         }
 
         /// <summary>
-        /// Determines whether the RequestMessage is handled.
+        /// Gets the RequestMatchResult based on the RequestMessage.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
+        /// <param name="nextState">The Next State.</param>
         /// <returns>The <see cref="RequestMatchResult"/>.</returns>
-        public RequestMatchResult IsRequestHandled(RequestMessage requestMessage)
+        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] object nextState)
         {
             var result = new RequestMatchResult();
 
             RequestMatcher.GetMatchingScore(requestMessage, result);
+
+            // Only check state if Scenario is defined
+            if (Scenario != null)
+            {
+                var matcher = new RequestMessageScenarioAndStateMatcher(nextState, ExecutionConditionState);
+                matcher.GetMatchingScore(requestMessage, result);
+                //// If ExecutionConditionState is null, this means that request is the start from a scenario. So just return.
+                //if (ExecutionConditionState != null)
+                //{
+                //    // ExecutionConditionState is not null, so get score for matching with the nextState.
+                //    var matcher = new RequestMessageScenarioAndStateMatcher(nextState, ExecutionConditionState);
+                //    matcher.GetMatchingScore(requestMessage, result);
+                //}
+            }
 
             return result;
         }
