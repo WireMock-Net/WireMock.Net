@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
@@ -11,6 +12,28 @@ namespace WireMock.Server
 {
     public partial class FluentMockServer
     {
+        /// <summary>
+        /// Log entries notification handler
+        /// </summary>
+        [PublicAPI]
+        public event NotifyCollectionChangedEventHandler LogEntriesChanged
+        {
+            add
+            {
+                lock (((ICollection) _options.LogEntries).SyncRoot)
+                {
+                    _options.LogEntries.CollectionChanged += value;
+                }
+            }
+            remove
+            {
+                lock (((ICollection)_options.LogEntries).SyncRoot)
+                {
+                    _options.LogEntries.CollectionChanged -= value;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the request logs.
         /// </summary>
