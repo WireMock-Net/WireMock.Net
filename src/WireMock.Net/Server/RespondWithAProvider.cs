@@ -11,9 +11,9 @@ namespace WireMock.Server
         private int _priority;
         private Guid? _guid;
         private string _title;
-
-        private object _executionConditionState = null;
-        private object _nextState = null;
+        private object _executionConditionState;
+        private object _nextState;
+        private string _scenario;
 
         /// <summary>
         /// The _registration callback.
@@ -45,19 +45,7 @@ namespace WireMock.Server
         public void RespondWith(IResponseProvider provider)
         {
             var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority, _executionConditionState, _nextState));
-        }
-
-        public IRespondWithAProvider WhenStateIs(object state)
-        {
-            _executionConditionState = state;
-            return this;
-        }
-
-        public IRespondWithAProvider WillSetStateTo(object state)
-        {
-            _nextState = state;
-            return this;
+            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
         }
 
         /// <summary>
@@ -102,6 +90,42 @@ namespace WireMock.Server
         public IRespondWithAProvider AtPriority(int priority)
         {
             _priority = priority;
+
+            return this;
+        }
+
+        public IRespondWithAProvider InScenario(string scenario)
+        {
+            _scenario = scenario;
+
+            return this;
+        }
+
+        public IRespondWithAProvider WhenStateIs(object state)
+        {
+            if (string.IsNullOrEmpty(_scenario))
+            {
+                throw new NotSupportedException("Unable to set state condition when no scenario is defined.");
+            }
+
+            //if (_nextState != null)
+            //{
+            //    throw new NotSupportedException("Unable to set state condition when next state is defined.");
+            //}
+
+            _executionConditionState = state;
+
+            return this;
+        }
+
+        public IRespondWithAProvider WillSetStateTo(object state)
+        {
+            if (string.IsNullOrEmpty(_scenario))
+            {
+                throw new NotSupportedException("Unable to set next state when no scenario is defined.");
+            }
+
+            _nextState = state;
 
             return this;
         }

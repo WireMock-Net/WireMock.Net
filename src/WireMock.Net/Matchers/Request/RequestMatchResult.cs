@@ -43,7 +43,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Gets the match details.
         /// </summary>
-        public IList<KeyValuePair<Type, double>> MatchDetails { get; private set; }
+        public IList<KeyValuePair<Type, double>> MatchDetails { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMatchResult"/> class.
@@ -72,7 +72,6 @@ namespace WireMock.Matchers.Request
         /// <returns>
         /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public int CompareTo(object obj)
         {
             var compareObj = (RequestMatchResult)obj;
