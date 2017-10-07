@@ -31,6 +31,7 @@ namespace WireMock.Server
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
+        private const string AdminScenarios = "/__admin/scenarios";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
@@ -117,6 +118,15 @@ namespace WireMock.Server
 
             // __admin/requests/find
             Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
+
+
+            // __admin/scenarios
+            // __admin/scenarios
+            Given(Request.Create().WithPath(AdminScenarios).UsingGet()).RespondWith(new DynamicResponseProvider(ScenariosGet));
+            Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).RespondWith(new DynamicResponseProvider(ScenariosReset));
+
+            // __admin/scenarios/reset
+            Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(ScenariosReset));
         }
 
         #region Proxy and Record
@@ -458,6 +468,26 @@ namespace WireMock.Server
             return ToJson(result);
         }
         #endregion Requests/find
+
+        #region Scenarios
+        private ResponseMessage ScenariosGet(RequestMessage requestMessage)
+        {
+            var scenarios = Scenarios.Select(s => new
+            {
+                Name = s.Key,
+                Started = s.Value != null,
+                NextState = s.Value
+            });
+            return ToJson(scenarios);
+        }
+
+        private ResponseMessage ScenariosReset(RequestMessage requestMessage)
+        {
+            ResetScenarios();
+
+            return new ResponseMessage { Body = "Scenarios reset" };
+        }
+        #endregion
 
         private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
         {

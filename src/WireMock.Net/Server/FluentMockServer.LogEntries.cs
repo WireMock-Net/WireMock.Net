@@ -19,36 +19,15 @@ namespace WireMock.Server
         [PublicAPI]
         public event NotifyCollectionChangedEventHandler LogEntriesChanged
         {
-            add
-            {
-                lock (((ICollection)_options.LogEntries).SyncRoot)
-                {
-                    _options.LogEntries.CollectionChanged += value;
-                }
-            }
-            remove
-            {
-                lock (((ICollection)_options.LogEntries).SyncRoot)
-                {
-                    _options.LogEntries.CollectionChanged -= value;
-                }
-            }
+            add => _options.LogEntries.CollectionChanged += value;
+            remove => _options.LogEntries.CollectionChanged -= value;
         }
 
         /// <summary>
         /// Gets the request logs.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<LogEntry> LogEntries
-        {
-            get
-            {
-                lock (((ICollection)_options.LogEntries).SyncRoot)
-                {
-                    return new ReadOnlyCollection<LogEntry>(_options.LogEntries);
-                }
-            }
-        }
+        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries);
 
         /// <summary>
         /// The search log-entries based on matchers.
@@ -58,26 +37,23 @@ namespace WireMock.Server
         [PublicAPI]
         public IEnumerable<LogEntry> FindLogEntries([NotNull] params IRequestMatcher[] matchers)
         {
-            lock (((ICollection)_options.LogEntries).SyncRoot)
+            var results = new Dictionary<LogEntry, RequestMatchResult>();
+
+            foreach (var log in _options.LogEntries)
             {
-                var results = new Dictionary<LogEntry, RequestMatchResult>();
-
-                foreach (var log in _options.LogEntries)
+                var requestMatchResult = new RequestMatchResult();
+                foreach (var matcher in matchers)
                 {
-                    var requestMatchResult = new RequestMatchResult();
-                    foreach (var matcher in matchers)
-                    {
-                        matcher.GetMatchingScore(log.RequestMessage, requestMatchResult);
-                    }
-
-                    if (requestMatchResult.AverageTotalScore > MatchScores.AlmostPerfect)
-                    {
-                        results.Add(log, requestMatchResult);
-                    }
+                    matcher.GetMatchingScore(log.RequestMessage, requestMatchResult);
                 }
 
-                return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());
+                if (requestMatchResult.AverageTotalScore > MatchScores.AlmostPerfect)
+                {
+                    results.Add(log, requestMatchResult);
+                }
             }
+
+            return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());
         }
 
         /// <summary>
@@ -86,10 +62,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetLogEntries()
         {
-            lock (((ICollection)_options.LogEntries).SyncRoot)
-            {
-                _options.LogEntries.Clear();
-            }
+            _options.LogEntries.Clear();
         }
 
         /// <summary>
@@ -99,18 +72,15 @@ namespace WireMock.Server
         [PublicAPI]
         public bool DeleteLogEntry(Guid guid)
         {
-            lock (((ICollection)_options.LogEntries).SyncRoot)
+            // Check a logentry exists with the same GUID, if so, remove it.
+            var existing = _options.LogEntries.FirstOrDefault(m => m.Guid == guid);
+            if (existing != null)
             {
-                // Check a logentry exists with the same GUID, if so, remove it.
-                var existing = _options.LogEntries.FirstOrDefault(m => m.Guid == guid);
-                if (existing != null)
-                {
-                    _options.LogEntries.Remove(existing);
-                    return true;
-                }
-
-                return false;
+                _options.LogEntries.Remove(existing);
+                return true;
             }
+
+            return false;
         }
     }
 }

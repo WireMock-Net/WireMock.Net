@@ -19,7 +19,7 @@
 //            var sut = _objectMother.Create();
 
 //            // then
-//            Check.That(sut.States).IsNull();
+//            Check.That(sut.Scenarios).IsNull();
 //        }
 
 //        private class ObjectMother

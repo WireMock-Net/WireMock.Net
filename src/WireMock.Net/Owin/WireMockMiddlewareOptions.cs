@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
@@ -14,18 +15,14 @@ namespace WireMock.Owin
 
         public bool AllowPartialMapping { get; set; }
 
-        public IList<Mapping> Mappings { get; set; }
+        public IList<Mapping> Mappings { get; set; } = new List<Mapping>();
 
-        public ObservableCollection<LogEntry> LogEntries { get; }
-        
+        public ObservableCollection<LogEntry> LogEntries { get; } = new ObservableCollection<LogEntry>();
+
         public int? RequestLogExpirationDuration { get; set; }
 
         public int? MaxRequestLogCount { get; set; }
 
-        public WireMockMiddlewareOptions()
-        {
-            Mappings = new List<Mapping>();
-            LogEntries = new ObservableCollection<LogEntry>();
-        }
+        public IDictionary<string, object> Scenarios { get; } = new ConcurrentDictionary<string, object>();
     }
 }

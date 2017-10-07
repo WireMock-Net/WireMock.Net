@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
@@ -27,8 +23,6 @@ namespace WireMock.Owin
 
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
-
-        private readonly IDictionary<string, object> _states = new ConcurrentDictionary<string, object>();
 
 #if !NETSTANDARD
         public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
@@ -59,9 +53,9 @@ namespace WireMock.Owin
                 foreach (var mapping in _options.Mappings.Where(m => m.Scenario != null))
                 {
                     // Set start
-                    if (!_states.ContainsKey(mapping.Scenario) && mapping.IsStartState)
+                    if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
                     {
-                        _states.Add(mapping.Scenario, null);
+                        _options.Scenarios.Add(mapping.Scenario, null);
                     }
                 }
 
@@ -69,7 +63,7 @@ namespace WireMock.Owin
                     .Select(m => new
                     {
                         Mapping = m,
-                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _states.ContainsKey(m.Scenario) ? _states[m.Scenario] : null)
+                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _options.Scenarios.ContainsKey(m.Scenario) ? _options.Scenarios[m.Scenario] : null)
                     })
                     .ToList();
 
@@ -107,7 +101,7 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
-                    bool present = request.Headers.TryGetValue("Authorization", out var authorization);
+                    bool present = request.Headers.TryGetValue("Authorization", out string authorization);
                     if (!present || _options.AuthorizationMatcher.IsMatch(authorization) < MatchScores.Perfect)
                     {
                         response = new ResponseMessage { StatusCode = 401 };
@@ -124,7 +118,7 @@ namespace WireMock.Owin
 
                 if (targetMapping.Scenario != null)
                 {
-                    _states[targetMapping.Scenario] = targetMapping.NextState;
+                    _options.Scenarios[targetMapping.Scenario] = targetMapping.NextState;
                 }
             }
             catch (Exception ex)
@@ -153,33 +147,30 @@ namespace WireMock.Owin
 
         private void LogRequest(LogEntry entry, bool addRequest)
         {
-            lock (((ICollection)_options.LogEntries).SyncRoot)
+            if (addRequest)
             {
-                if (addRequest)
+                _options.LogEntries.Add(entry);
+            }
+
+            if (_options.MaxRequestLogCount != null)
+            {
+                var amount = _options.LogEntries.Count - _options.MaxRequestLogCount.Value;
+                for (int i = 0; i < amount; i++)
                 {
-                    _options.LogEntries.Add(entry);
+                    _options.LogEntries.RemoveAt(0);
                 }
+            }
 
-                if (_options.MaxRequestLogCount != null)
+            if (_options.RequestLogExpirationDuration != null)
+            {
+                var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
+
+                for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
                 {
-                    var amount = _options.LogEntries.Count - _options.MaxRequestLogCount.Value;
-                    for (int i = 0; i < amount; i++)
+                    var le = _options.LogEntries[i];
+                    if (le.RequestMessage.DateTime <= checkTime)
                     {
-                        _options.LogEntries.RemoveAt(0);
-                    }
-                }
-
-                if (_options.RequestLogExpirationDuration != null)
-                {
-                    var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
-
-                    for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
-                    {
-                        var le = _options.LogEntries[i];
-                        if (le.RequestMessage.DateTime <= checkTime)
-                        {
-                            _options.LogEntries.RemoveAt(i);
-                        }
+                        _options.LogEntries.RemoveAt(i);
                     }
                 }
             }

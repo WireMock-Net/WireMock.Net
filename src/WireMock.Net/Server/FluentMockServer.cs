@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -44,16 +45,13 @@ namespace WireMock.Server
         /// Gets the mappings.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<Mapping> Mappings
-        {
-            get
-            {
-                lock (((ICollection)_options.Mappings).SyncRoot)
-                {
-                    return new ReadOnlyCollection<Mapping>(_options.Mappings);
-                }
-            }
-        }
+        public IEnumerable<Mapping> Mappings => new ReadOnlyCollection<Mapping>(_options.Mappings);
+
+        /// <summary>
+        /// Gets the scenarios.
+        /// </summary>
+        [PublicAPI]
+        public IDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios);
 
         #region Start/Stop
         /// <summary>
@@ -258,10 +256,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetMappings()
         {
-            lock (((ICollection)_options.Mappings).SyncRoot)
-            {
-                _options.Mappings = _options.Mappings.Where(m => m.IsAdminInterface).ToList();
-            }
+            _options.Mappings = _options.Mappings.Where(m => m.IsAdminInterface).ToList();
         }
 
         /// <summary>
@@ -271,18 +266,15 @@ namespace WireMock.Server
         [PublicAPI]
         public bool DeleteMapping(Guid guid)
         {
-            lock (((ICollection)_options.Mappings).SyncRoot)
+            // Check a mapping exists with the same GUID, if so, remove it.
+            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
+            if (existingMapping != null)
             {
-                // Check a mapping exists with the same GUID, if so, remove it.
-                var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
-                if (existingMapping != null)
-                {
-                    _options.Mappings.Remove(existingMapping);
-                    return true;
-                }
-
-                return false;
+                _options.Mappings.Remove(existingMapping);
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -350,6 +342,15 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Resets the Scenarios.
+        /// </summary>
+        [PublicAPI]
+        public void ResetScenarios()
+        {
+            _options.Scenarios.Clear();
+        }
+
+        /// <summary>
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
@@ -368,13 +369,10 @@ namespace WireMock.Server
         /// </param>
         private void RegisterMapping(Mapping mapping)
         {
-            lock (((ICollection)_options.Mappings).SyncRoot)
-            {
-                // Check a mapping exists with the same GUID, if so, remove it first.
-                DeleteMapping(mapping.Guid);
+            // Check a mapping exists with the same GUID, if so, remove it first.
+            DeleteMapping(mapping.Guid);
 
-                _options.Mappings.Add(mapping);
-            }
+            _options.Mappings.Add(mapping);
         }
     }
 }
