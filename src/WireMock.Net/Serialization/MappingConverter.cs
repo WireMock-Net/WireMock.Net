@@ -32,6 +32,9 @@ namespace WireMock.Serialization
                 Guid = mapping.Guid,
                 Title = mapping.Title,
                 Priority = mapping.Priority,
+                Scenario = mapping.Scenario,
+                WhenStateIs = mapping.ExecutionConditionState,
+                SetStateTo = mapping.NextState,
                 Request = new RequestModel
                 {
                     ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel

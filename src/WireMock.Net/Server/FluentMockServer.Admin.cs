@@ -69,9 +69,8 @@ namespace WireMock.Server
             Check.NotNull(filename, nameof(filename));
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
-            Guid guidFromFilename;
 
-            if (Guid.TryParse(filenameWithoutExtension, out guidFromFilename))
+            if (Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
             {
                 DeserializeAndAddMapping(File.ReadAllText(filename), guidFromFilename);
             }
@@ -151,7 +150,7 @@ namespace WireMock.Server
 
             var response = (Response)Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, request, response, 0);
+            return new Mapping(Guid.NewGuid(), string.Empty, request, response, 0, null, null, null);
         }
         #endregion
 
@@ -322,6 +321,13 @@ namespace WireMock.Server
 
             if (mappingModel.Priority != null)
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
+
+            if (mappingModel.Scenario != null)
+            {
+                respondProvider = respondProvider.InScenario(mappingModel.Scenario);
+                respondProvider = respondProvider.WhenStateIs(mappingModel.WhenStateIs);
+                respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
+            }
 
             respondProvider.RespondWith(responseBuilder);
         }

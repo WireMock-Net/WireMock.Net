@@ -40,5 +40,26 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="provider">The provider.</param>
         void RespondWith(IResponseProvider provider);
+
+        /// <summary>
+        /// Sets the the scenario.
+        /// </summary>
+        /// <param name="scenario">The scenario.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider InScenario(string scenario);
+
+        /// <summary>
+        /// Execute this respond only in case the current state is equal to specified one.
+        /// </summary>
+        /// <param name="state">Any object which identifies the current state</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WhenStateIs(object state);
+
+        /// <summary>
+        /// Once this mapping is executed the state will be changed to specified one.
+        /// </summary>
+        /// <param name="state">Any object which identifies the new state</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WillSetStateTo(object state);
     }
 }
