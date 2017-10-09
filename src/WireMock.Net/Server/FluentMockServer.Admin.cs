@@ -121,7 +121,6 @@ namespace WireMock.Server
 
 
             // __admin/scenarios
-            // __admin/scenarios
             Given(Request.Create().WithPath(AdminScenarios).UsingGet()).RespondWith(new DynamicResponseProvider(ScenariosGet));
             Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).RespondWith(new DynamicResponseProvider(ScenariosReset));
 
@@ -345,6 +344,8 @@ namespace WireMock.Server
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
         {
             ResetMappings();
+
+            ResetScenarios();
 
             return new ResponseMessage { Body = "Mappings deleted" };
         }
