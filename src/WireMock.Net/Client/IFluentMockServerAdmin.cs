@@ -138,5 +138,23 @@ namespace WireMock.Client
         /// <param name="model">The RequestModel</param>
         [Post("__admin/requests/find")]
         Task<IList<LogRequestModel>> FindRequestsAsync([Body] RequestModel model);
+
+        /// <summary>
+        /// Get all scenarios
+        /// </summary>
+        [Get("__admin/scenarios")]
+        Task<string> GetScenariosAsync();
+
+        /// <summary>
+        /// Delete (reset) all scenarios
+        /// </summary>
+        [Delete("__admin/scenarios")]
+        Task<string> DeleteScenariosAsync();
+
+        /// <summary>
+        /// Delete (reset) all scenarios
+        /// </summary>
+        [Post("__admin/scenarios")]
+        Task<string> ResetScenariosAsync();
     }
 }
