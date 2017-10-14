@@ -71,11 +71,12 @@ namespace WireMock.Http
             // Call the URL
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-
             // Transform response
             var responseMessage = new ResponseMessage
             {
                 StatusCode = (int)httpResponseMessage.StatusCode,
+
+                // TODO : what about BodyAsBytes ???
                 Body = await httpResponseMessage.Content.ReadAsStringAsync()
             };
 

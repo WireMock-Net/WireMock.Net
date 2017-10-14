@@ -19,9 +19,19 @@ namespace WireMock.Admin.Requests
         public IDictionary<string, string> Headers { get; set; }
 
         /// <summary>
+        /// Gets or sets the body destination (SameAsSource, String or Bytes).
+        /// </summary>
+        public string BodyDestination { get; set; }
+
+        /// <summary>
         /// Gets or sets the body.
         /// </summary>
         public string Body { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        public byte[] BodyAsBytes { get; set; }
 
         /// <summary>
         /// Gets or sets the original body.

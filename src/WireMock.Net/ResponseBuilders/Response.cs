@@ -150,28 +150,59 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="body">The body.</param>
-        /// <param name="encoding">The body encoding.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBody(string body, Encoding encoding = null)
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
+        public IResponseBuilder WithBody(byte[] body, string destination, Encoding encoding = null)
         {
             Check.NotNull(body, nameof(body));
 
-            ResponseMessage.Body = body;
-            ResponseMessage.BodyEncoding = encoding ?? Encoding.UTF8;
+            ResponseMessage.BodyDestination = destination;
+
+            switch (destination)
+            {
+                case BodyDestinationFormat.String:
+                    var enc = encoding ?? Encoding.UTF8;
+                    ResponseMessage.BodyAsBytes = null;
+                    ResponseMessage.Body = enc.GetString(body);
+                    ResponseMessage.BodyEncoding = enc;
+                    break;
+
+                default:
+                    ResponseMessage.BodyAsBytes = body;
+                    ResponseMessage.BodyEncoding = null;
+                    break;
+            }
 
             return this;
         }
 
-        /// <summary>
-        /// The with body (AsJson object).
-        /// </summary>
-        /// <param name="body">The body.</param>
-        /// <param name="encoding">The body encoding.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(string, string, Encoding)"/>
+        public IResponseBuilder WithBody(string body, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        {
+            Check.NotNull(body, nameof(body));
+
+            encoding = encoding ?? Encoding.UTF8;
+
+            ResponseMessage.BodyDestination = destination;
+
+            switch (destination)
+            {
+                case BodyDestinationFormat.Bytes:
+                    ResponseMessage.Body = null;
+                    ResponseMessage.BodyAsBytes = encoding.GetBytes(body);
+                    ResponseMessage.BodyEncoding = encoding;
+                    break;
+
+                default:
+                    ResponseMessage.Body = body;
+                    ResponseMessage.BodyAsBytes = null;
+                    ResponseMessage.BodyEncoding = encoding;
+                    break;
+            }
+
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson"/>
         public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null)
         {
             Check.NotNull(body, nameof(body));
@@ -184,23 +215,20 @@ namespace WireMock.ResponseBuilders
                 ResponseMessage.BodyEncoding = encoding;
             }
 
+            ResponseMessage.BodyDestination = null;
             ResponseMessage.Body = jsonBody;
 
             return this;
         }
 
-        /// <summary>
-        /// The with body as base64.
-        /// </summary>
-        /// <param name="bodyAsbase64">The body asbase64.</param>
-        /// <param name="encoding">The Encoding.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithBodyAsBase64(string bodyAsbase64, Encoding encoding = null)
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>
+        public IResponseBuilder WithBodyFromBase64(string bodyAsbase64, Encoding encoding = null)
         {
             Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
 
             encoding = encoding ?? Encoding.UTF8;
 
+            ResponseMessage.BodyDestination = null;
             ResponseMessage.Body = encoding.GetString(Convert.FromBase64String(bodyAsbase64));
             ResponseMessage.BodyEncoding = encoding;
 

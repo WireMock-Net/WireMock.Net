@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireMock.Http;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -32,15 +33,28 @@ namespace WireMock.Owin
         {
             response.StatusCode = responseMessage.StatusCode;
 
-            responseMessage.Headers.ToList().ForEach(pair => response.Headers.Append(pair.Key, pair.Value));
+            if (responseMessage.Headers.ContainsKey(HttpKnownHeaderNames.ContentType))
+            {
+                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType];
+            }
+            responseMessage.Headers.Where(h => h.Key != HttpKnownHeaderNames.ContentType).ToList().ForEach(pair => response.Headers.Append(pair.Key, pair.Value));
 
-            if (responseMessage.Body == null)
+            if (responseMessage.Body == null && responseMessage.BodyAsBytes == null)
+            {
                 return;
+            }
+
+            if (responseMessage.BodyAsBytes != null)
+            {
+                await response.Body.WriteAsync(responseMessage.BodyAsBytes, 0, responseMessage.BodyAsBytes.Length);
+                return;
+            }
 
             Encoding encoding = responseMessage.BodyEncoding ?? _utf8NoBom;
             using (var writer = new StreamWriter(response.Body, encoding))
             {
                 await writer.WriteAsync(responseMessage.Body);
+                // TODO : response.ContentLength = responseMessage.Body.Length;
             }
         }
     }

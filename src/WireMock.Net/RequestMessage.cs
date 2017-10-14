@@ -51,7 +51,7 @@ namespace WireMock
         /// <summary>
         /// Gets the query.
         /// </summary>
-        public IDictionary<string, WireMockList<string>> Query { get; } = new Dictionary<string, WireMockList<string>>();
+        public IDictionary<string, WireMockList<string>> Query { get; }
 
         /// <summary>
         /// Gets the bodyAsBytes.
@@ -94,34 +94,38 @@ namespace WireMock
             BodyEncoding = bodyEncoding;
             Headers = headers;
             Cookies = cookies;
+            Query = ParseQuery(url.Query);
+        }
 
-            string query = url.Query;
-            if (!string.IsNullOrEmpty(query))
+        private IDictionary<string, WireMockList<string>> ParseQuery(string queryString)
+        {
+            if (string.IsNullOrEmpty(queryString))
             {
-                if (query.StartsWith("?"))
-                {
-                    query = query.Substring(1);
-                }
-
-                Query = query.Split('&').Aggregate(
-                    new Dictionary<string, WireMockList<string>>(),
-                    (dict, term) =>
-                    {
-                        var parts = term.Split('=');
-                        string key = parts[0];
-                        if (!dict.ContainsKey(key))
-                        {
-                            dict.Add(key, new WireMockList<string>());
-                        }
-
-                        if (parts.Length == 2)
-                        {
-                            dict[key].Add(parts[1]);
-                        }
-
-                        return dict;
-                    });
+                return null;
             }
+
+            if (queryString.StartsWith("?"))
+            {
+                queryString = queryString.Substring(1);
+            }
+
+            return queryString.Split('&').Aggregate(new Dictionary<string, WireMockList<string>>(),
+                (dict, term) =>
+                {
+                    var parts = term.Split('=');
+                    string key = parts[0];
+                    if (!dict.ContainsKey(key))
+                    {
+                        dict.Add(key, new WireMockList<string>());
+                    }
+
+                    if (parts.Length == 2)
+                    {
+                        dict[key].Add(parts[1]);
+                    }
+
+                    return dict;
+                });
         }
 
         /// <summary>
@@ -131,6 +135,11 @@ namespace WireMock
         /// <returns>The query parameter.</returns>
         public List<string> GetParameter(string key)
         {
+            if (Query == null)
+            {
+                return null;
+            }
+
             return Query.ContainsKey(key) ? Query[key] : null;
         }
     }

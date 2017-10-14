@@ -95,16 +95,20 @@ namespace WireMock.Serialization
             {
                 mappingModel.Response.StatusCode = null;
                 mappingModel.Response.Headers = null;
+                mappingModel.Response.BodyDestination = null;
                 mappingModel.Response.Body = null;
+                mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.UseTransformer = false;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyUrl;
             }
             else
             {
+                mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
                 mappingModel.Response.Headers = response.ResponseMessage.Headers;
                 mappingModel.Response.Body = response.ResponseMessage.Body;
+                mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
                 mappingModel.Response.UseTransformer = response.UseTransformer;
                 mappingModel.Response.BodyEncoding = response.ResponseMessage.BodyEncoding != null
                     ? new EncodingModel

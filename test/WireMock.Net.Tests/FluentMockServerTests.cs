@@ -174,11 +174,11 @@ namespace WireMock.Net.Tests
             Check.That(_server.LogEntries).HasSize(1);
             var requestLogged = _server.LogEntries.First();
             Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
-            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsEmpty();
+            Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
 
         [Fact]
-        public async Task Should_respond_to_request()
+        public async Task Should_respond_to_request_bodyAsString()
         {
             // given
             _server = FluentMockServer.Start();
@@ -189,13 +189,13 @@ namespace WireMock.Net.Tests
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
-                    .WithBody(@"{ msg: ""Hello world!""}"));
+                    .WithBody("Hello world!"));
 
             // when
             var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
-            Check.That(response).IsEqualTo(@"{ msg: ""Hello world!""}");
+            Check.That(response).IsEqualTo("Hello world!");
         }
 
         [Fact]
@@ -204,13 +204,30 @@ namespace WireMock.Net.Tests
             // given
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyAsBase64("SGVsbG8gV29ybGQ/"));
+            _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyFromBase64("SGVsbG8gV29ybGQ/"));
 
             // when
             var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
             // then
             Check.That(response).IsEqualTo("Hello World?");
+        }
+
+        [Fact]
+        public async Task Should_respond_to_request_bodyAsBytes()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBody(new byte[] { 48, 49 }));
+
+            // when
+            var responseAsString = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var responseAsBytes = await new HttpClient().GetByteArrayAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // then
+            Check.That(responseAsString).IsEqualTo("01");
+            Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
         }
 
         [Fact]
@@ -398,10 +415,10 @@ namespace WireMock.Net.Tests
             await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo1");
             await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo2");
             await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo3");
-            
+
             // Assert
             Check.That(_server.LogEntries).HasSize(2);
-            
+
             var requestLoggedA = _server.LogEntries.First();
             Check.That(requestLoggedA.RequestMessage.Path).EndsWith("/foo2");
 

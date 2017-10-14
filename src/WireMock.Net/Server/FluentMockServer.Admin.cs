@@ -412,7 +412,9 @@ namespace WireMock.Server
                 Response = new LogResponseModel
                 {
                     StatusCode = logEntry.ResponseMessage.StatusCode,
+                    BodyDestination = logEntry.ResponseMessage.BodyDestination,
                     Body = logEntry.ResponseMessage.Body,
+                    BodyAsBytes = logEntry.ResponseMessage.BodyAsBytes,
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
                     Headers = logEntry.ResponseMessage.Headers,
                     BodyEncoding = logEntry.ResponseMessage.BodyEncoding != null ? new EncodingModel
@@ -612,17 +614,21 @@ namespace WireMock.Server
                 }
             }
 
-            if (responseModel.Body != null)
+            if (responseModel.BodyAsBytes != null)
             {
-                responseBuilder = responseBuilder.WithBody(responseModel.Body, ToEncoding(responseModel.BodyEncoding));
+                responseBuilder = responseBuilder.WithBody(responseModel.BodyAsBytes, responseModel.BodyDestination, ToEncoding(responseModel.BodyEncoding));
+            }
+            else if (responseModel.Body != null)
+            {
+                responseBuilder = responseBuilder.WithBody(responseModel.Body, responseModel.BodyDestination, ToEncoding(responseModel.BodyEncoding));
             }
             else if (responseModel.BodyAsJson != null)
             {
                 responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding));
             }
-            else if (responseModel.BodyAsBase64 != null)
+            else if (responseModel.BodyFromBase64 != null)
             {
-                responseBuilder = responseBuilder.WithBodyAsBase64(responseModel.BodyAsBase64, ToEncoding(responseModel.BodyEncoding));
+                responseBuilder = responseBuilder.WithBodyFromBase64(responseModel.BodyFromBase64, ToEncoding(responseModel.BodyEncoding));
             }
 
             if (responseModel.UseTransformer)

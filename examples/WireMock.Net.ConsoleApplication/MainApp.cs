@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -21,13 +20,21 @@ namespace WireMock.Net.ConsoleApplication
             {
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
-                ReadStaticMappings = true
+                ReadStaticMappings = false
             });
             System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 
             // server.AllowPartialMapping();
+
+            server
+                .Given(Request.Create().WithPath("/bodyasbytes.png")
+                .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "image/png")
+                    .WithBody(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTczbp9jAAAAJ0lEQVQoU2NgUPuPD6Hz0RCEAtJoiAxpCCBXGgmRIo0TofORkdp/AMiMdRVnV6O0AAAAAElFTkSuQmCC"))
+                );
 
             server
                 .Given(Request.Create().WithPath("/oauth2/access").UsingPost().WithBody("grant_type=password;username=u;password=p"))

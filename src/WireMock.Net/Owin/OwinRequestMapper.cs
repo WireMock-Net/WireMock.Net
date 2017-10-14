@@ -46,7 +46,7 @@ namespace WireMock.Owin
             string bodyAsString = null;
             byte[] body = null;
             Encoding bodyEncoding = null;
-            if (request.Body != null)
+            if (ParseBody(method) && request.Body != null)
             {
                 using (var streamReader = new StreamReader(request.Body))
                 {
@@ -57,18 +57,42 @@ namespace WireMock.Owin
                 body = bodyEncoding.GetBytes(bodyAsString);
             }
 
-            var listenerHeaders = request.Headers;
+            Dictionary<string, string> headers = null;
+            if (request.Headers.Any())
+            {
+                headers = new Dictionary<string, string>();
+                foreach (var header in request.Headers)
+                {
+                    headers.Add(header.Key, header.Value.FirstOrDefault());
+                }
+            }
 
-            var headers = new Dictionary<string, string>();
-            foreach (var header in listenerHeaders)
-                headers.Add(header.Key, header.Value.FirstOrDefault());
-
-            var cookies = new Dictionary<string, string>();
-
-            foreach (var cookie in request.Cookies)
-                cookies.Add(cookie.Key, cookie.Value);
+            IDictionary<string, string> cookies = null;
+            if (request.Cookies.Any())
+            {
+                cookies = new Dictionary<string, string>();
+                foreach (var cookie in request.Cookies)
+                {
+                    cookies.Add(cookie.Key, cookie.Value);
+                }
+            }
 
             return new RequestMessage(url, method, clientIP, body, bodyAsString, bodyEncoding, headers, cookies) { DateTime = DateTime.Now };
+        }
+
+        private bool ParseBody(string method)
+        {
+            /*
+                HEAD - No defined body semantics.
+                GET - No defined body semantics.
+                PUT - Body supported.
+                POST - Body supported.
+                DELETE - No defined body semantics.
+                TRACE - Body not supported.
+                OPTIONS - Body supported but no semantics on usage (maybe in the future).
+                CONNECT - No defined body semantics
+            */
+            return new[] { "PUT", "POST", "OPTIONS" }.Contains(method.ToUpper());
         }
     }
 }

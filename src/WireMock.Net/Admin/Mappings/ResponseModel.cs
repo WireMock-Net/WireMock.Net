@@ -16,6 +16,11 @@ namespace WireMock.Admin.Mappings
         public int? StatusCode { get; set; }
 
         /// <summary>
+        /// Gets or sets the body destination (SameAsSource, String or Bytes).
+        /// </summary>
+        public string BodyDestination { get; set; }
+
+        /// <summary>
         /// Gets or sets the body.
         /// </summary>
         /// <value>
@@ -29,7 +34,7 @@ namespace WireMock.Admin.Mappings
         /// <value>
         /// The body.
         /// </value>
-        public string BodyAsBase64 { get; set; }
+        public string BodyFromBase64 { get; set; }
 
         /// <summary>
         /// Gets or sets the body (as JSON object).
@@ -38,6 +43,14 @@ namespace WireMock.Admin.Mappings
         /// The body.
         /// </value>
         public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body (as bytearray).
+        /// </summary>
+        /// <value>
+        /// The body.
+        /// </value>
+        public byte[] BodyAsBytes { get; set; }
 
         /// <summary>
         /// Gets or sets the body encoding.
