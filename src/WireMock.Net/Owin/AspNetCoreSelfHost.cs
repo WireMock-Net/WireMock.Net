@@ -46,7 +46,9 @@ namespace WireMock.Owin
             _host = new WebHostBuilder()
                 .Configure(appBuilder =>
                 {
+                    _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
                     appBuilder.UseMiddleware<WireMockMiddleware>(_options);
+                    _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
                 .UseKestrel()
                 .UseUrls(_uriPrefixes)

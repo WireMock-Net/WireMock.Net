@@ -57,11 +57,13 @@ namespace WireMock.Owin
 
         private void StartServers()
         {
-            System.Console.WriteLine("WireMock.Net server using .net 4.5.x or .net 4.6.x");
+            Console.WriteLine("WireMock.Net server using .net 4.5.x or .net 4.6.x");
 
             Action<IAppBuilder> startup = app =>
             {
+                _options.PreWireMockMiddlewareInit?.Invoke(app);
                 app.Use<WireMockMiddleware>(_options);
+                _options.PostWireMockMiddlewareInit?.Invoke(app);
             };
 
             var servers = new List<IDisposable>();

@@ -162,6 +162,9 @@ namespace WireMock.Server
                 Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
             }
 
+            _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
+            _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
+
 #if NETSTANDARD
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
 #else
