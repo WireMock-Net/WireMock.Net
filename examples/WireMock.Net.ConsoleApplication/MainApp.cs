@@ -20,7 +20,9 @@ namespace WireMock.Net.ConsoleApplication
             {
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
-                ReadStaticMappings = false
+                ReadStaticMappings = false,
+                PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
+                PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); }
             });
             System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
 

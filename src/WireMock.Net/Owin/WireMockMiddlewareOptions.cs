@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
+#if !NETSTANDARD
+using Owin;
+#else
+using Microsoft.AspNetCore.Builder;
+#endif
 
 namespace WireMock.Owin
 {
@@ -24,5 +29,15 @@ namespace WireMock.Owin
         public int? MaxRequestLogCount { get; set; }
 
         public IDictionary<string, object> Scenarios { get; } = new ConcurrentDictionary<string, object>();
+
+#if !NETSTANDARD
+        public Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
+
+        public Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
+#else
+        public Action<IApplicationBuilder> PreWireMockMiddlewareInit { get; set; }
+
+        public Action<IApplicationBuilder> PostWireMockMiddlewareInit { get; set; }
+#endif
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace WireMock.ResponseBuilders
 {
+    /// <summary>
+    /// Defines the BodyDestinationFormat
+    /// </summary>
     public static class BodyDestinationFormat
     {
         /// <summary>
