@@ -2,15 +2,12 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-
         private static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
             if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
@@ -25,8 +22,6 @@ namespace WireMock.Http
 
                 var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
-
-
 #else
                 var handler = new WebRequestHandler
                 {
@@ -76,7 +71,7 @@ namespace WireMock.Http
             {
                 StatusCode = (int)httpResponseMessage.StatusCode,
 
-                // TODO : what about BodyAsBytes ???
+                BodyAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync(),
                 Body = await httpResponseMessage.Content.ReadAsStringAsync()
             };
 

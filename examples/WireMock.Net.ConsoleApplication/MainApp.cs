@@ -31,6 +31,13 @@ namespace WireMock.Net.ConsoleApplication
             // server.AllowPartialMapping();
 
             server
+                .Given(Request.Create().WithHeader("ProxyThis", "true")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithProxy("http://www.google.com")
+            );
+
+            server
                 .Given(Request.Create().WithPath("/bodyasbytes.png")
                 .UsingGet())
                 .RespondWith(Response.Create()
