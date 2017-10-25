@@ -20,7 +20,7 @@ namespace WireMock.Net.ConsoleApplication
             {
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
-                ReadStaticMappings = false,
+                ReadStaticMappings = true,
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); }
             });
@@ -29,6 +29,18 @@ namespace WireMock.Net.ConsoleApplication
             server.SetBasicAuthentication("a", "b");
 
             // server.AllowPartialMapping();
+
+            server
+                .Given(Request.Create().WithPath("/file").UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBodyFromFile(@"c:\temp\x.json", false)
+                );
+
+            server
+                .Given(Request.Create().WithPath("/filecache").UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBodyFromFile(@"c:\temp\x.json")
+                );
 
             server
                 .Given(Request.Create().WithHeader("ProxyThis", "true")

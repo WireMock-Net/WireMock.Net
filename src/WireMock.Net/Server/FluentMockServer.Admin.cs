@@ -416,6 +416,8 @@ namespace WireMock.Server
                     Body = logEntry.ResponseMessage.Body,
                     BodyAsBytes = logEntry.ResponseMessage.BodyAsBytes,
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
+                    BodyAsFile = logEntry.ResponseMessage.BodyAsFile,
+                    BodyAsFileIsCached = logEntry.ResponseMessage.BodyAsFileIsCached,
                     Headers = logEntry.ResponseMessage.Headers,
                     BodyEncoding = logEntry.ResponseMessage.BodyEncoding != null ? new EncodingModel
                     {

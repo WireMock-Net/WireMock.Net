@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -139,11 +140,7 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with headers.
-        /// </summary>
-        /// <param name="headers">The headers.</param>
-        /// <returns></returns>
+        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
         {
             ResponseMessage.Headers = headers;
@@ -170,6 +167,30 @@ namespace WireMock.ResponseBuilders
                     ResponseMessage.BodyAsBytes = body;
                     ResponseMessage.BodyEncoding = null;
                     break;
+            }
+
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromFile"/>
+        public IResponseBuilder WithBodyFromFile(string filename, bool cache = true)
+        {
+            Check.NotNull(filename, nameof(filename));
+
+            ResponseMessage.BodyEncoding = null;
+            ResponseMessage.BodyAsFileIsCached = cache;
+
+            if (cache)
+            {
+                ResponseMessage.Body = null;
+                ResponseMessage.BodyAsBytes = File.ReadAllBytes(filename);
+                ResponseMessage.BodyAsFile = null;
+            }
+            else
+            {
+                ResponseMessage.Body = null;
+                ResponseMessage.BodyAsBytes = null;
+                ResponseMessage.BodyAsFile = filename;
             }
 
             return this;

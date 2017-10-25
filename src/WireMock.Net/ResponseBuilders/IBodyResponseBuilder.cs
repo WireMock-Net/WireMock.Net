@@ -9,14 +9,6 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public interface IBodyResponseBuilder : ITransformResponseBuilder
     {
-        ///// <summary>
-        ///// WithBody : Create a string response based on a string.
-        ///// </summary>
-        ///// <param name="body">The body.</param>
-        ///// <param name="encoding">The body encoding.</param>
-        ///// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        //// IResponseBuilder WithBody([NotNull] string body, [CanBeNull] Encoding encoding = null);
-
         /// <summary>
         /// WithBody : Create a ... response based on a string.
         /// </summary>
@@ -51,5 +43,13 @@ namespace WireMock.ResponseBuilders
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [Obsolete]
         IResponseBuilder WithBodyFromBase64([NotNull] string bodyAsbase64, [CanBeNull] Encoding encoding = null);
+
+        /// <summary>
+        /// WithBodyFromFile : Create a ... response based on a File.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="cache">Defines if this file is cached in memory or retrieved from disk everytime the response is created.</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithBodyFromFile([NotNull] string filename, bool cache = true);
     }
 }

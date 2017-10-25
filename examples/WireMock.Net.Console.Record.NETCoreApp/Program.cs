@@ -10,11 +10,12 @@ namespace WireMock.Net.Console.Record.NETCoreApp
         {
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                Urls = new[] { "http://localhost:9095/", "https://localhost:9096/" },
+                Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
                 StartAdminInterface = true,
+                ReadStaticMappings = true,
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = "https://www.msn.com",
+                    Url = "https://www.google.com",
                     //X509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true
                 }

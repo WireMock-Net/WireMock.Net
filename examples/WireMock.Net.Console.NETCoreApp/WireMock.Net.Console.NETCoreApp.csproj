@@ -18,14 +18,20 @@
     <Content Include="__admin\mappings\11111110-a633-40e8-a244-5cb80bc0ab66.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="__admin\mappings\826aff7c-6208-4a3c-923d-575248907db4.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

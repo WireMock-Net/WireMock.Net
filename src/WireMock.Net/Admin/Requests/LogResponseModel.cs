@@ -29,9 +29,19 @@ namespace WireMock.Admin.Requests
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets or sets the body.
+        /// Gets or sets the body as bytes.
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body as file.
+        /// </summary>
+        public string BodyAsFile { get; set; }
+
+        /// <summary>
+        /// Is the body as file cached?
+        /// </summary>
+        public bool? BodyAsFileIsCached { get; set; }
 
         /// <summary>
         /// Gets or sets the original body.

@@ -10,9 +10,6 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the HTTP status.
         /// </summary>
-        /// <value>
-        /// The HTTP status.
-        /// </value>
         public int? StatusCode { get; set; }
 
         /// <summary>
@@ -23,79 +20,61 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        /// <value>
-        /// The body.
-        /// </value>
         public string Body { get; set; }
 
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        /// <value>
-        /// The body.
-        /// </value>
         public string BodyFromBase64 { get; set; }
 
         /// <summary>
         /// Gets or sets the body (as JSON object).
         /// </summary>
-        /// <value>
-        /// The body.
-        /// </value>
         public object BodyAsJson { get; set; }
 
         /// <summary>
         /// Gets or sets the body (as bytearray).
         /// </summary>
-        /// <value>
-        /// The body.
-        /// </value>
         public byte[] BodyAsBytes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body as a file.
+        /// </summary>
+        public string BodyAsFile { get; set; }
+
+        /// <summary>
+        /// Is the body as file cached?
+        /// </summary>
+        public bool? BodyAsFileIsCached { get; set; }
 
         /// <summary>
         /// Gets or sets the body encoding.
         /// </summary>
-        /// <value>
-        /// The body encoding.
-        /// </value>
         public EncodingModel BodyEncoding { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [use transformer].
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if [use transformer]; otherwise, <c>false</c>.
-        /// </value>
         public bool UseTransformer { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.
         /// </summary>
-        /// <value>
-        /// The headers.
-        /// </value>
         public IDictionary<string, string> Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the Headers (Raw).
         /// </summary>
-        /// <value>
-        /// The Headers (Raw).
-        /// </value>
         public string HeadersRaw { get; set; }
 
         /// <summary>
         /// Gets or sets the delay in milliseconds.
         /// </summary>
-        /// <value>
-        /// The delay in milliseconds.
-        /// </value>
         public int? Delay { get; set; }
 
         /// <summary>
         /// Gets or sets the Proxy URL.
         /// </summary>
-        /// <value>ProxyUrl</value>
         public string ProxyUrl { get; set; }
 
         /// <summary>

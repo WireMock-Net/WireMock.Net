@@ -98,6 +98,8 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyDestination = null;
                 mappingModel.Response.Body = null;
                 mappingModel.Response.BodyAsBytes = null;
+                mappingModel.Response.BodyAsFile = null;
+                mappingModel.Response.BodyAsFileIsCached = null;
                 mappingModel.Response.UseTransformer = false;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyUrl;
@@ -109,6 +111,8 @@ namespace WireMock.Serialization
                 mappingModel.Response.Headers = response.ResponseMessage.Headers;
                 mappingModel.Response.Body = response.ResponseMessage.Body;
                 mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
+                mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
+                mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyAsFileIsCached;
                 mappingModel.Response.UseTransformer = response.UseTransformer;
                 mappingModel.Response.BodyEncoding = response.ResponseMessage.BodyEncoding != null
                     ? new EncodingModel
