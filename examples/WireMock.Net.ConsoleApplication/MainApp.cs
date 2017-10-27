@@ -43,6 +43,12 @@ namespace WireMock.Net.ConsoleApplication
                 );
 
             server
+                .Given(Request.Create().WithPath("/file_rel").UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBodyFromFile("Program.cs", false)
+                );
+
+            server
                 .Given(Request.Create().WithHeader("ProxyThis", "true")
                     .UsingGet())
                 .RespondWith(Response.Create()
