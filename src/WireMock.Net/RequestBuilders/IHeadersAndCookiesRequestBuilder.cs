@@ -33,7 +33,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="funcs">The headers funcs.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithHeader([NotNull] params Func<IDictionary<string, string>, bool>[] funcs);
+        IRequestBuilder WithHeader([NotNull] params Func<IDictionary<string, string[]>, bool>[] funcs);
 
         /// <summary>
         /// The with cookie.

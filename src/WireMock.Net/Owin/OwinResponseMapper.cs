@@ -35,9 +35,16 @@ namespace WireMock.Owin
 
             if (responseMessage.Headers.ContainsKey(HttpKnownHeaderNames.ContentType))
             {
-                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType];
+                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType].FirstOrDefault();
             }
-            responseMessage.Headers.Where(h => h.Key != HttpKnownHeaderNames.ContentType).ToList().ForEach(pair => response.Headers.Append(pair.Key, pair.Value));
+
+            var headers = responseMessage.Headers.Where(h => h.Key != HttpKnownHeaderNames.ContentType).ToList();
+
+#if !NETSTANDARD
+            headers.ForEach(pair => response.Headers.AppendValues(pair.Key, pair.Value.ToArray()));
+#else
+            headers.ForEach(pair => response.Headers.Append(pair.Key, pair.Value.ToArray()));
+#endif
 
             if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null)
             {
@@ -49,7 +56,7 @@ namespace WireMock.Owin
                 await response.Body.WriteAsync(responseMessage.BodyAsBytes, 0, responseMessage.BodyAsBytes.Length);
                 return;
             }
-            
+
             if (responseMessage.BodyAsFile != null)
             {
                 byte[] bytes = File.ReadAllBytes(responseMessage.BodyAsFile);

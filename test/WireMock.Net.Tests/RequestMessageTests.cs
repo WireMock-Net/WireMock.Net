@@ -8,13 +8,13 @@ namespace WireMock.Net.Tests
     //[TestFixture]
     public class RequestMessageTests
     {
-        private const string clientIP = "::1";
+        private const string ClientIp = "::1";
 
         [Fact]
         public void Should_handle_empty_query()
         {
             // given
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp);
 
             // then
             Check.That(request.GetParameter("not_there")).IsNull();
@@ -26,7 +26,7 @@ namespace WireMock.Net.Tests
             // given
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost?foo=bar&multi=1&multi=2"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost?foo=bar&multi=1&multi=2"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             Check.That(request.GetParameter("foo")).Contains("bar");

@@ -36,9 +36,6 @@ namespace WireMock.Util
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
-        /// <returns>
-        /// A <see cref="string" /> that represents this instance.
-        /// </returns>
         public override string ToString()
         {
             if (this != null && this.Any())

@@ -57,13 +57,13 @@ namespace WireMock.Owin
                 body = bodyEncoding.GetBytes(bodyAsString);
             }
 
-            Dictionary<string, string> headers = null;
+            Dictionary<string, string[]> headers = null;
             if (request.Headers.Any())
             {
-                headers = new Dictionary<string, string>();
+                headers = new Dictionary<string, string[]>();
                 foreach (var header in request.Headers)
                 {
-                    headers.Add(header.Key, header.Value.FirstOrDefault());
+                    headers.Add(header.Key, header.Value);
                 }
             }
 

@@ -395,7 +395,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="funcs">The funcs.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithHeader(params Func<IDictionary<string, string>, bool>[] funcs)
+        public IRequestBuilder WithHeader(params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
             Check.NotEmpty(funcs, nameof(funcs));
 

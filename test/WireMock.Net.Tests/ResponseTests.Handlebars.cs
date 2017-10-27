@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using NFluent;
+using WireMock.ResponseBuilders;
+using Xunit;
+
+namespace WireMock.Net.Tests
+{
+    public partial class ResponseTests
+    {
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create()
+                .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo post");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Query()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create()
+                .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test keya=1 idx=1 idx=2 keyb=5");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Header()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
+
+            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test");
+            Check.That(responseMessage.Headers).ContainsKey("x");
+            Check.That(responseMessage.Headers["x"]).ContainsExactly("text/plain");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Headers()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
+
+            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test");
+            Check.That(responseMessage.Headers).ContainsKey("x");
+            Check.That(responseMessage.Headers["x"]).Contains("text/plain");
+            Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
+        }
+    }
+}

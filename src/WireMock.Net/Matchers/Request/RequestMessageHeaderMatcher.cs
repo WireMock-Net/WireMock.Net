@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -14,7 +15,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The functions
         /// </summary>
-        public Func<IDictionary<string, string>, bool>[] Funcs { get; }
+        public Func<IDictionary<string, string[]>, bool>[] Funcs { get; }
 
         /// <summary>
         /// The name
@@ -59,7 +60,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
         /// <param name="funcs">The funcs.</param>
-        public RequestMessageHeaderMatcher([NotNull] params Func<IDictionary<string, string>, bool>[] funcs)
+        public RequestMessageHeaderMatcher([NotNull] params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
 
@@ -86,7 +87,7 @@ namespace WireMock.Matchers.Request
                 return MatchScores.Mismatch;
 
             if (Funcs != null)
-                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers)));
+                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))));
 
             if (Matchers == null)
                 return MatchScores.Mismatch;
@@ -94,8 +95,8 @@ namespace WireMock.Matchers.Request
             if (!requestMessage.Headers.ContainsKey(Name))
                 return MatchScores.Mismatch;
 
-            string value = requestMessage.Headers[Name];
-            return Matchers.Max(m => m.IsMatch(value));
+            WireMockList<string> list = requestMessage.Headers[Name];
+            return Matchers.Max(m => list.Max(value => m.IsMatch(value))); // TODO : is this correct ?
         }
     }
 }

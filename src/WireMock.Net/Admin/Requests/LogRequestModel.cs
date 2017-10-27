@@ -43,7 +43,7 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets or sets the Headers.
         /// </summary>
-        public IDictionary<string, string> Headers { get; set; }
+        public IDictionary<string, WireMockList<string>> Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the Cookies.

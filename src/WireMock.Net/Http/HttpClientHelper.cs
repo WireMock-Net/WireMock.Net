@@ -52,7 +52,7 @@ namespace WireMock.Http
             {
                 foreach (var headerName in requestMessage.Headers.Keys.Where(k => k.ToUpper() != "HOST"))
                 {
-                    httpRequestMessage.Headers.TryAddWithoutValidation(headerName, new[] { requestMessage.Headers[headerName] });
+                    httpRequestMessage.Headers.TryAddWithoutValidation(headerName, requestMessage.Headers[headerName]);
                 }
             }
 

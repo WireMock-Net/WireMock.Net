@@ -41,7 +41,7 @@ namespace WireMock
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string> Headers { get; }
+        public IDictionary<string, WireMockList<string>> Headers { get; }
 
         /// <summary>
         /// Gets the cookies.
@@ -79,7 +79,7 @@ namespace WireMock
         /// <param name="bodyEncoding">The body encoding</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
             Check.NotNull(method, nameof(method));
@@ -92,7 +92,7 @@ namespace WireMock
             BodyAsBytes = bodyAsBytes;
             Body = body;
             BodyEncoding = bodyEncoding;
-            Headers = headers;
+            Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
             Query = ParseQuery(url.Query);
         }

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
+using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Serialization;
+using WireMock.Settings;
 using WireMock.Util;
 using WireMock.Validation;
-using WireMock.Http;
-using System.Threading.Tasks;
-using WireMock.Settings;
-using WireMock.Serialization;
 
 namespace WireMock.Server
 {
@@ -519,12 +519,15 @@ namespace WireMock.Server
             {
                 string path = requestModel.Path as string;
                 if (path != null)
+                {
                     requestBuilder = requestBuilder.WithPath(path);
+                }
                 else
                 {
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
-                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
+                        requestBuilder =
+                            requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
@@ -532,17 +535,22 @@ namespace WireMock.Server
             {
                 string url = requestModel.Url as string;
                 if (url != null)
+                {
                     requestBuilder = requestBuilder.WithUrl(url);
+                }
                 else
                 {
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
-                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
+                        requestBuilder =
+                            requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
                 }
             }
 
             if (requestModel.Methods != null)
+            {
                 requestBuilder = requestBuilder.UsingVerb(requestModel.Methods);
+            }
 
             if (requestModel.Headers != null)
             {
@@ -603,7 +611,12 @@ namespace WireMock.Server
 
             if (responseModel.Headers != null)
             {
-                responseBuilder = responseBuilder.WithHeaders(responseModel.Headers);
+                foreach (var entry in responseModel.Headers)
+                {
+                    responseBuilder = entry.Value is string value ?
+                        responseBuilder.WithHeader(entry.Key, value) :
+                        responseBuilder.WithHeader(entry.Key, JsonUtils.ParseJTokenToObject<string[]>(entry.Value));
+                }
             }
             else if (responseModel.HeadersRaw != null)
             {
@@ -647,7 +660,7 @@ namespace WireMock.Server
             {
                 Body = JsonConvert.SerializeObject(result, _settings),
                 StatusCode = 200,
-                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+                Headers = new Dictionary<string, WireMockList<string>> { { "Content-Type", new WireMockList<string>("application/json") } }
             };
         }
 
