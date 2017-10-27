@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using WireMock.Validation;
 using WireMock.Http;
 using WireMock.Transformers;
+using WireMock.Validation;
 
 namespace WireMock.ResponseBuilders
 {
@@ -140,8 +141,25 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders"/>
+        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
+        public IResponseBuilder WithHeader([NotNull] string name, string[] values)
+        {
+            Check.NotNull(name, nameof(name));
+
+            ResponseMessage.AddHeader(name, values);
+            return this;
+        }
+
+        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
+        {
+            var headersValues = headers.ToDictionary(header => header.Key, header => new[] { header.Value });
+            ResponseMessage.Headers = headersValues;
+            return this;
+        }
+
+        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
+        public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
         {
             ResponseMessage.Headers = headers;
             return this;

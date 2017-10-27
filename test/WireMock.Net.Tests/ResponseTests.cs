@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using NFluent;
-using Xunit;
 using WireMock.ResponseBuilders;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
@@ -66,7 +66,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(responseMessage.Body).Equals("test");
-            Check.That(responseMessage.Headers).Contains(new KeyValuePair<string, string>("x", "text/plain"));
+            Check.That(responseMessage.Headers).ContainsKey("x");
+            Check.That(responseMessage.Headers["x"]).ContainsExactly("text/plain");
         }
 
         [Fact]

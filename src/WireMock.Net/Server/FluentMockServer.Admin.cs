@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
+using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Serialization;
+using WireMock.Settings;
 using WireMock.Util;
 using WireMock.Validation;
-using WireMock.Http;
-using System.Threading.Tasks;
-using WireMock.Settings;
-using WireMock.Serialization;
 
 namespace WireMock.Server
 {
@@ -647,7 +647,7 @@ namespace WireMock.Server
             {
                 Body = JsonConvert.SerializeObject(result, _settings),
                 StatusCode = 200,
-                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+                Headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } }
             };
         }
 

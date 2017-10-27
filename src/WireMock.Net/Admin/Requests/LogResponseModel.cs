@@ -16,7 +16,7 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string> Headers { get; set; }
+        public IDictionary<string, string[]> Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the body destination (SameAsSource, String or Bytes).

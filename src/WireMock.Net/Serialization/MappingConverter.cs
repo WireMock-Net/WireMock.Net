@@ -108,7 +108,7 @@ namespace WireMock.Serialization
             {
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
-                mappingModel.Response.Headers = response.ResponseMessage.Headers;
+                mappingModel.Response.Headers = response.ResponseMessage.Headers.ToDictionary(header => header.Key, header => header.Value[0]);
                 mappingModel.Response.Body = response.ResponseMessage.Body;
                 mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
                 mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using WireMock.Validation;
 
 namespace WireMock
 {
@@ -12,7 +14,7 @@ namespace WireMock
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string> Headers { get; set; } = new ConcurrentDictionary<string, string>();
+        public IDictionary<string, string[]> Headers { get; set; } = new ConcurrentDictionary<string, string[]>();
 
         /// <summary>
         /// Gets or sets the status code.
@@ -55,7 +57,7 @@ namespace WireMock
         public Encoding BodyEncoding { get; set; } = new UTF8Encoding(false);
 
         /// <summary>
-        /// The add header.
+        /// Add header.
         /// </summary>
         /// <param name="name">
         /// The name.
@@ -65,7 +67,27 @@ namespace WireMock
         /// </param>
         public void AddHeader(string name, string value)
         {
-            Headers.Add(name, value);
+            Headers.Add(name, new[] { value });
+        }
+
+        /// <summary>
+        /// Add header.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="values">
+        /// Header values.
+        /// </param>
+        public void AddHeader(string name, string[] values)
+        {
+            Check.NotEmpty(values, nameof(values));
+
+            var newHeaderValues = Headers.TryGetValue(name, out string[] existingValues)
+                ? values.Union(existingValues).ToArray()
+                : values;
+
+            Headers[name] = newHeaderValues;
         }
     }
 }
