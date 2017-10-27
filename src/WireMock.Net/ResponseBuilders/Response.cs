@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Transformers;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.ResponseBuilders
@@ -127,22 +128,8 @@ namespace WireMock.ResponseBuilders
             return WithStatusCode((int)HttpStatusCode.NotFound);
         }
 
-        /// <summary>
-        /// The with header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        public IResponseBuilder WithHeader(string name, string value)
-        {
-            Check.NotNull(name, nameof(name));
-
-            ResponseMessage.AddHeader(name, value);
-            return this;
-        }
-
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
-        public IResponseBuilder WithHeader([NotNull] string name, string[] values)
+        public IResponseBuilder WithHeader(string name, params string[] values)
         {
             Check.NotNull(name, nameof(name));
 
@@ -153,13 +140,23 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
         {
-            var headersValues = headers.ToDictionary(header => header.Key, header => new[] { header.Value });
-            ResponseMessage.Headers = headersValues;
+            Check.NotNull(headers, nameof(headers));
+
+            ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             return this;
         }
 
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
+        {
+            Check.NotNull(headers, nameof(headers));
+
+            ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
+            return this;
+        }
+
+        /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, WireMockList{string}})"/>
+        public IResponseBuilder WithHeaders(IDictionary<string, WireMockList<string>> headers)
         {
             ResponseMessage.Headers = headers;
             return this;

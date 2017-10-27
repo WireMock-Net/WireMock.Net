@@ -7,13 +7,12 @@ namespace WireMock.Util
         public static T ParseJTokenToObject<T>(object value)
         {
             if (value == null)
+            {
                 return default(T);
+            }
 
-            JToken token = value as JToken;
-            if (token == null)
-                return default(T);
-
-            return token.ToObject<T>();
+            var token = value as JToken;
+            return token == null ? default(T) : token.ToObject<T>();
         }
     }
 }

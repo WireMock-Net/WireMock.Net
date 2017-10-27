@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using WireMock.Admin.Mappings;
+using WireMock.Util;
 
 namespace WireMock.Admin.Requests
 {
@@ -16,7 +17,7 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string[]> Headers { get; set; }
+        public IDictionary<string, WireMockList<string>> Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the body destination (SameAsSource, String or Bytes).

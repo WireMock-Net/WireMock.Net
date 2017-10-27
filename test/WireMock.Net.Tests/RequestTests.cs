@@ -12,7 +12,7 @@ namespace WireMock.Net.Tests
     //[TestFixture]
     public partial class RequestTests
     {
-        private const string clientIP = "::1";
+        private const string ClientIp = "::1";
 
         [Fact]
         public void Should_specify_requests_matching_given_path()
@@ -21,7 +21,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -33,8 +33,8 @@ namespace WireMock.Net.Tests
         {
             var requestBuilder = Request.Create().WithPath("/x1", "/x2");
 
-            var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla", clientIP);
-            var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla", clientIP);
+            var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla", ClientIp);
+            var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla", ClientIp);
 
             var requestMatchResult = new RequestMatchResult();
             Check.That(requestBuilder.GetMatchingScore(request1, requestMatchResult)).IsEqualTo(1.0);
@@ -48,7 +48,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath(url => url.EndsWith("/foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -62,7 +62,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath(new RegexMatcher("^/foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -76,7 +76,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -90,7 +90,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithUrl("*/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -104,7 +104,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -118,7 +118,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPost();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -132,7 +132,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingGet();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -148,7 +148,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -162,7 +162,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingHead();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -176,7 +176,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -190,7 +190,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/bar").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -206,7 +206,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tata" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new [] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -222,7 +222,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tata" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -238,7 +238,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "ABC" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -254,7 +254,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "whatever";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "TaTa" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -268,7 +268,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithCookie("session", "a*");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, null, null, null, null, new Dictionary<string, string> { { "session", "abc" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, null, null, null, null, new Dictionary<string, string> { { "session", "abc" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -284,7 +284,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "Hello world!";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -300,7 +300,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "cat";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -316,7 +316,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "cat";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -332,7 +332,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "caR";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -348,7 +348,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "The car drives in the street.";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -364,7 +364,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "Hello";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -380,7 +380,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "Hello world!";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tatata" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tatata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -396,7 +396,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "Hello world!";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -417,7 +417,7 @@ namespace WireMock.Net.Tests
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>";
             byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, xmlBodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, xmlBodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -438,7 +438,7 @@ namespace WireMock.Net.Tests
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>";
             byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, xmlBodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, xmlBodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -454,7 +454,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -470,7 +470,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -486,7 +486,7 @@ namespace WireMock.Net.Tests
             // when
             string bodyAsString = "xxx";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", clientIP, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string> { { "X-toto", "tatata" } });
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -500,7 +500,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithParam("bar", "1", "2");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -514,7 +514,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithParam("bar");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -528,7 +528,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyVerb().WithParam(p => p.ContainsKey("bar"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -542,7 +542,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithParam("bar", "1");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/test=7"), "PUT", clientIP);
+            var request = new RequestMessage(new Uri("http://localhost/test=7"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();

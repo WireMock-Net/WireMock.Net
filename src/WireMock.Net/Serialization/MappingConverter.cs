@@ -8,6 +8,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
 
 namespace WireMock.Serialization
 {
@@ -108,7 +109,7 @@ namespace WireMock.Serialization
             {
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
-                mappingModel.Response.Headers = response.ResponseMessage.Headers.ToDictionary(header => header.Key, header => header.Value[0]);
+                mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
                 mappingModel.Response.Body = response.ResponseMessage.Body;
                 mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
                 mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
@@ -127,7 +128,24 @@ namespace WireMock.Serialization
             return mappingModel;
         }
 
-        public static MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
+        private static IDictionary<string, object> Map(IDictionary<string, WireMockList<string>> dictionary)
+        {
+            if (dictionary == null)
+            {
+                return null;
+            }
+
+            var newDictionary = new Dictionary<string, object>();
+            foreach (var entry in dictionary)
+            {
+                object value = entry.Value.Count == 1 ? (object)entry.Value.ToString() : entry.Value;
+                newDictionary.Add(entry.Key, value);
+            }
+
+            return newDictionary;
+        }
+
+        private static MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
             if (matchers == null || !matchers.Any())
                 return null;
@@ -135,7 +153,7 @@ namespace WireMock.Serialization
             return matchers.Select(Map).Where(x => x != null).ToArray();
         }
 
-        public static MatcherModel Map([CanBeNull] IMatcher matcher)
+        private static MatcherModel Map([CanBeNull] IMatcher matcher)
         {
             if (matcher == null)
                 return null;
@@ -150,7 +168,7 @@ namespace WireMock.Serialization
             };
         }
 
-        public static string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
+        private static string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
         {
             if (funcs == null || !funcs.Any())
                 return null;
@@ -158,7 +176,7 @@ namespace WireMock.Serialization
             return funcs.Select(Map).Where(x => x != null).ToArray();
         }
 
-        public static string Map<T>([CanBeNull] Func<T, bool> func)
+        private static string Map<T>([CanBeNull] Func<T, bool> func)
         {
             return func?.ToString();
         }

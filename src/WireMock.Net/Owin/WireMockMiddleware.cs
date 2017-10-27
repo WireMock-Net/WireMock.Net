@@ -4,6 +4,7 @@ using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
 using WireMock.Matchers;
+using WireMock.Util;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -101,8 +102,8 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
-                    bool present = request.Headers.TryGetValue("Authorization", out string authorization);
-                    if (!present || _options.AuthorizationMatcher.IsMatch(authorization) < MatchScores.Perfect)
+                    bool present = request.Headers.TryGetValue("Authorization", out WireMockList<string> authorization);
+                    if (!present || _options.AuthorizationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
                         response = new ResponseMessage { StatusCode = 401 };
                         return;

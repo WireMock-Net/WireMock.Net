@@ -35,14 +35,15 @@ namespace WireMock.Owin
 
             if (responseMessage.Headers.ContainsKey(HttpKnownHeaderNames.ContentType))
             {
-                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType][0];
+                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType].FirstOrDefault();
             }
+
             var headers = responseMessage.Headers.Where(h => h.Key != HttpKnownHeaderNames.ContentType).ToList();
 
 #if !NETSTANDARD
-            headers.ForEach(pair => response.Headers.AppendValues(pair.Key, pair.Value));
+            headers.ForEach(pair => response.Headers.AppendValues(pair.Key, pair.Value.ToArray()));
 #else
-            headers.ForEach(pair => response.Headers.Append(pair.Key, pair.Value));
+            headers.ForEach(pair => response.Headers.Append(pair.Key, pair.Value.ToArray()));
 #endif
 
             if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null)

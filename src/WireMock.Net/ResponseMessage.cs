@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock
@@ -14,7 +15,7 @@ namespace WireMock
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, string[]> Headers { get; set; } = new ConcurrentDictionary<string, string[]>();
+        public IDictionary<string, WireMockList<string>> Headers { get; set; } = new ConcurrentDictionary<string, WireMockList<string>>();
 
         /// <summary>
         /// Gets or sets the status code.
@@ -57,37 +58,29 @@ namespace WireMock
         public Encoding BodyEncoding { get; set; } = new UTF8Encoding(false);
 
         /// <summary>
-        /// Add header.
+        /// Adds the header.
         /// </summary>
-        /// <param name="name">
-        /// The name.
-        /// </param>
-        /// <param name="value">
-        /// The value.
-        /// </param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public void AddHeader(string name, string value)
         {
-            Headers.Add(name, new[] { value });
+            Headers.Add(name, new WireMockList<string>(value));
         }
 
         /// <summary>
-        /// Add header.
+        /// Adds the header.
         /// </summary>
-        /// <param name="name">
-        /// The name.
-        /// </param>
-        /// <param name="values">
-        /// Header values.
-        /// </param>
-        public void AddHeader(string name, string[] values)
+        /// <param name="name">The name.</param>
+        /// <param name="values">The values.</param>
+        public void AddHeader(string name, params string[] values)
         {
             Check.NotEmpty(values, nameof(values));
 
-            var newHeaderValues = Headers.TryGetValue(name, out string[] existingValues)
+            var newHeaderValues = Headers.TryGetValue(name, out WireMockList<string> existingValues)
                 ? values.Union(existingValues).ToArray()
                 : values;
 
-            Headers[name] = newHeaderValues;
+            Headers[name] = new WireMockList<string>(newHeaderValues);
         }
     }
 }

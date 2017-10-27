@@ -14,8 +14,9 @@
     },
     "Response": {
         "BodyAsJson": { "body": "static mapping" },
-        "Headers": {
-            "Content-Type": "application/json"
-        }
+      "Headers": {
+        "Content-Type": "application/json",
+        "Test-X": [ "test 1", "test 2" ]
+      }
     }
 }

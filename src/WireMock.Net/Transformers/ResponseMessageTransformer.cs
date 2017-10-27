@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HandlebarsDotNet;
+using WireMock.Util;
 
 namespace WireMock.Transformers
 {
@@ -17,7 +18,7 @@ namespace WireMock.Transformers
             responseMessage.Body = templateBody(template);
 
             // Headers
-            var newHeaders = new Dictionary<string, string[]>();
+            var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)
             {
                 var templateHeaderKey = Handlebars.Compile(header.Key);
@@ -26,7 +27,7 @@ namespace WireMock.Transformers
                     .Select(func => func(template))
                     .ToArray();
 
-                newHeaders.Add(templateHeaderKey(template), templateHeaderValues);
+                newHeaders.Add(templateHeaderKey(template), new WireMockList<string>(templateHeaderValues));
             }
 
             responseMessage.Headers = newHeaders;
