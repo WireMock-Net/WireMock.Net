@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NFluent;
-using Xunit;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
@@ -19,6 +20,7 @@ namespace WireMock.Net.Tests
     public class FluentMockServerTests : IDisposable
     {
         private FluentMockServer _server;
+        private FluentMockServer _serverForProxyForwarding;
 
         // For for AppVeyor + OpenCover
         private string GetCurrentFolder()
@@ -386,6 +388,128 @@ namespace WireMock.Net.Tests
             Check.That(result).Contains("google");
         }
 
+        [Fact]
+        public async Task Should_preserve_content_header_in_proxied_request()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create());
+
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+
+            // when
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(_server.Urls[0]),
+                Content = new StringContent("stringContent")
+            };
+            requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            await new HttpClient().SendAsync(requestMessage);
+
+            // then
+            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            Check.That(receivedRequest.Body).IsEqualTo("stringContent");
+            Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
+            Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly(new[] { "text/plain" });
+        }
+
+        [Fact]
+        public async Task Should_preserve_content_header_in_proxied_response()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create()
+                    .WithBody("body")
+                    .WithHeader("Content-Type", "text/plain"));
+
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+
+            // when
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(_server.Urls[0])
+            };
+            var response = await new HttpClient().SendAsync(requestMessage);
+
+            // then
+            Check.That(await response.Content.ReadAsStringAsync()).IsEqualTo("body");
+            Check.That(response.Content.Headers.Contains("Content-Type")).IsTrue();
+            Check.That(response.Content.Headers.GetValues("Content-Type")).ContainsExactly(new[] { "text/plain" });
+        }
+
+        [Fact]
+        public async Task Should_change_absolute_location_header_in_proxied_response()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(HttpStatusCode.Redirect)
+                    .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
+
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+
+            // when
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(_server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // then
+            Check.That(response.Headers.Contains("Location")).IsTrue();
+            Check.That(response.Headers.GetValues("Location")).ContainsExactly(new[] { _server.Urls[0] + "testpath" });
+        }
+
+        [Fact]
+        public async Task Should_preserve_cookie_header_in_proxied_request()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create());
+
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+
+            // when
+            var requestUri = new Uri(_server.Urls[0]);
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = requestUri
+            };
+            var clientHandler = new HttpClientHandler();
+            clientHandler.CookieContainer.Add(requestUri, new Cookie("name", "value"));
+            await new HttpClient(clientHandler).SendAsync(requestMessage);
+
+            // then
+            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            Check.That(receivedRequest.Cookies).IsNotNull();
+            Check.That(receivedRequest.Cookies).ContainsPair("name", "value");
+        }
+
         //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate
         //[Fact]
         //public async Task Should_proxy_responses_with_client_certificate()
@@ -429,6 +553,7 @@ namespace WireMock.Net.Tests
         public void Dispose()
         {
             _server?.Stop();
+            _serverForProxyForwarding?.Stop();
         }
     }
 }

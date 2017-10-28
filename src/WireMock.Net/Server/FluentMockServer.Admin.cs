@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -129,8 +130,11 @@ namespace WireMock.Server
         }
 
         #region Proxy and Record
+        private HttpClient httpClientForProxy;
+
         private void InitProxyAndRecord(ProxyAndRecordSettings settings)
         {
+            httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
@@ -140,7 +144,7 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, settings.X509Certificate2ThumbprintOrSubjectName);
+            var responseMessage = await HttpClientHelper.SendAsync(httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
 
             if (settings.SaveMapping)
             {

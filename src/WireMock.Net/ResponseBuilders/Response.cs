@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -19,6 +20,8 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
+        private HttpClient httpClientForProxy;
+
         /// <summary>
         /// The delay
         /// </summary>
@@ -317,6 +320,7 @@ namespace WireMock.ResponseBuilders
 
             ProxyUrl = proxyUrl;
             X509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
+            httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
             return this;
         }
 
@@ -332,12 +336,12 @@ namespace WireMock.ResponseBuilders
             if (Delay != null)
                 await Task.Delay(Delay.Value);
 
-            if (ProxyUrl != null)
+            if (ProxyUrl != null && httpClientForProxy != null)
             {
                 var requestUri = new Uri(requestMessage.Url);
                 var proxyUri = new Uri(ProxyUrl);
                 var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
-                return await HttpClientHelper.SendAsync(requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, X509Certificate2ThumbprintOrSubjectName);
+                return await HttpClientHelper.SendAsync(httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
             }
 
             if (UseTransformer)
