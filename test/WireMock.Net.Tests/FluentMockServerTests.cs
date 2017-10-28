@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.Matchers;
@@ -15,12 +14,9 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    //[TestFixture]
-    //[Timeout(5000)]
-    public class FluentMockServerTests : IDisposable
+    public partial class FluentMockServerTests : IDisposable
     {
         private FluentMockServer _server;
-        private FluentMockServer _serverForProxyForwarding;
 
         // For for AppVeyor + OpenCover
         private string GetCurrentFolder()
@@ -180,7 +176,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsString()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsString()
         {
             // given
             _server = FluentMockServer.Start();
@@ -201,7 +197,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsBase64()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given
             _server = FluentMockServer.Start();
@@ -216,7 +212,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsBytes()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsBytes()
         {
             // given
             _server = FluentMockServer.Start();
@@ -233,7 +229,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_404_for_unexpected_request()
+        public async Task FluentMockServer_Should_respond_404_for_unexpected_request()
         {
             // given
             _server = FluentMockServer.Start();
@@ -247,7 +243,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_find_a_request_satisfying_a_request_spec()
+        public async Task FluentMockServer_Should_find_a_request_satisfying_a_request_spec()
         {
             // given
             _server = FluentMockServer.Start();
@@ -266,7 +262,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_reset_requestlogs()
+        public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
             _server = FluentMockServer.Start();
@@ -280,7 +276,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_reset_mappings()
+        public void FluentMockServer_Should_reset_mappings()
         {
             // given
             _server = FluentMockServer.Start();
@@ -302,7 +298,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_a_redirect_without_body()
+        public async Task FluentMockServer_Should_respond_a_redirect_without_body()
         {
             // given
             _server = FluentMockServer.Start();
@@ -330,7 +326,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_delay_responses_for_a_given_route()
+        public async Task FluentMockServer_Should_delay_responses_for_a_given_route()
         {
             // given
             _server = FluentMockServer.Start();
@@ -353,7 +349,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_delay_responses()
+        public async Task FluentMockServer_Should_delay_responses()
         {
             // given
             _server = FluentMockServer.Start();
@@ -370,144 +366,6 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
-        }
-
-        [Fact]
-        public async Task Should_proxy_responses()
-        {
-            // given
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy("http://www.google.com"));
-
-            // when
-            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/search?q=test");
-
-            // then
-            Check.That(result).Contains("google");
-        }
-
-        [Fact]
-        public async Task Should_preserve_content_header_in_proxied_request()
-        {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create());
-
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
-
-            // when
-            var requestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(_server.Urls[0]),
-                Content = new StringContent("stringContent")
-            };
-            requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
-            await new HttpClient().SendAsync(requestMessage);
-
-            // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Body).IsEqualTo("stringContent");
-            Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
-            Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly(new[] { "text/plain" });
-        }
-
-        [Fact]
-        public async Task Should_preserve_content_header_in_proxied_response()
-        {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create()
-                    .WithBody("body")
-                    .WithHeader("Content-Type", "text/plain"));
-
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
-
-            // when
-            var requestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0])
-            };
-            var response = await new HttpClient().SendAsync(requestMessage);
-
-            // then
-            Check.That(await response.Content.ReadAsStringAsync()).IsEqualTo("body");
-            Check.That(response.Content.Headers.Contains("Content-Type")).IsTrue();
-            Check.That(response.Content.Headers.GetValues("Content-Type")).ContainsExactly(new[] { "text/plain" });
-        }
-
-        [Fact]
-        public async Task Should_change_absolute_location_header_in_proxied_response()
-        {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create()
-                    .WithStatusCode(HttpStatusCode.Redirect)
-                    .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
-
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
-
-            // when
-            var requestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0])
-            };
-            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
-            var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
-
-            // then
-            Check.That(response.Headers.Contains("Location")).IsTrue();
-            Check.That(response.Headers.GetValues("Location")).ContainsExactly(new[] { _server.Urls[0] + "testpath" });
-        }
-
-        [Fact]
-        public async Task Should_preserve_cookie_header_in_proxied_request()
-        {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create());
-
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
-
-            // when
-            var requestUri = new Uri(_server.Urls[0]);
-            var requestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = requestUri
-            };
-            var clientHandler = new HttpClientHandler();
-            clientHandler.CookieContainer.Add(requestUri, new Cookie("name", "value"));
-            await new HttpClient(clientHandler).SendAsync(requestMessage);
-
-            // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Cookies).IsNotNull();
-            Check.That(receivedRequest.Cookies).ContainsPair("name", "value");
         }
 
         //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate

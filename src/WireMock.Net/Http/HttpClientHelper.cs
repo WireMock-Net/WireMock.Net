@@ -45,6 +45,7 @@ namespace WireMock.Http
 
             // For proxy we shouldn't follow auto redirects
             handler.AllowAutoRedirect = false;
+
             // If UseCookies enabled, httpClient ignores Cookie header
             handler.UseCookies = false;
 
@@ -75,10 +76,9 @@ namespace WireMock.Http
                 foreach (var header in requestMessage.Headers.Where(header => !string.Equals(header.Key, "HOST", StringComparison.OrdinalIgnoreCase)))
                 {
                     // Try to add to request headers. If failed - try to add to content headers
-                    if (!httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value)
-                        && httpRequestMessage.Content != null)
+                    if (!httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value))
                     {
-                        httpRequestMessage.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                        httpRequestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value);
                     }
                 }
             }
@@ -96,14 +96,12 @@ namespace WireMock.Http
             };
 
             // Set both content and response headers, replacing URLs in values
-            var headers = httpResponseMessage.Content != null
-                ? httpResponseMessage.Content.Headers.Union(httpResponseMessage.Headers)
-                : httpResponseMessage.Headers;
+            var headers = httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers);
 
             foreach (var header in headers)
             {
                 // if Location header contains absolute redirect URL, and base URL is one that we proxy to,
-                // we need to replace it to original one
+                // we need to replace it to original one.
                 if (string.Equals(header.Key, "Location", StringComparison.OrdinalIgnoreCase)
                     && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out Uri absoluteLocationUri)
                     && string.Equals(absoluteLocationUri.Host, requiredUri.Host, StringComparison.OrdinalIgnoreCase))
