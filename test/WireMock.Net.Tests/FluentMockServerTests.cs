@@ -6,17 +6,15 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NFluent;
-using Xunit;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    //[TestFixture]
-    //[Timeout(5000)]
-    public class FluentMockServerTests : IDisposable
+    public partial class FluentMockServerTests : IDisposable
     {
         private FluentMockServer _server;
 
@@ -178,7 +176,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsString()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsString()
         {
             // given
             _server = FluentMockServer.Start();
@@ -199,7 +197,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsBase64()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given
             _server = FluentMockServer.Start();
@@ -214,7 +212,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_to_request_bodyAsBytes()
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsBytes()
         {
             // given
             _server = FluentMockServer.Start();
@@ -231,7 +229,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_404_for_unexpected_request()
+        public async Task FluentMockServer_Should_respond_404_for_unexpected_request()
         {
             // given
             _server = FluentMockServer.Start();
@@ -245,7 +243,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_find_a_request_satisfying_a_request_spec()
+        public async Task FluentMockServer_Should_find_a_request_satisfying_a_request_spec()
         {
             // given
             _server = FluentMockServer.Start();
@@ -264,7 +262,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_reset_requestlogs()
+        public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
             _server = FluentMockServer.Start();
@@ -278,7 +276,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_reset_mappings()
+        public void FluentMockServer_Should_reset_mappings()
         {
             // given
             _server = FluentMockServer.Start();
@@ -300,7 +298,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_respond_a_redirect_without_body()
+        public async Task FluentMockServer_Should_respond_a_redirect_without_body()
         {
             // given
             _server = FluentMockServer.Start();
@@ -328,7 +326,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_delay_responses_for_a_given_route()
+        public async Task FluentMockServer_Should_delay_responses_for_a_given_route()
         {
             // given
             _server = FluentMockServer.Start();
@@ -351,7 +349,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_delay_responses()
+        public async Task FluentMockServer_Should_delay_responses()
         {
             // given
             _server = FluentMockServer.Start();
@@ -368,22 +366,6 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
-        }
-
-        [Fact]
-        public async Task Should_proxy_responses()
-        {
-            // given
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy("http://www.google.com"));
-
-            // when
-            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/search?q=test");
-
-            // then
-            Check.That(result).Contains("google");
         }
 
         //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate
@@ -429,6 +411,7 @@ namespace WireMock.Net.Tests
         public void Dispose()
         {
             _server?.Stop();
+            _serverForProxyForwarding?.Stop();
         }
     }
 }
