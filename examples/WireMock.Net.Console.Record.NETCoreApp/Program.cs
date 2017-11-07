@@ -12,12 +12,13 @@ namespace WireMock.Net.Console.Record.NETCoreApp
             {
                 Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
                 StartAdminInterface = true,
-                ReadStaticMappings = true,
+                ReadStaticMappings = false,
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
                     Url = "https://www.google.com",
                     //X509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
-                    SaveMapping = true
+                    SaveMapping = true,
+                    SaveMappingToFile = false
                 }
             });
 

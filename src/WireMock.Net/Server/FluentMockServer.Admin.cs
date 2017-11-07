@@ -130,11 +130,11 @@ namespace WireMock.Server
         }
 
         #region Proxy and Record
-        private HttpClient httpClientForProxy;
+        private HttpClient _httpClientForProxy;
 
         private void InitProxyAndRecord(ProxyAndRecordSettings settings)
         {
-            httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
@@ -144,12 +144,17 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
+            var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
 
             if (settings.SaveMapping)
             {
                 var mapping = ToMapping(requestMessage, responseMessage);
-                SaveMappingToFile(mapping);
+                _options.Mappings.Add(mapping);
+
+                if (settings.SaveMappingToFile)
+                {
+                    SaveMappingToFile(mapping);
+                }
             }
 
             return responseMessage;
@@ -157,11 +162,20 @@ namespace WireMock.Server
 
         private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage)
         {
-            var request = (Request)Request.Create();
+            var request = Request.Create();
             request.WithPath(requestMessage.Path);
             request.UsingVerb(requestMessage.Method);
 
-            var response = (Response)Response.Create(responseMessage);
+            requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
+            requestMessage.Headers.Loop((key, value) => request.WithHeader(key, new ExactMatcher(value.ToArray())));
+            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, new ExactMatcher(value)));
+
+            if (requestMessage.Body != null)
+            {
+                request.WithBody(new ExactMatcher(requestMessage.Body));
+            }
+
+            var response = Response.Create(responseMessage);
 
             return new Mapping(Guid.NewGuid(), string.Empty, request, response, 0, null, null, null);
         }
@@ -530,8 +544,9 @@ namespace WireMock.Server
                 {
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
-                        requestBuilder =
-                            requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    {
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    }
                 }
             }
 
@@ -546,8 +561,9 @@ namespace WireMock.Server
                 {
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
-                        requestBuilder =
-                            requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    {
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    }
                 }
             }
 

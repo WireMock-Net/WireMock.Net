@@ -13,25 +13,16 @@ namespace WireMock
         /// <summary>
         /// Gets the unique identifier.
         /// </summary>
-        /// <value>
-        /// The unique identifier.
-        /// </value>
         public Guid Guid { get; }
 
         /// <summary>
         /// Gets the unique title.
         /// </summary>
-        /// <value>
-        /// The unique title.
-        /// </value>
         public string Title { get; }
 
         /// <summary>
         /// Gets the priority.
         /// </summary>
-        /// <value>
-        /// The priority.
-        /// </value>
         public int Priority { get; }
 
         /// <summary>

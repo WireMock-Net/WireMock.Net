@@ -66,6 +66,7 @@ namespace WireMock.Net.StandAlone
                 {
                     Url = proxyURL,
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
+                    SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                     X509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("X509Certificate2ThumbprintOrSubjectName")
                 };
             }

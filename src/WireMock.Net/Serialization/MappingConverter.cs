@@ -79,7 +79,7 @@ namespace WireMock.Serialization
                         Funcs = Map(pm.Funcs)
                     }).ToList() : null,
 
-                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Count(m => m == "get") == 1 ? null : new BodyModel
+                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
                     {
                         Matcher = bodyMatcher != null ? Map(bodyMatcher.Matcher) : null,
                         Func = bodyMatcher != null ? Map(bodyMatcher.Func) : null,
@@ -115,14 +115,16 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
                 mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyAsFileIsCached;
                 mappingModel.Response.UseTransformer = response.UseTransformer;
-                mappingModel.Response.BodyEncoding = response.ResponseMessage.BodyEncoding != null
-                    ? new EncodingModel
+
+                if (response.ResponseMessage.BodyEncoding != null)
+                {
+                    mappingModel.Response.BodyEncoding = new EncodingModel
                     {
                         EncodingName = response.ResponseMessage.BodyEncoding.EncodingName,
                         CodePage = response.ResponseMessage.BodyEncoding.CodePage,
                         WebName = response.ResponseMessage.BodyEncoding.WebName
-                    }
-                    : null;
+                    };
+                }
             }
 
             return mappingModel;
