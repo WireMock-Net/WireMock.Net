@@ -25,7 +25,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="paths">The paths.</param>
-        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).ToArray())
+        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).Cast<IMatcher>().ToArray())
         {
         }
 
@@ -49,14 +49,7 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);

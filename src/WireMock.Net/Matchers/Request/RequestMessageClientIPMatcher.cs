@@ -25,7 +25,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
         /// </summary>
         /// <param name="clientIPs">The clientIPs.</param>
-        public RequestMessageClientIPMatcher([NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(ip)).ToArray())
+        public RequestMessageClientIPMatcher([NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(ip)).Cast<IMatcher>().ToArray())
         {
         }
 
@@ -49,14 +49,7 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);

@@ -74,8 +74,7 @@ namespace WireMock.Util
 
         public void RemoveLock(string name)
         {
-            ReaderWriterLockSlim o;
-            _lockDict.TryRemove(name, out o);
+            _lockDict.TryRemove(name, out _);
         }
     }
 }

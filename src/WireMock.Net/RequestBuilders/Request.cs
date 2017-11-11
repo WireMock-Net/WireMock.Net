@@ -359,19 +359,23 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// With header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string,bool)"/>
         public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(name, pattern, ignoreCase));
+            return this;
+        }
+
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string[],bool)"/>
+        public IRequestBuilder WithHeader(string name, string[] patterns, bool ignoreCase = true)
+        {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(patterns, nameof(patterns));
+
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, patterns, ignoreCase));
             return this;
         }
 

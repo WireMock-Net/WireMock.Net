@@ -10,6 +10,7 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// The request header matcher.
     /// </summary>
+    /// <inheritdoc cref="IRequestMatcher"/>
     public class RequestMessageHeaderMatcher : IRequestMatcher
     {
         /// <summary>
@@ -32,7 +33,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">The ignoreCase.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
@@ -40,6 +41,21 @@ namespace WireMock.Matchers.Request
 
             Name = name;
             Matchers = new IMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string[] patterns, bool ignoreCase = true)
+        {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(patterns, nameof(patterns));
+
+            Name = name;
+            Matchers = patterns.Select(pattern => new WildcardMatcher(pattern, ignoreCase)).Cast<IMatcher>().ToArray();
         }
 
         /// <summary>
@@ -67,14 +83,7 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);

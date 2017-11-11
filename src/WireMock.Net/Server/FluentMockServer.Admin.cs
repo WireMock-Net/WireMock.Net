@@ -167,8 +167,8 @@ namespace WireMock.Server
             request.UsingVerb(requestMessage.Method);
 
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
-            requestMessage.Headers.Loop((key, value) => request.WithHeader(key, new ExactMatcher(value.ToArray())));
-            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, new ExactMatcher(value)));
+            requestMessage.Headers.Loop((key, value) => request.WithHeader(key, value.ToArray()));
+            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
 
             if (requestMessage.Body != null)
             {

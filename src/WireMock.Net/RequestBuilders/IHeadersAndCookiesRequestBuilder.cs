@@ -12,13 +12,22 @@ namespace WireMock.RequestBuilders
     public interface IHeadersAndCookiesRequestBuilder : IBodyRequestBuilder, IRequestMatcher, IParamsRequestBuilder
     {
         /// <summary>
-        /// The with header.
+        /// Add Header matching based on name, pattern and ignoreCase.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">ignore Case</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithHeader([NotNull] string name, string pattern, bool ignoreCase = true);
+
+        /// <summary>
+        /// Add Header matching based on name, patterns and ignoreCase.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">ignore Case</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithHeader([NotNull] string name, string[] patterns, bool ignoreCase = true);
 
         /// <summary>
         /// The with header.
