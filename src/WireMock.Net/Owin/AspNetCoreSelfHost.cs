@@ -46,6 +46,7 @@ namespace WireMock.Owin
             _host = new WebHostBuilder()
                 .Configure(appBuilder =>
                 {
+                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
                     _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
                     appBuilder.UseMiddleware<WireMockMiddleware>(_options);
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
