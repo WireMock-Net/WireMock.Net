@@ -5,6 +5,7 @@ using WireMock.Matchers.Request;
 using System.Linq;
 using WireMock.Matchers;
 using WireMock.Util;
+using Newtonsoft.Json;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -124,7 +125,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                response = new ResponseMessage { StatusCode = 500, Body = ex.ToString() };
+                response = new ResponseMessage { StatusCode = 500, Body = JsonConvert.SerializeObject(ex) };
             }
             finally
             {

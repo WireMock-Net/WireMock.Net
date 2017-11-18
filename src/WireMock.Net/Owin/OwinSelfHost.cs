@@ -61,6 +61,7 @@ namespace WireMock.Owin
 
             Action<IAppBuilder> startup = app =>
             {
+                app.Use<GlobalExceptionMiddleware>();
                 _options.PreWireMockMiddlewareInit?.Invoke(app);
                 app.Use<WireMockMiddleware>(_options);
                 _options.PostWireMockMiddlewareInit?.Invoke(app);

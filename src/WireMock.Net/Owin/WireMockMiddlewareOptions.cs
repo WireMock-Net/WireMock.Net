@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Util;
 #if !NETSTANDARD
 using Owin;
 #else
@@ -22,7 +23,7 @@ namespace WireMock.Owin
 
         public IList<Mapping> Mappings { get; set; } = new List<Mapping>();
 
-        public ObservableCollection<LogEntry> LogEntries { get; } = new ObservableCollection<LogEntry>();
+        public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 
         public int? RequestLogExpirationDuration { get; set; }
 
