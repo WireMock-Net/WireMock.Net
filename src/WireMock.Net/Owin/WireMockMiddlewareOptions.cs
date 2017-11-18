@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
-using WireMock.Utils;
+using WireMock.Util;
 #if !NETSTANDARD
 using Owin;
 #else
