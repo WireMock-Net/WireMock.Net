@@ -86,5 +86,24 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.Headers["x"]).Contains("text/plain");
             Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
         }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Origin_Port_Protocol_Host()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost:1234"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create()
+                .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test http://localhost:1234 1234 http localhost");
+        }
     }
 }

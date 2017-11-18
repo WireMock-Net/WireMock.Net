@@ -64,6 +64,26 @@ namespace WireMock
         public string Body { get; }
 
         /// <summary>
+        /// Gets the Host
+        /// </summary>
+        public string Host { get; }
+
+        /// <summary>
+        /// Gets the protocol
+        /// </summary>
+        public string Protocol { get; }
+
+        /// <summary>
+        /// Gets the port
+        /// </summary>
+        public int Port { get; }
+
+        /// <summary>
+        /// Gets the origin
+        /// </summary>
+        public string Origin { get; }
+
+        /// <summary>
         /// Gets the body encoding.
         /// </summary>
         public Encoding BodyEncoding { get; }
@@ -86,6 +106,10 @@ namespace WireMock
             Check.NotNull(clientIP, nameof(clientIP));
 
             Url = url.ToString();
+            Protocol = url.Scheme;
+            Host = url.Host;
+            Port = url.Port;
+            Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = url.AbsolutePath;
             Method = method.ToLower();
             ClientIP = clientIP;
