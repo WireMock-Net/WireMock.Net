@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using JetBrains.Annotations;
 using WireMock.Util;
 using WireMock.Validation;
 using System.Text;
-using WireMock.Http;
 
 namespace WireMock
 {
@@ -108,10 +106,10 @@ namespace WireMock
             Check.NotNull(clientIP, nameof(clientIP));
 
             Url = url.ToString();
-            Origin = string.Format("{0}://{1}:{2}", url.Scheme, url.Host, url.Port);
-            Port = url.Port;
             Protocol = url.Scheme;
             Host = url.Host;
+            Port = url.Port;
+            Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = url.AbsolutePath;
             Method = method.ToLower();
             ClientIP = clientIP;

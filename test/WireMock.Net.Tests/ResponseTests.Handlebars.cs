@@ -93,7 +93,7 @@ namespace WireMock.Net.Tests
             // given
             string bodyAsString = "abc";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost:1234/foo?a=b"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var request = new RequestMessage(new Uri("http://localhost:1234"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             var response = Response.Create()
                 .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")
