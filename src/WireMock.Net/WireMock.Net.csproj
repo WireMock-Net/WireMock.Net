@@ -19,7 +19,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType> 
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
