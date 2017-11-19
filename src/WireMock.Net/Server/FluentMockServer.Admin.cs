@@ -486,7 +486,7 @@ namespace WireMock.Server
                 }
             }
 
-            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key);
+            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(ToLogEntryModel);
 
             return ToJson(result);
         }

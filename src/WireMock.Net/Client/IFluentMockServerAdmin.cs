@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
+using WireMock.Logging;
 
 namespace WireMock.Client
 {
@@ -103,7 +104,7 @@ namespace WireMock.Client
         /// </summary>
         /// <returns>LogRequestModels</returns>
         [Get("__admin/requests")]
-        Task<IList<LogRequestModel>> GetRequestsAsync();
+        Task<IList<LogEntryModel>> GetRequestsAsync();
 
         /// <summary>
         /// Delete all requests.
@@ -123,7 +124,7 @@ namespace WireMock.Client
         /// <param name="guid">The Guid</param>
         /// <returns>MappingModel</returns>
         [Get("__admin/requests/{guid}")]
-        Task<LogRequestModel> GetRequestAsync([Path] Guid guid);
+        Task<LogEntryModel> GetRequestAsync([Path] Guid guid);
 
         /// <summary>
         /// Delete a request based on the guid
@@ -137,7 +138,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="model">The RequestModel</param>
         [Post("__admin/requests/find")]
-        Task<IList<LogRequestModel>> FindRequestsAsync([Body] RequestModel model);
+        Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model);
 
         /// <summary>
         /// Get all scenarios
