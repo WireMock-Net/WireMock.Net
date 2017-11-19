@@ -22,16 +22,17 @@ namespace WireMock.Net.Tests
         private FluentMockServer _server;
 
         [Fact]
-        public async Task RestClientFindRequestsReturnsLogOfRequetsMade()
+        public async Task IFluentMockServerAdmin_FindRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings {StartAdminInterface = true});
+            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true });
             var serverUrl = "http://localhost:" + _server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
             // when
-            var requests = await api.FindRequestsAsync(new RequestModel {Methods = new[] {"get"}});
+            var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "get" } });
+
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
@@ -41,16 +42,17 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task RestClientGetRequestsReturnsLogOfRequetssMade()
+        public async Task IFluentMockServerAdmin_GetRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings {StartAdminInterface = true});
+            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true });
             var serverUrl = "http://localhost:" + _server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
             // when
             var requests = await api.GetRequestsAsync();
+
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
