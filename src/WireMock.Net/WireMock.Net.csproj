@@ -17,9 +17,11 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <DebugType>portable</DebugType>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
+    <DebugType>full</DebugType>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0'">
