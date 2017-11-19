@@ -1,11 +1,11 @@
 # WireMock.Net
 A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based http://WireMock.org
 
-[![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
+[![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/WireMock-Net/wiremock-net)
 [![codecov](https://codecov.io/gh/WireMock-Net/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/WireMock-Net/WireMock.Net)
-[![Coverage Status](https://coveralls.io/repos/github/StefH/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/StefH/WireMock.Net?branch=master)
-[![GitHub issues](https://img.shields.io/github/issues/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/issues)
-[![GitHub stars](https://img.shields.io/github/stars/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/stargazers)
+[![Coverage Status](https://coveralls.io/repos/github/WireMock-Net/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/WireMock-Net/WireMock.Net?branch=master)
+[![GitHub issues](https://img.shields.io/github/issues/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/issues)
+[![GitHub stars](https://img.shields.io/github/stars/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/stargazers)
 
 | Name | NuGet |
 | ---- | ----- |
