@@ -39,6 +39,6 @@ test_script:
   - nuget.exe install coveralls.net -ExcludeVersion
   - pip install codecov
 
-  - cmd: '"OpenCover\tools\OpenCover.Console.exe" -target:dotnet.exe -targetargs:"test test\WireMock.Net.Tests\WireMock.Net.Tests.csproj --no-build" -output:coverage.xml -returntargetcode -register:user -filter:"+[WireMock.Net]* -[WireMock.Net.Tests*]*" -nodefaultfilters -returntargetcode -oldstyle'
+  - cmd: '"OpenCover\tools\OpenCover.Console.exe" -target:dotnet.exe -targetargs:"test test\WireMock.Net.Tests\WireMock.Net.Tests.csproj --no-build" -output:coverage.xml -returntargetcode -register:user -filter:"+[WireMock.Net]* -[WireMock.Net.Tests*]*" -nodefaultfilters -returntargetcode -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452"'
   - codecov -f "coverage.xml"
   - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
