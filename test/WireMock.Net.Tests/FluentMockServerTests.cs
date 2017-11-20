@@ -212,6 +212,35 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_methodPatch()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithPath("/foo").UsingVerb("patch"))
+                   .RespondWith(Response.Create().WithBody("hello patch"));
+
+            // when
+            var msg = new HttpRequestMessage(new HttpMethod("patch"),
+                new Uri("http://localhost:" + _server.Ports[0] + "/foo"))
+            {
+                Content = new StringContent("{\"data\": {\"attr\":\"value\"}}")
+            };
+            var response = await new HttpClient().SendAsync(msg);
+
+            // then
+            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Check.That(responseBody).IsEqualTo("hello patch");
+
+            Check.That(_server.LogEntries).HasSize(1);
+            var requestLogged = _server.LogEntries.First();
+            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("patch");
+            Check.That(requestLogged.RequestMessage.Body).IsNotNull();
+            Check.That(requestLogged.RequestMessage.Body).IsEqualTo("{\"data\": {\"attr\":\"value\"}}");
+        }
+
+        [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBytes()
         {
             // given
