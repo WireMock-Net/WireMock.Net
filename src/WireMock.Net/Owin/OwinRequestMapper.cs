@@ -91,8 +91,9 @@ namespace WireMock.Owin
                 TRACE - Body not supported.
                 OPTIONS - Body supported but no semantics on usage (maybe in the future).
                 CONNECT - No defined body semantics
+                PATCH - Body supported.
             */
-            return new[] { "PUT", "POST", "OPTIONS" }.Contains(method.ToUpper());
+            return new[] { "PUT", "POST", "OPTIONS", "PATCH" }.Contains(method.ToUpper());
         }
     }
 }
