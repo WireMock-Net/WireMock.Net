@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
-using WireMock.Logging;
 
 namespace WireMock.Client
 {

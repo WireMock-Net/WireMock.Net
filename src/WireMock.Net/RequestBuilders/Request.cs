@@ -171,70 +171,49 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The using get.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingGet()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using post.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingPost()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using put.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingPut()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using delete.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingDelete"/>
         public IRequestBuilder UsingDelete()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("delete"));
             return this;
         }
 
-        /// <summary>
-        /// The using head.
-        /// </summary>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingGet"/>
+        public IRequestBuilder UsingGet()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingHead"/>
         public IRequestBuilder UsingHead()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("head"));
             return this;
         }
 
-        /// <summary>
-        /// The using any verb.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPost"/>
+        public IRequestBuilder UsingPost()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPatch"/>
+        public IRequestBuilder UsingPatch()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("patch"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPut"/>
+        public IRequestBuilder UsingPut()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyVerb"/>
         public IRequestBuilder UsingAnyVerb()
         {
             var matchers = _requestMatchers.Where(m => m is RequestMessageMethodMatcher).ToList();
@@ -246,11 +225,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The using verb.
-        /// </summary>
-        /// <param name="verbs">The verbs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingVerb"/>
         public IRequestBuilder UsingVerb(params string[] verbs)
         {
             Check.NotEmpty(verbs, nameof(verbs));
