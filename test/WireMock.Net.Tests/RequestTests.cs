@@ -84,20 +84,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_specify_requests_matching_given_url()
-        {
-            // given
-            var spec = Request.Create().WithUrl("*/foo");
-
-            // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
-
-        [Fact]
         public void Should_exclude_requests_matching_given_http_method_but_not_url()
         {
             // given
