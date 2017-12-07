@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.Net
 		{B6269AAC-170A-43D5-8B9A-579DED3D9A95} = {B6269AAC-170A-43D5-8B9A-579DED3D9A95}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.ConsoleApplication", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NET452", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.Console.NET452.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
