@@ -21,7 +21,6 @@ environment:
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
 - dotnet restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj
-- nuget restore .\examples\WireMock.Net.ConsoleApplication\WireMock.Net.ConsoleApplication.csproj -PackagesDirectory packages
 
 build_script:
 # build WireMock.Net
