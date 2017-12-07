@@ -25,10 +25,10 @@ namespace WireMock.Owin
 #endif
 
 #if NETSTANDARD
-    public RequestDelegate Next { get; private set; }
+        public RequestDelegate Next { get; }
 #endif
 
-    private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
+        private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
 #if !NETSTANDARD
         public override async Task Invoke(IOwinContext ctx)

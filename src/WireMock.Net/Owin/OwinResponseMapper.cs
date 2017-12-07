@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WireMock.Http;
+using WireMock.Util;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -17,6 +19,19 @@ namespace WireMock.Owin
     public class OwinResponseMapper
     {
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
+
+        // https://stackoverflow.com/questions/239725/cannot-set-some-http-headers-when-using-system-net-webrequest
+#if !NETSTANDARD
+        private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+#else
+        private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+#endif
+            { "Content-Length", null },
+            { "Content-Type", (r, v) => r.ContentType = v.FirstOrDefault() },
+            { "Keep-Alive", null },
+            { "Transfer-Encoding", null },
+            { "WWW-Authenticate", null }
+        };
 
         /// <summary>
         /// MapAsync ResponseMessage to OwinResponse
@@ -33,18 +48,22 @@ namespace WireMock.Owin
         {
             response.StatusCode = responseMessage.StatusCode;
 
-            if (responseMessage.Headers.ContainsKey(HttpKnownHeaderNames.ContentType))
+            // Set headers
+            foreach (var pair in responseMessage.Headers)
             {
-                response.ContentType = responseMessage.Headers[HttpKnownHeaderNames.ContentType].FirstOrDefault();
-            }
-
-            var headers = responseMessage.Headers.Where(h => h.Key != HttpKnownHeaderNames.ContentType).ToList();
-
+                if (RestrictedResponseHeaders.ContainsKey(pair.Key))
+                {
+                    RestrictedResponseHeaders[pair.Key]?.Invoke(response, pair.Value);
+                }
+                else
+                {
 #if !NETSTANDARD
-            headers.ForEach(pair => response.Headers.AppendValues(pair.Key, pair.Value.ToArray()));
+                    response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
 #else
-            headers.ForEach(pair => response.Headers.Append(pair.Key, pair.Value.ToArray()));
+                    response.Headers.Append(pair.Key, pair.Value.ToArray());
 #endif
+                }
+            }
 
             if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null)
             {
