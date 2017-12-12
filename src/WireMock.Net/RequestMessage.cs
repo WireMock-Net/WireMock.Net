@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Net;
 using JetBrains.Annotations;
 using WireMock.Util;
 using WireMock.Validation;
-using System.Text;
 
 namespace WireMock
 {
@@ -52,6 +53,11 @@ namespace WireMock
         /// Gets the query.
         /// </summary>
         public IDictionary<string, WireMockList<string>> Query { get; }
+
+        /// <summary>
+        /// Gets the raw query.
+        /// </summary>
+        public string RawQuery { get; }
 
         /// <summary>
         /// Gets the bodyAsBytes.
@@ -110,7 +116,7 @@ namespace WireMock
             Host = url.Host;
             Port = url.Port;
             Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
-            Path = url.AbsolutePath;
+            Path = WebUtility.UrlDecode(url.AbsolutePath);
             Method = method.ToLower();
             ClientIP = clientIP;
             BodyAsBytes = bodyAsBytes;
@@ -118,10 +124,11 @@ namespace WireMock
             BodyEncoding = bodyEncoding;
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
-            Query = ParseQuery(url.Query);
+            RawQuery = WebUtility.UrlDecode(url.Query);
+            Query = ParseQuery(RawQuery);
         }
 
-        private IDictionary<string, WireMockList<string>> ParseQuery(string queryString)
+        private static IDictionary<string, WireMockList<string>> ParseQuery(string queryString)
         {
             if (string.IsNullOrEmpty(queryString))
             {
@@ -153,7 +160,7 @@ namespace WireMock
         }
 
         /// <summary>
-        /// The get a query parameter.
+        /// Get a query parameter.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>The query parameter.</returns>

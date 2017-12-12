@@ -32,13 +32,22 @@ namespace WireMock.Net.ConsoleApplication
 
             server.SetBasicAuthentication("a", "b");
 
-            // server.AllowPartialMapping();
+            server.AllowPartialMapping();
 
             // .WithHeader("Stef", "Stef")
             //server
             //    .Given(Request.Create().WithPath("*"))
             //    .RespondWith(Response.Create()
             //    .WithProxy("http://restcountries.eu"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath(new WildcardMatcher("/navision/OData/Company('My Company')/School*", true))
+                    .WithParam("$filter", "(substringof(Code, 'WA')")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""odata""}"));
 
             server
                 .Given(Request.Create().WithPath("/headers", "/headers_test").UsingPost().WithHeader("Content-Type", "application/json*"))
