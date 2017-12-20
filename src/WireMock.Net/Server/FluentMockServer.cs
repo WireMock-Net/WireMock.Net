@@ -371,10 +371,31 @@ namespace WireMock.Server
         /// </param>
         private void RegisterMapping(Mapping mapping)
         {
-            // Check a mapping exists with the same GUID, if so, remove it first.
+            // Check a mapping exists with the same GUID, if so, replace it
+
+            var index = GetMappingIndex(mapping.Guid);
+
             DeleteMapping(mapping.Guid);
 
-            _options.Mappings.Add(mapping);
+            if (index != -1)
+            {
+                _options.Mappings.Insert(index, mapping);
+            }
+            else
+            {
+                _options.Mappings.Add(mapping);
+            }
+        }
+
+        private int GetMappingIndex(Guid guid)
+        {
+            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
+            if (existingMapping != null)
+            {
+                return _options.Mappings.IndexOf(existingMapping);
+            }
+
+            return -1;
         }
     }
 }
