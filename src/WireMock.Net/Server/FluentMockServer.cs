@@ -363,18 +363,18 @@ namespace WireMock.Server
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }
 
-        /// <summary>
-        /// The register mapping.
-        /// </summary>
-        /// <param name="mapping">
-        /// The mapping.
-        /// </param>
         private void RegisterMapping(Mapping mapping)
         {
-            // Check a mapping exists with the same GUID, if so, remove it first.
-            DeleteMapping(mapping.Guid);
-
-            _options.Mappings.Add(mapping);
+            // Check a mapping exists with the same Guid, if so, replace it.
+            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == mapping.Guid);
+            if (existingMapping != null)
+            {
+                _options.Mappings[_options.Mappings.IndexOf(existingMapping)] = mapping;
+            }
+            else
+            {
+                _options.Mappings.Add(mapping);
+            }
         }
     }
 }

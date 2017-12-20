@@ -117,20 +117,24 @@ namespace WireMock.Net.Tests
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/1").UsingGet())
+            var response1 = Response.Create().WithStatusCode(500);
+            _server.Given(Request.Create().UsingGet())
                 .WithGuid(guid)
-                .RespondWith(Response.Create().WithStatusCode(500));
+                .RespondWith(response1);
 
-            var mappings = _server.Mappings.ToArray();
-            Check.That(mappings).HasSize(1);
-            Check.That(mappings.First().Guid).Equals(guid);
+            var mappings1 = _server.Mappings.ToArray();
+            Check.That(mappings1).HasSize(1);
+            Check.That(mappings1.First().Guid).Equals(guid);
 
+            var response2 = Response.Create().WithStatusCode(400);
             _server.Given(Request.Create().WithPath("/2").UsingGet())
                 .WithGuid(guid)
-                .RespondWith(Response.Create().WithStatusCode(500));
+                .RespondWith(response2);
 
-            Check.That(mappings).HasSize(1);
-            Check.That(mappings.First().Guid).Equals(guid);
+            var mappings2 = _server.Mappings.ToArray();
+            Check.That(mappings2).HasSize(1);
+            Check.That(mappings2.First().Guid).Equals(guid);
+            Check.That(mappings2.First().Provider).Equals(response2);
         }
 
         [Fact]
