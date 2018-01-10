@@ -28,7 +28,7 @@ To build you need:
 
 
 ## Stubbing
-A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
+A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing & Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing-and-Request-Matching).
 
 ## Using WireMock in UnitTest framework
 You can use your favorite test framework and use WireMock within your tests, see
