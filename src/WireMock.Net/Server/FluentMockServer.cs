@@ -26,11 +26,14 @@ namespace WireMock.Server
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
+        /// Gets a value indicating whether this server is started.
+        /// </summary>
+        [PublicAPI]
+        public bool IsStarted { get; }
+
+        /// <summary>
         /// Gets the ports.
         /// </summary>
-        /// <value>
-        /// The ports.
-        /// </value>
         [PublicAPI]
         public List<int> Ports { get; }
 
@@ -59,7 +62,7 @@ namespace WireMock.Server
         /// <param name="settings">The FluentMockServerSettings.</param>
         /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
-        public static FluentMockServer Start(FluentMockServerSettings settings)
+        public static FluentMockServer Start(IFluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
@@ -150,7 +153,7 @@ namespace WireMock.Server
             });
         }
 
-        private FluentMockServer(FluentMockServerSettings settings)
+        private FluentMockServer(IFluentMockServerSettings settings)
         {
             if (settings.Urls != null)
             {
@@ -170,6 +173,8 @@ namespace WireMock.Server
 #else
             _httpServer = new OwinSelfHost(_options, Urls);
 #endif
+            IsStarted = _httpServer.IsStarted;
+
             Ports = _httpServer.Ports;
 
             _httpServer.StartAsync();
