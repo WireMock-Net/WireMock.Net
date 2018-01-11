@@ -6,91 +6,62 @@ namespace WireMock.Settings
     /// <summary>
     /// FluentMockServerSettings
     /// </summary>
-    public class FluentMockServerSettings
+    public class FluentMockServerSettings : IFluentMockServerSettings
     {
-        /// <summary>
-        /// Gets or sets the port.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.Port"/>
         [PublicAPI]
         public int? Port { get; set; }
 
-        /// <summary>
-        /// Gets or sets the use SSL.
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
+        /// <inheritdoc cref="IFluentMockServerSettings.UseSSL"/>
         [PublicAPI]
+        // ReSharper disable once InconsistentNaming
         public bool? UseSSL { get; set; }
 
-        /// <summary>
-        /// Gets or sets wether to start admin interface.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.StartAdminInterface"/>
         [PublicAPI]
         public bool? StartAdminInterface { get; set; }
 
-        /// <summary>
-        /// Gets or sets if the static mappings should be read at startup.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.ReadStaticMappings"/>
         [PublicAPI]
         public bool? ReadStaticMappings { get; set; }
 
-        /// <summary>
-        /// Gets or sets if the server should record and save requests and responses.
-        /// </summary>
-        /// <value>true/false</value>
+        /// <inheritdoc cref="IFluentMockServerSettings.ProxyAndRecordSettings"/>
         [PublicAPI]
-        public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
+        public IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
-        /// <summary>
-        /// Gets or sets the urls.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.Urls"/>
         [PublicAPI]
         public string[] Urls { get; set; }
 
-        /// <summary>
-        /// StartTimeout
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.StartTimeout"/>
         [PublicAPI]
         public int StartTimeout { get; set; } = 10000;
 
-        /// <summary>
-        /// Allow Partial Mapping (default set to false).
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.AllowPartialMapping"/>
         [PublicAPI]
         public bool? AllowPartialMapping { get; set; }
 
-        /// <summary>
-        /// The username needed for __admin access.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.AdminUsername"/>
         [PublicAPI]
         public string AdminUsername { get; set; }
 
-        /// <summary>
-        /// The password needed for __admin access.
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.AdminPassword"/>
         [PublicAPI]
         public string AdminPassword { get; set; }
 
-        /// <summary>
-        /// The RequestLog expiration in hours (optional).
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.RequestLogExpirationDuration"/>
         [PublicAPI]
         public int? RequestLogExpirationDuration { get; set; }
 
-        /// <summary>
-        /// The MaxRequestLog count (optional).
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.MaxRequestLogCount"/>
         [PublicAPI]
         public int? MaxRequestLogCount { get; set; }
 
-        /// <summary>
-        /// Action which is called (with the IAppBuilder or IApplicationBuilder) before the internal WireMockMiddleware is initialized. [Optional]
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.PreWireMockMiddlewareInit"/>
         [PublicAPI]
         public Action<object> PreWireMockMiddlewareInit { get; set; }
 
-        /// <summary>
-        /// Action which is called (with the IAppBuilder or IApplicationBuilder) after the internal WireMockMiddleware is initialized. [Optional]
-        /// </summary>
+        /// <inheritdoc cref="IFluentMockServerSettings.PostWireMockMiddlewareInit"/>
         [PublicAPI]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
     }

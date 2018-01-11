@@ -18,7 +18,7 @@ namespace WireMock.Net.StandAlone
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
         [PublicAPI]
-        public static FluentMockServer Start([NotNull] FluentMockServerSettings settings)
+        public static FluentMockServer Start([NotNull] IFluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 

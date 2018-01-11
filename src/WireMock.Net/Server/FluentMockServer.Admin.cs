@@ -132,13 +132,13 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(ProxyAndRecordSettings settings)
+        private void InitProxyAndRecord(IProxyAndRecordSettings settings)
         {
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.Url);

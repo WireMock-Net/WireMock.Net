@@ -42,10 +42,10 @@ namespace WireMock
 
     internal class ProxyAsyncResponseProvider : IResponseProvider
     {
-        private readonly Func<RequestMessage, ProxyAndRecordSettings, Task<ResponseMessage>> _responseMessageFunc;
-        private readonly ProxyAndRecordSettings _settings;
+        private readonly Func<RequestMessage, IProxyAndRecordSettings, Task<ResponseMessage>> _responseMessageFunc;
+        private readonly IProxyAndRecordSettings _settings;
 
-        public ProxyAsyncResponseProvider([NotNull] Func<RequestMessage, ProxyAndRecordSettings, Task<ResponseMessage>> responseMessageFunc, [NotNull] ProxyAndRecordSettings settings)
+        public ProxyAsyncResponseProvider([NotNull] Func<RequestMessage, IProxyAndRecordSettings, Task<ResponseMessage>> responseMessageFunc, [NotNull] IProxyAndRecordSettings settings)
         {
             Check.NotNull(responseMessageFunc, nameof(responseMessageFunc));
             Check.NotNull(settings, nameof(settings));

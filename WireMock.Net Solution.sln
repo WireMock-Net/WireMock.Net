@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
@@ -14,9 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F0C22C47-DF71-463C-9B04-B4E0F3B8708A}"
-	ProjectSection(SolutionItems) = preProject
-		examples\WireMock.Net.Console.Record.NETCoreApp\__admin\mappings\ab38efae-4e4d-4f20-8afe-635533ec2535.json = examples\WireMock.Net.Console.Record.NETCoreApp\__admin\mappings\ab38efae-4e4d-4f20-8afe-635533ec2535.json
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{890A1DED-C229-4FA1-969E-AAC3BBFC05E5}"
 EndProject
@@ -40,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.Net
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NET452", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.Console.NET452.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.csproj", "{049539C1-7A66-4559-AD7A-B1C73B97CBB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +82,10 @@ Global
 		{668F689E-57B4-422E-8846-C0FF643CA268}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{668F689E-57B4-422E-8846-C0FF643CA268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{668F689E-57B4-422E-8846-C0FF643CA268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +100,7 @@ Global
 		{10E16614-61CA-48D8-8BDD-664C13913DED} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA999} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{049539C1-7A66-4559-AD7A-B1C73B97CBB0} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF428BCC-C837-433B-87D2-15C7014B73E9}
