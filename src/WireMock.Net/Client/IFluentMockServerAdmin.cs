@@ -55,6 +55,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="mapping">MappingModel</param>
         [Post("__admin/mappings")]
+        [Header("Content-Type", "application/json")]
         Task<string> PostMappingAsync([Body] MappingModel mapping);
 
         /// <summary>
@@ -137,6 +138,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="model">The RequestModel</param>
         [Post("__admin/requests/find")]
+        [Header("Content-Type", "application/json")]
         Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model);
 
         /// <summary>
