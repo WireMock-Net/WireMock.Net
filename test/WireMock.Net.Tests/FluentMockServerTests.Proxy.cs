@@ -64,6 +64,37 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task FluentMockServer_Should_preserve_content_header_in_proxied_request_with_empty_content()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create());
+
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+
+            // when
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(_server.Urls[0]),
+                Content = new StringContent("")
+            };
+            requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            await new HttpClient().SendAsync(requestMessage);
+
+            // then
+            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            Check.That(receivedRequest.Body).IsEqualTo("");
+            Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
+            Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly("text/plain");
+        }
+
+        [Fact]
         public async Task FluentMockServer_Should_preserve_content_header_in_proxied_response()
         {
             // given

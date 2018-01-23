@@ -62,7 +62,7 @@ namespace WireMock.Http
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
             // Set Body if present
-            if (requestMessage.BodyAsBytes != null && requestMessage.BodyAsBytes.Length > 0)
+            if (requestMessage.BodyAsBytes != null)
             {
                 httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
             }
