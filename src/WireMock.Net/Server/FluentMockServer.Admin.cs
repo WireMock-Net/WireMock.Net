@@ -29,6 +29,7 @@ namespace WireMock.Server
     public partial class FluentMockServer
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
+        private const string ContentTypeJson = "application/json";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
@@ -86,12 +87,12 @@ namespace WireMock.Server
         {
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST").WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
 
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingsPost));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
@@ -99,7 +100,7 @@ namespace WireMock.Server
 
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingPut));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save

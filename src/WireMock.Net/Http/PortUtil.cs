@@ -5,18 +5,15 @@ using System.Text.RegularExpressions;
 namespace WireMock.Http
 {
     /// <summary>
-    /// Utility class
+    /// Port Utility class
     /// </summary>
     public static class PortUtil
     {
         private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)?/", RegexOptions.Compiled);
 
         /// <summary>
-        /// The find free TCP port.
+        /// Finds a free TCP port.
         /// </summary>
-        /// <returns>
-        /// The <see cref="int"/>.
-        /// </returns>
         /// <remarks>see http://stackoverflow.com/questions/138043/find-the-next-tcp-port-in-net.</remarks>
         public static int FindFreeTcpPort()
         {
