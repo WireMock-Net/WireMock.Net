@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WireMock.Validation;
 
 namespace WireMock.Http
@@ -29,7 +31,6 @@ namespace WireMock.Http
                 var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
 #else
-
                 var webRequestHandler = new WebRequestHandler
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -86,23 +87,46 @@ namespace WireMock.Http
             // Call the URL
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-            // Transform response
-            var responseMessage = new ResponseMessage
-            {
-                StatusCode = (int)httpResponseMessage.StatusCode,
-
-                BodyAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync(),
-                Body = await httpResponseMessage.Content.ReadAsStringAsync()
-            };
+            // Create transform response
+            var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 
             // Set both content and response headers, replacing URLs in values
-            var headers = httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers);
+            var headers = (httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers) ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>()).ToArray();
+
+            // In case the Content-Type header is application/json, try to set BodyAsJson, else set Body and BodyAsBytes.
+            bool bodyAsJson = false;
+            var contentTypeHeader = headers.FirstOrDefault(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase));
+            if (!contentTypeHeader.Equals(default(KeyValuePair<string, IEnumerable<string>>)) &&
+                contentTypeHeader.Value.Any(value => value != null && value.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
+            {
+                if (httpResponseMessage.Content != null)
+                {
+                    string content = await httpResponseMessage.Content.ReadAsStringAsync();
+                    try
+                    {
+                        responseMessage.BodyAsJson = JsonConvert.DeserializeObject(content, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                        bodyAsJson = true;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            if (!bodyAsJson)
+            {
+                if (httpResponseMessage.Content != null)
+                {
+                    responseMessage.BodyAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
+                    responseMessage.Body = await httpResponseMessage.Content.ReadAsStringAsync();
+                }
+            }
 
             foreach (var header in headers)
             {
-                // if Location header contains absolute redirect URL, and base URL is one that we proxy to,
+                // If Location header contains absolute redirect URL, and base URL is one that we proxy to,
                 // we need to replace it to original one.
-                if (string.Equals(header.Key, "Location", StringComparison.OrdinalIgnoreCase)
+                if (string.Equals(header.Key, HttpKnownHeaderNames.Location, StringComparison.OrdinalIgnoreCase)
                     && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out Uri absoluteLocationUri)
                     && string.Equals(absoluteLocationUri.Host, requiredUri.Host, StringComparison.OrdinalIgnoreCase))
                 {

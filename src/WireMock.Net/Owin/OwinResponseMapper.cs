@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WireMock.Util;
 #if !NETSTANDARD
 using Microsoft.Owin;
@@ -65,7 +66,7 @@ namespace WireMock.Owin
                 }
             }
 
-            if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null)
+            if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null && responseMessage.BodyAsJson == null)
             {
                 return;
             }
@@ -84,11 +85,20 @@ namespace WireMock.Owin
                 return;
             }
 
-            Encoding encoding = responseMessage.BodyEncoding ?? _utf8NoBom;
-            using (var writer = new StreamWriter(response.Body, encoding))
+            if (responseMessage.BodyAsJson != null)
+            {
+                string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyAsJson, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
+                using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
+                {
+                    await writer.WriteAsync(jsonBody);
+                }
+
+                return;
+            }
+
+            using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
             {
                 await writer.WriteAsync(responseMessage.Body);
-                // TODO : response.ContentLength = responseMessage.Body.Length;
             }
         }
     }

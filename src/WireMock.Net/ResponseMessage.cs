@@ -38,6 +38,11 @@ namespace WireMock
         public string Body { get; set; }
 
         /// <summary>
+        /// Gets or sets the body as a json object.
+        /// </summary>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
         /// Gets or sets the body as bytes.
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
