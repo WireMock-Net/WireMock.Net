@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,36 +13,28 @@ namespace WireMock.Http
     {
         public static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            HttpClientHandler handler;
-
-            if (string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
-            {
-                handler = new HttpClientHandler();
-            }
-            else
-            {
 #if NETSTANDARD || NET46
-                handler = new HttpClientHandler
-                {
-                    ClientCertificateOptions = ClientCertificateOption.Manual,
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                };
+            var handler = new HttpClientHandler
+            {
+                CheckCertificateRevocationList = false,
+                SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+#else
+            var handler = new WebRequestHandler
+            {
+                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+#endif
+
+            if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
+            {
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
                 var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
-#else
-                var webRequestHandler = new WebRequestHandler
-                {
-                    ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
-                    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
-                };
-
-                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
-                webRequestHandler.ClientCertificates.Add(x509Certificate2);
-                handler = webRequestHandler;
-#endif
             }
 
             // For proxy we shouldn't follow auto redirects
