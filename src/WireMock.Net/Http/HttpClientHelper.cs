@@ -43,7 +43,11 @@ namespace WireMock.Http
             // If UseCookies enabled, httpClient ignores Cookie header
             handler.UseCookies = false;
 
-            return new HttpClient(handler);
+            var client = new HttpClient(handler);
+#if NET452 || NET46
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+#endif
+            return client;
         }
 
         public static async Task<ResponseMessage> SendAsync(HttpClient client, RequestMessage requestMessage, string url)

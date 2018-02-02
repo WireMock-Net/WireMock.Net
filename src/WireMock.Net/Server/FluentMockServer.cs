@@ -157,7 +157,7 @@ namespace WireMock.Server
         {
             if (settings.Urls != null)
             {
-                Urls = settings.Urls;
+                Urls = settings.Urls.Select(u => u.EndsWith("/") ? u : $"{u}/").ToArray();
             }
             else
             {

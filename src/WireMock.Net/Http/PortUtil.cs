@@ -37,7 +37,7 @@ namespace WireMock.Http
         public static bool TryExtractProtocolAndPort(string url, out string proto, out int port)
         {
             proto = null;
-            port = -1;
+            port = 0;
 
             Match m = UrlDetailsRegex.Match(url);
             if (m.Success)

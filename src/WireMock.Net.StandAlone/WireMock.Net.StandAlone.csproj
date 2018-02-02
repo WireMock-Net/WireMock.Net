@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
@@ -16,10 +16,16 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <DebugType>portable</DebugType>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>full</DebugType>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">

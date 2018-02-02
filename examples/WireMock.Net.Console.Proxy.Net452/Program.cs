@@ -2,11 +2,11 @@
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace WireMock.Net.Console.Proxy.NETCoreApp
+namespace WireMock.Net.Console.Proxy.Net452
 {
-    static class Program
+    class Program
     {
-        static void Main(params string[] args)
+        static void Main(string[] args)
         {
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
@@ -19,20 +19,18 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp
                     //X509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedHeaders = new [] { "dnt", "Content-Length" }
+                    BlackListedHeaders = new[] { "dnt", "Content-Length" }
                 }
             });
+
+            server.LogEntriesChanged += (sender, eventRecordArgs) =>
+            {
+                System.Console.WriteLine(JsonConvert.SerializeObject(eventRecordArgs.NewItems, Formatting.Indented));
+            };
 
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();
-
-            System.Console.WriteLine("Displaying all requests");
-            var allRequests = server.LogEntries;
-            System.Console.WriteLine(JsonConvert.SerializeObject(allRequests, Formatting.Indented));
-
-            System.Console.WriteLine("Press any key to quit");
-            System.Console.ReadKey();
         }
     }
 }

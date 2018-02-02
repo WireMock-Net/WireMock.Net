@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Tests", "test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NETCoreApp", "examples\WireMock.Net.Console.NETCoreApp\WireMock.Net.Console.NETCoreApp.csproj", "{FE281639-B014-4C8A-96FA-141164A74713}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.Record.NETCoreApp", "examples\WireMock.Net.Console.Record.NETCoreApp\WireMock.Net.Console.Record.NETCoreApp.csproj", "{1995E414-F197-4AB4-90C2-68D806B5AF59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.Proxy.NETCoreApp", "examples\WireMock.Net.Console.Record.NETCoreApp\WireMock.Net.Console.Proxy.NETCoreApp.csproj", "{1995E414-F197-4AB4-90C2-68D806B5AF59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Client", "examples\WireMock.Net.Client\WireMock.Net.Client.csproj", "{058D4B6C-C03E-49D0-91DB-A535B058FA0D}"
 EndProject
@@ -39,6 +39,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NET452", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.Console.NET452.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.csproj", "{049539C1-7A66-4559-AD7A-B1C73B97CBB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.Net452", "examples\WireMock.Net.Console.Proxy.Net452\WireMock.Net.Console.Proxy.Net452.csproj", "{26433A8F-BF01-4962-97EB-81BFFBB61096}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.NETCoreApp2", "examples\WireMock.Net.Console.Proxy.NETCoreApp2\WireMock.Net.Console.Proxy.NETCoreApp2.csproj", "{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +90,14 @@ Global
 		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{049539C1-7A66-4559-AD7A-B1C73B97CBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26433A8F-BF01-4962-97EB-81BFFBB61096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26433A8F-BF01-4962-97EB-81BFFBB61096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26433A8F-BF01-4962-97EB-81BFFBB61096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26433A8F-BF01-4962-97EB-81BFFBB61096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +113,8 @@ Global
 		{668F689E-57B4-422E-8846-C0FF643CA999} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{049539C1-7A66-4559-AD7A-B1C73B97CBB0} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{26433A8F-BF01-4962-97EB-81BFFBB61096} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF428BCC-C837-433B-87D2-15C7014B73E9}

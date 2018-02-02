@@ -1,5 +1,8 @@
 ﻿#if NETSTANDARD
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -14,7 +17,7 @@ namespace WireMock.Owin
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly WireMockMiddlewareOptions _options;
-        private readonly string[] _uriPrefixes;
+        private readonly string[] _urls;
 
         private IWebHost _host;
 
@@ -38,7 +41,7 @@ namespace WireMock.Owin
             }
 
             _options = options;
-            _uriPrefixes = uriPrefixes;
+            _urls = uriPrefixes;
         }
 
         public Task StartAsync()
@@ -51,12 +54,38 @@ namespace WireMock.Owin
                     appBuilder.UseMiddleware<WireMockMiddleware>(_options);
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
-                .UseKestrel()
-                .UseUrls(_uriPrefixes)
+                .UseKestrel(options =>
+                {
+#if NETSTANDARD1_3
+                    if (_urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        options.UseHttps("self-signed-certificate.pfx");
+                    }
+#else
+                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
+                    foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        options.Listen(IPAddress.Loopback, port);
+                    }
+
+                    foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        options.Listen(IPAddress.Loopback, port, listenOptions =>
+                        {
+                            listenOptions.UseHttps("self-signed-certificate.pfx");
+                        });
+                    }
+#endif
+                })
+#if NETSTANDARD1_3
+                .UseUrls(_urls)
+#endif
                 .Build();
 
 #if NETSTANDARD1_3
-            System.Console.WriteLine("WireMock.Net server using netstandard1.3");
+            Console.WriteLine("WireMock.Net server using netstandard1.3");
             return Task.Run(() =>
             {
                 _host.Run(_cts.Token);
@@ -65,7 +94,11 @@ namespace WireMock.Owin
 #else
             System.Console.WriteLine("WireMock.Net server using netstandard2.0");
             IsStarted = true;
-            return _host.RunAsync(_cts.Token);
+            return Task.Run(() =>
+            {
+                _host.Run();
+                IsStarted = true;
+            }, _cts.Token);
 #endif
         }
 
