@@ -92,34 +92,10 @@ namespace WireMock.Http
 
             // Set both content and response headers, replacing URLs in values
             var headers = (httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers) ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>()).ToArray();
-
-            // In case the Content-Type header is application/json, try to set BodyAsJson, else set Body and BodyAsBytes.
-            bool bodyAsJson = false;
             var contentTypeHeader = headers.FirstOrDefault(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase));
-            if (!contentTypeHeader.Equals(default(KeyValuePair<string, IEnumerable<string>>)) &&
-                contentTypeHeader.Value.Any(value => value != null && value.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
+            if (httpResponseMessage.Content != null)
             {
-                if (httpResponseMessage.Content != null)
-                {
-                    string content = await httpResponseMessage.Content.ReadAsStringAsync();
-                    try
-                    {
-                        responseMessage.BodyAsJson = JsonConvert.DeserializeObject(content, new JsonSerializerSettings { Formatting = Formatting.Indented });
-                        bodyAsJson = true;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            if (!bodyAsJson)
-            {
-                if (httpResponseMessage.Content != null)
-                {
-                    responseMessage.BodyAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-                    responseMessage.Body = await httpResponseMessage.Content.ReadAsStringAsync();
-                }
+                SetBody(httpResponseMessage.Content, contentTypeHeader, responseMessage);
             }
 
             foreach (var header in headers)
@@ -140,6 +116,42 @@ namespace WireMock.Http
             }
 
             return responseMessage;
+        }
+
+        private static async void SetBody(HttpContent content, KeyValuePair<string, IEnumerable<string>> contentTypeHeader, ResponseMessage responseMessage)
+        {
+            bool contentTypeIsDefault = contentTypeHeader.Equals(default(KeyValuePair<string, IEnumerable<string>>));
+            string[] textContentTypes = { "text/", "application/xml", "application/javascript", "application/typescript", "application/xhtml+xml" };
+
+            if (!contentTypeIsDefault && contentTypeHeader.Value.Any(value => textContentTypes.Any(t => value != null && value.StartsWith(t, StringComparison.OrdinalIgnoreCase))))
+            {
+                try
+                {
+                    responseMessage.Body = await content.ReadAsStringAsync();
+                }
+                catch
+                {
+                    // Reading as string failed, just get the ByteArray.
+                    responseMessage.BodyAsBytes = await content.ReadAsByteArrayAsync();
+                }
+            }
+            else if (!contentTypeIsDefault && contentTypeHeader.Value.Any(value => value != null && value.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
+            {
+                string stringContent = await content.ReadAsStringAsync();
+                try
+                {
+                    responseMessage.BodyAsJson = JsonConvert.DeserializeObject(stringContent, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                }
+                catch
+                {
+                    // JsonConvert failed, just set the Body as string.
+                    responseMessage.Body = stringContent;
+                }
+            }
+            else
+            {
+                responseMessage.BodyAsBytes = await content.ReadAsByteArrayAsync();
+            }
         }
     }
 }
