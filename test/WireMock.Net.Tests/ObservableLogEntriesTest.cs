@@ -18,7 +18,7 @@ namespace WireMock.Net.Tests
         private FluentMockServer _server;
 
         [Fact]
-        public async void Test()
+        public async void FluentMockServer_LogEntriesChanged()
         {
             // Assign
             _server = FluentMockServer.Start();
@@ -41,9 +41,9 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task ParallelTest()
+        public async Task FluentMockServer_LogEntriesChanged_Parallel()
         {
-            var expectedCount = 100;
+            int expectedCount = 10;
 
             // Assign
             _server = FluentMockServer.Start();
@@ -65,11 +65,11 @@ namespace WireMock.Net.Tests
             var listOfTasks = new List<Task<HttpResponseMessage>>();
             for (var i = 0; i < expectedCount; i++)
             {
-                Thread.Sleep(3);
-                listOfTasks.Add(http.GetAsync(_server.Urls[0] + $"/foo"));
+                Thread.Sleep(100);
+                listOfTasks.Add(http.GetAsync($"{_server.Urls[0]}/foo"));
             }
             var responses = await Task.WhenAll(listOfTasks);
-            var countResponsesWithStatusNotOk = responses.Where(r => r.StatusCode != HttpStatusCode.OK).Count();
+            var countResponsesWithStatusNotOk = responses.Count(r => r.StatusCode != HttpStatusCode.OK);
 
             // Assert
             Check.That(countResponsesWithStatusNotOk).Equals(0);

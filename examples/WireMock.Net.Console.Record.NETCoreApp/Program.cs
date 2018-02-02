@@ -18,7 +18,8 @@ namespace WireMock.Net.Console.Record.NETCoreApp
                     Url = "https://www.google.com",
                     //X509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
-                    SaveMappingToFile = false
+                    SaveMappingToFile = false,
+                    BlackListedHeaders = new [] { "dnt", "Content-Length" }
                 }
             });
 

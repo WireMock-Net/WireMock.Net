@@ -5,9 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NFluent;
+using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -41,7 +43,16 @@ namespace WireMock.Net.Tests
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create());
 
-            _server = FluentMockServer.Start();
+            var settings = new FluentMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = _serverForProxyForwarding.Urls[0],
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            _server = FluentMockServer.Start(settings);
             _server
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
@@ -54,6 +65,7 @@ namespace WireMock.Net.Tests
                 Content = new StringContent("stringContent")
             };
             requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            requestMessage.Content.Headers.Add("bbb", "test");
             await new HttpClient().SendAsync(requestMessage);
 
             // then
@@ -61,6 +73,54 @@ namespace WireMock.Net.Tests
             Check.That(receivedRequest.Body).IsEqualTo("stringContent");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
             Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly("text/plain");
+            Check.That(receivedRequest.Headers).ContainsKey("bbb");
+
+            var mapping = _server.Mappings.Last();
+            var matcher = ((Request) mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
+            Check.That(matcher).IsNotNull();
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
+        {
+            // given
+            _serverForProxyForwarding = FluentMockServer.Start();
+            _serverForProxyForwarding
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create());
+
+            var settings = new FluentMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = _serverForProxyForwarding.Urls[0],
+                    SaveMapping = true,
+                    SaveMappingToFile = false,
+                    BlackListedHeaders = new[] { "bbb" }
+                }
+            };
+            _server = FluentMockServer.Start(settings);
+            _server
+                .Given(Request.Create().WithPath("/*"))
+                .RespondWith(Response.Create());
+
+            // when
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(_server.Urls[0]),
+                Content = new StringContent("stringContent")
+            };
+            requestMessage.Content.Headers.Add("bbb", "test");
+            await new HttpClient().SendAsync(requestMessage);
+
+            // then
+            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            Check.That(receivedRequest.Headers).ContainsKey("bbb");
+
+            var mapping = _server.Mappings.Last();
+            var matcher = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
+            Check.That(matcher).IsNull();
         }
 
         [Fact]

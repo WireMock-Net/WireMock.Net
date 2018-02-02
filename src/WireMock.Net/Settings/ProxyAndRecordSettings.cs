@@ -3,7 +3,7 @@
 namespace WireMock.Settings
 {
     /// <summary>
-    /// RecordAndSaveSettings
+    /// ProxyAndRecordSettings
     /// </summary>
     public class ProxyAndRecordSettings : IProxyAndRecordSettings
     {
@@ -22,5 +22,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IProxyAndRecordSettings.X509Certificate2ThumbprintOrSubjectName"/>
         [PublicAPI]
         public string X509Certificate2ThumbprintOrSubjectName { get; set; }
+
+        /// <inheritdoc cref="IProxyAndRecordSettings.BlackListedHeaders"/>
+        [PublicAPI]
+        public string[] BlackListedHeaders { get; set; }
     }
 }

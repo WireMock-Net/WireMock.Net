@@ -6,10 +6,12 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class RequestTests
+    public class RequestWithUrlTests
     {
+        private const string ClientIp = "::1";
+
         [Fact]
-        public void Should_specify_requests_matching_given_url_wildcard()
+        public void Request_WithUrl()
         {
             // given
             var spec = Request.Create().WithUrl("*/foo");
@@ -23,7 +25,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_specify_requests_matching_given_url_exact()
+        public void Request_WithUrlExact()
         {
             // given
             var spec = Request.Create().WithUrl("http://localhost/foo");

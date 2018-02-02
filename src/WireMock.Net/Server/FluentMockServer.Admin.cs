@@ -149,7 +149,7 @@ namespace WireMock.Server
 
             if (settings.SaveMapping)
             {
-                var mapping = ToMapping(requestMessage, responseMessage);
+                var mapping = ToMapping(requestMessage, responseMessage, settings.BlackListedHeaders ?? new string[] { });
                 _options.Mappings.Add(mapping);
 
                 if (settings.SaveMappingToFile)
@@ -161,15 +161,22 @@ namespace WireMock.Server
             return responseMessage;
         }
 
-        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage)
+        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders)
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
             request.UsingVerb(requestMessage.Method);
 
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
-            requestMessage.Headers.Loop((key, value) => request.WithHeader(key, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
+
+            requestMessage.Headers.Loop((key, value) =>
+            {
+                if (!blacklistedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
+                {
+                    request.WithHeader(key, value.ToArray());
+                }
+            });
 
             if (requestMessage.Body != null)
             {

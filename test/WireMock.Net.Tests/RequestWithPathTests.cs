@@ -1,15 +1,103 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using NFluent;
+using WireMock.Matchers;
 using Xunit;
 using WireMock.RequestBuilders;
 using WireMock.Matchers.Request;
 
 namespace WireMock.Net.Tests
 {
-    //[TestFixture]
-    public partial class RequestTests
+    public class RequestWithPathTests
     {
+        private const string ClientIp = "::1";
+
+        [Fact]
+        public void Request_WithPath_WithHeader_Match()
+        {
+            // given
+            var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
+
+            // when
+            string bodyAsString = "whatever";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPath()
+        {
+            // given
+            var spec = Request.Create().WithPath("/foo");
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPaths()
+        {
+            var requestBuilder = Request.Create().WithPath("/x1", "/x2");
+
+            var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla", ClientIp);
+            var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla", ClientIp);
+
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request1, requestMatchResult)).IsEqualTo(1.0);
+            Check.That(requestBuilder.GetMatchingScore(request2, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPathFunc()
+        {
+            // given
+            var spec = Request.Create().WithPath(url => url.EndsWith("/foo"));
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPathRegexMatcher()
+        {
+            // given
+            var spec = Request.Create().WithPath(new RegexMatcher("^/foo"));
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPathRegex_false()
+        {
+            // given
+            var spec = Request.Create().WithPath("/foo");
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+        }
+
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_delete()
         {

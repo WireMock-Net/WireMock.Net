@@ -67,7 +67,8 @@ namespace WireMock.Net.StandAlone
                     Url = proxyURL,
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
-                    X509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("X509Certificate2ThumbprintOrSubjectName")
+                    X509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("X509Certificate2ThumbprintOrSubjectName"),
+                    BlackListedHeaders = parser.GetValues("BlackListedHeaders")
                 };
             }
 
@@ -75,7 +76,7 @@ namespace WireMock.Net.StandAlone
 
             FluentMockServer server = Start(settings);
 
-            Console.WriteLine("WireMock.Net server listening at {0}", string.Join(" and ", server.Urls));
+            Console.WriteLine("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
             return server;
         }

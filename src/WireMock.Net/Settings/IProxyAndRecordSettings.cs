@@ -1,7 +1,7 @@
 ﻿namespace WireMock.Settings
 {
     /// <summary>
-    /// IRecordAndSaveSettings
+    /// IProxyAndRecordSettings
     /// </summary>
     public interface IProxyAndRecordSettings
     {
@@ -24,5 +24,10 @@
         /// The clientCertificate thumbprint or subject name fragment to use. Example thumbprint : "D2DBF135A8D06ACCD0E1FAD9BFB28678DF7A9818". Example subject name: "www.google.com""
         /// </summary>
         string X509Certificate2ThumbprintOrSubjectName { get; set; }
+
+        /// <summary>
+        /// Defines a list from headers which will excluded from the saved mappings.
+        /// </summary>
+        string[] BlackListedHeaders { get; set; }
     }
 }

@@ -8,8 +8,10 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class ResponseTests
+    public class ResponseWithBodyHandlebarsTests
     {
+        private const string ClientIp = "::1";
+
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {

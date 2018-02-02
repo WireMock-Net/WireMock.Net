@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class ResponseTests
+    public class ResponseWithBodyTests
     {
         private const string ClientIp = "::1";
 
