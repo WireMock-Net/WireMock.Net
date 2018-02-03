@@ -47,7 +47,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "documentdb_root.json");
-            _server.ReadStaticMapping(folder);
+            _server.ReadStaticMappingAndAddOrUpdate(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests
 
             _server = FluentMockServer.Start();
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
-            _server.ReadStaticMapping(folder);
+            _server.ReadStaticMappingAndAddOrUpdate(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);

@@ -29,6 +29,11 @@ namespace WireMock.Settings
         bool? ReadStaticMappings { get; set; }
 
         /// <summary>
+        /// Watch the static mapping files + folder for changes when running.
+        /// </summary>
+        bool? WatchStaticMappings { get; set; }
+
+        /// <summary>
         /// Gets or sets if the proxy and record settings.
         /// </summary>
         IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }

@@ -21,6 +21,11 @@ namespace WireMock
         public string Title { get; }
 
         /// <summary>
+        /// The full filename path for this mapping (only defined for static mappings).
+        /// </summary>
+        public string Path { get; set; }
+
+        /// <summary>
         /// Gets the priority.
         /// </summary>
         public int Priority { get; }
@@ -63,17 +68,19 @@ namespace WireMock
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
-        /// <param name="title">The unique title (can be null_.</param>
+        /// <param name="title">The unique title (can be null).</param>
+        /// <param name="path">The full file path from this mapping title (can be null).</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
         /// <param name="scenario">The scenario. [Optional]</param>
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
-        public Mapping(Guid guid, [CanBeNull] string title, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] object executionConditionState, [CanBeNull] object nextState)
+        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] object executionConditionState, [CanBeNull] object nextState)
         {
             Guid = guid;
             Title = title;
+            Path = path;
             RequestMatcher = requestMatcher;
             Provider = provider;
             Priority = priority;

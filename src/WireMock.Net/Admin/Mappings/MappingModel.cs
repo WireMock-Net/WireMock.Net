@@ -10,29 +10,20 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the unique identifier.
         /// </summary>
-        /// <value>
-        /// The unique identifier.
-        /// </value>
         public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or sets the unique title.
-        /// </summary>
-        /// <value>
         /// The unique title.
-        /// </value>
+        /// </summary>
         public string Title { get; set; }
 
         /// <summary>
-        /// Gets or sets the priority.
-        /// </summary>
-        /// <value>
         /// The priority.
-        /// </value>
+        /// </summary>
         public int? Priority { get; set; }
 
         /// <summary>
-        /// Scenario.
+        /// The Scenario.
         /// </summary>
         public string Scenario { get; set; }
 
@@ -48,19 +39,13 @@ namespace WireMock.Admin.Mappings
         public object SetStateTo { get; set; }
 
         /// <summary>
-        /// Gets or sets the request.
-        /// </summary>
-        /// <value>
         /// The request.
-        /// </value>
+        /// </summary>
         public RequestModel Request { get; set; }
 
         /// <summary>
-        /// Gets or sets the response.
-        /// </summary>
-        /// <value>
         /// The response.
-        /// </value>
+        /// </summary>
         public ResponseModel Response { get; set; }
     }
 }

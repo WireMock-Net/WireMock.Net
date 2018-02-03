@@ -13,6 +13,7 @@ using WireMock.RequestBuilders;
 using WireMock.Settings;
 using WireMock.Validation;
 using WireMock.Owin;
+using WireMock.Serialization;
 
 namespace WireMock.Server
 {
@@ -202,6 +203,11 @@ namespace WireMock.Server
                 ReadStaticMappings();
             }
 
+            if (settings.WatchStaticMappings == true)
+            {
+                WatchStaticMappings();
+            }
+
             if (settings.ProxyAndRecordSettings != null)
             {
                 InitProxyAndRecord(settings.ProxyAndRecordSettings);
@@ -274,7 +280,18 @@ namespace WireMock.Server
         public bool DeleteMapping(Guid guid)
         {
             // Check a mapping exists with the same GUID, if so, remove it.
-            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
+            return DeleteMapping(m => m.Guid == guid);
+        }
+
+        private bool DeleteMapping(string path)
+        {
+            // Check a mapping exists with the same path, if so, remove it.
+            return DeleteMapping(m => string.Equals(m.Path, path, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool DeleteMapping(Func<Mapping, bool> predicate)
+        {
+            var existingMapping = _options.Mappings.FirstOrDefault(predicate);
             if (existingMapping != null)
             {
                 _options.Mappings.Remove(existingMapping);

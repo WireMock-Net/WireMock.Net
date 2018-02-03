@@ -25,6 +25,10 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool? ReadStaticMappings { get; set; }
 
+        /// <inheritdoc cref="IFluentMockServerSettings.WatchStaticMappings"/>
+        [PublicAPI]
+        public bool? WatchStaticMappings { get; set; }
+
         /// <inheritdoc cref="IFluentMockServerSettings.ProxyAndRecordSettings"/>
         [PublicAPI]
         public IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
