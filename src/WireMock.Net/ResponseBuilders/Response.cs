@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Util;
 using WireMock.Validation;
@@ -43,7 +44,7 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The client X509Certificate2 Thumbprint or SubjectName to use.
         /// </summary>
-        public string X509Certificate2ThumbprintOrSubjectName { get; private set; }
+        public string ClientX509Certificate2ThumbprintOrSubjectName { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -296,20 +297,23 @@ namespace WireMock.ResponseBuilders
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <summary>
-        /// With Proxy URL.
-        /// </summary>
-        /// <param name="proxyUrl">The proxy url.</param>
-        /// <param name="clientX509Certificate2ThumbprintOrSubjectName">The X509Certificate2 file to use for client authentication.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
         public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
             Check.NotEmpty(proxyUrl, nameof(proxyUrl));
 
             ProxyUrl = proxyUrl;
-            X509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
+            ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
             return this;
+        }
+
+        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
+        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
+        {
+            Check.NotNull(settings, nameof(settings));
+
+            return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
         /// <summary>

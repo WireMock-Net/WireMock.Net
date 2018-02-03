@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using WireMock.HttpsCertificate;
 using WireMock.Validation;
 
 namespace WireMock.Http
@@ -33,7 +34,7 @@ namespace WireMock.Http
             {
                 handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
-                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
+                var x509Certificate2 = ClientCertificateHelper.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
             }
 

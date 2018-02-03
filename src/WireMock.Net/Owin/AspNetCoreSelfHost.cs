@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using WireMock.Http;
+using WireMock.HttpsCertificate;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -59,7 +60,7 @@ namespace WireMock.Owin
 #if NETSTANDARD1_3
                     if (_urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
-                        options.UseHttps("self-signed-certificate.pfx");
+                        options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                     }
 #else
                     // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
@@ -74,7 +75,7 @@ namespace WireMock.Owin
                         PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
                         options.Listen(IPAddress.Loopback, port, listenOptions =>
                         {
-                            listenOptions.UseHttps("self-signed-certificate.pfx");
+                            listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                         });
                     }
 #endif

@@ -135,7 +135,7 @@ namespace WireMock.Server
 
         private void InitProxyAndRecord(IProxyAndRecordSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ClientX509Certificate2ThumbprintOrSubjectName);
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
