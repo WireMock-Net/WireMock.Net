@@ -31,7 +31,7 @@ namespace WireMock.Owin
         public AspNetCoreSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
 
             foreach (string uriPrefix in uriPrefixes)
             {
@@ -51,8 +51,11 @@ namespace WireMock.Owin
                 .Configure(appBuilder =>
                 {
                     appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
+
                     _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
+
                     appBuilder.UseMiddleware<WireMockMiddleware>(_options);
+
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
                 .UseKestrel(options =>

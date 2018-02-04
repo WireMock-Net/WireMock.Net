@@ -19,7 +19,7 @@ namespace WireMock.Owin
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
 
             foreach (string uriPrefix in uriPrefixes)
             {

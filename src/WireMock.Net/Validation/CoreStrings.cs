@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using JetBrains.Annotations;
 
 // copied from https://github.com/aspnet/EntityFramework/blob/dev/src/Microsoft.EntityFrameworkCore/Properties/CoreStrings.resx
 namespace WireMock.Validation
@@ -11,33 +9,33 @@ namespace WireMock.Validation
         /// <summary>
         /// The property '{property}' of the argument '{argument}' cannot be null.
         /// </summary>
-        public static string ArgumentPropertyNull([CanBeNull] string property, [CanBeNull] string argument)
+        public static string ArgumentPropertyNull(string property, string argument)
         {
-            return string.Format(CultureInfo.CurrentCulture, $"The property '{property}' of the argument '{argument}' cannot be null.", property, argument);
+            return $"The property '{property}' of the argument '{argument}' cannot be null.";
         }
 
         /// <summary>
         /// The string argument '{argumentName}' cannot be empty.
         /// </summary>
-        public static string ArgumentIsEmpty([CanBeNull] string argumentName)
+        public static string ArgumentIsEmpty(string argumentName)
         {
-            return string.Format(CultureInfo.CurrentCulture, $"The string argument '{argumentName}' cannot be empty.", argumentName);
+            return $"The string argument '{argumentName}' cannot be empty.";
         }
 
         /// <summary>
         /// The entity type '{type}' provided for the argument '{argumentName}' must be a reference type.
         /// </summary>
-        public static string InvalidEntityType([CanBeNull] Type type, [CanBeNull] string argumentName)
+        public static string InvalidEntityType(Type type, string argumentName)
         {
-            return string.Format(CultureInfo.CurrentCulture, $"The entity type '{type}' provided for the argument '{argumentName}' must be a reference type.", type, argumentName);
+            return $"The entity type '{type}' provided for the argument '{argumentName}' must be a reference type.";
         }
 
         /// <summary>
         /// The collection argument '{argumentName}' must contain at least one element.
         /// </summary>
-        public static string CollectionArgumentIsEmpty([CanBeNull] string argumentName)
+        public static string CollectionArgumentIsEmpty(string argumentName)
         {
-            return string.Format(CultureInfo.CurrentCulture, $"The collection argument '{argumentName}' must contain at least one element.", argumentName);
+            return $"The collection argument '{argumentName}' must contain at least one element.";
         }
     }
 }

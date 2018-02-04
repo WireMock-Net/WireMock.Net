@@ -146,7 +146,7 @@ namespace WireMock.Server
             {
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
-                if (Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
+                if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
                 {
                     DeleteMapping(guidFromFilename);
                 }

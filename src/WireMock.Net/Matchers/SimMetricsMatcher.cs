@@ -32,7 +32,7 @@ namespace WireMock.Matchers
         /// <param name="simMetricType">The SimMetric Type</param>
         public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein)
         {
-            Check.NotEmpty(patterns, nameof(patterns));
+            Check.NotNullOrEmpty(patterns, nameof(patterns));
 
             _patterns = patterns;
             _simMetricType = simMetricType;

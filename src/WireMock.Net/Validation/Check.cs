@@ -23,7 +23,7 @@ namespace WireMock.Validation
 
             if (!condition(value))
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentOutOfRangeException(parameterName);
             }
@@ -36,7 +36,7 @@ namespace WireMock.Validation
         {
             if (ReferenceEquals(value, null))
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentNullException(parameterName);
             }
@@ -45,15 +45,12 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static T NotNull<T>(
-            [NoEnumeration] T value,
-            [InvokerParameterName] [NotNull] string parameterName,
-            [NotNull] string propertyName)
+        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName] [NotNull] string parameterName, [NotNull] string propertyName)
         {
             if (ReferenceEquals(value, null))
             {
-                NotEmpty(parameterName, nameof(parameterName));
-                NotEmpty(propertyName, nameof(propertyName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(propertyName, nameof(propertyName));
 
                 throw new ArgumentException(CoreStrings.ArgumentPropertyNull(propertyName, parameterName));
             }
@@ -62,13 +59,13 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static IList<T> NotEmpty<T>(IList<T> value, [InvokerParameterName] [NotNull] string parameterName)
+        public static IList<T> NotNullOrEmpty<T>(IList<T> value, [InvokerParameterName] [NotNull] string parameterName)
         {
             NotNull(value, parameterName);
 
             if (value.Count == 0)
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentException(CoreStrings.CollectionArgumentIsEmpty(parameterName));
             }
@@ -77,7 +74,7 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static string NotEmpty(string value, [InvokerParameterName] [NotNull] string parameterName)
+        public static string NotNullOrEmpty(string value, [InvokerParameterName] [NotNull] string parameterName)
         {
             Exception e = null;
             if (ReferenceEquals(value, null))
@@ -91,7 +88,7 @@ namespace WireMock.Validation
 
             if (e != null)
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw e;
             }
@@ -104,7 +101,7 @@ namespace WireMock.Validation
             if (!ReferenceEquals(value, null)
                 && (value.Length == 0))
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentException(CoreStrings.ArgumentIsEmpty(parameterName));
             }
@@ -119,7 +116,7 @@ namespace WireMock.Validation
 
             if (value.Any(e => e == null))
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentException(parameterName);
             }
@@ -131,7 +128,7 @@ namespace WireMock.Validation
         {
             if (!value.GetTypeInfo().IsClass)
             {
-                NotEmpty(parameterName, nameof(parameterName));
+                NotNullOrEmpty(parameterName, nameof(parameterName));
 
                 throw new ArgumentException(CoreStrings.InvalidEntityType(value, parameterName));
             }

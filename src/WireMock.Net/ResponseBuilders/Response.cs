@@ -300,7 +300,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
         public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            Check.NotEmpty(proxyUrl, nameof(proxyUrl));
+            Check.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
 
             ProxyUrl = proxyUrl;
             ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;

@@ -94,7 +94,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer Start(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
@@ -127,7 +127,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer StartWithAdminInterface(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
@@ -144,7 +144,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
