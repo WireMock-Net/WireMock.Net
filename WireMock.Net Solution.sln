@@ -9,7 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.runsettings = .runsettings
 		appveyor.yml = appveyor.yml
+		CHANGELOG.md = CHANGELOG.md
 		codecov-local.cmd = codecov-local.cmd
+		GitReleaseNotes.txt = GitReleaseNotes.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -42,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.Net452", "examples\WireMock.Net.Console.Proxy.Net452\WireMock.Net.Console.Proxy.Net452.csproj", "{26433A8F-BF01-4962-97EB-81BFFBB61096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.NETCoreApp2", "examples\WireMock.Net.Console.Proxy.NETCoreApp2\WireMock.Net.Console.Proxy.NETCoreApp2.csproj", "{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.Proxy.NETCoreApp2", "examples\WireMock.Net.Console.Proxy.NETCoreApp2\WireMock.Net.Console.Proxy.NETCoreApp2.csproj", "{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
     <AssemblyTitle>WireMock.Net</AssemblyTitle>
-    <Version>1.0.2.13</Version>
+    <Version>1.0.3</Version>
     <Authors>Alexandre Victoor;Stef Heyenrath</Authors>
     <TargetFrameworks>net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net</AssemblyName>
     <PackageId>WireMock.Net</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/LICENSE</PackageLicenseUrl>
