@@ -36,10 +36,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <!-- <PackageReference Include="CommandLineArgumentsParser" Version="3.0.16" /> -->
-    <!-- <PackageReference Include="Marsonsoft.CommandLineParser" Version="1.0.34" /> -->
-    <!-- <PackageReference Include="BurnSystems.CommandLine" Version="1.1.0" /> -->
-    <!-- <ProjectReference Include="..\..\..\CommandLineParser\src\CommandLineArgumentsParser\CommandLineArgumentsParser.csproj" /> -->
+    <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>

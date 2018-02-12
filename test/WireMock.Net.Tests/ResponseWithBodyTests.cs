@@ -75,13 +75,15 @@ namespace WireMock.Net.Tests
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
             var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
 
-            var response = Response.Create().WithBodyAsJson(new { value = "test" }, Encoding.ASCII);
+            object x = new { value = "test" };
+            var response = Response.Create().WithBodyAsJson(x, Encoding.ASCII);
 
             // act
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // then
-            Check.That(responseMessage.Body).Equals("{\"value\":\"test\"}");
+            Check.That(responseMessage.BodyAsJson).IsNotNull();
+            Check.That(responseMessage.BodyAsJson).Equals(x);
             Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
         }
     }

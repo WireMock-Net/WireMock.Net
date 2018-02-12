@@ -247,16 +247,9 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(body, nameof(body));
 
-            string jsonBody = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
-
-            if (encoding != null && !encoding.Equals(Encoding.UTF8))
-            {
-                jsonBody = encoding.GetString(Encoding.UTF8.GetBytes(jsonBody));
-                ResponseMessage.BodyEncoding = encoding;
-            }
-
             ResponseMessage.BodyDestination = null;
-            ResponseMessage.Body = jsonBody;
+            ResponseMessage.BodyAsJson = body;
+            ResponseMessage.BodyEncoding = encoding;
 
             return this;
         }
