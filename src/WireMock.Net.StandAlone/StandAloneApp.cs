@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Validation;
 using JetBrains.Annotations;
 using log4net;
-using Newtonsoft.Json;
 
 namespace WireMock.Net.StandAlone
 {
@@ -17,7 +15,7 @@ namespace WireMock.Net.StandAlone
         private static readonly ILog Log = LogManager.GetLogger(typeof(StandAloneApp));
 
         /// <summary>
-        /// Start WireMock.Net standalone based on the FluentMockServerSettings.
+        /// Start WireMock.Net standalone Server based on the FluentMockServerSettings.
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
         [PublicAPI]
@@ -29,7 +27,7 @@ namespace WireMock.Net.StandAlone
         }
 
         /// <summary>
-        /// Start WireMock.Net standalone based on the commandline arguments.
+        /// Start WireMock.Net standalone Server based on the commandline arguments.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
         [PublicAPI]

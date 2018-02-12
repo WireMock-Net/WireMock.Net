@@ -16,8 +16,6 @@ namespace WireMock.Net.Console.NETCoreApp
         {
             XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 
-            Log.Info("Hello");
-
             MainApp.Run();
         }
     }
