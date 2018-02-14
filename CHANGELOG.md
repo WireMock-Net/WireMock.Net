@@ -1,3 +1,11 @@
+# 1.0.3.1 (14 February 2018)
+
+ - [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
+
+Commits: ...
+
+
 # 1.0.3 (04 February 2018)
 
  - [#86](https://github.com/WireMock-Net/WireMock.Net/issues/86) - Feature : Add FileSystemWatcher logic for watching static mapping files +feature
