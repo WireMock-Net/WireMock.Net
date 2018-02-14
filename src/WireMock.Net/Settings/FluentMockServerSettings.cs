@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace WireMock.Settings
 {
@@ -63,10 +64,12 @@ namespace WireMock.Settings
 
         /// <inheritdoc cref="IFluentMockServerSettings.PreWireMockMiddlewareInit"/>
         [PublicAPI]
+        [JsonIgnore]
         public Action<object> PreWireMockMiddlewareInit { get; set; }
 
         /// <inheritdoc cref="IFluentMockServerSettings.PostWireMockMiddlewareInit"/>
         [PublicAPI]
+        [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
     }
 }

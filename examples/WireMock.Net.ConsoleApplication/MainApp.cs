@@ -54,8 +54,9 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/headers", "/headers_test").UsingPost().WithHeader("Content-Type", "application/json*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
-                    .WithHeader("MyHeader", "application/json", "application/json2")
-                    .WithBody(@"{ ""result"": ""data posted with 201""}"));
+                    //.WithHeader("MyHeader", "application/json", "application/json2")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { result = "data:headers posted with 201" }));
 
             server
                 .Given(Request.Create().WithPath("/file").UsingGet())
@@ -117,7 +118,7 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
+                    .WithBodyAsJson(new { result = "data posted with FUNC 201" }));
 
             server
                 .Given(Request.Create().WithPath("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))

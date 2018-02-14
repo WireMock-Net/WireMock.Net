@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using System.Linq;
+using log4net;
 using WireMock.Matchers;
 using WireMock.Util;
 using Newtonsoft.Json;
+using WireMock.Http;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -20,6 +22,7 @@ namespace WireMock.Owin
     internal class WireMockMiddleware
 #endif
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(WireMockMiddleware));
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly WireMockMiddlewareOptions _options;
 
@@ -95,6 +98,7 @@ namespace WireMock.Owin
                 if (targetMapping == null)
                 {
                     logRequest = true;
+                    Log.Warn("HttpStatusCode set to 404 : No matching mapping found");
                     response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
                     return;
                 }
@@ -103,9 +107,10 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
-                    bool present = request.Headers.TryGetValue("Authorization", out WireMockList<string> authorization);
+                    bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string> authorization);
                     if (!present || _options.AuthorizationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
+                        Log.Error("HttpStatusCode set to 401");
                         response = new ResponseMessage { StatusCode = 401 };
                         return;
                     }
@@ -125,6 +130,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
+                Log.Error("HttpStatusCode set to 500", ex);
                 response = new ResponseMessage { StatusCode = 500, Body = JsonConvert.SerializeObject(ex) };
             }
             finally

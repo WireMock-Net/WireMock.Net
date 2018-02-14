@@ -25,12 +25,17 @@ namespace WireMock.Admin.Requests
         public string BodyDestination { get; set; }
 
         /// <summary>
-        /// Gets or sets the body.
+        /// The body (as string).
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets or sets the body as bytes.
+        /// The body (as JSON object).
+        /// </summary>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// The body (as bytearray).
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
 

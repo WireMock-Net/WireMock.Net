@@ -60,14 +60,19 @@ namespace WireMock
         public string RawQuery { get; }
 
         /// <summary>
-        /// Gets the bodyAsBytes.
-        /// </summary>
-        public byte[] BodyAsBytes { get; }
-
-        /// <summary>
-        /// Gets the body.
+        /// The body as string.
         /// </summary>
         public string Body { get; }
+
+        /// <summary>
+        /// The body (as JSON object).
+        /// </summary>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// The body (as bytearray).
+        /// </summary>
+        public byte[] BodyAsBytes { get; set; }
 
         /// <summary>
         /// Gets the Host
@@ -90,9 +95,44 @@ namespace WireMock
         public string Origin { get; }
 
         /// <summary>
-        /// Gets the body encoding.
+        /// The body encoding.
         /// </summary>
         public Encoding BodyEncoding { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessage"/> class.
+        /// </summary>
+        /// <param name="url">The original url.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="clientIP">The client IP Address.</param>
+        /// <param name="body">The body.</param>
+        /// <param name="headers">The headers.</param>
+        /// <param name="cookies">The cookies.</param>
+        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData body, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        {
+            Check.NotNull(url, nameof(url));
+            Check.NotNull(method, nameof(method));
+            Check.NotNull(clientIP, nameof(clientIP));
+
+            Url = url.ToString();
+            Protocol = url.Scheme;
+            Host = url.Host;
+            Port = url.Port;
+            Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
+            Path = WebUtility.UrlDecode(url.AbsolutePath);
+            Method = method.ToLower();
+            ClientIP = clientIP;
+
+            Body = body?.BodyAsString;
+            BodyEncoding = body?.Encoding;
+            BodyAsJson = body?.BodyAsJson;
+            BodyAsBytes = body?.BodyAsBytes;
+
+            Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
+            Cookies = cookies;
+            RawQuery = WebUtility.UrlDecode(url.Query);
+            Query = ParseQuery(RawQuery);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.

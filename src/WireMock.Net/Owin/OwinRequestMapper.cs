@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WireMock.Util;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -16,7 +17,7 @@ namespace WireMock.Owin
     /// <summary>
     /// OwinRequestMapper
     /// </summary>
-    public class OwinRequestMapper
+    internal class OwinRequestMapper
     {
         /// <summary>
         /// MapAsync IOwinRequest to RequestMessage
@@ -43,20 +44,6 @@ namespace WireMock.Owin
 #endif
             string method = request.Method;
 
-            string bodyAsString = null;
-            byte[] body = null;
-            Encoding bodyEncoding = null;
-            if (ParseBody(method) && request.Body != null)
-            {
-                using (var streamReader = new StreamReader(request.Body))
-                {
-                    bodyAsString = await streamReader.ReadToEndAsync();
-                    bodyEncoding = streamReader.CurrentEncoding;
-                }
-
-                body = bodyEncoding.GetBytes(bodyAsString);
-            }
-
             Dictionary<string, string[]> headers = null;
             if (request.Headers.Any())
             {
@@ -77,10 +64,16 @@ namespace WireMock.Owin
                 }
             }
 
-            return new RequestMessage(url, method, clientIP, body, bodyAsString, bodyEncoding, headers, cookies) { DateTime = DateTime.Now };
+            BodyData body = null;
+            if (request.Body != null && ShouldParseBody(method))
+            {
+                body = await BodyParser.Parse(request.Body, request.ContentType);
+            }
+
+            return new RequestMessage(url, method, clientIP, body, headers, cookies) { DateTime = DateTime.Now };
         }
 
-        private bool ParseBody(string method)
+        private bool ShouldParseBody(string method)
         {
             /*
                 HEAD - No defined body semantics.

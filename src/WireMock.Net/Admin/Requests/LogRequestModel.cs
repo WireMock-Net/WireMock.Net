@@ -11,52 +11,62 @@ namespace WireMock.Admin.Requests
     public class LogRequestModel
     {
         /// <summary>
-        /// Gets the Client IP Address.
+        /// The Client IP Address.
         /// </summary>
         public string ClientIP { get; set; }
 
         /// <summary>
-        /// Gets the DateTime.
+        /// The DateTime.
         /// </summary>
         public DateTime DateTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the Path.
+        /// The Path.
         /// </summary>
         public string Path { get; set; }
 
         /// <summary>
-        /// Gets or sets the absolete URL.
+        ///The absolete URL.
         /// </summary>
         public string AbsoluteUrl { get; set; }
 
         /// <summary>
-        /// Gets the query.
+        /// The query.
         /// </summary>
         public IDictionary<string, WireMockList<string>> Query { get; set; }
 
         /// <summary>
-        /// Gets or sets the method.
+        /// The method.
         /// </summary>
         public string Method { get; set; }
 
         /// <summary>
-        /// Gets or sets the Headers.
+        /// The Headers.
         /// </summary>
         public IDictionary<string, WireMockList<string>> Headers { get; set; }
 
         /// <summary>
-        /// Gets or sets the Cookies.
+        /// Tthe Cookies.
         /// </summary>
         public IDictionary<string, string> Cookies { get; set; }
 
         /// <summary>
-        /// Gets or sets the body.
+        /// The body (as string).
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets or sets the body encoding.
+        /// The body (as JSON object).
+        /// </summary>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// The body (as bytearray).
+        /// </summary>
+        public byte[] BodyAsBytes { get; set; }
+
+        /// <summary>
+        /// The body encoding.
         /// </summary>
         public EncodingModel BodyEncoding { get; set; }
     }

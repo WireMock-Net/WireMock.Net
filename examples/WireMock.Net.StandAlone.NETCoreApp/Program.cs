@@ -1,16 +1,26 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Threading;
+using log4net;
+using log4net.Config;
+using log4net.Repository;
 using WireMock.Server;
 
 namespace WireMock.Net.StandAlone.NETCoreApp
 {
-    class Program
+    static class Program
     {
+        private static readonly ILoggerRepository LogRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+        // private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+
         private static int sleepTime = 30000;
         private static FluentMockServer _server;
 
         static void Main(string[] args)
         {
+            XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
+
             _server = StandAloneApp.Start(args);
 
             Console.WriteLine($"{DateTime.UtcNow} Press Ctrl+C to shut down");

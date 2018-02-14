@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using log4net;
+using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -13,7 +15,6 @@ using WireMock.RequestBuilders;
 using WireMock.Settings;
 using WireMock.Validation;
 using WireMock.Owin;
-using WireMock.Serialization;
 
 namespace WireMock.Server
 {
@@ -22,6 +23,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(FluentMockServer));
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -156,6 +158,8 @@ namespace WireMock.Server
 
         private FluentMockServer(IFluentMockServerSettings settings)
         {
+            Log.DebugFormat("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
+
             if (settings.Urls != null)
             {
                 Urls = settings.Urls.Select(u => u.EndsWith("/") ? u : $"{u}/").ToArray();
@@ -315,9 +319,10 @@ namespace WireMock.Server
         /// Allows the partial mapping.
         /// </summary>
         [PublicAPI]
-        public void AllowPartialMapping()
+        public void AllowPartialMapping(bool allow = true)
         {
-            _options.AllowPartialMapping = true;
+            Log.InfoFormat("AllowPartialMapping is set to {0}", allow);
+            _options.AllowPartialMapping = allow;
         }
 
         /// <summary>

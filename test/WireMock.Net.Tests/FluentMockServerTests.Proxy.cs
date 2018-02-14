@@ -72,7 +72,7 @@ namespace WireMock.Net.Tests
             var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Body).IsEqualTo("stringContent");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
-            Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly("text/plain");
+            Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
             Check.That(receivedRequest.Headers).ContainsKey("bbb");
 
             var mapping = _server.Mappings.Last();
@@ -151,7 +151,7 @@ namespace WireMock.Net.Tests
             var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Body).IsEqualTo("");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
-            Check.That(receivedRequest.Headers["Content-Type"]).ContainsExactly("text/plain");
+            Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
         }
 
         [Fact]

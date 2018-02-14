@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Validation;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
+using log4net;
 
 namespace WireMock.Net.StandAlone
 {
@@ -13,8 +12,10 @@ namespace WireMock.Net.StandAlone
     /// </summary>
     public static class StandAloneApp
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(StandAloneApp));
+
         /// <summary>
-        /// Start WireMock.Net standalone based on the FluentMockServerSettings.
+        /// Start WireMock.Net standalone Server based on the FluentMockServerSettings.
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
         [PublicAPI]
@@ -26,7 +27,7 @@ namespace WireMock.Net.StandAlone
         }
 
         /// <summary>
-        /// Start WireMock.Net standalone based on the commandline arguments.
+        /// Start WireMock.Net standalone Server based on the commandline arguments.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
         [PublicAPI]
@@ -34,7 +35,7 @@ namespace WireMock.Net.StandAlone
         {
             Check.NotNull(args, nameof(args));
 
-            Console.WriteLine("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
+            Log.DebugFormat("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             var parser = new SimpleCommandLineParser();
             parser.Parse(args);
@@ -73,11 +74,9 @@ namespace WireMock.Net.StandAlone
                 };
             }
 
-            Console.WriteLine("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
-
             FluentMockServer server = Start(settings);
 
-            Console.WriteLine("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
+            Log.InfoFormat("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
             return server;
         }
