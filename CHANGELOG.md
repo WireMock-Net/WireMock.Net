@@ -1,3 +1,13 @@
+# 1.0.3.2 (14 February 2018)
+
+ - [#90](https://github.com/WireMock-Net/WireMock.Net/pull/90) - Concurrent issue (#88) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#88](https://github.com/WireMock-Net/WireMock.Net/issues/88) - Bug: Standalone server throws 500 error when receiving concurrent requests +fix
+ - [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
+
+Commits: 51070dab63...693778659e
+
+
 # 1.0.3.1 (14 February 2018)
 
  - [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
