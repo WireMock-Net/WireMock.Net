@@ -209,7 +209,7 @@ namespace WireMock.Server
             if (settings.SaveMapping)
             {
                 var mapping = ToMapping(requestMessage, responseMessage, settings.BlackListedHeaders ?? new string[] { });
-                _options.Mappings.Add(mapping);
+                _options.Mappings.Add(mapping.Guid, mapping);
 
                 if (settings.SaveMappingToFile)
                 {

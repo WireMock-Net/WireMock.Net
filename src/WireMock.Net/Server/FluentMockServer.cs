@@ -50,7 +50,7 @@ namespace WireMock.Server
         /// Gets the mappings.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<Mapping> Mappings => new ReadOnlyCollection<Mapping>(_options.Mappings);
+        public IEnumerable<Mapping> Mappings => _options.Mappings.Values.ToArray();
 
         /// <summary>
         /// Gets the scenarios.
@@ -273,7 +273,10 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetMappings()
         {
-            _options.Mappings = _options.Mappings.Where(m => m.IsAdminInterface).ToList();
+            foreach (var nonAdmin in _options.Mappings.Where(m => !m.Value.IsAdminInterface))
+            {
+                _options.Mappings.Remove(nonAdmin);
+            }
         }
 
         /// <summary>
@@ -284,25 +287,19 @@ namespace WireMock.Server
         public bool DeleteMapping(Guid guid)
         {
             // Check a mapping exists with the same GUID, if so, remove it.
-            return DeleteMapping(m => m.Guid == guid);
+            if (_options.Mappings.ContainsKey(guid))
+            {
+                return _options.Mappings.Remove(guid);
+            }
+
+            return false;
         }
 
         private bool DeleteMapping(string path)
         {
             // Check a mapping exists with the same path, if so, remove it.
-            return DeleteMapping(m => string.Equals(m.Path, path, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool DeleteMapping(Func<Mapping, bool> predicate)
-        {
-            var existingMapping = _options.Mappings.FirstOrDefault(predicate);
-            if (existingMapping != null)
-            {
-                _options.Mappings.Remove(existingMapping);
-                return true;
-            }
-
-            return false;
+            var mapping = _options.Mappings.FirstOrDefault(entry => string.Equals(entry.Value.Path, path, StringComparison.OrdinalIgnoreCase));
+            return DeleteMapping(mapping.Key);
         }
 
         /// <summary>
@@ -393,14 +390,13 @@ namespace WireMock.Server
         private void RegisterMapping(Mapping mapping)
         {
             // Check a mapping exists with the same Guid, if so, replace it.
-            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == mapping.Guid);
-            if (existingMapping != null)
+            if (_options.Mappings.ContainsKey(mapping.Guid))
             {
-                _options.Mappings[_options.Mappings.IndexOf(existingMapping)] = mapping;
+                _options.Mappings[mapping.Guid] = mapping;
             }
             else
             {
-                _options.Mappings.Add(mapping);
+                _options.Mappings.Add(mapping.Guid, mapping);
             }
         }
     }

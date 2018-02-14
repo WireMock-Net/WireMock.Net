@@ -21,7 +21,7 @@ namespace WireMock.Owin
 
         public bool AllowPartialMapping { get; set; }
 
-        public IList<Mapping> Mappings { get; set; } = new List<Mapping>();
+        public IDictionary<Guid, Mapping> Mappings { get; set; } = new ConcurrentDictionary<Guid, Mapping>();
 
         public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 
