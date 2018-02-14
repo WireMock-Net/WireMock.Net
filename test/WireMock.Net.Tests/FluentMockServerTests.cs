@@ -91,7 +91,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public void FluentMockServer_Admin_Mappings_Get()
         {
-            var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+            Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
             _server.Given(Request.Create().WithPath("/foo1").UsingGet())
@@ -103,12 +103,6 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
-
-            Check.That(mappings.First().RequestMatcher).IsNotNull();
-            Check.That(mappings.First().Provider).IsNotNull();
-            Check.That(mappings.First().Guid).Equals(guid);
-
-            Check.That(mappings[1].Guid).Not.Equals(guid);
         }
 
         [Fact]
@@ -153,8 +147,6 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
-            Check.That(mappings[0].Priority).Equals(2);
-            Check.That(mappings[1].Priority).Equals(1);
 
             // when
             var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/1");

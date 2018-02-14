@@ -43,6 +43,7 @@ namespace WireMock.Net.Tests
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create());
 
+            Guid guid = new Guid();
             var settings = new FluentMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
@@ -55,6 +56,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start(settings);
             _server
                 .Given(Request.Create().WithPath("/*"))
+                .WithGuid(guid)
                 .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
 
             // when
@@ -75,8 +77,11 @@ namespace WireMock.Net.Tests
             Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
             Check.That(receivedRequest.Headers).ContainsKey("bbb");
 
-            var mapping = _server.Mappings.Last();
-            var matcher = ((Request) mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
+            // check that new proxied mapping is added
+            Check.That(_server.Mappings).HasSize(2);
+
+            var newMapping = _server.Mappings.First(m => m.Guid != guid);
+            var matcher = ((Request)newMapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
             Check.That(matcher).IsNotNull();
         }
 
