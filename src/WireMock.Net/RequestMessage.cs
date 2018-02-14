@@ -95,7 +95,7 @@ namespace WireMock
         public string Origin { get; }
 
         /// <summary>
-        /// Gets the body encoding.
+        /// The body encoding.
         /// </summary>
         public Encoding BodyEncoding { get; }
 
