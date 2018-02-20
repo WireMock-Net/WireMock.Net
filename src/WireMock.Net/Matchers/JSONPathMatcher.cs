@@ -10,8 +10,9 @@ namespace WireMock.Matchers
     /// JSONPathMatcher
     /// </summary>
     /// <seealso cref="IMatcher" />
-    public class JsonPathMatcher : IMatcher
+    public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     {
+        // private readonly object _jsonPattern;
         private readonly string[] _patterns;
 
         /// <summary>
@@ -25,15 +26,20 @@ namespace WireMock.Matchers
             _patterns = patterns;
         }
 
-        /// <summary>
-        /// Determines whether the specified input is match.
-        /// </summary>
-        /// <param name="input">The input string</param>
-        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        //public JsonPathMatcher([NotNull] object jsonPattern)
+        //{
+        //    Check.NotNull(jsonPattern, nameof(jsonPattern));
+
+        //    _jsonPattern = jsonPattern;
+        //}
+
+        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
             if (input == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             try
             {
@@ -47,19 +53,33 @@ namespace WireMock.Matchers
             }
         }
 
-        /// <summary>
-        /// Gets the patterns.
-        /// </summary>
-        /// <returns>Pattern</returns>
+        /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
+        public double IsMatch(object input)
+        {
+            if (input == null)
+            {
+                return MatchScores.Mismatch;
+            }
+
+            try
+            {
+                var o = input as JObject ?? JObject.FromObject(input);
+
+                return MatchScores.ToScore(_patterns.Select(p => o.SelectToken(p) != null));
+            }
+            catch (Exception)
+            {
+                return MatchScores.Mismatch;
+            }
+        }
+
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public string[] GetPatterns()
         {
             return _patterns;
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <returns>Name</returns>
+        /// <inheritdoc cref="IMatcher.GetName"/>
         public string GetName()
         {
             return "JsonPathMatcher";

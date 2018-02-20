@@ -14,7 +14,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matchers.
         /// </summary>
-        public IReadOnlyList<IMatcher> Matchers { get; }
+        public IReadOnlyList<IStringMatcher> Matchers { get; }
 
         /// <summary>
         /// The ClientIP functions.
@@ -25,7 +25,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
         /// </summary>
         /// <param name="clientIPs">The clientIPs.</param>
-        public RequestMessageClientIPMatcher([NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(ip)).Cast<IMatcher>().ToArray())
+        public RequestMessageClientIPMatcher([NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(ip)).Cast<IStringMatcher>().ToArray())
         {
         }
 
@@ -33,7 +33,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
         /// </summary>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageClientIPMatcher([NotNull] params IMatcher[] matchers)
+        public RequestMessageClientIPMatcher([NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(matchers, nameof(matchers));
             Matchers = matchers;

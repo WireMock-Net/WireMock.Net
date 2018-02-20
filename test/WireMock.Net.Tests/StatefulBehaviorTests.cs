@@ -159,16 +159,16 @@ namespace WireMock.Net.Tests
             // when / then
             string url = "http://localhost:" + _server.Ports[0];
             var http = new HttpClient();
-            var responseNoState1 = await http.GetStringAsync(url + "/state1");
+            var responseNoState1 = http.GetStringAsync(url + "/state1").Result;
             Check.That(responseNoState1).Equals("No state msg 1");
 
-            var responseNoState2 = await http.GetStringAsync(url + "/state2");
+            var responseNoState2 = http.GetStringAsync(url + "/state2").Result;
             Check.That(responseNoState2).Equals("No state msg 2");
 
-            var responseWithState1 = await http.GetStringAsync(url + "/foo");
+            var responseWithState1 = http.GetStringAsync(url + "/foo").Result;
             Check.That(responseWithState1).Equals("Test state msg 1");
 
-            var responseWithState2 = await http.GetStringAsync(url + "/foo");
+            var responseWithState2 = http.GetStringAsync(url + "/foo").Result;
             Check.That(responseWithState2).Equals("Test state msg 2");
         }
 

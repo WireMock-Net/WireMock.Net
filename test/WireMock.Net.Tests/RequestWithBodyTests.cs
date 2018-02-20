@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -197,6 +199,27 @@ namespace WireMock.Net.Tests
             // then
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithBodyAsJson_JsonPathMatcher_true()
+        {
+            // given
+            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+
+            // when
+            string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                Encoding = Encoding.UTF8
+            };
+
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
     }
 }

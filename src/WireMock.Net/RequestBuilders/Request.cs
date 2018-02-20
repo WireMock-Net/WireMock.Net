@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithClientIP(params IMatcher[] matchers)
+        public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -98,7 +98,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params IMatcher[] matchers)
+        public IRequestBuilder WithPath(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -137,7 +137,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithUrl(params IMatcher[] matchers)
+        public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -360,7 +360,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithHeader(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithHeader(string name, params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -401,7 +401,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithCookie(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithCookie(string name, params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 

@@ -9,8 +9,8 @@ namespace WireMock.Matchers
     /// <summary>
     /// Regular Expression Matcher
     /// </summary>
-    /// <seealso cref="IMatcher" />
-    public class RegexMatcher : IMatcher
+    /// <seealso cref="IStringMatcher" />
+    public class RegexMatcher : IStringMatcher
     {
         private readonly string[] _patterns;
         private readonly Regex[] _expressions;
@@ -37,20 +37,20 @@ namespace WireMock.Matchers
 
             RegexOptions options = RegexOptions.Compiled;
             if (ignoreCase)
+            {
                 options |= RegexOptions.IgnoreCase;
+            }
 
             _expressions = patterns.Select(p => new Regex(p, options)).ToArray();
         }
 
-        /// <summary>
-        /// Determines whether the specified input is match.
-        /// </summary>
-        /// <param name="input">The input string</param>
-        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
             if (input == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             try
             {
@@ -62,21 +62,13 @@ namespace WireMock.Matchers
             }
         }
 
-        /// <summary>
-        /// Gets the patterns.
-        /// </summary>
-        /// <returns>Pattern</returns>
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public virtual string[] GetPatterns()
         {
             return _patterns;
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <returns>
-        /// Name
-        /// </returns>
+        /// <inheritdoc cref="IMatcher.GetName"/>
         public virtual string GetName()
         {
             return "RegexMatcher";

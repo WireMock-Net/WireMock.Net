@@ -26,7 +26,7 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The matchers.
         /// </value>
-        public IMatcher[] Matchers { get; }
+        public IStringMatcher[] Matchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
@@ -40,7 +40,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(pattern, nameof(pattern));
 
             Name = name;
-            Matchers = new IMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+            Matchers = new IStringMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(patterns, nameof(patterns));
 
             Name = name;
-            Matchers = patterns.Select(pattern => new WildcardMatcher(pattern, ignoreCase)).Cast<IMatcher>().ToArray();
+            Matchers = patterns.Select(pattern => new WildcardMatcher(pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] params IMatcher[] matchers)
+        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(matchers, nameof(matchers));
@@ -93,16 +93,24 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (requestMessage.Headers == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))));
+            }
 
             if (Matchers == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             if (!requestMessage.Headers.ContainsKey(Name))
+            {
                 return MatchScores.Mismatch;
+            }
 
             WireMockList<string> list = requestMessage.Headers[Name];
             return Matchers.Max(m => list.Max(value => m.IsMatch(value))); // TODO : is this correct ?
