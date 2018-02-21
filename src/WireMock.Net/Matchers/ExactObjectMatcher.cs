@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 
 namespace WireMock.Matchers
 {
@@ -8,7 +9,8 @@ namespace WireMock.Matchers
     /// <seealso cref="IObjectMatcher" />
     public class ExactObjectMatcher : IObjectMatcher
     {
-        private readonly object _value;
+        private readonly object _object;
+        private readonly byte[] _bytes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
@@ -16,13 +18,23 @@ namespace WireMock.Matchers
         /// <param name="value">The value.</param>
         public ExactObjectMatcher([NotNull] object value)
         {
-            _value = value;
+            _object = value;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        public ExactObjectMatcher([NotNull] byte[] value)
+        {
+            _bytes = value;
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
         public double IsMatch(object input)
         {
-            return MatchScores.ToScore(Equals(_value, input));
+            bool equals = _object != null ? Equals(_object, input) : _bytes.SequenceEqual((byte[])input);
+            return MatchScores.ToScore(equals);
         }
 
         /// <inheritdoc cref="IMatcher.GetName"/>

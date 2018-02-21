@@ -202,7 +202,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_WithBodyAsJson_JsonPathMatcher_true()
+        public void Request_WithBodyAsJson_Object_JsonPathMatcher_true()
         {
             // given
             var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
@@ -220,6 +220,47 @@ namespace WireMock.Net.Tests
             // then
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+        [Fact]
+        public void Request_WithBodyAsJson_Array_JsonPathMatcher_true()
+        {
+            // given
+            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.books[?(@.price < 10)]"));
+
+            // when
+            string jsonString = "{ \"books\": [ { \"category\": \"test1\", \"price\": 8.95 }, { \"category\": \"test2\", \"price\": 20 } ] }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                Encoding = Encoding.UTF8
+            };
+
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+
+        [Fact]
+        public void Request_WithBodyAsBytes_ExactObjectMatcher_true()
+        {
+            // Assign
+            byte[] body = { 123 };
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(body);
+
+            var bodyData = new BodyData
+            {
+                BodyAsBytes = new byte[] { 123 }
+            };
+
+            // Act
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
     }
 }
