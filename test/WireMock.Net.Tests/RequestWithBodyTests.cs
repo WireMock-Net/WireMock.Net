@@ -242,6 +242,25 @@ namespace WireMock.Net.Tests
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
+        [Fact]
+        public void Request_WithBodyAsObject_ExactObjectMatcher_true()
+        {
+            // Assign
+            object body = DateTime.MinValue;
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(body);
+
+            var bodyData = new BodyData
+            {
+                BodyAsJson = DateTime.MinValue
+            };
+
+            // Act
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
 
         [Fact]
         public void Request_WithBodyAsBytes_ExactObjectMatcher_true()

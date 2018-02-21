@@ -59,10 +59,14 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (Matchers != null)
+            {
                 return Matchers.Max(matcher => matcher.IsMatch(requestMessage.ClientIP));
+            }
 
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(requestMessage.ClientIP != null && Funcs.Any(func => func(requestMessage.ClientIP)));
+            }
 
             return MatchScores.Mismatch;
         }

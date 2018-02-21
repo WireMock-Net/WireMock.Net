@@ -44,6 +44,15 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request
                     .Create()
+                    .WithPath("/jsonthings")
+                    .WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"))
+                    .UsingPut())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""JsonPathMatcher !!!""}"));
+
+            server
+                .Given(Request
+                    .Create()
                     .WithPath(new WildcardMatcher("/navision/OData/Company('My Company')/School*", true))
                     .WithParam("$filter", "(substringof(Code, 'WA')")
                     .UsingGet())

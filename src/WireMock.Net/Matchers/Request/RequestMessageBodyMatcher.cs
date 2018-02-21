@@ -127,7 +127,7 @@ namespace WireMock.Matchers.Request
 
             if (Func != null)
             {
-                return MatchScores.ToScore(Func(requestMessage.Body));
+                return MatchScores.ToScore(requestMessage.Body != null && Func(requestMessage.Body));
             }
 
             if (DataFunc != null)

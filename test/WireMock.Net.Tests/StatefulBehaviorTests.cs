@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.RequestBuilders;
@@ -155,6 +156,8 @@ namespace WireMock.Net.Tests
                 .WhenStateIs("Test state 2")
                 .RespondWith(Response.Create()
                     .WithBody("Test state msg 2"));
+
+            Thread.Sleep(500);
 
             // when / then
             string url = "http://localhost:" + _server.Ports[0];

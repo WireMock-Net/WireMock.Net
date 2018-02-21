@@ -10,38 +10,52 @@ namespace WireMock.RequestBuilders
     public interface IBodyRequestBuilder
     {
         /// <summary>
-        /// The with body.
+        /// WithBody: IMatcher
         /// </summary>
         /// <param name="matcher">The matcher.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] IMatcher matcher);
 
         /// <summary>
-        /// The with body.
+        /// WithBody: Body as string
         /// </summary>
         /// <param name="body">The body.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(string body);
 
         /// <summary>
-        /// The with body byte[].
+        /// WithBody: Body as byte[]
         /// </summary>
-        /// <param name="body">The body as byte[].</param>
+        /// <param name="body">The body.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody(byte[] body);
 
         /// <summary>
-        /// The with body string func.
+        /// WithBody: Body as object
         /// </summary>
-        /// <param name="body">The body string function.</param>
+        /// <param name="body">The body.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody([NotNull] Func<string, bool> body);
+        IRequestBuilder WithBody(object body);
 
         /// <summary>
-        /// The with body byte[] func.
+        ///WithBody: func (string)
         /// </summary>
-        /// <param name="body">The body byte[] function.</param>
+        /// <param name="func">The function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody([NotNull] Func<byte[], bool> body);
+        IRequestBuilder WithBody([NotNull] Func<string, bool> func);
+
+        /// <summary>
+        ///WithBody: func (byte[])
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody([NotNull] Func<byte[], bool> func);
+
+        /// <summary>
+        ///WithBody: func (object)
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody([NotNull] Func<object, bool> func);
     }
 }
