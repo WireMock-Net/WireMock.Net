@@ -35,7 +35,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithHeader([NotNull] string name, [NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithHeader([NotNull] string name, [NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with header.
@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithCookie([NotNull] string name, [NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithCookie([NotNull] string name, [NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with cookie.

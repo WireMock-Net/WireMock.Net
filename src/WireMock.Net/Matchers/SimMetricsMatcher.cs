@@ -10,8 +10,8 @@ namespace WireMock.Matchers
     /// <summary>
     /// SimMetricsMatcher
     /// </summary>
-    /// <seealso cref="IMatcher" />
-    public class SimMetricsMatcher : IMatcher
+    /// <seealso cref="IStringMatcher" />
+    public class SimMetricsMatcher : IStringMatcher
     {
         private readonly string[] _patterns;
         private readonly SimMetricType _simMetricType;
@@ -38,11 +38,7 @@ namespace WireMock.Matchers
             _simMetricType = simMetricType;
         }
 
-        /// <summary>
-        /// Determines whether the specified input is match.
-        /// </summary>
-        /// <param name="input">The input string</param>
-        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
             IStringMetric m = GetStringMetricType();
@@ -93,19 +89,13 @@ namespace WireMock.Matchers
             }
         }
 
-        /// <summary>
-        /// Gets the pattern.
-        /// </summary>
-        /// <returns>Pattern</returns>
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public string[] GetPatterns()
         {
             return _patterns;
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <returns>Name</returns>
+        /// <inheritdoc cref="IMatcher.GetName"/>
         public string GetName()
         {
             return $"SimMetricsMatcher.{_simMetricType}";

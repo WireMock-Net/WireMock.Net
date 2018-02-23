@@ -12,8 +12,8 @@ namespace WireMock.Matchers
     /// <summary>
     /// XPath2Matcher
     /// </summary>
-    /// <seealso cref="WireMock.Matchers.IMatcher" />
-    public class XPathMatcher : IMatcher
+    /// <seealso cref="IStringMatcher" />
+    public class XPathMatcher : IStringMatcher
     {
         private readonly string[] _patterns;
 
@@ -28,15 +28,13 @@ namespace WireMock.Matchers
             _patterns = patterns;
         }
 
-        /// <summary>
-        /// Determines whether the specified input is match.
-        /// </summary>
-        /// <param name="input">The input string</param>
-        /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
             if (input == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             try
             {
@@ -53,19 +51,13 @@ namespace WireMock.Matchers
             }
         }
 
-        /// <summary>
-        /// Gets the patterns.
-        /// </summary>
-        /// <returns>Patterns</returns>
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public string[] GetPatterns()
         {
             return _patterns;
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <returns>Name</returns>
+        /// <inheritdoc cref="IMatcher.GetName"/>
         public string GetName()
         {
             return "XPathMatcher";

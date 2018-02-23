@@ -17,7 +17,7 @@ namespace WireMock.Owin
     {
         public TimeSpan? RequestProcessingDelay { get; set; }
 
-        public IMatcher AuthorizationMatcher { get; set; }
+        public IStringMatcher AuthorizationMatcher { get; set; }
 
         public bool AllowPartialMapping { get; set; }
 

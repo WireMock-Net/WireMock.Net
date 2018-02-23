@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithClientIP(params IMatcher[] matchers)
+        public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -98,7 +98,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params IMatcher[] matchers)
+        public IRequestBuilder WithPath(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -137,7 +137,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithUrl(params IMatcher[] matchers)
+        public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 
@@ -234,67 +234,28 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="body">
-        /// The body.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(string)"/>
         public IRequestBuilder WithBody(string body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body byte[].
-        /// </summary>
-        /// <param name="body">
-        /// The body as byte[].
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(byte[])"/>
         public IRequestBuilder WithBody(byte[] body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="func">
-        /// The body function.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithBody(Func<string, bool> func)
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(object)"/>
+        public IRequestBuilder WithBody(object body)
         {
-            Check.NotNull(func, nameof(func));
-
-            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="func">
-        /// The body function.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithBody(Func<byte[], bool> func)
-        {
-            Check.NotNull(func, nameof(func));
-
-            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
-            return this;
-        }
-
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        /// <returns>The <see cref="IRequestBuilder" />.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(IMatcher)"/>
         public IRequestBuilder WithBody(IMatcher matcher)
         {
             Check.NotNull(matcher, nameof(matcher));
@@ -303,16 +264,34 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with parameters.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <param name="values">
-        /// The values.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{string, bool})"/>
+        public IRequestBuilder WithBody(Func<string, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{byte[], bool})"/>
+        public IRequestBuilder WithBody(Func<byte[], bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{object, bool})"/>
+        public IRequestBuilder WithBody(Func<object, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, string[])"/>
         public IRequestBuilder WithParam(string key, params string[] values)
         {
             Check.NotNull(key, nameof(key));
@@ -321,11 +300,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with parameters.
-        /// </summary>
-        /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
         public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
@@ -360,7 +335,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithHeader(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithHeader(string name, params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -401,7 +376,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithCookie(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithCookie(string name, params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
 

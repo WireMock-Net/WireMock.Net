@@ -166,7 +166,8 @@ namespace WireMock.Serialization
                 return null;
             }
 
-            var patterns = matcher.GetPatterns();
+            IStringMatcher stringMatcher = matcher as IStringMatcher;
+            string[] patterns = stringMatcher != null ? stringMatcher.GetPatterns() : new string[0];
 
             return new MatcherModel
             {
@@ -192,7 +193,9 @@ namespace WireMock.Serialization
         public static IMatcher Map([CanBeNull] MatcherModel matcher)
         {
             if (matcher == null)
+            {
                 return null;
+            }
 
             var parts = matcher.Name.Split('.');
             string matcherName = parts[0];

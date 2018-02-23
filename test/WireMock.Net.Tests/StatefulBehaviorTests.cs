@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.RequestBuilders;
@@ -69,7 +70,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Scenario_and_State_TodoList_Example()
+        public void Scenario_and_State_TodoList_Example()
         {
             // Assign
             _server = FluentMockServer.Start();
@@ -104,18 +105,18 @@ namespace WireMock.Net.Tests
 
             // Act and Assert
             string url = "http://localhost:" + _server.Ports[0];
-            string getResponse1 = await new HttpClient().GetStringAsync(url + "/todo/items");
+            string getResponse1 = new HttpClient().GetStringAsync(url + "/todo/items").Result;
             Check.That(getResponse1).Equals("Buy milk");
 
-            var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription"));
+            var postResponse = new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription")).Result;
             Check.That(postResponse.StatusCode).Equals(HttpStatusCode.Created);
 
-            string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items");
+            string getResponse2 = new HttpClient().GetStringAsync(url + "/todo/items").Result;
             Check.That(getResponse2).Equals("Buy milk;Cancel newspaper subscription");
         }
 
         [Fact]
-        public async Task Should_process_request_if_equals_state_and_multiple_state_defined()
+        public void Should_process_request_if_equals_state_and_multiple_state_defined()
         {
             // given
             _server = FluentMockServer.Start();
@@ -156,19 +157,20 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create()
                     .WithBody("Test state msg 2"));
 
+            Thread.Sleep(500);
+
             // when / then
             string url = "http://localhost:" + _server.Ports[0];
-            var http = new HttpClient();
-            var responseNoState1 = await http.GetStringAsync(url + "/state1");
+            var responseNoState1 = new HttpClient().GetStringAsync(url + "/state1").Result;
             Check.That(responseNoState1).Equals("No state msg 1");
 
-            var responseNoState2 = await http.GetStringAsync(url + "/state2");
+            var responseNoState2 = new HttpClient().GetStringAsync(url + "/state2").Result;
             Check.That(responseNoState2).Equals("No state msg 2");
 
-            var responseWithState1 = await http.GetStringAsync(url + "/foo");
+            var responseWithState1 = new HttpClient().GetStringAsync(url + "/foo").Result;
             Check.That(responseWithState1).Equals("Test state msg 1");
 
-            var responseWithState2 = await http.GetStringAsync(url + "/foo");
+            var responseWithState2 = new HttpClient().GetStringAsync(url + "/foo").Result;
             Check.That(responseWithState2).Equals("Test state msg 2");
         }
 

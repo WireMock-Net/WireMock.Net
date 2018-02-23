@@ -14,7 +14,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matcher.
         /// </summary>
-        public IReadOnlyList<IMatcher> Matchers { get; }
+        public IReadOnlyList<IStringMatcher> Matchers { get; }
 
         /// <summary>
         /// The path functions
@@ -25,7 +25,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="paths">The paths.</param>
-        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).Cast<IMatcher>().ToArray())
+        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).Cast<IStringMatcher>().ToArray())
         {
         }
 
@@ -33,7 +33,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessagePathMatcher([NotNull] params IMatcher[] matchers)
+        public RequestMessagePathMatcher([NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(matchers, nameof(matchers));
             Matchers = matchers;
@@ -59,10 +59,14 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (Matchers != null)
+            {
                 return Matchers.Max(m => m.IsMatch(requestMessage.Path));
+            }
 
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(requestMessage.Path != null && Funcs.Any(func => func(requestMessage.Path)));
+            }
 
             return MatchScores.Mismatch;
         }
