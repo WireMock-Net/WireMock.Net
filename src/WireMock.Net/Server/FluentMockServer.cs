@@ -157,7 +157,7 @@ namespace WireMock.Server
 
         private FluentMockServer(IFluentMockServerSettings settings)
         {
-            settings.Logger = settings.Logger ?? new DefaultWireMockLogger();
+            settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
             _logger = settings.Logger;
 
             _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));

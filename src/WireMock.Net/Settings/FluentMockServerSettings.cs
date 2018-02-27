@@ -76,6 +76,6 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IFluentMockServerSettings.Logger"/>
         [PublicAPI]
         [JsonIgnore]
-        public IWireMockLogger Logger { get; set; } = new DefaultWireMockLogger();
+        public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
     }
 }

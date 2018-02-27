@@ -3,10 +3,10 @@
 namespace WireMock.Logging
 {
     /// <summary>
-    /// DefaultWireMockLogger which logs to Console
+    /// WireMockConsoleLogger which logs to Console
     /// </summary>
     /// <seealso cref="IWireMockLogger" />
-    public class DefaultWireMockLogger : IWireMockLogger
+    public class WireMockConsoleLogger : IWireMockLogger
     {
         /// <see cref="IWireMockLogger.Debug"/>
         public void Debug(string formatString, params object[] args)
