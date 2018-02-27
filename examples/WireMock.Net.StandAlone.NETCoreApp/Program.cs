@@ -21,7 +21,7 @@ namespace WireMock.Net.StandAlone.NETCoreApp
         {
             XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 
-            _server = StandAloneApp.Start(args);
+            _server = StandAloneApp.Start(args, new WireMockLog4NetLogger());
 
             Console.WriteLine($"{DateTime.UtcNow} Press Ctrl+C to shut down");
 

@@ -3,7 +3,7 @@ using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Validation;
 using JetBrains.Annotations;
-using log4net;
+using WireMock.Logging;
 
 namespace WireMock.Net.StandAlone
 {
@@ -12,8 +12,6 @@ namespace WireMock.Net.StandAlone
     /// </summary>
     public static class StandAloneApp
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(StandAloneApp));
-
         /// <summary>
         /// Start WireMock.Net standalone Server based on the FluentMockServerSettings.
         /// </summary>
@@ -30,12 +28,11 @@ namespace WireMock.Net.StandAlone
         /// Start WireMock.Net standalone Server based on the commandline arguments.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
+        /// <param name="logger">The logger</param>
         [PublicAPI]
-        public static FluentMockServer Start([NotNull] string[] args)
+        public static FluentMockServer Start([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {
             Check.NotNull(args, nameof(args));
-
-            Log.DebugFormat("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             var parser = new SimpleCommandLineParser();
             parser.Parse(args);
@@ -51,6 +48,11 @@ namespace WireMock.Net.StandAlone
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
             };
+
+            if (logger != null)
+            {
+                settings.Logger = logger;
+            }
 
             if (parser.Contains("Port"))
             {
@@ -74,9 +76,11 @@ namespace WireMock.Net.StandAlone
                 };
             }
 
+            settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
+
             FluentMockServer server = Start(settings);
 
-            Log.InfoFormat("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
+            settings.Logger.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
             return server;
         }

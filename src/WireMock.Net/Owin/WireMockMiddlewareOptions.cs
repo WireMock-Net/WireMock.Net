@@ -15,13 +15,15 @@ namespace WireMock.Owin
 {
     internal class WireMockMiddlewareOptions
     {
+        public IWireMockLogger Logger { get; set; }
+
         public TimeSpan? RequestProcessingDelay { get; set; }
 
         public IStringMatcher AuthorizationMatcher { get; set; }
 
         public bool AllowPartialMapping { get; set; }
 
-        public IDictionary<Guid, Mapping> Mappings { get; set; } = new ConcurrentDictionary<Guid, Mapping>();
+        public IDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>();
 
         public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 

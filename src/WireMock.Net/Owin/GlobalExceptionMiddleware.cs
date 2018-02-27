@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using log4net;
 using Newtonsoft.Json;
 #if !NETSTANDARD
 using Microsoft.Owin;
@@ -16,13 +15,18 @@ namespace WireMock.Owin
     internal class GlobalExceptionMiddleware
 #endif
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(GlobalExceptionMiddleware));
+        private readonly WireMockMiddlewareOptions _options;
+
 #if !NETSTANDARD
-        public GlobalExceptionMiddleware(OwinMiddleware next) : base(next) { }
+        public GlobalExceptionMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
+        {
+            _options = options;
+        }
 #else
-        public GlobalExceptionMiddleware(RequestDelegate next)
+        public GlobalExceptionMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
         {
             Next = next;
+            _options = options;
         }
 #endif
 
@@ -44,7 +48,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                Log.Error("HttpStatusCode set to 500", ex);
+                _options.Logger.Error("HttpStatusCode set to 500 {0}", ex);
                 await _responseMapper.MapAsync(new ResponseMessage { StatusCode = 500, Body = JsonConvert.SerializeObject(ex) }, ctx.Response);
             }
         }

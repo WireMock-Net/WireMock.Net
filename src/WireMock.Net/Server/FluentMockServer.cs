@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using log4net;
 using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -23,7 +22,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(FluentMockServer));
+        private readonly IWireMockLogger _logger;
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -158,7 +157,10 @@ namespace WireMock.Server
 
         private FluentMockServer(IFluentMockServerSettings settings)
         {
-            Log.DebugFormat("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
+            settings.Logger = settings.Logger ?? new DefaultWireMockLogger();
+            _logger = settings.Logger;
+
+            _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
             if (settings.Urls != null)
             {
@@ -172,6 +174,7 @@ namespace WireMock.Server
 
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
+            _options.Logger = _logger;
 
 #if NETSTANDARD
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
@@ -318,7 +321,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void AllowPartialMapping(bool allow = true)
         {
-            Log.InfoFormat("AllowPartialMapping is set to {0}", allow);
+            _logger.Info("AllowPartialMapping is set to {0}", allow);
             _options.AllowPartialMapping = allow;
         }
 

@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Settings;
 using WireMock.Transformers;
