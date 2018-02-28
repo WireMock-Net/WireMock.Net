@@ -48,10 +48,12 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// Gets the response message.
         /// </summary>
-        /// <value>
-        /// The response message.
-        /// </value>
         public ResponseMessage ResponseMessage { get; }
+
+        /// <summary>
+        /// A delegate to execute to generate the response
+        /// </summary>
+        public Func<RequestMessage, ResponseMessage> Callback { get; private set; }
 
         /// <summary>
         /// Creates this instance.
@@ -308,6 +310,16 @@ namespace WireMock.ResponseBuilders
             return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
+        /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
+        public IResponseBuilder WithCallback(Func<RequestMessage, ResponseMessage> callbackHandler)
+        {
+            Check.NotNull(callbackHandler, nameof(callbackHandler));
+
+            Callback = callbackHandler;
+
+            return this;
+        }
+
         /// <summary>
         /// The provide response.
         /// </summary>
@@ -334,6 +346,11 @@ namespace WireMock.ResponseBuilders
             if (UseTransformer)
             {
                 return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
+            }
+
+            if (Callback != null)
+            {
+                return Callback(requestMessage);
             }
 
             return ResponseMessage;

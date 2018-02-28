@@ -432,6 +432,23 @@ namespace WireMock.Net.Tests
             Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
         }
 
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_callback()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .RespondWith(Response.Create().WithCallback(req => new ResponseMessage { Body = req.Path + "Bar" }));
+
+            // Act
+            string response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // Assert
+            Check.That(response).IsEqualTo("/fooBar");
+        }
+
         public void Dispose()
         {
             _server?.Stop();

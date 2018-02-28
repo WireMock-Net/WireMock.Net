@@ -1,4 +1,5 @@
 ﻿using System;
+using WireMock.ResponseProviders;
 
 namespace WireMock.Server
 {
