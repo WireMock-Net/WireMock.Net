@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using WireMock.Logging;
 
 namespace WireMock.Settings
 {
@@ -71,5 +72,10 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
+
+        /// <inheritdoc cref="IFluentMockServerSettings.Logger"/>
+        [PublicAPI]
+        [JsonIgnore]
+        public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
     }
 }

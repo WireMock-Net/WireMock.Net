@@ -6,6 +6,7 @@ using NFluent;
 using RestEase;
 using WireMock.Admin.Mappings;
 using WireMock.Client;
+using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
@@ -25,7 +26,7 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_FindRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true });
+            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
             var serverUrl = "http://localhost:" + _server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
@@ -45,7 +46,7 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_GetRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true });
+            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
             var serverUrl = "http://localhost:" + _server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -50,7 +49,7 @@ namespace WireMock.Owin
             _host = new WebHostBuilder()
                 .Configure(appBuilder =>
                 {
-                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
+                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>(_options);
 
                     _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
 
@@ -70,13 +69,13 @@ namespace WireMock.Owin
                     foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
                     {
                         PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
-                        options.Listen(IPAddress.Loopback, port);
+                        options.Listen(System.Net.IPAddress.Loopback, port);
                     }
 
                     foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
                         PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
-                        options.Listen(IPAddress.Loopback, port, listenOptions =>
+                        options.Listen(System.Net.IPAddress.Loopback, port, listenOptions =>
                         {
                             listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                         });

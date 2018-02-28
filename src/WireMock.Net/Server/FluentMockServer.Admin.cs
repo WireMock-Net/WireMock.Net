@@ -113,7 +113,7 @@ namespace WireMock.Server
 
             foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
             {
-                Log.InfoFormat("Reading Static MappingFile : '{0}'", filename);
+                _logger.Info("Reading Static MappingFile : '{0}'", filename);
                 ReadStaticMappingAndAddOrUpdate(filename);
             }
         }
@@ -135,22 +135,22 @@ namespace WireMock.Server
                 return;
             }
 
-            Log.InfoFormat("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
+            _logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
 
             var watcher = new EnhancedFileSystemWatcher(folder, "*.json", 1000);
             watcher.Created += (sender, args) =>
             {
-                Log.InfoFormat("New MappingFile created : '{0}'", args.FullPath);
+                _logger.Info("New MappingFile created : '{0}'", args.FullPath);
                 ReadStaticMappingAndAddOrUpdate(args.FullPath);
             };
             watcher.Changed += (sender, args) =>
             {
-                Log.InfoFormat("New MappingFile updated : '{0}'", args.FullPath);
+                _logger.Info("New MappingFile updated : '{0}'", args.FullPath);
                 ReadStaticMappingAndAddOrUpdate(args.FullPath);
             };
             watcher.Deleted += (sender, args) =>
             {
-                Log.InfoFormat("New MappingFile deleted : '{0}'", args.FullPath);
+                _logger.Info("New MappingFile deleted : '{0}'", args.FullPath);
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
                 if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -288,7 +288,7 @@ namespace WireMock.Server
 
             if (mapping == null)
             {
-                Log.Warn("HttpStatusCode set to 404 : Mapping not found");
+                _logger.Warn("HttpStatusCode set to 404 : Mapping not found");
                 return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
             }
 
@@ -343,7 +343,7 @@ namespace WireMock.Server
             string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
 
             string filePath = Path.Combine(folder, filename + ".json");
-            Log.InfoFormat("Saving Mapping to file {0}", filePath);
+            _logger.Info("Saving Mapping to file {0}", filePath);
 
             File.WriteAllText(filePath, JsonConvert.SerializeObject(model, _settings));
         }
@@ -374,12 +374,12 @@ namespace WireMock.Server
             }
             catch (ArgumentException a)
             {
-                Log.Error("HttpStatusCode set to 400", a);
+                _logger.Error("HttpStatusCode set to 400 {0}", a);
                 return new ResponseMessage { StatusCode = 400, Body = a.Message };
             }
             catch (Exception e)
             {
-                Log.Error("HttpStatusCode set to 500", e);
+                _logger.Error("HttpStatusCode set to 500 {0}", e);
                 return new ResponseMessage { StatusCode = 500, Body = e.ToString() };
             }
 
@@ -449,8 +449,8 @@ namespace WireMock.Server
 
             if (entry == null)
             {
-                Log.Warn("HttpStatusCode set to 404 : Request not found");
-                return new ResponseMessage {StatusCode = 404, Body = "Request not found"};
+                _logger.Warn("HttpStatusCode set to 404 : Request not found");
+                return new ResponseMessage { StatusCode = 404, Body = "Request not found" };
             }
 
             var model = ToLogEntryModel(entry);
