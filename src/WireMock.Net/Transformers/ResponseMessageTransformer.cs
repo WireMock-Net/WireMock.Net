@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HandlebarsDotNet;
+using Newtonsoft.Json;
 using WireMock.Util;
 
 namespace WireMock.Transformers
@@ -9,13 +10,27 @@ namespace WireMock.Transformers
     {
         public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
-            var responseMessage = new ResponseMessage { StatusCode = original.StatusCode, BodyOriginal = original.Body };
+            bool bodyIsJson = original.BodyAsJson != null;
+            var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
+
+            if (!bodyIsJson)
+            {
+                responseMessage.BodyOriginal = original.Body;
+            }
 
             var template = new { request = requestMessage };
 
             // Body
-            var templateBody = Handlebars.Compile(original.Body);
-            responseMessage.Body = templateBody(template);
+            var templateBody = Handlebars.Compile(bodyIsJson ? JsonConvert.SerializeObject(original.BodyAsJson) : original.Body);
+
+            if (!bodyIsJson)
+            {
+                responseMessage.Body = templateBody(template);
+            }
+            else
+            {
+                responseMessage.BodyAsJson = JsonConvert.DeserializeObject(templateBody(template));
+            }
 
             // Headers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
