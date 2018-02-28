@@ -221,6 +221,26 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_callback()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/foo")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithCallback(req => new ResponseMessage {Body = req.Path + "Bar"}));
+
+            // when
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // then
+            Check.That(response).IsEqualTo("/fooBar");
+        }
+
+        [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given

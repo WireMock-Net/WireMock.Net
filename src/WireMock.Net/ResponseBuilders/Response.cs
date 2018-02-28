@@ -299,6 +299,24 @@ namespace WireMock.ResponseBuilders
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
             return this;
         }
+        /// <summary>
+        /// With 
+        /// </summary>
+        /// <param name="callbackHandler">the func to execute when the request is recieved</param>
+        /// <returns>A <see cref="IResponseBuilder"/>. </returns>
+        public IResponseBuilder WithCallback(Func<RequestMessage, ResponseMessage> callbackHandler)
+        {
+            Check.NotNull(callbackHandler, nameof(callbackHandler));
+
+            this.Callback = callbackHandler;
+
+            return this;
+        }
+
+        /// <summary>
+        /// A delegate to execute to generate the response
+        /// </summary>
+        public Func<RequestMessage, ResponseMessage> Callback { get; private set; }
 
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
         public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
@@ -335,6 +353,9 @@ namespace WireMock.ResponseBuilders
             {
                 return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }
+
+            if (Callback != null)
+                return Callback(requestMessage);
 
             return ResponseMessage;
         }
