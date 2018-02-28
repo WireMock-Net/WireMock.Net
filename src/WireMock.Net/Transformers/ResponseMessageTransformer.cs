@@ -21,15 +21,19 @@ namespace WireMock.Transformers
             var template = new { request = requestMessage };
 
             // Body
-            var templateBody = Handlebars.Compile(bodyIsJson ? JsonConvert.SerializeObject(original.BodyAsJson) : original.Body);
+            string body = bodyIsJson ? JsonConvert.SerializeObject(original.BodyAsJson) : original.Body;
+            if (body != null)
+            {
+                var templateBody = Handlebars.Compile(body);
 
-            if (!bodyIsJson)
-            {
-                responseMessage.Body = templateBody(template);
-            }
-            else
-            {
-                responseMessage.BodyAsJson = JsonConvert.DeserializeObject(templateBody(template));
+                if (!bodyIsJson)
+                {
+                    responseMessage.Body = templateBody(template);
+                }
+                else
+                {
+                    responseMessage.BodyAsJson = JsonConvert.DeserializeObject(templateBody(template));
+                }
             }
 
             // Headers

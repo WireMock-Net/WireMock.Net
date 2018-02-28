@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NFluent;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -11,6 +13,29 @@ namespace WireMock.Net.Tests
     public class ResponseWithBodyHandlebarsTests
     {
         private const string ClientIp = "::1";
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson()
+        {
+            // given
+            string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, bodyData);
+
+            var response = Response.Create()
+                .WithBodyAsJson(new { x = "test {{request.url}}" })
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test http://localhost/foo\"}");
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
