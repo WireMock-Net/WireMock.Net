@@ -181,14 +181,14 @@ namespace WireMock.Server
 #else
             _httpServer = new OwinSelfHost(_options, Urls);
 #endif
-            IsStarted = _httpServer.IsStarted;
-
             Ports = _httpServer.Ports;
 
             _httpServer.StartAsync();
 
             // Fix for 'Bug: Server not listening after Start() returns (on macOS)'
             Task.Delay(ServerStartDelay).Wait();
+
+            IsStarted = _httpServer.IsStarted;
 
             if (settings.AllowPartialMapping == true)
             {

@@ -87,20 +87,20 @@ namespace WireMock.Owin
 #endif
                 .Build();
 
+            IsStarted = true;
+
 #if NETSTANDARD1_3
             Console.WriteLine("WireMock.Net server using netstandard1.3");
             return Task.Run(() =>
             {
                 _host.Run(_cts.Token);
-                IsStarted = true;
             }, _cts.Token);
 #else
             System.Console.WriteLine("WireMock.Net server using netstandard2.0");
-            IsStarted = true;
+
             return Task.Run(() =>
             {
                 _host.Run();
-                IsStarted = true;
             }, _cts.Token);
 #endif
         }

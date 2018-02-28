@@ -37,7 +37,7 @@ namespace WireMock.Net.StandAlone.NETCoreApp
 
             while (true)
             {
-                Console.WriteLine($"{DateTime.UtcNow} WireMock.Net server running");
+                Console.WriteLine($"{DateTime.UtcNow} WireMock.Net server running : {_server.IsStarted}");
                 Thread.Sleep(sleepTime);
             }
         }
