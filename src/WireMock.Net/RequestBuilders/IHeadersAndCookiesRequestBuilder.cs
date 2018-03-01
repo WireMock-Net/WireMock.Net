@@ -12,7 +12,7 @@ namespace WireMock.RequestBuilders
     public interface IHeadersAndCookiesRequestBuilder : IBodyRequestBuilder, IRequestMatcher, IParamsRequestBuilder
     {
         /// <summary>
-        /// The with header.
+        /// Add Header matching based on name, pattern and ignoreCase.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
@@ -21,12 +21,21 @@ namespace WireMock.RequestBuilders
         IRequestBuilder WithHeader([NotNull] string name, string pattern, bool ignoreCase = true);
 
         /// <summary>
+        /// Add Header matching based on name, patterns and ignoreCase.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">ignore Case</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithHeader([NotNull] string name, string[] patterns, bool ignoreCase = true);
+
+        /// <summary>
         /// The with header.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithHeader([NotNull] string name, [NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithHeader([NotNull] string name, [NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with header.
@@ -50,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithCookie([NotNull] string name, [NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithCookie([NotNull] string name, [NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with cookie.

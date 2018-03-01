@@ -19,7 +19,7 @@ namespace WireMock.Owin
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
 
             foreach (string uriPrefix in uriPrefixes)
             {
@@ -57,10 +57,11 @@ namespace WireMock.Owin
 
         private void StartServers()
         {
-            Console.WriteLine("WireMock.Net server using .net 4.5.x or .net 4.6.x");
+            Console.WriteLine("WireMock.Net server using .net 4.5.x or higher");
 
             Action<IAppBuilder> startup = app =>
             {
+                app.Use<GlobalExceptionMiddleware>(_options);
                 _options.PreWireMockMiddlewareInit?.Invoke(app);
                 app.Use<WireMockMiddleware>(_options);
                 _options.PostWireMockMiddlewareInit?.Invoke(app);

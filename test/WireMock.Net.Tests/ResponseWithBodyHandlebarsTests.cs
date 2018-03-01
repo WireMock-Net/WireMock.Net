@@ -2,14 +2,41 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NFluent;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class ResponseTests
+    public class ResponseWithBodyHandlebarsTests
     {
+        private const string ClientIp = "::1";
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson()
+        {
+            // given
+            string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, bodyData);
+
+            var response = Response.Create()
+                .WithBodyAsJson(new { x = "test {{request.url}}" })
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test http://localhost/foo\"}");
+        }
+
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {
@@ -85,6 +112,25 @@ namespace WireMock.Net.Tests
             Check.That(responseMessage.Headers).ContainsKey("x");
             Check.That(responseMessage.Headers["x"]).Contains("text/plain");
             Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Origin_Port_Protocol_Host()
+        {
+            // given
+            string bodyAsString = "abc";
+            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
+            var request = new RequestMessage(new Uri("http://localhost:1234"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+
+            var response = Response.Create()
+                .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")
+                .WithTransformer();
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.Body).Equals("test http://localhost:1234 1234 http localhost");
         }
     }
 }

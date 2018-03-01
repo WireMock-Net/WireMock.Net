@@ -55,6 +55,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="mapping">MappingModel</param>
         [Post("__admin/mappings")]
+        [Header("Content-Type", "application/json")]
         Task<string> PostMappingAsync([Body] MappingModel mapping);
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace WireMock.Client
         /// </summary>
         /// <returns>LogRequestModels</returns>
         [Get("__admin/requests")]
-        Task<IList<LogRequestModel>> GetRequestsAsync();
+        Task<IList<LogEntryModel>> GetRequestsAsync();
 
         /// <summary>
         /// Delete all requests.
@@ -123,7 +124,7 @@ namespace WireMock.Client
         /// <param name="guid">The Guid</param>
         /// <returns>MappingModel</returns>
         [Get("__admin/requests/{guid}")]
-        Task<LogRequestModel> GetRequestAsync([Path] Guid guid);
+        Task<LogEntryModel> GetRequestAsync([Path] Guid guid);
 
         /// <summary>
         /// Delete a request based on the guid
@@ -137,7 +138,8 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="model">The RequestModel</param>
         [Post("__admin/requests/find")]
-        Task<IList<LogRequestModel>> FindRequestsAsync([Body] RequestModel model);
+        [Header("Content-Type", "application/json")]
+        Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model);
 
         /// <summary>
         /// Get all scenarios

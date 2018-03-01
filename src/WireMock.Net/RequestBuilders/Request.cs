@@ -59,9 +59,9 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithClientIP(params IMatcher[] matchers)
+        public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {
-            Check.NotEmpty(matchers, nameof(matchers));
+            Check.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(matchers));
             return this;
@@ -74,7 +74,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithClientIP(params string[] clientIPs)
         {
-            Check.NotEmpty(clientIPs, nameof(clientIPs));
+            Check.NotNullOrEmpty(clientIPs, nameof(clientIPs));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(clientIPs));
             return this;
@@ -87,7 +87,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithClientIP(params Func<string, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(funcs));
             return this;
@@ -98,9 +98,9 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithPath(params IMatcher[] matchers)
+        public IRequestBuilder WithPath(params IStringMatcher[] matchers)
         {
-            Check.NotEmpty(matchers, nameof(matchers));
+            Check.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(matchers));
             return this;
@@ -113,7 +113,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithPath(params string[] paths)
         {
-            Check.NotEmpty(paths, nameof(paths));
+            Check.NotNullOrEmpty(paths, nameof(paths));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(paths));
             return this;
@@ -126,7 +126,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
             return this;
@@ -137,9 +137,9 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithUrl(params IMatcher[] matchers)
+        public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
         {
-            Check.NotEmpty(matchers, nameof(matchers));
+            Check.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(matchers));
             return this;
@@ -152,7 +152,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithUrl(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(urls));
             return this;
@@ -165,76 +165,55 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(funcs));
             return this;
         }
 
-        /// <summary>
-        /// The using get.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingGet()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using post.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingPost()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using put.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        public IRequestBuilder UsingPut()
-        {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
-            return this;
-        }
-
-        /// <summary>
-        /// The using delete.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingDelete"/>
         public IRequestBuilder UsingDelete()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("delete"));
             return this;
         }
 
-        /// <summary>
-        /// The using head.
-        /// </summary>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingGet"/>
+        public IRequestBuilder UsingGet()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingHead"/>
         public IRequestBuilder UsingHead()
         {
             _requestMatchers.Add(new RequestMessageMethodMatcher("head"));
             return this;
         }
 
-        /// <summary>
-        /// The using any verb.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPost"/>
+        public IRequestBuilder UsingPost()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPatch"/>
+        public IRequestBuilder UsingPatch()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("patch"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPut"/>
+        public IRequestBuilder UsingPut()
+        {
+            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
+            return this;
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyVerb"/>
         public IRequestBuilder UsingAnyVerb()
         {
             var matchers = _requestMatchers.Where(m => m is RequestMessageMethodMatcher).ToList();
@@ -246,80 +225,37 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The using verb.
-        /// </summary>
-        /// <param name="verbs">The verbs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingVerb"/>
         public IRequestBuilder UsingVerb(params string[] verbs)
         {
-            Check.NotEmpty(verbs, nameof(verbs));
+            Check.NotNullOrEmpty(verbs, nameof(verbs));
 
             _requestMatchers.Add(new RequestMessageMethodMatcher(verbs));
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="body">
-        /// The body.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(string)"/>
         public IRequestBuilder WithBody(string body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body byte[].
-        /// </summary>
-        /// <param name="body">
-        /// The body as byte[].
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(byte[])"/>
         public IRequestBuilder WithBody(byte[] body)
         {
             _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="func">
-        /// The body function.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithBody(Func<string, bool> func)
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(object)"/>
+        public IRequestBuilder WithBody(object body)
         {
-            Check.NotNull(func, nameof(func));
-
-            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            _requestMatchers.Add(new RequestMessageBodyMatcher(body));
             return this;
         }
 
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="func">
-        /// The body function.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithBody(Func<byte[], bool> func)
-        {
-            Check.NotNull(func, nameof(func));
-
-            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
-            return this;
-        }
-
-        /// <summary>
-        /// The with body.
-        /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        /// <returns>The <see cref="IRequestBuilder" />.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(IMatcher)"/>
         public IRequestBuilder WithBody(IMatcher matcher)
         {
             Check.NotNull(matcher, nameof(matcher));
@@ -328,16 +264,34 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with parameters.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <param name="values">
-        /// The values.
-        /// </param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{string, bool})"/>
+        public IRequestBuilder WithBody(Func<string, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{byte[], bool})"/>
+        public IRequestBuilder WithBody(Func<byte[], bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{object, bool})"/>
+        public IRequestBuilder WithBody(Func<object, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, string[])"/>
         public IRequestBuilder WithParam(string key, params string[] values)
         {
             Check.NotNull(key, nameof(key));
@@ -346,26 +300,16 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with parameters.
-        /// </summary>
-        /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
         public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
             return this;
         }
 
-        /// <summary>
-        /// With header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string,bool)"/>
         public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
@@ -375,16 +319,26 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string[],bool)"/>
+        public IRequestBuilder WithHeader(string name, string[] patterns, bool ignoreCase = true)
+        {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(patterns, nameof(patterns));
+
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, patterns, ignoreCase));
+            return this;
+        }
+
         /// <summary>
         /// With header.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithHeader(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithHeader(string name, params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
-            Check.NotEmpty(matchers, nameof(matchers));
+            Check.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(name, matchers));
             return this;
@@ -397,7 +351,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithHeader(params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(funcs));
             return this;
@@ -422,9 +376,9 @@ namespace WireMock.RequestBuilders
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithCookie(string name, params IMatcher[] matchers)
+        public IRequestBuilder WithCookie(string name, params IStringMatcher[] matchers)
         {
-            Check.NotEmpty(matchers, nameof(matchers));
+            Check.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageCookieMatcher(name, matchers));
             return this;
@@ -437,7 +391,7 @@ namespace WireMock.RequestBuilders
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         public IRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
         {
-            Check.NotEmpty(funcs, nameof(funcs));
+            Check.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageCookieMatcher(funcs));
             return this;

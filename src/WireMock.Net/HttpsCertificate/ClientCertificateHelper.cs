@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace WireMock.Http
+namespace WireMock.HttpsCertificate
 {
-    internal static class CertificateUtil
+    internal static class ClientCertificateHelper
     {
         public static X509Certificate2 GetCertificate(string thumbprintOrSubjectName)
         {

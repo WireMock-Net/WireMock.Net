@@ -3,9 +3,9 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b3n6q3ygbww4lyls?svg=true)](https://ci.appveyor.com/project/StefH/wiremock-net)
 [![codecov](https://codecov.io/gh/WireMock-Net/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/WireMock-Net/WireMock.Net)
-[![Coverage Status](https://coveralls.io/repos/github/StefH/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/StefH/WireMock.Net?branch=master)
-[![GitHub issues](https://img.shields.io/github/issues/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/issues)
-[![GitHub stars](https://img.shields.io/github/stars/StefH/WireMock.Net.svg)](https://github.com/StefH/WireMock.Net/stargazers)
+[![Coverage Status](https://coveralls.io/repos/github/WireMock-Net/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/WireMock-Net/WireMock.Net?branch=master)
+[![GitHub issues](https://img.shields.io/github/issues/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/issues)
+[![GitHub stars](https://img.shields.io/github/stars/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/stargazers)
 
 | Name | NuGet |
 | ---- | ----- |
@@ -28,7 +28,7 @@ To build you need:
 
 
 ## Stubbing
-A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing](https://github.com/StefH/WireMock.Net/wiki/Stubbing).
+A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing & Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing-and-Request-Matching).
 
 ## Using WireMock in UnitTest framework
 You can use your favorite test framework and use WireMock within your tests, see
@@ -43,6 +43,16 @@ This is quite straight forward to launch a mock server within a console applicat
 ### SSL
 You can start a standalone mock server listening for HTTPS requests. To do so, there is just a flag to set when creating the server:
 ```csharp
-var server = FluentMockServer.Start(port: 8443, ssl: true);
+var server1 = FluentMockServer.Start(port: 8443, ssl: true);
+
+// or like this
+
+var server2 = FluentMockServer.Start(new FluentMockServerSettings
+{
+    Urls = new[] { "http://localhost:9091", "https://localhost:9443" }
+});
 ```
-Obviously you need a certificate registered on your box, properly associated with your application and the port number that will be used. This is not really specific to WireMock, not very straightforward and hence the following stackoverflow thread might come handy: [Httplistener with https support](http://stackoverflow.com/questions/11403333/httplistener-with-https-support)
+
+- In case when using **net 4.5.2** or **net 4.6**, you need a certificate registered on your box, properly associated with your application and the port number that will be used. This is not really specific to WireMock.Net, not very straightforward and hence the following stackoverflow thread might come handy: [Httplistener with https support](http://stackoverflow.com/questions/11403333/httplistener-with-https-support).
+
+- When using **netstandard**, WireMock.Net uses a self signed certificate (which can be overriden if you like) to host https urls.

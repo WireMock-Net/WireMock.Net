@@ -14,7 +14,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithPath([NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithPath([NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with path.
@@ -35,7 +35,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithUrl([NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithUrl([NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with url.

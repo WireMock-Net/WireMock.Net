@@ -27,7 +27,7 @@
     },
     "UseTransformer": false,
     "Headers": {
-      "Date": "Wed, 25 Oct 2017 18:57:40 GMT",
+      "Date": "Wed, 27 Oct 2017 18:57:40 GMT",
       "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"39,38,37,35\"",
       "Referrer-Policy": "no-referrer",
       "Connection": "close"

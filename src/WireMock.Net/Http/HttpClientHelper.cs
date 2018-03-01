@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using WireMock.HttpsCertificate;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Http
@@ -10,37 +16,28 @@ namespace WireMock.Http
     {
         public static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            HttpClientHandler handler;
-
-            if (string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
-            {
-                handler = new HttpClientHandler();
-            }
-            else
-            {
 #if NETSTANDARD || NET46
-                handler = new HttpClientHandler
-                {
-                    ClientCertificateOptions = ClientCertificateOption.Manual,
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                };
-
-                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
-                handler.ClientCertificates.Add(x509Certificate2);
+            var handler = new HttpClientHandler
+            {
+                CheckCertificateRevocationList = false,
+                SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
 #else
-
-                var webRequestHandler = new WebRequestHandler
-                {
-                    ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
-                    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
-                };
-
-                var x509Certificate2 = CertificateUtil.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
-                webRequestHandler.ClientCertificates.Add(x509Certificate2);
-                handler = webRequestHandler;
+            var handler = new WebRequestHandler
+            {
+                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
 #endif
+
+            if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
+            {
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+
+                var x509Certificate2 = ClientCertificateHelper.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
+                handler.ClientCertificates.Add(x509Certificate2);
             }
 
             // For proxy we shouldn't follow auto redirects
@@ -49,22 +46,42 @@ namespace WireMock.Http
             // If UseCookies enabled, httpClient ignores Cookie header
             handler.UseCookies = false;
 
-            return new HttpClient(handler);
+            var client = new HttpClient(handler);
+#if NET452 || NET46
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+#endif
+            return client;
         }
 
-        public static async Task<ResponseMessage> SendAsync(HttpClient client, RequestMessage requestMessage, string url)
+        public static async Task<ResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] RequestMessage requestMessage, string url)
         {
             Check.NotNull(client, nameof(client));
+            Check.NotNull(requestMessage, nameof(requestMessage));
 
             var originalUri = new Uri(requestMessage.Url);
             var requiredUri = new Uri(url);
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
+            WireMockList<string> contentTypeHeader = null;
+            bool contentTypeHeaderPresent = requestMessage.Headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase));
+            if (contentTypeHeaderPresent)
+            {
+                contentTypeHeader = requestMessage.Headers[HttpKnownHeaderNames.ContentType];
+            }
+
             // Set Body if present
-            if (requestMessage.BodyAsBytes != null && requestMessage.BodyAsBytes.Length > 0)
+            if (requestMessage.BodyAsBytes != null)
             {
                 httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
+            }
+            else if (requestMessage.BodyAsJson != null)
+            {
+                httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyAsJson), requestMessage.BodyEncoding);
+            }
+            else if (requestMessage.Body != null)
+            {
+                httpRequestMessage.Content = new StringContent(requestMessage.Body, requestMessage.BodyEncoding);
             }
 
             // Overwrite the host header
@@ -86,23 +103,25 @@ namespace WireMock.Http
             // Call the URL
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-            // Transform response
-            var responseMessage = new ResponseMessage
-            {
-                StatusCode = (int)httpResponseMessage.StatusCode,
-
-                BodyAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync(),
-                Body = await httpResponseMessage.Content.ReadAsStringAsync()
-            };
+            // Create transform response
+            var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 
             // Set both content and response headers, replacing URLs in values
-            var headers = httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers);
+            var headers = (httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers) ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>()).ToArray();
+            if (httpResponseMessage.Content != null)
+            {
+                var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                var body = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
+                responseMessage.Body = body.BodyAsString;
+                responseMessage.BodyAsJson = body.BodyAsJson;
+                responseMessage.BodyAsBytes = body.BodyAsBytes;
+            }
 
             foreach (var header in headers)
             {
-                // if Location header contains absolute redirect URL, and base URL is one that we proxy to,
+                // If Location header contains absolute redirect URL, and base URL is one that we proxy to,
                 // we need to replace it to original one.
-                if (string.Equals(header.Key, "Location", StringComparison.OrdinalIgnoreCase)
+                if (string.Equals(header.Key, HttpKnownHeaderNames.Location, StringComparison.OrdinalIgnoreCase)
                     && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out Uri absoluteLocationUri)
                     && string.Equals(absoluteLocationUri.Host, requiredUri.Host, StringComparison.OrdinalIgnoreCase))
                 {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Util;
 #if !NETSTANDARD
 using Owin;
 #else
@@ -14,15 +15,17 @@ namespace WireMock.Owin
 {
     internal class WireMockMiddlewareOptions
     {
+        public IWireMockLogger Logger { get; set; }
+
         public TimeSpan? RequestProcessingDelay { get; set; }
 
-        public IMatcher AuthorizationMatcher { get; set; }
+        public IStringMatcher AuthorizationMatcher { get; set; }
 
         public bool AllowPartialMapping { get; set; }
 
-        public IList<Mapping> Mappings { get; set; } = new List<Mapping>();
+        public IDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>();
 
-        public ObservableCollection<LogEntry> LogEntries { get; } = new ObservableCollection<LogEntry>();
+        public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 
         public int? RequestLogExpirationDuration { get; set; }
 

@@ -30,12 +30,8 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
         /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <param name="values">
-        /// The values.
-        /// </param>
+        /// <param name="key">The key.</param>
+        /// <param name="values">The values.</param>
         public RequestMessageParamMatcher([NotNull] string key, [CanBeNull] IEnumerable<string> values)
         {
             Check.NotNull(key, nameof(key));
@@ -51,17 +47,11 @@ namespace WireMock.Matchers.Request
         public RequestMessageParamMatcher([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
+
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
@@ -71,7 +61,9 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
+            }
 
             List<string> values = requestMessage.GetParameter(Key);
 

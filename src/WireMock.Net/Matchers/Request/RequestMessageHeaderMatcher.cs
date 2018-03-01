@@ -10,6 +10,7 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// The request header matcher.
     /// </summary>
+    /// <inheritdoc cref="IRequestMatcher"/>
     public class RequestMessageHeaderMatcher : IRequestMatcher
     {
         /// <summary>
@@ -25,21 +26,36 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The matchers.
         /// </value>
-        public IMatcher[] Matchers { get; }
+        public IStringMatcher[] Matchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">The ignoreCase.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
             Name = name;
-            Matchers = new IMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+            Matchers = new IStringMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string[] patterns, bool ignoreCase = true)
+        {
+            Check.NotNull(name, nameof(name));
+            Check.NotNull(patterns, nameof(patterns));
+
+            Name = name;
+            Matchers = patterns.Select(pattern => new WildcardMatcher(pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }
 
         /// <summary>
@@ -47,7 +63,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] params IMatcher[] matchers)
+        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(matchers, nameof(matchers));
@@ -67,14 +83,7 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
@@ -84,16 +93,24 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (requestMessage.Headers == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))));
+            }
 
             if (Matchers == null)
+            {
                 return MatchScores.Mismatch;
+            }
 
             if (!requestMessage.Headers.ContainsKey(Name))
+            {
                 return MatchScores.Mismatch;
+            }
 
             WireMockList<string> list = requestMessage.Headers[Name];
             return Matchers.Max(m => list.Max(value => m.IsMatch(value))); // TODO : is this correct ?

@@ -14,7 +14,7 @@ namespace WireMock.Server
     public partial class FluentMockServer
     {
         /// <summary>
-        /// Log entries notification handler
+        /// Occurs when [log entries changed].
         /// </summary>
         [PublicAPI]
         public event NotifyCollectionChangedEventHandler LogEntriesChanged
@@ -66,7 +66,7 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// Deletes the mapping.
+        /// Deletes a LogEntry.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
         [PublicAPI]

@@ -22,6 +22,13 @@ namespace WireMock.Server
         IRespondWithAProvider WithTitle(string title);
 
         /// <summary>
+        /// Define the full filepath for this mapping.
+        /// </summary>
+        /// <param name="path">The full filepath.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithPath(string path);
+
+        /// <summary>
         /// Define a unique identifier for this mapping.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Settings;
@@ -29,6 +30,7 @@ namespace WireMock.Server
     public partial class FluentMockServer
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
+        private const string ContentTypeJson = "application/json";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
@@ -42,56 +44,17 @@ namespace WireMock.Server
             NullValueHandling = NullValueHandling.Ignore,
         };
 
-        /// <summary>
-        /// Reads the static mappings from a folder.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
-        [PublicAPI]
-        public void ReadStaticMappings([CanBeNull] string folder = null)
-        {
-            if (folder == null)
-                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
-
-            if (!Directory.Exists(folder))
-                return;
-
-            foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
-            {
-                ReadStaticMapping(filename);
-            }
-        }
-
-        /// <summary>
-        /// Reads the static mapping.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        [PublicAPI]
-        public void ReadStaticMapping([NotNull] string filename)
-        {
-            Check.NotNull(filename, nameof(filename));
-
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
-
-            if (Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
-            {
-                DeserializeAndAddMapping(File.ReadAllText(filename), guidFromFilename);
-            }
-            else
-            {
-                DeserializeAndAddMapping(File.ReadAllText(filename));
-            }
-        }
-
+        #region InitAdmin
         private void InitAdmin()
         {
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST").WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
 
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingsPost));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
@@ -99,7 +62,7 @@ namespace WireMock.Server
 
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader("Content-Type", "application/json")).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingPut));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save
@@ -128,17 +91,114 @@ namespace WireMock.Server
             // __admin/scenarios/reset
             Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(ScenariosReset));
         }
+        #endregion
+
+        #region StaticMappings
+        /// <summary>
+        /// Reads the static mappings from a folder.
+        /// </summary>
+        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
+        [PublicAPI]
+        public void ReadStaticMappings([CanBeNull] string folder = null)
+        {
+            if (folder == null)
+            {
+                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
+            }
+
+            if (!Directory.Exists(folder))
+            {
+                return;
+            }
+
+            foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
+            {
+                _logger.Info("Reading Static MappingFile : '{0}'", filename);
+                ReadStaticMappingAndAddOrUpdate(filename);
+            }
+        }
+
+        /// <summary>
+        /// Watches the static mappings for changes.
+        /// </summary>
+        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
+        [PublicAPI]
+        public void WatchStaticMappings([CanBeNull] string folder = null)
+        {
+            if (folder == null)
+            {
+                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
+            }
+
+            if (!Directory.Exists(folder))
+            {
+                return;
+            }
+
+            _logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
+
+            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", 1000);
+            watcher.Created += (sender, args) =>
+            {
+                _logger.Info("New MappingFile created : '{0}'", args.FullPath);
+                ReadStaticMappingAndAddOrUpdate(args.FullPath);
+            };
+            watcher.Changed += (sender, args) =>
+            {
+                _logger.Info("New MappingFile updated : '{0}'", args.FullPath);
+                ReadStaticMappingAndAddOrUpdate(args.FullPath);
+            };
+            watcher.Deleted += (sender, args) =>
+            {
+                _logger.Info("New MappingFile deleted : '{0}'", args.FullPath);
+                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
+
+                if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+                {
+                    DeleteMapping(guidFromFilename);
+                }
+                else
+                {
+                    DeleteMapping(args.FullPath);
+                }
+            };
+
+            watcher.EnableRaisingEvents = true;
+        }
+
+        /// <summary>
+        /// Reads a static mapping file and adds or updates the mapping.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        [PublicAPI]
+        public void ReadStaticMappingAndAddOrUpdate([NotNull] string path)
+        {
+            Check.NotNull(path, nameof(path));
+
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+
+            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(FileHelper.ReadAllText(path));
+            if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+            {
+                DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+            }
+            else
+            {
+                DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+            }
+        }
+        #endregion
 
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(ProxyAndRecordSettings settings)
+        private void InitProxyAndRecord(IProxyAndRecordSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.X509Certificate2ThumbprintOrSubjectName);
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ClientX509Certificate2ThumbprintOrSubjectName);
             Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, ProxyAndRecordSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.Url);
@@ -148,8 +208,8 @@ namespace WireMock.Server
 
             if (settings.SaveMapping)
             {
-                var mapping = ToMapping(requestMessage, responseMessage);
-                _options.Mappings.Add(mapping);
+                var mapping = ToMapping(requestMessage, responseMessage, settings.BlackListedHeaders ?? new string[] { });
+                _options.Mappings.Add(mapping.Guid, mapping);
 
                 if (settings.SaveMappingToFile)
                 {
@@ -160,15 +220,22 @@ namespace WireMock.Server
             return responseMessage;
         }
 
-        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage)
+        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders)
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
             request.UsingVerb(requestMessage.Method);
 
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
-            requestMessage.Headers.Loop((key, value) => request.WithHeader(key, new ExactMatcher(value.ToArray())));
-            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, new ExactMatcher(value)));
+            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
+
+            requestMessage.Headers.Loop((key, value) =>
+            {
+                if (!blacklistedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
+                {
+                    request.WithHeader(key, value.ToArray());
+                }
+            });
 
             if (requestMessage.Body != null)
             {
@@ -177,7 +244,7 @@ namespace WireMock.Server
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, request, response, 0, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, request, response, 0, null, null, null);
         }
         #endregion
 
@@ -197,7 +264,7 @@ namespace WireMock.Server
 
         private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
         {
-            var settings = JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body);
+            var settings = requestMessage.Body != null ? JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<SettingsModel>();
 
             if (settings.AllowPartialMapping != null)
                 _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
@@ -220,7 +287,10 @@ namespace WireMock.Server
             var mapping = Mappings.FirstOrDefault(m => !m.IsAdminInterface && m.Guid == guid);
 
             if (mapping == null)
+            {
+                _logger.Warn("HttpStatusCode set to 404 : Mapping not found");
                 return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
+            }
 
             var model = MappingConverter.ToMappingModel(mapping);
 
@@ -230,23 +300,9 @@ namespace WireMock.Server
         private ResponseMessage MappingPut(RequestMessage requestMessage)
         {
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
-            var mappingModel = JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body);
 
-            if (mappingModel.Request == null)
-                return new ResponseMessage { StatusCode = 400, Body = "Request missing" };
-
-            if (mappingModel.Response == null)
-                return new ResponseMessage { StatusCode = 400, Body = "Response missing" };
-
-            var requestBuilder = InitRequestBuilder(mappingModel.Request);
-            var responseBuilder = InitResponseBuilder(mappingModel.Response);
-
-            IRespondWithAProvider respondProvider = Given(requestBuilder).WithGuid(guid);
-
-            if (!string.IsNullOrEmpty(mappingModel.Title))
-                respondProvider = respondProvider.WithTitle(mappingModel.Title);
-
-            respondProvider.RespondWith(responseBuilder);
+            MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+            DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
             return new ResponseMessage { Body = "Mapping added or updated" };
         }
@@ -256,7 +312,9 @@ namespace WireMock.Server
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
 
             if (DeleteMapping(guid))
+            {
                 return new ResponseMessage { Body = "Mapping removed" };
+            }
 
             return new ResponseMessage { Body = "Mapping not found" };
         }
@@ -277,13 +335,17 @@ namespace WireMock.Server
         {
             string folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
             if (!Directory.Exists(folder))
+            {
                 Directory.CreateDirectory(folder);
+            }
 
             var model = MappingConverter.ToMappingModel(mapping);
-            string json = JsonConvert.SerializeObject(model, _settings);
             string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
 
-            File.WriteAllText(Path.Combine(folder, filename + ".json"), json);
+            string filePath = Path.Combine(folder, filename + ".json");
+            _logger.Info("Saving Mapping to file {0}", filePath);
+
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(model, _settings));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')
@@ -307,24 +369,25 @@ namespace WireMock.Server
         {
             try
             {
-                DeserializeAndAddMapping(requestMessage.Body);
+                MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+                DeserializeAndAddOrUpdateMapping(mappingModel);
             }
             catch (ArgumentException a)
             {
+                _logger.Error("HttpStatusCode set to 400 {0}", a);
                 return new ResponseMessage { StatusCode = 400, Body = a.Message };
             }
             catch (Exception e)
             {
+                _logger.Error("HttpStatusCode set to 500 {0}", e);
                 return new ResponseMessage { StatusCode = 500, Body = e.ToString() };
             }
 
             return new ResponseMessage { StatusCode = 201, Body = "Mapping added" };
         }
 
-        private void DeserializeAndAddMapping(string json, Guid? guid = null)
+        private void DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
-            var mappingModel = JsonConvert.DeserializeObject<MappingModel>(json);
-
             Check.NotNull(mappingModel, nameof(mappingModel));
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
             Check.NotNull(mappingModel.Response, nameof(mappingModel.Response));
@@ -343,11 +406,20 @@ namespace WireMock.Server
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
             }
 
+            if (path != null)
+            {
+                respondProvider = respondProvider.WithPath(path);
+            }
+
             if (!string.IsNullOrEmpty(mappingModel.Title))
+            {
                 respondProvider = respondProvider.WithTitle(mappingModel.Title);
+            }
 
             if (mappingModel.Priority != null)
+            {
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
+            }
 
             if (mappingModel.Scenario != null)
             {
@@ -376,7 +448,10 @@ namespace WireMock.Server
             var entry = LogEntries.FirstOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
 
             if (entry == null)
+            {
+                _logger.Warn("HttpStatusCode set to 404 : Request not found");
                 return new ResponseMessage { StatusCode = 404, Body = "Request not found" };
+            }
 
             var model = ToLogEntryModel(entry);
 
@@ -418,6 +493,8 @@ namespace WireMock.Server
                     Query = logEntry.RequestMessage.Query,
                     Method = logEntry.RequestMessage.Method,
                     Body = logEntry.RequestMessage.Body,
+                    BodyAsJson = logEntry.RequestMessage.BodyAsJson,
+                    BodyAsBytes = logEntry.RequestMessage.BodyAsBytes,
                     Headers = logEntry.RequestMessage.Headers,
                     Cookies = logEntry.RequestMessage.Cookies,
                     BodyEncoding = logEntry.RequestMessage.BodyEncoding != null ? new EncodingModel
@@ -432,6 +509,7 @@ namespace WireMock.Server
                     StatusCode = logEntry.ResponseMessage.StatusCode,
                     BodyDestination = logEntry.ResponseMessage.BodyDestination,
                     Body = logEntry.ResponseMessage.Body,
+                    BodyAsJson = logEntry.ResponseMessage.BodyAsJson,
                     BodyAsBytes = logEntry.ResponseMessage.BodyAsBytes,
                     BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
                     BodyAsFile = logEntry.ResponseMessage.BodyAsFile,
@@ -472,7 +550,7 @@ namespace WireMock.Server
         #region Requests/find
         private ResponseMessage RequestsFind(RequestMessage requestMessage)
         {
-            var requestModel = JsonConvert.DeserializeObject<RequestModel>(requestMessage.Body);
+            var requestModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<RequestModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<RequestModel>();
 
             var request = (Request)InitRequestBuilder(requestModel);
 
@@ -486,7 +564,7 @@ namespace WireMock.Server
                 }
             }
 
-            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key);
+            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(ToLogEntryModel);
 
             return ToJson(result);
         }
@@ -528,7 +606,7 @@ namespace WireMock.Server
                     var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
                     if (clientIPModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(MappingConverter.Map).ToArray());
+                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
@@ -545,7 +623,7 @@ namespace WireMock.Server
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).ToArray());
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
@@ -562,7 +640,7 @@ namespace WireMock.Server
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).ToArray());
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
@@ -576,7 +654,7 @@ namespace WireMock.Server
             {
                 foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 
@@ -584,7 +662,7 @@ namespace WireMock.Server
             {
                 foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(MappingConverter.Map).ToArray());
+                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 
@@ -680,7 +758,7 @@ namespace WireMock.Server
             {
                 Body = JsonConvert.SerializeObject(result, _settings),
                 StatusCode = 200,
-                Headers = new Dictionary<string, WireMockList<string>> { { "Content-Type", new WireMockList<string>("application/json") } }
+                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
             };
         }
 

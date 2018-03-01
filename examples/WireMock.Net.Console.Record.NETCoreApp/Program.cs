@@ -2,7 +2,7 @@
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace WireMock.Net.Console.Record.NETCoreApp
+namespace WireMock.Net.Console.Proxy.NETCoreApp
 {
     static class Program
     {
@@ -16,9 +16,10 @@ namespace WireMock.Net.Console.Record.NETCoreApp
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
                     Url = "https://www.google.com",
-                    //X509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
+                    //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
-                    SaveMappingToFile = false
+                    SaveMappingToFile = false,
+                    BlackListedHeaders = new [] { "dnt", "Content-Length" }
                 }
             });
 

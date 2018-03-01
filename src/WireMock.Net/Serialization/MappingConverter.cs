@@ -97,6 +97,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.StatusCode = null;
                 mappingModel.Response.Headers = null;
                 mappingModel.Response.BodyDestination = null;
+                mappingModel.Response.BodyAsJson = null;
                 mappingModel.Response.Body = null;
                 mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.BodyAsFile = null;
@@ -110,6 +111,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
                 mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
+                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyAsJson;
                 mappingModel.Response.Body = response.ResponseMessage.Body;
                 mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
                 mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
@@ -150,7 +152,9 @@ namespace WireMock.Serialization
         private static MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
             if (matchers == null || !matchers.Any())
+            {
                 return null;
+            }
 
             return matchers.Select(Map).Where(x => x != null).ToArray();
         }
@@ -158,9 +162,12 @@ namespace WireMock.Serialization
         private static MatcherModel Map([CanBeNull] IMatcher matcher)
         {
             if (matcher == null)
+            {
                 return null;
+            }
 
-            var patterns = matcher.GetPatterns();
+            IStringMatcher stringMatcher = matcher as IStringMatcher;
+            string[] patterns = stringMatcher != null ? stringMatcher.GetPatterns() : new string[0];
 
             return new MatcherModel
             {
@@ -186,7 +193,9 @@ namespace WireMock.Serialization
         public static IMatcher Map([CanBeNull] MatcherModel matcher)
         {
             if (matcher == null)
+            {
                 return null;
+            }
 
             var parts = matcher.Name.Split('.');
             string matcherName = parts[0];

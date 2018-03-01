@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -21,16 +22,20 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
+        private readonly IWireMockLogger _logger;
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
+        /// Gets a value indicating whether this server is started.
+        /// </summary>
+        [PublicAPI]
+        public bool IsStarted { get; }
+
+        /// <summary>
         /// Gets the ports.
         /// </summary>
-        /// <value>
-        /// The ports.
-        /// </value>
         [PublicAPI]
         public List<int> Ports { get; }
 
@@ -44,7 +49,7 @@ namespace WireMock.Server
         /// Gets the mappings.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<Mapping> Mappings => new ReadOnlyCollection<Mapping>(_options.Mappings);
+        public IEnumerable<Mapping> Mappings => _options.Mappings.Values.ToArray();
 
         /// <summary>
         /// Gets the scenarios.
@@ -59,7 +64,7 @@ namespace WireMock.Server
         /// <param name="settings">The FluentMockServerSettings.</param>
         /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
-        public static FluentMockServer Start(FluentMockServerSettings settings)
+        public static FluentMockServer Start(IFluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
@@ -90,7 +95,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer Start(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
@@ -123,7 +128,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer StartWithAdminInterface(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
@@ -140,7 +145,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static FluentMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
         {
-            Check.NotEmpty(urls, nameof(urls));
+            Check.NotNullOrEmpty(urls, nameof(urls));
 
             return new FluentMockServer(new FluentMockServerSettings
             {
@@ -150,11 +155,16 @@ namespace WireMock.Server
             });
         }
 
-        private FluentMockServer(FluentMockServerSettings settings)
+        private FluentMockServer(IFluentMockServerSettings settings)
         {
+            settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
+            _logger = settings.Logger;
+
+            _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
+
             if (settings.Urls != null)
             {
-                Urls = settings.Urls;
+                Urls = settings.Urls.Select(u => u.EndsWith("/") ? u : $"{u}/").ToArray();
             }
             else
             {
@@ -164,6 +174,7 @@ namespace WireMock.Server
 
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
+            _options.Logger = _logger;
 
 #if NETSTANDARD
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
@@ -176,6 +187,8 @@ namespace WireMock.Server
 
             // Fix for 'Bug: Server not listening after Start() returns (on macOS)'
             Task.Delay(ServerStartDelay).Wait();
+
+            IsStarted = _httpServer.IsStarted;
 
             if (settings.AllowPartialMapping == true)
             {
@@ -195,6 +208,11 @@ namespace WireMock.Server
             if (settings.ReadStaticMappings == true)
             {
                 ReadStaticMappings();
+            }
+
+            if (settings.WatchStaticMappings == true)
+            {
+                WatchStaticMappings();
             }
 
             if (settings.ProxyAndRecordSettings != null)
@@ -258,7 +276,10 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetMappings()
         {
-            _options.Mappings = _options.Mappings.Where(m => m.IsAdminInterface).ToList();
+            foreach (var nonAdmin in _options.Mappings.Where(m => !m.Value.IsAdminInterface))
+            {
+                _options.Mappings.Remove(nonAdmin);
+            }
         }
 
         /// <summary>
@@ -269,14 +290,19 @@ namespace WireMock.Server
         public bool DeleteMapping(Guid guid)
         {
             // Check a mapping exists with the same GUID, if so, remove it.
-            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
-            if (existingMapping != null)
+            if (_options.Mappings.ContainsKey(guid))
             {
-                _options.Mappings.Remove(existingMapping);
-                return true;
+                return _options.Mappings.Remove(guid);
             }
 
             return false;
+        }
+
+        private bool DeleteMapping(string path)
+        {
+            // Check a mapping exists with the same path, if so, remove it.
+            var mapping = _options.Mappings.FirstOrDefault(entry => string.Equals(entry.Value.Path, path, StringComparison.OrdinalIgnoreCase));
+            return DeleteMapping(mapping.Key);
         }
 
         /// <summary>
@@ -293,9 +319,10 @@ namespace WireMock.Server
         /// Allows the partial mapping.
         /// </summary>
         [PublicAPI]
-        public void AllowPartialMapping()
+        public void AllowPartialMapping(bool allow = true)
         {
-            _options.AllowPartialMapping = true;
+            _logger.Info("AllowPartialMapping is set to {0}", allow);
+            _options.AllowPartialMapping = allow;
         }
 
         /// <summary>
@@ -363,39 +390,17 @@ namespace WireMock.Server
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }
 
-        /// <summary>
-        /// The register mapping.
-        /// </summary>
-        /// <param name="mapping">
-        /// The mapping.
-        /// </param>
         private void RegisterMapping(Mapping mapping)
         {
-            // Check a mapping exists with the same GUID, if so, replace it
-
-            var index = GetMappingIndex(mapping.Guid);
-
-            DeleteMapping(mapping.Guid);
-
-            if (index != -1)
+            // Check a mapping exists with the same Guid, if so, replace it.
+            if (_options.Mappings.ContainsKey(mapping.Guid))
             {
-                _options.Mappings.Insert(index, mapping);
+                _options.Mappings[mapping.Guid] = mapping;
             }
             else
             {
-                _options.Mappings.Add(mapping);
+                _options.Mappings.Add(mapping.Guid, mapping);
             }
-        }
-
-        private int GetMappingIndex(Guid guid)
-        {
-            var existingMapping = _options.Mappings.FirstOrDefault(m => m.Guid == guid);
-            if (existingMapping != null)
-            {
-                return _options.Mappings.IndexOf(existingMapping);
-            }
-
-            return -1;
         }
     }
 }

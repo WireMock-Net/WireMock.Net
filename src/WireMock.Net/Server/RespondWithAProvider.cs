@@ -11,18 +11,11 @@ namespace WireMock.Server
         private int _priority;
         private Guid? _guid;
         private string _title;
+        private string _path;
         private object _executionConditionState;
         private object _nextState;
         private string _scenario;
-
-        /// <summary>
-        /// The _registration callback.
-        /// </summary>
         private readonly RegistrationCallback _registrationCallback;
-
-        /// <summary>
-        /// The _request matcher.
-        /// </summary>
         private readonly IRequestMatcher _requestMatcher;
 
         /// <summary>
@@ -39,30 +32,20 @@ namespace WireMock.Server
         /// <summary>
         /// The respond with.
         /// </summary>
-        /// <param name="provider">
-        /// The provider.
-        /// </param>
+        /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
             var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _title, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
+            _registrationCallback(new Mapping(mappingGuid, _title, _path, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
         }
 
-        /// <summary>
-        /// Define a unique identifier for this mapping.
-        /// </summary>
-        /// <param name="guid">The unique identifier.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
         public IRespondWithAProvider WithGuid(string guid)
         {
             return WithGuid(Guid.Parse(guid));
         }
 
-        /// <summary>
-        /// Define a unique identifier for this mapping.
-        /// </summary>
-        /// <param name="guid">The unique identifier.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        /// <see cref="IRespondWithAProvider.WithGuid(Guid)"/>
         public IRespondWithAProvider WithGuid(Guid guid)
         {
             _guid = guid;
@@ -70,11 +53,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <summary>
-        /// Define a unique identifier for this mapping.
-        /// </summary>
-        /// <param name="title">The unique identifier.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        /// <see cref="IRespondWithAProvider.WithTitle"/>
         public IRespondWithAProvider WithTitle(string title)
         {
             _title = title;
@@ -82,11 +61,15 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <summary>
-        /// Define the priority for this mapping.
-        /// </summary>
-        /// <param name="priority">The priority.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        /// <see cref="IRespondWithAProvider.WithPath"/>
+        public IRespondWithAProvider WithPath(string path)
+        {
+            _path = path;
+
+            return this;
+        }
+
+        /// <see cref="IRespondWithAProvider.AtPriority"/>
         public IRespondWithAProvider AtPriority(int priority)
         {
             _priority = priority;
@@ -94,6 +77,7 @@ namespace WireMock.Server
             return this;
         }
 
+        /// <see cref="IRespondWithAProvider.InScenario(string)"/>
         public IRespondWithAProvider InScenario(string scenario)
         {
             _scenario = scenario;
@@ -101,6 +85,7 @@ namespace WireMock.Server
             return this;
         }
 
+        /// <see cref="IRespondWithAProvider.WhenStateIs"/>
         public IRespondWithAProvider WhenStateIs(object state)
         {
             if (string.IsNullOrEmpty(_scenario))
@@ -118,6 +103,7 @@ namespace WireMock.Server
             return this;
         }
 
+        /// <see cref="IRespondWithAProvider.WillSetStateTo"/>
         public IRespondWithAProvider WillSetStateTo(object state)
         {
             if (string.IsNullOrEmpty(_scenario))

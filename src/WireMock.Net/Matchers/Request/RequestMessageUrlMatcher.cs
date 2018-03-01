@@ -14,7 +14,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matchers.
         /// </summary>
-        public IReadOnlyList<IMatcher> Matchers { get; }
+        public IReadOnlyList<IStringMatcher> Matchers { get; }
 
         /// <summary>
         /// The url functions.
@@ -25,7 +25,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
         /// <param name="urls">The urls.</param>
-        public RequestMessageUrlMatcher([NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(url)).ToArray())
+        public RequestMessageUrlMatcher([NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(url)).Cast<IStringMatcher>().ToArray())
         {
         }
 
@@ -33,7 +33,7 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageUrlMatcher([NotNull] params IMatcher[] matchers)
+        public RequestMessageUrlMatcher([NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(matchers, nameof(matchers));
             Matchers = matchers;
@@ -49,14 +49,7 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
@@ -66,10 +59,14 @@ namespace WireMock.Matchers.Request
         private double IsMatch(RequestMessage requestMessage)
         {
             if (Matchers != null)
+            {
                 return Matchers.Max(matcher => matcher.IsMatch(requestMessage.Url));
+            }
 
             if (Funcs != null)
+            {
                 return MatchScores.ToScore(requestMessage.Url != null && Funcs.Any(func => func(requestMessage.Url)));
+            }
 
             return MatchScores.Mismatch;
         }

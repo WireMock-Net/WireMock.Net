@@ -47,7 +47,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "documentdb_root.json");
-            _server.ReadStaticMapping(folder);
+            _server.ReadStaticMappingAndAddOrUpdate(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests
 
             _server = FluentMockServer.Start();
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
-            _server.ReadStaticMapping(folder);
+            _server.ReadStaticMappingAndAddOrUpdate(folder);
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
@@ -91,7 +91,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public void FluentMockServer_Admin_Mappings_Get()
         {
-            var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+            Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
             _server.Given(Request.Create().WithPath("/foo1").UsingGet())
@@ -103,12 +103,6 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
-
-            Check.That(mappings.First().RequestMatcher).IsNotNull();
-            Check.That(mappings.First().Provider).IsNotNull();
-            Check.That(mappings.First().Guid).Equals(guid);
-
-            Check.That(mappings[1].Guid).Not.Equals(guid);
         }
 
         [Fact]
@@ -117,20 +111,24 @@ namespace WireMock.Net.Tests
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/1").UsingGet())
+            var response1 = Response.Create().WithStatusCode(500);
+            _server.Given(Request.Create().UsingGet())
                 .WithGuid(guid)
-                .RespondWith(Response.Create().WithStatusCode(500));
+                .RespondWith(response1);
 
-            var mappings = _server.Mappings.ToArray();
-            Check.That(mappings).HasSize(1);
-            Check.That(mappings.First().Guid).Equals(guid);
+            var mappings1 = _server.Mappings.ToArray();
+            Check.That(mappings1).HasSize(1);
+            Check.That(mappings1.First().Guid).Equals(guid);
 
+            var response2 = Response.Create().WithStatusCode(400);
             _server.Given(Request.Create().WithPath("/2").UsingGet())
                 .WithGuid(guid)
-                .RespondWith(Response.Create().WithStatusCode(500));
+                .RespondWith(response2);
 
-            Check.That(mappings).HasSize(1);
-            Check.That(mappings.First().Guid).Equals(guid);
+            var mappings2 = _server.Mappings.ToArray();
+            Check.That(mappings2).HasSize(1);
+            Check.That(mappings2.First().Guid).Equals(guid);
+            Check.That(mappings2.First().Provider).Equals(response2);
         }
 
         [Fact]
@@ -149,8 +147,6 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
-            Check.That(mappings[0].Priority).Equals(2);
-            Check.That(mappings[1].Priority).Equals(1);
 
             // when
             var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/1");
@@ -173,6 +169,34 @@ namespace WireMock.Net.Tests
             var requestLogged = _server.LogEntries.First();
             Check.That(requestLogged.RequestMessage.Method).IsEqualTo("get");
             Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_methodPatch()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithPath("/foo").UsingVerb("patch"))
+                .RespondWith(Response.Create().WithBody("hello patch"));
+
+            // when
+            var msg = new HttpRequestMessage(new HttpMethod("patch"), new Uri("http://localhost:" + _server.Ports[0] + "/foo"))
+            {
+                Content = new StringContent("{\"data\": {\"attr\":\"value\"}}")
+            };
+            var response = await new HttpClient().SendAsync(msg);
+
+            // then
+            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Check.That(responseBody).IsEqualTo("hello patch");
+
+            Check.That(_server.LogEntries).HasSize(1);
+            var requestLogged = _server.LogEntries.First();
+            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("patch");
+            Check.That(requestLogged.RequestMessage.Body).IsNotNull();
+            Check.That(requestLogged.RequestMessage.Body).IsEqualTo("{\"data\": {\"attr\":\"value\"}}");
         }
 
         [Fact]

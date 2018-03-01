@@ -21,21 +21,51 @@ namespace WireMock.Net.ConsoleApplication
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
+                WatchStaticMappings = true,
+                //ProxyAndRecordSettings = new ProxyAndRecordSettings
+                //{
+                //    SaveMapping = true
+                //},
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); }
             });
-            System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(" and ", server.Urls));
+            System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 
-            // server.AllowPartialMapping();
+            server.AllowPartialMapping();
+
+            // .WithHeader("Stef", "Stef")
+            //server
+            //    .Given(Request.Create().WithPath("*"))
+            //    .RespondWith(Response.Create()
+            //    .WithProxy("http://restcountries.eu"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath("/jsonthings")
+                    .WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"))
+                    .UsingPut())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""JsonPathMatcher !!!""}"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath(new WildcardMatcher("/navision/OData/Company('My Company')/School*", true))
+                    .WithParam("$filter", "(substringof(Code, 'WA')")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""odata""}"));
 
             server
                 .Given(Request.Create().WithPath("/headers", "/headers_test").UsingPost().WithHeader("Content-Type", "application/json*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
-                    .WithHeader("MyHeader", "application/json", "application/json2")
-                    .WithBody(@"{ ""result"": ""data posted with 201""}"));
+                    //.WithHeader("MyHeader", "application/json", "application/json2")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { result = "data:headers posted with 201" }));
 
             server
                 .Given(Request.Create().WithPath("/file").UsingGet())
@@ -97,7 +127,7 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""result"": ""data posted with FUNC 201""}"));
+                    .WithBodyAsJson(new { result = "data posted with FUNC 201" }));
 
             server
                 .Given(Request.Create().WithPath("/json").UsingPost().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]")))

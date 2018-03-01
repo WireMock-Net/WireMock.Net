@@ -7,8 +7,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Util;
 using WireMock.Validation;
@@ -20,7 +20,7 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private HttpClient httpClientForProxy;
+        private HttpClient _httpClientForProxy;
 
         /// <summary>
         /// The delay
@@ -43,7 +43,7 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The client X509Certificate2 Thumbprint or SubjectName to use.
         /// </summary>
-        public string X509Certificate2ThumbprintOrSubjectName { get; private set; }
+        public string ClientX509Certificate2ThumbprintOrSubjectName { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -246,16 +246,9 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(body, nameof(body));
 
-            string jsonBody = JsonConvert.SerializeObject(body, new JsonSerializerSettings { Formatting = Formatting.None, NullValueHandling = NullValueHandling.Ignore });
-
-            if (encoding != null && !encoding.Equals(Encoding.UTF8))
-            {
-                jsonBody = encoding.GetString(Encoding.UTF8.GetBytes(jsonBody));
-                ResponseMessage.BodyEncoding = encoding;
-            }
-
             ResponseMessage.BodyDestination = null;
-            ResponseMessage.Body = jsonBody;
+            ResponseMessage.BodyAsJson = body;
+            ResponseMessage.BodyEncoding = encoding;
 
             return this;
         }
@@ -274,54 +267,45 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with transformer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer"/>
         public IResponseBuilder WithTransformer()
         {
             UseTransformer = true;
             return this;
         }
 
-        /// <summary>
-        /// The with delay.
-        /// </summary>
-        /// <param name="delay">The TimeSpan to delay.</param>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(TimeSpan)"/>
         public IResponseBuilder WithDelay(TimeSpan delay)
         {
             Check.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
+
             Delay = delay;
             return this;
         }
 
-        /// <summary>
-        /// The with delay.
-        /// </summary>
-        /// <param name="milliseconds">The milliseconds to delay.</param>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(int)"/>
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <summary>
-        /// With Proxy URL.
-        /// </summary>
-        /// <param name="proxyUrl">The proxy url.</param>
-        /// <param name="clientX509Certificate2ThumbprintOrSubjectName">The X509Certificate2 file to use for client authentication.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
         public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            Check.NotEmpty(proxyUrl, nameof(proxyUrl));
+            Check.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
 
             ProxyUrl = proxyUrl;
-            X509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
-            httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
+            ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
             return this;
+        }
+
+        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
+        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
+        {
+            Check.NotNull(settings, nameof(settings));
+
+            return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
         /// <summary>
@@ -334,14 +318,17 @@ namespace WireMock.ResponseBuilders
             Check.NotNull(requestMessage, nameof(requestMessage));
 
             if (Delay != null)
+            {
                 await Task.Delay(Delay.Value);
+            }
 
-            if (ProxyUrl != null && httpClientForProxy != null)
+            if (ProxyUrl != null && _httpClientForProxy != null)
             {
                 var requestUri = new Uri(requestMessage.Url);
                 var proxyUri = new Uri(ProxyUrl);
                 var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
-                return await HttpClientHelper.SendAsync(httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
+
+                return await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
             }
 
             if (UseTransformer)

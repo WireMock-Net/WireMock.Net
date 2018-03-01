@@ -14,7 +14,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="matchers">The matchers.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithClientIP([NotNull] params IMatcher[] matchers);
+        IRequestBuilder WithClientIP([NotNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// The with ClientIP.

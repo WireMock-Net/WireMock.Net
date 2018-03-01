@@ -7,7 +7,7 @@ namespace WireMock.Matchers
     /// <summary>
     /// WildcardMatcher
     /// </summary>
-    /// <seealso cref="IMatcher" />
+    /// <seealso cref="RegexMatcher" />
     public class WildcardMatcher : RegexMatcher
     {
         private readonly string[] _patterns;
@@ -31,21 +31,13 @@ namespace WireMock.Matchers
             _patterns = patterns;
         }
 
-        /// <summary>
-        /// Gets the pattern.
-        /// </summary>
-        /// <returns>Pattern</returns>
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public override string[] GetPatterns()
         {
             return _patterns;
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <returns>
-        /// Name
-        /// </returns>
+        /// <inheritdoc cref="IMatcher.GetName"/>
         public override string GetName()
         {
             return "WildcardMatcher";

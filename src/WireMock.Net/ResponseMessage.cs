@@ -38,6 +38,11 @@ namespace WireMock
         public string Body { get; set; }
 
         /// <summary>
+        /// Gets or sets the body as a json object.
+        /// </summary>
+        public object BodyAsJson { get; set; }
+
+        /// <summary>
         /// Gets or sets the body as bytes.
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
@@ -74,7 +79,7 @@ namespace WireMock
         /// <param name="values">The values.</param>
         public void AddHeader(string name, params string[] values)
         {
-            Check.NotEmpty(values, nameof(values));
+            Check.NotNullOrEmpty(values, nameof(values));
 
             var newHeaderValues = Headers.TryGetValue(name, out WireMockList<string> existingValues)
                 ? values.Union(existingValues).ToArray()

@@ -1,11 +1,14 @@
 ﻿#if NETSTANDARD
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using WireMock.Http;
+using WireMock.HttpsCertificate;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -14,7 +17,7 @@ namespace WireMock.Owin
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly WireMockMiddlewareOptions _options;
-        private readonly string[] _uriPrefixes;
+        private readonly string[] _urls;
 
         private IWebHost _host;
 
@@ -27,7 +30,7 @@ namespace WireMock.Owin
         public AspNetCoreSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
 
             foreach (string uriPrefix in uriPrefixes)
             {
@@ -38,7 +41,7 @@ namespace WireMock.Owin
             }
 
             _options = options;
-            _uriPrefixes = uriPrefixes;
+            _urls = uriPrefixes;
         }
 
         public Task StartAsync()
@@ -46,25 +49,59 @@ namespace WireMock.Owin
             _host = new WebHostBuilder()
                 .Configure(appBuilder =>
                 {
+                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>(_options);
+
                     _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
+
                     appBuilder.UseMiddleware<WireMockMiddleware>(_options);
+
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
-                .UseKestrel()
-                .UseUrls(_uriPrefixes)
+                .UseKestrel(options =>
+                {
+#if NETSTANDARD1_3
+                    if (_urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                    }
+#else
+                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
+                    foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        options.Listen(System.Net.IPAddress.Loopback, port);
+                    }
+
+                    foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        options.Listen(System.Net.IPAddress.Loopback, port, listenOptions =>
+                        {
+                            listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                        });
+                    }
+#endif
+                })
+#if NETSTANDARD1_3
+                .UseUrls(_urls)
+#endif
                 .Build();
 
+            IsStarted = true;
+
 #if NETSTANDARD1_3
-            System.Console.WriteLine("WireMock.Net server using netstandard1.3");
+            Console.WriteLine("WireMock.Net server using netstandard1.3");
             return Task.Run(() =>
             {
                 _host.Run(_cts.Token);
-                IsStarted = true;
             }, _cts.Token);
 #else
             System.Console.WriteLine("WireMock.Net server using netstandard2.0");
-            IsStarted = true;
-            return _host.RunAsync(_cts.Token);
+
+            return Task.Run(() =>
+            {
+                _host.Run();
+            }, _cts.Token);
 #endif
         }
 

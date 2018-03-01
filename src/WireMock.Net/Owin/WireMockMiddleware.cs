@@ -5,6 +5,8 @@ using WireMock.Matchers.Request;
 using System.Linq;
 using WireMock.Matchers;
 using WireMock.Util;
+using Newtonsoft.Json;
+using WireMock.Http;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -51,7 +53,7 @@ namespace WireMock.Owin
             RequestMatchResult requestMatchResult = null;
             try
             {
-                foreach (var mapping in _options.Mappings.Where(m => m?.Scenario != null))
+                foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
                 {
                     // Set start
                     if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
@@ -60,7 +62,7 @@ namespace WireMock.Owin
                     }
                 }
 
-                var mappings = _options.Mappings
+                var mappings = _options.Mappings.Values
                     .Select(m => new
                     {
                         Mapping = m,
@@ -94,6 +96,7 @@ namespace WireMock.Owin
                 if (targetMapping == null)
                 {
                     logRequest = true;
+                    _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
                     response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
                     return;
                 }
@@ -102,9 +105,10 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
-                    bool present = request.Headers.TryGetValue("Authorization", out WireMockList<string> authorization);
+                    bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string> authorization);
                     if (!present || _options.AuthorizationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
+                        _options.Logger.Error("HttpStatusCode set to 401");
                         response = new ResponseMessage { StatusCode = 401 };
                         return;
                     }
@@ -124,7 +128,8 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                response = new ResponseMessage { StatusCode = 500, Body = ex.ToString() };
+                _options.Logger.Error("HttpStatusCode set to 500");
+                response = new ResponseMessage { StatusCode = 500, Body = JsonConvert.SerializeObject(ex) };
             }
             finally
             {
