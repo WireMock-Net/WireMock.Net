@@ -89,13 +89,12 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_Admin_Mappings_Get()
+        public void FluentMockServer_Admin_Mappings_WithGuid_Get()
         {
             Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo1").UsingGet())
-                .WithGuid(guid)
+            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
 
             _server.Given(Request.Create().WithPath("/foo2").UsingGet())
@@ -103,6 +102,19 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
+        }
+
+        [Fact]
+        public void FluentMockServer_Admin_Mappings_WithGuidAsString_Get()
+        {
+            string guid = "90356dba-b36c-469a-a17e-669cd84f1f05";
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
+                .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
         }
 
         [Fact]

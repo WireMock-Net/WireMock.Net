@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using Xunit;
@@ -25,10 +26,24 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_WithUrlExact()
+        public void Request_WithUrl_WildcardMatcher()
         {
             // given
-            var spec = Request.Create().WithUrl("http://localhost/foo");
+            var spec = Request.Create().WithUrl(new WildcardMatcher("*/foo"));
+
+            // when
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithUrl_Func()
+        {
+            // given
+            var spec = Request.Create().WithUrl(url => url.Contains("foo"));
 
             // when
             var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
