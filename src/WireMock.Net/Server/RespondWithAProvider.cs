@@ -1,5 +1,6 @@
 ﻿using System;
 using WireMock.Matchers.Request;
+using WireMock.ResponseProviders;
 
 namespace WireMock.Server
 {

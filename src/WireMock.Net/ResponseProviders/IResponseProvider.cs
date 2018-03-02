@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace WireMock
+namespace WireMock.ResponseProviders
 {
     /// <summary>
     /// The Response Provider interface.

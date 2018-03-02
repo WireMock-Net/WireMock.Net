@@ -17,6 +17,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Util;

@@ -16,6 +16,60 @@ namespace WireMock.Net.Tests
         private const string ClientIp = "::1";
 
         [Fact]
+        public void Request_WithBody_FuncString()
+        {
+            // Assign
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(b => b.Contains("b"));
+
+            // Act
+            var body = new BodyData
+            {
+                BodyAsString = "b"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithBody_FuncJson()
+        {
+            // Assign
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(b => b != null);
+
+            // Act
+            var body = new BodyData
+            {
+                BodyAsJson = 123
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithBody_FuncByteArray()
+        {
+            // Assign
+            var requestBuilder = Request.Create().UsingAnyVerb().WithBody((byte[] b) => b != null);
+
+            // Act
+            var body = new BodyData
+            {
+                BodyAsBytes = new byte[0]
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
         public void Request_WithBodyExactMatcher()
         {
             // given

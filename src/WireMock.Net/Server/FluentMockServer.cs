@@ -14,6 +14,7 @@ using WireMock.RequestBuilders;
 using WireMock.Settings;
 using WireMock.Validation;
 using WireMock.Owin;
+using WireMock.ResponseProviders;
 
 namespace WireMock.Server
 {
