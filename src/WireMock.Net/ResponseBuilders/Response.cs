@@ -167,6 +167,13 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
+        public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource,
+            Encoding encoding = null)
+        {
+            return WithCallback(req => new ResponseMessage {Body = bodyFactory(req)});
+        }
+
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
         public IResponseBuilder WithBody(byte[] body, string destination, Encoding encoding = null)
         {
