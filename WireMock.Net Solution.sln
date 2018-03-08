@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
@@ -45,6 +45,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.Net452", "examples\WireMock.Net.Console.Proxy.Net452\WireMock.Net.Console.Proxy.Net452.csproj", "{26433A8F-BF01-4962-97EB-81BFFBB61096}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.Proxy.NETCoreApp2", "examples\WireMock.Net.Console.Proxy.NETCoreApp2\WireMock.Net.Console.Proxy.NETCoreApp2.csproj", "{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.Net461", "examples\WireMock.Net.StandAlone.Net461\WireMock.Net.StandAlone.Net461.csproj", "{3C279524-DB73-4DE3-BEF1-F2B2958C9F65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,6 +102,10 @@ Global
 		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C279524-DB73-4DE3-BEF1-F2B2958C9F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C279524-DB73-4DE3-BEF1-F2B2958C9F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C279524-DB73-4DE3-BEF1-F2B2958C9F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C279524-DB73-4DE3-BEF1-F2B2958C9F65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{049539C1-7A66-4559-AD7A-B1C73B97CBB0} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{26433A8F-BF01-4962-97EB-81BFFBB61096} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{23A9AA3C-40FC-42AA-8A5E-05899795A1C6} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{3C279524-DB73-4DE3-BEF1-F2B2958C9F65} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF428BCC-C837-433B-87D2-15C7014B73E9}
