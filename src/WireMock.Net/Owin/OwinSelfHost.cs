@@ -57,7 +57,11 @@ namespace WireMock.Owin
 
         private void StartServers()
         {
+#if NET46
+            Console.WriteLine("WireMock.Net server using .net 4.6.x or higher");
+#else
             Console.WriteLine("WireMock.Net server using .net 4.5.x or higher");
+#endif
 
             Action<IAppBuilder> startup = app =>
             {

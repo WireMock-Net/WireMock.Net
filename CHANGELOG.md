@@ -1,3 +1,10 @@
+# 1.0.3.7 (09 March 2018)
+
+ - [#104](https://github.com/WireMock-Net/WireMock.Net/issues/104) - Issue: PlatformNotSupportedException
+
+Commits: 3e634c2fde...3e634c2fde
+
+
 # 1.0.3.4 (04 March 2018)
 
  - [#102](https://github.com/WireMock-Net/WireMock.Net/pull/102) - Feature: add WithBody(req => dostuff) style callback contributed by Alastair Crabtree ([alastairtree](https://github.com/alastairtree)) +feature

@@ -16,7 +16,7 @@ namespace WireMock.Http
     {
         public static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-#if NETSTANDARD || NET46
+#if NETSTANDARD
             var handler = new HttpClientHandler
             {
                 CheckCertificateRevocationList = false,
@@ -24,12 +24,20 @@ namespace WireMock.Http
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
+#elif NET46
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 #else
             var handler = new WebRequestHandler
             {
                 ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 #endif
 
             if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
