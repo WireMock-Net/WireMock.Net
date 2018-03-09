@@ -67,7 +67,12 @@ namespace WireMock.Matchers.Request
 
             List<string> values = requestMessage.GetParameter(Key);
 
-            return MatchScores.ToScore(values?.Intersect(Values).Count() == Values.Count());
+            if (values != null)
+            {
+                return MatchScores.ToScore(values.Select(t => Values.Contains(t)).FirstOrDefault());
+            }
+
+            return MatchScores.Mismatch;
         }
     }
 }
