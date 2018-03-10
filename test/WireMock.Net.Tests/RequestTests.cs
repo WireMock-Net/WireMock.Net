@@ -124,20 +124,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_specify_requests_matching_given_paramNoValue()
-        {
-            // given
-            var spec = Request.Create().WithParam("bar");
-
-            // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar"), "PUT", ClientIp);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
-
-        [Fact]
         public void Should_specify_requests_matching_given_param_func()
         {
             // given

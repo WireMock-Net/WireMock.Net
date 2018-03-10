@@ -180,10 +180,11 @@ namespace WireMock
                 queryString = queryString.Substring(1);
             }
 
-            return queryString.Split('&').Aggregate(new Dictionary<string, WireMockList<string>>(),
+            return queryString.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
+                .Aggregate(new Dictionary<string, WireMockList<string>>(),
                 (dict, term) =>
                 {
-                    var parts = term.Split('=');
+                    string[] parts = term.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                     string key = parts[0];
                     if (!dict.ContainsKey(key))
                     {
@@ -192,7 +193,8 @@ namespace WireMock
 
                     if (parts.Length == 2)
                     {
-                        dict[key].Add(parts[1]);
+                        string[] values = parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        dict[key].AddRange(values);
                     }
 
                     return dict;

@@ -1,3 +1,10 @@
+# 1.0.3.8 (10 March 2018)
+
+ - [#106](https://github.com/WireMock-Net/WireMock.Net/issues/106) - Issue: Params does not work, when there are multiple values for a key
+
+Commits: f604be3c02...f604be3c02
+
+
 # 1.0.3.7 (09 March 2018)
 
  - [#104](https://github.com/WireMock-Net/WireMock.Net/issues/104) - Issue: PlatformNotSupportedException

@@ -65,9 +65,15 @@ namespace WireMock.Matchers.Request
                 return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
             }
 
-            List<string> values = requestMessage.GetParameter(Key);
+            var values = requestMessage.GetParameter(Key);
+            if (values == null && !Values.Any())
+            {
+                // Key is present, but no values, just return match
+                return MatchScores.Perfect;
+            }
 
-            return MatchScores.ToScore(values?.Intersect(Values).Count() == Values.Count());
+            var matches = Values.Select(v => values != null && values.Contains(v));
+            return MatchScores.ToScore(matches);
         }
     }
 }
