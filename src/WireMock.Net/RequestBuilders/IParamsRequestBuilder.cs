@@ -6,12 +6,19 @@ using WireMock.Util;
 namespace WireMock.RequestBuilders
 {
     /// <summary>
-    /// The ParametersRequestBuilder interface.
+    /// The ParamsRequestBuilder interface.
     /// </summary>
     public interface IParamsRequestBuilder
     {
         /// <summary>
-        /// The with parameters.
+        /// WithParam (key only)
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithParam([NotNull] string key);
+
+        /// <summary>
+        /// WithParam (values)
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="values">The values.</param>
@@ -19,7 +26,7 @@ namespace WireMock.RequestBuilders
         IRequestBuilder WithParam([NotNull] string key, [CanBeNull] params string[] values);
 
         /// <summary>
-        /// The with parameters.
+        /// WithParam (funcs)
         /// </summary>
         /// <param name="funcs">The funcs.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>

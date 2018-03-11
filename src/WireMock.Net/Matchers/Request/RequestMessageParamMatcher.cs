@@ -31,6 +31,14 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
         /// </summary>
         /// <param name="key">The key.</param>
+        public RequestMessageParamMatcher([NotNull] string key) : this(key, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
+        /// </summary>
+        /// <param name="key">The key.</param>
         /// <param name="values">The values.</param>
         public RequestMessageParamMatcher([NotNull] string key, [CanBeNull] IEnumerable<string> values)
         {
@@ -66,13 +74,19 @@ namespace WireMock.Matchers.Request
             }
 
             var values = requestMessage.GetParameter(Key);
-            if (values == null && !Values.Any())
+            if (values == null)
             {
-                // Key is present, but no values, just return match
+                // Key is not present, just return Mismatch
+                return MatchScores.Mismatch;
+            }
+
+            if (values.Count == 0 && (Values == null || !Values.Any()))
+            {
+                // Key is present, but no values or null, just return Perfect
                 return MatchScores.Perfect;
             }
 
-            var matches = Values.Select(v => values != null && values.Contains(v));
+            var matches = Values.Select(v => values.Contains(v));
             return MatchScores.ToScore(matches);
         }
     }

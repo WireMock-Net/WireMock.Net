@@ -206,7 +206,7 @@ namespace WireMock
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>The query parameter.</returns>
-        public List<string> GetParameter(string key)
+        public WireMockList<string> GetParameter(string key)
         {
             if (Query == null)
             {

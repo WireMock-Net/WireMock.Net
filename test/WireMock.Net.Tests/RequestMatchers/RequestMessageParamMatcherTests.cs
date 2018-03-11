@@ -51,5 +51,35 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assert
             Check.That(score).IsEqualTo(0.0d);
         }
+
+        [Fact]
+        public void RequestMessageParamMatcher_GetMatchingScore_OnlyKeyPresent_WithNull()
+        {
+            // Assign
+            var requestMessage = new RequestMessage(new Uri("http://localhost?key"), "GET", "127.0.0.1");
+            var matcher = new RequestMessageParamMatcher("key");
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
+        public void RequestMessageParamMatcher_GetMatchingScore_OnlyKeyPresent_WithEmptyArray()
+        {
+            // Assign
+            var requestMessage = new RequestMessage(new Uri("http://localhost?key"), "GET", "127.0.0.1");
+            var matcher = new RequestMessageParamMatcher("key", new string[] { });
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
     }
 }
