@@ -33,14 +33,7 @@ namespace WireMock.Matchers.Request
             RequestMatchers = requestMatchers;
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             if (!RequestMatchers.Any())

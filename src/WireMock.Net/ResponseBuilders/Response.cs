@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Settings;
 using WireMock.Transformers;
@@ -168,10 +169,9 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
-        public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource,
-            Encoding encoding = null)
+        public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            return WithCallback(req => new ResponseMessage {Body = bodyFactory(req)});
+            return WithCallback(req => new ResponseMessage { Body = bodyFactory(req) });
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
@@ -231,19 +231,26 @@ namespace WireMock.ResponseBuilders
             encoding = encoding ?? Encoding.UTF8;
 
             ResponseMessage.BodyDestination = destination;
+            ResponseMessage.BodyEncoding = encoding;
 
             switch (destination)
             {
                 case BodyDestinationFormat.Bytes:
                     ResponseMessage.Body = null;
+                    ResponseMessage.BodyAsJson = null;
                     ResponseMessage.BodyAsBytes = encoding.GetBytes(body);
-                    ResponseMessage.BodyEncoding = encoding;
+                    break;
+
+                case BodyDestinationFormat.Json:
+                    ResponseMessage.Body = null;
+                    ResponseMessage.BodyAsJson = JsonConvert.DeserializeObject(body);
+                    ResponseMessage.BodyAsBytes = null;
                     break;
 
                 default:
                     ResponseMessage.Body = body;
+                    ResponseMessage.BodyAsJson = null;
                     ResponseMessage.BodyAsBytes = null;
-                    ResponseMessage.BodyEncoding = encoding;
                     break;
             }
 

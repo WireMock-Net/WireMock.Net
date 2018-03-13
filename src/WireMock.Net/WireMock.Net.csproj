@@ -33,6 +33,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Util\NamedReaderWriterLocker.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Server\FluentMockServer.cs~RF44936b9f.TMP" />
   </ItemGroup>
 

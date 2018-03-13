@@ -86,70 +86,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_WithBodyExactMatcher_multiplePatterns()
-        {
-            // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat", "dog"));
-
-            // when
-            string bodyAsString = "cat";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.5);
-        }
-
-        [Fact]
-        public void Request_WithBodyExactMatcher_false()
-        {
-            // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat"));
-
-            // when
-            string bodyAsString = "caR";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0);
-        }
-
-        [Fact]
-        public void Request_WithBodySimMetricsMatcher1()
-        {
-            // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
-
-            // when
-            string bodyAsString = "The car drives in the street.";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(1.0).And.IsStrictlyGreaterThan(0.5);
-        }
-
-        [Fact]
-        public void Request_WithBodySimMetricsMatcher2()
-        {
-            // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new SimMetricsMatcher("The cat walks in the street."));
-
-            // when
-            string bodyAsString = "Hello";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
-        }
-
-        [Fact]
         public void Request_WithBodyWildcardMatcher()
         {
             // given
@@ -159,22 +95,6 @@ namespace WireMock.Net.Tests
             string bodyAsString = "Hello world!";
             byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
             var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tatata" } } });
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
-
-        [Fact]
-        public void Request_WithBodyRegexMatcher()
-        {
-            // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new RegexMatcher("H.*o"));
-
-            // when
-            string bodyAsString = "Hello world!";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
 
             // then
             var requestMatchResult = new RequestMatchResult();
