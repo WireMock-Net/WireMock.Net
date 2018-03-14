@@ -147,7 +147,7 @@ namespace WireMock.Serialization
             return newDictionary;
         }
 
-        
+
 
         private static string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
         {

@@ -20,11 +20,12 @@ namespace WireMock.Serialization
                 return null;
             }
 
-            IStringMatcher stringMatcher = matcher as IStringMatcher;
-            string[] patterns = stringMatcher != null ? stringMatcher.GetPatterns() : new string[0];
+            string[] patterns = matcher is IStringMatcher stringMatcher ? stringMatcher.GetPatterns() : new string[0];
+            bool? ignorecase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
 
             return new MatcherModel
             {
+                IgnoreCase = ignorecase,
                 Name = matcher.GetName(),
                 Pattern = patterns.Length == 1 ? patterns.First() : null,
                 Patterns = patterns.Length > 1 ? patterns : null
