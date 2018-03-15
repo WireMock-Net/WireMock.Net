@@ -18,12 +18,12 @@
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
