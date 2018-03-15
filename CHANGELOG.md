@@ -1,3 +1,10 @@
+# 1.0.3.9 (15 March 2018)
+
+ - [#108](https://github.com/WireMock-Net/WireMock.Net/issues/108) - Issue: provide correct contentTypeHeader value for the bodyparser +fix
+
+Commits: f604be3c02...b7dd1b9242
+
+
 # 1.0.3.8 (10 March 2018)
 
  - [#106](https://github.com/WireMock-Net/WireMock.Net/issues/106) - Issue: Params does not work, when there are multiple values for a key
