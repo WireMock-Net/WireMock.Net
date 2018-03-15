@@ -19,5 +19,10 @@
         /// Convert to bytes
         /// </summary>
         public const string Bytes = "Bytes";
+
+        /// <summary>
+        /// Convert to Json object
+        /// </summary>
+        public const string Json = "Json";
     }
 }
