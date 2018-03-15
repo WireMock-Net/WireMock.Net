@@ -69,8 +69,9 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
-        /// Creates this instance.
+        /// Creates this instance with the specified function.
         /// </summary>
+        /// <param name="func">The callback function.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
         public static IResponseBuilder Create([NotNull] Func<ResponseMessage> func)

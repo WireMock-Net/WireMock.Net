@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.ResponseBuilders;
-using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilderTests

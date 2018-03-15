@@ -230,9 +230,10 @@ namespace WireMock.Server
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
 
+            var allBlackListedHeaders = new List<string>(blacklistedHeaders) { "Cookie" };
             requestMessage.Headers.Loop((key, value) =>
             {
-                if (!blacklistedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
+                if (!allBlackListedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
                 {
                     request.WithHeader(key, value.ToArray());
                 }

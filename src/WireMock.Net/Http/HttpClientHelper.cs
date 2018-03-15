@@ -71,13 +71,6 @@ namespace WireMock.Http
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
-            WireMockList<string> contentTypeHeader = null;
-            bool contentTypeHeaderPresent = requestMessage.Headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase));
-            if (contentTypeHeaderPresent)
-            {
-                contentTypeHeader = requestMessage.Headers[HttpKnownHeaderNames.ContentType];
-            }
-
             // Set Body if present
             if (requestMessage.BodyAsBytes != null)
             {
@@ -119,6 +112,12 @@ namespace WireMock.Http
             if (httpResponseMessage.Content != null)
             {
                 var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                IEnumerable<string> contentTypeHeader = null;
+                if (headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)))
+                {
+                    contentTypeHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
+                }
+
                 var body = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
                 responseMessage.Body = body.BodyAsString;
                 responseMessage.BodyAsJson = body.BodyAsJson;
