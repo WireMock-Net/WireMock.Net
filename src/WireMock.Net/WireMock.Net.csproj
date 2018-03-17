@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
     <AssemblyTitle>WireMock.Net</AssemblyTitle>
-    <Version>1.0.3.9</Version>
-    <Authors>Alexandre Victoor;Stef Heyenrath</Authors>
+    <Version>1.0.3.10</Version>
+    <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net</AssemblyName>
@@ -49,6 +49,7 @@
     <PackageReference Include="SimMetrics.Net" Version="1.0.4" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="RestEase" Version="1.4.4" />
+    <PackageReference Include="MimeKitLite" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">

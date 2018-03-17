@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using WireMock.HttpsCertificate;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Http
@@ -69,79 +65,14 @@ namespace WireMock.Http
             var originalUri = new Uri(requestMessage.Url);
             var requiredUri = new Uri(url);
 
-            var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
-
-            // Set Body if present
-            if (requestMessage.BodyAsBytes != null)
-            {
-                httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
-            }
-            else if (requestMessage.BodyAsJson != null)
-            {
-                httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyAsJson), requestMessage.BodyEncoding);
-            }
-            else if (requestMessage.Body != null)
-            {
-                httpRequestMessage.Content = new StringContent(requestMessage.Body, requestMessage.BodyEncoding);
-            }
-
-            // Overwrite the host header
-            httpRequestMessage.Headers.Host = requiredUri.Authority;
-
-            // Set headers if present
-            if (requestMessage.Headers != null)
-            {
-                foreach (var header in requestMessage.Headers.Where(header => !string.Equals(header.Key, "HOST", StringComparison.OrdinalIgnoreCase)))
-                {
-                    // Try to add to request headers. If failed - try to add to content headers
-                    if (!httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value))
-                    {
-                        httpRequestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value);
-                    }
-                }
-            }
+            // Create HttpRequestMessage
+            var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, url);
 
             // Call the URL
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
-            // Create transform response
-            var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
-
-            // Set both content and response headers, replacing URLs in values
-            var headers = (httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers) ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>()).ToArray();
-            if (httpResponseMessage.Content != null)
-            {
-                var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                IEnumerable<string> contentTypeHeader = null;
-                if (headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)))
-                {
-                    contentTypeHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
-                }
-
-                var body = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
-                responseMessage.Body = body.BodyAsString;
-                responseMessage.BodyAsJson = body.BodyAsJson;
-                responseMessage.BodyAsBytes = body.BodyAsBytes;
-            }
-
-            foreach (var header in headers)
-            {
-                // If Location header contains absolute redirect URL, and base URL is one that we proxy to,
-                // we need to replace it to original one.
-                if (string.Equals(header.Key, HttpKnownHeaderNames.Location, StringComparison.OrdinalIgnoreCase)
-                    && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out Uri absoluteLocationUri)
-                    && string.Equals(absoluteLocationUri.Host, requiredUri.Host, StringComparison.OrdinalIgnoreCase))
-                {
-                    var replacedLocationUri = new Uri(originalUri, absoluteLocationUri.PathAndQuery);
-                    responseMessage.AddHeader(header.Key, replacedLocationUri.ToString());
-                }
-                else
-                {
-                    responseMessage.AddHeader(header.Key, header.Value.ToArray());
-                }
-            }
-
-            return responseMessage;
+            // Parse httpResponseMessage
+            return await HttpResponseMessageHelper.Create(httpResponseMessage, requiredUri, originalUri);
         }
     }
 }

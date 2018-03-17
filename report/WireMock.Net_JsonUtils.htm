@@ -15,12 +15,12 @@
 <tbody>
 <tr><th>Class:</th><td>WireMock.Util.JsonUtils</td></tr>
 <tr><th>Assembly:</th><td>WireMock.Net</td></tr>
-<tr><th>File(s):</th><td><a href="#CUsersStefDocumentsGitHubWireMockNetsrcWireMockNetUtilJsonUtilscs" data-ng-click="navigateToHash('#CUsersStefDocumentsGitHubWireMockNetsrcWireMockNetUtilJsonUtilscs')">C:\Users\Stef\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs</a></td></tr>
-<tr><th>Covered lines:</th><td>6</td></tr>
+<tr><th>File(s):</th><td><a href="#CUsersazureuserDocumentsGithubWireMockNetsrcWireMockNetUtilJsonUtilscs" data-ng-click="navigateToHash('#CUsersazureuserDocumentsGithubWireMockNetsrcWireMockNetUtilJsonUtilscs')">C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs</a></td></tr>
+<tr><th>Covered lines:</th><td>5</td></tr>
 <tr><th>Uncovered lines:</th><td>2</td></tr>
-<tr><th>Coverable lines:</th><td>8</td></tr>
-<tr><th>Total lines:</th><td>19</td></tr>
-<tr><th>Line coverage:</th><td>75%</td></tr>
+<tr><th>Coverable lines:</th><td>7</td></tr>
+<tr><th>Total lines:</th><td>18</td></tr>
+<tr><th>Line coverage:</th><td>71.4%</td></tr>
 <tr><th>Branch coverage:</th><td>50%</td></tr>
 </tbody>
 </table>
@@ -28,11 +28,11 @@
 <table class="overview table-fixed">
 <thead><tr><th>Method</th><th>Cyclomatic complexity <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity" class="info">&nbsp;</a></th><th>NPath complexity <a href="https://modess.io/npath-complexity-cyclomatic-complexity-explained" class="info">&nbsp;</a></th><th>Sequence coverage <a href="https://en.wikipedia.org/wiki/Code_coverage" class="info">&nbsp;</a></th><th>Branch coverage <a href="https://en.wikipedia.org/wiki/Code_coverage" class="info">&nbsp;</a></th></tr></thead>
 <tbody>
-<tr><td title="T WireMock.Util.JsonUtils::ParseJTokenToObject(System.Object)">ParseJTokenToObject(...)</td><td>3</td><td>4</td><td>75</td><td>60</td></tr>
+<tr><td title="T WireMock.Util.JsonUtils::ParseJTokenToObject(System.Object)">ParseJTokenToObject(...)</td><td>3</td><td>4</td><td>71.43</td><td>60</td></tr>
 </tbody>
 </table>
 <h1>File(s)</h1>
-<h2 id="CUsersStefDocumentsGitHubWireMockNetsrcWireMockNetUtilJsonUtilscs">C:\Users\Stef\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs</h2>
+<h2 id="CUsersazureuserDocumentsGithubWireMockNetsrcWireMockNetUtilJsonUtilscs">C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs</h2>
 <table class="lineAnalysis">
 <thead><tr><th></th><th>#</th><th>Line</th><th></th><th>Line coverage</th></tr></thead>
 <tbody>
@@ -45,19 +45,18 @@
 <tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line7"></a><code>7</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;T&nbsp;ParseJTokenToObject&lt;T&gt;(object&nbsp;value)</code></td></tr>
 <tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line8"></a><code>8</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</code></td></tr>
 <tr title="1 of 2 branches are covered" data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'orange'}}"><td class="orange">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line9"></a><code>9</code></td><td class="branch50">&nbsp;</td><td class="lightorange"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(value&nbsp;==&nbsp;null)</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '0', 'LVS': 'red'}}"><td class="red">&nbsp;</td><td class="leftmargin rightmargin right">0</td><td class="rightmargin right"><a id="file0_line10"></a><code>10</code></td><td></td><td class="lightred"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;default(T);</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line11"></a><code>11</code></td><td></td><td class="lightgray"><code></code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line12"></a><code>12</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JToken&nbsp;token&nbsp;=&nbsp;value&nbsp;as&nbsp;JToken;</code></td></tr>
-<tr title="1 of 2 branches are covered" data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'orange'}}"><td class="orange">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line13"></a><code>13</code></td><td class="branch50">&nbsp;</td><td class="lightorange"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(token&nbsp;==&nbsp;null)</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '0', 'LVS': 'red'}}"><td class="red">&nbsp;</td><td class="leftmargin rightmargin right">0</td><td class="rightmargin right"><a id="file0_line14"></a><code>14</code></td><td></td><td class="lightred"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;default(T);</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line15"></a><code>15</code></td><td></td><td class="lightgray"><code></code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line16"></a><code>16</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;token.ToObject&lt;T&gt;();</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line17"></a><code>17</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line18"></a><code>18</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;}</code></td></tr>
-<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line19"></a><code>19</code></td><td></td><td class="lightgray"><code>}</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '0', 'LVS': 'red'}}"><td class="red">&nbsp;</td><td class="leftmargin rightmargin right">0</td><td class="rightmargin right"><a id="file0_line10"></a><code>10</code></td><td></td><td class="lightred"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '0', 'LVS': 'red'}}"><td class="red">&nbsp;</td><td class="leftmargin rightmargin right">0</td><td class="rightmargin right"><a id="file0_line11"></a><code>11</code></td><td></td><td class="lightred"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;default(T);</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line12"></a><code>12</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line13"></a><code>13</code></td><td></td><td class="lightgray"><code></code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line14"></a><code>14</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;token&nbsp;=&nbsp;value&nbsp;as&nbsp;JToken;</code></td></tr>
+<tr title="1 of 2 branches are covered" data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'orange'}}"><td class="orange">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line15"></a><code>15</code></td><td class="branch50">&nbsp;</td><td class="lightorange"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;token&nbsp;==&nbsp;null&nbsp;?&nbsp;default(T)&nbsp;:&nbsp;token.ToObject&lt;T&gt;();</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '4', 'LVS': 'green'}}"><td class="green">&nbsp;</td><td class="leftmargin rightmargin right">4</td><td class="rightmargin right"><a id="file0_line16"></a><code>16</code></td><td></td><td class="lightgreen"><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line17"></a><code>17</code></td><td></td><td class="lightgray"><code>&nbsp;&nbsp;&nbsp;&nbsp;}</code></td></tr>
+<tr data-coverage="{'AllTestMethods': {'VC': '', 'LVS': 'gray'}}"><td class="gray">&nbsp;</td><td class="leftmargin rightmargin right"></td><td class="rightmargin right"><a id="file0_line18"></a><code>18</code></td><td></td><td class="lightgray"><code>}</code></td></tr>
 </tbody>
 </table>
-<div class="footer">Generated by: ReportGenerator 2.5.6.0<br />26-4-2017 - 21:18:05<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="http://www.palmmedia.de">www.palmmedia.de</a></div></div>
+<div class="footer">Generated by: ReportGenerator 2.5.6.0<br />2018-03-17 - 13:19:12<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="http://www.palmmedia.de">www.palmmedia.de</a></div></div>
 <div class="containerright">
 <div class="containerrightfixed">
 <h1>Methods/Properties</h1>

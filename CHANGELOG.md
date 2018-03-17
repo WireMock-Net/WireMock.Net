@@ -1,3 +1,10 @@
+# 1.0.3.10 (17 March 2018)
+
+ - [#109](https://github.com/WireMock-Net/WireMock.Net/issues/109) - Issue: When proxying, MimeType is wrong for StringContent
+
+Commits: 720c59c595...720c59c595
+
+
 # 1.0.3.9 (15 March 2018)
 
  - [#108](https://github.com/WireMock-Net/WireMock.Net/issues/108) - Issue: provide correct contentTypeHeader value for the bodyparser +fix
