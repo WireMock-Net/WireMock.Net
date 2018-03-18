@@ -21,7 +21,11 @@ namespace WireMock.Net.StandAlone
         {
             Check.NotNull(settings, nameof(settings));
 
-            return FluentMockServer.Start(settings);
+            var server = FluentMockServer.Start(settings);
+
+            settings.Logger.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
+
+            return server;
         }
 
         /// <summary>
@@ -79,8 +83,6 @@ namespace WireMock.Net.StandAlone
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             FluentMockServer server = Start(settings);
-
-            settings.Logger.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
             return server;
         }
