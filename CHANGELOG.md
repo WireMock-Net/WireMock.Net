@@ -1,3 +1,10 @@
+# 1.0.3.11 (20 March 2018)
+
+ - [#110](https://github.com/WireMock-Net/WireMock.Net/issues/110) - Fix: remove `Func[]` from MappingModel
+
+Commits: a4a9f2c862...a4a9f2c862
+
+
 # 1.0.3.10 (17 March 2018)
 
  - [#109](https://github.com/WireMock-Net/WireMock.Net/issues/109) - Issue: When proxying, MimeType is wrong for StringContent
