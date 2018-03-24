@@ -7,12 +7,11 @@ using WireMock.Validation;
 namespace WireMock.Matchers
 {
     /// <summary>
-    /// JSONPathMatcher
+    /// JsonPathMatcher
     /// </summary>
     /// <seealso cref="IMatcher" />
     public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     {
-        // private readonly object _jsonPattern;
         private readonly string[] _patterns;
 
         /// <summary>
@@ -26,13 +25,6 @@ namespace WireMock.Matchers
             _patterns = patterns;
         }
 
-        //public JsonPathMatcher([NotNull] object jsonPattern)
-        //{
-        //    Check.NotNull(jsonPattern, nameof(jsonPattern));
-
-        //    _jsonPattern = jsonPattern;
-        //}
-
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
@@ -43,9 +35,8 @@ namespace WireMock.Matchers
 
             try
             {
-                JObject o = JObject.Parse(input);
-
-                return MatchScores.ToScore(_patterns.Select(p => o.SelectToken(p) != null));
+                var jtoken = JToken.Parse(input);
+                return IsMatch(jtoken);
             }
             catch (Exception)
             {
@@ -63,9 +54,9 @@ namespace WireMock.Matchers
 
             try
             {
-                var o = input as JObject ?? JObject.FromObject(input);
-
-                return MatchScores.ToScore(_patterns.Select(p => o.SelectToken(p) != null));
+                // Check if JToken or object
+                JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
+                return IsMatch(jtoken);
             }
             catch (Exception)
             {
@@ -83,6 +74,14 @@ namespace WireMock.Matchers
         public string GetName()
         {
             return "JsonPathMatcher";
+        }
+
+        private double IsMatch(JToken jtoken)
+        {
+            // Wrap in array if needed
+            JToken jarray = jtoken is JArray ? jtoken : new JArray(jtoken);
+
+            return MatchScores.ToScore(_patterns.Select(pattern => jarray.SelectToken(pattern) != null));
         }
     }
 }

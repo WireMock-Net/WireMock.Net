@@ -147,7 +147,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyJsonPathMatcher_true()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
             // when
             string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -179,7 +179,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyAsJson_Object_JsonPathMatcher_true()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
             // when
             string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -199,7 +199,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_1()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.books[?(@.price < 10)]"));
+            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..books[?(@.price < 10)]"));
 
             // when
             string jsonString = "{ \"books\": [ { \"category\": \"test1\", \"price\": 8.95 }, { \"category\": \"test2\", \"price\": 20 } ] }";

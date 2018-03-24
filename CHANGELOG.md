@@ -1,3 +1,10 @@
+# 1.0.3.12 (24 March 2018)
+
+ - [#100](https://github.com/WireMock-Net/WireMock.Net/issues/100) - Issue: JsonPathMatcher - not working for rootless jsons?
+
+Commits: ...
+
+
 # 1.0.3.11 (20 March 2018)
 
  - [#110](https://github.com/WireMock-Net/WireMock.Net/issues/110) - Fix: remove `Func[]` from MappingModel
