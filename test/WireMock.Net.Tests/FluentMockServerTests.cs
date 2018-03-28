@@ -233,6 +233,40 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().UsingAnyVerb())
+                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
+
+            // Assert
+            Check.That(response).IsEqualTo("{\"message\":\"Hello\"}");
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().UsingAnyVerb())
+                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
+
+            // Assert
+            Check.That(response).IsEqualTo("{\r\n  \"message\": \"Hello\"\r\n}");
+        }
+
+        [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
         {
             // given

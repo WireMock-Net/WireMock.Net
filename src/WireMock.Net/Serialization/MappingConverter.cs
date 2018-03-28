@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -96,6 +94,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.Headers = null;
                 mappingModel.Response.BodyDestination = null;
                 mappingModel.Response.BodyAsJson = null;
+                mappingModel.Response.BodyAsJsonIndented = null;
                 mappingModel.Response.Body = null;
                 mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.BodyAsFile = null;
@@ -110,6 +109,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
                 mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
                 mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyAsJson;
+                mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyAsJsonIndented;
                 mappingModel.Response.Body = response.ResponseMessage.Body;
                 mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
                 mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
@@ -152,9 +152,9 @@ namespace WireMock.Serialization
         //    return funcs?.Select(Map).Where(x => x != null).ToArray();
         //}
 
-        private static string Map<T>([CanBeNull] Func<T, bool> func)
-        {
-            return func?.ToString();
-        }
+        //private static string Map<T>([CanBeNull] Func<T, bool> func)
+        //{
+        //    return func?.ToString();
+        //}
     }
 }

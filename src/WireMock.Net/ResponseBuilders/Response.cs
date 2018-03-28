@@ -258,16 +258,23 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson"/>
-        public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null)
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool)"/>
+        public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null, bool? indented = null)
         {
             Check.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = null;
             ResponseMessage.BodyAsJson = body;
             ResponseMessage.BodyEncoding = encoding;
+            ResponseMessage.BodyAsJsonIndented = indented;
 
             return this;
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, bool)"/>
+        public IResponseBuilder WithBodyAsJson(object body, bool indented)
+        {
+            return WithBodyAsJson(body, null, indented);
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>

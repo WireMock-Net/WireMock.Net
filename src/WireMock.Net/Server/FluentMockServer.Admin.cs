@@ -266,17 +266,19 @@ namespace WireMock.Server
 
         private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
         {
-            var settings = requestMessage.Body != null ? JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<SettingsModel>();
-
-            if (settings.AllowPartialMapping != null)
-                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
-
+            var settings = DeserializeObject<SettingsModel>(requestMessage);
             _options.MaxRequestLogCount = settings.MaxRequestLogCount;
-
             _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
 
+            if (settings.AllowPartialMapping != null)
+            {
+                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
+            }
+
             if (settings.GlobalProcessingDelay != null)
+            {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+            }
 
             return new ResponseMessage { Body = "Settings updated" };
         }
@@ -303,7 +305,7 @@ namespace WireMock.Server
         {
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
 
-            MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+            var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
             return new ResponseMessage { Body = "Mapping added or updated" };
@@ -371,7 +373,7 @@ namespace WireMock.Server
         {
             try
             {
-                MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+                var mappingModel = DeserializeObject<MappingModel>(requestMessage);
                 DeserializeAndAddOrUpdateMapping(mappingModel);
             }
             catch (ArgumentException a)
@@ -552,7 +554,7 @@ namespace WireMock.Server
         #region Requests/find
         private ResponseMessage RequestsFind(RequestMessage requestMessage)
         {
-            var requestModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<RequestModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<RequestModel>();
+            var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
             var request = (Request)InitRequestBuilder(requestModel);
 
@@ -598,8 +600,7 @@ namespace WireMock.Server
 
             if (requestModel.ClientIP != null)
             {
-                string clientIP = requestModel.ClientIP as string;
-                if (clientIP != null)
+                if (requestModel.ClientIP is string clientIP)
                 {
                     requestBuilder = requestBuilder.WithClientIP(clientIP);
                 }
@@ -615,8 +616,7 @@ namespace WireMock.Server
 
             if (requestModel.Path != null)
             {
-                string path = requestModel.Path as string;
-                if (path != null)
+                if (requestModel.Path is string path)
                 {
                     requestBuilder = requestBuilder.WithPath(path);
                 }
@@ -632,8 +632,7 @@ namespace WireMock.Server
 
             if (requestModel.Url != null)
             {
-                string url = requestModel.Url as string;
-                if (url != null)
+                if (requestModel.Url is string url)
                 {
                     requestBuilder = requestBuilder.WithUrl(url);
                 }
@@ -739,7 +738,7 @@ namespace WireMock.Server
             }
             else if (responseModel.BodyAsJson != null)
             {
-                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding));
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
             }
             else if (responseModel.BodyFromBase64 != null)
             {
@@ -767,6 +766,13 @@ namespace WireMock.Server
         private Encoding ToEncoding(EncodingModel encodingModel)
         {
             return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
+        }
+
+        private T DeserializeObject<T>(RequestMessage requestMessage)
+        {
+            return requestMessage.Body != null ?
+                JsonConvert.DeserializeObject<T>(requestMessage.Body) :
+                ((JObject)requestMessage.BodyAsJson).ToObject<T>();
         }
     }
 }

@@ -33,6 +33,11 @@ namespace WireMock.Admin.Mappings
         public object BodyAsJson { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.
+        /// </summary>
+        public bool? BodyAsJsonIndented { get; set; }
+
+        /// <summary>
         /// Gets or sets the body (as bytearray).
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
