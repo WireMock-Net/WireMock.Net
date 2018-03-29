@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -49,6 +50,26 @@ namespace WireMock.Net.Tests
             Check.That(request.GetParameter("key")).Contains("1");
             Check.That(request.GetParameter("key")).Contains("2");
             Check.That(request.GetParameter("key")).Contains("3");
+        }
+
+        [Fact]
+        public void RequestMessage_Constructor1_PathSegments()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.PathSegments).ContainsExactly("a", "b", "c");
+        }
+
+        [Fact]
+        public void RequestMessage_Constructor2_PathSegments()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp, new BodyData());
+
+            // Assert
+            Check.That(request.PathSegments).ContainsExactly("a", "b", "c");
         }
     }
 }

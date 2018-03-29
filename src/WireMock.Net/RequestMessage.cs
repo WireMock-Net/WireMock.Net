@@ -35,6 +35,11 @@ namespace WireMock
         public string Path { get; }
 
         /// <summary>
+        /// Gets the path segments.
+        /// </summary>
+        public string[] PathSegments { get; }
+
+        /// <summary>
         /// Gets the method.
         /// </summary>
         public string Method { get; }
@@ -120,6 +125,7 @@ namespace WireMock
             Port = url.Port;
             Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = WebUtility.UrlDecode(url.AbsolutePath);
+            PathSegments = Path.Split('/').Skip(1).ToArray();
             Method = method.ToLower();
             ClientIP = clientIP;
 
@@ -157,11 +163,14 @@ namespace WireMock
             Port = url.Port;
             Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = WebUtility.UrlDecode(url.AbsolutePath);
+            PathSegments = Path.Split('/').Skip(1).ToArray();
             Method = method.ToLower();
             ClientIP = clientIP;
+
             BodyAsBytes = bodyAsBytes;
             Body = body;
             BodyEncoding = bodyEncoding;
+
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
             RawQuery = WebUtility.UrlDecode(url.Query);

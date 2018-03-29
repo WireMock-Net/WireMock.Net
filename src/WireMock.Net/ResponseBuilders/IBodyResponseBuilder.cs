@@ -18,7 +18,6 @@ namespace WireMock.ResponseBuilders
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithBody([NotNull] string body, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
 
-
         /// <summary>
         /// WithBody : Create a ... response based on a callback function.
         /// </summary>
@@ -26,8 +25,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] Func<RequestMessage,string> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
-
+        IResponseBuilder WithBody([NotNull] Func<RequestMessage, string> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
         /// WithBody : Create a ... response based on a bytearray.
