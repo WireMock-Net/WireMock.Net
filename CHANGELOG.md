@@ -1,3 +1,11 @@
+# 1.0.3.14 (01 April 2018)
+
+ - [#114](https://github.com/WireMock-Net/WireMock.Net/issues/114) - Feature: Add PathSegments in Transform +feature
+ - [#113](https://github.com/WireMock-Net/WireMock.Net/issues/113) - Feature: Add BodyAsJsonIndented for response message +feature
+
+Commits: bdb79aec95...e87f970057
+
+
 # 1.0.3.12 (24 March 2018)
 
  - [#100](https://github.com/WireMock-Net/WireMock.Net/issues/100) - Issue: JsonPathMatcher - not working for rootless jsons?
