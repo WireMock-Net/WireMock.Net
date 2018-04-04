@@ -1,20 +1,20 @@
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+using System.Threading;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Owin;
 using WireMock.RequestBuilders;
+using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Validation;
-using WireMock.Owin;
-using WireMock.ResponseProviders;
 
 namespace WireMock.Server
 {
@@ -32,7 +32,7 @@ namespace WireMock.Server
         /// Gets a value indicating whether this server is started.
         /// </summary>
         [PublicAPI]
-        public bool IsStarted { get; }
+        public bool IsStarted { get => _httpServer == null ? false : _httpServer.IsStarted; }
 
         /// <summary>
         /// Gets the ports.
@@ -186,10 +186,17 @@ namespace WireMock.Server
 
             _httpServer.StartAsync();
 
-            // Fix for 'Bug: Server not listening after Start() returns (on macOS)'
-            Task.Delay(ServerStartDelay).Wait();
-
-            IsStarted = _httpServer.IsStarted;
+            using (var ctsStartTimeout = new CancellationTokenSource(settings.StartTimeout))
+            {
+                while (!_httpServer.IsStarted)
+                {
+                    // Throw out exception if service start fail
+                    if (_httpServer.RunningException != null) throw new Exception($"Service start failed with error: {_httpServer.RunningException.Message}", _httpServer.RunningException);
+                    // Repsect start timeout setting by throwing TimeoutException
+                    if (ctsStartTimeout.IsCancellationRequested) throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
+                    ctsStartTimeout.Token.WaitHandle.WaitOne(100);
+                }
+            }
 
             if (settings.AllowPartialMapping == true)
             {

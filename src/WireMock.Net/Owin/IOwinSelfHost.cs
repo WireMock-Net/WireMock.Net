@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace WireMock.Owin
 {
@@ -28,6 +29,11 @@ namespace WireMock.Owin
         /// The ports.
         /// </value>
         List<int> Ports { get; }
+
+        /// <summary>
+        /// Determind an exception occurred in host running
+        /// </summary>
+        Exception RunningException { get; }
 
         Task StartAsync();
 
