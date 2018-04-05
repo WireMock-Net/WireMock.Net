@@ -80,7 +80,7 @@ namespace WireMock.Owin
                     app.Use<WireMockMiddleware>(_options);
                     _options.PostWireMockMiddlewareInit?.Invoke(app);
                 };
-                
+
                 foreach (var url in Urls)
                 {
                     servers.Add(WebApp.Start(url, startup));
@@ -104,7 +104,7 @@ namespace WireMock.Owin
             {
                 IsStarted = false;
                 // Dispose all servers in finally block to make sure clean up allocated resource on error happening
-                servers.ForEach((s) => s.Dispose());
+                servers.ForEach(s => s.Dispose());
             }
         }
     }

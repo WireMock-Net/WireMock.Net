@@ -32,7 +32,7 @@ namespace WireMock.Server
         /// Gets a value indicating whether this server is started.
         /// </summary>
         [PublicAPI]
-        public bool IsStarted { get => _httpServer == null ? false : _httpServer.IsStarted; }
+        public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
 
         /// <summary>
         /// Gets the ports.
@@ -200,7 +200,7 @@ namespace WireMock.Server
                     {
                         throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
                     }
-                    ctsStartTimeout.Token.WaitHandle.WaitOne(100);
+                    ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelay);
                 }
             }
 

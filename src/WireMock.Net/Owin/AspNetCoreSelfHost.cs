@@ -108,13 +108,12 @@ namespace WireMock.Owin
             {
                 IsStarted = true;
 #if NETSTANDARD1_3
-                _logger.Info("WireMock.Net server using netstandard1.3");           
+                _logger.Info("WireMock.Net server using netstandard1.3");
                 _host.Run(_cts.Token);
 #else
                 _logger.Info("WireMock.Net server using netstandard2.0");
                 _host.Run();
 #endif
-                
             }
             catch (Exception e)
             {

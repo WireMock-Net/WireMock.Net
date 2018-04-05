@@ -17,17 +17,11 @@ namespace WireMock.Owin
         /// <summary>
         /// Gets the urls.
         /// </summary>
-        /// <value>
-        /// The urls.
-        /// </value>
         List<string> Urls { get; }
 
         /// <summary>
         /// Gets the ports.
         /// </summary>
-        /// <value>
-        /// The ports.
-        /// </value>
         List<int> Ports { get; }
 
         /// <summary>
