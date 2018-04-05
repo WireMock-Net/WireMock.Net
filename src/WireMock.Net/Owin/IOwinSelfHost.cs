@@ -31,7 +31,7 @@ namespace WireMock.Owin
         List<int> Ports { get; }
 
         /// <summary>
-        /// Determind an exception occurred in host running
+        /// The exception occurred when the host is running
         /// </summary>
         Exception RunningException { get; }
 

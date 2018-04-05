@@ -190,10 +190,16 @@ namespace WireMock.Server
             {
                 while (!_httpServer.IsStarted)
                 {
-                    // Throw out exception if service start fail
-                    if (_httpServer.RunningException != null) throw new Exception($"Service start failed with error: {_httpServer.RunningException.Message}", _httpServer.RunningException);
-                    // Repsect start timeout setting by throwing TimeoutException
-                    if (ctsStartTimeout.IsCancellationRequested) throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
+                    // Throw out exception if service start fails
+                    if (_httpServer.RunningException != null)
+                    {
+                        throw new Exception($"Service start failed with error: {_httpServer.RunningException.Message}", _httpServer.RunningException);
+                    }
+                    // Respect start timeout setting by throwing TimeoutException
+                    if (ctsStartTimeout.IsCancellationRequested)
+                    {
+                        throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
+                    }
                     ctsStartTimeout.Token.WaitHandle.WaitOne(100);
                 }
             }
