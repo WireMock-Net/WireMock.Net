@@ -1,3 +1,10 @@
+# 1.0.3.15 (05 April 2018)
+
+ - [#117](https://github.com/WireMock-Net/WireMock.Net/pull/117) - Respect start timeout setting and expose exception from server startup contributed by Evan Liang ([evanlwj](https://github.com/evanlwj))
+
+Commits: 2d2a2dd6fc...4f294baff2
+
+
 # 1.0.3.14 (01 April 2018)
 
  - [#114](https://github.com/WireMock-Net/WireMock.Net/issues/114) - Feature: Add PathSegments in Transform +feature
