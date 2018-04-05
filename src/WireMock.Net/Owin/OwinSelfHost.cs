@@ -69,6 +69,8 @@ namespace WireMock.Owin
 #else
             _logger.Info("WireMock.Net server using .net 4.5.x or higher");
 #endif
+            var servers = new List<IDisposable>();
+
             try
             {
                 Action<IAppBuilder> startup = app =>
@@ -78,8 +80,7 @@ namespace WireMock.Owin
                     app.Use<WireMockMiddleware>(_options);
                     _options.PostWireMockMiddlewareInit?.Invoke(app);
                 };
-
-                var servers = new List<IDisposable>();
+                
                 foreach (var url in Urls)
                 {
                     servers.Add(WebApp.Start(url, startup));
@@ -90,11 +91,6 @@ namespace WireMock.Owin
                 // WaitHandle is signaled when the token is cancelled,
                 // which will be more efficent than Thread.Sleep in while loop
                 _cts.Token.WaitHandle.WaitOne();
-
-                foreach (var server in servers)
-                {
-                    server.Dispose();
-                }
             }
             catch (Exception e)
             {
@@ -107,6 +103,8 @@ namespace WireMock.Owin
             finally
             {
                 IsStarted = false;
+                // Dispose all servers in finally block to make sure clean up allocated resource on error happening
+                servers.ForEach((s) => s.Dispose());
             }
         }
     }
