@@ -291,6 +291,15 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string)"/>
+        public IRequestBuilder WithParam(string key)
+        {
+            Check.NotNull(key, nameof(key));
+
+            _requestMatchers.Add(new RequestMessageParamMatcher(key));
+            return this;
+        }
+
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, string[])"/>
         public IRequestBuilder WithParam(string key, params string[] values)
         {

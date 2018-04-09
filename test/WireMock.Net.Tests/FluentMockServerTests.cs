@@ -89,13 +89,12 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_Admin_Mappings_Get()
+        public void FluentMockServer_Admin_Mappings_WithGuid_Get()
         {
             Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo1").UsingGet())
-                .WithGuid(guid)
+            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
 
             _server.Given(Request.Create().WithPath("/foo2").UsingGet())
@@ -103,6 +102,19 @@ namespace WireMock.Net.Tests
 
             var mappings = _server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
+        }
+
+        [Fact]
+        public void FluentMockServer_Admin_Mappings_WithGuidAsString_Get()
+        {
+            string guid = "90356dba-b36c-469a-a17e-669cd84f1f05";
+            _server = FluentMockServer.Start();
+
+            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
+                .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
         }
 
         [Fact]
@@ -218,6 +230,61 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(response).IsEqualTo("Hello world!");
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().UsingAnyVerb())
+                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
+
+            // Assert
+            Check.That(response).IsEqualTo("{\"message\":\"Hello\"}");
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().UsingAnyVerb())
+                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
+
+            // Assert
+            Check.That(response).IsEqualTo("{\r\n  \"message\": \"Hello\"\r\n}");
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
+        {
+            // given
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create()
+                    .WithPath("/foo")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody(req => $"{{ path: '{req.Path}' }}"));
+
+            // when
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // then
+            Check.That(response).IsEqualTo("{ path: '/foo' }");
         }
 
         [Fact]
@@ -430,6 +497,23 @@ namespace WireMock.Net.Tests
 
             var requestLoggedB = _server.LogEntries.Last();
             Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_request_callback()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .RespondWith(Response.Create().WithCallback(req => new ResponseMessage { Body = req.Path + "Bar" }));
+
+            // Act
+            string response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // Assert
+            Check.That(response).IsEqualTo("/fooBar");
         }
 
         public void Dispose()

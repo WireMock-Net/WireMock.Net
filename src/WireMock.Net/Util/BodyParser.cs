@@ -10,7 +10,13 @@ namespace WireMock.Util
 {
     internal static class BodyParser
     {
-        private static readonly string[] TextContentTypes = { "text/", "application/xml", "application/javascript", "application/typescript", "application/xhtml+xml" };
+        private static readonly string[] TextContentTypes =
+        {
+            "text/",
+            "application/javascript", "application/typescript",
+            "application/xml", "application/xhtml+xml",
+            "application/x-www-form-urlencoded"
+        };
 
         private static async Task<Tuple<string, Encoding>> ReadStringAsync(Stream stream)
         {

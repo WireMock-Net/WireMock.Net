@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace WireMock.Owin
 {
@@ -16,18 +17,17 @@ namespace WireMock.Owin
         /// <summary>
         /// Gets the urls.
         /// </summary>
-        /// <value>
-        /// The urls.
-        /// </value>
         List<string> Urls { get; }
 
         /// <summary>
         /// Gets the ports.
         /// </summary>
-        /// <value>
-        /// The ports.
-        /// </value>
         List<int> Ports { get; }
+
+        /// <summary>
+        /// The exception occurred when the host is running
+        /// </summary>
+        Exception RunningException { get; }
 
         Task StartAsync();
 

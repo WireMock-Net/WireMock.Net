@@ -18,7 +18,7 @@ namespace WireMock.Matchers
         /// <param name="values">The values.</param>
         public ExactMatcher([NotNull] params string[] values)
         {
-            Check.NotNull(values, nameof(values));
+            Check.HasNoNulls(values, nameof(values));
 
             _values = values;
         }

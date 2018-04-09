@@ -10,7 +10,7 @@ namespace WireMock.Matchers
     /// Regular Expression Matcher
     /// </summary>
     /// <seealso cref="IStringMatcher" />
-    public class RegexMatcher : IStringMatcher
+    public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     {
         private readonly string[] _patterns;
         private readonly Regex[] _expressions;
@@ -34,6 +34,7 @@ namespace WireMock.Matchers
             Check.NotNull(patterns, nameof(patterns));
 
             _patterns = patterns;
+            IgnoreCase = ignoreCase;
 
             RegexOptions options = RegexOptions.Compiled;
             if (ignoreCase)
@@ -73,5 +74,8 @@ namespace WireMock.Matchers
         {
             return "RegexMatcher";
         }
+
+        /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
+        public bool IgnoreCase { get; }
     }
 }

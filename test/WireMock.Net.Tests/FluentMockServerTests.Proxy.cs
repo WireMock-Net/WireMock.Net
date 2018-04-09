@@ -97,7 +97,7 @@ namespace WireMock.Net.Tests
                     Url = _serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedHeaders = new[] { "bbb" }
+                    BlackListedHeaders = new[] { "blacklisted" }
                 }
             };
             _server = FluentMockServer.Start(settings);
@@ -112,12 +112,14 @@ namespace WireMock.Net.Tests
                 RequestUri = new Uri(_server.Urls[0]),
                 Content = new StringContent("stringContent")
             };
-            requestMessage.Content.Headers.Add("bbb", "test");
+            requestMessage.Headers.Add("blacklisted", "test");
+            requestMessage.Headers.Add("ok", "ok-value");
             await new HttpClient().SendAsync(requestMessage);
 
             // then
             var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Headers).ContainsKey("bbb");
+            Check.That(receivedRequest.Headers).Not.ContainsKey("bbb");
+            Check.That(receivedRequest.Headers).ContainsKey("ok");
 
             //var mapping = _server.Mappings.Last();
             //var matcher = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");

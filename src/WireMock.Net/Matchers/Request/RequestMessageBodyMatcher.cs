@@ -104,15 +104,13 @@ namespace WireMock.Matchers.Request
         {
             if (requestMessage.Body != null)
             {
-                var stringMatcher = Matcher as IStringMatcher;
-                if (stringMatcher != null)
+                if (Matcher is IStringMatcher stringMatcher)
                 {
                     return stringMatcher.IsMatch(requestMessage.Body);
                 }
             }
 
-            var objectMatcher = Matcher as IObjectMatcher;
-            if (objectMatcher != null)
+            if (Matcher is IObjectMatcher objectMatcher)
             {
                 if (requestMessage.BodyAsJson != null)
                 {

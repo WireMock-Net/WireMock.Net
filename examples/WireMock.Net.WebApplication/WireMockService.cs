@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using WireMock.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Settings;
 
@@ -13,10 +14,42 @@ namespace WireMock.Net.WebApplication
         private readonly ILogger _logger;
         private readonly IFluentMockServerSettings _settings;
 
+        private class Logger : IWireMockLogger
+        {
+            private readonly ILogger _logger;
+
+            public Logger(ILogger logger)
+            {
+                _logger = logger;
+            }
+
+            public void Debug(string formatString, params object[] args)
+            {
+                _logger.LogDebug(formatString, args);
+            }
+
+            public void Info(string formatString, params object[] args)
+            {
+                _logger.LogInformation(formatString, args);
+            }
+
+            public void Warn(string formatString, params object[] args)
+            {
+                _logger.LogWarning(formatString, args);
+            }
+
+            public void Error(string formatString, params object[] args)
+            {
+                _logger.LogError(formatString, args);
+            }
+        }
+
         public WireMockService(ILogger logger, IFluentMockServerSettings settings)
         {
             _logger = logger;
             _settings = settings;
+
+            _settings.Logger = new Logger(logger);
         }
 
         public void Run()

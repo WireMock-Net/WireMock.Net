@@ -1,3 +1,84 @@
+# 1.0.3.15 (05 April 2018)
+
+ - [#117](https://github.com/WireMock-Net/WireMock.Net/pull/117) - Respect start timeout setting and expose exception from server startup contributed by Evan Liang ([evanlwj](https://github.com/evanlwj))
+
+Commits: 2d2a2dd6fc...4f294baff2
+
+
+# 1.0.3.14 (01 April 2018)
+
+ - [#114](https://github.com/WireMock-Net/WireMock.Net/issues/114) - Feature: Add PathSegments in Transform +feature
+ - [#113](https://github.com/WireMock-Net/WireMock.Net/issues/113) - Feature: Add BodyAsJsonIndented for response message +feature
+
+Commits: bdb79aec95...e87f970057
+
+
+# 1.0.3.12 (24 March 2018)
+
+ - [#100](https://github.com/WireMock-Net/WireMock.Net/issues/100) - Issue: JsonPathMatcher - not working for rootless jsons?
+
+Commits: ...
+
+
+# 1.0.3.11 (20 March 2018)
+
+ - [#110](https://github.com/WireMock-Net/WireMock.Net/issues/110) - Fix: remove `Func[]` from MappingModel
+
+Commits: a4a9f2c862...a4a9f2c862
+
+
+# 1.0.3.10 (17 March 2018)
+
+ - [#109](https://github.com/WireMock-Net/WireMock.Net/issues/109) - Issue: When proxying, MimeType is wrong for StringContent
+
+Commits: 720c59c595...720c59c595
+
+
+# 1.0.3.9 (15 March 2018)
+
+ - [#108](https://github.com/WireMock-Net/WireMock.Net/issues/108) - Issue: provide correct contentTypeHeader value for the bodyparser +fix
+
+Commits: f604be3c02...b7dd1b9242
+
+
+# 1.0.3.8 (10 March 2018)
+
+ - [#106](https://github.com/WireMock-Net/WireMock.Net/issues/106) - Issue: Params does not work, when there are multiple values for a key
+
+Commits: f604be3c02...f604be3c02
+
+
+# 1.0.3.7 (09 March 2018)
+
+ - [#104](https://github.com/WireMock-Net/WireMock.Net/issues/104) - Issue: PlatformNotSupportedException
+
+Commits: 3e634c2fde...3e634c2fde
+
+
+# 1.0.3.4 (04 March 2018)
+
+ - [#102](https://github.com/WireMock-Net/WireMock.Net/pull/102) - Feature: add WithBody(req => dostuff) style callback contributed by Alastair Crabtree ([alastairtree](https://github.com/alastairtree)) +feature
+ - [#101](https://github.com/WireMock-Net/WireMock.Net/pull/101) - ICallbackResponseBuilder + added more unit-tests contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +fix
+ - [#100](https://github.com/WireMock-Net/WireMock.Net/issues/100) - Question: JsonPathMatcher - not working for rootless jsons?
+ - [#99](https://github.com/WireMock-Net/WireMock.Net/pull/99) - feat: simple implementation/spike of dynamic responses using callbacks contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#98](https://github.com/WireMock-Net/WireMock.Net/issues/98) - IBodyResponseBuilder.WithBody* should receive the request as a parameter
+ - [#96](https://github.com/WireMock-Net/WireMock.Net/pull/96) - Replace log4net by custom logger (#94) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#95](https://github.com/WireMock-Net/WireMock.Net/pull/95) - Unittest fix contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#94](https://github.com/WireMock-Net/WireMock.Net/issues/94) - Issue: Introduced dependency on log4net
+ - [#93](https://github.com/WireMock-Net/WireMock.Net/issues/93) - Bug: FluentMockServer IsStarted after calling Start()
+ - [#66](https://github.com/WireMock-Net/WireMock.Net/issues/66) - Interested in callbacks?
+
+Commits: e850126184...a2df91a2a2
+
+
+# 1.0.3.3 (24 February 2018)
+
+ - [#92](https://github.com/WireMock-Net/WireMock.Net/pull/92) - Json fixes (#91) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#91](https://github.com/WireMock-Net/WireMock.Net/issues/91) - Bug: WireMock.Net is not matching application/json http requests using JSONPathMatcher +fix
+
+Commits: 1ffd56701c...ad6c59e3b5
+
+
 # 1.0.3.2 (14 February 2018)
 
  - [#90](https://github.com/WireMock-Net/WireMock.Net/pull/90) - Concurrent issue (#88) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
@@ -5,18 +86,10 @@
  - [#88](https://github.com/WireMock-Net/WireMock.Net/issues/88) - Bug: Standalone server throws 500 error when receiving concurrent requests +fix
  - [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
 
-Commits: 51070dab63...693778659e
+Commits: 51070dab63...4f87146622
 
 
-# 1.0.3.1 (14 February 2018)
-
- - [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
- - [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
-
-Commits: ...
-
-
-# 1.0.3 (04 February 2018)
+# 1.0.3.0 (05 February 2018)
 
  - [#86](https://github.com/WireMock-Net/WireMock.Net/issues/86) - Feature : Add FileSystemWatcher logic for watching static mapping files +feature
  - [#85](https://github.com/WireMock-Net/WireMock.Net/issues/85) - Bug: https for netstandard does not work ? +fix
@@ -25,7 +98,7 @@ Commits: ...
  - [#81](https://github.com/WireMock-Net/WireMock.Net/issues/81) - Feature: When using proxy, only BodyAsBytes in case of binary data?
  - [#80](https://github.com/WireMock-Net/WireMock.Net/issues/80) - Feature: When using proxy, in case Content-Type is JSON, use BodyAsJson in Response
 
-Commits: 40ff8514ac...cf4e83b10b
+Commits: 40ff8514ac...9778c5adbe
 
 
 # 1.0.2.13 (23 January 2018)

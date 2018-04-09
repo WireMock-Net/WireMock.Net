@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using WireMock.Http;
 using WireMock.HttpsCertificate;
+using WireMock.Logging;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -18,6 +19,8 @@ namespace WireMock.Owin
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly WireMockMiddlewareOptions _options;
         private readonly string[] _urls;
+        private readonly IWireMockLogger _logger;
+        private Exception _runningException;
 
         private IWebHost _host;
 
@@ -27,10 +30,14 @@ namespace WireMock.Owin
 
         public List<int> Ports { get; } = new List<int>();
 
+        public Exception RunningException => _runningException;
+
         public AspNetCoreSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
             Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
+
+            _logger = options.Logger ?? new WireMockConsoleLogger();
 
             foreach (string uriPrefix in uriPrefixes)
             {
@@ -89,20 +96,34 @@ namespace WireMock.Owin
 
             IsStarted = true;
 
-#if NETSTANDARD1_3
-            Console.WriteLine("WireMock.Net server using netstandard1.3");
             return Task.Run(() =>
             {
-                _host.Run(_cts.Token);
+                StartServers();
             }, _cts.Token);
-#else
-            System.Console.WriteLine("WireMock.Net server using netstandard2.0");
+        }
 
-            return Task.Run(() =>
+        private void StartServers()
+        {
+            try
             {
+                IsStarted = true;
+#if NETSTANDARD1_3
+                _logger.Info("WireMock.Net server using netstandard1.3");
+                _host.Run(_cts.Token);
+#else
+                _logger.Info("WireMock.Net server using netstandard2.0");
                 _host.Run();
-            }, _cts.Token);
 #endif
+            }
+            catch (Exception e)
+            {
+                _runningException = e;
+                _logger.Error(e.ToString());
+            }
+            finally
+            {
+                IsStarted = false;
+            }
         }
 
         public Task StopAsync()

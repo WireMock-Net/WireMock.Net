@@ -1,13 +1,14 @@
 ﻿#if !NETSTANDARD
+using JetBrains.Annotations;
+using Microsoft.Owin.Hosting;
+using Owin;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using WireMock.Validation;
-using Owin;
-using Microsoft.Owin.Hosting;
 using WireMock.Http;
+using WireMock.Logging;
+using WireMock.Validation;
 
 namespace WireMock.Owin
 {
@@ -15,11 +16,15 @@ namespace WireMock.Owin
     {
         private readonly WireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly IWireMockLogger _logger;
+        private Exception _runningException;
 
         public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
             Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
+
+            _logger = options.Logger ?? new WireMockConsoleLogger();
 
             foreach (string uriPrefix in uriPrefixes)
             {
@@ -37,6 +42,8 @@ namespace WireMock.Owin
         public List<string> Urls { get; } = new List<string>();
 
         public List<int> Ports { get; } = new List<int>();
+
+        public Exception RunningException => _runningException;
 
         [PublicAPI]
         public Task StartAsync()
@@ -57,34 +64,47 @@ namespace WireMock.Owin
 
         private void StartServers()
         {
-            Console.WriteLine("WireMock.Net server using .net 4.5.x or higher");
-
-            Action<IAppBuilder> startup = app =>
-            {
-                app.Use<GlobalExceptionMiddleware>(_options);
-                _options.PreWireMockMiddlewareInit?.Invoke(app);
-                app.Use<WireMockMiddleware>(_options);
-                _options.PostWireMockMiddlewareInit?.Invoke(app);
-            };
-
+#if NET46
+            _logger.Info("WireMock.Net server using .net 4.6.x or higher");
+#else
+            _logger.Info("WireMock.Net server using .net 4.5.x or higher");
+#endif
             var servers = new List<IDisposable>();
-            foreach (var url in Urls)
+
+            try
             {
-                servers.Add(WebApp.Start(url, startup));
+                Action<IAppBuilder> startup = app =>
+                {
+                    app.Use<GlobalExceptionMiddleware>(_options);
+                    _options.PreWireMockMiddlewareInit?.Invoke(app);
+                    app.Use<WireMockMiddleware>(_options);
+                    _options.PostWireMockMiddlewareInit?.Invoke(app);
+                };
+
+                foreach (var url in Urls)
+                {
+                    servers.Add(WebApp.Start(url, startup));
+                }
+
+                IsStarted = true;
+
+                // WaitHandle is signaled when the token is cancelled,
+                // which will be more efficent than Thread.Sleep in while loop
+                _cts.Token.WaitHandle.WaitOne();
             }
-
-            IsStarted = true;
-
-            while (!_cts.IsCancellationRequested)
+            catch (Exception e)
             {
-                Thread.Sleep(30000);
+                // Expose exception of starting host, otherwise it's hard to be troubleshooting if keeping quiet
+                // For example, WebApp.Start will fail with System.MissingMemberException if Microsoft.Owin.Host.HttpListener.dll is being located
+                // https://stackoverflow.com/questions/25090211/owin-httplistener-not-located/31369857
+                _runningException = e;
+                _logger.Error(e.ToString());
             }
-
-            IsStarted = false;
-
-            foreach (var server in servers)
+            finally
             {
-                server.Dispose();
+                IsStarted = false;
+                // Dispose all servers in finally block to make sure clean up allocated resource on error happening
+                servers.ForEach(s => s.Dispose());
             }
         }
     }

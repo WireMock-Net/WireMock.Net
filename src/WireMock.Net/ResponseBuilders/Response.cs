@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Settings;
 using WireMock.Transformers;
@@ -48,10 +49,12 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// Gets the response message.
         /// </summary>
-        /// <value>
-        /// The response message.
-        /// </value>
         public ResponseMessage ResponseMessage { get; }
+
+        /// <summary>
+        /// A delegate to execute to generate the response
+        /// </summary>
+        public Func<RequestMessage, ResponseMessage> Callback { get; private set; }
 
         /// <summary>
         /// Creates this instance.
@@ -66,8 +69,9 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <summary>
-        /// Creates this instance.
+        /// Creates this instance with the specified function.
         /// </summary>
+        /// <param name="func">The callback function.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         [PublicAPI]
         public static IResponseBuilder Create([NotNull] Func<ResponseMessage> func)
@@ -165,6 +169,12 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
+        public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        {
+            return WithCallback(req => new ResponseMessage { Body = bodyFactory(req) });
+        }
+
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
         public IResponseBuilder WithBody(byte[] body, string destination, Encoding encoding = null)
         {
@@ -222,35 +232,49 @@ namespace WireMock.ResponseBuilders
             encoding = encoding ?? Encoding.UTF8;
 
             ResponseMessage.BodyDestination = destination;
+            ResponseMessage.BodyEncoding = encoding;
 
             switch (destination)
             {
                 case BodyDestinationFormat.Bytes:
                     ResponseMessage.Body = null;
+                    ResponseMessage.BodyAsJson = null;
                     ResponseMessage.BodyAsBytes = encoding.GetBytes(body);
-                    ResponseMessage.BodyEncoding = encoding;
+                    break;
+
+                case BodyDestinationFormat.Json:
+                    ResponseMessage.Body = null;
+                    ResponseMessage.BodyAsJson = JsonConvert.DeserializeObject(body);
+                    ResponseMessage.BodyAsBytes = null;
                     break;
 
                 default:
                     ResponseMessage.Body = body;
+                    ResponseMessage.BodyAsJson = null;
                     ResponseMessage.BodyAsBytes = null;
-                    ResponseMessage.BodyEncoding = encoding;
                     break;
             }
 
             return this;
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson"/>
-        public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null)
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool)"/>
+        public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null, bool? indented = null)
         {
             Check.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = null;
             ResponseMessage.BodyAsJson = body;
             ResponseMessage.BodyEncoding = encoding;
+            ResponseMessage.BodyAsJsonIndented = indented;
 
             return this;
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, bool)"/>
+        public IResponseBuilder WithBodyAsJson(object body, bool indented)
+        {
+            return WithBodyAsJson(body, null, indented);
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>
@@ -308,6 +332,16 @@ namespace WireMock.ResponseBuilders
             return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
+        /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
+        public IResponseBuilder WithCallback(Func<RequestMessage, ResponseMessage> callbackHandler)
+        {
+            Check.NotNull(callbackHandler, nameof(callbackHandler));
+
+            Callback = callbackHandler;
+
+            return this;
+        }
+
         /// <summary>
         /// The provide response.
         /// </summary>
@@ -334,6 +368,11 @@ namespace WireMock.ResponseBuilders
             if (UseTransformer)
             {
                 return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
+            }
+
+            if (Callback != null)
+            {
+                return Callback(requestMessage);
             }
 
             return ResponseMessage;

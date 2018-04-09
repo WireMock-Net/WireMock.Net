@@ -17,6 +17,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Util;
@@ -229,9 +230,10 @@ namespace WireMock.Server
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
 
+            var allBlackListedHeaders = new List<string>(blacklistedHeaders) { "Cookie" };
             requestMessage.Headers.Loop((key, value) =>
             {
-                if (!blacklistedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
+                if (!allBlackListedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
                 {
                     request.WithHeader(key, value.ToArray());
                 }
@@ -264,17 +266,19 @@ namespace WireMock.Server
 
         private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
         {
-            var settings = requestMessage.Body != null ? JsonConvert.DeserializeObject<SettingsModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<SettingsModel>();
-
-            if (settings.AllowPartialMapping != null)
-                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
-
+            var settings = DeserializeObject<SettingsModel>(requestMessage);
             _options.MaxRequestLogCount = settings.MaxRequestLogCount;
-
             _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
 
+            if (settings.AllowPartialMapping != null)
+            {
+                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
+            }
+
             if (settings.GlobalProcessingDelay != null)
+            {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+            }
 
             return new ResponseMessage { Body = "Settings updated" };
         }
@@ -301,7 +305,7 @@ namespace WireMock.Server
         {
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
 
-            MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+            var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
             return new ResponseMessage { Body = "Mapping added or updated" };
@@ -369,7 +373,7 @@ namespace WireMock.Server
         {
             try
             {
-                MappingModel mappingModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<MappingModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<MappingModel>();
+                var mappingModel = DeserializeObject<MappingModel>(requestMessage);
                 DeserializeAndAddOrUpdateMapping(mappingModel);
             }
             catch (ArgumentException a)
@@ -550,7 +554,7 @@ namespace WireMock.Server
         #region Requests/find
         private ResponseMessage RequestsFind(RequestMessage requestMessage)
         {
-            var requestModel = requestMessage.Body != null ? JsonConvert.DeserializeObject<RequestModel>(requestMessage.Body) : ((JObject)requestMessage.BodyAsJson).ToObject<RequestModel>();
+            var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
             var request = (Request)InitRequestBuilder(requestModel);
 
@@ -596,8 +600,7 @@ namespace WireMock.Server
 
             if (requestModel.ClientIP != null)
             {
-                string clientIP = requestModel.ClientIP as string;
-                if (clientIP != null)
+                if (requestModel.ClientIP is string clientIP)
                 {
                     requestBuilder = requestBuilder.WithClientIP(clientIP);
                 }
@@ -606,15 +609,14 @@ namespace WireMock.Server
                     var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
                     if (clientIPModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(MatcherModelMapper.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
 
             if (requestModel.Path != null)
             {
-                string path = requestModel.Path as string;
-                if (path != null)
+                if (requestModel.Path is string path)
                 {
                     requestBuilder = requestBuilder.WithPath(path);
                 }
@@ -623,15 +625,14 @@ namespace WireMock.Server
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MatcherModelMapper.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
 
             if (requestModel.Url != null)
             {
-                string url = requestModel.Url as string;
-                if (url != null)
+                if (requestModel.Url is string url)
                 {
                     requestBuilder = requestBuilder.WithUrl(url);
                 }
@@ -640,7 +641,7 @@ namespace WireMock.Server
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MatcherModelMapper.Map).Cast<IStringMatcher>().ToArray());
                     }
                 }
             }
@@ -654,7 +655,7 @@ namespace WireMock.Server
             {
                 foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(MatcherModelMapper.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 
@@ -662,21 +663,21 @@ namespace WireMock.Server
             {
                 foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(MappingConverter.Map).Cast<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(MatcherModelMapper.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 
             if (requestModel.Params != null)
             {
-                foreach (var paramModel in requestModel.Params.Where(p => p.Values != null))
+                foreach (var paramModel in requestModel.Params)
                 {
-                    requestBuilder = requestBuilder.WithParam(paramModel.Name, paramModel.Values.ToArray());
+                    requestBuilder = paramModel.Values == null ? requestBuilder.WithParam(paramModel.Name) : requestBuilder.WithParam(paramModel.Name, paramModel.Values.ToArray());
                 }
             }
 
             if (requestModel.Body?.Matcher != null)
             {
-                var bodyMatcher = MappingConverter.Map(requestModel.Body.Matcher);
+                var bodyMatcher = MatcherModelMapper.Map(requestModel.Body.Matcher);
                 requestBuilder = requestBuilder.WithBody(bodyMatcher);
             }
 
@@ -737,7 +738,7 @@ namespace WireMock.Server
             }
             else if (responseModel.BodyAsJson != null)
             {
-                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding));
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
             }
             else if (responseModel.BodyFromBase64 != null)
             {
@@ -769,6 +770,13 @@ namespace WireMock.Server
         private Encoding ToEncoding(EncodingModel encodingModel)
         {
             return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
+        }
+
+        private T DeserializeObject<T>(RequestMessage requestMessage)
+        {
+            return requestMessage.Body != null ?
+                JsonConvert.DeserializeObject<T>(requestMessage.Body) :
+                ((JObject)requestMessage.BodyAsJson).ToObject<T>();
         }
     }
 }

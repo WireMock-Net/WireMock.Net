@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Text;
 using NFluent;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    //[TestFixture]
     public class RequestMessageTests
     {
         private const string ClientIp = "::1";
 
         [Fact]
-        public void Should_handle_empty_query()
+        public void RequestMessage_ParseQuery_NoKeys()
         {
             // given
             var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp);
@@ -21,17 +20,56 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Should_parse_query_params()
+        public void RequestMessage_ParseQuery_SingleKey_SingleValue()
         {
-            // given
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost?foo=bar&multi=1&multi=2"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost?foo=bar"), "POST", ClientIp);
 
-            // then
-            Check.That(request.GetParameter("foo")).Contains("bar");
-            Check.That(request.GetParameter("multi")).Contains("1");
-            Check.That(request.GetParameter("multi")).Contains("2");
+            // Assert
+            Check.That(request.GetParameter("foo")).ContainsExactly("bar");
+        }
+
+        [Fact]
+        public void RequestMessage_ParseQuery_MultipleKeys_MultipleValues()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost?key=1&key=2"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.GetParameter("key")).Contains("1");
+            Check.That(request.GetParameter("key")).Contains("2");
+        }
+
+        [Fact]
+        public void RequestMessage_ParseQuery_SingleKey_MultipleValues()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost?key=1,2&foo=bar&key=3"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.GetParameter("key")).Contains("1");
+            Check.That(request.GetParameter("key")).Contains("2");
+            Check.That(request.GetParameter("key")).Contains("3");
+        }
+
+        [Fact]
+        public void RequestMessage_Constructor1_PathSegments()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.PathSegments).ContainsExactly("a", "b", "c");
+        }
+
+        [Fact]
+        public void RequestMessage_Constructor2_PathSegments()
+        {
+            // Assign
+            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp, new BodyData());
+
+            // Assert
+            Check.That(request.PathSegments).ContainsExactly("a", "b", "c");
         }
     }
 }

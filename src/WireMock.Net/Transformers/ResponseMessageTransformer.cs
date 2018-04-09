@@ -21,7 +21,8 @@ namespace WireMock.Transformers
             var template = new { request = requestMessage };
 
             // Body
-            string body = bodyIsJson ? JsonConvert.SerializeObject(original.BodyAsJson) : original.Body;
+            Formatting formatting = original.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+            string body = bodyIsJson ? JsonConvert.SerializeObject(original.BodyAsJson, formatting) : original.Body;
             if (body != null)
             {
                 var templateBody = Handlebars.Compile(body);

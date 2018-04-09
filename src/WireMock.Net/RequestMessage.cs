@@ -35,6 +35,11 @@ namespace WireMock
         public string Path { get; }
 
         /// <summary>
+        /// Gets the path segments.
+        /// </summary>
+        public string[] PathSegments { get; }
+
+        /// <summary>
         /// Gets the method.
         /// </summary>
         public string Method { get; }
@@ -120,6 +125,7 @@ namespace WireMock
             Port = url.Port;
             Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = WebUtility.UrlDecode(url.AbsolutePath);
+            PathSegments = Path.Split('/').Skip(1).ToArray();
             Method = method.ToLower();
             ClientIP = clientIP;
 
@@ -157,11 +163,14 @@ namespace WireMock
             Port = url.Port;
             Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
             Path = WebUtility.UrlDecode(url.AbsolutePath);
+            PathSegments = Path.Split('/').Skip(1).ToArray();
             Method = method.ToLower();
             ClientIP = clientIP;
+
             BodyAsBytes = bodyAsBytes;
             Body = body;
             BodyEncoding = bodyEncoding;
+
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
             RawQuery = WebUtility.UrlDecode(url.Query);
@@ -180,10 +189,11 @@ namespace WireMock
                 queryString = queryString.Substring(1);
             }
 
-            return queryString.Split('&').Aggregate(new Dictionary<string, WireMockList<string>>(),
+            return queryString.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
+                .Aggregate(new Dictionary<string, WireMockList<string>>(),
                 (dict, term) =>
                 {
-                    var parts = term.Split('=');
+                    string[] parts = term.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                     string key = parts[0];
                     if (!dict.ContainsKey(key))
                     {
@@ -192,7 +202,8 @@ namespace WireMock
 
                     if (parts.Length == 2)
                     {
-                        dict[key].Add(parts[1]);
+                        string[] values = parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        dict[key].AddRange(values);
                     }
 
                     return dict;
@@ -204,7 +215,7 @@ namespace WireMock
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>The query parameter.</returns>
-        public List<string> GetParameter(string key)
+        public WireMockList<string> GetParameter(string key)
         {
             if (Query == null)
             {

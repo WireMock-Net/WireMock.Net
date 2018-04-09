@@ -8,17 +8,11 @@
         /// <summary>
         /// Gets or sets the matchers.
         /// </summary>
-        /// <value>
-        /// The matchers.
-        /// </value>
         public MatcherModel[] Matchers { get; set; }
 
-        /// <summary>
-        /// Gets or sets the functions.
-        /// </summary>
-        /// <value>
-        /// The functions.
-        /// </value>
-        public string[] Funcs { get; set; }
+        ///// <summary>
+        ///// Gets or sets the functions.
+        ///// </summary>
+        //public string[] Funcs { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests.ResponseBuilderTests
 {
     public class ResponseWithBodyHandlebarsTests
     {
