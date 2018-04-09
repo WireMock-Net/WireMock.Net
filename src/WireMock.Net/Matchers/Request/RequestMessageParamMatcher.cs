@@ -80,14 +80,7 @@ namespace WireMock.Matchers.Request
                 return MatchScores.Mismatch;
             }
 
-            if (values.Count == 0 && (Values == null || !Values.Any()))
-            {
-                // Key is present, but no values or null, just return Perfect
-                return MatchScores.Perfect;
-            }
-
-            var matches = Values.Select(v => values.Contains(v));
-            return MatchScores.ToScore(matches);
+            return MatchScores.ToScore(values?.Intersect(Values).Count() == Values.Count());
         }
     }
 }
