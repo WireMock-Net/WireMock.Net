@@ -745,6 +745,11 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithBodyFromBase64(responseModel.BodyFromBase64, ToEncoding(responseModel.BodyEncoding));
             }
 
+            else if (responseModel.BodyAsFile != null)
+            {
+                responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile);
+            }
+
             if (responseModel.UseTransformer)
             {
                 responseBuilder = responseBuilder.WithTransformer();
