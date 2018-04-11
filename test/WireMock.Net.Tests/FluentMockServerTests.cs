@@ -11,6 +11,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
+using Newtonsoft.Json;
 
 namespace WireMock.Net.Tests
 {
@@ -86,10 +87,10 @@ namespace WireMock.Net.Tests
 
             string responseBodyFilePath = Path.Combine(GetCurrentFolder(), "ResponseBodyFiles", "responsebody.json");
 
-            dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
             jsonObj["Response"]["BodyAsFile"] = responseBodyFilePath;
 
-            string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+            string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(folder, output);
 
             _server = FluentMockServer.Start();
