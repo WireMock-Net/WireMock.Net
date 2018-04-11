@@ -1,0 +1,24 @@
+﻿{
+  "Guid": "00000002-ee28-4f29-ae63-1ac9b0802d87",
+  "Priority": 0,
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "ExactMatcher",
+          "Pattern": "/response/staticfile"
+        }
+      ]
+    },
+    "Methods": [
+      "get"
+    ]
+  },
+  "Response": {
+    "StatusCode": 200,
+    "BodyAsFile": "responsebody.json",
+    "Headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
