@@ -76,13 +76,13 @@ namespace WireMock.Owin
                     foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
                     {
                         PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
-                        options.Listen(System.Net.IPAddress.Loopback, port);
+                        options.Listen(System.Net.IPAddress.Any, port);
                     }
 
                     foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
                         PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
-                        options.Listen(System.Net.IPAddress.Loopback, port, listenOptions =>
+                        options.Listen(System.Net.IPAddress.Any, port, listenOptions =>
                         {
                             listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                         });
