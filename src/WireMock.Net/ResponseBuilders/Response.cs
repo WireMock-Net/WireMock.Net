@@ -31,9 +31,6 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// Gets a value indicating whether [use transformer].
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if [use transformer]; otherwise, <c>false</c>.
-        /// </value>
         public bool UseTransformer { get; private set; }
 
         /// <summary>
@@ -258,7 +255,7 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool)"/>
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool?)"/>
         public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null, bool? indented = null)
         {
             Check.NotNull(body, nameof(body));

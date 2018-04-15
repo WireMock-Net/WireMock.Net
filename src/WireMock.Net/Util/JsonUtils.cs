@@ -11,8 +11,7 @@ namespace WireMock.Util
                 return default(T);
             }
 
-            var token = value as JToken;
-            return token == null ? default(T) : token.ToObject<T>();
+            return !(value is JToken token) ? default(T) : token.ToObject<T>();
         }
     }
 }
