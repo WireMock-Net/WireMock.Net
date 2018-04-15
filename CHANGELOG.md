@@ -1,3 +1,13 @@
+# 1.0.3.16 (15 April 2018)
+
+ - [#125](https://github.com/WireMock-Net/WireMock.Net/pull/125) - Change listen from loopback to any ip address for dotnetcore2.0 apps contributed by ([SubjectiveReality](https://github.com/SubjectiveReality))
+ - [#124](https://github.com/WireMock-Net/WireMock.Net/issues/124) - Issue: Unable to get host to listen on ips other than 127.0.0.1 using StandAloneApp
+ - [#121](https://github.com/WireMock-Net/WireMock.Net/pull/121) - Fix for issue #118 contributed by ([raghavendrabankapur](https://github.com/raghavendrabankapur)) +fix
+ - [#118](https://github.com/WireMock-Net/WireMock.Net/issues/118) - Not reading the response from a file when mappings are placed in json file
+
+Commits: 7bd63a0baf...1bcdfe31ab
+
+
 # 1.0.3.15 (05 April 2018)
 
  - [#117](https://github.com/WireMock-Net/WireMock.Net/pull/117) - Respect start timeout setting and expose exception from server startup contributed by Evan Liang ([evanlwj](https://github.com/evanlwj))
