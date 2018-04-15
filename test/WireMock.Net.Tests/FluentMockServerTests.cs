@@ -11,6 +11,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
+using Newtonsoft.Json;
 
 namespace WireMock.Net.Tests
 {
@@ -77,6 +78,34 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void FluentMockServer_ReadStaticMapping_WithResponseBodyFromFile()
+        {
+            string guid = "00000002-ee28-4f29-ae63-1ac9b0802d87";
+
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
+            string json = File.ReadAllText(folder);
+
+            string responseBodyFilePath = Path.Combine(GetCurrentFolder(), "ResponseBodyFiles", "responsebody.json");
+
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            jsonObj["Response"]["BodyAsFile"] = responseBodyFilePath;
+
+            string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+            File.WriteAllText(folder, output);
+
+            _server = FluentMockServer.Start();
+            _server.ReadStaticMappingAndAddOrUpdate(folder);
+
+            var mappings = _server.Mappings.ToArray();
+            Check.That(mappings).HasSize(1);
+
+            Check.That(mappings.First().RequestMatcher).IsNotNull();
+            Check.That(mappings.First().Provider).IsNotNull();
+            Check.That(mappings.First().Guid).Equals(Guid.Parse(guid));
+            Check.That(mappings.First().Title).IsNullOrEmpty();
+        }
+
+        [Fact]
         public void FluentMockServer_ReadStaticMappings()
         {
             _server = FluentMockServer.Start();
@@ -85,7 +114,7 @@ namespace WireMock.Net.Tests
             _server.ReadStaticMappings(folder);
 
             var mappings = _server.Mappings.ToArray();
-            Check.That(mappings).HasSize(2);
+            Check.That(mappings).HasSize(3);
         }
 
         [Fact]
