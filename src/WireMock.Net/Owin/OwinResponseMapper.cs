@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using WireMock.Http;
 using WireMock.Util;
 #if !NETSTANDARD
 using Microsoft.Owin;
@@ -21,17 +22,27 @@ namespace WireMock.Owin
     {
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
-        // https://stackoverflow.com/questions/239725/cannot-set-some-http-headers-when-using-system-net-webrequest
+        // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
 #if !NETSTANDARD
         private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #else
         private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #endif
-            { "Content-Length", null },
-            { "Content-Type", (r, v) => r.ContentType = v.FirstOrDefault() },
-            { "Keep-Alive", null },
-            { "Transfer-Encoding", null },
-            { "WWW-Authenticate", null }
+            { HttpKnownHeaderNames.Accept, null },
+            { HttpKnownHeaderNames.Connection, null },
+            { HttpKnownHeaderNames.ContentLength, null },
+            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() },
+            { HttpKnownHeaderNames.Date, null },
+            { HttpKnownHeaderNames.Expect, null },
+            { HttpKnownHeaderNames.Host, null },
+            { HttpKnownHeaderNames.IfModifiedSince, null },
+            { HttpKnownHeaderNames.KeepAlive, null },
+            { HttpKnownHeaderNames.Range, null },
+            { HttpKnownHeaderNames.Referer, null },
+            { HttpKnownHeaderNames.TransferEncoding, null },
+            { HttpKnownHeaderNames.UserAgent, null },
+            { HttpKnownHeaderNames.ProxyConnection, null },
+            { HttpKnownHeaderNames.WWWAuthenticate, null }
         };
 
         /// <summary>

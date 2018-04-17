@@ -545,6 +545,24 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("/fooBar");
         }
 
+        [Fact]
+        public async Task FluentMockServer_Should_IgnoreRestrictedHeader()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+            _server
+                .Given(Request.Create().WithPath("/head").UsingHead())
+                .RespondWith(Response.Create().WithHeader("Content-Length", "1024"));
+
+            var request = new HttpRequestMessage(HttpMethod.Head, "http://localhost:" + _server.Ports[0] + "/head");
+
+            // Act
+            var response = await new HttpClient().SendAsync(request);
+
+            // Assert
+            Check.That(response.Content.Headers.GetValues("Content-Length")).ContainsExactly("0");
+        }
+
         public void Dispose()
         {
             _server?.Stop();
