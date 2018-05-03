@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_headers()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "tatata");
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tatata");
 
             // when
             string bodyAsString = "whatever";
@@ -46,7 +46,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_headers_ignorecase()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "abc", false);
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "abc", false);
 
             // when
             string bodyAsString = "whatever";
@@ -62,7 +62,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_header_prefix()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithHeader("X-toto", "tata*");
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tata*");
 
             // when
             string bodyAsString = "whatever";
@@ -80,7 +80,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_body()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody("Hello world!");
+            var spec = Request.Create().UsingAnyMethod().WithBody("Hello world!");
 
             // when
             string bodyAsString = "Hello world!";
@@ -97,7 +97,7 @@ namespace WireMock.Net.Tests
         public void Should_exclude_requests_not_matching_given_body()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody("      Hello world!   ");
+            var spec = Request.Create().UsingAnyMethod().WithBody("      Hello world!   ");
 
             // when
             string bodyAsString = "xxx";
@@ -127,7 +127,7 @@ namespace WireMock.Net.Tests
         public void Should_specify_requests_matching_given_param_func()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithParam(p => p.ContainsKey("bar"));
+            var spec = Request.Create().UsingAnyMethod().WithParam(p => p.ContainsKey("bar"));
 
             // when
             var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);

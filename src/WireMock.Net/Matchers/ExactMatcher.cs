@@ -12,21 +12,34 @@ namespace WireMock.Matchers
     {
         private readonly string[] _values;
 
+        /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+        public MatchBehaviour MatchBehaviour { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
         /// </summary>
         /// <param name="values">The values.</param>
-        public ExactMatcher([NotNull] params string[] values)
+        public ExactMatcher([NotNull] params string[] values) : this(MatchBehaviour.AcceptOnMatch, values)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="values">The values.</param>
+        public ExactMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] values)
         {
             Check.HasNoNulls(values, nameof(values));
 
             _values = values;
+            MatchBehaviour = matchBehaviour;
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            return MatchScores.ToScore(_values.Select(value => value.Equals(input)));
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_values.Select(value => value.Equals(input))));
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
@@ -35,10 +48,7 @@ namespace WireMock.Matchers
             return _values;
         }
 
-        /// <inheritdoc cref="IMatcher.GetName"/>
-        public string GetName()
-        {
-            return "ExactMatcher";
-        }
+        /// <inheritdoc cref="IMatcher.Name"/>
+        public string Name => "ExactMatcher";
     }
 }

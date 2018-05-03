@@ -24,8 +24,9 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="urls">The urls.</param>
-        public RequestMessageUrlMatcher([NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(url)).Cast<IStringMatcher>().ToArray())
+        public RequestMessageUrlMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(matchBehaviour, url)).Cast<IStringMatcher>().ToArray())
         {
         }
 

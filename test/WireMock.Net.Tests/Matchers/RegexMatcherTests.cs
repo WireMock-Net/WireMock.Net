@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new RegexMatcher("");
 
             // Act
-            string name = matcher.GetName();
+            string name = matcher.Name;
 
             // Assert
             Check.That(name).Equals("RegexMatcher");
@@ -65,10 +65,23 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new RegexMatcher("H.*o", true);
 
             // Act
-            double result = matcher.IsMatch("hello world!");
+            double result = matcher.IsMatch("hello");
 
             // Assert
             Check.That(result).IsEqualTo(1.0d);
+        }
+
+        [Fact]
+        public void RegexMatcher_IsMatch_RejectOnMatch()
+        {
+            // Assign
+            var matcher = new RegexMatcher(MatchBehaviour.RejectOnMatch, "h.*o");
+
+            // Act
+            double result = matcher.IsMatch("hello");
+
+            // Assert
+            Check.That(result).IsEqualTo(0.0);
         }
     }
 }

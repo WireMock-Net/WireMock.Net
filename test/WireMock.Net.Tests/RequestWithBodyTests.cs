@@ -19,7 +19,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBody_FuncString()
         {
             // Assign
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(b => b.Contains("b"));
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody(b => b.Contains("b"));
 
             // Act
             var body = new BodyData
@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBody_FuncJson()
         {
             // Assign
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(b => b != null);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody(b => b != null);
 
             // Act
             var body = new BodyData
@@ -55,7 +55,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBody_FuncByteArray()
         {
             // Assign
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody((byte[] b) => b != null);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((byte[] b) => b != null);
 
             // Act
             var body = new BodyData
@@ -73,7 +73,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyExactMatcher()
         {
             // given
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(new ExactMatcher("cat"));
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody(new ExactMatcher("cat"));
 
             // when
             string bodyAsString = "cat";
@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyWildcardMatcher()
         {
             // given
-            var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithBody(new WildcardMatcher("H*o*"));
+            var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("H*o*"));
 
             // when
             string bodyAsString = "Hello world!";
@@ -105,7 +105,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyXPathMatcher_true()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
 
             // when
             string xmlBodyAsString = @"
@@ -126,7 +126,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyXPathMatcher_false()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
 
             // when
             string xmlBodyAsString = @"
@@ -147,7 +147,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyJsonPathMatcher_true()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
             // when
             string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -163,7 +163,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyJsonPathMatcher_false()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
             string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
@@ -179,7 +179,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyAsJson_Object_JsonPathMatcher_true()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
             // when
             string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -199,7 +199,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_1()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..books[?(@.price < 10)]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..books[?(@.price < 10)]"));
 
             // when
             string jsonString = "{ \"books\": [ { \"category\": \"test1\", \"price\": 8.95 }, { \"category\": \"test2\", \"price\": 20 } ] }";
@@ -220,7 +220,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_2()
         {
             // given
-            var spec = Request.Create().UsingAnyVerb().WithBody(new JsonPathMatcher("$..[?(@.Id == 1)]"));
+            var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..[?(@.Id == 1)]"));
 
             // when
             string jsonString = "{ \"Id\": 1, \"Name\": \"Test\" }";
@@ -243,7 +243,7 @@ namespace WireMock.Net.Tests
         {
             // Assign
             object body = DateTime.MinValue;
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(body);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody(body);
 
             var bodyData = new BodyData
             {
@@ -263,7 +263,7 @@ namespace WireMock.Net.Tests
         {
             // Assign
             byte[] body = { 123 };
-            var requestBuilder = Request.Create().UsingAnyVerb().WithBody(body);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody(body);
 
             var bodyData = new BodyData
             {

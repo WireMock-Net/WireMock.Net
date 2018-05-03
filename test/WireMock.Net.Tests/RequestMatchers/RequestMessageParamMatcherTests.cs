@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new Uri("http://localhost?key=test1,test2"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageParamMatcher("key", new[] { "test1", "test2" });
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", new[] { "test1", "test2" });
 
             // Act
             var result = new RequestMatchResult();
@@ -27,7 +28,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new Uri("http://localhost?key=test0,test2"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageParamMatcher("key", new[] { "test1", "test2" });
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", new[] { "test1", "test2" });
 
             // Act
             var result = new RequestMatchResult();
@@ -42,7 +43,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new Uri("http://localhost?key"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageParamMatcher("key", new[] { "test1", "test2" });
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", new[] { "test1", "test2" });
 
             // Act
             var result = new RequestMatchResult();
@@ -57,7 +58,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new Uri("http://localhost?key"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageParamMatcher("key");
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key");
 
             // Act
             var result = new RequestMatchResult();
@@ -72,7 +73,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new Uri("http://localhost?key"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageParamMatcher("key", new string[] { });
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", new string[] { });
 
             // Act
             var result = new RequestMatchResult();

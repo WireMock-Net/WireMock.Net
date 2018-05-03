@@ -3,6 +3,7 @@
     /// <summary>
     /// IStringMatcher
     /// </summary>
+    /// <inheritdoc cref="IMatcher"/>
     public interface IStringMatcher : IMatcher
     {
         /// <summary>

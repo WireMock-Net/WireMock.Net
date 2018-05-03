@@ -26,7 +26,7 @@ namespace WireMock.Serialization
             return new MatcherModel
             {
                 IgnoreCase = ignorecase,
-                Name = matcher.GetName(),
+                Name = matcher.Name,
                 Pattern = patterns.Length == 1 ? patterns.First() : null,
                 Patterns = patterns.Length > 1 ? patterns : null
             };

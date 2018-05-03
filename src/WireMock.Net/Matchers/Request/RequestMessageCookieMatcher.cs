@@ -29,16 +29,17 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageCookieMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">The ignoreCase.</param>
-        public RequestMessageCookieMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
+        public RequestMessageCookieMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
             Name = name;
-            Matchers = new IStringMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+            Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
         }
 
         /// <summary>

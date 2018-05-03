@@ -33,14 +33,16 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string pattern, bool ignoreCase = true)
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, [NotNull] string pattern, bool ignoreCase)
         {
+
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
             Name = name;
-            Matchers = new IStringMatcher[] { new WildcardMatcher(pattern, ignoreCase) };
+            Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
         }
 
         /// <summary>
@@ -48,14 +50,15 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="patterns">The patterns.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] string[] patterns, bool ignoreCase = true)
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, [NotNull] string[] patterns, bool ignoreCase)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(patterns, nameof(patterns));
 
             Name = name;
-            Matchers = patterns.Select(pattern => new WildcardMatcher(pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
+            Matchers = patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }
 
         /// <summary>

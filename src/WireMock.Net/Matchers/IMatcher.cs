@@ -8,7 +8,12 @@
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <returns>Name</returns>
-        string GetName();
+        string Name { get; }
+
+
+        /// <summary>
+        /// Gets the match behaviour.
+        /// </summary>
+        MatchBehaviour MatchBehaviour { get; }
     }
 }

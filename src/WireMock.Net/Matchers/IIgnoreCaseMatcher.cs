@@ -3,10 +3,11 @@
     /// <summary>
     /// IIgnoreCaseMatcher
     /// </summary>
+    /// <inheritdoc cref="IMatcher"/>
     public interface IIgnoreCaseMatcher : IMatcher
     {
         /// <summary>
-        /// Ignore the case.
+        /// Ignore the case from the pattern.
         /// </summary>
         bool IgnoreCase { get; }
     }

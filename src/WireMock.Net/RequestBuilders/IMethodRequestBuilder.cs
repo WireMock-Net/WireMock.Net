@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using WireMock.Matchers;
 
 namespace WireMock.RequestBuilders
 {
@@ -8,66 +9,66 @@ namespace WireMock.RequestBuilders
     public interface IMethodRequestBuilder : IHeadersAndCookiesRequestBuilder
     {
         /// <summary>
-        /// The using delete.
+        /// UsingDelete: add HTTP Method matching on `delete` and matchBehaviour (optional).
         /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingDelete();
-
-        /// <summary>
-        /// The using get.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingGet();
-
-        /// <summary>
-        /// The using head.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingHead();
-
-        /// <summary>
-        /// The using post.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingPost();
-
-        /// <summary>
-        /// The using patch.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingPatch();
-
-        /// <summary>
-        /// The using put.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingPut();
-
-        /// <summary>
-        /// The using any verb.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IRequestBuilder"/>.
-        /// </returns>
-        IRequestBuilder UsingAnyVerb();
-
-        /// <summary>
-        /// The using verb.
-        /// </summary>
-        /// <param name="verbs">The verb.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder UsingVerb([NotNull] params string[] verbs);
+        IRequestBuilder UsingDelete(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingGet: add HTTP Method matching on `get` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// Add HTTP Method matching on `head` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingHead(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingPost: add HTTP Method matching on `post` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingPost(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingPatch: add HTTP Method matching on `patch` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingPut: add HTTP Method matching on `put` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingAnyMethod: add HTTP Method matching on any method.
+        /// </summary>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingAnyMethod();
+
+        /// <summary>
+        /// UsingMethod: add HTTP Method matching on any methods and matchBehaviour.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="methods">The methods.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingMethod(MatchBehaviour matchBehaviour, [NotNull] params string[] methods);
+
+        /// <summary>
+        /// UsingMethod: add HTTP Method matching on any methods.
+        /// </summary>
+        /// <param name="methods">The methods.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingMethod([NotNull] params string[] methods);
     }
 }

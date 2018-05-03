@@ -17,7 +17,7 @@ namespace WireMock.Net.Tests
         public void Request_WithPath_WithHeader_Match()
         {
             // given
-            var spec = Request.Create().WithPath("/foo").UsingAnyVerb().WithHeader("X-toto", "tata");
+            var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithHeader("X-toto", "tata");
 
             // when
             string bodyAsString = "whatever";
