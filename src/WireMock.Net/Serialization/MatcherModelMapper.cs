@@ -20,7 +20,7 @@ namespace WireMock.Serialization
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
             string[] patterns = matcher.Patterns ?? new[] { matcher.Pattern };
-            var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+            MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
 
             switch (matcherName)
             {

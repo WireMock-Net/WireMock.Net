@@ -12,6 +12,15 @@ namespace WireMock.RequestBuilders
     public interface IHeadersAndCookiesRequestBuilder : IBodyRequestBuilder, IRequestMatcher, IParamsRequestBuilder
     {
         /// <summary>
+        /// WithHeader: matching based on name, pattern and matchBehaviour.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithHeader([NotNull] string name, string pattern, MatchBehaviour matchBehaviour);
+
+        /// <summary>
         /// WithHeader: matching based on name, pattern, ignoreCase and matchBehaviour.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -20,6 +29,15 @@ namespace WireMock.RequestBuilders
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithHeader([NotNull] string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// WithHeader: matching based on name, patterns and matchBehaviour.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithHeader([NotNull] string name, string[] patterns, MatchBehaviour matchBehaviour);
 
         /// <summary>
         /// WithHeader: matching based on name, patterns, ignoreCase and matchBehaviour.

@@ -22,9 +22,11 @@ namespace WireMock.Serialization
 
             string[] patterns = matcher is IStringMatcher stringMatcher ? stringMatcher.GetPatterns() : new string[0];
             bool? ignorecase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
+            bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?) null;
 
             return new MatcherModel
             {
+                RejectOnMatch = rejectOnMatch,
                 IgnoreCase = ignorecase,
                 Name = matcher.Name,
                 Pattern = patterns.Length == 1 ? patterns.First() : null,

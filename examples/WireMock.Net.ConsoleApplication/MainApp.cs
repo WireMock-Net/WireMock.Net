@@ -151,6 +151,14 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody(@"{ ""result"": ""data deleted with 200""}"));
 
             server
+                .Given(Request.Create()
+                    .WithPath("/reject")
+                    .WithHeader("x", "1", MatchBehaviour.RejectOnMatch)
+                    .UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""reject""}"));
+
+            server
                 .Given(Request.Create().WithPath("/nobody").UsingGet())
                 .RespondWith(Response.Create().WithDelay(TimeSpan.FromSeconds(1))
                     .WithStatusCode(200));

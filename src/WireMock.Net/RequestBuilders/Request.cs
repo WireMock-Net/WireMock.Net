@@ -312,6 +312,12 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string, MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string pattern, MatchBehaviour matchBehaviour)
+        {
+            return WithHeader(name, pattern, true, matchBehaviour);
+        }
+
         /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string, bool, MatchBehaviour)"/>
         public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
@@ -320,6 +326,12 @@ namespace WireMock.RequestBuilders
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, pattern, ignoreCase));
             return this;
+        }
+
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string[], MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string[] patterns, MatchBehaviour matchBehaviour)
+        {
+            return WithHeader(name, patterns, true, matchBehaviour);
         }
 
         /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string[], bool, MatchBehaviour)"/>
