@@ -12,7 +12,7 @@ namespace WireMock.Matchers.Request
     public class RequestMessagePathMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The matcher.
+        /// The matchers
         /// </summary>
         public IReadOnlyList<IStringMatcher> Matchers { get; }
 
@@ -37,6 +37,7 @@ namespace WireMock.Matchers.Request
         public RequestMessagePathMatcher([NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(matchers, nameof(matchers));
+
             Matchers = matchers;
         }
 
@@ -47,6 +48,7 @@ namespace WireMock.Matchers.Request
         public RequestMessagePathMatcher([NotNull] params Func<string, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
+
             Funcs = funcs;
         }
 

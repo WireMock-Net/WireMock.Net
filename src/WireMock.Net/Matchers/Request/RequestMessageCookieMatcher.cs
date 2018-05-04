@@ -11,6 +11,8 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageCookieMatcher : IRequestMatcher
     {
+        private readonly MatchBehaviour _matchBehaviour;
+
         /// <value>
         /// The funcs.
         /// </value>
@@ -38,6 +40,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
+            _matchBehaviour = matchBehaviour;
             Name = name;
             Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
         }
@@ -78,7 +81,7 @@ namespace WireMock.Matchers.Request
         {
             if (requestMessage.Cookies == null)
             {
-                return MatchScores.Mismatch;
+                return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
             if (Funcs != null)
@@ -93,7 +96,7 @@ namespace WireMock.Matchers.Request
 
             if (!requestMessage.Cookies.ContainsKey(Name))
             {
-                return MatchScores.Mismatch;
+                return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
             string value = requestMessage.Cookies[Name];
