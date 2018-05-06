@@ -58,6 +58,6 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IMatcher.Name"/>
-        public new string Name => "WildcardMatcher";
+        public override string Name => "WildcardMatcher";
     }
 }

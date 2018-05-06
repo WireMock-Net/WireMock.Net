@@ -153,6 +153,7 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request.Create()
                     .WithPath("/reject")
+                    .UsingGet()
                     .WithHeader("x", "1", MatchBehaviour.RejectOnMatch)
                     .UsingAnyMethod())
                 .RespondWith(Response.Create()

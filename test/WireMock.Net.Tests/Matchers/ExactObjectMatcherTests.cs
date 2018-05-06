@@ -21,6 +21,20 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
+        public void ExactObjectMatcher_IsMatch_ByteArray()
+        {
+            // Assign
+            object checkValue = new byte[] { 1, 2 };
+
+            // Act
+            var matcher = new ExactObjectMatcher(new byte[] { 1, 2 });
+            double result = matcher.IsMatch(checkValue);
+
+            // Assert
+            Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Fact]
         public void ExactObjectMatcher_IsMatch_AcceptOnMatch()
         {
             // Assign

@@ -96,7 +96,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IMatcher.Name"/>
-        public string Name => "RegexMatcher";
+        public virtual string Name => "RegexMatcher";
 
         /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
         public bool IgnoreCase { get; }

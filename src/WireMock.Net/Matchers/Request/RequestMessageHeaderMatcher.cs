@@ -59,6 +59,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(name, nameof(name));
             Check.NotNull(patterns, nameof(patterns));
 
+            _matchBehaviour = matchBehaviour;
             Name = name;
             Matchers = patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }

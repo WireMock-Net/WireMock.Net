@@ -78,10 +78,10 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPathMatcher_IsMatch_Object_Exception_Mismatch()
         {
             // Assign
-            var matcher = new JsonPathMatcher("xxx");
+            var matcher = new JsonPathMatcher("");
 
             // Act 
-            double match = matcher.IsMatch("");
+            double match = matcher.IsMatch("x");
 
             // Assert 
             Check.That(match).IsEqualTo(0);

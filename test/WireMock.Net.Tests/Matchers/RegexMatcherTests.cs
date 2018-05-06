@@ -33,6 +33,18 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
+        public void RegexMatcher_GetIgnoreCase()
+        {
+            // Act
+            bool case1 = new RegexMatcher("X").IgnoreCase;
+            bool case2 = new RegexMatcher("X", true).IgnoreCase;
+
+            // Assert
+            Check.That(case1).IsFalse();
+            Check.That(case2).IsTrue();
+        }
+
+        [Fact]
         public void RegexMatcher_IsMatch()
         {
             // Assign
