@@ -105,24 +105,35 @@ namespace WireMock.Matchers.Request
 
         private double IsMatch(RequestMessage requestMessage)
         {
-            if (requestMessage.Body != null)
-            {
-                if (Matcher is IStringMatcher stringMatcher)
-                {
-                    return stringMatcher.IsMatch(requestMessage.Body);
-                }
-            }
-
+            // Check if the matcher is a IObjectMatcher
             if (Matcher is IObjectMatcher objectMatcher)
             {
+                // If the body is a JSON object, try to match.
                 if (requestMessage.BodyAsJson != null)
                 {
                     return objectMatcher.IsMatch(requestMessage.BodyAsJson);
                 }
 
+                // If the body is a byte array, try to match.
                 if (requestMessage.BodyAsBytes != null)
                 {
                     return objectMatcher.IsMatch(requestMessage.BodyAsBytes);
+                }
+            }
+
+            // Check if the matcher is a IStringMatcher
+            if (Matcher is IStringMatcher stringMatcher)
+            {
+                // If the string body is defined, try to match.
+                if (requestMessage.Body != null)
+                {
+                    return stringMatcher.IsMatch(requestMessage.Body);
+                }
+
+                // If the  body is a JSON object, try to use BodyAsStringOriginal to match.
+                if (requestMessage.BodyAsJson != null && requestMessage.BodyAsStringOriginal != null)
+                {
+                    return stringMatcher.IsMatch(requestMessage.BodyAsStringOriginal);
                 }
             }
 

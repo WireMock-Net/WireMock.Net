@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.Matchers;
@@ -346,6 +347,25 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseAsString).IsEqualTo("01");
             Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_wildcard_matching_even_when_sent_as_json()
+        {
+            // Assign
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().WithPath("/foo").WithBody(new WildcardMatcher("*Hello server*")))
+                .RespondWith(Response.Create().WithBody("Hello client"));
+
+            // Act
+            var content = new StringContent(@"{ ""message"" : ""Hello server"" }", Encoding.UTF8, "application/json");
+            var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + "/foo", content);
+
+            // Assert
+            var responseString = await response.Content.ReadAsStringAsync();
+            Check.That(responseString).Equals("Hello client");
         }
 
         [Fact]

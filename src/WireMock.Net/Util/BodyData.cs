@@ -18,6 +18,11 @@ namespace WireMock.Util
         public string BodyAsString { get; set; }
 
         /// <summary>
+        /// The original body as string, this is defined when BodyAsString or BodyAsJson are not null.
+        /// </summary>
+        public string BodyAsStringOriginal { get; set; }
+
+        /// <summary>
         /// The body (as JSON object).
         /// </summary>
         public object BodyAsJson { get; set; }

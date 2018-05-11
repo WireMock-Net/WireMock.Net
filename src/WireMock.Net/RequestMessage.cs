@@ -70,6 +70,11 @@ namespace WireMock
         public string Body { get; }
 
         /// <summary>
+        /// The original body as string, this is defined when BodyAsString or BodyAsJson are not null.
+        /// </summary>
+        public string BodyAsStringOriginal { get; }
+
+        /// <summary>
         /// The body (as JSON object).
         /// </summary>
         public object BodyAsJson { get; set; }
@@ -113,7 +118,7 @@ namespace WireMock
         /// <param name="body">The body.</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData body, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData body = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(url, nameof(url));
             Check.NotNull(method, nameof(method));
@@ -130,6 +135,7 @@ namespace WireMock
             ClientIP = clientIP;
 
             Body = body?.BodyAsString;
+            BodyAsStringOriginal = body?.BodyAsStringOriginal;
             BodyEncoding = body?.Encoding;
             BodyAsJson = body?.BodyAsJson;
             BodyAsBytes = body?.BodyAsBytes;
@@ -151,31 +157,32 @@ namespace WireMock
         /// <param name="bodyEncoding">The body encoding</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
-        {
-            Check.NotNull(url, nameof(url));
-            Check.NotNull(method, nameof(method));
-            Check.NotNull(clientIP, nameof(clientIP));
+        //[Obsolete]
+        //public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] byte[] bodyAsBytes = null, [CanBeNull] string body = null, [CanBeNull] Encoding bodyEncoding = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        //{
+        //    Check.NotNull(url, nameof(url));
+        //    Check.NotNull(method, nameof(method));
+        //    Check.NotNull(clientIP, nameof(clientIP));
 
-            Url = url.ToString();
-            Protocol = url.Scheme;
-            Host = url.Host;
-            Port = url.Port;
-            Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
-            Path = WebUtility.UrlDecode(url.AbsolutePath);
-            PathSegments = Path.Split('/').Skip(1).ToArray();
-            Method = method.ToLower();
-            ClientIP = clientIP;
+        //    Url = url.ToString();
+        //    Protocol = url.Scheme;
+        //    Host = url.Host;
+        //    Port = url.Port;
+        //    Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
+        //    Path = WebUtility.UrlDecode(url.AbsolutePath);
+        //    PathSegments = Path.Split('/').Skip(1).ToArray();
+        //    Method = method.ToLower();
+        //    ClientIP = clientIP;
 
-            BodyAsBytes = bodyAsBytes;
-            Body = body;
-            BodyEncoding = bodyEncoding;
+        //    BodyAsBytes = bodyAsBytes;
+        //    Body = body;
+        //    BodyEncoding = bodyEncoding;
 
-            Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
-            Cookies = cookies;
-            RawQuery = WebUtility.UrlDecode(url.Query);
-            Query = ParseQuery(RawQuery);
-        }
+        //    Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
+        //    Cookies = cookies;
+        //    RawQuery = WebUtility.UrlDecode(url.Query);
+        //    Query = ParseQuery(RawQuery);
+        //}
 
         private static IDictionary<string, WireMockList<string>> ParseQuery(string queryString)
         {

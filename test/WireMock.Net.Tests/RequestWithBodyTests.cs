@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using NFluent;
@@ -76,9 +75,11 @@ namespace WireMock.Net.Tests
             var requestBuilder = Request.Create().UsingAnyMethod().WithBody(new ExactMatcher("cat"));
 
             // when
-            string bodyAsString = "cat";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "cat"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -92,9 +93,11 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("H*o*"));
 
             // when
-            string bodyAsString = "Hello world!";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tatata" } } });
+            var body = new BodyData
+            {
+                BodyAsString = "Hello world!"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -108,14 +111,16 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
 
             // when
-            string xmlBodyAsString = @"
+            var body = new BodyData
+            {
+                BodyAsString = @"
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
-                    </todo-list>";
-            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, xmlBodyAsString, Encoding.UTF8);
+                    </todo-list>"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -129,14 +134,16 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
 
             // when
-            string xmlBodyAsString = @"
+            var body = new BodyData
+            {
+                BodyAsString = @"
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
-                    </todo-list>";
-            byte[] body = Encoding.UTF8.GetBytes(xmlBodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, xmlBodyAsString, Encoding.UTF8);
+                    </todo-list>"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -150,9 +157,11 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
             // when
-            string bodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -166,9 +175,11 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
             // when
-            string bodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -186,6 +197,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                BodyAsStringOriginal = jsonString,
                 Encoding = Encoding.UTF8
             };
 
@@ -195,6 +207,7 @@ namespace WireMock.Net.Tests
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
+
         [Fact]
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_1()
         {
@@ -206,6 +219,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                BodyAsStringOriginal = jsonString,
                 Encoding = Encoding.UTF8
             };
 
@@ -227,6 +241,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                BodyAsStringOriginal = jsonString,
                 Encoding = Encoding.UTF8
             };
 
