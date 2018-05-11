@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace WireMock.Net.Tests
     public partial class FluentMockServerTests : IDisposable
     {
         private FluentMockServer _server;
+        private static string jsonRequestMessage = @"{ ""message"" : ""Hello server"" }";
 
         // For for AppVeyor + OpenCover
         private string GetCurrentFolder()
@@ -349,18 +351,32 @@ namespace WireMock.Net.Tests
             Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
         }
 
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_wildcard_matching_even_when_sent_as_json()
+        public static IEnumerable<object[]> Data =>
+            new List<object[]>
+            {
+                new object[] { new WildcardMatcher("*Hello server*"), "application/json" },
+                new object[] { new WildcardMatcher("*Hello server*"), "text/plain" },
+                new object[] { new ExactMatcher(jsonRequestMessage), "application/json" },
+                new object[] { new ExactMatcher(jsonRequestMessage), "text/plain" },
+                new object[] { new RegexMatcher("Hello server"), "application/json" },
+                new object[] { new RegexMatcher("Hello server"), "text/plain" },
+                new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "application/json" },
+                new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "text/plain" }
+            };
+
+        [Theory]
+        [MemberData(nameof(Data))]
+        public async Task FluentMockServer_Should_respond_to_valid_matchers_when_sent_json(IMatcher matcher, string contentType)
         {
             // Assign
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request.Create().WithPath("/foo").WithBody(new WildcardMatcher("*Hello server*")))
+                .Given(Request.Create().WithPath("/foo").WithBody(matcher))
                 .RespondWith(Response.Create().WithBody("Hello client"));
 
             // Act
-            var content = new StringContent(@"{ ""message"" : ""Hello server"" }", Encoding.UTF8, "application/json");
+            var content = new StringContent(jsonRequestMessage, Encoding.UTF8, contentType);
             var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + "/foo", content);
 
             // Assert
