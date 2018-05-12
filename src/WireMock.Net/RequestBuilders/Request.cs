@@ -207,10 +207,22 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyVerb"/>
+        public IRequestBuilder UsingAnyVerb()
+        {
+            return UsingAnyMethod();
+        }
+
         /// <inheritdoc cref="IMethodRequestBuilder.UsingMethod(string[])"/>
         public IRequestBuilder UsingMethod(params string[] methods)
         {
             return UsingMethod(MatchBehaviour.AcceptOnMatch, methods);
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingVerb(string[])"/>
+        public IRequestBuilder UsingVerb(params string[] verbs)
+        {
+            return UsingMethod(verbs);
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingMethod(MatchBehaviour, string[])"/>

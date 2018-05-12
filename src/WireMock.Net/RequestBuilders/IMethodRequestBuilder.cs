@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using WireMock.Matchers;
 
 namespace WireMock.RequestBuilders
@@ -57,6 +58,13 @@ namespace WireMock.RequestBuilders
         IRequestBuilder UsingAnyMethod();
 
         /// <summary>
+        /// UsingAnyVerb: add HTTP Method matching on any method.
+        /// </summary>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        [Obsolete]
+        IRequestBuilder UsingAnyVerb();
+
+        /// <summary>
         /// UsingMethod: add HTTP Method matching on any methods and matchBehaviour.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
@@ -70,5 +78,13 @@ namespace WireMock.RequestBuilders
         /// <param name="methods">The methods.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder UsingMethod([NotNull] params string[] methods);
+
+        /// <summary>
+        /// UsingVerb: add HTTP Method matching on any methods.
+        /// </summary>
+        /// <param name="verbs">The methods.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        [Obsolete]
+        IRequestBuilder UsingVerb([NotNull] params string[] verbs);
     }
 }

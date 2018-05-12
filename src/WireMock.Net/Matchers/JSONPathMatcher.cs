@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Validation;
 
@@ -47,11 +47,11 @@ namespace WireMock.Matchers
                 try
                 {
                     var jtoken = JToken.Parse(input);
-                    match =  IsMatch(jtoken);
+                    match = IsMatch(jtoken);
                 }
-                catch (Exception)
+                catch (JsonException)
                 {
-                    // just ignore exception
+                    // just ignore JsonException
                 }
             }
 
@@ -70,9 +70,9 @@ namespace WireMock.Matchers
                     JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
                     match = IsMatch(jtoken);
                 }
-                catch (Exception)
+                catch (JsonException)
                 {
-                    // just ignore exception
+                    // just ignore JsonException
                 }
             }
 
