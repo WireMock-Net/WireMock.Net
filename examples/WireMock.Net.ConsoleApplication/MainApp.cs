@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -152,12 +153,25 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
-                    .WithPath("/reject")
+                    .WithPath("/needs-a-key")
                     .UsingGet()
-                    .WithHeader("x", "1", MatchBehaviour.RejectOnMatch)
+                    .WithHeader("api-key", "*", MatchBehaviour.AcceptOnMatch)
                     .UsingAnyMethod())
                 .RespondWith(Response.Create()
-                    .WithBody(@"{ ""result"": ""reject""}"));
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBody(@"{ ""result"": ""api-key found""}"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/needs-a-key")
+                    .UsingGet()
+                    .WithHeader("api-key", "*", MatchBehaviour.RejectOnMatch)
+                    .UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(HttpStatusCode.Unauthorized)
+                    .WithBody(@"{ ""result"": ""api-key missing""}"));
+
+
 
             server
                 .Given(Request.Create().WithPath("/nobody").UsingGet())
