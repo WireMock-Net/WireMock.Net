@@ -47,7 +47,7 @@ namespace WireMock.Net.Tests.Serialization
         {
             // Assign
             var matcherMock = new Mock<IStringMatcher>();
-            matcherMock.Setup(m => m.GetName()).Returns("test");
+            matcherMock.Setup(m => m.Name).Returns("test");
             matcherMock.Setup(m => m.GetPatterns()).Returns(new[] { "p1", "p2" });
 
             // Act

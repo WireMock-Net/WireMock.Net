@@ -16,12 +16,25 @@ namespace WireMock.Matchers
         private readonly string[] _patterns;
         private readonly SimMetricType _simMetricType;
 
+        /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+        public MatchBehaviour MatchBehaviour { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher([NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(new [] { pattern }, simMetricType)
+        public SimMetricsMatcher([NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(new[] { pattern }, simMetricType)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="simMetricType">The SimMetric Type</param>
+        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(matchBehaviour, new[] { pattern }, simMetricType)
         {
         }
 
@@ -30,10 +43,21 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="patterns">The patterns.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein)
+        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein) : this(MatchBehaviour.AcceptOnMatch, patterns, simMetricType)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="simMetricType">The SimMetric Type</param>
+        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein)
         {
             Check.NotNullOrEmpty(patterns, nameof(patterns));
 
+            MatchBehaviour = matchBehaviour;
             _patterns = patterns;
             _simMetricType = simMetricType;
         }
@@ -43,7 +67,7 @@ namespace WireMock.Matchers
         {
             IStringMetric m = GetStringMetricType();
 
-            return MatchScores.ToScore(_patterns.Select(p => m.GetSimilarity(p, input)));
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_patterns.Select(p => m.GetSimilarity(p, input))));
         }
 
         private IStringMetric GetStringMetricType()
@@ -95,10 +119,7 @@ namespace WireMock.Matchers
             return _patterns;
         }
 
-        /// <inheritdoc cref="IMatcher.GetName"/>
-        public string GetName()
-        {
-            return $"SimMetricsMatcher.{_simMetricType}";
-        }
+        /// <inheritdoc cref="IMatcher.Name"/>
+        public string Name => $"SimMetricsMatcher.{_simMetricType}";
     }
 }

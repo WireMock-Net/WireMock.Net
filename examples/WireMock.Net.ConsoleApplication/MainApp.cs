@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -149,6 +150,28 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""data deleted with 200""}"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/needs-a-key")
+                    .UsingGet()
+                    .WithHeader("api-key", "*", MatchBehaviour.AcceptOnMatch)
+                    .UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBody(@"{ ""result"": ""api-key found""}"));
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/needs-a-key")
+                    .UsingGet()
+                    .WithHeader("api-key", "*", MatchBehaviour.RejectOnMatch)
+                    .UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(HttpStatusCode.Unauthorized)
+                    .WithBody(@"{ ""result"": ""api-key missing""}"));
+
+
 
             server
                 .Given(Request.Create().WithPath("/nobody").UsingGet())

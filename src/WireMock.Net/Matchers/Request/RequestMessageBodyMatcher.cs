@@ -32,24 +32,27 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher([NotNull] string body) : this(new SimMetricsMatcher(body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] string body) : this(new WildcardMatcher(matchBehaviour, body))
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher([NotNull] byte[] body) : this(new ExactObjectMatcher(body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] body) : this(new ExactObjectMatcher(matchBehaviour, body))
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher([NotNull] object body) : this(new ExactObjectMatcher(body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] object body) : this(new ExactObjectMatcher(matchBehaviour, body))
         {
         }
 

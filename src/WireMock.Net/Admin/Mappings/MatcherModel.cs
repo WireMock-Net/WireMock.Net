@@ -24,5 +24,10 @@
         /// Gets or sets the ignore case.
         /// </summary>
         public bool? IgnoreCase { get; set; }
+
+        /// <summary>
+        /// Reject on match.
+        /// </summary>
+        public bool? RejectOnMatch { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new SimMetricsMatcher("X");
 
             // Act
-            string name = matcher.GetName();
+            string name = matcher.Name;
 
             // Assert
             Check.That(name).Equals("SimMetricsMatcher.Levenstein");
@@ -56,6 +56,32 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             Check.That(result).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
+        }
+
+        [Fact]
+        public void SimMetricsMatcher_IsMatch_AcceptOnMatch()
+        {
+            // Assign
+            var matcher = new SimMetricsMatcher("test");
+
+            // Act
+            double result = matcher.IsMatch("test");
+
+            // Assert
+            Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void SimMetricsMatcher_IsMatch_RejectOnMatch()
+        {
+            // Assign
+            var matcher = new SimMetricsMatcher(MatchBehaviour.RejectOnMatch, "test");
+
+            // Act
+            double result = matcher.IsMatch("test");
+
+            // Assert
+            Check.That(result).IsEqualTo(0.0);
         }
     }
 }

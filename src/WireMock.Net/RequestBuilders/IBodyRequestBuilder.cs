@@ -20,39 +20,42 @@ namespace WireMock.RequestBuilders
         /// WithBody: Body as string
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody(string body);
+        IRequestBuilder WithBody(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
         /// WithBody: Body as byte[]
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody(byte[] body);
+        IRequestBuilder WithBody(byte[] body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
         /// WithBody: Body as object
         /// </summary>
         /// <param name="body">The body.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithBody(object body);
+        IRequestBuilder WithBody(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
-        ///WithBody: func (string)
+        /// WithBody: func (string)
         /// </summary>
         /// <param name="func">The function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] Func<string, bool> func);
 
         /// <summary>
-        ///WithBody: func (byte[])
+        /// WithBody: func (byte[])
         /// </summary>
         /// <param name="func">The function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] Func<byte[], bool> func);
 
         /// <summary>
-        ///WithBody: func (object)
+        /// WithBody: func (object)
         /// </summary>
         /// <param name="func">The function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>

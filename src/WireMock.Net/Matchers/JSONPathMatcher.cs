@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Validation;
 
@@ -14,54 +14,69 @@ namespace WireMock.Matchers
     {
         private readonly string[] _patterns;
 
+        /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+        public MatchBehaviour MatchBehaviour { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher([NotNull] params string[] patterns)
+        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="patterns">The patterns.</param>
+        public JsonPathMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
+            MatchBehaviour = matchBehaviour;
             _patterns = patterns;
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            if (input == null)
+            double match = MatchScores.Mismatch;
+            if (input != null)
             {
-                return MatchScores.Mismatch;
+                try
+                {
+                    var jtoken = JToken.Parse(input);
+                    match = IsMatch(jtoken);
+                }
+                catch (JsonException)
+                {
+                    // just ignore JsonException
+                }
             }
 
-            try
-            {
-                var jtoken = JToken.Parse(input);
-                return IsMatch(jtoken);
-            }
-            catch (Exception)
-            {
-                return MatchScores.Mismatch;
-            }
+            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
         public double IsMatch(object input)
         {
-            if (input == null)
+            double match = MatchScores.Mismatch;
+            if (input != null)
             {
-                return MatchScores.Mismatch;
+                try
+                {
+                    // Check if JToken or object
+                    JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
+                    match = IsMatch(jtoken);
+                }
+                catch (JsonException)
+                {
+                    // just ignore JsonException
+                }
             }
 
-            try
-            {
-                // Check if JToken or object
-                JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
-                return IsMatch(jtoken);
-            }
-            catch (Exception)
-            {
-                return MatchScores.Mismatch;
-            }
+            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
@@ -70,11 +85,8 @@ namespace WireMock.Matchers
             return _patterns;
         }
 
-        /// <inheritdoc cref="IMatcher.GetName"/>
-        public string GetName()
-        {
-            return "JsonPathMatcher";
-        }
+        /// <inheritdoc cref="IMatcher.Name"/>
+        public string Name => "JsonPathMatcher";
 
         private double IsMatch(JToken jtoken)
         {

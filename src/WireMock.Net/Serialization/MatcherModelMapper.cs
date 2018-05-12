@@ -20,23 +20,24 @@ namespace WireMock.Serialization
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
             string[] patterns = matcher.Patterns ?? new[] { matcher.Pattern };
+            MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
 
             switch (matcherName)
             {
                 case "ExactMatcher":
-                    return new ExactMatcher(patterns);
+                    return new ExactMatcher(matchBehaviour, patterns);
 
                 case "RegexMatcher":
-                    return new RegexMatcher(patterns, matcher.IgnoreCase == true);
+                    return new RegexMatcher(matchBehaviour, patterns, matcher.IgnoreCase == true);
 
                 case "JsonPathMatcher":
-                    return new JsonPathMatcher(patterns);
+                    return new JsonPathMatcher(matchBehaviour, patterns);
 
                 case "XPathMatcher":
-                    return new XPathMatcher(matcher.Pattern);
+                    return new XPathMatcher(matchBehaviour, matcher.Pattern);
 
                 case "WildcardMatcher":
-                    return new WildcardMatcher(patterns, matcher.IgnoreCase == true);
+                    return new WildcardMatcher(matchBehaviour, patterns, matcher.IgnoreCase == true);
 
                 case "SimMetricsMatcher":
                     SimMetricType type = SimMetricType.Levenstein;
@@ -45,7 +46,7 @@ namespace WireMock.Serialization
                         throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
                     }
 
-                    return new SimMetricsMatcher(matcher.Pattern, type);
+                    return new SimMetricsMatcher(matchBehaviour, matcher.Pattern, type);
 
                 default:
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");

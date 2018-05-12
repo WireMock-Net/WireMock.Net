@@ -36,8 +36,8 @@ namespace WireMock.Server
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
-        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
-        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -50,7 +50,7 @@ namespace WireMock.Server
         {
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingVerb("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
 
             // __admin/mappings
@@ -196,7 +196,7 @@ namespace WireMock.Server
         private void InitProxyAndRecord(IProxyAndRecordSettings settings)
         {
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ClientX509Certificate2ThumbprintOrSubjectName);
-            Given(Request.Create().WithPath("/*").UsingAnyVerb()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
+            Given(Request.Create().WithPath("/*").UsingAnyMethod()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)
@@ -225,7 +225,7 @@ namespace WireMock.Server
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
-            request.UsingVerb(requestMessage.Method);
+            request.UsingMethod(requestMessage.Method);
 
             requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
@@ -241,7 +241,7 @@ namespace WireMock.Server
 
             if (requestMessage.Body != null)
             {
-                request.WithBody(new ExactMatcher(requestMessage.Body));
+                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.Body));
             }
 
             var response = Response.Create(responseMessage);
@@ -648,7 +648,7 @@ namespace WireMock.Server
 
             if (requestModel.Methods != null)
             {
-                requestBuilder = requestBuilder.UsingVerb(requestModel.Methods);
+                requestBuilder = requestBuilder.UsingMethod(requestModel.Methods);
             }
 
             if (requestModel.Headers != null)

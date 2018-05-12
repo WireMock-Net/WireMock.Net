@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPathMatcher("X");
 
             // Act
-            string name = matcher.GetName();
+            string name = matcher.Name;
 
             // Assert
             Check.That(name).Equals("JsonPathMatcher");
@@ -78,10 +78,10 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPathMatcher_IsMatch_Object_Exception_Mismatch()
         {
             // Assign
-            var matcher = new JsonPathMatcher("xxx");
+            var matcher = new JsonPathMatcher("");
 
             // Act 
-            double match = matcher.IsMatch("");
+            double match = matcher.IsMatch("x");
 
             // Assert 
             Check.That(match).IsEqualTo(0);
@@ -130,6 +130,19 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert 
             Check.That(match).IsEqualTo(1);
+        }
+
+        [Fact]
+        public void JsonPathMatcher_IsMatch_RejectOnMatch()
+        {
+            // Assign
+            var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, "$..[?(@.Id == 1)]");
+
+            // Act
+            double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}"));
+
+            // Assert
+            Check.That(match).IsEqualTo(0.0);
         }
     }
 }

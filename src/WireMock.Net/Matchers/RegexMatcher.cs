@@ -9,18 +9,32 @@ namespace WireMock.Matchers
     /// <summary>
     /// Regular Expression Matcher
     /// </summary>
-    /// <seealso cref="IStringMatcher" />
+    /// <inheritdoc cref="IStringMatcher"/>
+    /// <inheritdoc cref="IIgnoreCaseMatcher"/>
     public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     {
         private readonly string[] _patterns;
         private readonly Regex[] _expressions;
 
+        /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+        public MatchBehaviour MatchBehaviour { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">IgnoreCase</param>
-        public RegexMatcher([NotNull, RegexPattern] string pattern, bool ignoreCase = false) : this(new [] { pattern }, ignoreCase )
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        public RegexMatcher([NotNull, RegexPattern] string pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
         {
         }
 
@@ -28,13 +42,24 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        /// <param name="ignoreCase">IgnoreCase</param>
-        public RegexMatcher([NotNull, RegexPattern] string[] patterns, bool ignoreCase = false)
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        public RegexMatcher([NotNull, RegexPattern] string[] patterns, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string[] patterns, bool ignoreCase = false)
         {
             Check.NotNull(patterns, nameof(patterns));
 
             _patterns = patterns;
             IgnoreCase = ignoreCase;
+            MatchBehaviour = matchBehaviour;
 
             RegexOptions options = RegexOptions.Compiled;
             if (ignoreCase)
@@ -48,19 +73,20 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            if (input == null)
+            double match = MatchScores.Mismatch;
+            if (input != null)
             {
-                return MatchScores.Mismatch;
+                try
+                {
+                    match = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)));
+                }
+                catch (Exception)
+                {
+                    // just ignore exception
+                }
             }
-
-            try
-            {
-                return MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)));
-            }
-            catch (Exception)
-            {
-                return MatchScores.Mismatch;
-            }
+            
+            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
@@ -69,11 +95,8 @@ namespace WireMock.Matchers
             return _patterns;
         }
 
-        /// <inheritdoc cref="IMatcher.GetName"/>
-        public virtual string GetName()
-        {
-            return "RegexMatcher";
-        }
+        /// <inheritdoc cref="IMatcher.Name"/>
+        public virtual string Name => "RegexMatcher";
 
         /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
         public bool IgnoreCase { get; }

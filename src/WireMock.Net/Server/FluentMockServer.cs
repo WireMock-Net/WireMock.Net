@@ -256,7 +256,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void AddCatchAllMapping()
         {
-            Given(Request.Create().WithPath("/*").UsingAnyVerb())
+            Given(Request.Create().WithPath("/*").UsingAnyMethod())
                 .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
                 .AtPriority(1000)
                 .RespondWith(new DynamicResponseProvider(request => new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" }));
@@ -351,7 +351,7 @@ namespace WireMock.Server
             Check.NotNull(password, nameof(password));
 
             string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
-            _options.AuthorizationMatcher = new RegexMatcher("^(?i)BASIC " + authorization + "$");
+            _options.AuthorizationMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, "^(?i)BASIC " + authorization + "$");
         }
 
         /// <summary>

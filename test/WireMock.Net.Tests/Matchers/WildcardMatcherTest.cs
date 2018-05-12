@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new WildcardMatcher("x");
 
             // Act
-            string name = matcher.GetName();
+            string name = matcher.Name;
 
             // Assert
             Check.That(name).Equals("WildcardMatcher");
@@ -82,6 +82,18 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             Check.That(patterns).ContainsExactly("x");
+        }
+
+        [Fact]
+        public void WildcardMatcher_IsMatch_RejectOnMatch()
+        {
+            // Assign
+            var matcher = new WildcardMatcher(MatchBehaviour.RejectOnMatch, "m");
+
+            // Act
+            double result = matcher.IsMatch("m");
+
+            Check.That(result).IsEqualTo(0.0);
         }
     }
 }

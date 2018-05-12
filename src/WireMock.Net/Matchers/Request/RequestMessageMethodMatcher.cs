@@ -9,6 +9,8 @@ namespace WireMock.Matchers.Request
     /// </summary>
     internal class RequestMessageMethodMatcher : IRequestMatcher
     {
+        private readonly MatchBehaviour _matchBehaviour;
+
         /// <summary>
         /// The methods
         /// </summary>
@@ -17,26 +19,20 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
         /// </summary>
-        /// <param name="methods">
-        /// The verb.
-        /// </param>
-        public RequestMessageMethodMatcher([NotNull] params string[] methods)
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="methods">The methods.</param>
+        public RequestMessageMethodMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] methods)
         {
             Check.NotNull(methods, nameof(methods));
+            _matchBehaviour = matchBehaviour;
+
             Methods = methods.Select(v => v.ToLower()).ToArray();
         }
 
-        /// <summary>
-        /// Determines whether the specified RequestMessage is match.
-        /// </summary>
-        /// <param name="requestMessage">The RequestMessage.</param>
-        /// <param name="requestMatchResult">The RequestMatchResult.</param>
-        /// <returns>
-        /// A value between 0.0 - 1.0 of the similarity.
-        /// </returns>
+        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            double score = IsMatch(requestMessage);
+            double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
             return requestMatchResult.AddScore(GetType(), score);
         }
 

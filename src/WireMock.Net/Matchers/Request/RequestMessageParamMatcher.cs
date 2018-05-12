@@ -12,6 +12,8 @@ namespace WireMock.Matchers.Request
     /// </summary>
     public class RequestMessageParamMatcher : IRequestMatcher
     {
+        private readonly MatchBehaviour _matchBehaviour;
+
         /// <summary>
         /// The funcs
         /// </summary>
@@ -30,20 +32,23 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="key">The key.</param>
-        public RequestMessageParamMatcher([NotNull] string key) : this(key, null)
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key) : this(matchBehaviour, key, null)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="key">The key.</param>
         /// <param name="values">The values.</param>
-        public RequestMessageParamMatcher([NotNull] string key, [CanBeNull] IEnumerable<string> values)
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, [CanBeNull] IEnumerable<string> values)
         {
             Check.NotNull(key, nameof(key));
 
+            _matchBehaviour = matchBehaviour;
             Key = key;
             Values = values;
         }
@@ -62,7 +67,7 @@ namespace WireMock.Matchers.Request
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            double score = IsMatch(requestMessage);
+            double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
             return requestMatchResult.AddScore(GetType(), score);
         }
 

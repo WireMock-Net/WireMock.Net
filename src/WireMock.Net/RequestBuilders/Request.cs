@@ -54,11 +54,7 @@ namespace WireMock.RequestBuilders
             return _requestMatchers.Where(rm => rm is T).Cast<T>().FirstOrDefault();
         }
 
-        /// <summary>
-        /// The with clientIP.
-        /// </summary>
-        /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(IStringMatcher[])"/>
         public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -67,24 +63,22 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with clientIP.
-        /// </summary>
-        /// <param name="clientIPs">The ClientIPs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(string[])"/>
         public IRequestBuilder WithClientIP(params string[] clientIPs)
+        {
+            return WithClientIP(MatchBehaviour.AcceptOnMatch, clientIPs);
+        }
+
+        /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(string[])"/>
+        public IRequestBuilder WithClientIP(MatchBehaviour matchBehaviour, params string[] clientIPs)
         {
             Check.NotNullOrEmpty(clientIPs, nameof(clientIPs));
 
-            _requestMatchers.Add(new RequestMessageClientIPMatcher(clientIPs));
+            _requestMatchers.Add(new RequestMessageClientIPMatcher(matchBehaviour, clientIPs));
             return this;
         }
 
-        /// <summary>
-        /// The with clientIP.
-        /// </summary>
-        /// <param name="funcs">The clientIP funcs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(Func{string, bool}[])"/>
         public IRequestBuilder WithClientIP(params Func<string, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
@@ -93,11 +87,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with path.
-        /// </summary>
-        /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(IStringMatcher[])"/>
         public IRequestBuilder WithPath(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -106,24 +96,22 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with path.
-        /// </summary>
-        /// <param name="paths">The paths.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(string[])"/>
         public IRequestBuilder WithPath(params string[] paths)
+        {
+            return WithPath(MatchBehaviour.AcceptOnMatch, paths);
+        }
+
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(MatchBehaviour, string[])"/>
+        public IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths)
         {
             Check.NotNullOrEmpty(paths, nameof(paths));
 
-            _requestMatchers.Add(new RequestMessagePathMatcher(paths));
+            _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, paths));
             return this;
         }
 
-        /// <summary>
-        /// The with path.
-        /// </summary>
-        /// <param name="funcs">The path func.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(Func{string, bool}[])"/>
         public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
@@ -132,11 +120,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with url.
-        /// </summary>
-        /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(IStringMatcher[])"/>
         public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -145,24 +129,22 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with url.
-        /// </summary>
-        /// <param name="urls">The urls.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(string[])"/>
         public IRequestBuilder WithUrl(params string[] urls)
+        {
+            return WithUrl(MatchBehaviour.AcceptOnMatch, urls);
+        }
+
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(MatchBehaviour, string[])"/>
+        public IRequestBuilder WithUrl(MatchBehaviour matchBehaviour, params string[] urls)
         {
             Check.NotNullOrEmpty(urls, nameof(urls));
 
-            _requestMatchers.Add(new RequestMessageUrlMatcher(urls));
+            _requestMatchers.Add(new RequestMessageUrlMatcher(matchBehaviour, urls));
             return this;
         }
 
-        /// <summary>
-        /// The with url.
-        /// </summary>
-        /// <param name="funcs">The url func.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(Func{string, bool}[])"/>
         public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
@@ -171,50 +153,50 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingDelete"/>
-        public IRequestBuilder UsingDelete()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingDelete(MatchBehaviour)"/>
+        public IRequestBuilder UsingDelete(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("delete"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "delete"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingGet"/>
-        public IRequestBuilder UsingGet()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingGet(MatchBehaviour)"/>
+        public IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("get"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "get"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingHead"/>
-        public IRequestBuilder UsingHead()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingHead(MatchBehaviour)"/>
+        public IRequestBuilder UsingHead(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("head"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "head"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingPost"/>
-        public IRequestBuilder UsingPost()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPost(MatchBehaviour)"/>
+        public IRequestBuilder UsingPost(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("post"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "post"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingPatch"/>
-        public IRequestBuilder UsingPatch()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPatch(MatchBehaviour)"/>
+        public IRequestBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("patch"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "patch"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingPut"/>
-        public IRequestBuilder UsingPut()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingPut(MatchBehaviour)"/>
+        public IRequestBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher("put"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "put"));
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyVerb"/>
-        public IRequestBuilder UsingAnyVerb()
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyMethod"/>
+        public IRequestBuilder UsingAnyMethod()
         {
             var matchers = _requestMatchers.Where(m => m is RequestMessageMethodMatcher).ToList();
             foreach (var matcher in matchers)
@@ -225,33 +207,51 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IMethodRequestBuilder.UsingVerb"/>
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingAnyVerb"/>
+        public IRequestBuilder UsingAnyVerb()
+        {
+            return UsingAnyMethod();
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingMethod(string[])"/>
+        public IRequestBuilder UsingMethod(params string[] methods)
+        {
+            return UsingMethod(MatchBehaviour.AcceptOnMatch, methods);
+        }
+
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingVerb(string[])"/>
         public IRequestBuilder UsingVerb(params string[] verbs)
         {
-            Check.NotNullOrEmpty(verbs, nameof(verbs));
+            return UsingMethod(verbs);
+        }
 
-            _requestMatchers.Add(new RequestMessageMethodMatcher(verbs));
+        /// <inheritdoc cref="IMethodRequestBuilder.UsingMethod(MatchBehaviour, string[])"/>
+        public IRequestBuilder UsingMethod(MatchBehaviour matchBehaviour, params string[] methods)
+        {
+            Check.NotNullOrEmpty(methods, nameof(methods));
+
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, methods));
             return this;
         }
 
-        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(string)"/>
-        public IRequestBuilder WithBody(string body)
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(string, MatchBehaviour)"/>
+        public IRequestBuilder WithBody(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageBodyMatcher(body));
+            _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
             return this;
         }
 
-        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(byte[])"/>
-        public IRequestBuilder WithBody(byte[] body)
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(byte[], MatchBehaviour)"/>
+        public IRequestBuilder WithBody(byte[] body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageBodyMatcher(body));
+            _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
             return this;
         }
 
-        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(object)"/>
-        public IRequestBuilder WithBody(object body)
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(object, MatchBehaviour)"/>
+        public IRequestBuilder WithBody(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageBodyMatcher(body));
+            _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
             return this;
         }
 
@@ -291,21 +291,27 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string)"/>
-        public IRequestBuilder WithParam(string key)
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour)"/>
+        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
             Check.NotNull(key, nameof(key));
 
-            _requestMatchers.Add(new RequestMessageParamMatcher(key));
+            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key));
             return this;
         }
 
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, string[])"/>
         public IRequestBuilder WithParam(string key, params string[] values)
         {
+            return WithParam(key, MatchBehaviour.AcceptOnMatch, values);
+        }
+
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, string[])"/>
+        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params string[] values)
+        {
             Check.NotNull(key, nameof(key));
 
-            _requestMatchers.Add(new RequestMessageParamMatcher(key, values));
+            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, values));
             return this;
         }
 
@@ -318,32 +324,39 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string,bool)"/>
-        public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true)
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string, MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string pattern, MatchBehaviour matchBehaviour)
+        {
+            return WithHeader(name, pattern, true, matchBehaviour);
+        }
+
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string, bool, MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(pattern, nameof(pattern));
 
-            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, pattern, ignoreCase));
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, pattern, ignoreCase));
             return this;
         }
 
-        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string,string[],bool)"/>
-        public IRequestBuilder WithHeader(string name, string[] patterns, bool ignoreCase = true)
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string[], MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string[] patterns, MatchBehaviour matchBehaviour)
+        {
+            return WithHeader(name, patterns, true, matchBehaviour);
+        }
+
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, string[], bool, MatchBehaviour)"/>
+        public IRequestBuilder WithHeader(string name, string[] patterns, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(patterns, nameof(patterns));
 
-            _requestMatchers.Add(new RequestMessageHeaderMatcher(name, patterns, ignoreCase));
+            _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, patterns, ignoreCase));
             return this;
         }
 
-        /// <summary>
-        /// With header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(string, IStringMatcher[])"/>
         public IRequestBuilder WithHeader(string name, params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
@@ -353,11 +366,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// With header.
-        /// </summary>
-        /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithHeader(Func{IDictionary{string, string[]}, bool}[])"/>
         public IRequestBuilder WithHeader(params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
@@ -366,25 +375,14 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// With cookie.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="pattern">The pattern.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        public IRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true)
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithCookie(string, string, bool, MatchBehaviour)"/>
+        public IRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageCookieMatcher(name, pattern, ignoreCase));
+            _requestMatchers.Add(new RequestMessageCookieMatcher(matchBehaviour, name, pattern, ignoreCase));
             return this;
         }
 
-        /// <summary>
-        /// With cookie.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="matchers">The matchers.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithCookie(string, IStringMatcher[])"/>
         public IRequestBuilder WithCookie(string name, params IStringMatcher[] matchers)
         {
             Check.NotNullOrEmpty(matchers, nameof(matchers));
@@ -393,11 +391,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <summary>
-        /// With header.
-        /// </summary>
-        /// <param name="funcs">The funcs.</param>
-        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        /// <inheritdoc cref="IHeadersAndCookiesRequestBuilder.WithCookie(Func{IDictionary{string, string}, bool}[])"/>
         public IRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));

@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new ExactMatcher("X");
 
             // Act
-            string name = matcher.GetName();
+            string name = matcher.Name;
 
             // Assert
             Check.That(name).Equals("ExactMatcher");
@@ -46,7 +46,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void Request_WithBodyExactMatcher_false()
+        public void ExactMatcher_IsMatch_SinglePattern()
         {
             // Assign
             var matcher = new ExactMatcher("cat");
@@ -55,7 +55,33 @@ namespace WireMock.Net.Tests.Matchers
             double result = matcher.IsMatch("caR");
 
             // Assert
-            Check.That(result).IsStrictlyLessThan(1.0);
+            Check.That(result).IsEqualTo(0.0);
+        }
+
+        [Fact]
+        public void ExactMatcher_IsMatch_SinglePattern_AcceptOnMatch()
+        {
+            // Assign
+            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, "cat");
+
+            // Act
+            double result = matcher.IsMatch("cat");
+
+            // Assert
+            Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void ExactMatcher_IsMatch_SinglePattern_RejectOnMatch()
+        {
+            // Assign
+            var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, "cat");
+
+            // Act
+            double result = matcher.IsMatch("cat");
+
+            // Assert
+            Check.That(result).IsEqualTo(0.0);
         }
     }
 }

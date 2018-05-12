@@ -12,7 +12,7 @@ namespace WireMock.Matchers.Request
     public class RequestMessagePathMatcher : IRequestMatcher
     {
         /// <summary>
-        /// The matcher.
+        /// The matchers
         /// </summary>
         public IReadOnlyList<IStringMatcher> Matchers { get; }
 
@@ -24,8 +24,9 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="paths">The paths.</param>
-        public RequestMessagePathMatcher([NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(path)).Cast<IStringMatcher>().ToArray())
+        public RequestMessagePathMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(matchBehaviour, path)).Cast<IStringMatcher>().ToArray())
         {
         }
 
@@ -36,6 +37,7 @@ namespace WireMock.Matchers.Request
         public RequestMessagePathMatcher([NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(matchers, nameof(matchers));
+
             Matchers = matchers;
         }
 
@@ -46,6 +48,7 @@ namespace WireMock.Matchers.Request
         public RequestMessagePathMatcher([NotNull] params Func<string, bool>[] funcs)
         {
             Check.NotNull(funcs, nameof(funcs));
+
             Funcs = funcs;
         }
 

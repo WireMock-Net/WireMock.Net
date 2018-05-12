@@ -218,7 +218,7 @@ namespace WireMock.Net.Tests
             // given
             _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo").UsingVerb("patch"))
+            _server.Given(Request.Create().WithPath("/foo").UsingMethod("patch"))
                 .RespondWith(Response.Create().WithBody("hello patch"));
 
             // when
@@ -268,7 +268,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request.Create().UsingAnyVerb())
+                .Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }));
 
             // Act
@@ -285,7 +285,7 @@ namespace WireMock.Net.Tests
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request.Create().UsingAnyVerb())
+                .Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
 
             // Act

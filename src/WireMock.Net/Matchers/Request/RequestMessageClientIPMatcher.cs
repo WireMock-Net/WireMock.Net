@@ -25,7 +25,8 @@ namespace WireMock.Matchers.Request
         /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
         /// </summary>
         /// <param name="clientIPs">The clientIPs.</param>
-        public RequestMessageClientIPMatcher([NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(ip)).Cast<IStringMatcher>().ToArray())
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        public RequestMessageClientIPMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(matchBehaviour, ip)).Cast<IStringMatcher>().ToArray())
         {
         }
 
