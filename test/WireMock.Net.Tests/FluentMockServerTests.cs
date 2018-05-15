@@ -351,7 +351,7 @@ namespace WireMock.Net.Tests
             Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
         }
 
-        public static IEnumerable<object[]> Data =>
+        public static IEnumerable<object[]> ValidMatchersForHelloServerJsonMessage =>
             new List<object[]>
             {
                 new object[] { new WildcardMatcher("*Hello server*"), "application/json" },
@@ -365,7 +365,7 @@ namespace WireMock.Net.Tests
             };
 
         [Theory]
-        [MemberData(nameof(Data))]
+        [MemberData(nameof(ValidMatchersForHelloServerJsonMessage))]
         public async Task FluentMockServer_Should_respond_to_valid_matchers_when_sent_json(IMatcher matcher, string contentType)
         {
             // Assign
