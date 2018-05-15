@@ -91,13 +91,13 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Fact]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsJson_and_BodyAsStringOriginal_IStringMatcher()
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsJson_and_BodyAsString_IStringMatcher()
         {
             // Assign
             var body = new BodyData
             {
                 BodyAsJson = new { value = 42 },
-                BodyAsStringOriginal = "orig"
+                BodyAsString = "orig"
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);

@@ -197,7 +197,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
-                BodyAsStringOriginal = jsonString,
+                BodyAsString = jsonString,
                 Encoding = Encoding.UTF8
             };
 
@@ -219,7 +219,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
-                BodyAsStringOriginal = jsonString,
+                BodyAsString = jsonString,
                 Encoding = Encoding.UTF8
             };
 
@@ -241,7 +241,7 @@ namespace WireMock.Net.Tests
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
-                BodyAsStringOriginal = jsonString,
+                BodyAsString = jsonString,
                 Encoding = Encoding.UTF8
             };
 

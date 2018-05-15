@@ -124,16 +124,16 @@ namespace WireMock.Matchers.Request
             // Check if the matcher is a IStringMatcher
             if (Matcher is IStringMatcher stringMatcher)
             {
-                // If the string body is defined, try to match.
-                if (requestMessage.Body != null)
+                // If the  body is a JSON object, try to use Body (string) to match.
+                if (requestMessage.BodyAsJson != null && requestMessage.Body != null)
                 {
                     return stringMatcher.IsMatch(requestMessage.Body);
                 }
 
-                // If the  body is a JSON object, try to use BodyAsStringOriginal to match.
-                if (requestMessage.BodyAsJson != null && requestMessage.BodyAsStringOriginal != null)
+                // If the string body is defined, try to match.
+                if (requestMessage.Body != null)
                 {
-                    return stringMatcher.IsMatch(requestMessage.BodyAsStringOriginal);
+                    return stringMatcher.IsMatch(requestMessage.Body);
                 }
             }
 

@@ -13,14 +13,9 @@ namespace WireMock.Util
         public Encoding Encoding { get; set; }
 
         /// <summary>
-        /// The body as string.
+        /// The body as string, this is defined when BodyAsString or BodyAsJson are not null.
         /// </summary>
         public string BodyAsString { get; set; }
-
-        /// <summary>
-        /// The original body as string, this is defined when BodyAsString or BodyAsJson are not null.
-        /// </summary>
-        public string BodyAsStringOriginal { get; set; }
 
         /// <summary>
         /// The body (as JSON object).
