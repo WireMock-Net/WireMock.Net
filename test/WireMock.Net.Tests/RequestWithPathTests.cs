@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
 using WireMock.RequestBuilders;
 using WireMock.Matchers.Request;
+using WireMock.Util;
 
 namespace WireMock.Net.Tests
 {
@@ -20,9 +20,11 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithHeader("X-toto", "tata");
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -105,9 +107,11 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingDelete();
 
             // when
-            string bodyAsString = "whatever";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "whatever"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();

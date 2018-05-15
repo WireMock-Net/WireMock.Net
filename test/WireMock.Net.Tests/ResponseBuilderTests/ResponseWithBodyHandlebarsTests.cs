@@ -41,9 +41,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "whatever"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create()
                 .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
@@ -60,9 +62,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_Handlebars_Query()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
 
             var response = Response.Create()
                 .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
@@ -79,9 +83,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_Handlebars_Header()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
@@ -98,9 +104,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_Handlebars_Headers()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
 
@@ -118,9 +126,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_Handlebars_Origin_Port_Protocol_Host()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost:1234"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
                 .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")

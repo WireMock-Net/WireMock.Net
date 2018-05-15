@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilderTests
@@ -15,9 +16,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_Bytes_Encoding_Destination_String()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.String, Encoding.ASCII);
 
@@ -34,9 +37,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_Bytes_Encoding_Destination_Bytes()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
@@ -53,9 +58,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_String_Encoding()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody("test", null, Encoding.ASCII);
 
@@ -71,9 +78,11 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_Object_Encoding()
         {
             // given
-            string bodyAsString = "abc";
-            byte[] body = Encoding.UTF8.GetBytes(bodyAsString);
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body, bodyAsString, Encoding.UTF8);
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
 
             object x = new { value = "test" };
             var response = Response.Create().WithBodyAsJson(x, Encoding.ASCII);
@@ -137,7 +146,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             // Assert
             Check.That(responseMessage.Body).IsNull();
             Check.That(responseMessage.BodyAsBytes).IsNull();
-            Check.That(((dynamic) responseMessage.BodyAsJson).value).Equals(42);
+            Check.That(((dynamic)responseMessage.BodyAsJson).value).Equals(42);
             Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
         }
     }
