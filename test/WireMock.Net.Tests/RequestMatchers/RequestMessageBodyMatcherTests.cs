@@ -87,7 +87,34 @@ namespace WireMock.Net.Tests.RequestMatchers
             Check.That(score).IsEqualTo(0.0d);
 
             // Verify
-            stringMatcherMock.Verify(m => m.IsMatch("b"), Times.Never);
+            stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsJson_and_BodyAsString_IStringMatcher()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = new { value = 42 },
+                BodyAsString = "orig"
+            };
+            var stringMatcherMock = new Mock<IStringMatcher>();
+            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
+
+            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(stringMatcherMock.Object);
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(0.5d);
+
+            // Verify
+            stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

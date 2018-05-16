@@ -58,6 +58,7 @@ namespace WireMock.Util
             else if (contentTypeHeaderValue != null && contentTypeHeaderValue.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
             {
                 var stringData = await ReadStringAsync(stream);
+                data.BodyAsString = stringData.Item1;
                 data.Encoding = stringData.Item2;
 
                 try
