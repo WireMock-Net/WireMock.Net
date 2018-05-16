@@ -1,3 +1,16 @@
+# 1.0.3.17 (16 May 2018)
+
+ - [#138](https://github.com/WireMock-Net/WireMock.Net/pull/138) - Added Negate matcher logic contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#135](https://github.com/WireMock-Net/WireMock.Net/pull/135) - Merge into the stef_negate_matcher branch (solves issue #133) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#134](https://github.com/WireMock-Net/WireMock.Net/pull/134) - Stef negate matcher contributed by Alastair Crabtree ([alastairtree](https://github.com/alastairtree))
+ - [#133](https://github.com/WireMock-Net/WireMock.Net/issues/133) - Issue: Wildcard matching a json body does not work? +fix
+ - [#128](https://github.com/WireMock-Net/WireMock.Net/issues/128) - Feature: Negate a matcher +feature
+ - [#126](https://github.com/WireMock-Net/WireMock.Net/issues/126) - Question: UsingHead always returns 0 for Content-Length header even when explicitly specified
+ - [#103](https://github.com/WireMock-Net/WireMock.Net/issues/103) - Support for Faults
+
+Commits: 0fb4b62b50...c575ca8296
+
+
 # 1.0.3.16 (15 April 2018)
 
  - [#125](https://github.com/WireMock-Net/WireMock.Net/pull/125) - Change listen from loopback to any ip address for dotnetcore2.0 apps contributed by ([SubjectiveReality](https://github.com/SubjectiveReality))
