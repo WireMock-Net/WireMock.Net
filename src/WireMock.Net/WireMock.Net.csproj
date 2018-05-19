@@ -37,10 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Server\FluentMockServer.cs~RF44936b9f.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

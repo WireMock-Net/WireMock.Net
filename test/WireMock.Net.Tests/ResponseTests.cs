@@ -9,18 +9,20 @@ namespace WireMock.Net.Tests
     {
         private const string ClientIp = "::1";
 
-        [Fact]
-        public async void Response_Create_WithHeader_ContentLength()
+        [Theory]
+        [InlineData("Content-Length", "1024")]
+        [InlineData("Transfer-Encoding", "identity")]
+        public async void Response_Create_WithHeader(string headerName, string headerValue)
         {
             // Assign
             var requestMock = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
-            IResponseBuilder builder = Response.Create().WithHeader("Content-Length", "1024");
+            IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValue);
 
             // Act
             var response = await builder.ProvideResponseAsync(requestMock);
 
             // Assert
-            Check.That(response.Headers["Content-Length"].ToString()).Equals("1024");
+            Check.That(response.Headers[headerName].ToString()).Equals(headerValue);
         }
     }
 }
