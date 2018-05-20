@@ -28,21 +28,7 @@ namespace WireMock.Owin
 #else
         private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #endif
-            //{ HttpKnownHeaderNames.Accept, null },
-            //{ HttpKnownHeaderNames.Connection, null },
-            //{ HttpKnownHeaderNames.ContentLength, null },
             { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
-            //{ HttpKnownHeaderNames.Date, null },
-            //{ HttpKnownHeaderNames.Expect, null },
-            //{ HttpKnownHeaderNames.Host, null },
-            //{ HttpKnownHeaderNames.IfModifiedSince, null },
-            //{ HttpKnownHeaderNames.KeepAlive, null },
-            //{ HttpKnownHeaderNames.Range, null },
-            //{ HttpKnownHeaderNames.Referer, null },
-            //{ HttpKnownHeaderNames.TransferEncoding, null },
-            //{ HttpKnownHeaderNames.UserAgent, null },
-            //{ HttpKnownHeaderNames.ProxyConnection, null },
-            //{ HttpKnownHeaderNames.WWWAuthenticate, null }
         };
 
         private void SetResponseHeaders(ResponseMessage responseMessage
@@ -72,7 +58,7 @@ namespace WireMock.Owin
         }
 
         /// <summary>
-        /// MapAsync ResponseMessage to OwinResponse
+        /// Map ResponseMessage to OwinResponse/HttpResponse
         /// </summary>
         /// <param name="responseMessage"></param>
         /// <param name="response"></param>
@@ -86,49 +72,31 @@ namespace WireMock.Owin
         {
             response.StatusCode = responseMessage.StatusCode;
 
-            if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null && responseMessage.BodyAsJson == null)
-            {
-                SetResponseHeaders(responseMessage, response);
-                return;
-            }
-
+            byte[] bytes = null;
             if (responseMessage.BodyAsBytes != null)
             {
-                await response.Body.WriteAsync(responseMessage.BodyAsBytes, 0, responseMessage.BodyAsBytes.Length);
-
-                SetResponseHeaders(responseMessage, response);
-                return;
+                bytes = responseMessage.BodyAsBytes;
             }
-
-            if (responseMessage.BodyAsFile != null)
+            else if (responseMessage.BodyAsFile != null)
             {
-                byte[] bytes = File.ReadAllBytes(responseMessage.BodyAsFile);
-
-                await response.Body.WriteAsync(bytes, 0, bytes.Length);
-
-                SetResponseHeaders(responseMessage, response);
-                return;
+                bytes = File.ReadAllBytes(responseMessage.BodyAsFile);
             }
-
-            if (responseMessage.BodyAsJson != null)
+            else if (responseMessage.BodyAsJson != null)
             {
                 Formatting formatting = responseMessage.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
                 string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
-                using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
-                {
-                    await writer.WriteAsync(jsonBody);
-
-                    SetResponseHeaders(responseMessage, response);
-                }
-
-                return;
+                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(jsonBody);
+            }
+            else if (responseMessage.Body != null)
+            {
+                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(responseMessage.Body);
             }
 
-            using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
-            {
-                await writer.WriteAsync(responseMessage.Body);
+            SetResponseHeaders(responseMessage, response);
 
-                SetResponseHeaders(responseMessage, response);
+            if (bytes != null)
+            {
+                await response.Body.WriteAsync(bytes, 0, bytes.Length);
             }
         }
     }

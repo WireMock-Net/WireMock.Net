@@ -12,6 +12,7 @@ namespace WireMock.Net.Tests
         [Theory]
         [InlineData("Content-Length", "1024")]
         [InlineData("Transfer-Encoding", "identity")]
+        [InlineData("Location", "http://test")]
         public async void Response_Create_WithHeader(string headerName, string headerValue)
         {
             // Assign

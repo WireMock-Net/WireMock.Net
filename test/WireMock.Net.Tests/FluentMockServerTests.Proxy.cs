@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -192,21 +194,21 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
-            _serverForProxyForwarding = FluentMockServer.Start();
+            var settings = new FluentMockServerSettings
+            {
+                AllowPartialMapping = false
+            };
+            _serverForProxyForwarding = FluentMockServer.Start(settings);
             _serverForProxyForwarding
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.Redirect)
                     .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
 
-            Thread.Sleep(1000);
-
-            _server = FluentMockServer.Start();
+            _server = FluentMockServer.Start(settings);
             _server
                 .Given(Request.Create().WithPath("/prx"))
                 .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
-
-            Thread.Sleep(1000);
 
             // Act
             var requestMessage = new HttpRequestMessage
@@ -216,6 +218,13 @@ namespace WireMock.Net.Tests
             };
             var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
             var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            var l = new List<string>();
+            foreach (var h in response.Headers)
+            {
+                l.Add("h = " + h.Key + "___" + h.Value.FirstOrDefault());
+            }
+            File.WriteAllLines("c:\\temp\\x.txt", l);
 
             // Assert
             Check.That(response.Headers.Contains("Location")).IsTrue();
