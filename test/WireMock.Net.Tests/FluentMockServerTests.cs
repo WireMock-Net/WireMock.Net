@@ -351,8 +351,11 @@ namespace WireMock.Net.Tests
             Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
         }
 
-        public static IEnumerable<object[]> ValidMatchersForHelloServerJsonMessage =>
-            new List<object[]>
+        [Fact]
+        public async Task FluentMockServer_Should_respond_to_valid_matchers_when_sent_json()
+        {
+            // Assign
+            var validMatchersForHelloServerJsonMessage = new List<object[]>
             {
                 new object[] { new WildcardMatcher("*Hello server*"), "application/json" },
                 new object[] { new WildcardMatcher("*Hello server*"), "text/plain" },
@@ -364,24 +367,25 @@ namespace WireMock.Net.Tests
                 new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "text/plain" }
             };
 
-        [Theory]
-        [MemberData(nameof(ValidMatchersForHelloServerJsonMessage))]
-        public async Task FluentMockServer_Should_respond_to_valid_matchers_when_sent_json(IMatcher matcher, string contentType)
-        {
-            // Assign
             _server = FluentMockServer.Start();
 
-            _server
-                .Given(Request.Create().WithPath("/foo").WithBody(matcher))
-                .RespondWith(Response.Create().WithBody("Hello client"));
+            foreach (var item in validMatchersForHelloServerJsonMessage)
+            {
+                _server
+                    .Given(Request.Create().WithPath("/foo").WithBody((IMatcher)item[0]))
+                    .RespondWith(Response.Create().WithBody("Hello client"));
 
-            // Act
-            var content = new StringContent(jsonRequestMessage, Encoding.UTF8, contentType);
-            var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + "/foo", content);
+                // Act
+                var content = new StringContent(jsonRequestMessage, Encoding.UTF8, (string)item[1]);
+                var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + "/foo", content);
 
-            // Assert
-            var responseString = await response.Content.ReadAsStringAsync();
-            Check.That(responseString).Equals("Hello client");
+                // Assert
+                var responseString = await response.Content.ReadAsStringAsync();
+                Check.That(responseString).Equals("Hello client");
+
+                _server.ResetMappings();
+                _server.ResetLogEntries();
+            }
         }
 
         [Fact]
@@ -579,24 +583,6 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response).IsEqualTo("/fooBar");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_IgnoreRestrictedHeader()
-        {
-            // Assign
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/head").UsingHead())
-                .RespondWith(Response.Create().WithHeader("Content-Length", "1024"));
-
-            var request = new HttpRequestMessage(HttpMethod.Head, "http://localhost:" + _server.Ports[0] + "/head");
-
-            // Act
-            var response = await new HttpClient().SendAsync(request);
-
-            // Assert
-            Check.That(response.Content.Headers.GetValues("Content-Length")).ContainsExactly("0");
         }
 
         public void Dispose()

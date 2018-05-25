@@ -24,29 +24,41 @@ namespace WireMock.Owin
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
 #if !NETSTANDARD
-        private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #else
-        private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> RestrictedResponseHeaders = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #endif
-            { HttpKnownHeaderNames.Accept, null },
-            { HttpKnownHeaderNames.Connection, null },
-            { HttpKnownHeaderNames.ContentLength, null },
-            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() },
-            { HttpKnownHeaderNames.Date, null },
-            { HttpKnownHeaderNames.Expect, null },
-            { HttpKnownHeaderNames.Host, null },
-            { HttpKnownHeaderNames.IfModifiedSince, null },
-            { HttpKnownHeaderNames.KeepAlive, null },
-            { HttpKnownHeaderNames.Range, null },
-            { HttpKnownHeaderNames.Referer, null },
-            { HttpKnownHeaderNames.TransferEncoding, null },
-            { HttpKnownHeaderNames.UserAgent, null },
-            { HttpKnownHeaderNames.ProxyConnection, null },
-            { HttpKnownHeaderNames.WWWAuthenticate, null }
+            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
         };
 
+        private void SetResponseHeaders(ResponseMessage responseMessage
+#if !NETSTANDARD
+            , IOwinResponse response
+#else
+            , HttpResponse response
+#endif
+        )
+        {
+            // Set headers
+            foreach (var pair in responseMessage.Headers)
+            {
+                if (ResponseHeadersToFix.ContainsKey(pair.Key))
+                {
+                    ResponseHeadersToFix[pair.Key]?.Invoke(response, pair.Value);
+                }
+                else
+                {
+#if !NETSTANDARD
+                    response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
+#else
+                    response.Headers.Append(pair.Key, pair.Value.ToArray());
+#endif
+                }
+            }
+        }
+
         /// <summary>
-        /// MapAsync ResponseMessage to OwinResponse
+        /// Map ResponseMessage to OwinResponse/HttpResponse
         /// </summary>
         /// <param name="responseMessage"></param>
         /// <param name="response"></param>
@@ -60,57 +72,31 @@ namespace WireMock.Owin
         {
             response.StatusCode = responseMessage.StatusCode;
 
-            // Set headers
-            foreach (var pair in responseMessage.Headers)
-            {
-                if (RestrictedResponseHeaders.ContainsKey(pair.Key))
-                {
-                    RestrictedResponseHeaders[pair.Key]?.Invoke(response, pair.Value);
-                }
-                else
-                {
-#if !NETSTANDARD
-                    response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
-#else
-                    response.Headers.Append(pair.Key, pair.Value.ToArray());
-#endif
-                }
-            }
-
-            if (responseMessage.Body == null && responseMessage.BodyAsBytes == null && responseMessage.BodyAsFile == null && responseMessage.BodyAsJson == null)
-            {
-                return;
-            }
-
+            byte[] bytes = null;
             if (responseMessage.BodyAsBytes != null)
             {
-                await response.Body.WriteAsync(responseMessage.BodyAsBytes, 0, responseMessage.BodyAsBytes.Length);
-                return;
+                bytes = responseMessage.BodyAsBytes;
             }
-
-            if (responseMessage.BodyAsFile != null)
+            else if (responseMessage.BodyAsFile != null)
             {
-                byte[] bytes = File.ReadAllBytes(responseMessage.BodyAsFile);
-
-                await response.Body.WriteAsync(bytes, 0, bytes.Length);
-                return;
+                bytes = File.ReadAllBytes(responseMessage.BodyAsFile);
             }
-
-            if (responseMessage.BodyAsJson != null)
+            else if (responseMessage.BodyAsJson != null)
             {
                 Formatting formatting = responseMessage.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
                 string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
-                using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
-                {
-                    await writer.WriteAsync(jsonBody);
-                }
-
-                return;
+                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(jsonBody);
+            }
+            else if (responseMessage.Body != null)
+            {
+                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(responseMessage.Body);
             }
 
-            using (var writer = new StreamWriter(response.Body, responseMessage.BodyEncoding ?? _utf8NoBom))
+            SetResponseHeaders(responseMessage, response);
+
+            if (bytes != null)
             {
-                await writer.WriteAsync(responseMessage.Body);
+                await response.Body.WriteAsync(bytes, 0, bytes.Length);
             }
         }
     }

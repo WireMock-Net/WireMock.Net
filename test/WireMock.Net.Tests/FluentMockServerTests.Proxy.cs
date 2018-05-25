@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NFluent;
-using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -190,29 +189,30 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
+            // Assign
+            var settings = new FluentMockServerSettings { AllowPartialMapping = false };
+            _serverForProxyForwarding = FluentMockServer.Start(settings);
             _serverForProxyForwarding
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.Redirect)
                     .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
 
-            _server = FluentMockServer.Start();
+            _server = FluentMockServer.Start(settings);
             _server
-                .Given(Request.Create().WithPath("/*"))
+                .Given(Request.Create().WithPath("/prx"))
                 .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
 
-            // when
+            // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0])
+                RequestUri = new Uri(_server.Urls[0] + "/prx")
             };
             var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
             var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
-            // then
+            // Assert
             Check.That(response.Headers.Contains("Location")).IsTrue();
             Check.That(response.Headers.GetValues("Location")).ContainsExactly(_server.Urls[0] + "testpath");
         }

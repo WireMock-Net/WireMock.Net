@@ -94,8 +94,6 @@ namespace WireMock.Owin
 #endif
                 .Build();
 
-            IsStarted = true;
-
             return Task.Run(() =>
             {
                 StartServers();
