@@ -1,3 +1,19 @@
+# 1.0.3.18 (25 May 2018)
+
+ - [#142](https://github.com/WireMock-Net/WireMock.Net/pull/142) - Allow all headers to be set as Response headers contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#140](https://github.com/WireMock-Net/WireMock.Net/issues/140) - Question: Why the Microsoft.Owin.Host.HttpListener is not referenced in the dll, which uses WireMock?
+ - [#139](https://github.com/WireMock-Net/WireMock.Net/issues/139) - Wiki link https://github.com/StefH/WireMock.Net/wiki/Record-(via-proxy)-and-Save is dead
+ - [#137](https://github.com/WireMock-Net/WireMock.Net/issues/137) - Question: How to specify Transfer-Encoding response header?
+ - [#136](https://github.com/WireMock-Net/WireMock.Net/issues/136) - Question: Does the WireMock send Content-Length response header
+ - [#132](https://github.com/WireMock-Net/WireMock.Net/issues/132) - LogEntries not being recorded on subsequent tests
+ - [#127](https://github.com/WireMock-Net/WireMock.Net/issues/127) - Question: Stub priority - Most recent stub is not always used
+ - [#126](https://github.com/WireMock-Net/WireMock.Net/issues/126) - Question: UsingHead always returns 0 for Content-Length header even when explicitly specified
+ - [#122](https://github.com/WireMock-Net/WireMock.Net/issues/122) - WireMock.Net not responding in unit tests - same works in console application
+ - [#97](https://github.com/WireMock-Net/WireMock.Net/issues/97) - Request matching logic is not practical
+
+Commits: eda71bd725...eda71bd725
+
+
 # 1.0.3.17 (16 May 2018)
 
  - [#138](https://github.com/WireMock-Net/WireMock.Net/pull/138) - Added Negate matcher logic contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
