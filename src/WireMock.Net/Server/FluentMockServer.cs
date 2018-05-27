@@ -56,7 +56,7 @@ namespace WireMock.Server
         /// Gets the scenarios.
         /// </summary>
         [PublicAPI]
-        public IDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios);
+        public ConcurrentDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios); // Checked
 
         #region Start/Stop
         /// <summary>
@@ -292,9 +292,9 @@ namespace WireMock.Server
         [PublicAPI]
         public void ResetMappings()
         {
-            foreach (var nonAdmin in _options.Mappings.Where(m => !m.Value.IsAdminInterface))
+            foreach (var nonAdmin in _options.Mappings.ToArray().Where(m => !m.Value.IsAdminInterface))
             {
-                _options.Mappings.Remove(nonAdmin);
+                _options.Mappings.TryRemove(nonAdmin.Key, out _);
             }
         }
 
@@ -308,7 +308,7 @@ namespace WireMock.Server
             // Check a mapping exists with the same GUID, if so, remove it.
             if (_options.Mappings.ContainsKey(guid))
             {
-                return _options.Mappings.Remove(guid);
+                return _options.Mappings.TryRemove(guid, out _);
             }
 
             return false;
@@ -317,7 +317,7 @@ namespace WireMock.Server
         private bool DeleteMapping(string path)
         {
             // Check a mapping exists with the same path, if so, remove it.
-            var mapping = _options.Mappings.FirstOrDefault(entry => string.Equals(entry.Value.Path, path, StringComparison.OrdinalIgnoreCase));
+            var mapping = _options.Mappings.ToArray().FirstOrDefault(entry => string.Equals(entry.Value.Path, path, StringComparison.OrdinalIgnoreCase));
             return DeleteMapping(mapping.Key);
         }
 
@@ -415,7 +415,7 @@ namespace WireMock.Server
             }
             else
             {
-                _options.Mappings.Add(mapping.Guid, mapping);
+                _options.Mappings.TryAdd(mapping.Guid, mapping);
             }
         }
     }

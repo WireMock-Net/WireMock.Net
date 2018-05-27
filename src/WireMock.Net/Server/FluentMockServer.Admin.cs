@@ -210,7 +210,7 @@ namespace WireMock.Server
             if (settings.SaveMapping)
             {
                 var mapping = ToMapping(requestMessage, responseMessage, settings.BlackListedHeaders ?? new string[] { });
-                _options.Mappings.Add(mapping.Guid, mapping);
+                _options.Mappings.TryAdd(mapping.Guid, mapping);
 
                 if (settings.SaveMappingToFile)
                 {
@@ -577,7 +577,7 @@ namespace WireMock.Server
         #region Scenarios
         private ResponseMessage ScenariosGet(RequestMessage requestMessage)
         {
-            var scenarios = Scenarios.Select(s => new
+            var scenarios = Scenarios.ToArray().Select(s => new
             {
                 Name = s.Key,
                 Started = s.Value != null,

@@ -58,7 +58,7 @@ namespace WireMock.Owin
                     // Set start
                     if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
                     {
-                        _options.Scenarios.Add(mapping.Scenario, null);
+                        _options.Scenarios.TryAdd(mapping.Scenario, null);
                     }
                 }
 
