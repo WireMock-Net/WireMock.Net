@@ -1,9 +1,10 @@
 # 1.0.3.19 (28 May 2018)
 
+ - [#129](https://github.com/WireMock-Net/WireMock.Net/issues/129) - Random test failures between WireMock.Net 1.0.3.1 and 1.0.3.2
  - [#145](https://github.com/WireMock-Net/WireMock.Net/pull/145) - Cancellation token not passed to server instance in .NET Core 2 contributed by Bob Paul ([Bob11327](https://github.com/Bob11327)) +fix
  - [#144](https://github.com/WireMock-Net/WireMock.Net/pull/144) - Fix ConcurrentDictionary (#129) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
 
-Commits: 0640c88bcd...297743a19a
+Commits: ...
 
 
 # 1.0.3.18 (25 May 2018)
