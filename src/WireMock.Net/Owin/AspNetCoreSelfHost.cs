@@ -110,7 +110,7 @@ namespace WireMock.Owin
                 _host.Run(_cts.Token);
 #else
                 _logger.Info("WireMock.Net server using netstandard2.0");
-                _host.Run();
+                _host.RunAsync(_cts.Token).Wait();
 #endif
             }
             catch (Exception e)
