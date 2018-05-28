@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -23,15 +22,15 @@ namespace WireMock.Owin
 
         public bool AllowPartialMapping { get; set; }
 
-        public IDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>();
+        public ConcurrentDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>(); // Checked
+
+        public ConcurrentDictionary<string, object> Scenarios { get; } = new ConcurrentDictionary<string, object>(); // Checked
 
         public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 
         public int? RequestLogExpirationDuration { get; set; }
 
         public int? MaxRequestLogCount { get; set; }
-
-        public IDictionary<string, object> Scenarios { get; } = new ConcurrentDictionary<string, object>();
 
 #if !NETSTANDARD
         public Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }

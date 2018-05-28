@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WireMock.Util;
@@ -8,14 +7,14 @@ using WireMock.Validation;
 namespace WireMock
 {
     /// <summary>
-    /// The response.
+    /// The ResponseMessage.
     /// </summary>
     public class ResponseMessage
     {
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        public IDictionary<string, WireMockList<string>> Headers { get; set; } = new ConcurrentDictionary<string, WireMockList<string>>();
+        public IDictionary<string, WireMockList<string>> Headers { get; set; } = new Dictionary<string, WireMockList<string>>();
 
         /// <summary>
         /// Gets or sets the status code.
