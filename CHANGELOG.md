@@ -1,3 +1,12 @@
+# 1.0.3.20 (29 May 2018)
+
+ - [#147](https://github.com/WireMock-Net/WireMock.Net/pull/147) - Revert PortUtil.cs changes contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#146](https://github.com/WireMock-Net/WireMock.Net/issues/146) - Hang possibly due to Windows firewall prompt
+ - [#129](https://github.com/WireMock-Net/WireMock.Net/issues/129) - Random test failures between WireMock.Net 1.0.3.1 and 1.0.3.2
+
+Commits: 2fcfda49c7...2b498f45cb
+
+
 # 1.0.3.19 (28 May 2018)
 
  - [#129](https://github.com/WireMock-Net/WireMock.Net/issues/129) - Random test failures between WireMock.Net 1.0.3.1 and 1.0.3.2
