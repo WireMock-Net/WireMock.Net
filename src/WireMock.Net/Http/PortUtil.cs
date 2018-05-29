@@ -9,7 +9,6 @@ namespace WireMock.Http
     /// </summary>
     public static class PortUtil
     {
-        private static readonly IPEndPoint DefaultLoopbackEndpoint = new IPEndPoint(IPAddress.Loopback, port: 0);
         private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)?/", RegexOptions.Compiled);
 
         /// <summary>
@@ -18,10 +17,17 @@ namespace WireMock.Http
         /// <remarks>see http://stackoverflow.com/questions/138043/find-the-next-tcp-port-in-net.</remarks>
         public static int FindFreeTcpPort()
         {
-            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            TcpListener tcpListener = null;
+            try
             {
-                socket.Bind(DefaultLoopbackEndpoint);
-                return ((IPEndPoint)socket.LocalEndPoint).Port;
+                tcpListener = new TcpListener(IPAddress.Loopback, 0);
+                tcpListener.Start();
+
+                return ((IPEndPoint)tcpListener.LocalEndpoint).Port;
+            }
+            finally
+            {
+                tcpListener?.Stop();
             }
         }
 
