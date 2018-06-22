@@ -43,5 +43,33 @@ namespace WireMock.Logging
         [PublicAPI]
         [StringFormatMethod("formatString")]
         void Error([NotNull] string formatString, [NotNull] params object[] args);
+
+        /// <summary>
+        /// Writes the message at the Debug level using the specified parameters. 
+        /// </summary>
+        /// <param name="message">The message.</param>
+        [PublicAPI]
+        void Debug([NotNull] string message);
+
+        /// <summary>
+        /// Writes the message at the Info level using the specified parameters. 
+        /// </summary>
+        /// <param name="message">The message.</param>
+        [PublicAPI]
+        void Info([NotNull] string message);
+
+        /// <summary>
+        /// Writes the message at the Warning level using the specified parameters. 
+        /// </summary>
+        /// <param name="message">The message.</param>
+        [PublicAPI]
+        void Warn([NotNull] string message);
+
+        /// <summary>
+        /// Writes the message at the Error level using the specified parameters. 
+        /// </summary>
+        /// <param name="message">The message.</param>
+        [PublicAPI]
+        void Error([NotNull] string message);
     }
 }

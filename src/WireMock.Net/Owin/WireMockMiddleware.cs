@@ -53,6 +53,13 @@ namespace WireMock.Owin
             RequestMatchResult requestMatchResult = null;
             try
             {
+                var bodyMessage = "";
+                if (!string.IsNullOrEmpty(request.Body))
+                {
+                    bodyMessage = $" with body [{request.Body}]";
+                }
+                _options.Logger.Debug($"Incomming request: {request.Method.ToUpper()} {request.Url}{bodyMessage}");
+
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
                 {
                     // Set start
