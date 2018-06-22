@@ -1,28 +1,73 @@
 ﻿namespace WireMock.Logging
 {
+    /// <inheritdoc />
     /// <summary>
     /// WireMockNullLogger which does not log.
     /// </summary>
-    /// <seealso cref="IWireMockLogger" />
+    /// <seealso cref="T:WireMock.Logging.IWireMockLogger" />
     public class WireMockNullLogger : IWireMockLogger
     {
-        /// <see cref="IWireMockLogger.Debug"/>
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Debug(string, object[])</cref>
+        /// </see>
         public void Debug(string formatString, params object[] args)
         {
         }
 
-        /// <see cref="IWireMockLogger.Info"/>
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Info(string, object[])</cref>
+        /// </see>
         public void Info(string formatString, params object[] args)
         {
         }
 
-        /// <see cref="IWireMockLogger.Warn"/>
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Warn(string, object[])</cref>
+        /// </see>
         public void Warn(string formatString, params object[] args)
         {
         }
 
-        /// <see cref="IWireMockLogger.Error"/>
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Error(string, object[])</cref>
+        /// </see>
         public void Error(string formatString, params object[] args)
+        {
+        }
+
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Debug(string)</cref>
+        /// </see>
+        public void Debug(string message)
+        {
+        }
+
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Info(string)</cref>
+        /// </see>
+        public void Info(string message)
+        {
+        }
+
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Warn(string)</cref>
+        /// </see>
+        public void Warn(string message)
+        {
+        }
+
+        /// <inheritdoc />
+        /// <see>
+        ///     <cref>IWireMockLogger.Error(string)</cref>
+        /// </see>
+        public void Error(string message)
         {
         }
     }
