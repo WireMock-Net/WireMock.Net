@@ -1,3 +1,12 @@
+# 1.0.4.0 (23 June 2018)
+
+ - [#151](https://github.com/WireMock-Net/WireMock.Net/issues/151) - Feature: Add logging of incoming request and body for tracability
+ - [#149](https://github.com/WireMock-Net/WireMock.Net/issues/149) - Question: Transformer and Delay in Static Mappings?
+ - [#131](https://github.com/WireMock-Net/WireMock.Net/issues/131) - Bug: CurlException Couldn't connect to Server when running multiple tests
+
+Commits: 443fc76773...443fc76773
+
+
 # 1.0.3.20 (29 May 2018)
 
  - [#147](https://github.com/WireMock-Net/WireMock.Net/pull/147) - Revert PortUtil.cs changes contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
