@@ -1,4 +1,6 @@
-﻿namespace WireMock.Logging
+﻿using WireMock.Admin.Requests;
+
+namespace WireMock.Logging
 {
     /// <summary>
     /// WireMockNullLogger which does not log.
@@ -23,6 +25,11 @@
 
         /// <see cref="IWireMockLogger.Error"/>
         public void Error(string formatString, params object[] args)
+        {
+        }
+
+        /// <see cref="IWireMockLogger.DebugRequestResponse"/>
+        public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
         {
         }
     }

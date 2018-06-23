@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using WireMock.Admin.Requests;
 
 namespace WireMock.Logging
 {
@@ -43,5 +44,13 @@ namespace WireMock.Logging
         [PublicAPI]
         [StringFormatMethod("formatString")]
         void Error([NotNull] string formatString, [NotNull] params object[] args);
+
+        /// <summary>
+        /// Writes the LogEntryModel (LogRequestModel, LogResponseModel and more).
+        /// </summary>
+        /// <param name="logEntryModel">The Request Log Model.</param>
+        /// <param name="isAdminrequest">Defines if this request is an admin request.</param>
+        [PublicAPI]
+        void DebugRequestResponse([NotNull] LogEntryModel logEntryModel, bool isAdminrequest);
     }
 }

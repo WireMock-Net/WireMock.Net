@@ -7,6 +7,7 @@ using WireMock.Matchers;
 using WireMock.Util;
 using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Serialization;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -153,6 +154,8 @@ namespace WireMock.Owin
 
         private void LogRequest(LogEntry entry, bool addRequest)
         {
+            _options.Logger.DebugRequestResponse(LogEntryMapper.Map(entry), entry.RequestMessage.Path.StartsWith("/__admin/"));
+
             if (addRequest)
             {
                 _options.LogEntries.Add(entry);

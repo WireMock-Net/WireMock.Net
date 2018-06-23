@@ -161,6 +161,7 @@ namespace WireMock.Server
             settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
             _logger = settings.Logger;
 
+            _logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
             if (settings.Urls != null)

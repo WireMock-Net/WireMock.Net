@@ -1,4 +1,6 @@
 ﻿using log4net;
+using Newtonsoft.Json;
+using WireMock.Admin.Requests;
 using WireMock.Logging;
 
 namespace WireMock.Net.StandAlone.NETCoreApp
@@ -25,6 +27,12 @@ namespace WireMock.Net.StandAlone.NETCoreApp
         public void Error(string formatString, params object[] args)
         {
             Log.ErrorFormat(formatString, args);
+        }
+
+        public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
+        {
+            string message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
+            Log.DebugFormat("Admin[{0}] {1}", isAdminRequest, message);
         }
     }
 }

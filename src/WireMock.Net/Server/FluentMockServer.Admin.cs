@@ -457,7 +457,7 @@ namespace WireMock.Server
                 return new ResponseMessage { StatusCode = 404, Body = "Request not found" };
             }
 
-            var model = ToLogEntryModel(entry);
+            var model = LogEntryMapper.Map(entry);
 
             return ToJson(model);
         }
@@ -478,69 +478,9 @@ namespace WireMock.Server
         {
             var result = LogEntries
                 .Where(r => !r.RequestMessage.Path.StartsWith("/__admin/"))
-                .Select(ToLogEntryModel);
+                .Select(LogEntryMapper.Map);
 
             return ToJson(result);
-        }
-
-        private LogEntryModel ToLogEntryModel(LogEntry logEntry)
-        {
-            return new LogEntryModel
-            {
-                Guid = logEntry.Guid,
-                Request = new LogRequestModel
-                {
-                    DateTime = logEntry.RequestMessage.DateTime,
-                    ClientIP = logEntry.RequestMessage.ClientIP,
-                    Path = logEntry.RequestMessage.Path,
-                    AbsoluteUrl = logEntry.RequestMessage.Url,
-                    Query = logEntry.RequestMessage.Query,
-                    Method = logEntry.RequestMessage.Method,
-                    Body = logEntry.RequestMessage.Body,
-                    BodyAsJson = logEntry.RequestMessage.BodyAsJson,
-                    BodyAsBytes = logEntry.RequestMessage.BodyAsBytes,
-                    Headers = logEntry.RequestMessage.Headers,
-                    Cookies = logEntry.RequestMessage.Cookies,
-                    BodyEncoding = logEntry.RequestMessage.BodyEncoding != null ? new EncodingModel
-                    {
-                        EncodingName = logEntry.RequestMessage.BodyEncoding.EncodingName,
-                        CodePage = logEntry.RequestMessage.BodyEncoding.CodePage,
-                        WebName = logEntry.RequestMessage.BodyEncoding.WebName
-                    } : null
-                },
-                Response = new LogResponseModel
-                {
-                    StatusCode = logEntry.ResponseMessage.StatusCode,
-                    BodyDestination = logEntry.ResponseMessage.BodyDestination,
-                    Body = logEntry.ResponseMessage.Body,
-                    BodyAsJson = logEntry.ResponseMessage.BodyAsJson,
-                    BodyAsBytes = logEntry.ResponseMessage.BodyAsBytes,
-                    BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
-                    BodyAsFile = logEntry.ResponseMessage.BodyAsFile,
-                    BodyAsFileIsCached = logEntry.ResponseMessage.BodyAsFileIsCached,
-                    Headers = logEntry.ResponseMessage.Headers,
-                    BodyEncoding = logEntry.ResponseMessage.BodyEncoding != null ? new EncodingModel
-                    {
-                        EncodingName = logEntry.ResponseMessage.BodyEncoding.EncodingName,
-                        CodePage = logEntry.ResponseMessage.BodyEncoding.CodePage,
-                        WebName = logEntry.ResponseMessage.BodyEncoding.WebName
-                    } : null
-                },
-                MappingGuid = logEntry.MappingGuid,
-                MappingTitle = logEntry.MappingTitle,
-                RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
-                {
-                    TotalScore = logEntry.RequestMatchResult.TotalScore,
-                    TotalNumber = logEntry.RequestMatchResult.TotalNumber,
-                    IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
-                    AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore,
-                    MatchDetails = logEntry.RequestMatchResult.MatchDetails.Select(x => new
-                    {
-                        Name = x.Key.Name.Replace("RequestMessage", string.Empty),
-                        Score = x.Value
-                    } as object).ToList()
-                } : null
-            };
         }
 
         private ResponseMessage RequestsDelete(RequestMessage requestMessage)
@@ -568,7 +508,7 @@ namespace WireMock.Server
                 }
             }
 
-            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(ToLogEntryModel);
+            var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(LogEntryMapper.Map);
 
             return ToJson(result);
         }

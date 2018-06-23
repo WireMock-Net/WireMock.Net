@@ -1,4 +1,6 @@
 ﻿using System;
+using Newtonsoft.Json;
+using WireMock.Admin.Requests;
 
 namespace WireMock.Logging
 {
@@ -8,6 +10,14 @@ namespace WireMock.Logging
     /// <seealso cref="IWireMockLogger" />
     public class WireMockConsoleLogger : IWireMockLogger
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WireMockConsoleLogger"/> class.
+        /// </summary>
+        public WireMockConsoleLogger()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+        }
+
         /// <see cref="IWireMockLogger.Debug"/>
         public void Debug(string formatString, params object[] args)
         {
@@ -32,9 +42,16 @@ namespace WireMock.Logging
             Console.WriteLine(Format("Error", formatString, args));
         }
 
+        /// <see cref="IWireMockLogger.DebugRequestResponse"/>
+        public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
+        {
+            string message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
+            Console.WriteLine(Format("DebugRequestResponse", "Admin[{0}] {1}", isAdminRequest, message));
+        }
+
         private static string Format(string level, string formatString, params object[] args)
         {
-            string message = string.Format(formatString, args);
+            var message = args.Length > 0 ? string.Format(formatString, args) : formatString;
 
             return $"{DateTime.UtcNow} [{level}] : {message}";
         }
