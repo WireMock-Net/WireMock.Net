@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <None Update="ResponseBodyFiles\responsebody.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
