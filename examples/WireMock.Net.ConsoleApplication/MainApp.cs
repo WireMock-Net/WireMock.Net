@@ -39,6 +39,13 @@ namespace WireMock.Net.ConsoleApplication
             server.AllowPartialMapping();
 
             server
+                .Given(Request.Create()
+                    .WithPath("/xpath").UsingPost()
+                    .WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"))
+                )
+                .RespondWith(Response.Create().WithBody("XPathMatcher!"));
+
+            server
                 .Given(Request
                     .Create()
                     .WithPath("/jsonthings")

@@ -1,3 +1,10 @@
+# 1.0.4.1 (25 June 2018)
+
+ - [#153](https://github.com/WireMock-Net/WireMock.Net/issues/153) - Feature: Add JsonMatcher to support Json mapping
+ 
+Commits: f61a814ab5...2eff243a96
+
+
 # 1.0.4.0 (23 June 2018)
 
  - [#151](https://github.com/WireMock-Net/WireMock.Net/issues/151) - Feature: Add logging of incoming request and body for tracability
