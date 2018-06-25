@@ -11,6 +11,11 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the value. Used by <see cref="Matchers.JsonMatcher"/>.
+        /// </summary>
+        public string Value { get; set; }
+
+        /// <summary>
         /// Gets or sets the pattern.
         /// </summary>
         public string Pattern { get; set; }

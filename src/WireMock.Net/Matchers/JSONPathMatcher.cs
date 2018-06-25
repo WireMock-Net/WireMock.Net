@@ -10,6 +10,7 @@ namespace WireMock.Matchers
     /// JsonPathMatcher
     /// </summary>
     /// <seealso cref="IMatcher" />
+    /// <seealso cref="IObjectMatcher" />
     public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     {
         private readonly string[] _patterns;
@@ -91,9 +92,9 @@ namespace WireMock.Matchers
         private double IsMatch(JToken jtoken)
         {
             // Wrap in array if needed
-            JToken jarray = jtoken is JArray ? jtoken : new JArray(jtoken);
+            JToken tokenOrArray = jtoken is JArray ? jtoken : new JArray(jtoken);
 
-            return MatchScores.ToScore(_patterns.Select(pattern => jarray.SelectToken(pattern) != null));
+            return MatchScores.ToScore(_patterns.Select(pattern => tokenOrArray.SelectToken(pattern) != null));
         }
     }
 }

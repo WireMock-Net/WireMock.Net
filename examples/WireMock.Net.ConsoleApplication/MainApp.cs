@@ -38,12 +38,6 @@ namespace WireMock.Net.ConsoleApplication
 
             server.AllowPartialMapping();
 
-            // .WithHeader("Stef", "Stef")
-            //server
-            //    .Given(Request.Create().WithPath("*"))
-            //    .RespondWith(Response.Create()
-            //    .WithProxy("http://restcountries.eu"));
-
             server
                 .Given(Request
                     .Create()
@@ -52,6 +46,16 @@ namespace WireMock.Net.ConsoleApplication
                     .UsingPut())
                 .RespondWith(Response.Create()
                     .WithBody(@"{ ""result"": ""JsonPathMatcher !!!""}"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath("/jsonbodytest")
+                    .WithBody(new JsonMatcher("{ \"x\": 42, \"s\": \"s\" }"))
+                    .UsingPost())
+                .WithGuid("debaf408-3b23-4c04-9d18-ef1c020e79f2")
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""jsonbodytest"" }"));
 
             server
                 .Given(Request

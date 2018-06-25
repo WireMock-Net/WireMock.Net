@@ -116,7 +116,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyAsFileIsCached;
                 mappingModel.Response.UseTransformer = response.UseTransformer;
 
-                if (response.ResponseMessage.BodyEncoding != null)
+                if (response.ResponseMessage.BodyEncoding != null && response.ResponseMessage.BodyEncoding.WebName != "utf-8")
                 {
                     mappingModel.Response.BodyEncoding = new EncodingModel
                     {
@@ -132,7 +132,7 @@ namespace WireMock.Serialization
 
         private static IDictionary<string, object> Map(IDictionary<string, WireMockList<string>> dictionary)
         {
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return null;
             }

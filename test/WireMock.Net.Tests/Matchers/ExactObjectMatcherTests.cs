@@ -38,11 +38,11 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactObjectMatcher_IsMatch_AcceptOnMatch()
         {
             // Assign
-            object obj = 1;
+            object obj = new { x = 500, s = "s" };
 
             // Act
             var matcher = new ExactObjectMatcher(obj);
-            double result = matcher.IsMatch(1);
+            double result = matcher.IsMatch(new { x = 500, s = "s" });
 
             // Assert
             Check.That(result).IsEqualTo(1.0);
@@ -52,11 +52,11 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactObjectMatcher_IsMatch_RejectOnMatch()
         {
             // Assign
-            object obj = 1;
+            object obj = new { x = 500, s = "s" };
 
             // Act
             var matcher = new ExactObjectMatcher(MatchBehaviour.RejectOnMatch, obj);
-            double result = matcher.IsMatch(1);
+            double result = matcher.IsMatch(new { x = 500, s = "s" });
 
             // Assert
             Check.That(result).IsEqualTo(0.0);

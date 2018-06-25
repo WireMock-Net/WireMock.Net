@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.Serialization
         public void MatcherModelMapper_Map_Null()
         {
             // Act
-            IMatcher matcher = MatcherModelMapper.Map(null);
+            IMatcher matcher = MatcherMapper.Map((MatcherModel)null);
 
             // Assert
             Check.That(matcher).IsNull();
@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (ExactMatcher)MatcherModelMapper.Map(model);
+            var matcher = (ExactMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -47,7 +47,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (ExactMatcher)MatcherModelMapper.Map(model);
+            var matcher = (ExactMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (RegexMatcher)MatcherModelMapper.Map(model);
+            var matcher = (RegexMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -84,7 +84,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (WildcardMatcher)MatcherModelMapper.Map(model);
+            var matcher = (WildcardMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -102,7 +102,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (SimMetricsMatcher)MatcherModelMapper.Map(model);
+            var matcher = (SimMetricsMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -119,7 +119,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (SimMetricsMatcher)MatcherModelMapper.Map(model);
+            var matcher = (SimMetricsMatcher)MatcherMapper.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -136,7 +136,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            Check.ThatCode(() => MatcherModelMapper.Map(model)).Throws<NotSupportedException>();
+            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
         }
 
         [Fact]
@@ -150,7 +150,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            Check.ThatCode(() => MatcherModelMapper.Map(model)).Throws<NotSupportedException>();
+            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
         }
     }
 }

@@ -10,7 +10,6 @@
         /// </summary>
         string Name { get; }
 
-
         /// <summary>
         /// Gets the match behaviour.
         /// </summary>

@@ -5,7 +5,7 @@ using WireMock.Validation;
 namespace WireMock.Matchers
 {
     /// <summary>
-    /// ExactMatcher
+    /// ExactObjectMatcher
     /// </summary>
     /// <seealso cref="IObjectMatcher" />
     public class ExactObjectMatcher : IObjectMatcher
@@ -17,7 +17,7 @@ namespace WireMock.Matchers
         public MatchBehaviour MatchBehaviour { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
         public ExactObjectMatcher([NotNull] object value) : this(MatchBehaviour.AcceptOnMatch, value)
@@ -25,7 +25,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The value.</param>
@@ -38,7 +38,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
         public ExactObjectMatcher([NotNull] byte[] value) : this(MatchBehaviour.AcceptOnMatch, value)
@@ -46,7 +46,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The value.</param>
