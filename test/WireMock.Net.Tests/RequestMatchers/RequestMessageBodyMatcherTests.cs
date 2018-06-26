@@ -144,6 +144,29 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Fact]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsJson_JsonObjectMatcher()
+        {
+            // Assign
+            object bodyAsJson = new { Name = "Ford", Value = 42 };
+            object targetValue = new { Name = "Ford", Value = 42 };
+
+            var body = new BodyData
+            {
+                BodyAsJson = bodyAsJson
+            };
+
+            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(new JsonObjectMatcher(targetValue));
+
+            // Act
+            double score = matcher.GetMatchingScore(requestMessage, new RequestMatchResult());
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
         public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher()
         {
             // Assign

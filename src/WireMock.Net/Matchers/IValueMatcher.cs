@@ -10,6 +10,6 @@
         /// Gets the value.
         /// </summary>
         /// <returns>Value</returns>
-        string GetValue();
+        object GetValue();
     }
 }
