@@ -32,8 +32,8 @@ namespace WireMock.Serialization
                 case "RegexMatcher":
                     return new RegexMatcher(matchBehaviour, patterns, matcher.IgnoreCase == true);
 
-                case "JsonMatcher":
-                    return new JsonMatcher(matchBehaviour, matcher.Pattern);
+                case "JsonObjectMatcher":
+                    return new JsonObjectMatcher(matchBehaviour, matcher.Value);
 
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, patterns);
@@ -71,8 +71,8 @@ namespace WireMock.Serialization
             }
 
             string[] patterns = matcher is IStringMatcher stringMatcher ?
-                stringMatcher.GetPatterns() :
-                matcher is IValueMatcher valueMatcher ? new[] { valueMatcher.GetValue() } : new string[0];
+                stringMatcher.GetPatterns() :  new string[0];
+            object value = matcher is IValueMatcher valueMatcher ? valueMatcher.GetValue() : null;
             bool? ignorecase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
             bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?)null;
 
@@ -82,7 +82,8 @@ namespace WireMock.Serialization
                 IgnoreCase = ignorecase,
                 Name = matcher.Name,
                 Pattern = patterns.Length == 1 ? patterns.First() : null,
-                Patterns = patterns.Length > 1 ? patterns : null
+                Patterns = patterns.Length > 1 ? patterns : null,
+                Value = value
             };
         }
     }

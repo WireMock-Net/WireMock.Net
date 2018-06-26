@@ -238,7 +238,11 @@ namespace WireMock.Server
                 }
             });
 
-            if (requestMessage.Body != null)
+            if (requestMessage.BodyAsJson != null)
+            {
+                request.WithBody(new JsonObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyAsJson));
+            }
+            else if (requestMessage.Body != null)
             {
                 request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.Body));
             }

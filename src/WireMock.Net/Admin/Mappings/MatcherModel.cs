@@ -11,9 +11,9 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the value. Used by <see cref="Matchers.JsonMatcher"/>.
+        /// Gets or sets the value. Used by <see cref="Matchers.JsonObjectMatcher"/>.
         /// </summary>
-        public string Value { get; set; }
+        public object Value { get; set; }
 
         /// <summary>
         /// Gets or sets the pattern.

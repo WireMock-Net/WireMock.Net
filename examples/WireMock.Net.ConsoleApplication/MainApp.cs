@@ -58,7 +58,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request
                     .Create()
                     .WithPath("/jsonbodytest")
-                    .WithBody(new JsonMatcher("{ \"x\": 42, \"s\": \"s\" }"))
+                    .WithBody(new JsonObjectMatcher(new { x = 42, s = "s" }))
                     .UsingPost())
                 .WithGuid("debaf408-3b23-4c04-9d18-ef1c020e79f2")
                 .RespondWith(Response.Create()

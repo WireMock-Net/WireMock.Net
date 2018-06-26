@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -8,12 +7,12 @@ namespace WireMock.Matchers
     /// <summary>
     /// JsonMatcher
     /// </summary>
-    public class JsonMatcher : IValueMatcher
+    public class JsonObjectMatcher : IValueMatcher
     {
-        private readonly string _value;
+        private readonly object _value;
 
         /// <inheritdoc cref="IMatcher.Name"/>
-        public string Name => "JsonMatcher";
+        public string Name => "JsonObjectMatcher";
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -22,7 +21,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
         /// <param name="value">The value to check for equality.</param>
-        public JsonMatcher([NotNull] string value) : this(MatchBehaviour.AcceptOnMatch, value)
+        public JsonObjectMatcher([NotNull] object value) : this(MatchBehaviour.AcceptOnMatch, value)
         {
         }
 
@@ -31,7 +30,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The value to check for equality.</param>
-        public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] string value)
+        public JsonObjectMatcher(MatchBehaviour matchBehaviour, [NotNull] object value)
         {
             Check.NotNull(value, nameof(value));
 
@@ -47,10 +46,7 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    // Check if JToken or object
-                    JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
-
-                    match = JToken.DeepEquals(JToken.Parse(_value), jtoken);
+                    match = AreDeepEquals(input, _value);
                 }
                 catch (JsonException)
                 {
@@ -61,7 +57,14 @@ namespace WireMock.Matchers
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
         }
 
+        private bool AreDeepEquals(object specimen, object target)
+        {
+            var settings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects };
+
+            return JsonConvert.SerializeObject(specimen, settings) == JsonConvert.SerializeObject(target, settings);
+        }
+
         /// <inheritdoc cref="IValueMatcher.GetValue"/>
-        public string GetValue() => _value;
+        public object GetValue() => _value;
     }
 }
