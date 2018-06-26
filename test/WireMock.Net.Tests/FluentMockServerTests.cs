@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
             string json = File.ReadAllText(folder);
 
-            string responseBodyFilePath = Path.Combine(GetCurrentFolder(), "ResponseBodyFiles", "responsebody.json");
+            string responseBodyFilePath = Path.Combine(GetCurrentFolder(), "responsebody.json");
 
             dynamic jsonObj = JsonConvert.DeserializeObject(json);
             jsonObj["Response"]["BodyAsFile"] = responseBodyFilePath;

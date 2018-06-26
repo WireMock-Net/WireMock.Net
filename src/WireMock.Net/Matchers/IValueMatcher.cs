@@ -7,9 +7,9 @@
     public interface IValueMatcher: IObjectMatcher
     {
         /// <summary>
-        /// Gets the value.
+        /// Gets the value (can be a string or an obejct).
         /// </summary>
         /// <returns>Value</returns>
-        string GetValue();
+        object Value { get; }
     }
 }
