@@ -87,7 +87,6 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/headers", "/headers_test").UsingPost().WithHeader("Content-Type", "application/json*"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
-                    //.WithHeader("MyHeader", "application/json", "application/json2")
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { result = "data:headers posted with 201" }));
 
@@ -194,8 +193,6 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(HttpStatusCode.Unauthorized)
                     .WithBody(@"{ ""result"": ""api-key missing""}"));
 
-
-
             server
                 .Given(Request.Create().WithPath("/nobody").UsingGet())
                 .RespondWith(Response.Create().WithDelay(TimeSpan.FromSeconds(1))
@@ -205,7 +202,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher(new[] { "cat", "dog" })))
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
-            // http://localhost:8080/any/any?start=1000&stop=1&stop=2
+            // http://localhost:8080/trans?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithPath("/trans").UsingGet())
                 .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
@@ -213,6 +210,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
+                    .WithHeader("xyz_{{request.headers.Postman-Token}}", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
                     .WithTransformer()
                     .WithDelay(TimeSpan.FromMilliseconds(100))
