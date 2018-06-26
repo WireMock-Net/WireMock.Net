@@ -27,7 +27,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonMatcher("{}");
 
             // Act
-            string value = matcher.GetValue();
+            object value = matcher.Value;
 
             // Assert
             Check.That(value).Equals("{}");
@@ -62,7 +62,39 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void JsonMatcher_IsMatch_JObject()
+        public void JsonMatcher_IsMatch_JObject1()
+        {
+            // Assign 
+            var matcher = new JsonMatcher(new { Id = 1, Name = "test" });
+
+            // Act 
+            var jobject = new JObject
+            {
+                { "Id", new JValue(1) },
+                { "Name", new JValue("Test") }
+            };
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_JObject2()
+        {
+            // Assign 
+            var matcher = new JsonMatcher(new { Id = 1, Name = "test" });
+
+            // Act 
+            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_JObjectAsString()
         {
             // Assign 
             var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"Test\" }");
@@ -80,7 +112,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void JsonMatcher_IsMatch_JObject_RejectOnMatch()
+        public void JsonMatcher_IsMatch_JObjectAsString_RejectOnMatch()
         {
             // Assign 
             var matcher = new JsonMatcher(MatchBehaviour.RejectOnMatch, "{ \"Id\" : 1, \"Name\" : \"Test\" }");

@@ -57,12 +57,22 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request
                     .Create()
-                    .WithPath("/jsonbodytest")
+                    .WithPath("/jsonbodytest1")
                     .WithBody(new JsonMatcher("{ \"x\": 42, \"s\": \"s\" }"))
                     .UsingPost())
                 .WithGuid("debaf408-3b23-4c04-9d18-ef1c020e79f2")
                 .RespondWith(Response.Create()
-                    .WithBody(@"{ ""result"": ""jsonbodytest"" }"));
+                    .WithBody(@"{ ""result"": ""jsonbodytest1"" }"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath("/jsonbodytest2")
+                    .WithBody(new JsonMatcher(new { x = 42, s = "s" }))
+                    .UsingPost())
+                .WithGuid("debaf408-3b23-4c04-9d18-ef1c020e79f3")
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ ""result"": ""jsonbodytest2"" }"));
 
             server
                 .Given(Request

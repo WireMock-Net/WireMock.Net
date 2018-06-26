@@ -11,19 +11,14 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the value. Used by <see cref="Matchers.JsonMatcher"/>.
+        /// Gets or sets the pattern. Can be a string (default) or an object;
         /// </summary>
-        public string Value { get; set; }
+        public object Pattern { get; set; }
 
         /// <summary>
-        /// Gets or sets the pattern.
+        /// Gets or sets the patterns. Can be array of strings (default) or an array of objects;
         /// </summary>
-        public string Pattern { get; set; }
-
-        /// <summary>
-        /// Gets or sets the patterns.
-        /// </summary>
-        public string[] Patterns { get; set; }
+        public object[] Patterns { get; set; }
 
         /// <summary>
         /// Gets or sets the ignore case.

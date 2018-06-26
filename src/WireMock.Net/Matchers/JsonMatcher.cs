@@ -10,7 +10,8 @@ namespace WireMock.Matchers
     /// </summary>
     public class JsonMatcher : IValueMatcher
     {
-        private readonly string _value;
+        /// <inheritdoc cref="IValueMatcher.Value"/>
+        public object Value { get; }
 
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "JsonMatcher";
@@ -21,7 +22,7 @@ namespace WireMock.Matchers
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
-        /// <param name="value">The value to check for equality.</param>
+        /// <param name="value">The string value to check for equality.</param>
         public JsonMatcher([NotNull] string value) : this(MatchBehaviour.AcceptOnMatch, value)
         {
         }
@@ -29,14 +30,35 @@ namespace WireMock.Matchers
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
+        /// <param name="value">The object value to check for equality.</param>
+        public JsonMatcher([NotNull] object value) : this(MatchBehaviour.AcceptOnMatch, value)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
+        /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="value">The value to check for equality.</param>
+        /// <param name="value">The string value to check for equality.</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] string value)
         {
             Check.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
-            _value = value;
+            Value = value;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="value">The object value to check for equality.</param>
+        public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value)
+        {
+            Check.NotNull(value, nameof(value));
+
+            MatchBehaviour = matchBehaviour;
+            Value = value;
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
@@ -48,9 +70,15 @@ namespace WireMock.Matchers
                 try
                 {
                     // Check if JToken or object
-                    JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
+                    JToken jtokenInput = input is JToken tokenInput ? tokenInput : JObject.FromObject(input);
 
-                    match = JToken.DeepEquals(JToken.Parse(_value), jtoken);
+                    // Check if JToken or string or object
+                    JToken jtokenValue =
+                        Value is JToken tokenValue ? tokenValue :
+                        Value is string stringValue ? JToken.Parse(stringValue) :
+                        JObject.FromObject(input);
+
+                    match = JToken.DeepEquals(jtokenValue, jtokenInput);
                 }
                 catch (JsonException)
                 {
@@ -60,8 +88,5 @@ namespace WireMock.Matchers
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
         }
-
-        /// <inheritdoc cref="IValueMatcher.GetValue"/>
-        public string GetValue() => _value;
     }
 }
