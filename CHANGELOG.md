@@ -1,7 +1,16 @@
+# 1.0.4.2 (26 June 2018)
+
+ - [#157](https://github.com/WireMock-Net/WireMock.Net/pull/157) - Support for string and object in JsonMatcher. contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature
+ - [#155](https://github.com/WireMock-Net/WireMock.Net/pull/155) - Replace JsonMatcher with JsonObjectMatcher and directly support JSON body matching. contributed by ([DavidKorn](https://github.com/DavidKorn))
+ - [#154](https://github.com/WireMock-Net/WireMock.Net/issues/154) - Feature: support BodyAsJson for Request in static mapping files. +feature
+
+Commits: 9470130d65...4283732b6c
+
+
 # 1.0.4.1 (25 June 2018)
 
  - [#153](https://github.com/WireMock-Net/WireMock.Net/issues/153) - Feature: Add JsonMatcher to support Json mapping
- 
+
 Commits: f61a814ab5...2eff243a96
 
 
