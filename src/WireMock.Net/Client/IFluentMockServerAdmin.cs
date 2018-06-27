@@ -33,7 +33,7 @@ namespace WireMock.Client
         /// <param name="settings">SettingsModel</param>
         [Put("__admin/settings")]
         [Header("Content-Type", "application/json")]
-        Task<string> PutSettingsAsync([Body] SettingsModel settings);
+        Task<StatusModel> PutSettingsAsync([Body] SettingsModel settings);
 
         /// <summary>
         /// Update the settings
@@ -41,7 +41,7 @@ namespace WireMock.Client
         /// <param name="settings">SettingsModel</param>
         [Post("__admin/settings")]
         [Header("Content-Type", "application/json")]
-        Task<string> PostSettingsAsync([Body] SettingsModel settings);
+        Task<StatusModel> PostSettingsAsync([Body] SettingsModel settings);
 
         /// <summary>
         /// Get the mappings.
@@ -56,19 +56,19 @@ namespace WireMock.Client
         /// <param name="mapping">MappingModel</param>
         [Post("__admin/mappings")]
         [Header("Content-Type", "application/json")]
-        Task<string> PostMappingAsync([Body] MappingModel mapping);
+        Task<StatusModel> PostMappingAsync([Body] MappingModel mapping);
 
         /// <summary>
         /// Delete all mappings.
         /// </summary>
         [Delete("__admin/mappings")]
-        Task<string> DeleteMappingsAsync();
+        Task<StatusModel> DeleteMappingsAsync();
 
         /// <summary>
         /// Delete (reset) all mappings.
         /// </summary>
         [Post("__admin/mappings/reset")]
-        Task<string> ResetMappingsAsync();
+        Task<StatusModel> ResetMappingsAsync();
 
         /// <summary>
         /// Get a mapping based on the guid
@@ -84,20 +84,20 @@ namespace WireMock.Client
         /// <param name="guid">The Guid</param>
         /// <param name="mapping">MappingModel</param>
         [Put("__admin/mappings/{guid}")]
-        Task<string> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping);
+        Task<StatusModel> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping);
 
         /// <summary>
         /// Delete a mapping based on the guid
         /// </summary>
         /// <param name="guid">The Guid</param>
         [Delete("__admin/mappings/{guid}")]
-        Task<string> DeleteMappingAsync([Path] Guid guid);
+        Task<StatusModel> DeleteMappingAsync([Path] Guid guid);
 
         /// <summary>
         /// Save the mappings
         /// </summary>
         [Post("__admin/mappings/save")]
-        Task<string> SaveMappingAsync();
+        Task<StatusModel> SaveMappingAsync();
 
         /// <summary>
         /// Get the requests.
@@ -110,13 +110,13 @@ namespace WireMock.Client
         /// Delete all requests.
         /// </summary>
         [Delete("__admin/requests")]
-        Task<string> DeleteRequestsAsync();
+        Task<StatusModel> DeleteRequestsAsync();
 
         /// <summary>
         /// Delete (reset) all requests.
         /// </summary>
         [Post("__admin/requests/reset")]
-        Task<string> ResetRequestsAsync();
+        Task<StatusModel> ResetRequestsAsync();
 
         /// <summary>
         /// Get a request based on the guid
@@ -131,7 +131,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="guid">The Guid</param>
         [Delete("__admin/requests/{guid}")]
-        Task<string> DeleteRequestAsync([Path] Guid guid);
+        Task<StatusModel> DeleteRequestAsync([Path] Guid guid);
 
         /// <summary>
         /// Find a request based on the criteria
@@ -151,12 +151,12 @@ namespace WireMock.Client
         /// Delete (reset) all scenarios
         /// </summary>
         [Delete("__admin/scenarios")]
-        Task<string> DeleteScenariosAsync();
+        Task<StatusModel> DeleteScenariosAsync();
 
         /// <summary>
         /// Delete (reset) all scenarios
         /// </summary>
         [Post("__admin/scenarios")]
-        Task<string> ResetScenariosAsync();
+        Task<StatusModel> ResetScenariosAsync();
     }
 }
