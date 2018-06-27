@@ -37,6 +37,7 @@ namespace WireMock.Server
         private const string AdminScenarios = "/__admin/scenarios";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
+        private readonly IDictionary<string, WireMockList<string>> _contentTypeJsonHeaders = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string> { ContentTypeJson } } };
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -283,7 +284,7 @@ namespace WireMock.Server
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
             }
 
-            return new ResponseMessage { Body = "Settings updated" };
+            return CreateResponseMessage("Settings updated");
         }
         #endregion Settings
 
@@ -296,7 +297,7 @@ namespace WireMock.Server
             if (mapping == null)
             {
                 _logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-                return new ResponseMessage { StatusCode = 404, Body = "Mapping not found" };
+                return CreateResponseMessage("Mapping not found", 404);
             }
 
             var model = MappingConverter.ToMappingModel(mapping);
@@ -311,7 +312,7 @@ namespace WireMock.Server
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
-            return new ResponseMessage { Body = "Mapping added or updated" };
+            return CreateResponseMessage("Mapping added or updated", 200, guid);
         }
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
@@ -320,10 +321,10 @@ namespace WireMock.Server
 
             if (DeleteMapping(guid))
             {
-                return new ResponseMessage { Body = "Mapping removed" };
+                return CreateResponseMessage("Mapping removed", 200, guid);
             }
 
-            return new ResponseMessage { Body = "Mapping not found" };
+            return CreateResponseMessage("Mapping not found", 404);
         }
         #endregion Mapping/{guid}
 
@@ -335,7 +336,7 @@ namespace WireMock.Server
                 SaveMappingToFile(mapping);
             }
 
-            return new ResponseMessage { Body = "Mappings saved to disk" };
+            return CreateResponseMessage("Mappings saved to disk");
         }
 
         private void SaveMappingToFile(Mapping mapping)
@@ -374,23 +375,25 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsPost(RequestMessage requestMessage)
         {
+            Guid? guid;
             try
             {
                 var mappingModel = DeserializeObject<MappingModel>(requestMessage);
+                guid = mappingModel.Guid;
                 DeserializeAndAddOrUpdateMapping(mappingModel);
             }
             catch (ArgumentException a)
             {
                 _logger.Error("HttpStatusCode set to 400 {0}", a);
-                return new ResponseMessage { StatusCode = 400, Body = a.Message };
+                return CreateResponseMessage(a.Message, 400);
             }
             catch (Exception e)
             {
                 _logger.Error("HttpStatusCode set to 500 {0}", e);
-                return new ResponseMessage { StatusCode = 500, Body = e.ToString() };
+                return CreateResponseMessage(e.ToString(), 500);
             }
 
-            return new ResponseMessage { StatusCode = 201, Body = "Mapping added" };
+            return CreateResponseMessage("Mapping added", 201, guid);
         }
 
         private void DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
@@ -444,7 +447,7 @@ namespace WireMock.Server
 
             ResetScenarios();
 
-            return new ResponseMessage { Body = "Mappings deleted" };
+            return CreateResponseMessage("Mappings deleted");
         }
         #endregion Mappings
 
@@ -457,7 +460,7 @@ namespace WireMock.Server
             if (entry == null)
             {
                 _logger.Warn("HttpStatusCode set to 404 : Request not found");
-                return new ResponseMessage { StatusCode = 404, Body = "Request not found" };
+                return CreateResponseMessage("Request not found", 404);
             }
 
             var model = LogEntryMapper.Map(entry);
@@ -470,9 +473,11 @@ namespace WireMock.Server
             Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
 
             if (DeleteLogEntry(guid))
-                return new ResponseMessage { Body = "Request removed" };
+            {
+                return CreateResponseMessage("Request removed");
+            }
 
-            return new ResponseMessage { Body = "Request not found" };
+            return CreateResponseMessage("Request not found", 404);
         }
         #endregion Request/{guid}
 
@@ -490,7 +495,7 @@ namespace WireMock.Server
         {
             ResetLogEntries();
 
-            return new ResponseMessage { Body = "Requests deleted" };
+            return CreateResponseMessage("Requests deleted");
         }
         #endregion Requests
 
@@ -533,7 +538,7 @@ namespace WireMock.Server
         {
             ResetScenarios();
 
-            return new ResponseMessage { Body = "Scenarios reset" };
+            return CreateResponseMessage("Scenarios reset");
         }
         #endregion
 
@@ -721,6 +726,18 @@ namespace WireMock.Server
             return requestMessage.Body != null ?
                 JsonConvert.DeserializeObject<T>(requestMessage.Body) :
                 ((JObject)requestMessage.BodyAsJson).ToObject<T>();
+        }
+
+        private ResponseMessage CreateResponseMessage(string message, int statusCode = 200, Guid? guid = null)
+        {
+            var response = new ResponseMessage
+            {
+                StatusCode = statusCode,
+                Headers = _contentTypeJsonHeaders,
+                BodyAsJson = new StatusModel { Status = message, Guid = guid }
+            };
+
+            return response;
         }
     }
 }
