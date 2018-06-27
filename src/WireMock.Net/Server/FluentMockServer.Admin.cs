@@ -379,8 +379,7 @@ namespace WireMock.Server
             try
             {
                 var mappingModel = DeserializeObject<MappingModel>(requestMessage);
-                guid = mappingModel.Guid;
-                DeserializeAndAddOrUpdateMapping(mappingModel);
+                guid = DeserializeAndAddOrUpdateMapping(mappingModel);
             }
             catch (ArgumentException a)
             {
@@ -396,7 +395,7 @@ namespace WireMock.Server
             return CreateResponseMessage("Mapping added", 201, guid);
         }
 
-        private void DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
+        private Guid DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
             Check.NotNull(mappingModel, nameof(mappingModel));
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
@@ -405,7 +404,7 @@ namespace WireMock.Server
             var requestBuilder = InitRequestBuilder(mappingModel.Request);
             var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
-            IRespondWithAProvider respondProvider = Given(requestBuilder);
+            var respondProvider = Given(requestBuilder);
 
             if (guid != null)
             {
@@ -439,6 +438,8 @@ namespace WireMock.Server
             }
 
             respondProvider.RespondWith(responseBuilder);
+
+            return respondProvider.Guid;
         }
 
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)

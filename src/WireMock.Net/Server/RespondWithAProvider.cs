@@ -10,7 +10,6 @@ namespace WireMock.Server
     internal class RespondWithAProvider : IRespondWithAProvider
     {
         private int _priority;
-        private Guid? _guid;
         private string _title;
         private string _path;
         private object _executionConditionState;
@@ -18,6 +17,8 @@ namespace WireMock.Server
         private string _scenario;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
+
+        public Guid Guid { get; private set; } = Guid.NewGuid();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -36,8 +37,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            var mappingGuid = _guid ?? Guid.NewGuid();
-            _registrationCallback(new Mapping(mappingGuid, _title, _path, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
+            _registrationCallback(new Mapping(Guid, _title, _path, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -49,7 +49,7 @@ namespace WireMock.Server
         /// <see cref="IRespondWithAProvider.WithGuid(Guid)"/>
         public IRespondWithAProvider WithGuid(Guid guid)
         {
-            _guid = guid;
+            Guid = guid;
 
             return this;
         }

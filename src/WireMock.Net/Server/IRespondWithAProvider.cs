@@ -9,6 +9,11 @@ namespace WireMock.Server
     public interface IRespondWithAProvider
     {
         /// <summary>
+        /// Gets the unique identifier for this mapping.
+        /// </summary>
+        Guid Guid { get; }
+
+        /// <summary>
         /// Define a unique identifier for this mapping.
         /// </summary>
         /// <param name="guid">The unique identifier.</param>

@@ -33,10 +33,12 @@ namespace WireMock.Net.Tests
                 Priority = 500,
                 Title = "test"
             };
-            string result = await api.PostMappingAsync(model);
+            var result = await api.PostMappingAsync(model);
 
             // Assert
             Check.That(result).IsNotNull();
+            Check.That(result.Status).IsNotNull();
+            Check.That(result.Guid).IsNotNull();
 
             var mapping = server.Mappings.Single(m => m.Priority == 500);
             Check.That(mapping).IsNotNull();
