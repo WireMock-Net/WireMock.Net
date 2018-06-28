@@ -306,12 +306,27 @@ namespace WireMock.RequestBuilders
             return WithParam(key, MatchBehaviour.AcceptOnMatch, values);
         }
 
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, IStringMatcher[])"/>
+        public IRequestBuilder WithParam(string key, params IStringMatcher[] matchers)
+        {
+            return WithParam(key, MatchBehaviour.AcceptOnMatch, matchers);
+        }
+
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, string[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params string[] values)
         {
             Check.NotNull(key, nameof(key));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, values));
+            return this;
+        }
+
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, IStringMatcher[])"/>
+        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params IStringMatcher[] matchers)
+        {
+            Check.NotNull(key, nameof(key));
+
+            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, matchers));
             return this;
         }
 
