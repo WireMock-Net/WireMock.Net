@@ -618,9 +618,9 @@ namespace WireMock.Server
 
             if (requestModel.Params != null)
             {
-                foreach (var paramModel in requestModel.Params)
+                foreach (var paramModel in requestModel.Params.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = paramModel.Values == null ? requestBuilder.WithParam(paramModel.Name) : requestBuilder.WithParam(paramModel.Name, paramModel.Values.ToArray());
+                    requestBuilder = requestBuilder.WithParam(paramModel.Name, paramModel.Matchers.Select(MatcherMapper.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 
