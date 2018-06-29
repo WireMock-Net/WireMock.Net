@@ -1,3 +1,11 @@
+# 1.0.4.3 (30 June 2018)
+
+ - [#159](https://github.com/WireMock-Net/WireMock.Net/issues/159) - Bug: IRequestBuilder.WithParam broken for key-only matching +fix
+ - [#156](https://github.com/WireMock-Net/WireMock.Net/issues/156) - Feature: when adding / updating a mapping : return more details
+
+Commits: 2d1ead25cd...db013a56ad
+
+
 # 1.0.4.2 (26 June 2018)
 
  - [#157](https://github.com/WireMock-Net/WireMock.Net/pull/157) - Support for string and object in JsonMatcher. contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature
