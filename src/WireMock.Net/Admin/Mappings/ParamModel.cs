@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿// using System.Collections.Generic;
 
 namespace WireMock.Admin.Mappings
 {
@@ -12,10 +12,15 @@ namespace WireMock.Admin.Mappings
         /// </summary>
         public string Name { get; set; }
 
+        ///// <summary>
+        ///// Gets or sets the values.
+        ///// </summary>
+        //public IList<string> Values { get; set; }
+
         /// <summary>
-        /// Gets or sets the values.
+        /// Gets or sets the matchers.
         /// </summary>
-        public IList<string> Values { get; set; }
+        public MatcherModel[] Matchers { get; set; }
 
         ///// <summary>
         ///// Gets or sets the functions.

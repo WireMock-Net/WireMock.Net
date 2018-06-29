@@ -81,7 +81,28 @@ namespace WireMock.Net.ConsoleApplication
                     .WithParam("$filter", "(substringof(Code, 'WA')")
                     .UsingGet())
                 .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(@"{ ""result"": ""odata""}"));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath(new WildcardMatcher("/param2", true))
+                    .WithParam("key", "test")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { result = "param2" }));
+
+            server
+                .Given(Request
+                    .Create()
+                    .WithPath(new WildcardMatcher("/param3", true))
+                    .WithParam("key", new WildcardMatcher("t*"))
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { result = "param3" }));
 
             server
                 .Given(Request.Create().WithPath("/headers", "/headers_test").UsingPost().WithHeader("Content-Type", "application/json*"))

@@ -71,7 +71,7 @@ namespace WireMock.Serialization
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
-                        Values = pm.Values?.ToList()
+                        Matchers = MatcherMapper.Map(pm.Matchers)
                         //Funcs = Map(pm.Funcs)
                     }).ToList() : null,
 

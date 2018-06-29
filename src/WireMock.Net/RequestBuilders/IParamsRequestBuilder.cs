@@ -28,6 +28,14 @@ namespace WireMock.RequestBuilders
         IRequestBuilder WithParam([NotNull] string key, [CanBeNull] params string[] values);
 
         /// <summary>
+        /// WithParam: matching on key and matchers.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithParam([NotNull] string key, [CanBeNull] params IStringMatcher[] matchers);
+
+        /// <summary>
         /// WithParam: matching on key, values and matchBehaviour.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -35,6 +43,15 @@ namespace WireMock.RequestBuilders
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithParam([NotNull] string key, MatchBehaviour matchBehaviour, [CanBeNull] params string[] values);
+
+        /// <summary>
+        /// WithParam: matching on key, matchers and matchBehaviour.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="matchers">The matchers.</param>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithParam([NotNull] string key, MatchBehaviour matchBehaviour, [CanBeNull] params IStringMatcher[] matchers);
 
         /// <summary>
         /// WithParam: matching on functions.
