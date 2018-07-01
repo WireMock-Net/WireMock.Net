@@ -2,6 +2,7 @@
 
 Follow these links / steps:
 * https://weblog.west-wind.com/posts/2016/Jun/06/Publishing-and-Running-ASPNET-Core-Applications-with-IIS
+* https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/development-time-iis-support?view=aspnetcore-2.1
 * Create a `web.config` file
 
 ## IIS Sites
