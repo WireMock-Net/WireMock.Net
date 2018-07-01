@@ -1,3 +1,10 @@
+# 1.0.4.4 (01 July 2018)
+
+ - [#156](https://github.com/WireMock-Net/WireMock.Net/issues/156) - Feature: when adding / updating a mapping : return more details
+
+Commits: ...
+
+
 # 1.0.4.3 (30 June 2018)
 
  - [#159](https://github.com/WireMock-Net/WireMock.Net/issues/159) - Bug: IRequestBuilder.WithParam broken for key-only matching +fix

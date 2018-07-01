@@ -264,7 +264,7 @@ namespace WireMock.Server
             Given(Request.Create().WithPath("/*").UsingAnyMethod())
                 .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
                 .AtPriority(1000)
-                .RespondWith(new DynamicResponseProvider(request => new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" }));
+                .RespondWith(new DynamicResponseProvider(request => ResponseMessageBuilder.Create("No matching mapping found", 404)));
         }
 
         /// <summary>

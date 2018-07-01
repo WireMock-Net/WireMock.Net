@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
@@ -6,6 +7,7 @@ using System.Linq;
 using WireMock.Matchers;
 using WireMock.Util;
 using Newtonsoft.Json;
+using WireMock.Admin.Mappings;
 using WireMock.Http;
 using WireMock.Serialization;
 #if !NETSTANDARD
@@ -22,6 +24,8 @@ namespace WireMock.Owin
     internal class WireMockMiddleware
 #endif
     {
+        private readonly IDictionary<string, WireMockList<string>> _contentTypeJsonHeaders = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string> { "application/json" } } };
+
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly WireMockMiddlewareOptions _options;
 
@@ -98,7 +102,7 @@ namespace WireMock.Owin
                 {
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
-                    response = new ResponseMessage { StatusCode = 404, Body = "No matching mapping found" };
+                    response = ResponseMessageBuilder.Create("No matching mapping found", 404);
                     return;
                 }
 
@@ -110,7 +114,7 @@ namespace WireMock.Owin
                     if (!present || _options.AuthorizationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
-                        response = new ResponseMessage { StatusCode = 401 };
+                        response = ResponseMessageBuilder.Create(null, 401);
                         return;
                     }
                 }
@@ -130,7 +134,7 @@ namespace WireMock.Owin
             catch (Exception ex)
             {
                 _options.Logger.Error("HttpStatusCode set to 500");
-                response = new ResponseMessage { StatusCode = 500, Body = JsonConvert.SerializeObject(ex) };
+                response = ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500);
             }
             finally
             {

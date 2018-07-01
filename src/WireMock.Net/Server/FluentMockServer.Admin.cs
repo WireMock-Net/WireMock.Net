@@ -37,7 +37,6 @@ namespace WireMock.Server
         private const string AdminScenarios = "/__admin/scenarios";
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
-        private readonly IDictionary<string, WireMockList<string>> _contentTypeJsonHeaders = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string> { ContentTypeJson } } };
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -284,7 +283,7 @@ namespace WireMock.Server
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
             }
 
-            return CreateResponseMessage("Settings updated");
+            return ResponseMessageBuilder.Create("Settings updated");
         }
         #endregion Settings
 
@@ -297,7 +296,7 @@ namespace WireMock.Server
             if (mapping == null)
             {
                 _logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-                return CreateResponseMessage("Mapping not found", 404);
+                return ResponseMessageBuilder.Create("Mapping not found", 404);
             }
 
             var model = MappingConverter.ToMappingModel(mapping);
@@ -312,7 +311,7 @@ namespace WireMock.Server
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
-            return CreateResponseMessage("Mapping added or updated", 200, guid);
+            return ResponseMessageBuilder.Create("Mapping added or updated", 200, guid);
         }
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
@@ -321,10 +320,10 @@ namespace WireMock.Server
 
             if (DeleteMapping(guid))
             {
-                return CreateResponseMessage("Mapping removed", 200, guid);
+                return ResponseMessageBuilder.Create("Mapping removed", 200, guid);
             }
 
-            return CreateResponseMessage("Mapping not found", 404);
+            return ResponseMessageBuilder.Create("Mapping not found", 404);
         }
         #endregion Mapping/{guid}
 
@@ -336,7 +335,7 @@ namespace WireMock.Server
                 SaveMappingToFile(mapping);
             }
 
-            return CreateResponseMessage("Mappings saved to disk");
+            return ResponseMessageBuilder.Create("Mappings saved to disk");
         }
 
         private void SaveMappingToFile(Mapping mapping)
@@ -384,15 +383,15 @@ namespace WireMock.Server
             catch (ArgumentException a)
             {
                 _logger.Error("HttpStatusCode set to 400 {0}", a);
-                return CreateResponseMessage(a.Message, 400);
+                return ResponseMessageBuilder.Create(a.Message, 400);
             }
             catch (Exception e)
             {
                 _logger.Error("HttpStatusCode set to 500 {0}", e);
-                return CreateResponseMessage(e.ToString(), 500);
+                return ResponseMessageBuilder.Create(e.ToString(), 500);
             }
 
-            return CreateResponseMessage("Mapping added", 201, guid);
+            return ResponseMessageBuilder.Create("Mapping added", 201, guid);
         }
 
         private Guid DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
@@ -448,7 +447,7 @@ namespace WireMock.Server
 
             ResetScenarios();
 
-            return CreateResponseMessage("Mappings deleted");
+            return ResponseMessageBuilder.Create("Mappings deleted");
         }
         #endregion Mappings
 
@@ -461,7 +460,7 @@ namespace WireMock.Server
             if (entry == null)
             {
                 _logger.Warn("HttpStatusCode set to 404 : Request not found");
-                return CreateResponseMessage("Request not found", 404);
+                return ResponseMessageBuilder.Create("Request not found", 404);
             }
 
             var model = LogEntryMapper.Map(entry);
@@ -475,10 +474,10 @@ namespace WireMock.Server
 
             if (DeleteLogEntry(guid))
             {
-                return CreateResponseMessage("Request removed");
+                return ResponseMessageBuilder.Create("Request removed");
             }
 
-            return CreateResponseMessage("Request not found", 404);
+            return ResponseMessageBuilder.Create("Request not found", 404);
         }
         #endregion Request/{guid}
 
@@ -496,7 +495,7 @@ namespace WireMock.Server
         {
             ResetLogEntries();
 
-            return CreateResponseMessage("Requests deleted");
+            return ResponseMessageBuilder.Create("Requests deleted");
         }
         #endregion Requests
 
@@ -539,7 +538,7 @@ namespace WireMock.Server
         {
             ResetScenarios();
 
-            return CreateResponseMessage("Scenarios reset");
+            return ResponseMessageBuilder.Create("Scenarios reset");
         }
         #endregion
 
@@ -727,18 +726,6 @@ namespace WireMock.Server
             return requestMessage.Body != null ?
                 JsonConvert.DeserializeObject<T>(requestMessage.Body) :
                 ((JObject)requestMessage.BodyAsJson).ToObject<T>();
-        }
-
-        private ResponseMessage CreateResponseMessage(string message, int statusCode = 200, Guid? guid = null)
-        {
-            var response = new ResponseMessage
-            {
-                StatusCode = statusCode,
-                Headers = _contentTypeJsonHeaders,
-                BodyAsJson = new StatusModel { Status = message, Guid = guid }
-            };
-
-            return response;
         }
     }
 }

@@ -41,6 +41,7 @@ namespace WireMock.Net.StandAlone
                 Arguments[currentName] = values.ToArray();
             }
         }
+
         public bool Contains(string name)
         {
             return Arguments.ContainsKey(name);
