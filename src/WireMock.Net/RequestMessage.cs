@@ -10,7 +10,7 @@ using WireMock.Validation;
 namespace WireMock
 {
     /// <summary>
-    /// The request.
+    /// The RequestMessage.
     /// </summary>
     public class RequestMessage
     {

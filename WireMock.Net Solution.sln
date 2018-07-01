@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.StandAlone.Net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NET452", "examples\WireMock.Net.ConsoleApplication\WireMock.Net.Console.NET452.csproj", "{668F689E-57B4-422E-8846-C0FF643CA268}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.csproj", "{049539C1-7A66-4559-AD7A-B1C73B97CBB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication.NETCore2", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.NETCore2.csproj", "{049539C1-7A66-4559-AD7A-B1C73B97CBB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Proxy.Net452", "examples\WireMock.Net.Console.Proxy.Net452\WireMock.Net.Console.Proxy.Net452.csproj", "{26433A8F-BF01-4962-97EB-81BFFBB61096}"
 EndProject

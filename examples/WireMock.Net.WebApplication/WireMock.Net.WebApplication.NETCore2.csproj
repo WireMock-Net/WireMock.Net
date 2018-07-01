@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
     <StartupObject>WireMock.Net.WebApplication.Program</StartupObject>
+    <AssemblyName>WireMock.Net.WebApplication</AssemblyName>
+    <RootNamespace>WireMock.Net.WebApplication</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

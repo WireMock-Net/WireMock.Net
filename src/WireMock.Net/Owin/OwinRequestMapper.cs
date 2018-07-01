@@ -31,10 +31,10 @@ namespace WireMock.Owin
             )
         {
 #if !NETSTANDARD
-            Uri url = request.Uri;
+            Uri url = UriUtils.CreateUri(request.Uri, request.PathBase);
             string clientIP = request.RemoteIpAddress;
 #else
-            Uri url = new Uri(request.GetEncodedUrl());
+            Uri url = UriUtils.CreateUri(new Uri(request.GetEncodedUrl()), request.PathBase);
             var connection = request.HttpContext.Connection;
             string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
                 ? connection.RemoteIpAddress.MapToIPv4().ToString()
