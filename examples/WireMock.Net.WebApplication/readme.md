@@ -6,7 +6,6 @@ Follow these links / steps:
 * Create a `web.config` file
 
 ## IIS Sites
-Sites configuration looks like:
 ![IIS Multiple](resources/iis-wiremock1and2.png)
 
 ## App Pool settings
