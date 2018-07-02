@@ -7,12 +7,16 @@ Follow these links / steps:
 
 ## IIS Sites
 Sites configuration looks like:
-![IIS Multiple](iis-wiremock1and2.png)
+![IIS Multiple](resources/iis-wiremock1and2.png)
 
 ## App Pool settings
-![IIS Multiple](iis-apppool.png)
+![IIS Multiple](resources/iis-apppool.png)
 
 ## Publish Profiles
 Two example publish profiles are created:
-* [IIS Localhost 1](./Properties/PublishProfiles/ISS%20Localhost%201.pubxml)
-* [IIS Localhost 2](./Properties/PublishProfiles/ISS%20Localhost%202.pubxml)
+* [IIS Localhost 1](./Properties/PublishProfiles/IIS%20Localhost%201.pubxml)
+* [IIS Localhost 2](./Properties/PublishProfiles/IIS%20Localhost%202.pubxml)
+
+## Debugging
+Select the debug "IIS" if you want to debug in IIS.
+![IIS Debug](resources/iis-debug.png)
