@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NFluent;
+using WireMock.Models;
 using WireMock.ResponseBuilders;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         {
             // Assign
             var responseMessage = new ResponseMessage { StatusCode = 500 };
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
 
             var response = Response.Create(() => responseMessage);
 

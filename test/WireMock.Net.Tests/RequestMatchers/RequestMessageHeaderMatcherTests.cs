@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers
@@ -13,7 +14,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         public void RequestMessageHeaderMatcher_GetMatchingScore_AcceptOnMatch_HeaderDoesNotExists()
         {
             // Assign
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, "h", "x", true);
 
             // Act
@@ -28,7 +29,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         public void RequestMessageHeaderMatcher_GetMatchingScore_RejectOnMatch_HeaderDoesNotExists()
         {
             // Assign
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.RejectOnMatch, "h", "x", true);
 
             // Act
@@ -44,7 +45,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, "no-match", "123", true);
 
             // Act
@@ -59,7 +60,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.RejectOnMatch, "no-match", "123", true);
 
             // Act
@@ -75,7 +76,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, "h", "x", true);
 
             // Act
@@ -91,7 +92,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.RejectOnMatch, "h", "x", true);
 
             // Act
@@ -107,7 +108,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher("h", new ExactMatcher("x"));
 
             // Act
@@ -123,7 +124,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", null, headers);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
             var matcher = new RequestMessageHeaderMatcher(x => x.ContainsKey("h"));
 
             // Act

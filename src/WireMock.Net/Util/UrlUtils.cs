@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using WireMock.Models;
 #if !NETSTANDARD
 using Microsoft.Owin;
 #else
@@ -8,19 +9,19 @@ using Microsoft.AspNetCore.Http;
 
 namespace WireMock.Util
 {
-    internal static class UriUtils
+    internal static class UrlUtils
     {
-        public static Uri CreateUri([NotNull] Uri uri, PathString pathBase)
+        public static UrlDetails Parse([NotNull] Uri uri, PathString pathBase)
         {
             if (!pathBase.HasValue)
             {
-                return uri;
+                return new UrlDetails(uri, uri);
             }
 
             var builder = new UriBuilder(uri);
             builder.Path = RemoveFirst(builder.Path, pathBase.Value);
 
-            return builder.Uri;
+            return new UrlDetails(uri, builder.Uri);
         }
 
         private static string RemoveFirst(string text, string search)

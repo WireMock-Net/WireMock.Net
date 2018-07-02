@@ -6,7 +6,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Util
 {
-    public class UriUtilsTests
+    public class UrlUtilsTests
     {
         [Fact]
         public void UriUtils_CreateUri_WithValidPathString()
@@ -15,10 +15,11 @@ namespace WireMock.Net.Tests.Util
             Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
             // Act
-            Uri result = UriUtils.CreateUri(uri, new PathString("/a"));
+            var result = UrlUtils.Parse(uri, new PathString("/a"));
 
             // Assert
-            Check.That(result.ToString()).Equals("https://localhost:1234/b?x=0");
+            Check.That(result.Url.ToString()).Equals("https://localhost:1234/b?x=0");
+            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
         }
 
         [Fact]
@@ -28,10 +29,11 @@ namespace WireMock.Net.Tests.Util
             Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
             // Act
-            Uri result = UriUtils.CreateUri(uri, new PathString());
+            var result = UrlUtils.Parse(uri, new PathString());
 
             // Assert
-            Check.That(result.ToString()).Equals("https://localhost:1234/a/b?x=0");
+            Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
+            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
         }
 
         [Fact]
@@ -41,10 +43,11 @@ namespace WireMock.Net.Tests.Util
             Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
             // Act
-            Uri result = UriUtils.CreateUri(uri, new PathString("/test"));
+            var result = UrlUtils.Parse(uri, new PathString("/test"));
 
             // Assert
-            Check.That(result.ToString()).Equals("https://localhost:1234/a/b?x=0");
+            Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
+            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
         }
     }
 }

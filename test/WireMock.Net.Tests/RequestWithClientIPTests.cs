@@ -2,6 +2,7 @@ using System;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithClientIP("127.0.0.2", "1.1.1.1");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.2");
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.2");
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -30,7 +31,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithClientIP("127.0.0.2");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", "192.1.1.1");
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "192.1.1.1");
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -44,7 +45,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithClientIP(new WildcardMatcher("127.0.0.2"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.2");
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.2");
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -58,7 +59,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithClientIP(c => c.Contains("."));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.2");
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.2");
 
             // then
             var requestMatchResult = new RequestMatchResult();

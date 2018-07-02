@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.Util;
 using Xunit;
@@ -25,7 +26,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "b"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();
@@ -43,7 +44,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsJson = 123
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();
@@ -61,7 +62,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsBytes = new byte[0]
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();
@@ -79,7 +80,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "cat"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -97,7 +98,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "Hello world!"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -120,7 +121,7 @@ namespace WireMock.Net.Tests
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -143,7 +144,7 @@ namespace WireMock.Net.Tests
                         <todo-item id='a3'>xyz</todo-item>
                     </todo-list>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -161,7 +162,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -179,7 +180,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -201,7 +202,7 @@ namespace WireMock.Net.Tests
                 Encoding = Encoding.UTF8
             };
 
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -223,7 +224,7 @@ namespace WireMock.Net.Tests
                 Encoding = Encoding.UTF8
             };
 
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -245,7 +246,7 @@ namespace WireMock.Net.Tests
                 Encoding = Encoding.UTF8
             };
 
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -266,7 +267,7 @@ namespace WireMock.Net.Tests
             };
 
             // Act
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();
@@ -286,7 +287,7 @@ namespace WireMock.Net.Tests
             };
 
             // Act
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();

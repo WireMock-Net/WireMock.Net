@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithCookie("session", "a*");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, null, null, new Dictionary<string, string> { { "session", "abc" } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, null, null, new Dictionary<string, string> { { "session", "abc" } });
 
             // then
             var requestMatchResult = new RequestMatchResult();

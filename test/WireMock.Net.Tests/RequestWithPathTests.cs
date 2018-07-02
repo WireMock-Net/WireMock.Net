@@ -5,6 +5,7 @@ using WireMock.Matchers;
 using Xunit;
 using WireMock.RequestBuilders;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Net.Tests
@@ -24,7 +25,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "abc"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -38,7 +39,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -50,8 +51,8 @@ namespace WireMock.Net.Tests
         {
             var requestBuilder = Request.Create().WithPath("/x1", "/x2");
 
-            var request1 = new RequestMessage(new Uri("http://localhost/x1"), "blabla", ClientIp);
-            var request2 = new RequestMessage(new Uri("http://localhost/x2"), "blabla", ClientIp);
+            var request1 = new RequestMessage(new UrlDetails("http://localhost/x1"), "blabla", ClientIp);
+            var request2 = new RequestMessage(new UrlDetails("http://localhost/x2"), "blabla", ClientIp);
 
             var requestMatchResult = new RequestMatchResult();
             Check.That(requestBuilder.GetMatchingScore(request1, requestMatchResult)).IsEqualTo(1.0);
@@ -65,7 +66,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath(url => url.EndsWith("/foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -79,7 +80,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath(new RegexMatcher("^/foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo/bar"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo/bar"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -93,7 +94,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/bar"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/bar"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -111,7 +112,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "whatever"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "Delete", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "Delete", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -125,7 +126,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingGet();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -139,7 +140,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingHead();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "HEAD", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -153,7 +154,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPost();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -167,7 +168,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -181,7 +182,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPatch();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PATCH", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PATCH", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -195,7 +196,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "HEAD", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "HEAD", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();

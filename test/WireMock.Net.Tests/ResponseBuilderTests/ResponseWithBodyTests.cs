@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using NFluent;
+using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
@@ -20,7 +21,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             {
                 BodyAsString = "abc"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.String, Encoding.ASCII);
 
@@ -41,7 +42,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             {
                 BodyAsString = "abc"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
@@ -62,7 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             {
                 BodyAsString = "abc"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             var response = Response.Create().WithBody("test", null, Encoding.ASCII);
 
@@ -82,7 +83,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             {
                 BodyAsString = "abc"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
             object x = new { value = "test" };
             var response = Response.Create().WithBodyAsJson(x, Encoding.ASCII);
@@ -100,7 +101,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_String_SameAsSource_Encoding()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
 
             var response = Response.Create().WithBody("r", BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
@@ -118,7 +119,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_String_Bytes_Encoding()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
 
             var response = Response.Create().WithBody("r", BodyDestinationFormat.Bytes, Encoding.ASCII);
 
@@ -136,7 +137,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithBody_String_Json_Encoding()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
 
             var response = Response.Create().WithBody("{ \"value\": 42 }", BodyDestinationFormat.Json, Encoding.ASCII);
 

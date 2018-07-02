@@ -3,6 +3,7 @@ using Moq;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Util;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(stringMatcherMock.Object);
 
@@ -48,7 +49,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(stringMatcherMock.Object);
 
@@ -75,7 +76,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(stringMatcherMock.Object);
 
@@ -102,7 +103,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(stringMatcherMock.Object);
 
@@ -128,7 +129,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var objectMatcherMock = new Mock<IObjectMatcher>();
             objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(objectMatcherMock.Object);
 
@@ -154,7 +155,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var objectMatcherMock = new Mock<IObjectMatcher>();
             objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1", body);
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
             var matcher = new RequestMessageBodyMatcher(objectMatcherMock.Object);
 

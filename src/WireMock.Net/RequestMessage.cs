@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using JetBrains.Annotations;
+using WireMock.Models;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -20,9 +21,14 @@ namespace WireMock
         public string ClientIP { get; }
 
         /// <summary>
-        /// Gets the url.
+        /// Gets the url (relative).
         /// </summary>
         public string Url { get; }
+
+        /// <summary>
+        /// Gets the AbsoluteUrl.
+        /// </summary>
+        public string AbsoluteUrl { get; }
 
         /// <summary>
         /// Gets the DateTime.
@@ -30,14 +36,24 @@ namespace WireMock
         public DateTime DateTime { get; set; }
 
         /// <summary>
-        /// Gets the path.
+        /// Gets the path (relative).
         /// </summary>
         public string Path { get; }
+
+        /// <summary>
+        /// Gets the AbsolutePath.
+        /// </summary>
+        public string AbsolutePath { get; }
 
         /// <summary>
         /// Gets the path segments.
         /// </summary>
         public string[] PathSegments { get; }
+
+        /// <summary>
+        /// Gets the absolute path segments.
+        /// </summary>
+        public string[] AbsolutePathSegments { get; }
 
         /// <summary>
         /// Gets the method.
@@ -107,25 +123,30 @@ namespace WireMock
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
         /// </summary>
-        /// <param name="url">The original url.</param>
+        /// <param name="urlDetails">The original url details.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="clientIP">The client IP Address.</param>
         /// <param name="body">The body.</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] Uri url, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData body = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] UrlDetails urlDetails, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData body = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
-            Check.NotNull(url, nameof(url));
+            Check.NotNull(urlDetails, nameof(urlDetails));
             Check.NotNull(method, nameof(method));
             Check.NotNull(clientIP, nameof(clientIP));
 
-            Url = url.ToString();
-            Protocol = url.Scheme;
-            Host = url.Host;
-            Port = url.Port;
-            Origin = $"{url.Scheme}://{url.Host}:{url.Port}";
-            Path = WebUtility.UrlDecode(url.AbsolutePath);
+            AbsoluteUrl = urlDetails.AbsoluteUrl.ToString();
+            Url = urlDetails.Url.ToString();
+            Protocol = urlDetails.Url.Scheme;
+            Host = urlDetails.Url.Host;
+            Port = urlDetails.Url.Port;
+            Origin = $"{Protocol}://{Host}:{Port}";
+
+            AbsolutePath = WebUtility.UrlDecode(urlDetails.AbsoluteUrl.AbsolutePath);
+            Path = WebUtility.UrlDecode(urlDetails.Url.AbsolutePath);
             PathSegments = Path.Split('/').Skip(1).ToArray();
+            AbsolutePathSegments = AbsolutePath.Split('/').Skip(1).ToArray();
+
             Method = method.ToLower();
             ClientIP = clientIP;
 
@@ -136,7 +157,7 @@ namespace WireMock
 
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
-            RawQuery = WebUtility.UrlDecode(url.Query);
+            RawQuery = WebUtility.UrlDecode(urlDetails.Url.Query);
             Query = ParseQuery(RawQuery);
         }
 

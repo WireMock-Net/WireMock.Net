@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using WireMock.Models;
 using WireMock.ResponseBuilders;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace WireMock.Net.Tests
         public async void Response_Create_WithHeader(string headerName, string headerValue)
         {
             // Assign
-            var requestMock = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
+            var requestMock = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
             IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValue);
 
             // Act
