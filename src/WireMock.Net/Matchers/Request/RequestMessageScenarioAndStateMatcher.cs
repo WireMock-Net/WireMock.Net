@@ -7,11 +7,6 @@ namespace WireMock.Matchers.Request
     /// </summary>
     internal class RequestMessageScenarioAndStateMatcher : IRequestMatcher
     {
-        ///// <summary>
-        ///// Scenario.
-        ///// </summary>
-        //[CanBeNull] private string _scenario;
-
         /// <summary>
         /// Execution state condition for the current mapping.
         /// </summary>

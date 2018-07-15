@@ -38,10 +38,7 @@ namespace WireMock.Util
         /// </summary>
         public override string ToString()
         {
-            if (this != null && this.Any())
-                return this.First().ToString();
-
-            return base.ToString();
+            return this.Any() ? this.First().ToString() : base.ToString();
         }
     }
 }

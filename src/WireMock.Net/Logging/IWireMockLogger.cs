@@ -49,8 +49,8 @@ namespace WireMock.Logging
         /// Writes the LogEntryModel (LogRequestModel, LogResponseModel and more).
         /// </summary>
         /// <param name="logEntryModel">The Request Log Model.</param>
-        /// <param name="isAdminrequest">Defines if this request is an admin request.</param>
+        /// <param name="isAdminRequest">Defines if this request is an admin request.</param>
         [PublicAPI]
-        void DebugRequestResponse([NotNull] LogEntryModel logEntryModel, bool isAdminrequest);
+        void DebugRequestResponse([NotNull] LogEntryModel logEntryModel, bool isAdminRequest);
     }
 }

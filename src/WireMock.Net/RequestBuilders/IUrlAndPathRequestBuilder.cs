@@ -63,8 +63,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// WithUrl: add url matching based on functions.
         /// </summary>
-        /// <param name="func">The path func.</param>
+        /// <param name="funcs">The url functions.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithUrl([NotNull] params Func<string, bool>[] func);
+        IRequestBuilder WithUrl([NotNull] params Func<string, bool>[] funcs);
     }
 }

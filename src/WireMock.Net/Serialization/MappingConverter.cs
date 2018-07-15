@@ -146,15 +146,5 @@ namespace WireMock.Serialization
 
             return newDictionary;
         }
-
-        //private static string[] Map<T>([CanBeNull] IEnumerable<Func<T, bool>> funcs)
-        //{
-        //    return funcs?.Select(Map).Where(x => x != null).ToArray();
-        //}
-
-        //private static string Map<T>([CanBeNull] Func<T, bool> func)
-        //{
-        //    return func?.ToString();
-        //}
     }
 }
