@@ -21,8 +21,6 @@
     <DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
-    
-    <!-- SonarQube needs this -->
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
   </PropertyGroup>
 
