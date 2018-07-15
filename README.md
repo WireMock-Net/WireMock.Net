@@ -1,5 +1,5 @@
 # WireMock.Net
-A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based http://WireMock.org
+A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based [WireMock.org](http://WireMock.org).
 
 [![Gitter](https://img.shields.io/gitter/room/wiremock_dotnet/Lobby.svg)](https://gitter.im/wiremock_dotnet/Lobby)
 [![GitHub issues](https://img.shields.io/github/issues/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/issues)
@@ -14,7 +14,7 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 
 ### NuGet
-| Name | NuGet |
+| Package | Version |
 | ---- | ----- |
 | WireMock.Net | [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |
 | WireMock.Net.StandAlone | [![NuGet Badge](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |
