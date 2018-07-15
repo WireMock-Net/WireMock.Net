@@ -9,9 +9,8 @@ namespace WireMock.Util
     /// <summary>
     /// An EnhancedFileSystemWatcher, which can be used to suppress duplicate events that fire on a single change to the file.
     /// </summary>
-    /// <seealso cref="System.IO.FileSystemWatcher" />
-    /// <seealso cref="System.IDisposable" />
-    public class EnhancedFileSystemWatcher : FileSystemWatcher, IDisposable
+    /// <seealso cref="FileSystemWatcher" />
+    public class EnhancedFileSystemWatcher : FileSystemWatcher
     {
         #region Private Members
         // Default Watch Interval in Milliseconds
@@ -250,16 +249,6 @@ namespace WireMock.Util
             }
         }
         #endregion
-        #endregion
-
-        #region IDisposable Members
-        /// <summary>
-        /// Releases all resources used by the <see cref="T:System.ComponentModel.Component" />.
-        /// </summary>
-        public new void Dispose()
-        {
-            base.Dispose();
-        }
         #endregion
     }
 }

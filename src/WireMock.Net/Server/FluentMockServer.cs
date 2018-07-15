@@ -56,7 +56,30 @@ namespace WireMock.Server
         /// Gets the scenarios.
         /// </summary>
         [PublicAPI]
-        public ConcurrentDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios); // Checked
+        public ConcurrentDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios);
+
+        #region IDisposable Members
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_httpServer != null && _httpServer.IsStarted)
+            {
+                _httpServer.StopAsync();
+            }
+        }
+        #endregion
 
         #region Start/Stop
         /// <summary>
@@ -265,17 +288,6 @@ namespace WireMock.Server
                 .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
                 .AtPriority(1000)
                 .RespondWith(new DynamicResponseProvider(request => ResponseMessageBuilder.Create("No matching mapping found", 404)));
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_httpServer != null && _httpServer.IsStarted)
-            {
-                _httpServer.StopAsync();
-            }
         }
 
         /// <summary>
