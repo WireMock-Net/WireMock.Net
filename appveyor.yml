@@ -27,7 +27,7 @@ before_build:
 
 build_script:
 # build WireMock.Net with SonarScanner
-- dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="fa53932a45b32ff5488c175641d2f40f194bcb33" /d:sonar.projectVersion=$Env:LABEL
+- dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="fa53932a45b32ff5488c175641d2f40f194bcb33" /v:$Env:LABEL
 - dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
 
 # build WireMock.Net.Standalone
