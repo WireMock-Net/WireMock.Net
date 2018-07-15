@@ -29,7 +29,6 @@ build_script:
 # build WireMock.Net with SonarScanner
 - dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="fa53932a45b32ff5488c175641d2f40f194bcb33"
 - dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
-- dotnet sonarscanner end /d:sonar.login="fa53932a45b32ff5488c175641d2f40f194bcb33"
 
 # build WireMock.Net.Standalone
 - dotnet build .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -c %CONFIGURATION%
@@ -45,3 +44,4 @@ test_script:
   - cmd: '"OpenCover\tools\OpenCover.Console.exe" -target:dotnet.exe -targetargs:"test test\WireMock.Net.Tests\WireMock.Net.Tests.csproj --no-build" -output:coverage.xml -returntargetcode -register:user -filter:"+[WireMock.Net]* -[WireMock.Net.Tests*]*" -nodefaultfilters -returntargetcode -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452"'
   - codecov -f "coverage.xml"
   - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
+  - dotnet sonarscanner end /d:sonar.login="fa53932a45b32ff5488c175641d2f40f194bcb33"
