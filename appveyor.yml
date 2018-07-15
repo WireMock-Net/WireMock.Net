@@ -9,9 +9,12 @@ init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
 install:
-  - ps: Start-FileDownload 'https://download.microsoft.com/download/0/F/D/0FD852A4-7EA1-4E2A-983A-0484AC19B92C/dotnet-sdk-2.0.0-win-gs-x64.exe'
-  - cmd: dotnet-sdk-2.0.0-win-gs-x64.exe /quiet
-  - ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
+- ps: Start-FileDownload 'https://download.microsoft.com/download/4/0/9/40920432-3302-47a8-b13c-bbc4848ad114/dotnet-sdk-2.1.302-win-x64.exe'
+- cmd: dotnet-sdk-2.1.302-win-x64.exe /quiet
+- ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
+  
+install_sonarscanner:
+- dotnet tool install --global dotnet-sonarscanner
 
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
@@ -21,16 +24,18 @@ environment:
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
 - dotnet restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj
+- dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
 
 build_script:
-# build WireMock.Net
+# build WireMock.Net with SonarScanner
+- dotnet sonarscanner begin /k:"fa53932a45b32ff5488c175641d2f40f194bcb33"
 - dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
+- dotnet sonarscanner end
 
 # build WireMock.Net.Standalone
 - dotnet build .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -c %CONFIGURATION%
 
-# restore and build WireMock.Net.Tests
-- dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
+# build WireMock.Net.Tests
 - dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
 
 test_script:
