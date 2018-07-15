@@ -7,6 +7,7 @@
     <AssemblyName>WireMock.Net.Tests</AssemblyName>
     <PackageId>WireMock.Net.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <ProjectGuid>{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +24,7 @@
     <PackageReference Include="ReportGenerator" Version="3.1.2" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.4" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
-	  <PackageReference Include="xunit" Version="2.3.1" /> 
+    <PackageReference Include="xunit" Version="2.3.1" /> 
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" /> 
   </ItemGroup>
 

@@ -8,29 +8,34 @@ configuration:
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
+# install dotnet SDK and dotnet-sonarscanner
 install:
-  - ps: Start-FileDownload 'https://download.microsoft.com/download/0/F/D/0FD852A4-7EA1-4E2A-983A-0484AC19B92C/dotnet-sdk-2.0.0-win-gs-x64.exe'
-  - cmd: dotnet-sdk-2.0.0-win-gs-x64.exe /quiet
-  - ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
+- ps: Start-FileDownload 'https://download.microsoft.com/download/4/0/9/40920432-3302-47a8-b13c-bbc4848ad114/dotnet-sdk-2.1.302-win-x64.exe'
+- cmd: dotnet-sdk-2.1.302-win-x64.exe /quiet
+- ps: $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
+- dotnet tool install --global dotnet-sonarscanner
 
 environment:
   PATH: $(PATH);$(PROGRAMFILES)\dotnet\
   COVERALLS_REPO_TOKEN:
     secure: Eq/3VV5DVAeQAlQhe6hvy21IYPo5uY4fWKxvC4pxdq3giJzcwFp1QxBvRpXJ8Wkw
+  SONAR_TOKEN:
+    secure: guog1+ttdnlD8sVgvizlewksm3qbO7dy2oZUcR8WhurWYvdOByinxXo732hmSaMT
 
 before_build:
 - dotnet restore .\src\WireMock.Net\WireMock.Net.csproj
 - dotnet restore .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj
+- dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
 
 build_script:
-# build WireMock.Net
+# build WireMock.Net with SonarScanner
+- dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="%SONAR_TOKEN%" /v:"%APPVEYOR_BUILD_NUMBER%" /d:sonar.cs.opencover.reportsPaths="%CD%\coverage.xml"
 - dotnet build .\src\WireMock.Net\WireMock.Net.csproj -c %CONFIGURATION%
 
 # build WireMock.Net.Standalone
 - dotnet build .\src\WireMock.Net.Standalone\WireMock.Net.Standalone.csproj -c %CONFIGURATION%
 
-# restore and build WireMock.Net.Tests
-- dotnet restore .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj
+# build WireMock.Net.Tests
 - dotnet build .\test\WireMock.Net.Tests\WireMock.Net.Tests.csproj -c %CONFIGURATION%
 
 test_script:
@@ -41,3 +46,4 @@ test_script:
   - cmd: '"OpenCover\tools\OpenCover.Console.exe" -target:dotnet.exe -targetargs:"test test\WireMock.Net.Tests\WireMock.Net.Tests.csproj --no-build" -output:coverage.xml -returntargetcode -register:user -filter:"+[WireMock.Net]* -[WireMock.Net.Tests*]*" -nodefaultfilters -returntargetcode -oldstyle -searchdirs:".\test\WireMock.Net.Tests\bin\%CONFIGURATION%\net452"'
   - codecov -f "coverage.xml"
   - coveralls.net\tools\csmacnz.Coveralls.exe --opencover -i .\coverage.xml
+  - dotnet sonarscanner end /d:sonar.login="%SONAR_TOKEN%"
