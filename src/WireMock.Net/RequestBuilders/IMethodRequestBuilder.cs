@@ -61,7 +61,7 @@ namespace WireMock.RequestBuilders
         /// UsingAnyVerb: add HTTP Method matching on any method.
         /// </summary>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        [Obsolete]
+        [Obsolete("Use the method UsingAnyMethod().")]
         IRequestBuilder UsingAnyVerb();
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace WireMock.RequestBuilders
         /// </summary>
         /// <param name="verbs">The methods.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        [Obsolete]
+        [Obsolete("Use the method UsingMethod(...).")]
         IRequestBuilder UsingVerb([NotNull] params string[] verbs);
     }
 }

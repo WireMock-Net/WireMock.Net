@@ -85,8 +85,8 @@ namespace WireMock.RequestBuilders
         /// <summary>
         /// WithCookie: matching based on functions.
         /// </summary>
-        /// <param name="cookieFuncs">The funcs.</param>
+        /// <param name="funcs">The funcs.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-        IRequestBuilder WithCookie([NotNull] params Func<IDictionary<string, string>, bool>[] cookieFuncs);
+        IRequestBuilder WithCookie([NotNull] params Func<IDictionary<string, string>, bool>[] funcs);
     }
 }

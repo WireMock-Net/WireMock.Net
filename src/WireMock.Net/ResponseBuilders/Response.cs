@@ -173,7 +173,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
-        public IResponseBuilder WithBody(byte[] body, string destination, Encoding encoding = null)
+        public IResponseBuilder WithBody(byte[] body, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
             Check.NotNull(body, nameof(body));
 

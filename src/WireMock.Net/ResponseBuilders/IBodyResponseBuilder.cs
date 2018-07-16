@@ -59,7 +59,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="bodyAsbase64">The body.</param>
         /// <param name="encoding">The Encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        [Obsolete]
+        [Obsolete("Should not be used, will be removed in future.")]
         IResponseBuilder WithBodyFromBase64([NotNull] string bodyAsbase64, [CanBeNull] Encoding encoding = null);
 
         /// <summary>

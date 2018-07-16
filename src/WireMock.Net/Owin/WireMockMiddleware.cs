@@ -7,7 +7,6 @@ using System.Linq;
 using WireMock.Matchers;
 using WireMock.Util;
 using Newtonsoft.Json;
-using WireMock.Admin.Mappings;
 using WireMock.Http;
 using WireMock.Serialization;
 #if !NETSTANDARD
@@ -24,8 +23,6 @@ namespace WireMock.Owin
     internal class WireMockMiddleware
 #endif
     {
-        private readonly IDictionary<string, WireMockList<string>> _contentTypeJsonHeaders = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string> { "application/json" } } };
-
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly WireMockMiddlewareOptions _options;
 
