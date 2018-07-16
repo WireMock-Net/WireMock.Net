@@ -30,13 +30,13 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Execution state condition for the current mapping.
         /// </summary>
-        public object WhenStateIs { get; set; }
+        public string WhenStateIs { get; set; }
 
         /// <summary>
         /// The next state which will be signaled after the current mapping execution.
         /// In case the value is null state will not be changed.
         /// </summary>
-        public object SetStateTo { get; set; }
+        public string SetStateTo { get; set; }
 
         /// <summary>
         /// The request.

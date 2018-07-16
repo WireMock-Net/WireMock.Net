@@ -60,7 +60,10 @@ namespace WireMock.Owin
                     // Set start
                     if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
                     {
-                        _options.Scenarios.TryAdd(mapping.Scenario, null);
+                        _options.Scenarios.TryAdd(mapping.Scenario, new ScenarioState
+                        {
+                            Name = mapping.Scenario
+                        });
                     }
                 }
 
@@ -68,7 +71,7 @@ namespace WireMock.Owin
                     .Select(m => new
                     {
                         Mapping = m,
-                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _options.Scenarios.ContainsKey(m.Scenario) ? _options.Scenarios[m.Scenario] : null)
+                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _options.Scenarios.ContainsKey(m.Scenario) ? _options.Scenarios[m.Scenario].NextState : null)
                     })
                     .ToList();
 
@@ -125,7 +128,9 @@ namespace WireMock.Owin
 
                 if (targetMapping.Scenario != null)
                 {
-                    _options.Scenarios[targetMapping.Scenario] = targetMapping.NextState;
+                    _options.Scenarios[targetMapping.Scenario].NextState = targetMapping.NextState;
+                    _options.Scenarios[targetMapping.Scenario].Started = true;
+                    _options.Scenarios[targetMapping.Scenario].Finished = targetMapping.NextState == null;
                 }
             }
             catch (Exception ex)

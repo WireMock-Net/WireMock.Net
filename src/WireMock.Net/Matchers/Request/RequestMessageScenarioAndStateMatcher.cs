@@ -11,21 +11,21 @@ namespace WireMock.Matchers.Request
         /// Execution state condition for the current mapping.
         /// </summary>
         [CanBeNull]
-        private readonly object _executionConditionState;
+        private readonly string _executionConditionState;
 
         /// <summary>
         /// The next state which will be signaled after the current mapping execution.
         /// In case the value is null state will not be changed.
         /// </summary>
         [CanBeNull]
-        private readonly object _nextState;
+        private readonly string _nextState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageScenarioAndStateMatcher"/> class.
         /// </summary>
         /// <param name="nextState">The next state.</param>
         /// <param name="executionConditionState">Execution state condition for the current mapping.</param>
-        public RequestMessageScenarioAndStateMatcher([CanBeNull] object nextState, [CanBeNull] object executionConditionState)
+        public RequestMessageScenarioAndStateMatcher([CanBeNull] string nextState, [CanBeNull] string executionConditionState)
         {
             _nextState = nextState;
             _executionConditionState = executionConditionState;

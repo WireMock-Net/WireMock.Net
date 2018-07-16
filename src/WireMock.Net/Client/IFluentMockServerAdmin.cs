@@ -145,7 +145,7 @@ namespace WireMock.Client
         /// Get all scenarios
         /// </summary>
         [Get("__admin/scenarios")]
-        Task<string> GetScenariosAsync();
+        Task<IList<ScenarioState>> GetScenariosAsync();
 
         /// <summary>
         /// Delete (reset) all scenarios

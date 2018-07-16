@@ -43,11 +43,14 @@ namespace WireMock.Net.Client
             var request = api.GetRequestsAsync().Result;
             Console.WriteLine($"request = {JsonConvert.SerializeObject(request)}");
 
-            var deleteRequestsAsync = api.DeleteRequestsAsync().Result;
-            Console.WriteLine($"deleteRequestsAsync = {deleteRequestsAsync.Status}");
+            //var deleteRequestsAsync = api.DeleteRequestsAsync().Result;
+            //Console.WriteLine($"DeleteRequestsAsync = {deleteRequestsAsync.Status}");
 
-            var resetRequestsAsync = api.ResetRequestsAsync().Result;
-            Console.WriteLine($"resetRequestsAsync = {resetRequestsAsync.Status}");
+            //var resetRequestsAsync = api.ResetRequestsAsync().Result;
+            //Console.WriteLine($"ResetRequestsAsync = {resetRequestsAsync.Status}");
+
+            var scenarioStates = api.GetScenariosAsync().Result;
+            Console.WriteLine($"GetScenariosAsync = {JsonConvert.SerializeObject(scenarioStates)}");
 
             Console.WriteLine("Press any key to quit");
             Console.ReadKey();

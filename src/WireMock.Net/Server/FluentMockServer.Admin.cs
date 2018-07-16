@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
+using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
 using WireMock.Http;
 using WireMock.Logging;
@@ -525,13 +526,15 @@ namespace WireMock.Server
         #region Scenarios
         private ResponseMessage ScenariosGet(RequestMessage requestMessage)
         {
-            var scenarios = Scenarios.ToArray().Select(s => new
+            var scenariosStates = Scenarios.Values.Select(s => new ScenarioStateModel
             {
-                Name = s.Key,
-                Started = s.Value != null,
-                NextState = s.Value
+                Name = s.Name,
+                NextState = s.NextState,
+                Started = s.Started,
+                Finished = s.Finished
             });
-            return ToJson(scenarios);
+
+            return ToJson(scenariosStates);
         }
 
         private ResponseMessage ScenariosReset(RequestMessage requestMessage)
