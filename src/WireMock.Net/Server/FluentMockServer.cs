@@ -273,8 +273,7 @@ namespace WireMock.Server
         public void Stop()
         {
             var result = _httpServer?.StopAsync();
-            if (result != null)
-                result.Wait();          //wait for stop to actually happen
+            result?.Wait(); // wait for stop to actually happen
         }
         #endregion
 

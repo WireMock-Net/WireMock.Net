@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost//wiremock",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:56513/",
       "sslPort": 0
@@ -23,6 +27,12 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:56514/"
+    },
+    "IIS": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "development"
+      }
     }
   }
 }

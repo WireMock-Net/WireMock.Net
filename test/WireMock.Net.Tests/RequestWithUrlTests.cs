@@ -2,6 +2,7 @@
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithUrl("*/foo");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -32,7 +33,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithUrl(new WildcardMatcher("*/foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -46,7 +47,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithUrl(url => url.Contains("foo"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "blabla", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();

@@ -5,6 +5,7 @@ using NFluent;
 using Xunit;
 using WireMock.RequestBuilders;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Net.Tests
@@ -20,7 +21,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithPath("/bar").UsingPut();
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -38,7 +39,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "whatever"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -56,7 +57,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "whatever"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -74,7 +75,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "whatever"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -92,7 +93,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "Hello world!"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -110,7 +111,7 @@ namespace WireMock.Net.Tests
             {
                 BodyAsString = "xxx"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -124,7 +125,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithParam("bar", "1", "2");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -138,7 +139,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().UsingAnyMethod().WithParam(p => p.ContainsKey("bar"));
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();
@@ -152,7 +153,7 @@ namespace WireMock.Net.Tests
             var spec = Request.Create().WithParam("bar", "1");
 
             // when
-            var request = new RequestMessage(new Uri("http://localhost/test=7"), "PUT", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/test=7"), "PUT", ClientIp);
 
             // then
             var requestMatchResult = new RequestMatchResult();

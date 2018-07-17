@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NFluent;
+using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
@@ -16,7 +17,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithHeaders_SingleValue()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
             var headers = new Dictionary<string, string> { { "h", "x" } };
             var response = Response.Create().WithHeaders(headers);
 
@@ -31,7 +32,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithHeaders_MultipleValues()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
             var response = Response.Create().WithHeaders(headers);
 
@@ -46,7 +47,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         public async Task Response_ProvideResponse_WithHeaders_WiremockList()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
             var headers = new Dictionary<string, WireMockList<string>> { { "h", new WireMockList<string>("x") } };
             var response = Response.Create().WithHeaders(headers);
 

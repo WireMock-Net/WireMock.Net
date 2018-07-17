@@ -4,6 +4,7 @@ using System.Linq;
 using Moq;
 using NFluent;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers
@@ -21,7 +22,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         public void RequestMessageCompositeMatcher_GetMatchingScore_EmptyArray()
         {
             // Assign
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
             var matcher = new Helper(Enumerable.Empty<IRequestMatcher>());
 
             // Act
@@ -41,7 +42,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var requestMatcher2Mock = new Mock<IRequestMatcher>();
             requestMatcher2Mock.Setup(rm => rm.GetMatchingScore(It.IsAny<RequestMessage>(), It.IsAny<RequestMatchResult>())).Returns(0.8d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
             var matcher = new Helper(new[] { requestMatcher1Mock.Object, requestMatcher2Mock.Object });
 
             // Act
@@ -65,7 +66,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             var requestMatcher2Mock = new Mock<IRequestMatcher>();
             requestMatcher2Mock.Setup(rm => rm.GetMatchingScore(It.IsAny<RequestMessage>(), It.IsAny<RequestMatchResult>())).Returns(0.8d);
 
-            var requestMessage = new RequestMessage(new Uri("http://localhost"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
             var matcher = new Helper(new[] { requestMatcher1Mock.Object, requestMatcher2Mock.Object }, CompositeMatcherType.Or);
 
             // Act

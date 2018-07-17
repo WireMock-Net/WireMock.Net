@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using WireMock.Models;
 using WireMock.Util;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_ParseQuery_NoKeys()
         {
             // given
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp);
 
             // then
             Check.That(request.GetParameter("not_there")).IsNull();
@@ -23,7 +24,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_ParseQuery_SingleKey_SingleValue()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost?foo=bar"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost?foo=bar"), "POST", ClientIp);
 
             // Assert
             Check.That(request.GetParameter("foo")).ContainsExactly("bar");
@@ -33,7 +34,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_ParseQuery_MultipleKeys_MultipleValues()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost?key=1&key=2"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost?key=1&key=2"), "POST", ClientIp);
 
             // Assert
             Check.That(request.GetParameter("key")).Contains("1");
@@ -44,7 +45,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_ParseQuery_SingleKey_MultipleValues()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost?key=1,2&foo=bar&key=3"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost?key=1,2&foo=bar&key=3"), "POST", ClientIp);
 
             // Assert
             Check.That(request.GetParameter("key")).Contains("1");
@@ -56,7 +57,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_Constructor1_PathSegments()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost/a/b/c"), "POST", ClientIp);
 
             // Assert
             Check.That(request.PathSegments).ContainsExactly("a", "b", "c");
@@ -66,7 +67,7 @@ namespace WireMock.Net.Tests
         public void RequestMessage_Constructor2_PathSegments()
         {
             // Assign
-            var request = new RequestMessage(new Uri("http://localhost/a/b/c"), "POST", ClientIp, new BodyData());
+            var request = new RequestMessage(new UrlDetails("http://localhost/a/b/c"), "POST", ClientIp, new BodyData());
 
             // Assert
             Check.That(request.PathSegments).ContainsExactly("a", "b", "c");

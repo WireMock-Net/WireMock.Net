@@ -26,7 +26,17 @@ namespace WireMock.Admin.Requests
         public string Path { get; set; }
 
         /// <summary>
-        ///The absolete URL.
+        /// The Absolute Path.
+        /// </summary>
+        public string AbsolutePath { get; set; }
+
+        /// <summary>
+        /// Gets the url (relative).
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// The absolete URL.
         /// </summary>
         public string AbsoluteUrl { get; set; }
 

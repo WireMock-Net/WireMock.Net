@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NFluent;
 using WireMock.Http;
+using WireMock.Models;
 using WireMock.Util;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsString = "<xml>hello</xml>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -38,7 +39,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsBytes = Encoding.UTF8.GetBytes("hi")
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -55,7 +56,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsJson = new { x = 42 }
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -73,7 +74,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsJson = new { x = 42 }
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "GET", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -92,7 +93,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsString = "<xml>hello</xml>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -110,7 +111,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsString = "<xml>hello</xml>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -128,7 +129,7 @@ namespace WireMock.Net.Tests.Http
             {
                 BodyAsString = "<xml>hello</xml>"
             };
-            var request = new RequestMessage(new Uri("http://localhost/foo"), "PUT", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");

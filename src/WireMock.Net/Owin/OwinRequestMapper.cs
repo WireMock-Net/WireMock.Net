@@ -31,10 +31,10 @@ namespace WireMock.Owin
             )
         {
 #if !NETSTANDARD
-            Uri url = request.Uri;
+            var urldetails = UrlUtils.Parse(request.Uri, request.PathBase);
             string clientIP = request.RemoteIpAddress;
 #else
-            Uri url = new Uri(request.GetEncodedUrl());
+            var urldetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
             var connection = request.HttpContext.Connection;
             string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
                 ? connection.RemoteIpAddress.MapToIPv4().ToString()
@@ -68,7 +68,7 @@ namespace WireMock.Owin
                 body = await BodyParser.Parse(request.Body, request.ContentType);
             }
 
-            return new RequestMessage(url, method, clientIP, body, headers, cookies) { DateTime = DateTime.Now };
+            return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.Now };
         }
 
         private bool ShouldParseBody(string method)
