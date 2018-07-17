@@ -131,7 +131,7 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("No state msg 1"));
 
             server
-                .Given(Request.Create().WithPath("/fooX").UsingGet())
+                .Given(Request.Create().WithPath("/foo1X").UsingGet())
                 .InScenario("s1")
                 .WhenStateIs("Test state 1")
                 .RespondWith(Response.Create().WithBody("Test state msg 1"));
@@ -143,7 +143,7 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("No state msg 2"));
 
             server
-                .Given(Request.Create().WithPath("/fooX").UsingGet())
+                .Given(Request.Create().WithPath("/foo2X").UsingGet())
                 .InScenario("s2")
                 .WhenStateIs("Test state 2")
                 .RespondWith(Response.Create().WithBody("Test state msg 2"));
@@ -156,10 +156,10 @@ namespace WireMock.Net.Tests
             var responseNoState2 = await new HttpClient().GetStringAsync(url + "/state2");
             Check.That(responseNoState2).Equals("No state msg 2");
 
-            var responseWithState1 = await new HttpClient().GetStringAsync(url + "/fooX");
+            var responseWithState1 = await new HttpClient().GetStringAsync(url + "/foo1X");
             Check.That(responseWithState1).Equals("Test state msg 1");
 
-            var responseWithState2 = await new HttpClient().GetStringAsync(url + "/fooX");
+            var responseWithState2 = await new HttpClient().GetStringAsync(url + "/foo2X");
             Check.That(responseWithState2).Equals("Test state msg 2");
 
             server.Dispose();
