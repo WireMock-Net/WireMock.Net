@@ -42,7 +42,13 @@ namespace WireMock.Server
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        private readonly JsonSerializerSettings _settingsIncludeNullValues = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Include
         };
 
         #region InitAdmin
@@ -534,7 +540,7 @@ namespace WireMock.Server
                 Finished = s.Finished
             });
 
-            return ToJson(scenariosStates);
+            return ToJson(scenariosStates, true);
         }
 
         private ResponseMessage ScenariosReset(RequestMessage requestMessage)
@@ -709,11 +715,11 @@ namespace WireMock.Server
             return responseBuilder;
         }
 
-        private ResponseMessage ToJson<T>(T result)
+        private ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
         {
             return new ResponseMessage
             {
-                Body = JsonConvert.SerializeObject(result, _settings),
+                Body = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings),
                 StatusCode = 200,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
             };

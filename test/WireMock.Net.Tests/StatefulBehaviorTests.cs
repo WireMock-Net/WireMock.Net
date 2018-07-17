@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NFluent;
@@ -12,7 +13,7 @@ namespace WireMock.Net.Tests
     public class StatefulBehaviorTests
     {
         [Fact]
-        public async Task Should_skip_non_relevant_states()
+        public async Task Scenarios_Should_skip_non_relevant_states()
         {
             // given
             var server = FluentMockServer.Start();
@@ -33,7 +34,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Should_process_request_if_equals_state_and_single_state_defined()
+        public async Task Scenarios_Should_process_request_if_equals_state_and_single_state_defined()
         {
             // given
             var server = FluentMockServer.Start();
@@ -62,7 +63,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task Scenario_and_State_TodoList_Example()
+        public async Task Scenarios_TodoList_Example()
         {
             // Assign
             var server = FluentMockServer.Start();
@@ -86,22 +87,39 @@ namespace WireMock.Net.Tests
                 .WhenStateIs("Cancel newspaper item added")
                 .RespondWith(Response.Create().WithBody("Buy milk;Cancel newspaper subscription"));
 
+            Check.That(server.Scenarios.Any()).IsFalse();
+
             // Act and Assert
             string url = "http://localhost:" + server.Ports[0];
             string getResponse1 = new HttpClient().GetStringAsync(url + "/todo/items").Result;
             Check.That(getResponse1).Equals("Buy milk");
 
+            Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
+            Check.That(server.Scenarios["To do list"].NextState).IsEqualTo("TodoList State Started");
+            Check.That(server.Scenarios["To do list"].Started).IsTrue();
+            Check.That(server.Scenarios["To do list"].Finished).IsFalse();
+
             var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription"));
             Check.That(postResponse.StatusCode).Equals(HttpStatusCode.Created);
+
+            Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
+            Check.That(server.Scenarios["To do list"].NextState).IsEqualTo("Cancel newspaper item added");
+            Check.That(server.Scenarios["To do list"].Started).IsTrue();
+            Check.That(server.Scenarios["To do list"].Finished).IsFalse();
 
             string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items");
             Check.That(getResponse2).Equals("Buy milk;Cancel newspaper subscription");
 
+            Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
+            Check.That(server.Scenarios["To do list"].NextState).IsNull();
+            Check.That(server.Scenarios["To do list"].Started).IsTrue();
+            Check.That(server.Scenarios["To do list"].Finished).IsTrue();
+
             server.Dispose();
         }
 
-        // [Fact]
-        public async Task Should_process_request_if_equals_state_and_multiple_state_defined()
+        [Fact]
+        public async Task Scenarios_Should_process_request_if_equals_state_and_multiple_state_defined()
         {
             // Assign
             var server = FluentMockServer.Start();
