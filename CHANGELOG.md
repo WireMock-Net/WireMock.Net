@@ -1,3 +1,16 @@
+# 1.0.4.5 (17 July 2018)
+
+ - [#166](https://github.com/WireMock-Net/WireMock.Net/pull/166) - Fix Sonar issues contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#165](https://github.com/WireMock-Net/WireMock.Net/pull/165) - Add SonarCloud contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#164](https://github.com/WireMock-Net/WireMock.Net/pull/164) - Support running WireMock.Net as a sub-app in IIS contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature
+ - [#158](https://github.com/WireMock-Net/WireMock.Net/issues/158) - Feature: Support running WireMock.Net as a sub-app in IIS
+ - [#123](https://github.com/WireMock-Net/WireMock.Net/issues/123) - Fix for DateTime Header causing null value in ResponseBuilder
+ - [#120](https://github.com/WireMock-Net/WireMock.Net/issues/120) - Question: JsonPathMatcher - not matching? Correct syntax?
+ - [#105](https://github.com/WireMock-Net/WireMock.Net/issues/105) - Question: URL binding issues
+
+Commits: 3125c1bead...a9c0c6b670
+
+
 # 1.0.4.4 (01 July 2018)
 
  - [#156](https://github.com/WireMock-Net/WireMock.Net/issues/156) - Feature: when adding / updating a mapping : return more details
