@@ -37,15 +37,19 @@ To build you need:
 ## Stubbing
 A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing & Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing-and-Request-Matching).
 
-## Using WireMock in UnitTest framework
+## Using WireMock.Net in UnitTest framework
 You can use your favorite test framework and use WireMock within your tests, see
 [Wiki : UnitTesting](https://github.com/StefH/WireMock.Net/wiki/Using-WireMock-in-UnitTests).
 
 ## Admin API Reference
 The WireMock admin API provides functionality to define the mappings via a http interface, see [Wiki : Admin API Reference](https://github.com/StefH/WireMock.Net/wiki/Admin-API-Reference).
 
-## WireMock as a standalone process
+## WireMock.Net as a standalone process
 This is quite straight forward to launch a mock server within a console application, see [Wiki : standalone](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-a-standalone-process).
+
+## WireMock.Net in a docker container
+There is also a Linux and Windows-Nano container available at [hub.docker.com](https://hub.docker.com/r/sheyenrath).
+For more details see also [WireMock.Net-docker](https://github.com/WireMock-Net/WireMock.Net-docker).
 
 ### SSL
 You can start a standalone mock server listening for HTTPS requests. To do so, there is just a flag to set when creating the server:
