@@ -1,3 +1,11 @@
+# 1.0.4.6 (18 July 2018)
+
+ - [#168](https://github.com/WireMock-Net/WireMock.Net/pull/168) - Expose scenario states contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature
+ - [#163](https://github.com/WireMock-Net/WireMock.Net/issues/163) - Feature: Expose scenario states
+
+Commits: 6b0924029f...8f34291ea9
+
+
 # 1.0.4.5 (17 July 2018)
 
  - [#166](https://github.com/WireMock-Net/WireMock.Net/pull/166) - Fix Sonar issues contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
