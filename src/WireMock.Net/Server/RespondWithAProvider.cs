@@ -12,8 +12,8 @@ namespace WireMock.Server
         private int _priority;
         private string _title;
         private string _path;
-        private object _executionConditionState;
-        private object _nextState;
+        private string _executionConditionState;
+        private string _nextState;
         private string _scenario;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
@@ -87,17 +87,12 @@ namespace WireMock.Server
         }
 
         /// <see cref="IRespondWithAProvider.WhenStateIs"/>
-        public IRespondWithAProvider WhenStateIs(object state)
+        public IRespondWithAProvider WhenStateIs(string state)
         {
             if (string.IsNullOrEmpty(_scenario))
             {
                 throw new NotSupportedException("Unable to set state condition when no scenario is defined.");
             }
-
-            //if (_nextState != null)
-            //{
-            //    throw new NotSupportedException("Unable to set state condition when next state is defined.");
-            //}
 
             _executionConditionState = state;
 
@@ -105,7 +100,7 @@ namespace WireMock.Server
         }
 
         /// <see cref="IRespondWithAProvider.WillSetStateTo"/>
-        public IRespondWithAProvider WillSetStateTo(object state)
+        public IRespondWithAProvider WillSetStateTo(string state)
         {
             if (string.IsNullOrEmpty(_scenario))
             {

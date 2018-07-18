@@ -56,7 +56,7 @@ namespace WireMock.Server
         /// Gets the scenarios.
         /// </summary>
         [PublicAPI]
-        public ConcurrentDictionary<string, object> Scenarios => new ConcurrentDictionary<string, object>(_options.Scenarios);
+        public ConcurrentDictionary<string, ScenarioState> Scenarios => new ConcurrentDictionary<string, ScenarioState>(_options.Scenarios);
 
         #region IDisposable Members
         /// <summary>

@@ -41,14 +41,14 @@ namespace WireMock
         /// Execution state condition for the current mapping.
         /// </summary>
         [CanBeNull]
-        public object ExecutionConditionState { get; }
+        public string ExecutionConditionState { get; }
 
         /// <summary>
         /// The next state which will be signaled after the current mapping execution.
-        /// In case the value is null state will not be changed.
+        /// In case the value is null, state will not be changed.
         /// </summary>
         [CanBeNull]
-        public object NextState { get; }
+        public string NextState { get; }
 
         /// <summary>
         /// The Request matcher.
@@ -77,7 +77,7 @@ namespace WireMock
         /// <param name="scenario">The scenario. [Optional]</param>
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
-        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] object executionConditionState, [CanBeNull] object nextState)
+        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState)
         {
             Guid = guid;
             Title = title;
@@ -106,7 +106,7 @@ namespace WireMock
         /// <param name="requestMessage">The request message.</param>
         /// <param name="nextState">The Next State.</param>
         /// <returns>The <see cref="RequestMatchResult"/>.</returns>
-        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] object nextState)
+        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState)
         {
             var result = new RequestMatchResult();
 

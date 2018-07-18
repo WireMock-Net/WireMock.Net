@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
+using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
 using WireMock.Http;
 using WireMock.Logging;
@@ -41,7 +42,13 @@ namespace WireMock.Server
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        private readonly JsonSerializerSettings _settingsIncludeNullValues = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Include
         };
 
         #region InitAdmin
@@ -525,13 +532,15 @@ namespace WireMock.Server
         #region Scenarios
         private ResponseMessage ScenariosGet(RequestMessage requestMessage)
         {
-            var scenarios = Scenarios.ToArray().Select(s => new
+            var scenariosStates = Scenarios.Values.Select(s => new ScenarioStateModel
             {
-                Name = s.Key,
-                Started = s.Value != null,
-                NextState = s.Value
+                Name = s.Name,
+                NextState = s.NextState,
+                Started = s.Started,
+                Finished = s.Finished
             });
-            return ToJson(scenarios);
+
+            return ToJson(scenariosStates, true);
         }
 
         private ResponseMessage ScenariosReset(RequestMessage requestMessage)
@@ -706,11 +715,11 @@ namespace WireMock.Server
             return responseBuilder;
         }
 
-        private ResponseMessage ToJson<T>(T result)
+        private ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
         {
             return new ResponseMessage
             {
-                Body = JsonConvert.SerializeObject(result, _settings),
+                Body = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings),
                 StatusCode = 200,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
             };

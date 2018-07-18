@@ -22,9 +22,9 @@ namespace WireMock.Owin
 
         public bool AllowPartialMapping { get; set; }
 
-        public ConcurrentDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>(); // Checked
+        public ConcurrentDictionary<Guid, Mapping> Mappings { get; } = new ConcurrentDictionary<Guid, Mapping>();
 
-        public ConcurrentDictionary<string, object> Scenarios { get; } = new ConcurrentDictionary<string, object>(); // Checked
+        public ConcurrentDictionary<string, ScenarioState> Scenarios { get; } = new ConcurrentDictionary<string, ScenarioState>();
 
         public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurentObservableCollection<LogEntry>();
 

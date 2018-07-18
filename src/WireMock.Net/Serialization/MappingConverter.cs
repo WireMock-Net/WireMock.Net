@@ -37,19 +37,16 @@ namespace WireMock.Serialization
                     ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel
                     {
                         Matchers = MatcherMapper.Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                        //Funcs = Map(clientIPMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
                     } : null,
 
                     Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
                     {
                         Matchers = MatcherMapper.Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                        //Funcs = Map(pathMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
                     } : null,
 
                     Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
                     {
                         Matchers = MatcherMapper.Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                        //Funcs = Map(urlMatchers.Where(m => m.Funcs != null).SelectMany(m => m.Funcs))
                     } : null,
 
                     Methods = methodMatcher?.Methods,
@@ -58,28 +55,23 @@ namespace WireMock.Serialization
                     {
                         Name = hm.Name,
                         Matchers = MatcherMapper.Map(hm.Matchers)
-                        //Funcs = Map(hm.Funcs)
                     }).ToList() : null,
 
                     Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
                     {
                         Name = cm.Name,
                         Matchers = MatcherMapper.Map(cm.Matchers)
-                        //Funcs = Map(cm.Funcs)
                     }).ToList() : null,
 
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
                         Matchers = MatcherMapper.Map(pm.Matchers)
-                        //Funcs = Map(pm.Funcs)
                     }).ToList() : null,
 
                     Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
                     {
                         Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
-                        //Func = bodyMatcher != null ? Map(bodyMatcher.Func) : null,
-                        //DataFunc = bodyMatcher != null ? Map(bodyMatcher.DataFunc) : null
                     }
                 },
                 Response = new ResponseModel
