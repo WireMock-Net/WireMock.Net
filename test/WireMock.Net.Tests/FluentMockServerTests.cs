@@ -585,6 +585,24 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("/fooBar");
         }
 
+
+        [Fact]
+        public async Task FluentMockServer_Should_exclude_restrictedResponseHeader_for_IOwinResponse()
+        {
+            _server = FluentMockServer.Start();
+
+            _server
+                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .RespondWith(Response.Create().WithHeader("Keep-Alive", "").WithHeader("test", ""));
+
+            // Act
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+
+            // Assert
+            Check.That(response.Headers.Contains("test")).IsTrue();
+            Check.That(response.Headers.Contains("Keep-Alive")).IsFalse();
+        }
+
         public void Dispose()
         {
             _server?.Stop();
