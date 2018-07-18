@@ -6,7 +6,7 @@
     public class ScenarioState
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets or sets the Name (from the Scenario).
         /// </summary>
         public string Name { get; set; }
 
