@@ -40,6 +40,25 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
+                    .UsingGet()
+                    .WithPath("/proxy-test-keep-alive")
+                )
+                .RespondWith(Response.Create()
+                    .WithHeader("Keep-Alive", "timeout=1, max=1")
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingGet()
+                    .WithPath("/proxy-execute-keep-alive")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new [] { "Keep-Alive" } })
+                    .WithHeader("Keep-Alive-Test", "stef")
+                );
+
+            server
+                .Given(Request.Create()
                     .WithPath("/xpath").UsingPost()
                     .WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"))
                 )
