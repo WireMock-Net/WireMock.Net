@@ -232,16 +232,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals(
-@"{
-  ""Name"": ""Acme Co"",
-  ""Products"": [
-    {
-      ""Name"": ""Anvil"",
-      ""Price"": 50
-    }
-  ]
-}");
+            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
         }
 
         [Fact]
@@ -293,16 +284,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals(
-                @"{
-  ""Name"": ""Acme Co"",
-  ""Products"": [
-    {
-      ""Name"": ""Anvil"",
-      ""Price"": 50
-    }
-  ]
-}");
+            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
         }
 
         [Fact]
