@@ -1,3 +1,10 @@
+# 1.0.4.7 (19 July 2018)
+
+ - [#148](https://github.com/WireMock-Net/WireMock.Net/issues/148) - Question: proxy passthrough when no match?
+
+Commits: f1896ef73a...72394b6d3e
+
+
 # 1.0.4.6 (18 July 2018)
 
  - [#168](https://github.com/WireMock-Net/WireMock.Net/pull/168) - Expose scenario states contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature

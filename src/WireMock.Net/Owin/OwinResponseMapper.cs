@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -49,8 +50,13 @@ namespace WireMock.Owin
                 else
                 {
 #if !NETSTANDARD
-                    response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
+                    // For non-NETSTANDARD, check if this response header can be added (#148)
+                    if (!WebHeaderCollection.IsRestricted(pair.Key, true))
+                    {
+                        response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
+                    }
 #else
+                    // NETSTANDARD can add any header (or so it seems)
                     response.Headers.Append(pair.Key, pair.Value.ToArray());
 #endif
                 }
