@@ -238,6 +238,22 @@ namespace WireMock.Net.ConsoleApplication
                 );
 
             server
+                .Given(Request.Create().WithPath("/jsonpathtestToken").UsingPost())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody("{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}")
+                    .WithTransformer()
+                );
+
+            server
+                .Given(Request.Create().WithPath("/jsonpathtestTokens").UsingPost())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody("[{{#JsonPath.SelectTokens request.body \"$..Products[?(@.Price >= 50)].Name\"}} { \"idx\":{{id}}, \"value\":\"{{value}}\" }, {{/JsonPath.SelectTokens}} {} ]")
+                    .WithTransformer()
+                );
+
+            server
                 .Given(Request.Create()
                     .WithPath("/state1")
                     .UsingGet())

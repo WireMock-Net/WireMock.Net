@@ -8,6 +8,11 @@ namespace WireMock.Transformers
 {
     internal static class ResponseMessageTransformer
     {
+        static ResponseMessageTransformer()
+        {
+            HandlebarsHelpers.Register();
+        }
+
         public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
             bool bodyIsJson = original.BodyAsJson != null;
