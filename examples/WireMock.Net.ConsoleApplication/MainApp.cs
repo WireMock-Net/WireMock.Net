@@ -265,6 +265,22 @@ namespace WireMock.Net.ConsoleApplication
                 );
 
             server
+                .Given(Request.Create().WithPath("/zubinix").UsingPost())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody("{ \"result\": \"{{JsonPath.SelectToken request.bodyAsJson \"username\"}}\" }")
+                    .WithTransformer()
+                );
+
+            server
+                .Given(Request.Create().WithPath("/jsonpathtestTokenJson").UsingPost())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { status = "OK", url = "{{request.url}}", transformed = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" } )
+                    .WithTransformer()
+                );
+
+            server
                 .Given(Request.Create().WithPath("/jsonpathtestTokens").UsingPost())
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")

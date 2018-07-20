@@ -10,7 +10,6 @@ using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
-using Xunit.Sdk;
 
 namespace WireMock.Net.Tests.ResponseBuilderTests
 {
@@ -184,7 +183,61 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_BodyAsString()
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_ResponseBodyAsJson()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"{
+                  ""Stores"": [
+                    ""Lambton Quay"",
+                    ""Willis Street""
+                  ],
+                  ""Manufacturers"": [
+                    {
+                      ""Name"": ""Acme Co"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Anvil"",
+                          ""Price"": 50
+                        }
+                      ]
+                    },
+                    {
+                      ""Name"": ""Contoso"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Elbow Grease"",
+                          ""Price"": 99.95
+                        },
+                        {
+                          ""Name"": ""Headlight Fluid"",
+                          ""Price"": 4
+                        }
+                      ]
+                    }
+                  ]
+                }"
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(new { x = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            Check.That(j["x"]).IsNotNull();
+            Check.That(j["x"]["Name"].ToString()).Equals("Acme Co");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Request_BodyAsString()
         {
             // Assign
             var body = new BodyData
@@ -236,7 +289,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_BodyAsJObject()
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Request_BodyAsJObject()
         {
             // Assign
             var body = new BodyData
@@ -288,7 +341,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_BodyAsString()
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_Request_BodyAsString()
         {
             // Assign
             var body = new BodyData
@@ -340,7 +393,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_BodyAsJObject()
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_Request_BodyAsJObject()
         {
             // Assign
             var body = new BodyData
@@ -413,7 +466,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentNullException>();
         }
     }
 }

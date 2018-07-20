@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using HandlebarsDotNet;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Validation;
 
@@ -13,16 +15,45 @@ namespace WireMock.Transformers
             {
                 (JObject valueToProcess, string jsonpath) = Parse(arguments);
 
-                JToken result = valueToProcess.SelectToken(jsonpath);
-                writer.WriteSafeString(result);
+                JToken result = null;
+                try
+                {
+                    result = valueToProcess.SelectToken(jsonpath);
+                }
+                catch (JsonException)
+                {
+                    // Ignore JsonException and return
+                    return;
+                }
+
+                if (result != null)
+                {
+                    writer.WriteSafeString(result);
+                }
             });
 
             Handlebars.RegisterHelper("JsonPath.SelectTokens", (writer, options, context, arguments) =>
             {
                 (JObject valueToProcess, string jsonpath) = Parse(arguments);
 
+                IEnumerable<JToken> values = null;
+                try
+                {
+                    values = valueToProcess.SelectTokens(jsonpath);
+                }
+                catch (JsonException)
+                {
+                    // Ignore JsonException and return
+                    return;
+                }
+
+                if (values == null)
+                {
+                    return;
+                }
+
                 int id = 0;
-                foreach (JToken value in valueToProcess.SelectTokens(jsonpath))
+                foreach (JToken value in values)
                 {
                     options.Template(writer, new { id, value });
                     id++;

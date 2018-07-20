@@ -76,6 +76,11 @@ namespace WireMock.Owin
 #endif
             )
         {
+            if (responseMessage == null)
+            {
+                return;
+            }
+
             response.StatusCode = responseMessage.StatusCode;
 
             byte[] bytes = null;
