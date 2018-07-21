@@ -1,5 +1,4 @@
-﻿
-namespace WireMock.Matchers
+﻿namespace WireMock.Matchers
 {
     internal static class MatchBehaviourHelper
     {

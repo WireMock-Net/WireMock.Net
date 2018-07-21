@@ -388,7 +388,6 @@ namespace WireMock.Server
         public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
         {
             _options.MaxRequestLogCount = maxRequestLogCount;
-
         }
 
         /// <summary>

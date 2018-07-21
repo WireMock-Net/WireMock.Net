@@ -585,7 +585,6 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("/fooBar");
         }
 
-
         [Fact]
         public async Task FluentMockServer_Should_exclude_restrictedResponseHeader_for_IOwinResponse()
         {
