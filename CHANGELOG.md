@@ -1,8 +1,9 @@
 # 1.0.4.8 (23 July 2018)
 
+ - [#170](https://github.com/WireMock-Net/WireMock.Net/pull/170) - Support json path in the response contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
  - [#167](https://github.com/WireMock-Net/WireMock.Net/issues/167) - Feature: Support for JsonPath in the response (with HandleBars) +feature
 
-Commits: bd5e99b082...4e0b22db08
+Commits: 1f226f7361...1f226f7361
 
 
 # 1.0.4.7 (19 July 2018)
