@@ -1,5 +1,5 @@
 @echo off
-call uninstall.bat
+call Service-Uninstall.bat
 
 SET mypath=%~dp0
 SET targetpath=C:\Services\WireMock.Net.Service\

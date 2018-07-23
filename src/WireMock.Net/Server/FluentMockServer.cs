@@ -14,6 +14,7 @@ using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
+using WireMock.Transformers;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -387,7 +388,6 @@ namespace WireMock.Server
         public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
         {
             _options.MaxRequestLogCount = maxRequestLogCount;
-
         }
 
         /// <summary>

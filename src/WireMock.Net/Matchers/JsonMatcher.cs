@@ -73,10 +73,21 @@ namespace WireMock.Matchers
                     JToken jtokenInput = input is JToken tokenInput ? tokenInput : JObject.FromObject(input);
 
                     // Check if JToken or string or object
-                    JToken jtokenValue =
-                        Value is JToken tokenValue ? tokenValue :
-                        Value is string stringValue ? JToken.Parse(stringValue) :
-                        JObject.FromObject(input);
+                    JToken jtokenValue;
+                    switch (Value)
+                    {
+                        case JToken tokenValue:
+                            jtokenValue = tokenValue;
+                            break;
+
+                        case string stringValue:
+                            jtokenValue = JToken.Parse(stringValue);
+                            break;
+
+                        default:
+                            jtokenValue = JObject.FromObject(Value);
+                            break;
+                    }
 
                     match = JToken.DeepEquals(jtokenValue, jtokenInput);
                 }

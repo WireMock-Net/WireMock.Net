@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
@@ -19,7 +20,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson()
         {
-            // given
+            // Assign
             string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
             var bodyData = new BodyData
             {
@@ -32,17 +33,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBodyAsJson(new { x = "test {{request.url}}" })
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test http://localhost/foo\"}");
         }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
         {
-            // given
+            // Assign
             var body = new BodyData
             {
                 BodyAsString = "whatever"
@@ -53,17 +54,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo post");
         }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPath()
         {
-            // given
+            // Assign
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
@@ -71,17 +72,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBody("{{request.url}} {{request.absoluteurl}} {{request.path}} {{request.absolutepath}}")
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("http://localhost/a/b http://localhost/wiremock/a/b /a/b /wiremock/a/b");
         }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_PathSegments()
         {
-            // given
+            // Assign
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
@@ -89,17 +90,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBody("{{request.pathsegments.[0]}} {{request.absolutepathsegments.[0]}}")
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("a wiremock");
         }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Query()
         {
-            // given
+            // Assign
             var body = new BodyData
             {
                 BodyAsString = "abc"
@@ -110,17 +111,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("test keya=1 idx=1 idx=2 keyb=5");
         }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Header()
         {
-            // given
+            // Assign
             var body = new BodyData
             {
                 BodyAsString = "abc"
@@ -129,10 +130,10 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
 
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("test");
             Check.That(responseMessage.Headers).ContainsKey("x");
             Check.That(responseMessage.Headers["x"]).ContainsExactly("text/plain");
@@ -141,7 +142,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Headers()
         {
-            // given
+            // Assign
             var body = new BodyData
             {
                 BodyAsString = "abc"
@@ -150,10 +151,10 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
 
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("test");
             Check.That(responseMessage.Headers).ContainsKey("x");
             Check.That(responseMessage.Headers["x"]).Contains("text/plain");
@@ -163,7 +164,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Origin_Port_Protocol_Host()
         {
-            // given
+            // Assign
             var body = new BodyData
             {
                 BodyAsString = "abc"
@@ -174,11 +175,298 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")
                 .WithTransformer();
 
-            // act
+            // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
-            // then
+            // Assert
             Check.That(responseMessage.Body).Equals("test http://localhost:1234 1234 http localhost");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_ResponseBodyAsJson()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"{
+                  ""Stores"": [
+                    ""Lambton Quay"",
+                    ""Willis Street""
+                  ],
+                  ""Manufacturers"": [
+                    {
+                      ""Name"": ""Acme Co"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Anvil"",
+                          ""Price"": 50
+                        }
+                      ]
+                    },
+                    {
+                      ""Name"": ""Contoso"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Elbow Grease"",
+                          ""Price"": 99.95
+                        },
+                        {
+                          ""Name"": ""Headlight Fluid"",
+                          ""Price"": 4
+                        }
+                      ]
+                    }
+                  ]
+                }"
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(new { x = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            Check.That(j["x"]).IsNotNull();
+            Check.That(j["x"]["Name"].ToString()).Equals("Acme Co");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Request_BodyAsString()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"{
+                  ""Stores"": [
+                    ""Lambton Quay"",
+                    ""Willis Street""
+                  ],
+                  ""Manufacturers"": [
+                    {
+                      ""Name"": ""Acme Co"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Anvil"",
+                          ""Price"": 50
+                        }
+                      ]
+                    },
+                    {
+                      ""Name"": ""Contoso"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Elbow Grease"",
+                          ""Price"": 99.95
+                        },
+                        {
+                          ""Name"": ""Headlight Fluid"",
+                          ""Price"": 4
+                        }
+                      ]
+                    }
+                  ]
+                }"
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Request_BodyAsJObject()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = JObject.Parse(@"{
+                  'Stores': [
+                    'Lambton Quay',
+                    'Willis Street'
+                  ],
+                  'Manufacturers': [
+                    {
+                      'Name': 'Acme Co',
+                      'Products': [
+                        {
+                          'Name': 'Anvil',
+                          'Price': 50
+                        }
+                      ]
+                    },
+                    {
+                      'Name': 'Contoso',
+                      'Products': [
+                        {
+                          'Name': 'Elbow Grease',
+                          'Price': 99.95
+                        },
+                        {
+                          'Name': 'Headlight Fluid',
+                          'Price': 4
+                        }
+                      ]
+                    }
+                  ]
+                }")
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{{JsonPath.SelectToken request.bodyAsJson \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_Request_BodyAsString()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"{
+                  ""Stores"": [
+                    ""Lambton Quay"",
+                    ""Willis Street""
+                  ],
+                  ""Manufacturers"": [
+                    {
+                      ""Name"": ""Acme Co"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Anvil"",
+                          ""Price"": 50
+                        }
+                      ]
+                    },
+                    {
+                      ""Name"": ""Contoso"",
+                      ""Products"": [
+                        {
+                          ""Name"": ""Elbow Grease"",
+                          ""Price"": 99.95
+                        },
+                        {
+                          ""Name"": ""Headlight Fluid"",
+                          ""Price"": 4
+                        }
+                      ]
+                    }
+                  ]
+                }"
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{{#JsonPath.SelectTokens request.body \"$..Products[?(@.Price >= 50)].Name\"}}{{id}} {{value}},{{/JsonPath.SelectTokens}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(responseMessage.Body).Equals("0 Anvil,1 Elbow Grease,");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_Request_BodyAsJObject()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = JObject.Parse(@"{
+                  'Stores': [
+                    'Lambton Quay',
+                    'Willis Street'
+                  ],
+                  'Manufacturers': [
+                    {
+                      'Name': 'Acme Co',
+                      'Products': [
+                        {
+                          'Name': 'Anvil',
+                          'Price': 50
+                        }
+                      ]
+                    },
+                    {
+                      'Name': 'Contoso',
+                      'Products': [
+                        {
+                          'Name': 'Elbow Grease',
+                          'Price': 99.95
+                        },
+                        {
+                          'Name': 'Headlight Fluid',
+                          'Price': 4
+                        }
+                      ]
+                    }
+                  ]
+                }")
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{{#JsonPath.SelectTokens request.bodyAsJson \"$..Products[?(@.Price >= 50)].Name\"}}{{id}} {{value}},{{/JsonPath.SelectTokens}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(responseMessage.Body).Equals("0 Anvil,1 Elbow Grease,");
+        }
+
+        [Fact]
+        public void Response_ProvideResponse_Handlebars_JsonPath_SelectTokens_Throws()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = JObject.Parse(@"{
+                  'Stores': [
+                    'Lambton Quay',
+                    'Willis Street'
+                  ]
+                }")
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{{#JsonPath.SelectTokens request.body \"$..Products[?(@.Price >= 50)].Name\"}}{{id}} {{value}},{{/JsonPath.SelectTokens}}")
+                .WithTransformer();
+
+            // Act
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentNullException>();
         }
     }
 }

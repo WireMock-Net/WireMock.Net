@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonMatcher_IsMatch_JObject1()
         {
             // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "test" });
+            var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
 
             // Act 
             var jobject = new JObject
@@ -83,7 +83,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonMatcher_IsMatch_JObject2()
         {
             // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "test" });
+            var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
 
             // Act 
             var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
