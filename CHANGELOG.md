@@ -1,3 +1,10 @@
+# 1.0.4.8 (23 July 2018)
+
+ - [#167](https://github.com/WireMock-Net/WireMock.Net/issues/167) - Feature: Support for JsonPath in the response (with HandleBars) +feature
+
+Commits: bd5e99b082...4e0b22db08
+
+
 # 1.0.4.7 (19 July 2018)
 
  - [#169](https://github.com/WireMock-Net/WireMock.Net/pull/169) - Fix for Restricted Response headers contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +fix
