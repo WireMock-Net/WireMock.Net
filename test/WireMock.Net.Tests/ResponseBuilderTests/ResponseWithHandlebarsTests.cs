@@ -183,7 +183,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_ResponseBodyAsJson()
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Object_ResponseBodyAsJson()
         {
             // Assign
             var body = new BodyData
@@ -234,6 +234,27 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             JObject j = JObject.FromObject(responseMessage.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"]["Name"].ToString()).Equals("Acme Co");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Number_ResponseBodyAsJson()
+        {
+            // Assign
+            var body = new BodyData { BodyAsString = "{ \"Price\": 99 }" };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(new { x = "{{JsonPath.SelectToken request.body \"..Price\"}}" })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            Check.That(j["x"].Value<long>()).Equals(99);
         }
 
         [Fact]
