@@ -142,11 +142,11 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyFromFile(@"c:\temp\x.json")
                 );
 
-            server
-                .Given(Request.Create().WithPath("/file_rel").UsingGet())
-                .RespondWith(Response.Create()
-                    .WithBodyFromFile("Program.cs", false)
-                );
+            //server
+            //    .Given(Request.Create().WithPath("/file_rel").UsingGet())
+            //    .RespondWith(Response.Create()
+            //        .WithBodyFromFile("Program.cs", false)
+            //    );
 
             server
                 .Given(Request.Create().WithHeader("ProxyThis", "true")
@@ -176,13 +176,13 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithBody("hi"));
 
-            server
-                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
-                .AtPriority(4)
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
+            //server
+            //    .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
+            //    .AtPriority(4)
+            //    .RespondWith(Response.Create()
+            //        .WithStatusCode(200)
+            //        .WithHeader("Content-Type", "application/json")
+            //        .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
 
             server
                 .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
