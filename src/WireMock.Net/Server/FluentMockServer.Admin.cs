@@ -30,12 +30,13 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
-        private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
         private const string ContentTypeJson = "application/json";
+
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
+
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
 
@@ -104,21 +105,21 @@ namespace WireMock.Server
         /// <summary>
         /// Reads the static mappings from a folder.
         /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
+        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
         [PublicAPI]
         public void ReadStaticMappings([CanBeNull] string folder = null)
         {
             if (folder == null)
             {
-                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
+                folder = _staticMappingHandler.GetMappingFolder();
             }
 
-            if (!Directory.Exists(folder))
+            if (!_staticMappingHandler.FolderExists(folder))
             {
                 return;
             }
 
-            foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
+            foreach (string filename in _staticMappingHandler.EnumerateFiles(folder).OrderBy(f => f))
             {
                 _logger.Info("Reading Static MappingFile : '{0}'", filename);
                 ReadStaticMappingAndAddOrUpdate(filename);
@@ -128,16 +129,16 @@ namespace WireMock.Server
         /// <summary>
         /// Watches the static mappings for changes.
         /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use \__admin\mappings\</param>
+        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
         [PublicAPI]
         public void WatchStaticMappings([CanBeNull] string folder = null)
         {
             if (folder == null)
             {
-                folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
+                folder = _staticMappingHandler.GetMappingFolder();
             }
 
-            if (!Directory.Exists(folder))
+            if (!_staticMappingHandler.FolderExists(folder))
             {
                 return;
             }
@@ -184,7 +185,7 @@ namespace WireMock.Server
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(FileHelper.ReadAllText(path));
+            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(_staticMappingHandler.ReadMappingFile(path));
             if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
             {
                 DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
@@ -347,19 +348,21 @@ namespace WireMock.Server
 
         private void SaveMappingToFile(Mapping mapping)
         {
-            string folder = Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
-            if (!Directory.Exists(folder))
+            string folder = _staticMappingHandler.GetMappingFolder();
+
+            if (!_staticMappingHandler.FolderExists(folder))
             {
-                Directory.CreateDirectory(folder);
+                _staticMappingHandler.CreateFolder(folder);
             }
 
             var model = MappingConverter.ToMappingModel(mapping);
-            string filename = !string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString();
+            string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString()) + ".json";
 
-            string filePath = Path.Combine(folder, filename + ".json");
-            _logger.Info("Saving Mapping to file {0}", filePath);
+            string path = Path.Combine(folder, filename);
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(model, _settings));
+            _logger.Info("Saving Mapping file {0}", filename);
+
+            _staticMappingHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _settings));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')
