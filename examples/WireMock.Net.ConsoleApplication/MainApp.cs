@@ -53,7 +53,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithPath("/proxy-execute-keep-alive")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new [] { "Keep-Alive" } })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new[] { "Keep-Alive" } })
                     .WithHeader("Keep-Alive-Test", "stef")
                 );
 
@@ -142,11 +142,13 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyFromFile(@"c:\temp\x.json")
                 );
 
-            //server
-            //    .Given(Request.Create().WithPath("/file_rel").UsingGet())
-            //    .RespondWith(Response.Create()
-            //        .WithBodyFromFile("Program.cs", false)
-            //    );
+            server
+                .Given(Request.Create().WithPath("/file_rel").UsingGet())
+                .WithGuid("0000aaaa-fcf4-4256-a0d3-1c76e4862947")
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/xml")
+                    .WithBodyFromFile("WireMock.Net.xml", false)
+                );
 
             server
                 .Given(Request.Create().WithHeader("ProxyThis", "true")
@@ -284,7 +286,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/jsonpathtestTokenJson").UsingPost())
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new { status = "OK", url = "{{request.url}}", transformed = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" } )
+                    .WithBodyAsJson(new { status = "OK", url = "{{request.url}}", transformed = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" })
                     .WithTransformer()
                 );
 
