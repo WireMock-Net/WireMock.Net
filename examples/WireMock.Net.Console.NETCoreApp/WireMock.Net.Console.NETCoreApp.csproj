@@ -7,15 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="__admin\mappings\826aff7c-6208-4a3c-923d-575248907db4.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\WireMock.Net.ConsoleApplication\MainApp.cs" Link="MainApp.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="__admin\mappings\11111110-a633-40e8-a244-5cb80bc0ab66.json">
+    <Content Include="__admin\mappings\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
