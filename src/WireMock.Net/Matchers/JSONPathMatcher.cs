@@ -63,7 +63,9 @@ namespace WireMock.Matchers
         public double IsMatch(object input)
         {
             double match = MatchScores.Mismatch;
-            if (input != null)
+
+            // When input is null or byte[], return Mismatch.
+            if (input != null && !(input is byte[]))
             {
                 try
                 {

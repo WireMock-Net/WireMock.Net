@@ -1,3 +1,14 @@
+# 1.0.4.9 (08 August 2018)
+
+ - [#177](https://github.com/WireMock-Net/WireMock.Net/issues/177) - Feature: Skip invalid static mapping files +feature
+ - [#176](https://github.com/WireMock-Net/WireMock.Net/issues/176) - Question: Saving mapping with relative (not found) file fails
+ - [#175](https://github.com/WireMock-Net/WireMock.Net/issues/175) - Bug: Don't allow adding a mapping with no URL or PATH +fix
+ - [#174](https://github.com/WireMock-Net/WireMock.Net/issues/174) - Bug: JsonMatcher and JsonPathMatcher throws when posting byte[] +fix
+ - [#172](https://github.com/WireMock-Net/WireMock.Net/issues/172) - Question: Same/similar fluent interface for in process and admin client API
+
+Commits: 8cb15b2311...d9fde9329a
+
+
 # 1.0.4.8 (23 July 2018)
 
  - [#170](https://github.com/WireMock-Net/WireMock.Net/pull/170) - Support json path in the response contributed by Stef Heyenrath ([StefH](https://github.com/StefH))

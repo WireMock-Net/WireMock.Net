@@ -34,6 +34,20 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
+        public void JsonPathMatcher_IsMatch_ByteArray()
+        {
+            // Assign
+            var bytes = new byte[0];
+            var matcher = new JsonPathMatcher("");
+
+            // Act 
+            double match = matcher.IsMatch(bytes);
+
+            // Assert 
+            Check.That(match).IsEqualTo(0);
+        }
+
+        [Fact]
         public void JsonPathMatcher_IsMatch_NullString()
         {
             // Assign

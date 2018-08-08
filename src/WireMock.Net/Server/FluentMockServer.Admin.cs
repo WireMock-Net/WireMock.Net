@@ -122,7 +122,15 @@ namespace WireMock.Server
             foreach (string filename in _staticMappingHandler.EnumerateFiles(folder).OrderBy(f => f))
             {
                 _logger.Info("Reading Static MappingFile : '{0}'", filename);
-                ReadStaticMappingAndAddOrUpdate(filename);
+
+                try
+                {
+                    ReadStaticMappingAndAddOrUpdate(filename);
+                }
+                catch
+                {
+                    _logger.Error("Static MappingFile : '{0}' could not be read. This file will be skipped.", filename);
+                }
             }
         }
 
@@ -317,9 +325,9 @@ namespace WireMock.Server
             Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
 
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
-            DeserializeAndAddOrUpdateMapping(mappingModel, guid);
+            Guid? guidFromPut = DeserializeAndAddOrUpdateMapping(mappingModel, guid);
 
-            return ResponseMessageBuilder.Create("Mapping added or updated", 200, guid);
+            return ResponseMessageBuilder.Create("Mapping added or updated", 200, guidFromPut);
         }
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
@@ -404,13 +412,18 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("Mapping added", 201, guid);
         }
 
-        private Guid DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
+        private Guid? DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
             Check.NotNull(mappingModel, nameof(mappingModel));
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
             Check.NotNull(mappingModel.Response, nameof(mappingModel.Response));
 
-            var requestBuilder = InitRequestBuilder(mappingModel.Request);
+            var requestBuilder = InitRequestBuilder(mappingModel.Request, true);
+            if (requestBuilder == null)
+            {
+                return null;
+            }
+
             var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
             var respondProvider = Given(requestBuilder);
@@ -514,7 +527,7 @@ namespace WireMock.Server
         {
             var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
-            var request = (Request)InitRequestBuilder(requestModel);
+            var request = (Request)InitRequestBuilder(requestModel, false);
 
             var dict = new Dictionary<LogEntry, RequestMatchResult>();
             foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
@@ -554,7 +567,7 @@ namespace WireMock.Server
         }
         #endregion
 
-        private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
+        private IRequestBuilder InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
         {
             IRequestBuilder requestBuilder = Request.Create();
 
@@ -574,11 +587,13 @@ namespace WireMock.Server
                 }
             }
 
+            bool pathOrUrlmatchersValid = false;
             if (requestModel.Path != null)
             {
                 if (requestModel.Path is string path)
                 {
                     requestBuilder = requestBuilder.WithPath(path);
+                    pathOrUrlmatchersValid = true;
                 }
                 else
                 {
@@ -586,15 +601,16 @@ namespace WireMock.Server
                     if (pathModel?.Matchers != null)
                     {
                         requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(MatcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                        pathOrUrlmatchersValid = true;
                     }
                 }
             }
-
-            if (requestModel.Url != null)
+            else if (requestModel.Url != null)
             {
                 if (requestModel.Url is string url)
                 {
                     requestBuilder = requestBuilder.WithUrl(url);
+                    pathOrUrlmatchersValid = true;
                 }
                 else
                 {
@@ -602,8 +618,15 @@ namespace WireMock.Server
                     if (urlModel?.Matchers != null)
                     {
                         requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(MatcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                        pathOrUrlmatchersValid = true;
                     }
                 }
+            }
+
+            if (pathOrUrlRequired && !pathOrUrlmatchersValid)
+            {
+                _logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
+                return null;
             }
 
             if (requestModel.Methods != null)

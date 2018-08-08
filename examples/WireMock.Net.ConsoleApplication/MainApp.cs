@@ -39,6 +39,14 @@ namespace WireMock.Net.ConsoleApplication
             server.AllowPartialMapping();
 
             server
+                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
+                .AtPriority(4)
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
+
+            server
                 .Given(Request.Create()
                     .UsingGet()
                     .WithPath("/proxy-test-keep-alive")
@@ -53,7 +61,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithPath("/proxy-execute-keep-alive")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new [] { "Keep-Alive" } })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new[] { "Keep-Alive" } })
                     .WithHeader("Keep-Alive-Test", "stef")
                 );
 
@@ -144,8 +152,10 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create().WithPath("/file_rel").UsingGet())
+                .WithGuid("0000aaaa-fcf4-4256-a0d3-1c76e4862947")
                 .RespondWith(Response.Create()
-                    .WithBodyFromFile("Program.cs", false)
+                    .WithHeader("Content-Type", "application/xml")
+                    .WithBodyFromFile("WireMock.Net.xml", false)
                 );
 
             server
@@ -175,14 +185,6 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithBody("hi"));
-
-            server
-                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
-                .AtPriority(4)
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBody(@"{ ""result"": ""Contains x with FUNC 200""}"));
 
             server
                 .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
@@ -284,7 +286,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/jsonpathtestTokenJson").UsingPost())
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new { status = "OK", url = "{{request.url}}", transformed = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" } )
+                    .WithBodyAsJson(new { status = "OK", url = "{{request.url}}", transformed = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" })
                     .WithTransformer()
                 );
 

@@ -3,14 +3,7 @@
   "Title": "",
   "Priority": 0,
   "Request": {
-    "Path": {
-      "Matchers": [
-        {
-          "Name": "WildcardMatcher",
-          "Pattern": "/proxy-google-test-post"
-        }
-      ]
-    },
+    "Path": "/proxy-google-test-post",
     "Methods": [
       "post"
     ],
