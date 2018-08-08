@@ -121,7 +121,15 @@ namespace WireMock.Server
             foreach (string filename in Directory.EnumerateFiles(folder).OrderBy(f => f))
             {
                 _logger.Info("Reading Static MappingFile : '{0}'", filename);
-                ReadStaticMappingAndAddOrUpdate(filename);
+
+                try
+                {
+                    ReadStaticMappingAndAddOrUpdate(filename);
+                }
+                catch
+                {
+                    _logger.Error("Static MappingFile : '{0}' could not be read. This file will be skipped.", filename);
+                }
             }
         }
 
