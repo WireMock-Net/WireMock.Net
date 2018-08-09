@@ -40,9 +40,9 @@ namespace WireMock.Net.ConsoleApplication
         };
 
         /// <inheritdoc cref="IStaticMappingHandler.WriteMappingFile"/>
-        public Action<string, string> WriteMappingFile { get; } = (filename, text) =>
+        public Action<string, string> WriteMappingFile { get; } = (path, text) =>
         {
-            File.WriteAllText(filename, text);
+            File.WriteAllText(path, text);
         };
     }
 }

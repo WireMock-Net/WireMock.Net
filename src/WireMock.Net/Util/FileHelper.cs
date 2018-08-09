@@ -24,7 +24,6 @@ namespace WireMock.Util
                 }
                 catch
                 {
-                    // You may check error code to filter some exceptions, not every error can be recovered.
                     Thread.Sleep(DelayOnRetry);
                 }
             }
