@@ -10,12 +10,11 @@ namespace WireMock.Net.Tests.Util
 {
     public class FileHelperTests
     {
-        private Mock<IStaticMappingHandler> _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
-
         [Fact]
         public void FileHelper_ReadAllTextWithRetryAndDelay()
         {
             // Assign
+            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
             _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Returns((string path) => "text");
 
             // Act
@@ -32,6 +31,7 @@ namespace WireMock.Net.Tests.Util
         public void FileHelper_ReadAllTextWithRetryAndDelay_Throws()
         {
             // Assign
+            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
             _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Throws<NotSupportedException>();
 
             // Act

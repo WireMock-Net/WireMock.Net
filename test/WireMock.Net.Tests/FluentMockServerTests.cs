@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -14,6 +15,10 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 using Newtonsoft.Json;
+using WireMock.Handlers;
+using WireMock.Logging;
+using WireMock.Settings;
+using WireMock.Admin.Mappings;
 
 namespace WireMock.Net.Tests
 {
@@ -106,6 +111,53 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Provider).IsNotNull();
             Check.That(mappings.First().Guid).Equals(Guid.Parse(guid));
             Check.That(mappings.First().Title).IsNullOrEmpty();
+        }
+
+        [Fact]
+        public void FluentMockServer_ReadStaticMappings_FolderExistsIsTrue()
+        {
+            // Assign
+            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
+            _staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
+            _staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
+            _staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>())).Returns(new string[0]);
+
+            _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StaticMappingHandler = _staticMappingHandlerMock.Object
+            });
+
+            // Act
+            _server.ReadStaticMappings();
+
+            // Assert and Verify
+            _staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.EnumerateFiles("folder"), Times.Once);
+        }
+
+        [Fact]
+        public void FluentMockServer_ReadStaticMappingAndAddOrUpdate()
+        {
+            // Assign
+            string model = JsonConvert.SerializeObject(new MappingModel
+            {
+                Request = new RequestModel(),
+                Response = new ResponseModel()
+            });
+            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
+            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Returns((string path) => model);
+
+            _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StaticMappingHandler = _staticMappingHandlerMock.Object
+            });
+
+            // Act
+            _server.ReadStaticMappingAndAddOrUpdate("test.json");
+
+            // Assert and Verify
+            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile, Times.Once);
         }
 
         [Fact]
