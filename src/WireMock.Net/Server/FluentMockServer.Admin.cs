@@ -116,6 +116,7 @@ namespace WireMock.Server
 
             if (!_staticMappingHandler.FolderExists(folder))
             {
+                _logger.Info("The Static Mapping folder '{0}' does not exist, reading Static MappingFiles will be skipped.", folder);
                 return;
             }
 

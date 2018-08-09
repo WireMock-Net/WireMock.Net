@@ -460,28 +460,31 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Should_respond_a_redirect_without_body()
         {
-            // given
+            // Assign
+            string path = $"/foo_{Guid.NewGuid()}";
+            string pathToRedirect = $"/bar_{Guid.NewGuid()}";
+
             _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/foo")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(307)
-                    .WithHeader("Location", "/bar"));
+                    .WithHeader("Location", pathToRedirect));
             _server
                 .Given(Request.Create()
-                    .WithPath("/bar")
+                    .WithPath(pathToRedirect)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithBody("REDIRECT SUCCESSFUL"));
 
-            // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            // Act
+            var response = await new HttpClient().GetStringAsync($"http://localhost:{_server.Ports[0]}{path}");
 
-            // then
+            // Assert
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
         }
 

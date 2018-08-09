@@ -30,7 +30,7 @@ namespace WireMock.Net.ConsoleApplication
         /// <inheritdoc cref="IStaticMappingHandler.GetMappingFolder"/>
         public string GetMappingFolder()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
+            return Path.Combine(@"c:\temp-wiremock", AdminMappingsFolder);
         }
 
         /// <inheritdoc cref="IStaticMappingHandler.ReadMappingFile"/>

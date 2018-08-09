@@ -2,19 +2,26 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
+    <StartupObject>WireMock.Net.Console.NETCoreApp.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\WireMock.Net.ConsoleApplication\CustomStaticMappingFileHandler.cs" Link="CustomStaticMappingFileHandler.cs" />
     <Compile Include="..\WireMock.Net.ConsoleApplication\MainApp.cs" Link="MainApp.cs" />
+    <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="__admin\mappings\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\WireMock.Net.Console.NETCoreApp\log4net.config" Link="log4net.config" />
+    <None Include="..\WireMock.Net.Console.NETCoreApp\nlog.config" Link="nlog.config" />
   </ItemGroup>
 
   <ItemGroup>

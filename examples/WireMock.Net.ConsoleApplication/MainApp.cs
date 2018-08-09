@@ -30,7 +30,9 @@ namespace WireMock.Net.ConsoleApplication
                 //},
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); },
-                Logger = new WireMockConsoleLogger()
+                Logger = new WireMockConsoleLogger(),
+
+                StaticMappingHandler = new CustomStaticMappingFileHandler()
             });
             System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
 
