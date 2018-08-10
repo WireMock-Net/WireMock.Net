@@ -101,7 +101,20 @@ namespace WireMock.Server
         }
         #endregion
 
-        #region StaticMappings
+        #region StaticMappings        
+        /// <summary>
+        /// Saves the static mappings.
+        /// </summary>
+        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        [PublicAPI]
+        public void SaveStaticMappings([CanBeNull] string folder = null)
+        {
+            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
+            {
+                SaveMappingToFile(mapping, folder);
+            }
+        }
+
         /// <summary>
         /// Reads the static mappings from a folder.
         /// </summary>
@@ -111,16 +124,16 @@ namespace WireMock.Server
         {
             if (folder == null)
             {
-                folder = _staticMappingHandler.GetMappingFolder();
+                folder = _fileSystemHandler.GetMappingFolder();
             }
 
-            if (!_staticMappingHandler.FolderExists(folder))
+            if (!_fileSystemHandler.FolderExists(folder))
             {
                 _logger.Info("The Static Mapping folder '{0}' does not exist, reading Static MappingFiles will be skipped.", folder);
                 return;
             }
 
-            foreach (string filename in _staticMappingHandler.EnumerateFiles(folder).OrderBy(f => f))
+            foreach (string filename in _fileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
             {
                 _logger.Info("Reading Static MappingFile : '{0}'", filename);
 
@@ -144,10 +157,10 @@ namespace WireMock.Server
         {
             if (folder == null)
             {
-                folder = _staticMappingHandler.GetMappingFolder();
+                folder = _fileSystemHandler.GetMappingFolder();
             }
 
-            if (!_staticMappingHandler.FolderExists(folder))
+            if (!_fileSystemHandler.FolderExists(folder))
             {
                 return;
             }
@@ -194,7 +207,7 @@ namespace WireMock.Server
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(_staticMappingHandler.ReadMappingFile(path));
+            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(_fileSystemHandler.ReadMappingFile(path));
             if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
             {
                 DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
@@ -347,21 +360,21 @@ namespace WireMock.Server
         #region Mappings
         private ResponseMessage MappingsSave(RequestMessage requestMessage)
         {
-            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-            {
-                SaveMappingToFile(mapping);
-            }
+            SaveStaticMappings();
 
             return ResponseMessageBuilder.Create("Mappings saved to disk");
         }
 
-        private void SaveMappingToFile(Mapping mapping)
+        private void SaveMappingToFile(Mapping mapping, string folder = null)
         {
-            string folder = _staticMappingHandler.GetMappingFolder();
-
-            if (!_staticMappingHandler.FolderExists(folder))
+            if (folder == null)
             {
-                _staticMappingHandler.CreateFolder(folder);
+                folder = _fileSystemHandler.GetMappingFolder();
+            }
+
+            if (!_fileSystemHandler.FolderExists(folder))
+            {
+                _fileSystemHandler.CreateFolder(folder);
             }
 
             var model = MappingConverter.ToMappingModel(mapping);
@@ -371,7 +384,7 @@ namespace WireMock.Server
 
             _logger.Info("Saving Mapping file {0}", filename);
 
-            _staticMappingHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _settings));
+            _fileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _settings));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')

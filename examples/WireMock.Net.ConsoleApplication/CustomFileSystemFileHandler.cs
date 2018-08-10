@@ -1,48 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using WireMock.Handlers;
 
 namespace WireMock.Net.ConsoleApplication
 {
-    internal class CustomStaticMappingFileHandler : IStaticMappingHandler
+    internal class CustomFileSystemFileHandler : IFileSystemHandler
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
 
-        /// <inheritdoc cref="IStaticMappingHandler.FolderExists"/>
+        /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
         public bool FolderExists(string path)
         {
             return Directory.Exists(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.CreateFolder"/>
+        /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
         public void CreateFolder(string path)
         {
             Directory.CreateDirectory(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.EnumerateFiles"/>
+        /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
         public IEnumerable<string> EnumerateFiles(string path)
         {
             return Directory.EnumerateFiles(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.GetMappingFolder"/>
+        /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
         public string GetMappingFolder()
         {
             return Path.Combine(@"c:\temp-wiremock", AdminMappingsFolder);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.ReadMappingFile"/>
-        public Func<string, string> ReadMappingFile { get; } = (path) =>
+        /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
+        public string ReadMappingFile(string path)
         {
             return File.ReadAllText(path);
-        };
+        }
 
-        /// <inheritdoc cref="IStaticMappingHandler.WriteMappingFile"/>
-        public Action<string, string> WriteMappingFile { get; } = (path, text) =>
+        /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile"/>
+        public void WriteMappingFile(string path, string text)
         {
             File.WriteAllText(path, text);
-        };
+        }
     }
 }

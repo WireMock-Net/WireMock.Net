@@ -14,8 +14,8 @@ namespace WireMock.Net.Tests.Util
         public void FileHelper_ReadAllTextWithRetryAndDelay()
         {
             // Assign
-            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
-            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Returns((string path) => "text");
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns("text");
 
             // Act
             string result = FileHelper.ReadAllTextWithRetryAndDelay(_staticMappingHandlerMock.Object, @"c:\temp");
@@ -24,21 +24,21 @@ namespace WireMock.Net.Tests.Util
             Check.That(result).Equals("text");
 
             // Verify
-            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile, Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\temp"), Times.Once);
         }
 
         [Fact]
         public void FileHelper_ReadAllTextWithRetryAndDelay_Throws()
         {
             // Assign
-            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
-            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Throws<NotSupportedException>();
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Throws<NotSupportedException>();
 
             // Act
             Check.ThatCode(() => FileHelper.ReadAllTextWithRetryAndDelay(_staticMappingHandlerMock.Object, @"c:\temp")).Throws<IOException>();
 
             // Verify
-            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile, Times.Exactly(3));
+            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\temp"), Times.Exactly(3));
         }
     }
 }

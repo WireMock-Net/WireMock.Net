@@ -111,6 +111,6 @@ namespace WireMock.Settings
         /// Handler to interact with the file system to read and write static mapping files.
         /// </summary>
         [PublicAPI]
-        IStaticMappingHandler StaticMappingHandler { get; set; }
+        IFileSystemHandler FileSystemHandler { get; set; }
     }
 }

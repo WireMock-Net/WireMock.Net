@@ -11,7 +11,7 @@ namespace WireMock.Util
         private const int NumberOfRetries = 3;
         private const int DelayOnRetry = 500;
 
-        public static string ReadAllTextWithRetryAndDelay([NotNull] IStaticMappingHandler filehandler, [NotNull] string path)
+        public static string ReadAllTextWithRetryAndDelay([NotNull] IFileSystemHandler filehandler, [NotNull] string path)
         {
             Check.NotNull(filehandler, nameof(filehandler));
             Check.NotNullOrEmpty(path, nameof(path));

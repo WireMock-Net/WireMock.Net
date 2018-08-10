@@ -48,6 +48,35 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void FluentMockServer_SaveStaticMappings()
+        {
+            // Assign
+            string guid = "791a3f31-6946-aaaa-8e6f-0237c7441111";
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            _staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
+            _staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
+            _staticMappingHandlerMock.Setup(m => m.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()));
+
+            _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                FileSystemHandler = _staticMappingHandlerMock.Object
+            });
+
+            _server
+                .Given(Request.Create().WithPath($"/foo_{Guid.NewGuid()}"))
+                .WithGuid(guid)
+                .RespondWith(Response.Create().WithBody("save test"));
+
+            // Act
+            _server.SaveStaticMappings();
+
+            // Assert and Verify
+            _staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.WriteMappingFile(Path.Combine("folder", guid + ".json"), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
         public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
         {
             var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
@@ -117,14 +146,14 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_ReadStaticMappings_FolderExistsIsTrue()
         {
             // Assign
-            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
             _staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
             _staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
             _staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>())).Returns(new string[0]);
 
             _server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                StaticMappingHandler = _staticMappingHandlerMock.Object
+                FileSystemHandler = _staticMappingHandlerMock.Object
             });
 
             // Act
@@ -140,24 +169,20 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_ReadStaticMappingAndAddOrUpdate()
         {
             // Assign
-            string model = JsonConvert.SerializeObject(new MappingModel
-            {
-                Request = new RequestModel(),
-                Response = new ResponseModel()
-            });
-            var _staticMappingHandlerMock = new Mock<IStaticMappingHandler>();
-            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile).Returns((string path) => model);
+            string mapping = "{\"Request\": {\"Path\": {\"Matchers\": [{\"Name\": \"WildcardMatcher\",\"Pattern\": \"/static/mapping\"}]},\"Methods\": [\"get\"]},\"Response\": {\"BodyAsJson\": { \"body\": \"static mapping\" }}}";
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns(mapping);
 
             _server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                StaticMappingHandler = _staticMappingHandlerMock.Object
+                FileSystemHandler = _staticMappingHandlerMock.Object
             });
 
             // Act
-            _server.ReadStaticMappingAndAddOrUpdate("test.json");
+            _server.ReadStaticMappingAndAddOrUpdate(@"c:\test.json");
 
             // Assert and Verify
-            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile, Times.Once);
+            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\test.json"), Times.Once);
         }
 
         [Fact]

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\WireMock.Net.ConsoleApplication\CustomStaticMappingFileHandler.cs" Link="CustomStaticMappingFileHandler.cs" />
+    <Compile Include="..\WireMock.Net.ConsoleApplication\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
     <Compile Include="..\WireMock.Net.ConsoleApplication\MainApp.cs" Link="MainApp.cs" />
   </ItemGroup>
 

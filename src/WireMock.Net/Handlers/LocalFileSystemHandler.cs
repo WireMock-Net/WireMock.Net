@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace WireMock.Handlers
@@ -7,44 +6,44 @@ namespace WireMock.Handlers
     /// <summary>
     /// Default implementation for a handler to interact with the local file system to read and write static mapping files.
     /// </summary>
-    public class LocalFileSystemStaticMappingFileHandler : IStaticMappingHandler
+    public class LocalFileSystemHandler : IFileSystemHandler
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
 
-        /// <inheritdoc cref="IStaticMappingHandler.FolderExists"/>
+        /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
         public bool FolderExists(string path)
         {
             return Directory.Exists(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.CreateFolder"/>
+        /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
         public void CreateFolder(string path)
         {
             Directory.CreateDirectory(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.EnumerateFiles"/>
+        /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
         public IEnumerable<string> EnumerateFiles(string path)
         {
             return Directory.EnumerateFiles(path);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.GetMappingFolder"/>
+        /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
         public string GetMappingFolder()
         {
             return Path.Combine(Directory.GetCurrentDirectory(), AdminMappingsFolder);
         }
 
-        /// <inheritdoc cref="IStaticMappingHandler.ReadMappingFile"/>
-        public Func<string, string> ReadMappingFile { get; } = (path) =>
+        /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
+        public string ReadMappingFile(string path)
         {
             return File.ReadAllText(path);
-        };
+        }
 
-        /// <inheritdoc cref="IStaticMappingHandler.WriteMappingFile"/>
-        public Action<string, string> WriteMappingFile { get; } = (path, text) =>
+        /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile"/>
+        public void WriteMappingFile(string path, string text)
         {
             File.WriteAllText(path, text);
-        };
+        }
     }
 }

@@ -54,7 +54,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomStaticMappingFileHandler.cs" />
+    <Compile Include="CustomFileSystemFileHandler.cs" />
     <Compile Include="MainApp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -25,7 +25,7 @@ namespace WireMock.Server
     public partial class FluentMockServer : IDisposable
     {
         private readonly IWireMockLogger _logger;
-        private readonly IStaticMappingHandler _staticMappingHandler;
+        private readonly IFileSystemHandler _fileSystemHandler;
 
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
@@ -187,7 +187,7 @@ namespace WireMock.Server
             settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
 
             _logger = settings.Logger;
-            _staticMappingHandler = settings.StaticMappingHandler ?? new LocalFileSystemStaticMappingFileHandler();
+            _fileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
             _logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));

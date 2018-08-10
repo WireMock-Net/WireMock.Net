@@ -79,9 +79,9 @@ namespace WireMock.Settings
         [JsonIgnore]
         public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
 
-        /// <inheritdoc cref="IFluentMockServerSettings.StaticMappingHandler"/>
+        /// <inheritdoc cref="IFluentMockServerSettings.FileSystemHandler"/>
         [PublicAPI]
         [JsonIgnore]
-        public IStaticMappingHandler StaticMappingHandler { get; set; } = new LocalFileSystemStaticMappingFileHandler();
+        public IFileSystemHandler FileSystemHandler { get; set; } = new LocalFileSystemHandler();
     }
 }

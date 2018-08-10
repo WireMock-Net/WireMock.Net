@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WireMock.Handlers
 {
     /// <summary>
-    /// Handler to interact with the file system to read and write static mapping files.
+    /// Handler to interact with the file system to handle folders and read and write static mapping files.
     /// </summary>
-    public interface IStaticMappingHandler
+    public interface IFileSystemHandler
     {
         /// <summary>
         /// Gets the folder where the static mappings are located. For local file system, this would be `{CurrentFolder}/__admin/mappings`.
@@ -35,13 +34,16 @@ namespace WireMock.Handlers
         IEnumerable<string> EnumerateFiles(string path);
 
         /// <summary>
-        /// Delegate to read the static mapping by the specified path (folder + filename with .json extension)
+        /// Read a static mapping file as text.
         /// </summary>
-        Func<string, string> ReadMappingFile { get; }
+        /// <param name="path">The path (folder + filename with .json extension).</param>
+        string ReadMappingFile(string path);
 
         /// <summary>
-        /// Delegate to write the static mapping by the specified path (folder + filename with .json extension) and text;
+        /// Write the static mapping.
         /// </summary>
-        Action<string, string> WriteMappingFile { get; }
+        /// <param name="path">The path (folder + filename with .json extension).</param>
+        /// <param name="text">The text.</param>
+        void WriteMappingFile(string path, string text);
     }
 }
