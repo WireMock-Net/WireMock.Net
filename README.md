@@ -32,7 +32,7 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 ### Frameworks
 The following frameworks are supported:
-- net 4.5.2 and up & net 4.6 and up
+- net 4.5.1 and up & net 4.6 and up
 - netstandard 1.3 & netstandard 2.0
 
 ### Build info
