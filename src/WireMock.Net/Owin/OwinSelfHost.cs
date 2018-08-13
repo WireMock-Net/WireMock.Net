@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD
+﻿#if !USE_ASPNETCORE
 using JetBrains.Annotations;
 using Microsoft.Owin.Hosting;
 using Owin;
@@ -67,7 +67,7 @@ namespace WireMock.Owin
 #if NET46
             _logger.Info("WireMock.Net server using .net 4.6.x or higher");
 #else
-            _logger.Info("WireMock.Net server using .net 4.5.x or higher");
+            _logger.Info("WireMock.Net server using .net 4.5.x");
 #endif
             var servers = new List<IDisposable>();
 

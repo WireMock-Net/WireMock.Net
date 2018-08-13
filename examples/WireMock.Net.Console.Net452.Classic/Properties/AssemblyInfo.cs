@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WireMock.Net.ConsoleApplication")]
+[assembly: AssemblyTitle("WireMock.Net.Console.Net452.Classic")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WireMock.Net.ConsoleApplication")]
-[assembly: AssemblyCopyright("Copyright © Stef Heyenrath 2017")]
+[assembly: AssemblyProduct("WireMock.Net.Console.Net452.Classic")]
+[assembly: AssemblyCopyright("Copyright © Stef Heyenrath 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

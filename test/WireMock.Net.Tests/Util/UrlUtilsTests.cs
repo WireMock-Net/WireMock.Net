@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Owin;
+using Microsoft.AspNetCore.Http;
 using NFluent;
 using WireMock.Util;
 using Xunit;

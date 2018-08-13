@@ -5,7 +5,7 @@
     <AssemblyTitle>WireMock.Net</AssemblyTitle>
     <Version>1.0.4.9</Version>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net</AssemblyName>
     <PackageId>WireMock.Net</PackageId>
@@ -24,13 +24,17 @@
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>NETSTANDARD</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,7 +45,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.4" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="RestEase" Version="1.4.4" />
@@ -75,6 +79,14 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Handlebars.Net" Version="1.9.5" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
+    <!--<PackageReference Include="System.Net.Http" Version="4.3.3" />-->
+    <PackageReference Include="XPath2" Version="1.0.5.1" />
+    <!--<PackageReference Include="System.ValueTuple" Version="4.5.0" />-->
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="Handlebars.Net" Version="1.9.5" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.7" />
@@ -86,7 +98,7 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Handlebars.Net" Version="1.9.5" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
     <PackageReference Include="XPath2" Version="1.0.5.1" />
   </ItemGroup>
 

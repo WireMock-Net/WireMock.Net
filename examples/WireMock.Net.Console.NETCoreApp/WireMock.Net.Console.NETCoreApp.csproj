@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\WireMock.Net.ConsoleApplication\MainApp.cs" Link="MainApp.cs" />
+    <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>

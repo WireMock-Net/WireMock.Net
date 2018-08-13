@@ -32,8 +32,10 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 ### Frameworks
 The following frameworks are supported:
-- net 4.5.1 and up & net 4.6 and up
-- netstandard 1.3 & netstandard 2.0
+- net 4.5.1 and up (Microsoft.AspNet.WebApi.OwinSelfHost versie 5.2.6)
+- net 4.6.1 and up (Microsoft.AspNetCore versie 2.1.2)
+- netstandard 1.3 (Microsoft.AspNetCore versie 1.1.7)
+- netstandard 2.0 (Microsoft.AspNetCore versie 2.1.2)
 
 ### Build info
 To build you need:

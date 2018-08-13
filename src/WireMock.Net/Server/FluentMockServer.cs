@@ -202,7 +202,7 @@ namespace WireMock.Server
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _logger;
 
-#if NETSTANDARD
+#if USE_ASPNETCORE
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
 #else
             _httpServer = new OwinSelfHost(_options, Urls);

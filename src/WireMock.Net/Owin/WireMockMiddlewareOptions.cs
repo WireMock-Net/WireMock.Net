@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Owin;
 #else
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +32,7 @@ namespace WireMock.Owin
 
         public int? MaxRequestLogCount { get; set; }
 
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         public Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
 
         public Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }

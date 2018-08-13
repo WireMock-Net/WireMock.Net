@@ -586,20 +586,22 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Should_exclude_restrictedResponseHeader_for_IOwinResponse()
+        public async Task FluentMockServer_Should_not_exclude_restrictedResponseHeader_for_ASPNETCORE()
         {
+            // Assign
+            string path = $"/foo_{Guid.NewGuid()}";
             _server = FluentMockServer.Start();
 
             _server
-                .Given(Request.Create().WithPath("/foo").UsingGet())
-                .RespondWith(Response.Create().WithHeader("Keep-Alive", "").WithHeader("test", ""));
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .RespondWith(Response.Create().WithHeader("Keep-Alive", "k").WithHeader("test", "t"));
 
             // Act
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
 
             // Assert
             Check.That(response.Headers.Contains("test")).IsTrue();
-            Check.That(response.Headers.Contains("Keep-Alive")).IsFalse();
+            Check.That(response.Headers.Contains("Keep-Alive")).IsTrue();
         }
 
         public void Dispose()
