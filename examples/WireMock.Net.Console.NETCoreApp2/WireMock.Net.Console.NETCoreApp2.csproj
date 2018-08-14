@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
     <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
+    <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>

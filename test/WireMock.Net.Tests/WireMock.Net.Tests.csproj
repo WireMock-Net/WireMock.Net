@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net452;net462</TargetFrameworks>
+    <TargetFrameworks>net452;netcoreapp2.1</TargetFrameworks>
     <DebugType>full</DebugType>
     <AssemblyName>WireMock.Net.Tests</AssemblyName>
     <PackageId>WireMock.Net.Tests</PackageId>
@@ -23,8 +23,8 @@
     <PackageReference Include="ReportGenerator" Version="3.1.2" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.4" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.3.1" /> 
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" /> 
+    <PackageReference Include="xunit" Version="2.4.0" /> 
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" /> 
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net452'">

@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs">
+      <Link>CustomFileSystemFileHandler.cs</Link>
+    </Compile>
     <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs">
       <Link>MainApp.cs</Link>
     </Compile>

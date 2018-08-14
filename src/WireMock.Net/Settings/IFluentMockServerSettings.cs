@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using WireMock.Handlers;
 using WireMock.Logging;
 
 namespace WireMock.Settings
@@ -105,5 +106,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         IWireMockLogger Logger { get; set; }
+
+        /// <summary>
+        /// Handler to interact with the file system to read and write static mapping files.
+        /// </summary>
+        [PublicAPI]
+        IFileSystemHandler FileSystemHandler { get; set; }
     }
 }

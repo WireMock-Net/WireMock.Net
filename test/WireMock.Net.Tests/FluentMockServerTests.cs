@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -14,12 +15,13 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 using Newtonsoft.Json;
+using WireMock.Handlers;
+using WireMock.Settings;
 
 namespace WireMock.Net.Tests
 {
-    public partial class FluentMockServerTests : IDisposable
+    public partial class FluentMockServerTests
     {
-        private FluentMockServer _server;
         private static string jsonRequestMessage = @"{ ""message"" : ""Hello server"" }";
 
         // For for AppVeyor + OpenCover
@@ -43,12 +45,41 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void FluentMockServer_SaveStaticMappings()
+        {
+            // Assign
+            string guid = "791a3f31-6946-aaaa-8e6f-0237c7441111";
+            var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
+            staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
+            staticMappingHandlerMock.Setup(m => m.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()));
+
+            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                FileSystemHandler = staticMappingHandlerMock.Object
+            });
+
+            _server
+                .Given(Request.Create().WithPath($"/foo_{Guid.NewGuid()}"))
+                .WithGuid(guid)
+                .RespondWith(Response.Create().WithBody("save test"));
+
+            // Act
+            _server.SaveStaticMappings();
+
+            // Assert and Verify
+            staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.WriteMappingFile(Path.Combine("folder", guid + ".json"), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
         public void FluentMockServer_ReadStaticMapping_WithNonGuidFilename()
         {
             var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
             string title = "documentdb_root_title";
 
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "documentdb_root.json");
             _server.ReadStaticMappingAndAddOrUpdate(folder);
@@ -67,7 +98,7 @@ namespace WireMock.Net.Tests
         {
             string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
 
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
             _server.ReadStaticMappingAndAddOrUpdate(folder);
 
@@ -96,7 +127,7 @@ namespace WireMock.Net.Tests
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(folder, output);
 
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
             _server.ReadStaticMappingAndAddOrUpdate(folder);
 
             var mappings = _server.Mappings.ToArray();
@@ -109,9 +140,52 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void FluentMockServer_ReadStaticMappings_FolderExistsIsTrue()
+        {
+            // Assign
+            var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
+            staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
+            staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>())).Returns(new string[0]);
+
+            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                FileSystemHandler = staticMappingHandlerMock.Object
+            });
+
+            // Act
+            _server.ReadStaticMappings();
+
+            // Assert and Verify
+            staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.EnumerateFiles("folder"), Times.Once);
+        }
+
+        [Fact]
+        public void FluentMockServer_ReadStaticMappingAndAddOrUpdate()
+        {
+            // Assign
+            string mapping = "{\"Request\": {\"Path\": {\"Matchers\": [{\"Name\": \"WildcardMatcher\",\"Pattern\": \"/static/mapping\"}]},\"Methods\": [\"get\"]},\"Response\": {\"BodyAsJson\": { \"body\": \"static mapping\" }}}";
+            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns(mapping);
+
+            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                FileSystemHandler = _staticMappingHandlerMock.Object
+            });
+
+            // Act
+            _server.ReadStaticMappingAndAddOrUpdate(@"c:\test.json");
+
+            // Assert and Verify
+            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\test.json"), Times.Once);
+        }
+
+        [Fact]
         public void FluentMockServer_ReadStaticMappings()
         {
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
             _server.ReadStaticMappings(folder);
@@ -124,7 +198,7 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_WithGuid_Get()
         {
             Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
@@ -140,9 +214,9 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_WithGuidAsString_Get()
         {
             string guid = "90356dba-b36c-469a-a17e-669cd84f1f05";
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
+            _server.Given(Request.Create().WithPath("/foo100").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
 
             var mappings = _server.Mappings.ToArray();
@@ -153,7 +227,7 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_Add_SameGuid()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             var response1 = Response.Create().WithStatusCode(500);
             _server.Given(Request.Create().UsingGet())
@@ -178,7 +252,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Admin_Mappings_AtPriority()
         {
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             // given
             _server.Given(Request.Create().WithPath("/1").UsingGet())
@@ -203,7 +277,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Requests_Get()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             // when
             await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
@@ -219,13 +293,14 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_methodPatch()
         {
             // given
-            _server = FluentMockServer.Start();
+            string path = $"/foo_{Guid.NewGuid()}";
+            var _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo").UsingMethod("patch"))
+            _server.Given(Request.Create().WithPath(path).UsingMethod("patch"))
                 .RespondWith(Response.Create().WithBody("hello patch"));
 
             // when
-            var msg = new HttpRequestMessage(new HttpMethod("patch"), new Uri("http://localhost:" + _server.Ports[0] + "/foo"))
+            var msg = new HttpRequestMessage(new HttpMethod("patch"), new Uri("http://localhost:" + _server.Ports[0] + path))
             {
                 Content = new StringContent("{\"data\": {\"attr\":\"value\"}}")
             };
@@ -247,7 +322,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_bodyAsString()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
@@ -268,7 +343,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_BodyAsJson()
         {
             // Assign
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create().UsingAnyMethod())
@@ -285,7 +360,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
         {
             // Assign
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create().UsingAnyMethod())
@@ -302,7 +377,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
@@ -323,7 +398,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyFromBase64("SGVsbG8gV29ybGQ/"));
 
@@ -338,13 +413,14 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBytes()
         {
             // given
-            _server = FluentMockServer.Start();
+            string path = $"/foo_{Guid.NewGuid()}";
+            var _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBody(new byte[] { 48, 49 }));
+            _server.Given(Request.Create().WithPath(path).UsingGet()).RespondWith(Response.Create().WithBody(new byte[] { 48, 49 }));
 
             // when
-            var responseAsString = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
-            var responseAsBytes = await new HttpClient().GetByteArrayAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var responseAsString = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + path);
+            var responseAsBytes = await new HttpClient().GetByteArrayAsync("http://localhost:" + _server.Ports[0] + path);
 
             // then
             Check.That(responseAsString).IsEqualTo("01");
@@ -367,17 +443,18 @@ namespace WireMock.Net.Tests
                 new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "text/plain" }
             };
 
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             foreach (var item in validMatchersForHelloServerJsonMessage)
             {
+                string path = $"/foo_{Guid.NewGuid()}";
                 _server
-                    .Given(Request.Create().WithPath("/foo").WithBody((IMatcher)item[0]))
+                    .Given(Request.Create().WithPath(path).WithBody((IMatcher)item[0]))
                     .RespondWith(Response.Create().WithBody("Hello client"));
 
                 // Act
                 var content = new StringContent(jsonRequestMessage, Encoding.UTF8, (string)item[1]);
-                var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + "/foo", content);
+                var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + path, content);
 
                 // Assert
                 var responseString = await response.Content.ReadAsStringAsync();
@@ -392,10 +469,11 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_404_for_unexpected_request()
         {
             // given
-            _server = FluentMockServer.Start();
+            string path = $"/foo{Guid.NewGuid()}";
+            var _server = FluentMockServer.Start();
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
@@ -405,27 +483,28 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Should_find_a_request_satisfying_a_request_spec()
         {
-            // given
-            _server = FluentMockServer.Start();
+            // Assign
+            string path = $"/bar_{Guid.NewGuid()}";
+            var _server = FluentMockServer.Start();
 
             // when
             await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/bar");
+            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
 
             // then
             var result = _server.FindLogEntries(Request.Create().WithPath(new RegexMatcher("^/b.*"))).ToList();
             Check.That(result).HasSize(1);
 
             var requestLogged = result.First();
-            Check.That(requestLogged.RequestMessage.Path).IsEqualTo("/bar");
-            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Ports[0] + "/bar");
+            Check.That(requestLogged.RequestMessage.Path).IsEqualTo(path);
+            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Ports[0] + path);
         }
 
         [Fact]
         public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             // when
             await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
@@ -439,11 +518,12 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Should_reset_mappings()
         {
             // given
-            _server = FluentMockServer.Start();
+            string path = $"/foo_{Guid.NewGuid()}";
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/foo")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}"));
@@ -453,35 +533,38 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(_server.Mappings).IsEmpty();
-            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo"))
+            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + path))
                 .ThrowsAny();
         }
 
         [Fact]
         public async Task FluentMockServer_Should_respond_a_redirect_without_body()
         {
-            // given
-            _server = FluentMockServer.Start();
+            // Assign
+            string path = $"/foo_{Guid.NewGuid()}";
+            string pathToRedirect = $"/bar_{Guid.NewGuid()}";
+
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/foo")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(307)
-                    .WithHeader("Location", "/bar"));
+                    .WithHeader("Location", pathToRedirect));
             _server
                 .Given(Request.Create()
-                    .WithPath("/bar")
+                    .WithPath(pathToRedirect)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithBody("REDIRECT SUCCESSFUL"));
 
-            // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            // Act
+            var response = await new HttpClient().GetStringAsync($"http://localhost:{_server.Ports[0]}{path}");
 
-            // then
+            // Assert
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
         }
 
@@ -489,7 +572,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_delay_responses_for_a_given_route()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create()
@@ -512,7 +595,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_delay_responses()
         {
             // given
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
             _server.AddGlobalProcessingDelay(TimeSpan.FromMilliseconds(200));
             _server
                 .Given(Request.Create().WithPath("/*"))
@@ -533,7 +616,7 @@ namespace WireMock.Net.Tests
         //public async Task Should_proxy_responses_with_client_certificate()
         //{
         //    // given
-        //    _server = FluentMockServer.Start();
+        //    var _server = FluentMockServer.Start();
         //    _server
         //        .Given(Request.Create().WithPath("/*"))
         //        .RespondWith(Response.Create().WithProxy("https://server-that-expects-a-client-certificate", @"\\yourclientcertificatecontainingprivatekey.pfx", "yourclientcertificatepassword"));
@@ -551,7 +634,7 @@ namespace WireMock.Net.Tests
             // Assign
             var client = new HttpClient();
             // Act
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
             _server.SetMaxRequestLogCount(2);
 
             await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo1");
@@ -572,7 +655,7 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_callback()
         {
             // Assign
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create().WithPath("/foo").UsingGet())
@@ -591,7 +674,7 @@ namespace WireMock.Net.Tests
         {
             // Assign
             string path = $"/foo_{Guid.NewGuid()}";
-            _server = FluentMockServer.Start();
+            var _server = FluentMockServer.Start();
 
             _server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -605,11 +688,5 @@ namespace WireMock.Net.Tests
             Check.That(response.Headers.Contains("Keep-Alive")).IsTrue();
         }
 #endif
-
-        public void Dispose()
-        {
-            _server?.Stop();
-            _serverForProxyForwarding?.Stop();
-        }
     }
 }

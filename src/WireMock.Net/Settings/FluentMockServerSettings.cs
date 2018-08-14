@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using WireMock.Handlers;
 using WireMock.Logging;
 
 namespace WireMock.Settings
@@ -77,5 +78,10 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
+
+        /// <inheritdoc cref="IFluentMockServerSettings.FileSystemHandler"/>
+        [PublicAPI]
+        [JsonIgnore]
+        public IFileSystemHandler FileSystemHandler { get; set; } = new LocalFileSystemHandler();
     }
 }

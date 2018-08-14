@@ -1,3 +1,11 @@
+# 1.0.4.10 (14 August 2018)
+
+ - [#180](https://github.com/WireMock-Net/WireMock.Net/pull/180) - Add IFileSystemHandler to support Azure for StaticMapping location contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#173](https://github.com/WireMock-Net/WireMock.Net/issues/173) - Feature: Mapping files lost when restarting an Azure app service +feature
+
+Commits: 4b91c05fe7...4b91c05fe7
+
+
 # 1.0.4.9 (08 August 2018)
 
  - [#177](https://github.com/WireMock-Net/WireMock.Net/issues/177) - Feature: Skip invalid static mapping files +feature

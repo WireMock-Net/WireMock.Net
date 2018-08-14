@@ -1,11 +1,12 @@
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
+using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -14,7 +15,6 @@ using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
-using WireMock.Transformers;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -22,9 +22,11 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public partial class FluentMockServer : IDisposable
+    public partial class FluentMockServer // : IDisposable
     {
         private readonly IWireMockLogger _logger;
+        private readonly IFileSystemHandler _fileSystemHandler;
+
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -59,28 +61,28 @@ namespace WireMock.Server
         [PublicAPI]
         public ConcurrentDictionary<string, ScenarioState> Scenarios => new ConcurrentDictionary<string, ScenarioState>(_options.Scenarios);
 
-        #region IDisposable Members
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        //#region IDisposable Members
+        ///// <summary>
+        ///// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///// </summary>
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_httpServer != null && _httpServer.IsStarted)
-            {
-                _httpServer.StopAsync();
-            }
-        }
-        #endregion
+        ///// <summary>
+        ///// Releases unmanaged and - optionally - managed resources.
+        ///// </summary>
+        ///// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (_httpServer != null)
+        //    {
+        //        _httpServer.StopAsync();
+        //    }
+        //}
+        //#endregion
 
         #region Start/Stop
         /// <summary>
@@ -183,7 +185,9 @@ namespace WireMock.Server
         private FluentMockServer(IFluentMockServerSettings settings)
         {
             settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
+
             _logger = settings.Logger;
+            _fileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
             _logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
