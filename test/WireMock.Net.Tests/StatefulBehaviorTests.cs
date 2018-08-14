@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,16 +17,17 @@ namespace WireMock.Net.Tests
         public async Task Scenarios_Should_skip_non_relevant_states()
         {
             // given
+            string path = $"/foo_{Guid.NewGuid()}";
             var server = FluentMockServer.Start();
 
             server
-                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .Given(Request.Create().WithPath(path).UsingGet())
                 .InScenario("s")
                 .WhenStateIs("Test state")
                 .RespondWith(Response.Create());
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo");
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + path);
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
@@ -37,23 +39,24 @@ namespace WireMock.Net.Tests
         public async Task Scenarios_Should_process_request_if_equals_state_and_single_state_defined()
         {
             // given
+            string path = $"/foo_{Guid.NewGuid()}";
             var server = FluentMockServer.Start();
 
             server
-                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .Given(Request.Create().WithPath(path).UsingGet())
                 .InScenario("s")
                 .WillSetStateTo("Test state")
                 .RespondWith(Response.Create().WithBody("No state msg"));
 
             server
-                .Given(Request.Create().WithPath("/foo").UsingGet())
+                .Given(Request.Create().WithPath(path).UsingGet())
                 .InScenario("s")
                 .WhenStateIs("Test state")
                 .RespondWith(Response.Create().WithBody("Test state msg"));
 
             // when
-            var responseNoState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
-            var responseWithState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
+            var responseNoState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseWithState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
 
             // then
             Check.That(responseNoState).Equals("No state msg");

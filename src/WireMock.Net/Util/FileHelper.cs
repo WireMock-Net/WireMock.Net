@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using System.Threading;
+using JetBrains.Annotations;
+using WireMock.Handlers;
+using WireMock.Validation;
 
 namespace WireMock.Util
 {
@@ -8,17 +11,19 @@ namespace WireMock.Util
         private const int NumberOfRetries = 3;
         private const int DelayOnRetry = 500;
 
-        public static string ReadAllText(string path)
+        public static string ReadAllTextWithRetryAndDelay([NotNull] IFileSystemHandler filehandler, [NotNull] string path)
         {
+            Check.NotNull(filehandler, nameof(filehandler));
+            Check.NotNullOrEmpty(path, nameof(path));
+
             for (int i = 1; i <= NumberOfRetries; ++i)
             {
                 try
                 {
-                    return File.ReadAllText(path);
+                    return filehandler.ReadMappingFile(path);
                 }
                 catch
                 {
-                    // You may check error code to filter some exceptions, not every error can be recovered.
                     Thread.Sleep(DelayOnRetry);
                 }
             }

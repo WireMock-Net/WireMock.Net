@@ -1,11 +1,12 @@
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
+using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -14,7 +15,6 @@ using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
-using WireMock.Transformers;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -25,6 +25,8 @@ namespace WireMock.Server
     public partial class FluentMockServer : IDisposable
     {
         private readonly IWireMockLogger _logger;
+        private readonly IFileSystemHandler _fileSystemHandler;
+
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -183,7 +185,9 @@ namespace WireMock.Server
         private FluentMockServer(IFluentMockServerSettings settings)
         {
             settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
+
             _logger = settings.Logger;
+            _fileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
             _logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
