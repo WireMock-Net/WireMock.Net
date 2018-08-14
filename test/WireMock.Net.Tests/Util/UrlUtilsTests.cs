@@ -1,5 +1,9 @@
 ﻿using System;
+#if NET452
+using Microsoft.Owin;
+#else
 using Microsoft.AspNetCore.Http;
+#endif
 using NFluent;
 using WireMock.Util;
 using Xunit;

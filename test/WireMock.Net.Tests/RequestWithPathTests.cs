@@ -14,6 +14,7 @@ namespace WireMock.Net.Tests
     {
         private const string ClientIp = "::1";
 
+#if !NET452
         [Fact]
         public void Request_WithPath_EncodedSpaces()
         {
@@ -28,6 +29,7 @@ namespace WireMock.Net.Tests
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
+#endif
 
         [Fact]
         public void Request_WithPath_Spaces()

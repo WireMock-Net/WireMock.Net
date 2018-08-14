@@ -190,32 +190,33 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
-            string guid = Guid.NewGuid().ToString();
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
             var settings = new FluentMockServerSettings { AllowPartialMapping = false };
+
             _serverForProxyForwarding = FluentMockServer.Start(settings);
             _serverForProxyForwarding
-                .Given(Request.Create().WithPath($"/{guid}"))
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.Redirect)
-                    .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "/testpath"));
+                    .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
 
             _server = FluentMockServer.Start(settings);
             _server
-                .Given(Request.Create().WithPath("/prx"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0] + guid));
+                .Given(Request.Create().WithPath(path).UsingAnyMethod())
+                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
 
             // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0] + "/prx")
+                RequestUri = new Uri($"{_server.Urls[0]}{path}")
             };
             var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
             var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
             // Assert
             Check.That(response.Headers.Contains("Location")).IsTrue();
-            Check.That(response.Headers.GetValues("Location")).ContainsExactly(_server.Urls[0] + "/testpath");
+            Check.That(response.Headers.GetValues("Location")).ContainsExactly(_server.Urls[0] + "testpath");
         }
 
         [Fact]

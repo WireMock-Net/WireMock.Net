@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFrameworks>net452;net462</TargetFrameworks>
     <DebugType>full</DebugType>
     <AssemblyName>WireMock.Net.Tests</AssemblyName>
     <PackageId>WireMock.Net.Tests</PackageId>
@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
     <PackageReference Include="Moq" Version="4.8.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NFluent" Version="2.2.0" />
@@ -26,6 +25,14 @@
     <PackageReference Include="System.Threading" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.3.1" /> 
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" /> 
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>

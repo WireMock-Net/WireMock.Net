@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+#if NET452
+using Microsoft.Owin;
+#else
 using Microsoft.AspNetCore.Http;
+#endif
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;

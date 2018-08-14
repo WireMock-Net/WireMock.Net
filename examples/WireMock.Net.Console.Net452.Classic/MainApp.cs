@@ -334,6 +334,20 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithBody("Test state msg 2"));
 
+            server
+                .Given(Request.Create().WithPath("/encoded-test/a%20b"))
+                .RespondWith(Response.Create()
+                    .WithBody("EncodedTest 1 : Path={{request.path}}, Url={{request.url}}")
+                    .WithTransformer()
+                );
+
+            server
+                .Given(Request.Create().WithPath("/encoded-test/a b"))
+                .RespondWith(Response.Create()
+                    .WithBody("EncodedTest 2 : Path={{request.path}}, Url={{request.url}}")
+                    .WithTransformer()
+                );
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();

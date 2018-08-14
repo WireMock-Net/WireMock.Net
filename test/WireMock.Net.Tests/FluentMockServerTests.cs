@@ -585,6 +585,7 @@ namespace WireMock.Net.Tests
             Check.That(response).IsEqualTo("/fooBar");
         }
 
+#if !NET452
         [Fact]
         public async Task FluentMockServer_Should_not_exclude_restrictedResponseHeader_for_ASPNETCORE()
         {
@@ -603,6 +604,7 @@ namespace WireMock.Net.Tests
             Check.That(response.Headers.Contains("test")).IsTrue();
             Check.That(response.Headers.Contains("Keep-Alive")).IsTrue();
         }
+#endif
 
         public void Dispose()
         {
