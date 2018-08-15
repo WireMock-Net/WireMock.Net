@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Http;
@@ -22,7 +23,7 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public partial class FluentMockServer // : IDisposable
+    public partial class FluentMockServer : IDisposable
     {
         private readonly IWireMockLogger _logger;
         private readonly IFileSystemHandler _fileSystemHandler;
@@ -61,28 +62,28 @@ namespace WireMock.Server
         [PublicAPI]
         public ConcurrentDictionary<string, ScenarioState> Scenarios => new ConcurrentDictionary<string, ScenarioState>(_options.Scenarios);
 
-        //#region IDisposable Members
-        ///// <summary>
-        ///// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        ///// </summary>
-        //public void Dispose()
-        //{
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
+        #region IDisposable Members
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-        ///// <summary>
-        ///// Releases unmanaged and - optionally - managed resources.
-        ///// </summary>
-        ///// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (_httpServer != null)
-        //    {
-        //        _httpServer.StopAsync();
-        //    }
-        //}
-        //#endregion
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_httpServer != null)
+            {
+                _httpServer.StopAsync();
+            }
+        }
+        #endregion
 
         #region Start/Stop
         /// <summary>
@@ -194,12 +195,12 @@ namespace WireMock.Server
 
             if (settings.Urls != null)
             {
-                Urls = settings.Urls.Select(u => u.EndsWith("/") ? u : $"{u}/").ToArray();
+                Urls = settings.Urls.ToArray();
             }
             else
             {
                 int port = settings.Port > 0 ? settings.Port.Value : PortUtil.FindFreeTcpPort();
-                Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
+                Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;

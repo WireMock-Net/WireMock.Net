@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Moq;
+using Newtonsoft.Json;
+using NFluent;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,16 +10,13 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Moq;
-using NFluent;
+using WireMock.Handlers;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using Xunit;
-using Newtonsoft.Json;
-using WireMock.Handlers;
 using WireMock.Settings;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
@@ -37,10 +37,16 @@ namespace WireMock.Net.Tests
         [Fact]
         public void FluentMockServer_StartStop()
         {
-            var server1 = FluentMockServer.Start("http://localhost:9091/");
+            var server1 = FluentMockServer.Start("http://localhost:9091");
+
+            Check.That(server1.Urls[0]).Equals("http://localhost:9091");
+
             server1.Stop();
 
             var server2 = FluentMockServer.Start("http://localhost:9091/");
+
+            Check.That(server2.Urls[0]).Equals("http://localhost:9091/");
+
             server2.Stop();
         }
 

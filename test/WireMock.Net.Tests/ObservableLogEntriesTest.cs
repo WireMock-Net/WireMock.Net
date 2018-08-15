@@ -45,12 +45,12 @@ namespace WireMock.Net.Tests
             int expectedCount = 10;
 
             // Assign
-            string path = $"log_p_{Guid.NewGuid()}";
+            string path = $"/log_p_{Guid.NewGuid()}";
             var server = FluentMockServer.Start();
 
             server
                 .Given(Request.Create()
-                    .WithPath($"/{path}")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithSuccess());

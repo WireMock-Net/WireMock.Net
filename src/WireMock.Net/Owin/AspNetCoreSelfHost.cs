@@ -39,7 +39,7 @@ namespace WireMock.Owin
 
             _logger = options.Logger ?? new WireMockConsoleLogger();
 
-            foreach (string uriPrefix in uriPrefixes)
+            foreach (string uriPrefix in uriPrefixes) // .Select(u => u.EndsWith("/") ? u : $"{u}/")) // Always append an / at the end.
             {
                 Urls.Add(uriPrefix);
 
@@ -116,7 +116,7 @@ namespace WireMock.Owin
 #if NETSTANDARD1_3
                 _host.Run(_cts.Token);
 #else
-                _host.RunAsync(_cts.Token).Wait(_cts.Token);
+                _host.RunAsync(_cts.Token).Wait();
 #endif
             }
             catch (Exception e)
@@ -138,7 +138,7 @@ namespace WireMock.Owin
 #if NETSTANDARD1_3
             return Task.FromResult(true);
 #else
-            return _host.WaitForShutdownAsync();
+            return _host.StopAsync();
 #endif
         }
     }
