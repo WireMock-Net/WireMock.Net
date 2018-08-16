@@ -84,6 +84,7 @@ namespace WireMock.Client
         /// <param name="guid">The Guid</param>
         /// <param name="mapping">MappingModel</param>
         [Put("__admin/mappings/{guid}")]
+        [Header("Content-Type", "application/json")]
         Task<StatusModel> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping);
 
         /// <summary>
