@@ -32,17 +32,18 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 
 ### Frameworks
 The following frameworks are supported:
-- net 4.5.1 and up (Microsoft.AspNet.WebApi.OwinSelfHost versie 5.2.6)
-- net 4.6.1 and up (Microsoft.AspNetCore versie 2.1.2)
-- netstandard 1.3 (Microsoft.AspNetCore versie 1.1.7)
-- netstandard 2.0 (Microsoft.AspNetCore versie 2.1.2)
+- net 4.5.1 and up (Microsoft.AspNet.WebApi.OwinSelfHost version 5.2.6)
+- net 4.6.1 and up (Microsoft.AspNetCore version 2.1.2)
+- netstandard 1.3 (Microsoft.AspNetCore version 1.1.7)
+- netstandard 2.0 (Microsoft.AspNetCore version 2.1.2)
 
 ### Build info
 To build you need:
-- Microsoft .NET Framework 4.5.2 Developer Pack (https://www.microsoft.com/en-us/download/details.aspx?id=42637)
-- Microsoft .NET Framework 4.6 Targeting Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=48136)
-- Microsoft .NET Framework 4.6.2 Developer Pack (https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
-- .NET Core 2.0 (https://www.microsoft.com/net/core)
+- Microsoft .NET Framework [4.5.1 Developer Pack](https://www.microsoft.com/en-us/download/details.aspx?id=40772)
+- Microsoft .NET Framework [4.5.2 Developer Pack](https://www.microsoft.com/en-us/download/details.aspx?id=42637)
+- Microsoft .NET Framework [4.6 Targeting Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=48136)
+- Microsoft .NET Framework [4.6.2 Developer Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
+- .NET Core 2.0 (https://www.microsoft.com/net/download)
 
 ## Stubbing
 A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing & Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing-and-Request-Matching).
