@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using JetBrains.Annotations;
+using WireMock.Validation;
 
 namespace WireMock.Handlers
 {
@@ -11,20 +13,26 @@ namespace WireMock.Handlers
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
 
         /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
-        public bool FolderExists(string path)
+        public bool FolderExists([NotNull] string path)
         {
+            Check.NotNullOrEmpty(path, nameof(path));
+
             return Directory.Exists(path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
-        public void CreateFolder(string path)
+        public void CreateFolder([NotNull] string path)
         {
+            Check.NotNullOrEmpty(path, nameof(path));
+
             Directory.CreateDirectory(path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
-        public IEnumerable<string> EnumerateFiles(string path)
+        public IEnumerable<string> EnumerateFiles([NotNull] string path)
         {
+            Check.NotNullOrEmpty(path, nameof(path));
+
             return Directory.EnumerateFiles(path);
         }
 
@@ -35,14 +43,19 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
-        public string ReadMappingFile(string path)
+        public string ReadMappingFile([NotNull] string path)
         {
+            Check.NotNullOrEmpty(path, nameof(path));
+
             return File.ReadAllText(path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile"/>
-        public void WriteMappingFile(string path, string text)
+        public void WriteMappingFile([NotNull] string path, [NotNull] string text)
         {
+            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNull(text, nameof(text));
+
             File.WriteAllText(path, text);
         }
     }
