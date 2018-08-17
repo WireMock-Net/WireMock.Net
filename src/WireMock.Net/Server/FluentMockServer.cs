@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Http;
@@ -77,7 +78,7 @@ namespace WireMock.Server
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (_httpServer != null && _httpServer.IsStarted)
+            if (_httpServer != null)
             {
                 _httpServer.StopAsync();
             }
@@ -194,19 +195,19 @@ namespace WireMock.Server
 
             if (settings.Urls != null)
             {
-                Urls = settings.Urls.Select(u => u.EndsWith("/") ? u : $"{u}/").ToArray();
+                Urls = settings.Urls.ToArray();
             }
             else
             {
                 int port = settings.Port > 0 ? settings.Port.Value : PortUtil.FindFreeTcpPort();
-                Urls = new[] { (settings.UseSSL == true ? "https" : "http") + "://localhost:" + port + "/" };
+                Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _logger;
 
-#if NETSTANDARD
+#if USE_ASPNETCORE
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
 #else
             _httpServer = new OwinSelfHost(_options, Urls);

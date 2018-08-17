@@ -9,7 +9,7 @@ namespace WireMock.Http
     /// </summary>
     public static class PortUtil
     {
-        private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)?/", RegexOptions.Compiled);
+        private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)/?", RegexOptions.Compiled);
 
         /// <summary>
         /// Finds a free TCP port.

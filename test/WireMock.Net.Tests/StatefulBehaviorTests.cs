@@ -31,8 +31,6 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
-
-            server.Dispose();
         }
 
         [Fact]
@@ -61,8 +59,6 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseNoState).Equals("No state msg");
             Check.That(responseWithState).Equals("Test state msg");
-
-            server.Dispose();
         }
 
         [Fact]
@@ -117,8 +113,6 @@ namespace WireMock.Net.Tests
             Check.That(server.Scenarios["To do list"].NextState).IsNull();
             Check.That(server.Scenarios["To do list"].Started).IsTrue();
             Check.That(server.Scenarios["To do list"].Finished).IsTrue();
-
-            server.Dispose();
         }
 
         [Fact]
@@ -164,8 +158,6 @@ namespace WireMock.Net.Tests
 
             var responseWithState2 = await new HttpClient().GetStringAsync(url + "/foo2X");
             Check.That(responseWithState2).Equals("Test state msg 2");
-
-            server.Dispose();
         }
     }
 }

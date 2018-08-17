@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD
+﻿#if USE_ASPNETCORE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,9 +107,15 @@ namespace WireMock.Owin
                 IsStarted = true;
 #if NETSTANDARD1_3
                 _logger.Info("WireMock.Net server using netstandard1.3");
+#elif NETSTANDARD2_0
+                _logger.Info("WireMock.Net server using netstandard2.0");
+#elif NET46
+                _logger.Info("WireMock.Net server using .net 4.6.1 or higher");
+#endif
+
+#if NETSTANDARD1_3
                 _host.Run(_cts.Token);
 #else
-                _logger.Info("WireMock.Net server using netstandard2.0");
                 _host.RunAsync(_cts.Token).Wait();
 #endif
             }
@@ -132,7 +138,7 @@ namespace WireMock.Owin
 #if NETSTANDARD1_3
             return Task.FromResult(true);
 #else
-            return _host.WaitForShutdownAsync();
+            return _host.StopAsync();
 #endif
         }
     }

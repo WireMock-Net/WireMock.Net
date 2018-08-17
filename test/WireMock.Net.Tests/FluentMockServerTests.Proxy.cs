@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NFluent;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -13,52 +13,60 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class FluentMockServerTests
+    public class FluentMockServerProxyTests
     {
-        private FluentMockServer _serverForProxyForwarding;
-
+#if NET452
         [Fact]
         public async Task FluentMockServer_Proxy_Should_proxy_responses()
         {
-            // given
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy("http://www.google.com"));
 
-            // when
-            var result = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/search?q=test");
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{server.Urls[0]}{path}")
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+            string content = await response.Content.ReadAsStringAsync();
 
-            // then
-            Check.That(_server.Mappings).HasSize(1);
-            Check.That(result).Contains("google");
+            // Assert
+            Check.That(server.Mappings).HasSize(1);
+            Check.That(content).Contains("google");
         }
 
         [Fact]
         public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_request()
         {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
             var settings = new FluentMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = _serverForProxyForwarding.Urls[0],
+                    Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false
                 }
             };
-            _server = FluentMockServer.Start(settings);
+            var server = FluentMockServer.Start(settings);
 
             // when
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(_server.Urls[0]),
+                RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("stringContent")
             };
             requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
@@ -66,14 +74,14 @@ namespace WireMock.Net.Tests
             await new HttpClient().SendAsync(requestMessage);
 
             // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Body).IsEqualTo("stringContent");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
             Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
             Check.That(receivedRequest.Headers).ContainsKey("bbb");
 
             // check that new proxied mapping is added
-            Check.That(_server.Mappings).HasSize(2);
+            Check.That(server.Mappings).HasSize(2);
 
             //var newMapping = _server.Mappings.First(m => m.Guid != guid);
             //var matcher = ((Request)newMapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
@@ -84,31 +92,29 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
         {
             // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
             var settings = new FluentMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = _serverForProxyForwarding.Urls[0],
+                    Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false,
                     BlackListedHeaders = new[] { "blacklisted" }
                 }
             };
-            _server = FluentMockServer.Start(settings);
-            //_server
-            //    .Given(Request.Create().WithPath("/*"))
-            //    .RespondWith(Response.Create());
+            var server = FluentMockServer.Start(settings);
 
             // when
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(_server.Urls[0]),
+                RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("stringContent")
             };
             requestMessage.Headers.Add("blacklisted", "test");
@@ -116,7 +122,7 @@ namespace WireMock.Net.Tests
             await new HttpClient().SendAsync(requestMessage);
 
             // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Headers).Not.ContainsKey("bbb");
             Check.That(receivedRequest.Headers).ContainsKey("ok");
 
@@ -128,29 +134,30 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
         {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            _server = FluentMockServer.Start();
-            _server
+            var server = FluentMockServer.Start();
+            server
                 .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
 
-            // when
+            // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(_server.Urls[0]),
+                RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("")
             };
             requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
             await new HttpClient().SendAsync(requestMessage);
 
-            // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            // Assert
+            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Body).IsEqualTo("");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
             Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
@@ -159,28 +166,29 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_response()
         {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithBody("body")
                     .WithHeader("Content-Type", "text/plain"));
 
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
 
-            // when
+            // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0])
+                RequestUri = new Uri($"{server.Urls[0]}{path}")
             };
             var response = await new HttpClient().SendAsync(requestMessage);
 
-            // then
+            // Assert
             Check.That(await response.Content.ReadAsStringAsync()).IsEqualTo("body");
             Check.That(response.Content.Headers.Contains("Content-Type")).IsTrue();
             Check.That(response.Content.Headers.GetValues("Content-Type")).ContainsExactly("text/plain");
@@ -190,49 +198,52 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
             var settings = new FluentMockServerSettings { AllowPartialMapping = false };
-            _serverForProxyForwarding = FluentMockServer.Start(settings);
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+
+            var serverForProxyForwarding = FluentMockServer.Start(settings);
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.Redirect)
-                    .WithHeader("Location", _serverForProxyForwarding.Urls[0] + "testpath"));
+                    .WithHeader("Location", "/testpath"));
 
-            _server = FluentMockServer.Start(settings);
-            _server
-                .Given(Request.Create().WithPath("/prx"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+            var server = FluentMockServer.Start(settings);
+            server
+                .Given(Request.Create().WithPath(path).UsingAnyMethod())
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
 
             // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0] + "/prx")
+                RequestUri = new Uri($"{server.Urls[0]}{path}")
             };
             var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
             var response = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
             // Assert
             Check.That(response.Headers.Contains("Location")).IsTrue();
-            Check.That(response.Headers.GetValues("Location")).ContainsExactly(_server.Urls[0] + "testpath");
+            Check.That(response.Headers.GetValues("Location")).ContainsExactly("/testpath");
         }
 
         [Fact]
         public async Task FluentMockServer_Proxy_Should_preserve_cookie_header_in_proxied_request()
         {
-            // given
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
 
-            // when
-            var requestUri = new Uri(_server.Urls[0]);
+            // Act
+            var requestUri = new Uri($"{server.Urls[0]}{path}");
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -243,7 +254,7 @@ namespace WireMock.Net.Tests
             await new HttpClient(clientHandler).SendAsync(requestMessage);
 
             // then
-            var receivedRequest = _serverForProxyForwarding.LogEntries.First().RequestMessage;
+            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Cookies).IsNotNull();
             Check.That(receivedRequest.Cookies).ContainsPair("name", "value");
         }
@@ -252,23 +263,24 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Proxy_Should_set_BodyAsJson_in_proxied_response()
         {
             // Assign
-            _serverForProxyForwarding = FluentMockServer.Start();
-            _serverForProxyForwarding
-                .Given(Request.Create().WithPath("/*"))
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithBodyAsJson(new { i = 42 })
                     .WithHeader("Content-Type", "application/json; charset=utf-8"));
 
-            _server = FluentMockServer.Start();
-            _server
-                .Given(Request.Create().WithPath("/*"))
-                .RespondWith(Response.Create().WithProxy(_serverForProxyForwarding.Urls[0]));
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
 
             // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_server.Urls[0])
+                RequestUri = new Uri($"{server.Urls[0]}{path}")
             };
             var response = await new HttpClient().SendAsync(requestMessage);
 
@@ -277,5 +289,7 @@ namespace WireMock.Net.Tests
             Check.That(content).IsEqualTo("{\"i\":42}");
             Check.That(response.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json; charset=utf-8");
         }
+
+#endif
     }
 }

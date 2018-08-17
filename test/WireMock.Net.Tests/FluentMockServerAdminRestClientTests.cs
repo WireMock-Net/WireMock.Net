@@ -13,21 +13,14 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerAdminRestClientTests : IDisposable
+    public class FluentMockServerAdminRestClientTests
     {
-        public void Dispose()
-        {
-            _server?.Stop();
-        }
-
-        private FluentMockServer _server;
-
         [Fact]
         public async Task IFluentMockServerAdmin_FindRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
-            var serverUrl = "http://localhost:" + _server.Ports[0];
+            var server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
+            var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
@@ -46,8 +39,8 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_GetRequestsAsync()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
-            var serverUrl = "http://localhost:" + _server.Ports[0];
+            var server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
+            var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 

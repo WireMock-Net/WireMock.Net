@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using WireMock.Models;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
