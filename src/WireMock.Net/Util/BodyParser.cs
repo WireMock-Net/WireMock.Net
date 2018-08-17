@@ -10,6 +10,12 @@ namespace WireMock.Util
 {
     internal static class BodyParser
     {
+        private static readonly string[] JsonContentTypes =
+        {
+            "application/json",
+            "application/vnd.api+json"
+        };
+
         private static readonly string[] TextContentTypes =
         {
             "text/",
@@ -41,7 +47,7 @@ namespace WireMock.Util
         {
             var data = new BodyData();
 
-            if (contentTypeHeaderValue != null && TextContentTypes.Any(t => contentTypeHeaderValue.StartsWith(t, StringComparison.OrdinalIgnoreCase)))
+            if (contentTypeHeaderValue != null && TextContentTypes.Any(text => contentTypeHeaderValue.StartsWith(text, StringComparison.OrdinalIgnoreCase)))
             {
                 try
                 {
@@ -55,7 +61,7 @@ namespace WireMock.Util
                     data.BodyAsBytes = await ReadBytesAsync(stream);
                 }
             }
-            else if (contentTypeHeaderValue != null && contentTypeHeaderValue.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+            else if (contentTypeHeaderValue != null && JsonContentTypes.Any(json => contentTypeHeaderValue.StartsWith(json, StringComparison.OrdinalIgnoreCase)))
             {
                 var stringData = await ReadStringAsync(stream);
                 data.BodyAsString = stringData.Item1;
