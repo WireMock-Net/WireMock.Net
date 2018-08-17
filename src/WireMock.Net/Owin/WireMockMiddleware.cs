@@ -9,7 +9,7 @@ using WireMock.Util;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Serialization;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WireMock.Owin
 {
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
     internal class WireMockMiddleware : OwinMiddleware
 #else
     internal class WireMockMiddleware
@@ -29,7 +29,7 @@ namespace WireMock.Owin
         private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
@@ -41,7 +41,7 @@ namespace WireMock.Owin
         }
 #endif
 
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         public override async Task Invoke(IOwinContext ctx)
 #else
         public async Task Invoke(HttpContext ctx)

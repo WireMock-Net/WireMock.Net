@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WireMock.Util;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -23,14 +23,14 @@ namespace WireMock.Owin
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<RequestMessage> MapAsync(
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
             IOwinRequest request
 #else
             HttpRequest request
 #endif
             )
         {
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
             var urldetails = UrlUtils.Parse(request.Uri, request.PathBase);
             string clientIP = request.RemoteIpAddress;
 #else

@@ -9,8 +9,21 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
+    // TODO : move these to FluentMockServerAdminRestClientTests
     public class ClientTests
     {
+        [Fact]
+        public async Task Client_IFluentMockServerAdmin_SettingsGet()
+        {
+            // Assign
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var settings = await api.GetSettingsAsync();
+            Check.That(settings).IsNotNull();
+        }
+
         [Fact]
         public async Task Client_IFluentMockServerAdmin_PostMappingAsync()
         {

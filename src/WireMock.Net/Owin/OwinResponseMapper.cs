@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Util;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -24,7 +24,7 @@ namespace WireMock.Owin
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #else
         private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
@@ -33,7 +33,7 @@ namespace WireMock.Owin
         };
 
         private void SetResponseHeaders(ResponseMessage responseMessage
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
             , IOwinResponse response
 #else
             , HttpResponse response
@@ -49,7 +49,7 @@ namespace WireMock.Owin
                 }
                 else
                 {
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
                     // For non-NETSTANDARD, check if this response header can be added (#148)
                     if (!WebHeaderCollection.IsRestricted(pair.Key, true))
                     {
@@ -69,7 +69,7 @@ namespace WireMock.Owin
         /// <param name="responseMessage"></param>
         /// <param name="response"></param>
         public async Task MapAsync(ResponseMessage responseMessage
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
             , IOwinResponse response
 #else
             , HttpResponse response

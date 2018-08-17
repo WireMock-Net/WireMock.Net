@@ -13,28 +13,27 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class ObservableLogEntriesTest : IDisposable
+    public class ObservableLogEntriesTest
     {
-        private FluentMockServer _server;
-
         [Fact]
         public async void FluentMockServer_LogEntriesChanged()
         {
             // Assign
-            _server = FluentMockServer.Start();
+            string path = $"/log_{Guid.NewGuid()}";
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create()
-                    .WithPath("/foo")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             int count = 0;
-            _server.LogEntriesChanged += (sender, args) => count++;
+            server.LogEntriesChanged += (sender, args) => count++;
 
             // Act
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}");
 
             // Assert
             Check.That(count).Equals(1);
@@ -46,18 +45,18 @@ namespace WireMock.Net.Tests
             int expectedCount = 10;
 
             // Assign
-            _server = FluentMockServer.Start();
+            string path = $"/log_p_{Guid.NewGuid()}";
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create()
-                    .WithPath("/foo")
+                    .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
-                    .WithDelay(6)
                     .WithSuccess());
 
             int count = 0;
-            _server.LogEntriesChanged += (sender, args) => count++;
+            server.LogEntriesChanged += (sender, args) => count++;
 
             var http = new HttpClient();
 
@@ -65,8 +64,8 @@ namespace WireMock.Net.Tests
             var listOfTasks = new List<Task<HttpResponseMessage>>();
             for (var i = 0; i < expectedCount; i++)
             {
-                Thread.Sleep(100);
-                listOfTasks.Add(http.GetAsync($"{_server.Urls[0]}/foo"));
+                Thread.Sleep(10);
+                listOfTasks.Add(http.GetAsync($"{server.Urls[0]}{path}"));
             }
             var responses = await Task.WhenAll(listOfTasks);
             var countResponsesWithStatusNotOk = responses.Count(r => r.StatusCode != HttpStatusCode.OK);
@@ -74,11 +73,6 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(countResponsesWithStatusNotOk).Equals(0);
             Check.That(count).Equals(expectedCount);
-        }
-
-        public void Dispose()
-        {
-            _server?.Dispose();
         }
     }
 }

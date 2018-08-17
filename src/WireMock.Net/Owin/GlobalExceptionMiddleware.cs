@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WireMock.Owin
 {
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
     internal class GlobalExceptionMiddleware : OwinMiddleware
 #else
     internal class GlobalExceptionMiddleware
@@ -17,7 +17,7 @@ namespace WireMock.Owin
     {
         private readonly WireMockMiddlewareOptions _options;
 
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         public GlobalExceptionMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
@@ -30,13 +30,13 @@ namespace WireMock.Owin
         }
 #endif
 
-#if NETSTANDARD
+#if USE_ASPNETCORE
         public RequestDelegate Next { get; }
 #endif
 
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
-#if !NETSTANDARD
+#if !USE_ASPNETCORE
         public override async Task Invoke(IOwinContext ctx)
 #else
         public async Task Invoke(HttpContext ctx)
