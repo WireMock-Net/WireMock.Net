@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NFluent;
 using RestEase;
@@ -16,10 +16,62 @@ namespace WireMock.Net.Tests
     public class FluentMockServerAdminRestClientTests
     {
         [Fact]
+        public async Task IFluentMockServerAdmin_GetSettingsAsync()
+        {
+            // Assign
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var settings = await api.GetSettingsAsync();
+            Check.That(settings).IsNotNull();
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_PostMappingAsync()
+        {
+            // Assign
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var model = new MappingModel
+            {
+                Request = new RequestModel
+                {
+                    Path = "/1"
+                },
+                Response = new ResponseModel
+                {
+                    Body = "txt",
+                    StatusCode = 200
+                },
+                Priority = 500,
+                Title = "test"
+            };
+            var result = await api.PostMappingAsync(model);
+
+            // Assert
+            Check.That(result).IsNotNull();
+            Check.That(result.Status).IsNotNull();
+            Check.That(result.Guid).IsNotNull();
+
+            var mapping = server.Mappings.Single(m => m.Priority == 500);
+            Check.That(mapping).IsNotNull();
+            Check.That(mapping.Title).Equals("test");
+
+            server.Stop();
+        }
+
+        [Fact]
         public async Task IFluentMockServerAdmin_FindRequestsAsync()
         {
             // given
-            var server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                Logger = new WireMockNullLogger()
+            });
             var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
@@ -39,7 +91,11 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_GetRequestsAsync()
         {
             // given
-            var server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                Logger = new WireMockNullLogger()
+            });
             var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
@@ -59,17 +115,23 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_GetRequestsAsync_JsonApi()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
-            var serverUrl = "http://localhost:" + _server.Ports[0];
-            var data = "{\"data\":[{\"type\":\"program\",\"attributes\":{\"alias\":\"T000001\",\"title\":\"Title Group Entity\"}}]}";
-            var jsonApiAcceptHeader = "application/vnd.api+json";
-            var jsonApiContentType = "application/vnd.api+json";
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                Logger = new WireMockNullLogger()
+            });
+            string serverUrl = server.Urls[0];
+            string data = "{\"data\":[{\"type\":\"program\",\"attributes\":{\"alias\":\"T000001\",\"title\":\"Title Group Entity\"}}]}";
+            string jsonApiAcceptHeader = "application/vnd.api+json";
+            string jsonApiContentType = "application/vnd.api+json";
+
             var request = new HttpRequestMessage(HttpMethod.Post, serverUrl);
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(jsonApiAcceptHeader));
             request.Content = new StringContent(data);
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(jsonApiContentType);
-            var response = new HttpClient().SendAsync(request);
+
+            var response = await new HttpClient().SendAsync(request);
 
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
@@ -88,17 +150,22 @@ namespace WireMock.Net.Tests
         public async Task IFluentMockServerAdmin_GetRequestsAsync_Json()
         {
             // given
-            _server = FluentMockServer.Start(new FluentMockServerSettings { StartAdminInterface = true, Logger = new WireMockNullLogger() });
-            var serverUrl = "http://localhost:" + _server.Ports[0];
-            var data = "{\"alias\": \"T000001\"}";
-            var jsonAcceptHeader = "application/json";
-            var jsonApiContentType = "application/json";
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                Logger = new WireMockNullLogger()
+            });
+            string serverUrl = server.Urls[0];
+            string data = "{\"alias\": \"T000001\"}";
+            string jsonAcceptHeader = "application/json";
+            string jsonApiContentType = "application/json";
+
             var request = new HttpRequestMessage(HttpMethod.Post, serverUrl);
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(jsonAcceptHeader));
             request.Content = new StringContent(data);
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(jsonApiContentType);
-            var response = new HttpClient().SendAsync(request);
+            var response = await new HttpClient().SendAsync(request);
 
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
@@ -113,4 +180,5 @@ namespace WireMock.Net.Tests
             Check.That(requestLogged.Request.Body).Contains("T000001");
         }
     }
+
 }
