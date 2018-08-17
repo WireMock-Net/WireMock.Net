@@ -13,7 +13,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public partial class FluentMockServerTests
+    public class FluentMockServerProxyTests
     {
 #if NET452
         [Fact]

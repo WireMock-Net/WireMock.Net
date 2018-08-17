@@ -22,7 +22,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         private const string ClientIp = "::1";
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson()
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsObject()
         {
             // Assign
             string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
@@ -31,17 +31,17 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
                 Encoding = Encoding.UTF8
             };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBodyAsJson(new { x = "test {{request.url}}" })
+                .WithBodyAsJson(new { x = "test {{request.path}}" })
                 .WithTransformer();
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test http://localhost/foo\"}");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
         }
 
         [Fact]
