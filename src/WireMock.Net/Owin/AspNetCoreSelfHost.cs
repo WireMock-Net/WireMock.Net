@@ -39,7 +39,7 @@ namespace WireMock.Owin
 
             _logger = options.Logger ?? new WireMockConsoleLogger();
 
-            foreach (string uriPrefix in uriPrefixes) // .Select(u => u.EndsWith("/") ? u : $"{u}/")) // Always append an / at the end.
+            foreach (string uriPrefix in uriPrefixes)
             {
                 Urls.Add(uriPrefix);
 
