@@ -7,6 +7,7 @@ using Moq;
 using Newtonsoft.Json;
 using NFluent;
 using WireMock.Handlers;
+using WireMock.Logging;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -25,6 +26,23 @@ namespace WireMock.Net.Tests
             //    return Path.Combine(current, "test", "WireMock.Net.Tests");
 
             return current;
+        }
+
+        [Fact]
+        public void FluentMockServer_Admin_ResetMappings()
+        {
+            var server = FluentMockServer.Start();
+
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
+            server.ReadStaticMappings(folder);
+
+            Check.That(server.Mappings).HasSize(3);
+
+            // Act
+            server.ResetMappings();
+
+            // Assert
+            Check.That(server.Mappings).HasSize(0);
         }
 
         [Fact]
@@ -194,6 +212,28 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void FluentMockServer_Admin_ReadStaticMappings_FolderDoesNotExist()
+        {
+            // Assign
+            var loggerMock = new Mock<IWireMockLogger>();
+            loggerMock.Setup(l => l.Info(It.IsAny<string>(), It.IsAny<object[]>()));
+            var settings = new FluentMockServerSettings
+            {
+                Logger = loggerMock.Object
+            };
+            var _server = FluentMockServer.Start(settings);
+
+            // Act
+            _server.ReadStaticMappings(Guid.NewGuid().ToString());
+
+            // Assert
+            Check.That(_server.Mappings).HasSize(0);
+
+            // Verify
+            loggerMock.Verify(l => l.Info(It.Is<string>(s => s.StartsWith("The Static Mapping folder")), It.IsAny<object[]>()), Times.Once);
+        }
+
+        [Fact]
         public void FluentMockServer_Admin_Mappings_WithGuid_Get()
         {
             Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
@@ -309,6 +349,25 @@ namespace WireMock.Net.Tests
 
             var requestLoggedB = _server.LogEntries.Last();
             Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
+        }
+
+        [Fact]
+        public void FluentMockServer_Admin_WatchStaticMappings()
+        {
+            // Assign
+            var fileMock = new Mock<IFileSystemHandler>();
+            var settings = new FluentMockServerSettings
+            {
+                FileSystemHandler = fileMock.Object
+            };
+            var _server = FluentMockServer.Start(settings);
+
+            // Act
+            _server.WatchStaticMappings();
+
+            // Verify
+            fileMock.Verify(f => f.GetMappingFolder(), Times.Once);
+            fileMock.Verify(f => f.FolderExists(It.IsAny<string>()), Times.Once);
         }
     }
 }
