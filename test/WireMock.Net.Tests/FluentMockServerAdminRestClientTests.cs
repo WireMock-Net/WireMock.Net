@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NFluent;
 using RestEase;
 using WireMock.Admin.Mappings;
+using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Logging;
 using WireMock.Server;
@@ -25,6 +26,32 @@ namespace WireMock.Net.Tests
             // Act
             var settings = await api.GetSettingsAsync();
             Check.That(settings).IsNotNull();
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_PostSettingsAsync()
+        {
+            // Assign
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var settings = new SettingsModel();
+            var status = await api.PostSettingsAsync(settings);
+            Check.That(status.Status).Equals("Settings updated");
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_PutSettingsAsync()
+        {
+            // Assign
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var settings = new SettingsModel();
+            var status = await api.PutSettingsAsync(settings);
+            Check.That(status.Status).Equals("Settings updated");
         }
 
         [Fact]
