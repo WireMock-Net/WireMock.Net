@@ -1,3 +1,15 @@
+# 1.0.4.11 (20 August 2018)
+
+ - [#187](https://github.com/WireMock-Net/WireMock.Net/issues/187) - Bug: Admin GetRequestAsync does not populate request body for JsonApi ("application/vnd.api+json") content
+ - [#186](https://github.com/WireMock-Net/WireMock.Net/pull/186) - ContentType "application/vnd.api+json" is not recognized as json contributed by Steve Land ([steveland83](https://github.com/steveland83))
+ - [#185](https://github.com/WireMock-Net/WireMock.Net/pull/185) - Support Microsoft.AspNetCore for net 4.6.1 and up contributed by Stef Heyenrath ([StefH](https://github.com/StefH)) +feature
+ - [#184](https://github.com/WireMock-Net/WireMock.Net/issues/184) - Bug: Fix AppVeyor PR build process
+ - [#183](https://github.com/WireMock-Net/WireMock.Net/pull/183) - Set Content-Type header for PutMappingAsync in the client contributed by ([seanamosw](https://github.com/seanamosw))
+ - [#182](https://github.com/WireMock-Net/WireMock.Net/issues/182) - Bug: IFluentMockServerAdmin::PutMappingAsync does not set Content-Type
+
+Commits: 01d6dce62d...be08c3175e
+
+
 # 1.0.4.10 (14 August 2018)
 
  - [#180](https://github.com/WireMock-Net/WireMock.Net/pull/180) - Add IFileSystemHandler to support Azure for StaticMapping location contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
