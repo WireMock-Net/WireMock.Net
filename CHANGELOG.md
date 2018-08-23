@@ -1,3 +1,13 @@
+# 1.0.4.12 (23 August 2018)
+
+ - [#191](https://github.com/WireMock-Net/WireMock.Net/pull/191) - Fix ignore case logic for header-name and cookie-name contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#190](https://github.com/WireMock-Net/WireMock.Net/pull/190) - Fix ResponseMessageTransformer (#188) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#189](https://github.com/WireMock-Net/WireMock.Net/issues/189) - Issue: Case of header key/name not ignored in RequestBuilder when ignoreCase == true
+ - [#188](https://github.com/WireMock-Net/WireMock.Net/issues/188) - Bug: ResponseMessageTransformer : 
+
+Commits: e6ecf5cc84...f8d22d4c47
+
+
 # 1.0.4.11 (20 August 2018)
 
  - [#187](https://github.com/WireMock-Net/WireMock.Net/issues/187) - Bug: Admin GetRequestAsync does not populate request body for JsonApi ("application/vnd.api+json") content
