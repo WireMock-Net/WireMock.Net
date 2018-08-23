@@ -493,5 +493,28 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             // Act
             Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentNullException>();
         }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsArray()
+        {
+            // Assign
+            string jsonString = "{ \"a\": \"test 1\", \"b\": \"test 2\" }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_array"), "POST", ClientIp, bodyData);
+
+            var response = Response.Create()
+                .WithBodyAsJson(new[] { "first", "{{request.path}}", "{{request.bodyAsJson.a}}", "{{request.bodyAsJson.b}}", "last" })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
+        }
     }
 }
