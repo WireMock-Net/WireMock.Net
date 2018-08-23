@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
@@ -55,37 +56,41 @@ namespace WireMock.Transformers
 
         private static void TransformBodyAsJson(object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            JObject jobject;
+            JToken jToken;
             switch (original.BodyAsJson)
             {
                 case JObject bodyAsJObject:
-                    jobject = bodyAsJObject;
+                    jToken = bodyAsJObject;
+                    break;
+
+                case Array bodyAsArray:
+                    jToken = JArray.FromObject(bodyAsArray);
                     break;
 
                 default:
-                    jobject = JObject.FromObject(original.BodyAsJson);
+                    jToken = JObject.FromObject(original.BodyAsJson);
                     break;
             }
 
-            WalkNode(jobject, template);
+            WalkNode(jToken, template);
 
-            responseMessage.BodyAsJson = jobject;
+            responseMessage.BodyAsJson = jToken;
         }
 
         private static void WalkNode(JToken node, object template)
         {
             if (node.Type == JTokenType.Object)
             {
-                // In case of Object, loop all children.
-                foreach (JProperty child in node.Children<JProperty>())
+                // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
+                foreach (JProperty child in node.Children<JProperty>().ToArray())
                 {
                     WalkNode(child.Value, template);
                 }
             }
             else if (node.Type == JTokenType.Array)
             {
-                // In case of Array, loop all items.
-                foreach (JToken child in node.Children())
+                // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
+                foreach (JToken child in node.Children().ToArray())
                 {
                     WalkNode(child, template);
                 }
