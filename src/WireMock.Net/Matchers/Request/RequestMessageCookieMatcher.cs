@@ -12,6 +12,7 @@ namespace WireMock.Matchers.Request
     public class RequestMessageCookieMatcher : IRequestMatcher
     {
         private readonly MatchBehaviour _matchBehaviour;
+        private readonly bool _ignoreCase;
 
         /// <value>
         /// The funcs.
@@ -41,6 +42,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(pattern, nameof(pattern));
 
             _matchBehaviour = matchBehaviour;
+            _ignoreCase = ignoreCase;
             Name = name;
             Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
         }
@@ -84,9 +86,12 @@ namespace WireMock.Matchers.Request
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
+            // Check if we want to use IgnoreCase to compare the Cookie-Name and Cookie-Value
+            var cookies = !_ignoreCase ? requestMessage.Cookies : new Dictionary<string, string>(requestMessage.Cookies, StringComparer.OrdinalIgnoreCase);
+
             if (Funcs != null)
             {
-                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Cookies)));
+                return MatchScores.ToScore(Funcs.Any(f => f(cookies)));
             }
 
             if (Matchers == null)
@@ -94,12 +99,12 @@ namespace WireMock.Matchers.Request
                 return MatchScores.Mismatch;
             }
 
-            if (!requestMessage.Cookies.ContainsKey(Name))
+            if (!cookies.ContainsKey(Name))
             {
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
-            string value = requestMessage.Cookies[Name];
+            string value = cookies[Name];
             return Matchers.Max(m => m.IsMatch(value));
         }
     }

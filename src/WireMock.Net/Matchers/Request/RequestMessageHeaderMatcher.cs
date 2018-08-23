@@ -14,6 +14,7 @@ namespace WireMock.Matchers.Request
     public class RequestMessageHeaderMatcher : IRequestMatcher
     {
         private readonly MatchBehaviour _matchBehaviour;
+        private readonly bool _ignoreCase;
 
         /// <summary>
         /// The functions
@@ -43,6 +44,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(pattern, nameof(pattern));
 
             _matchBehaviour = matchBehaviour;
+            _ignoreCase = ignoreCase;
             Name = name;
             Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
         }
@@ -60,6 +62,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(patterns, nameof(patterns));
 
             _matchBehaviour = matchBehaviour;
+            _ignoreCase = ignoreCase;
             Name = name;
             Matchers = patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }
@@ -103,9 +106,12 @@ namespace WireMock.Matchers.Request
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
+            // Check if we want to use IgnoreCase to compare the Header-Name and Header-Value(s)
+            var headers = !_ignoreCase ? requestMessage.Headers : new Dictionary<string, WireMockList<string>>(requestMessage.Headers, StringComparer.OrdinalIgnoreCase);
+
             if (Funcs != null)
             {
-                return MatchScores.ToScore(Funcs.Any(f => f(requestMessage.Headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))));
+                return MatchScores.ToScore(Funcs.Any(f => f(headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))));
             }
 
             if (Matchers == null)
@@ -113,12 +119,12 @@ namespace WireMock.Matchers.Request
                 return MatchScores.Mismatch;
             }
 
-            if (!requestMessage.Headers.ContainsKey(Name))
+            if (!headers.ContainsKey(Name))
             {
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
-            WireMockList<string> list = requestMessage.Headers[Name];
+            WireMockList<string> list = headers[Name];
             return Matchers.Max(m => list.Max(value => m.IsMatch(value))); // TODO : is this correct ?
         }
     }

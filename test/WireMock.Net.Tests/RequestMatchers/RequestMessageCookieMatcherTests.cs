@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -126,6 +125,38 @@ namespace WireMock.Net.Tests.RequestMatchers
             var cookies = new Dictionary<string, string> { { "cook", "x" } };
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
             var matcher = new RequestMessageCookieMatcher(x => x.ContainsKey("cook"));
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
+        public void RequestMessageCookieMatcher_GetMatchingScore_CaseIgnoreForCookieValue()
+        {
+            // Assign
+            var cookies = new Dictionary<string, string> { { "cook", "teST" } };
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "cook", "test", true);
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
+        public void RequestMessageCookieMatcher_GetMatchingScore_CaseIgnoreForCookieName()
+        {
+            // Assign
+            var cookies = new Dictionary<string, string> { { "cook", "teST" } };
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "CooK", "test", true);
 
             // Act
             var result = new RequestMatchResult();
