@@ -50,6 +50,7 @@
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="RestEase" Version="1.4.4" />
     <PackageReference Include="MimeKitLite" Version="2.0.1" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.8.17" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">

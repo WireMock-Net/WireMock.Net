@@ -26,6 +26,9 @@ namespace WireMock.Serialization
 
             switch (matcherName)
             {
+                case "LinqMatcher":
+                    return new LinqMatcher(matchBehaviour, stringPatterns);
+
                 case "ExactMatcher":
                     return new ExactMatcher(matchBehaviour, stringPatterns);
 
