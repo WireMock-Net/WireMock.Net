@@ -1,3 +1,10 @@
+# 1.0.4.13 (31 August 2018)
+
+ - [#195](https://github.com/WireMock-Net/WireMock.Net/pull/195) - Add LinqMatcher contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+
+Commits: 9f17948e9f...9f17948e9f
+
+
 # 1.0.4.12 (23 August 2018)
 
  - [#191](https://github.com/WireMock-Net/WireMock.Net/pull/191) - Fix ignore case logic for header-name and cookie-name contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
