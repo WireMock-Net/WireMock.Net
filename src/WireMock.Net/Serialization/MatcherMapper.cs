@@ -17,7 +17,7 @@ namespace WireMock.Serialization
                 return null;
             }
 
-            string[] parts = matcher.Name?.Split('.');
+            string[] parts = matcher.Name.Split('.');
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
@@ -57,7 +57,7 @@ namespace WireMock.Serialization
                     return new SimMetricsMatcher(matchBehaviour, (string)matcher.Pattern, type);
 
                 default:
-                    return new WildcardMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
+                    throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
         }
 
