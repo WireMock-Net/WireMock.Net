@@ -350,6 +350,14 @@ namespace WireMock.Net.ConsoleApplication
                     .WithTransformer()
                 );
 
+            // https://stackoverflow.com/questions/51985089/wiremock-request-matching-with-comparison-between-two-query-parameters
+            server
+                .Given(Request.Create().WithPath("/linq")
+                    .WithParam("from", new LinqMatcher("DateTime.Parse(it) > \"2018-03-01 00:00:00\"")))
+                .RespondWith(Response.Create()
+                    .WithBody("linq match !!!")
+                );
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();
