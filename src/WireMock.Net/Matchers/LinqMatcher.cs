@@ -54,14 +54,38 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            // Convert a single input string to a Queryable list with 1 entry.
-            var queryable = new[] { input }.AsQueryable();
+            // Convert a single input string to a Queryable string-list with 1 entry.
+            IQueryable queryable = new[] { input }.AsQueryable();
 
             // Use the Any(...) method to check if the result matches
             double match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern)));
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
+
+        ///// <inheritdoc cref="IObjectMatcher.IsMatch"/>
+        //public double IsMatch(object input)
+        //{
+        //    object value;
+        //    switch (input)
+        //    {
+        //        case JObject valueAsJObject:
+        //            value = valueAsJObject.ToObject<object>();
+        //            break;
+
+        //        default:
+        //            value = input;
+        //            break;
+        //    }
+
+        //    // Convert a single object to a Queryable object-list with 1 entry.
+        //    IQueryable queryable = new[] { value }.AsQueryable().Select("new (it as x)");
+
+        //    // Use the Any(...) method to check if the result matches
+        //    double match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern)));
+
+        //    return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        //}
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public string[] GetPatterns()

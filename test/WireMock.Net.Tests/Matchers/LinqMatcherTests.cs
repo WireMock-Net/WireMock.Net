@@ -7,7 +7,7 @@ namespace WireMock.Net.Tests.Matchers
     public class LinqMatcherTests
     {
         [Fact]
-        public void LinqMatcher_SinglePattern_IsMatch_Positive()
+        public void LinqMatcher_For_String_SinglePattern_IsMatch_Positive()
         {
             // Assign
             string input = "2018-08-31 13:59:59";
@@ -20,7 +20,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void LinqMatcher_IsMatch_Negative()
+        public void LinqMatcher_For_String_IsMatch_Negative()
         {
             // Assign
             string input = "2018-08-31 13:59:59";
@@ -33,7 +33,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void LinqMatcher_IsMatch_RejectOnMatch()
+        public void LinqMatcher_For_String_IsMatch_RejectOnMatch()
         {
             // Assign
             string input = "2018-08-31 13:59:59";
@@ -44,6 +44,44 @@ namespace WireMock.Net.Tests.Matchers
             // Assert
             Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
         }
+
+        //[Fact]
+        //public void LinqMatcher_For_Object_IsMatch()
+        //{
+        //    // Assign
+        //    var input = new
+        //    {
+        //        Id = 9,
+        //        Name = "Test"
+        //    };
+
+        //    // Act
+        //    var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+
+        //    double match = matcher.IsMatch(input);
+
+        //    // Assert
+        //    Assert.Equal(1.0, match);
+        //}
+
+        //[Fact]
+        //public void LinqMatcher_For_JObject_IsMatch()
+        //{
+        //    // Assign
+        //    var input = new JObject
+        //    {
+        //        { "Id", new JValue(9) },
+        //        { "Name", new JValue("Test") }
+        //    };
+
+        //    // Act
+        //    var matcher = new LinqMatcher("it.Id > 1 AND it.Name == \"Test\"");
+
+        //    double match = matcher.IsMatch(input);
+
+        //    // Assert
+        //    Assert.Equal(1.0, match);
+        //}
 
         [Fact]
         public void LinqMatcher_GetName()
