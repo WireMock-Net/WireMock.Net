@@ -30,26 +30,21 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 | &nbsp;&nbsp;**WireMock.Net** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |
 | &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net.StandAlone](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |
 
-### Frameworks
-The following frameworks are supported:
-- net 4.5.1 and up (Microsoft.AspNet.WebApi.OwinSelfHost version 5.2.6)
-- net 4.6.1 and up (Microsoft.AspNetCore version 2.1.2)
-- netstandard 1.3 (Microsoft.AspNetCore version 1.1.7)
-- netstandard 2.0 (Microsoft.AspNetCore version 2.1.2)
-
-### Build info
-To build you need:
-- Microsoft .NET Framework [4.5.1 Developer Pack](https://www.microsoft.com/en-us/download/details.aspx?id=40772)
-- Microsoft .NET Framework [4.5.2 Developer Pack](https://www.microsoft.com/en-us/download/details.aspx?id=42637)
-- Microsoft .NET Framework [4.6 Targeting Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=48136)
-- Microsoft .NET Framework [4.6.2 Developer Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
-- .NET Core 2.0 (https://www.microsoft.com/net/download)
+## Development
+For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
 
 ## Stubbing
-A core feature of WireMock.Net is the ability to return canned/predefined HTTP responses for requests matching criteria, see [Wiki : Stubbing & Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing-and-Request-Matching).
+A core feature of WireMock.Net is the ability to return predefined HTTP responses for requests matching criteria.
+See [Wiki : Stubbing](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing).
+
+## Request Matching
+WireMock.Net support advanced request-matching logic, see [Wiki : Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Request-Matching).
+
+## Response Templating
+The response which is returned WireMock.Net can be changed using templating. This is described here [Wiki : Response Templating](https://github.com/WireMock-Net/WireMock.Net/wiki/Response-Templating.
 
 ## Admin API Reference
-The WireMock admin API provides functionality to define the mappings via a http interface, see [Wiki : Admin API Reference](https://github.com/StefH/WireMock.Net/wiki/Admin-API-Reference).
+The WireMock admin API provides functionality to define the mappings via a http interface see [Wiki : Admin API Reference](https://github.com/StefH/WireMock.Net/wiki/Admin-API-Reference).
 
 ## Using
 WireMock.Net can be used in several ways:
