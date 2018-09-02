@@ -104,7 +104,9 @@ namespace WireMock.Owin
         {
             try
             {
-                IsStarted = true;
+                var appLifetime = (IApplicationLifetime) _host.Services.GetService(typeof(IApplicationLifetime));
+                appLifetime.ApplicationStarted.Register(() => IsStarted = true);
+
 #if NETSTANDARD1_3
                 _logger.Info("WireMock.Net server using netstandard1.3");
 #elif NETSTANDARD2_0
