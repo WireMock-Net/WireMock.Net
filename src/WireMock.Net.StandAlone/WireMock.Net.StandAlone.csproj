@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
-    <Version>1.0.4.13</Version>
+    <Version>1.0.4.14</Version>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -46,5 +45,4 @@
   <ItemGroup>
     <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
   </ItemGroup>
-
 </Project>

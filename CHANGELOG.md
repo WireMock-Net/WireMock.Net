@@ -1,3 +1,11 @@
+# 1.0.4.14 (02 September 2018)
+
+ - [#197](https://github.com/WireMock-Net/WireMock.Net/pull/197) - Set IsStarted = true in a IApplicationLifetime.ApplicationStarted listener contributed by ([davide-romanini](https://github.com/davide-romanini)) +fix
+ - [#196](https://github.com/WireMock-Net/WireMock.Net/issues/196) - Issue: AspNetCoreSelfHost.IsStarted set before the server actually started for real +fix
+
+Commits: 077b3c0891...5ccb992201
+
+
 # 1.0.4.13 (31 August 2018)
 
  - [#195](https://github.com/WireMock-Net/WireMock.Net/pull/195) - Add LinqMatcher contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
