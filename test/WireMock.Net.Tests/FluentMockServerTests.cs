@@ -106,7 +106,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
         {
-            // given
+            // Assign
             var _server = FluentMockServer.Start();
 
             _server
@@ -114,14 +114,18 @@ namespace WireMock.Net.Tests
                     .WithPath("/foo")
                     .UsingGet())
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(req => $"{{ path: '{req.Path}' }}"));
+                    .WithStatusCode(500)
+                    .WithHeader("H1", "X1")
+                    .WithBody(req => $"path: {req.Path}"));
 
-            // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            // Act
+            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
 
-            // then
-            Check.That(response).IsEqualTo("{ path: '/foo' }");
+            // Assert
+            string content = await response.Content.ReadAsStringAsync();
+            Check.That(content).IsEqualTo("path: /foo");
+            Check.That((int) response.StatusCode).IsEqualTo(500);
+            Check.That(response.Headers.GetValues("H1")).ContainsExactly("X1");
         }
 
         [Fact]
