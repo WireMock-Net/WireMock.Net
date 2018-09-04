@@ -1,3 +1,11 @@
+# 1.0.4.15 (04 September 2018)
+
+ - [#199](https://github.com/WireMock-Net/WireMock.Net/pull/199) - Fix for .WithBody(Func<RequestMessage, string>...) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#198](https://github.com/WireMock-Net/WireMock.Net/issues/198) - Issue : creating response using .WithBody(Func<RequestMessage, string>...) and .WithStatusCode +fix
+
+Commits: 41fd1ef99d...41fd1ef99d
+
+
 # 1.0.4.14 (02 September 2018)
 
  - [#197](https://github.com/WireMock-Net/WireMock.Net/pull/197) - Set IsStarted = true in a IApplicationLifetime.ApplicationStarted listener contributed by ([davide-romanini](https://github.com/davide-romanini)) +fix
