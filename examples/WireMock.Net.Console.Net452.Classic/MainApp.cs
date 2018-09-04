@@ -358,6 +358,20 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("linq match !!!")
                 );
 
+            server
+                .Given(Request.Create().WithPath("/myendpoint").UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(500)
+                    .WithBody(requestMessage =>
+                    {
+                        string returnStr = JsonConvert.SerializeObject(new
+                        {
+                            Message = "Test error"
+                        });
+                        return returnStr;
+                    })
+                );
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();

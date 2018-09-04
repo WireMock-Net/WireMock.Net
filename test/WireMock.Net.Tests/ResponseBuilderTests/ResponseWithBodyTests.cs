@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
@@ -149,6 +148,31 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             Check.That(responseMessage.BodyAsBytes).IsNull();
             Check.That(((dynamic)responseMessage.BodyAsJson).value).Equals(42);
             Check.That(responseMessage.BodyEncoding).Equals(Encoding.ASCII);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_WithBody_Func()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost/test"), "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithStatusCode(500)
+                .WithHeader("H1", "X1")
+                .WithHeader("H2", "X2")
+                .WithBody(req => $"path: {req.Path}");
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            Check.That(responseMessage.Body).IsEqualTo("path: /test");
+            Check.That(responseMessage.BodyAsBytes).IsNull();
+            Check.That(responseMessage.BodyAsJson).IsNull();
+            Check.That(responseMessage.BodyEncoding.CodePage).Equals(Encoding.UTF8.CodePage);
+            Check.That(responseMessage.StatusCode).IsEqualTo(500);
+            Check.That(responseMessage.Headers["H1"].ToString()).IsEqualTo("X1");
+            Check.That(responseMessage.Headers["H2"].ToString()).IsEqualTo("X2");
         }
     }
 }

@@ -169,7 +169,14 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
         public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            return WithCallback(req => new ResponseMessage { Body = bodyFactory(req) });
+            Check.NotNull(bodyFactory, nameof(bodyFactory));
+
+            return WithCallback(req => new ResponseMessage
+            {
+                Body = bodyFactory(req),
+                BodyDestination = destination,
+                BodyEncoding = encoding ?? Encoding.UTF8
+            });
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
@@ -353,6 +360,22 @@ namespace WireMock.ResponseBuilders
                 await Task.Delay(Delay.Value);
             }
 
+            if (Callback != null)
+            {
+                var callbackResponseMessage = Callback(requestMessage);
+
+                // Copy StatusCode from ResponseMessage
+                callbackResponseMessage.StatusCode = ResponseMessage.StatusCode;
+
+                // Copy Headers from ResponseMessage (if defined)
+                if (ResponseMessage.Headers != null)
+                {
+                    callbackResponseMessage.Headers = ResponseMessage.Headers;
+                }
+
+                return callbackResponseMessage;
+            }
+
             if (ProxyUrl != null && _httpClientForProxy != null)
             {
                 var requestUri = new Uri(requestMessage.Url);
@@ -367,11 +390,7 @@ namespace WireMock.ResponseBuilders
                 return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }
 
-            if (Callback != null)
-            {
-                return Callback(requestMessage);
-            }
-
+            // Just return normal defined ResponseMessage
             return ResponseMessage;
         }
     }
