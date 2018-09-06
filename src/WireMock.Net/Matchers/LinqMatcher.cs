@@ -72,7 +72,7 @@ namespace WireMock.Matchers
             switch (input)
             {
                 case JObject valueAsJObject:
-                    value = valueAsJObject; // valueAsJObject.ToObject<object>();
+                    value = valueAsJObject;
                     break;
 
                 default:
