@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Linq.Dynamic.Core;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
+using WireMock.Util;
 
 namespace WireMock.Matchers
 {
@@ -63,29 +65,33 @@ namespace WireMock.Matchers
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
-        ///// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-        //public double IsMatch(object input)
-        //{
-        //    object value;
-        //    switch (input)
-        //    {
-        //        case JObject valueAsJObject:
-        //            value = valueAsJObject.ToObject<object>();
-        //            break;
+        /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
+        public double IsMatch(object input)
+        {
+            JObject value;
+            switch (input)
+            {
+                case JObject valueAsJObject:
+                    value = valueAsJObject; // valueAsJObject.ToObject<object>();
+                    break;
 
-        //        default:
-        //            value = input;
-        //            break;
-        //    }
+                default:
+                    value = JObject.FromObject(input);
+                    break;
+            }
 
-        //    // Convert a single object to a Queryable object-list with 1 entry.
-        //    IQueryable queryable = new[] { value }.AsQueryable().Select("new (it as x)");
+            // Convert a single object to a Queryable JObject-list with 1 entry.
+            var queryable1 = new[] { value }.AsQueryable();
 
-        //    // Use the Any(...) method to check if the result matches
-        //    double match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern)));
+            // Generate the dynamic linq select statement and generate a dynamic Queryable.
+            string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
+            var queryable2 = queryable1.Select(dynamicSelect);
 
-        //    return MatchBehaviourHelper.Convert(MatchBehaviour, match);
-        //}
+            // Use the Any(...) method to check if the result matches
+            double match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)));
+
+            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
         public string[] GetPatterns()

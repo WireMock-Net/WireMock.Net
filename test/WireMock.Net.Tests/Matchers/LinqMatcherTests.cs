@@ -1,4 +1,5 @@
-﻿using NFluent;
+﻿using Newtonsoft.Json.Linq;
+using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
@@ -45,43 +46,41 @@ namespace WireMock.Net.Tests.Matchers
             Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
         }
 
-        //[Fact]
-        //public void LinqMatcher_For_Object_IsMatch()
-        //{
-        //    // Assign
-        //    var input = new
-        //    {
-        //        Id = 9,
-        //        Name = "Test"
-        //    };
+        [Fact]
+        public void LinqMatcher_For_Object_IsMatch()
+        {
+            // Assign
+            var input = new
+            {
+                Id = 9,
+                Name = "Test"
+            };
 
-        //    // Act
-        //    var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+            // Act
+            var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+            double match = matcher.IsMatch(input);
 
-        //    double match = matcher.IsMatch(input);
+            // Assert
+            Assert.Equal(1.0, match);
+        }
 
-        //    // Assert
-        //    Assert.Equal(1.0, match);
-        //}
+        [Fact]
+        public void LinqMatcher_For_JObject_IsMatch()
+        {
+            // Assign
+            var input = new JObject
+            {
+                { "Id", new JValue(9) },
+                { "Name", new JValue("Test") }
+            };
 
-        //[Fact]
-        //public void LinqMatcher_For_JObject_IsMatch()
-        //{
-        //    // Assign
-        //    var input = new JObject
-        //    {
-        //        { "Id", new JValue(9) },
-        //        { "Name", new JValue("Test") }
-        //    };
+            // Act
+            var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+            double match = matcher.IsMatch(input);
 
-        //    // Act
-        //    var matcher = new LinqMatcher("it.Id > 1 AND it.Name == \"Test\"");
-
-        //    double match = matcher.IsMatch(input);
-
-        //    // Assert
-        //    Assert.Equal(1.0, match);
-        //}
+            // Assert
+            Assert.Equal(1.0, match);
+        }
 
         [Fact]
         public void LinqMatcher_GetName()
