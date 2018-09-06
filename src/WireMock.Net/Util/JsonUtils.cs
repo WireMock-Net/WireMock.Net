@@ -40,6 +40,7 @@ namespace WireMock.Util
                 {
                     WalkNode(child.Value, child.Path, child.Name, childLines);
                 }
+
                 text.Append(string.Join(", ", childLines));
                 text.Append(")");
 
@@ -115,7 +116,7 @@ namespace WireMock.Util
                         break;
 
                     default:
-                        throw new NotSupportedException($"JTokenType '{node.Type}'.");
+                        throw new NotSupportedException($"JTokenType '{node.Type}' cannot be converted to a Dynamic Linq cast operator.");
                 }
 
                 if (!string.IsNullOrEmpty(propertyName))
