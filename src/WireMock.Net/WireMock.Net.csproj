@@ -37,6 +37,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Util\IndexableDictionary.cs" />
     <Compile Remove="Util\NamedReaderWriterLocker.cs" />
   </ItemGroup>
 

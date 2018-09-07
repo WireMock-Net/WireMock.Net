@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Text.RegularExpressions;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WireMock.Utils;
 using WireMock.Validation;
 
 namespace WireMock.Transformers
@@ -11,9 +15,41 @@ namespace WireMock.Transformers
     {
         public static void Register()
         {
+            Handlebars.RegisterHelper("Regex.Match", (writer, context, arguments) =>
+            {
+                (string stringToProcess, string regexPattern, object defaultValue) = ParseRegexArguments(arguments);
+
+                Match match = Regex.Match(stringToProcess, regexPattern);
+
+                if (match.Success)
+                {
+                    writer.WriteSafeString(match.Value);
+                }
+                else if (defaultValue != null)
+                {
+                    writer.WriteSafeString(defaultValue);
+                }
+            });
+
+            Handlebars.RegisterHelper("Regex.Match", (writer, options, context, arguments) =>
+            {
+                (string stringToProcess, string regexPattern, object defaultValue) = ParseRegexArguments(arguments);
+
+                var regex = new Regex(regexPattern);
+                var namedGroups = RegexUtils.GetNamedGroups(regex, stringToProcess);
+                if (namedGroups.Any())
+                {
+                    options.Template(writer, namedGroups);
+                }
+                else if (defaultValue != null)
+                {
+                    writer.WriteSafeString(defaultValue);
+                }
+            });
+
             Handlebars.RegisterHelper("JsonPath.SelectToken", (writer, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonpath) = Parse(arguments);
+                (JObject valueToProcess, string jsonpath) = ParseJsonPathArguments(arguments);
 
                 JToken result = null;
                 try
@@ -34,7 +70,7 @@ namespace WireMock.Transformers
 
             Handlebars.RegisterHelper("JsonPath.SelectTokens", (writer, options, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonpath) = Parse(arguments);
+                (JObject valueToProcess, string jsonpath) = ParseJsonPathArguments(arguments);
 
                 IEnumerable<JToken> values = null;
                 try
@@ -61,7 +97,7 @@ namespace WireMock.Transformers
             });
         }
 
-        private static (JObject valueToProcess, string jsonpath) Parse(object[] arguments)
+        private static (JObject valueToProcess, string jsonpath) ParseJsonPathArguments(object[] arguments)
         {
             Check.Condition(arguments, args => args.Length == 2, nameof(arguments));
             Check.NotNull(arguments[0], "arguments[0]");
@@ -80,10 +116,29 @@ namespace WireMock.Transformers
                     break;
 
                 default:
-                    throw new NotSupportedException($"The value '{arguments[0]}' with type {arguments[0].GetType()} cannot be used in Handlebars JsonPath.");
+                    throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars JsonPath.");
             }
 
             return (valueToProcess, arguments[1] as string);
+        }
+
+        private static (string stringToProcess, string regexPattern, object defaultValue) ParseRegexArguments(object[] arguments)
+        {
+            Check.Condition(arguments, args => args.Length >= 2, nameof(arguments));
+
+            string ParseAsString(object arg)
+            {
+                if (arg is string)
+                {
+                    return arg as string;
+                }
+                else
+                {
+                    throw new NotSupportedException($"The value '{arg}' with type '{arg?.GetType()}' cannot be used in Handlebars Regex.");
+                }
+            }
+
+            return (ParseAsString(arguments[0]), ParseAsString(arguments[1]), arguments.Length == 3 ? arguments[2] : null);
         }
     }
 }
