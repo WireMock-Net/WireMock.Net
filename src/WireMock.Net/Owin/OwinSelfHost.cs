@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WireMock.Http;
 using WireMock.Logging;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -30,7 +31,7 @@ namespace WireMock.Owin
             {
                 Urls.Add(uriPrefix);
 
-                PortUtil.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
+                PortUtils.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
                 Ports.Add(port);
             }
 

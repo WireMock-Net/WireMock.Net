@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using WireMock.Http;
 using WireMock.HttpsCertificate;
 using WireMock.Logging;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -43,7 +43,7 @@ namespace WireMock.Owin
             {
                 Urls.Add(uriPrefix);
 
-                PortUtil.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
+                PortUtils.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
                 Ports.Add(port);
             }
 
@@ -75,13 +75,13 @@ namespace WireMock.Owin
                     // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
                     foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
                     {
-                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        PortUtils.TryExtractProtocolAndPort(url, out string host, out int port);
                         options.Listen(System.Net.IPAddress.Any, port);
                     }
 
                     foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
-                        PortUtil.TryExtractProtocolAndPort(url, out string host, out int port);
+                        PortUtils.TryExtractProtocolAndPort(url, out string host, out int port);
                         options.Listen(System.Net.IPAddress.Any, port, listenOptions =>
                         {
                             listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
