@@ -16,6 +16,7 @@ using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -199,7 +200,7 @@ namespace WireMock.Server
             }
             else
             {
-                int port = settings.Port > 0 ? settings.Port.Value : PortUtil.FindFreeTcpPort();
+                int port = settings.Port > 0 ? settings.Port.Value : PortUtils.FindFreeTcpPort();
                 Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 

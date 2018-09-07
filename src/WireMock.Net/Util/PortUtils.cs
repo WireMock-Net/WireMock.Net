@@ -2,12 +2,12 @@
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-namespace WireMock.Http
+namespace WireMock.Util
 {
     /// <summary>
     /// Port Utility class
     /// </summary>
-    public static class PortUtil
+    public static class PortUtils
     {
         private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)/?", RegexOptions.Compiled);
 
