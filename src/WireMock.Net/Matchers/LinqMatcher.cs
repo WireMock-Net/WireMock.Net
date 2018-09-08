@@ -83,11 +83,13 @@ namespace WireMock.Matchers
             // Convert a single object to a Queryable JObject-list with 1 entry.
             var queryable1 = new[] { value }.AsQueryable();
 
-            // Generate the dynamic linq select statement and generate a dynamic Queryable.
+            // Generate the DynamicLinq select statement.
             string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
+
+            // Execute DynamicLinq Select statement.
             var queryable2 = queryable1.Select(dynamicSelect);
 
-            // Use the Any(...) method to check if the result matches
+            // Use the Any(...) method to check if the result matches.
             double match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)));
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);

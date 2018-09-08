@@ -7,6 +7,8 @@
             HandleBarsRegex.Register();
 
             HandleBarsJsonPath.Register();
+
+            HandleBarsLinq.Register();
         }
     }
 }

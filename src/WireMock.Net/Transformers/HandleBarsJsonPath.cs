@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
@@ -16,20 +15,15 @@ namespace WireMock.Transformers
             {
                 (JObject valueToProcess, string jsonpath) = ParseArguments(arguments);
 
-                JToken result = null;
                 try
                 {
-                    result = valueToProcess.SelectToken(jsonpath);
+                    var result = valueToProcess.SelectToken(jsonpath);
+                    writer.WriteSafeString(result);
                 }
                 catch (JsonException)
                 {
                     // Ignore JsonException and return
                     return;
-                }
-
-                if (result != null)
-                {
-                    writer.WriteSafeString(result);
                 }
             });
 
@@ -37,23 +31,19 @@ namespace WireMock.Transformers
             {
                 (JObject valueToProcess, string jsonpath) = ParseArguments(arguments);
 
-                IEnumerable<JToken> values = null;
                 try
                 {
-                    values = valueToProcess.SelectTokens(jsonpath);
+                    var values = valueToProcess.SelectTokens(jsonpath);
+                    if (values != null)
+                    {
+                        options.Template(writer, values.ToDictionary(value => value.Path, value => value));
+                    }
                 }
                 catch (JsonException)
                 {
                     // Ignore JsonException and return
                     return;
                 }
-
-                if (values == null)
-                {
-                    return;
-                }
-
-                options.Template(writer, values.ToDictionary(value => value.Path, value => value));
             });
         }
 
