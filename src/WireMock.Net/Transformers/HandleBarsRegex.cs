@@ -27,7 +27,7 @@ namespace WireMock.Transformers
                 }
             });
 
-            Handlebars.RegisterHelper("Regex.Matches", (writer, options, context, arguments) =>
+            Handlebars.RegisterHelper("Regex.Match", (writer, options, context, arguments) =>
             {
                 (string stringToProcess, string regexPattern, object defaultValue) = ParseArguments(arguments);
 
@@ -39,7 +39,7 @@ namespace WireMock.Transformers
                 }
                 else if (defaultValue != null)
                 {
-                    writer.WriteSafeString(defaultValue);
+                    options.Template(writer, defaultValue);
                 }
             });
         }

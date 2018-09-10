@@ -69,7 +69,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatches()
+        public async void Response_ProvideResponse_Handlebars_RegexMatch2()
         {
             // Assign
             var body = new BodyData { BodyAsString = "https://localhost:5000/" };
@@ -77,7 +77,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("{{#Regex.Matches request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this.port}}-{{this.proto}}{{/Regex.Matches}}")
+                .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this.port}}-{{this.proto}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatches_NoMatch()
+        public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test" };
@@ -96,7 +96,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("{{#Regex.Matches request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this}}{{/Regex.Matches}}")
+                .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
@@ -107,7 +107,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatches_NoMatch_WithDefaultValue()
+        public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch_WithDefaultValue()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test" };
@@ -115,7 +115,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("{{#Regex.Matches request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\" \"x\"}}{{this}}{{/Regex.Matches}}")
+                .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\" \"x\"}}{{this}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
@@ -126,7 +126,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
-        public void Response_ProvideResponse_Handlebars_RegexMatches_Throws()
+        public void Response_ProvideResponse_Handlebars_RegexMatch2_Throws()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test" };
@@ -134,7 +134,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("{{#Regex.Matches request.bodyAsJson \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{/Regex.Matches}}")
+                .WithBody("{{#Regex.Match request.bodyAsJson \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act and Assert
