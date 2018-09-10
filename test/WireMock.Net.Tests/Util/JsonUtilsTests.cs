@@ -11,6 +11,19 @@ namespace WireMock.Net.Tests.Util
     public class JsonUtilsTests
     {
         [Fact]
+        public void JsonUtils_ParseJTokenToObject()
+        {
+            // Assign
+            object value = "test";
+
+            // Act
+            string result = JsonUtils.ParseJTokenToObject<string>(value);
+
+            // Assert
+            Check.That(result).IsEqualTo(default(string));
+        }
+
+        [Fact]
         public void JsonUtils_GenerateDynamicLinqStatement_JToken()
         {
             // Assign
