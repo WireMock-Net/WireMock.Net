@@ -5,8 +5,12 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Print Info
+- powershell: echo "BUILD_REASON : $env:BUILD_REASON"
+- powershell: echo "BUILD_ID     : $env:BUILD_ID"
+
 # Begin SonarScanner
-- powershell: 'if (-Not $env:BUILD_REASON -eq "PullRequest") { dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SONAR_TOKEN" /v:"$env:BUILD_ID" }'
+- powershell: 'if ($env:BUILD_REASON -eq "PullRequest") { dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SONAR_TOKEN" /v:"$env:BUILD_ID" }'
 
 # Build source and tests
 - script: |
