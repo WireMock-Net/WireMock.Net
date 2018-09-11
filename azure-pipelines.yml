@@ -5,11 +5,19 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Begin SonarScanner
+- powershell: 'if (-Not $env:BUILD_REASON eq "PullRequest") { dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SONAR_TOKEN" /v:"$env:BUILD_ID" }'
+
+# Build source and tests
 - script: |
     dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration $(buildConfiguration)
     dotnet build ./src/WireMock.Net.Standalone/WireMock.Net.Standalone.csproj --configuration $(buildConfiguration)
     dotnet build ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration)
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net452 --logger trx --collect:"Code Coverage"
+
+# End SonarScanner
+- powershell: 'if (-Not $env:BUILD_REASON eq "PullRequest") { & dotnet sonarscanner end /d:sonar.login="$env:SONAR_TOKEN" }'
+
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
