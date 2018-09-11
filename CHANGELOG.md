@@ -1,3 +1,11 @@
+# 1.0.4.16 (11 September 2018)
+
+ - [#202](https://github.com/WireMock-Net/WireMock.Net/pull/202) - Update handlebars code to support Regex.Match (#201) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
+ - [#201](https://github.com/WireMock-Net/WireMock.Net/issues/201) - Question : Extracting text from a request.body that is not json
+
+Commits: f3c395833a...da64934c13
+
+
 # 1.0.4.15 (04 September 2018)
 
  - [#199](https://github.com/WireMock-Net/WireMock.Net/pull/199) - Fix for .WithBody(Func<RequestMessage, string>...) contributed by Stef Heyenrath ([StefH](https://github.com/StefH))
