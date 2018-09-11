@@ -100,7 +100,7 @@ namespace WireMock.Net.Tests
             var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
 
             // Assert
-            Check.That(response).IsEqualTo("{\r\n  \"message\": \"Hello\"\r\n}");
+            Check.That(response).IsEqualTo($"{{{Environment.NewLine}  \"message\": \"Hello\"{Environment.NewLine}}}");
         }
 
         [Fact]

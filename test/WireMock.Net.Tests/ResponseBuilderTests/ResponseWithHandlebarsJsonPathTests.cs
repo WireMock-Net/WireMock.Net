@@ -137,7 +137,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
+            Check.That(responseMessage.Body).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
@@ -189,7 +189,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("{\r\n  \"Name\": \"Acme Co\",\r\n  \"Products\": [\r\n    {\r\n      \"Name\": \"Anvil\",\r\n      \"Price\": 50\r\n    }\r\n  ]\r\n}");
+            Check.That(responseMessage.Body).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
