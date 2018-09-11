@@ -11,7 +11,37 @@ namespace WireMock.Net.Tests.Util
     public class JsonUtilsTests
     {
         [Fact]
-        public void JsonUtils_GenerateDynamicLinqStatement()
+        public void JsonUtils_ParseJTokenToObject()
+        {
+            // Assign
+            object value = "test";
+
+            // Act
+            string result = JsonUtils.ParseJTokenToObject<string>(value);
+
+            // Assert
+            Check.That(result).IsEqualTo(default(string));
+        }
+
+        [Fact]
+        public void JsonUtils_GenerateDynamicLinqStatement_JToken()
+        {
+            // Assign
+            JToken j = "Test";
+
+            // Act
+            string line = JsonUtils.GenerateDynamicLinqStatement(j);
+
+            // Assert
+            var queryable = new[] { j }.AsQueryable().Select(line);
+            bool result = queryable.Any("it == \"Test\"");
+            Check.That(result).IsTrue();
+
+            Check.That(line).IsEqualTo("string(it)");
+        }
+
+        [Fact]
+        public void JsonUtils_GenerateDynamicLinqStatement_JObject()
         {
             // Assign
             var j = new JObject
@@ -39,7 +69,7 @@ namespace WireMock.Net.Tests.Util
             string line = JsonUtils.GenerateDynamicLinqStatement(j);
 
             // Assert
-            var queryable = new[] {j}.AsQueryable().Select(line);
+            var queryable = new[] { j }.AsQueryable().Select(line);
             bool result = queryable.Any("Id > 4");
             Check.That(result).IsTrue();
 

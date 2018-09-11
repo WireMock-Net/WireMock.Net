@@ -20,7 +20,7 @@ namespace WireMock.Util
             }
         }
 
-        public static string GenerateDynamicLinqStatement(JObject jsonObject)
+        public static string GenerateDynamicLinqStatement(JToken jsonObject)
         {
             var lines = new List<string>();
             WalkNode(jsonObject, null, null, lines);
@@ -40,7 +40,7 @@ namespace WireMock.Util
             }
             else
             {
-                ProcessItem(node, path, propertyName, lines);
+                ProcessItem(node, path ?? "it", propertyName, lines);
             }
         }
 
