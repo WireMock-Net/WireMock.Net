@@ -23,6 +23,7 @@ steps:
 # End SonarScanner
 - script: |
     dotnet tool install --global dotnet-sonarscanner
+    cmd
     dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="%SONAR_TOKEN%" /v:"%BUILD_ID%"
     dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration $(buildConfiguration)
     dotnet build ./src/WireMock.Net.Standalone/WireMock.Net.Standalone.csproj --configuration $(buildConfiguration)
