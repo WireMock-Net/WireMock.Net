@@ -15,6 +15,13 @@ steps:
 # Begin SonarScanner
 # See also https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools, else you get this error:
 # `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
+- powershell: |
+    Write-Host "---"
+    Write-Host $env:SONAR_TOKEN
+    Write-Host $env:BUILD_DEFINITIONNAME
+    Write-Host $env:BUILD_ID
+    Write-Host "---"
+
 - script: |
     echo %SONAR_TOKEN%
     echo %BUILD_ID%
