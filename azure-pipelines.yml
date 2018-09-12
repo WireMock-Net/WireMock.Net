@@ -3,12 +3,10 @@ pool:
   
 variables:
   buildConfiguration: 'Release'
+  # creates a counter called buildcounter and seeds it at 1000 and then assigns the value to a variable named buildId.
+  buildId: $[counter('buildcounter', 1000)]
 
 steps:
-# Print Info
-#- powershell: echo $env:BUILD_REASON
-#- powershell: echo $env:BUILD_ID
-
 # Install SonarScanner
 - script: dotnet tool install --global dotnet-sonarscanner
 
@@ -24,8 +22,10 @@ steps:
 
 - script: |
     echo %SONAR_TOKEN%
-    echo %BUILD_ID%
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="%SONAR_TOKEN%" /v:"%BUILD_ID%"
+    echo %BUILD_BUILDID%
+    echo "b  = $(buildId)"
+    echo "st = $(SONAR_TOKEN)"
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)"
 
 # Begin SonarScanner
 #- powershell: 'if ($env:BUILD_REASON -ne "PullRequest") { dotnet sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SONAR_TOKEN" /v:"$env:BUILD_ID" }'
@@ -35,7 +35,7 @@ steps:
 # Run tests
 # End SonarScanner
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="%SONAR_TOKEN%"
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
 
 # End SonarScanner
 #- powershell: 'if ($env:BUILD_REASON -ne "PullRequest") { & dotnet sonarscanner end /d:sonar.login="$env:SONAR_TOKEN" }'
