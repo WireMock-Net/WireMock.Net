@@ -18,15 +18,11 @@ steps:
 # `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
 - script: |
     echo "BuildId = $(buildId)"
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.vscoveragexml.reportsPaths="**\*.coverage"
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\*.xml"
 
-# Build source and tests
-# Run tests
+# Build source, tests and run tests
 - script: |
-    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration $(buildConfiguration)
-    dotnet build ./src/WireMock.Net.Standalone/WireMock.Net.Standalone.csproj --configuration $(buildConfiguration)
-    dotnet build ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration)
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net452 --logger trx --collect:"Code Coverage"
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net452 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat="opencover"
 
 # End SonarScanner
 - script: |
