@@ -6,7 +6,7 @@ variables:
 
   # Create a counter called buildcounter and seed it at 1000 and then assigns the value to a variable named buildId.
   #buildId: $[counter('buildcounter', 1000)]
-  buildId: "1$(Build.DefinitionName)"
+  buildId: "1$(Build.BuildId)"
 
 steps:
 # Install SonarScanner
