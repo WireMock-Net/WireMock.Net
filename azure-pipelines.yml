@@ -19,7 +19,7 @@ steps:
     Write-Host "---"
     Write-Host $env:SONAR_TOKEN
     Write-Host $env:BUILD_DEFINITIONNAME
-    Write-Host $env:BUILD_ID
+    Write-Host $env:BUILD_BUILDID
     Write-Host "---"
 
 - script: |
