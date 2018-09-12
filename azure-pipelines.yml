@@ -13,18 +13,7 @@ steps:
 # Begin SonarScanner
 # See also https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools, else you get this error:
 # `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
-- powershell: |
-    Write-Host "---"
-    Write-Host $env:SONAR_TOKEN
-    Write-Host $env:BUILD_DEFINITIONNAME
-    Write-Host $env:BUILD_BUILDID
-    Write-Host "---"
-
 - script: |
-    echo %SONAR_TOKEN%
-    echo %BUILD_BUILDID%
-    echo "b  = $(buildId)"
-    echo "st = $(SONAR_TOKEN)"
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)"
 
 # Begin SonarScanner
@@ -33,19 +22,18 @@ steps:
 
 # Build source and tests
 # Run tests
-# End SonarScanner
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
+    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration $(buildConfiguration)
+    dotnet build ./src/WireMock.Net.Standalone/WireMock.Net.Standalone.csproj --configuration $(buildConfiguration)
+    dotnet build ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration)
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net452 --logger trx --collect:"Code Coverage"
+
+# End SonarScanner
+- script: %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
 
 # End SonarScanner
 #- powershell: 'if ($env:BUILD_REASON -ne "PullRequest") { & dotnet sonarscanner end /d:sonar.login="$env:SONAR_TOKEN" }'
 #- script: dotnet sonarscanner end /d:sonar.login="$env:SONAR_TOKEN"
-
-#    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration $(buildConfiguration)
-    #dotnet build ./src/WireMock.Net.Standalone/WireMock.Net.Standalone.csproj --configuration $(buildConfiguration)
-    #dotnet build ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration)
-    #dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net452 --logger trx --collect:"Code Coverage"
-
 
 - task: PublishTestResults@2
   inputs:
