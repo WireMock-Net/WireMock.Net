@@ -1,0 +1,37 @@
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  buildConfiguration: 'Debug'
+  buildId: "1$(Build.BuildId)"
+
+steps:
+# Print buildId
+- script: |
+    echo "BuildId = $(buildId)"
+
+# Install SonarScanner
+- script: |
+    dotnet tool install --global dotnet-sonarscanner
+
+# Begin SonarScanner
+# See also
+# - https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools, else you get this error: `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
+# - https://github.com/dotnet/cli/issues/8368
+# - https://github.com/Microsoft/vsts-tasks/issues/8291
+#
+- script: |
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
+
+# Build source, tests and run tests
+- script: |
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework netcoreapp2.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+# End SonarScanner
+- script: |
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
