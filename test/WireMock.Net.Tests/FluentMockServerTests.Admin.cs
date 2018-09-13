@@ -46,22 +46,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_Admin_StartStop()
-        {
-            var server1 = FluentMockServer.Start("http://localhost:19091");
-
-            Check.That(server1.Urls[0]).Equals("http://localhost:19091");
-
-            server1.Stop();
-
-            var server2 = FluentMockServer.Start("http://localhost:19091/");
-
-            Check.That(server2.Urls[0]).Equals("http://localhost:19091/");
-
-            server2.Stop();
-        }
-
-        [Fact]
         public void FluentMockServer_Admin_SaveStaticMappings()
         {
             // Assign
