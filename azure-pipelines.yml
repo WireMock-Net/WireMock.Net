@@ -1,6 +1,6 @@
 pool:
   vmImage: 'vs2017-win2016'
-  
+
 variables:
   buildConfiguration: 'Debug'
   buildId: "1$(Build.BuildId)"
