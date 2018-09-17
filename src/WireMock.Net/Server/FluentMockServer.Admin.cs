@@ -222,10 +222,17 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(IProxyAndRecordSettings settings)
+        private void InitProxyAndRecord(IFluentMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ClientX509Certificate2ThumbprintOrSubjectName);
-            Given(Request.Create().WithPath("/*").UsingAnyMethod()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
+
+            var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
+            if (settings.StartAdminInterface == true)
+            {
+                respondProvider.AtPriority(100);
+            }
+
+            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings.ProxyAndRecordSettings));
         }
 
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)

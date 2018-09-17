@@ -264,7 +264,7 @@ namespace WireMock.Server
 
             if (settings.ProxyAndRecordSettings != null)
             {
-                InitProxyAndRecord(settings.ProxyAndRecordSettings);
+                InitProxyAndRecord(settings);
             }
 
             if (settings.MaxRequestLogCount != null)

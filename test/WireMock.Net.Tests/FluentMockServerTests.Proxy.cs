@@ -290,6 +290,52 @@ namespace WireMock.Net.Tests
             Check.That(response.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json; charset=utf-8");
         }
 
+        [Fact]
+        public async Task FluentMockServer_Proxy_Should_Not_overrule_AdminMappings()
+        {
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithBody("ok"));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                ReadStaticMappings = false,
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = serverForProxyForwarding.Urls[0],
+                    SaveMapping = false,
+                    SaveMappingToFile = false
+                }
+            });
+
+            // Act 1
+            var requestMessage1 = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{server.Urls[0]}{path}")
+            };
+            var response1 = await new HttpClient().SendAsync(requestMessage1);
+
+            // Assert 1
+            string content1 = await response1.Content.ReadAsStringAsync();
+            Check.That(content1).IsEqualTo("ok");
+
+            // Act 2
+            var requestMessage2 = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{server.Urls[0]}/__admin/mappings")
+            };
+            var response2 = await new HttpClient().SendAsync(requestMessage2);
+
+            // Assert 2
+            string content2 = await response2.Content.ReadAsStringAsync();
+            Check.That(content2).IsEqualTo("[]");
+        }
 #endif
     }
 }
