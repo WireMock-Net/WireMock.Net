@@ -59,7 +59,6 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
             Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
-
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
             Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingsPost));
@@ -76,7 +75,6 @@ namespace WireMock.Server
             // __admin/mappings/save
             Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsSave));
 
-
             // __admin/requests
             Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
             Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
@@ -90,7 +88,6 @@ namespace WireMock.Server
 
             // __admin/requests/find
             Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
-
 
             // __admin/scenarios
             Given(Request.Create().WithPath(AdminScenarios).UsingGet()).RespondWith(new DynamicResponseProvider(ScenariosGet));
