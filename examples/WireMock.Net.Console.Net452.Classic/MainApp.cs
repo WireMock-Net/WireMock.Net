@@ -59,6 +59,14 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
+                    .WithPath("/httpbin")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://httpbin.org" })
+                );
+
+            server
+                .Given(Request.Create()
                     .UsingGet()
                     .WithPath("/proxy-execute-keep-alive")
                 )

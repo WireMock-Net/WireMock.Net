@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             {
                 BodyAsString = "whatever"
             };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
             var response = Response.Create()
                 .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
@@ -61,7 +61,7 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo post");
+            Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo POSt");
         }
 
         [Fact]

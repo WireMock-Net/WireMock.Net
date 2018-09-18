@@ -104,12 +104,12 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
             // when
-            var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "get" } });
+            var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } });
 
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
-            Check.That(requestLogged.Request.Method).IsEqualTo("get");
+            Check.That(requestLogged.Request.Method).IsEqualTo("GET");
             Check.That(requestLogged.Request.Body).IsNull();
             Check.That(requestLogged.Request.Path).IsEqualTo("/foo");
         }
@@ -133,7 +133,7 @@ namespace WireMock.Net.Tests
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
-            Check.That(requestLogged.Request.Method).IsEqualTo("get");
+            Check.That(requestLogged.Request.Method).IsEqualTo("GET");
             Check.That(requestLogged.Request.Body).IsNull();
             Check.That(requestLogged.Request.Path).IsEqualTo("/foo");
         }
@@ -168,7 +168,7 @@ namespace WireMock.Net.Tests
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
-            Check.That(requestLogged.Request.Method).IsEqualTo("post");
+            Check.That(requestLogged.Request.Method).IsEqualTo("POST");
             Check.That(requestLogged.Request.Body).IsNotNull();
             Check.That(requestLogged.Request.Body).Contains("T000001");
         }
@@ -202,7 +202,7 @@ namespace WireMock.Net.Tests
             // then
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
-            Check.That(requestLogged.Request.Method).IsEqualTo("post");
+            Check.That(requestLogged.Request.Method).IsEqualTo("POST");
             Check.That(requestLogged.Request.Body).IsNotNull();
             Check.That(requestLogged.Request.Body).Contains("T000001");
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Validation;
 
@@ -26,7 +27,7 @@ namespace WireMock.Matchers.Request
             Check.NotNull(methods, nameof(methods));
             _matchBehaviour = matchBehaviour;
 
-            Methods = methods.Select(v => v.ToLower()).ToArray();
+            Methods = methods;
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
@@ -38,7 +39,7 @@ namespace WireMock.Matchers.Request
 
         private double IsMatch(RequestMessage requestMessage)
         {
-            return MatchScores.ToScore(Methods.Contains(requestMessage.Method));
+            return MatchScores.ToScore(Methods.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase));
         }
     }
 }
