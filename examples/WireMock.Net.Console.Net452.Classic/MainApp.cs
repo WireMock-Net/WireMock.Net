@@ -148,6 +148,11 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { result = "data:headers posted with 201" }));
 
+            if (!System.IO.File.Exists(@"c:\temp\x.json"))
+            {
+                System.IO.File.WriteAllText(@"c:\temp\x.json", "{ \"hello\": \"world\", \"answer\": 42 }");
+            }
+
             server
                 .Given(Request.Create().WithPath("/file").UsingGet())
                 .RespondWith(Response.Create()
