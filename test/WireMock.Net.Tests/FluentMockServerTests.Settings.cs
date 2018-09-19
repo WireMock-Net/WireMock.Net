@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
+using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -15,6 +17,40 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerSettingsTests
     {
+        [Fact]
+        public void FluentMockServer_FluentMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
+        {
+            // Assign and Act
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = true,
+                AdminUsername = "u",
+                AdminPassword = "p"
+            });
+
+            // Assert
+            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
+            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            Check.That(options.AuthorizationMatcher).IsNotNull();
+        }
+
+        [Fact]
+        public void FluentMockServer_FluentMockServerSettings_StartAdminInterfaceFalse_BasicAuthenticationIsNotSet()
+        {
+            // Assign and Act
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                StartAdminInterface = false,
+                AdminUsername = "u",
+                AdminPassword = "p"
+            });
+
+            // Assert
+            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
+            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            Check.That(options.AuthorizationMatcher).IsNull();
+        }
+
         [Fact]
         public void FluentMockServer_FluentMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
         {
