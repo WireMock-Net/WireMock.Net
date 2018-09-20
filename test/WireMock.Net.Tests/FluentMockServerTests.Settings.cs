@@ -1,14 +1,6 @@
-using NFluent;
-using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Threading.Tasks;
+using NFluent;
 using WireMock.Owin;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
@@ -29,8 +21,7 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
-            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher).IsNotNull();
         }
 
@@ -46,8 +37,7 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
-            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher).IsNull();
         }
 

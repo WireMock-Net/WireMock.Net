@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Reflection;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Owin;
@@ -20,8 +19,7 @@ namespace WireMock.Net.Tests
             server.SetBasicAuthentication("x", "y");
 
             // Assert
-            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
-            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher.Name).IsEqualTo("RegexMatcher");
             Check.That(options.AuthorizationMatcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
             Check.That(options.AuthorizationMatcher.GetPatterns()).ContainsExactly("^(?i)BASIC eDp5$");
@@ -38,8 +36,7 @@ namespace WireMock.Net.Tests
             server.RemoveBasicAuthentication();
 
             // Assert
-            var field = typeof(FluentMockServer).GetField("_options", BindingFlags.NonPublic | BindingFlags.Instance);
-            var options = (WireMockMiddlewareOptions)field.GetValue(server);
+            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher).IsNull();
         }
     }

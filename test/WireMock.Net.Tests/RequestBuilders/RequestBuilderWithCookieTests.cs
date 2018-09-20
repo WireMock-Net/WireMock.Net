@@ -25,7 +25,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void RequestBuilder_WithCookie_String_String_IExactMatcher()
+        public void RequestBuilder_WithCookie_String_IExactMatcher()
         {
             // Act
             var requestBuilder = (Request)Request.Create().WithCookie("c", new ExactMatcher("v"));
@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void RequestBuilder_WithCookie_String_String_FuncIDictionary()
+        public void RequestBuilder_WithCookie_FuncIDictionary()
         {
             // Act
             var requestBuilder = (Request)Request.Create().WithCookie((IDictionary<string, string> x) => true);
