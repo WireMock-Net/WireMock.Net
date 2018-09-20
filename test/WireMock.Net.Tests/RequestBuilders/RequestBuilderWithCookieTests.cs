@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
