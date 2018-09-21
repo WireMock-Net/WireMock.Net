@@ -24,8 +24,7 @@ namespace WireMock.Transformers
                 }
                 catch (ParseException)
                 {
-                    // Ignore ParseException and return
-                    return;
+                    // Ignore ParseException
                 }
             });
 
@@ -40,8 +39,7 @@ namespace WireMock.Transformers
                 }
                 catch (ParseException)
                 {
-                    // Ignore ParseException and return
-                    return;
+                    // Ignore ParseException
                 }
             });
         }
