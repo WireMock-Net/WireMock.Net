@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using HandlebarsDotNet;
-using WireMock.Utils;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Transformers
@@ -52,7 +52,7 @@ namespace WireMock.Transformers
             {
                 if (arg is string)
                 {
-                    return arg as string;
+                    return (string) arg;
                 }
                 else
                 {

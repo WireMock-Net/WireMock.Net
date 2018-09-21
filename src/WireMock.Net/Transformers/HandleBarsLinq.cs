@@ -82,7 +82,7 @@ namespace WireMock.Transformers
                     throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars Linq.");
             }
 
-            return (valueToProcess, arguments[1] as string);
+            return (valueToProcess, (string) arguments[1]);
         }
     }
 }

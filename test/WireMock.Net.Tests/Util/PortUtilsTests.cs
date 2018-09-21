@@ -11,12 +11,9 @@ namespace WireMock.Net.Tests.Util
         {
             // Assign
             string url = "test";
-            string proto = "x";
-            string host = "h";
-            int port = 1;
 
             // Act
-            var result = PortUtils.TryExtract(url, out proto, out host, out port);
+            bool result = PortUtils.TryExtract(url, out string proto, out string host, out int port);
 
             // Assert
             Check.That(result).IsFalse();
@@ -30,12 +27,9 @@ namespace WireMock.Net.Tests.Util
         {
             // Assign
             string url = "http://0.0.0.0";
-            string proto = "x";
-            string host = "h";
-            int port = 1;
 
             // Act
-            var result = PortUtils.TryExtract(url, out proto, out host, out port);
+            bool result = PortUtils.TryExtract(url, out string proto, out string host, out int port);
 
             // Assert
             Check.That(result).IsFalse();
@@ -49,12 +43,9 @@ namespace WireMock.Net.Tests.Util
         {
             // Assign
             string url = "https://wiremock.net:5000";
-            string proto = "x";
-            string host = "h";
-            int port = 1;
 
             // Act
-            var result = PortUtils.TryExtract(url, out proto, out host, out port);
+            bool result = PortUtils.TryExtract(url, out string proto, out string host, out int port);
 
             // Assert
             Check.That(result).IsTrue();
@@ -68,12 +59,9 @@ namespace WireMock.Net.Tests.Util
         {
             // Assign
             string url = "https://0.0.0.0:5000";
-            string proto = "x";
-            string host = "h";
-            int port = 1;
 
             // Act
-            var result = PortUtils.TryExtract(url, out proto, out host, out port);
+            bool result = PortUtils.TryExtract(url, out string proto, out string host, out int port);
 
             // Assert
             Check.That(result).IsTrue();

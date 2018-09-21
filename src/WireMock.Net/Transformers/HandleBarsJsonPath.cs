@@ -22,8 +22,7 @@ namespace WireMock.Transformers
                 }
                 catch (JsonException)
                 {
-                    // Ignore JsonException and return
-                    return;
+                    // Ignore JsonException
                 }
             });
 
@@ -41,8 +40,7 @@ namespace WireMock.Transformers
                 }
                 catch (JsonException)
                 {
-                    // Ignore JsonException and return
-                    return;
+                    // Ignore JsonException
                 }
             });
         }
@@ -69,7 +67,7 @@ namespace WireMock.Transformers
                     throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars JsonPath.");
             }
 
-            return (valueToProcess, arguments[1] as string);
+            return (valueToProcess, (string) arguments[1]);
         }
     }
 }
