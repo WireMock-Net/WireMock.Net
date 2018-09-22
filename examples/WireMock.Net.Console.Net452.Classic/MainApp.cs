@@ -59,6 +59,14 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
+                    .WithPath("/httpbin")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://httpbin.org" })
+                );
+
+            server
+                .Given(Request.Create()
                     .UsingGet()
                     .WithPath("/proxy-execute-keep-alive")
                 )
@@ -139,6 +147,11 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(201)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { result = "data:headers posted with 201" }));
+
+            if (!System.IO.File.Exists(@"c:\temp\x.json"))
+            {
+                System.IO.File.WriteAllText(@"c:\temp\x.json", "{ \"hello\": \"world\", \"answer\": 42 }");
+            }
 
             server
                 .Given(Request.Create().WithPath("/file").UsingGet())

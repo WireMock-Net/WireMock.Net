@@ -43,7 +43,7 @@ namespace WireMock.Owin
             {
                 Urls.Add(uriPrefix);
 
-                PortUtils.TryExtractProtocolAndPort(uriPrefix, out string host, out int port);
+                PortUtils.TryExtract(uriPrefix, out string protocol, out string host, out int port);
                 Ports.Add(port);
             }
 
@@ -75,13 +75,13 @@ namespace WireMock.Owin
                     // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
                     foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
                     {
-                        PortUtils.TryExtractProtocolAndPort(url, out string host, out int port);
+                        PortUtils.TryExtract(url, out string protocol, out string host, out int port);
                         options.Listen(System.Net.IPAddress.Any, port);
                     }
 
                     foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
-                        PortUtils.TryExtractProtocolAndPort(url, out string host, out int port);
+                        PortUtils.TryExtract(url, out string protocol, out string host, out int port);
                         options.Listen(System.Net.IPAddress.Any, port, listenOptions =>
                         {
                             listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());

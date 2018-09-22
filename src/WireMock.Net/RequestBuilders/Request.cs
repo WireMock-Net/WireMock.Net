@@ -156,42 +156,42 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IMethodRequestBuilder.UsingDelete(MatchBehaviour)"/>
         public IRequestBuilder UsingDelete(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "delete"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "DELETE"));
             return this;
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingGet(MatchBehaviour)"/>
         public IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "get"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "GET"));
             return this;
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingHead(MatchBehaviour)"/>
         public IRequestBuilder UsingHead(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "head"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "HEAD"));
             return this;
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingPost(MatchBehaviour)"/>
         public IRequestBuilder UsingPost(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "post"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "POST"));
             return this;
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingPatch(MatchBehaviour)"/>
         public IRequestBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "patch"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "PATCH"));
             return this;
         }
 
         /// <inheritdoc cref="IMethodRequestBuilder.UsingPut(MatchBehaviour)"/>
         public IRequestBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "put"));
+            _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, "PUT"));
             return this;
         }
 

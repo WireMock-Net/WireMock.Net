@@ -30,8 +30,10 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer
     {
+        private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
+        private const int AdminPriority = int.MinValue;
+        private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";
-
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
@@ -56,48 +58,45 @@ namespace WireMock.Server
         private void InitAdmin()
         {
             // __admin/settings
-            Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
-
+            Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
+            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
             // __admin/mappings
-            Given(Request.Create().WithPath(AdminMappings).UsingGet()).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingsPost));
-            Given(Request.Create().WithPath(AdminMappings).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingsDelete));
+            Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
-            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsDelete));
+            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/{guid}
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(MappingPut));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(MappingDelete));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save
-            Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).RespondWith(new DynamicResponseProvider(MappingsSave));
-
+            Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsSave));
 
             // __admin/requests
-            Given(Request.Create().WithPath(AdminRequests).UsingGet()).RespondWith(new DynamicResponseProvider(RequestsGet));
-            Given(Request.Create().WithPath(AdminRequests).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestsDelete));
+            Given(Request.Create().WithPath(AdminRequests).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsGet));
+            Given(Request.Create().WithPath(AdminRequests).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
 
             // __admin/requests/reset
-            Given(Request.Create().WithPath(AdminRequests + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsDelete));
+            Given(Request.Create().WithPath(AdminRequests + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
 
             // __admin/request/{guid}
-            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).RespondWith(new DynamicResponseProvider(RequestGet));
-            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).RespondWith(new DynamicResponseProvider(RequestDelete));
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestGet));
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestDelete));
 
             // __admin/requests/find
-            Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).RespondWith(new DynamicResponseProvider(RequestsFind));
-
+            Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFind));
 
             // __admin/scenarios
-            Given(Request.Create().WithPath(AdminScenarios).UsingGet()).RespondWith(new DynamicResponseProvider(ScenariosGet));
-            Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).RespondWith(new DynamicResponseProvider(ScenariosReset));
+            Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
+            Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
 
             // __admin/scenarios/reset
-            Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).RespondWith(new DynamicResponseProvider(ScenariosReset));
+            Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
         }
         #endregion
 
@@ -167,7 +166,7 @@ namespace WireMock.Server
 
             _logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
 
-            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", 1000);
+            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
             watcher.Created += (sender, args) =>
             {
                 _logger.Info("New MappingFile created : '{0}'", args.FullPath);
@@ -222,10 +221,17 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(IProxyAndRecordSettings settings)
+        private void InitProxyAndRecord(IFluentMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ClientX509Certificate2ThumbprintOrSubjectName);
-            Given(Request.Create().WithPath("/*").UsingAnyMethod()).RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
+
+            var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
+            if (settings.StartAdminInterface == true)
+            {
+                respondProvider.AtPriority(ProxyPriority);
+            }
+
+            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings.ProxyAndRecordSettings));
         }
 
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)

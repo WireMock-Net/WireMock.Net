@@ -147,7 +147,7 @@ namespace WireMock
             PathSegments = Path.Split('/').Skip(1).ToArray();
             AbsolutePathSegments = AbsolutePath.Split('/').Skip(1).ToArray();
 
-            Method = method.ToLower();
+            Method = method;
             ClientIP = clientIP;
 
             Body = body?.BodyAsString;

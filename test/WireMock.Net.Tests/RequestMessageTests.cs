@@ -11,6 +11,16 @@ namespace WireMock.Net.Tests
         private const string ClientIp = "::1";
 
         [Fact]
+        public void RequestMessage_Method_Should_BeSame()
+        {
+            // given
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "posT", ClientIp);
+
+            // then
+            Check.That(request.Method).IsEqualTo("posT");
+        }
+
+        [Fact]
         public void RequestMessage_ParseQuery_NoKeys()
         {
             // given

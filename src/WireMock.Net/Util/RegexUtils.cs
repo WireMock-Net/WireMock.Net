@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace WireMock.Utils
+namespace WireMock.Util
 {
     internal static class RegexUtils
     {

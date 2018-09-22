@@ -9,7 +9,7 @@ namespace WireMock.Util
     /// </summary>
     public static class PortUtils
     {
-        private static readonly Regex UrlDetailsRegex = new Regex(@"^(?<proto>\w+)://[^/]+?(?<port>\d+)/?", RegexOptions.Compiled);
+        private static readonly Regex UrlDetailsRegex = new Regex(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled);
 
         /// <summary>
         /// Finds a free TCP port.
@@ -32,17 +32,19 @@ namespace WireMock.Util
         }
 
         /// <summary>
-        /// Extract a proto and port from a URL.
+        /// Extract the protocol, host and port from a URL.
         /// </summary>
-        public static bool TryExtractProtocolAndPort(string url, out string proto, out int port)
+        public static bool TryExtract(string url, out string protocol, out string host, out int port)
         {
-            proto = null;
-            port = 0;
+            protocol = null;
+            host = null;
+            port = default(int);
 
             Match m = UrlDetailsRegex.Match(url);
             if (m.Success)
             {
-                proto = m.Groups["proto"].Value;
+                protocol = m.Groups["proto"].Value;
+                host = m.Groups["host"].Value;
 
                 return int.TryParse(m.Groups["port"].Value, out port);
             }

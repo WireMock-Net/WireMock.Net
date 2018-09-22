@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("hello patch"));
 
             // when
-            var msg = new HttpRequestMessage(new HttpMethod("patch"), new Uri("http://localhost:" + _server.Ports[0] + path))
+            var msg = new HttpRequestMessage(new HttpMethod("PATCH"), new Uri("http://localhost:" + _server.Ports[0] + path))
             {
                 Content = new StringContent("{\"data\": {\"attr\":\"value\"}}")
             };
@@ -43,7 +43,7 @@ namespace WireMock.Net.Tests
 
             Check.That(_server.LogEntries).HasSize(1);
             var requestLogged = _server.LogEntries.First();
-            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("patch");
+            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("PATCH");
             Check.That(requestLogged.RequestMessage.Body).IsNotNull();
             Check.That(requestLogged.RequestMessage.Body).IsEqualTo("{\"data\": {\"attr\":\"value\"}}");
         }
