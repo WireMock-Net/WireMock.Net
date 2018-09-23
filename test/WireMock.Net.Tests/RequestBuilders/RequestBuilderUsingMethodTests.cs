@@ -1,16 +1,25 @@
 ﻿using System.Collections.Generic;
 using NFluent;
-using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.RequestBuilders;
-using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
 {
     public class RequestBuilderUsingMethodTests
     {
+        [Fact]
+        public void RequestBuilder_UsingPatch()
+        {
+            // Act
+            var requestBuilder = (Request)Request.Create().UsingPatch();
+
+            // Assert 1
+            var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
+            Check.That(matchers.Count()).IsEqualTo(1);
+            Check.That((matchers[0] as RequestMessageMethodMatcher).Methods).ContainsExactly("PATCH");
+        }
+
         [Fact]
         public void RequestBuilder_UsingAnyMethod_ClearsAllOtherMatches()
         {

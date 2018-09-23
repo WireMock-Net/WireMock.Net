@@ -9,9 +9,11 @@ using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Util;
 #if !USE_ASPNETCORE
+using IResponse = Microsoft.Owin.IOwinResponse;
 using Microsoft.Owin;
 #else
 using Microsoft.AspNetCore.Http;
+using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
 #endif
 
 namespace WireMock.Owin
@@ -25,56 +27,19 @@ namespace WireMock.Owin
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
 #if !USE_ASPNETCORE
-        private static readonly IDictionary<string, Action<IOwinResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #else
-        private static readonly IDictionary<string, Action<HttpResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #endif
             { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
         };
 
-        private void SetResponseHeaders(ResponseMessage responseMessage
-#if !USE_ASPNETCORE
-            , IOwinResponse response
-#else
-            , HttpResponse response
-#endif
-        )
-        {
-            // Set headers
-            foreach (var pair in responseMessage.Headers)
-            {
-                if (ResponseHeadersToFix.ContainsKey(pair.Key))
-                {
-                    ResponseHeadersToFix[pair.Key]?.Invoke(response, pair.Value);
-                }
-                else
-                {
-#if !USE_ASPNETCORE
-                    // For non-NETSTANDARD, check if this response header can be added (#148)
-                    if (!WebHeaderCollection.IsRestricted(pair.Key, true))
-                    {
-                        response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
-                    }
-#else
-                    // NETSTANDARD can add any header (or so it seems)
-                    response.Headers.Append(pair.Key, pair.Value.ToArray());
-#endif
-                }
-            }
-        }
-
         /// <summary>
         /// Map ResponseMessage to OwinResponse/HttpResponse
         /// </summary>
-        /// <param name="responseMessage"></param>
-        /// <param name="response"></param>
-        public async Task MapAsync(ResponseMessage responseMessage
-#if !USE_ASPNETCORE
-            , IOwinResponse response
-#else
-            , HttpResponse response
-#endif
-            )
+        /// <param name="responseMessage">The ResponseMessage</param>
+        /// <param name="response">The OwinResponse/HttpResponse</param>
+        public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
         {
             if (responseMessage == null)
             {
@@ -108,6 +73,31 @@ namespace WireMock.Owin
             if (bytes != null)
             {
                 await response.Body.WriteAsync(bytes, 0, bytes.Length);
+            }
+        }
+
+        private void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
+        {
+            // Set headers
+            foreach (var pair in responseMessage.Headers)
+            {
+                if (ResponseHeadersToFix.ContainsKey(pair.Key))
+                {
+                    ResponseHeadersToFix[pair.Key]?.Invoke(response, pair.Value);
+                }
+                else
+                {
+#if !USE_ASPNETCORE
+                    // For non-NETSTANDARD, check if this response header can be added (#148)
+                    if (!WebHeaderCollection.IsRestricted(pair.Key, true))
+                    {
+                        response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
+                    }
+#else
+                    // NETSTANDARD can add any header (or so it seems)
+                    response.Headers.Append(pair.Key, pair.Value.ToArray());
+#endif
+                }
             }
         }
     }

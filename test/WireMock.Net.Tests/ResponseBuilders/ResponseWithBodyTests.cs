@@ -97,6 +97,28 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
         }
 
         [Fact]
+        public async Task Response_ProvideResponse_WithBody_Object_Indented()
+        {
+            // given
+            var body = new BodyData
+            {
+                BodyAsString = "abc"
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
+
+            object x = new { message = "Hello" };
+            var response = Response.Create().WithBodyAsJson(x, true);
+
+            // act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // then
+            Check.That(responseMessage.BodyAsJson).IsNotNull();
+            Check.That(responseMessage.BodyAsJson).Equals(x);
+            Check.That(responseMessage.BodyAsJsonIndented).IsEqualTo(true);
+        }
+
+        [Fact]
         public async Task Response_ProvideResponse_WithBody_String_SameAsSource_Encoding()
         {
             // Assign

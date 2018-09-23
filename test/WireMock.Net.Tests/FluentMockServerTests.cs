@@ -19,89 +19,22 @@ namespace WireMock.Net.Tests
     {
         private static string jsonRequestMessage = @"{ ""message"" : ""Hello server"" }";
 
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_methodPatch()
-        {
-            // given
-            string path = $"/foo_{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
+        //[Fact]
+        //public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
+        //{
+        //    // Assign
+        //    var _server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath(path).UsingMethod("patch"))
-                .RespondWith(Response.Create().WithBody("hello patch"));
+        //    _server
+        //        .Given(Request.Create().UsingAnyMethod())
+        //        .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
 
-            // when
-            var msg = new HttpRequestMessage(new HttpMethod("PATCH"), new Uri("http://localhost:" + _server.Ports[0] + path))
-            {
-                Content = new StringContent("{\"data\": {\"attr\":\"value\"}}")
-            };
-            var response = await new HttpClient().SendAsync(msg);
+        //    // Act
+        //    var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
 
-            // then
-            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
-            var responseBody = await response.Content.ReadAsStringAsync();
-            Check.That(responseBody).IsEqualTo("hello patch");
-
-            Check.That(_server.LogEntries).HasSize(1);
-            var requestLogged = _server.LogEntries.First();
-            Check.That(requestLogged.RequestMessage.Method).IsEqualTo("PATCH");
-            Check.That(requestLogged.RequestMessage.Body).IsNotNull();
-            Check.That(requestLogged.RequestMessage.Body).IsEqualTo("{\"data\": {\"attr\":\"value\"}}");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_bodyAsString()
-        {
-            // given
-            var _server = FluentMockServer.Start();
-
-            _server
-                .Given(Request.Create()
-                    .WithPath("/foo")
-                    .UsingGet())
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody("Hello world!"));
-
-            // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
-
-            // then
-            Check.That(response).IsEqualTo("Hello world!");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson()
-        {
-            // Assign
-            var _server = FluentMockServer.Start();
-
-            _server
-                .Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }));
-
-            // Act
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
-
-            // Assert
-            Check.That(response).IsEqualTo("{\"message\":\"Hello\"}");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
-        {
-            // Assign
-            var _server = FluentMockServer.Start();
-
-            _server
-                .Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
-
-            // Act
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
-
-            // Assert
-            Check.That(response).IsEqualTo($"{{{Environment.NewLine}  \"message\": \"Hello\"{Environment.NewLine}}}");
-        }
+        //    // Assert
+        //    Check.That(response).IsEqualTo($"{{{Environment.NewLine}  \"message\": \"Hello\"{Environment.NewLine}}}");
+        //}
 
         [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
