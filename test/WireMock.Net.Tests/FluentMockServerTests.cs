@@ -1,11 +1,9 @@
 ﻿using NFluent;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -17,25 +15,6 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerTests
     {
-        private static string jsonRequestMessage = @"{ ""message"" : ""Hello server"" }";
-
-        //[Fact]
-        //public async Task FluentMockServer_Should_respond_to_request_BodyAsJson_Indented()
-        //{
-        //    // Assign
-        //    var _server = FluentMockServer.Start();
-
-        //    _server
-        //        .Given(Request.Create().UsingAnyMethod())
-        //        .RespondWith(Response.Create().WithBodyAsJson(new { message = "Hello" }, true));
-
-        //    // Act
-        //    var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0]);
-
-        //    // Assert
-        //    Check.That(response).IsEqualTo($"{{{Environment.NewLine}  \"message\": \"Hello\"{Environment.NewLine}}}");
-        //}
-
         [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
         {
@@ -57,7 +36,7 @@ namespace WireMock.Net.Tests
             // Assert
             string content = await response.Content.ReadAsStringAsync();
             Check.That(content).IsEqualTo("path: /foo");
-            Check.That((int) response.StatusCode).IsEqualTo(500);
+            Check.That((int)response.StatusCode).IsEqualTo(500);
             Check.That(response.Headers.GetValues("H1")).ContainsExactly("X1");
         }
 
@@ -74,62 +53,6 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(response).IsEqualTo("Hello World?");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_bodyAsBytes()
-        {
-            // given
-            string path = $"/foo_{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
-
-            _server.Given(Request.Create().WithPath(path).UsingGet()).RespondWith(Response.Create().WithBody(new byte[] { 48, 49 }));
-
-            // when
-            var responseAsString = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + path);
-            var responseAsBytes = await new HttpClient().GetByteArrayAsync("http://localhost:" + _server.Ports[0] + path);
-
-            // then
-            Check.That(responseAsString).IsEqualTo("01");
-            Check.That(responseAsBytes).ContainsExactly(new byte[] { 48, 49 });
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_valid_matchers_when_sent_json()
-        {
-            // Assign
-            var validMatchersForHelloServerJsonMessage = new List<object[]>
-            {
-                new object[] { new WildcardMatcher("*Hello server*"), "application/json" },
-                new object[] { new WildcardMatcher("*Hello server*"), "text/plain" },
-                new object[] { new ExactMatcher(jsonRequestMessage), "application/json" },
-                new object[] { new ExactMatcher(jsonRequestMessage), "text/plain" },
-                new object[] { new RegexMatcher("Hello server"), "application/json" },
-                new object[] { new RegexMatcher("Hello server"), "text/plain" },
-                new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "application/json" },
-                new object[] { new JsonPathMatcher("$..[?(@.message == 'Hello server')]"), "text/plain" }
-            };
-
-            var _server = FluentMockServer.Start();
-
-            foreach (var item in validMatchersForHelloServerJsonMessage)
-            {
-                string path = $"/foo_{Guid.NewGuid()}";
-                _server
-                    .Given(Request.Create().WithPath(path).WithBody((IMatcher)item[0]))
-                    .RespondWith(Response.Create().WithBody("Hello client"));
-
-                // Act
-                var content = new StringContent(jsonRequestMessage, Encoding.UTF8, (string)item[1]);
-                var response = await new HttpClient().PostAsync("http://localhost:" + _server.Ports[0] + path, content);
-
-                // Assert
-                var responseString = await response.Content.ReadAsStringAsync();
-                Check.That(responseString).Equals("Hello client");
-
-                _server.ResetMappings();
-                _server.ResetLogEntries();
-            }
         }
 
         [Fact]
