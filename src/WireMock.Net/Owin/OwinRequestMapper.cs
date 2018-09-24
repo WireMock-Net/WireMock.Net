@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WireMock.Models;
 using WireMock.Util;
 #if !USE_ASPNETCORE
-using Microsoft.Owin;
+// using Microsoft.Owin;
+using IRequest = Microsoft.Owin.IOwinRequest;
 #else
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using IRequest = Microsoft.AspNetCore.Http.HttpRequest;
 #endif
 
 namespace WireMock.Owin
@@ -18,28 +21,14 @@ namespace WireMock.Owin
     internal class OwinRequestMapper
     {
         /// <summary>
-        /// MapAsync IOwinRequest to RequestMessage
+        /// MapAsync IRequest to RequestMessage
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<RequestMessage> MapAsync(
-#if !USE_ASPNETCORE
-            IOwinRequest request
-#else
-            HttpRequest request
-#endif
-            )
+        /// <param name="request">The OwinRequest/HttpRequest</param>
+        /// <returns>RequestMessage</returns>
+        public async Task<RequestMessage> MapAsync(IRequest request)
         {
-#if !USE_ASPNETCORE
-            var urldetails = UrlUtils.Parse(request.Uri, request.PathBase);
-            string clientIP = request.RemoteIpAddress;
-#else
-            var urldetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
-            var connection = request.HttpContext.Connection;
-            string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
-                ? connection.RemoteIpAddress.MapToIPv4().ToString()
-                : connection.RemoteIpAddress.ToString();
-#endif
+            (UrlDetails urldetails, string clientIP) = ParseRequest(request);
+
             string method = request.Method;
 
             Dictionary<string, string[]> headers = null;
@@ -68,7 +57,22 @@ namespace WireMock.Owin
                 body = await BodyParser.Parse(request.Body, request.ContentType);
             }
 
-            return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.Now };
+            return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
+        }
+
+        private (UrlDetails UrlDetails, string ClientIP) ParseRequest(IRequest request)
+        {
+#if !USE_ASPNETCORE
+            var urldetails = UrlUtils.Parse(request.Uri, request.PathBase);
+            string clientIP = request.RemoteIpAddress;
+#else
+            var urldetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
+            var connection = request.HttpContext.Connection;
+            string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
+                ? connection.RemoteIpAddress.MapToIPv4().ToString()
+                : connection.RemoteIpAddress.ToString();
+#endif
+            return (urldetails, clientIP);
         }
 
         private bool ShouldParseBody(string method)

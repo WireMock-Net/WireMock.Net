@@ -35,7 +35,7 @@ namespace WireMock.Owin
         };
 
         /// <summary>
-        /// Map ResponseMessage to OwinResponse/HttpResponse
+        /// Map ResponseMessage to IResponse.
         /// </summary>
         /// <param name="responseMessage">The ResponseMessage</param>
         /// <param name="response">The OwinResponse/HttpResponse</param>

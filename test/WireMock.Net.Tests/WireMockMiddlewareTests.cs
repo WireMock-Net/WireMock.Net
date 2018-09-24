@@ -1,44 +1,39 @@
-﻿//using Microsoft.Owin;
-//using Moq;
-//using NFluent;
-//using WireMock.Owin;
-//using Xunit;
+﻿using Moq;
+using NFluent;
+using WireMock.Owin;
+using Xunit;
+#if NET452
+using Microsoft.Owin;
+using IContext = Microsoft.Owin.IOwinContext;
+using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
+using Next = Microsoft.Owin.OwinMiddleware;
+#else
+using Microsoft.AspNetCore.Http;
+using OwinMiddleware = System.Object;
+using IContext = Microsoft.AspNetCore.Http.HttpContext;
+using Next = Microsoft.AspNetCore.Http.RequestDelegate;
+#endif
 
-//namespace WireMock.Net.Tests
-//{
-//    public class WireMockMiddlewareTests
-//    {
-//        private readonly ObjectMother _objectMother = new ObjectMother();
+namespace WireMock.Net.Tests
+{
+    public class WireMockMiddlewareTests
+    {
+        //private Mock<OwinMiddleware> OwinMiddleware;
+        //private Mock<IOwinContext> OwinContext;
+        private WireMockMiddlewareOptions WireMockMiddlewareOptions;
 
-//        [Fact]
-//        public void Should_have_default_state_as_null()
-//        {
-//            // given
+        private WireMockMiddleware _sut;
 
-//            // when
-//            var sut = _objectMother.Create();
+        public WireMockMiddlewareTests()
+        {
+            //OwinContext = new Mock<IOwinContext>();
+            //OwinMiddleware = new Mock<OwinMiddleware>(null);
+            WireMockMiddlewareOptions = new WireMockMiddlewareOptions();
+        }
 
-//            // then
-//            Check.That(sut.Scenarios).IsNull();
-//        }
-
-//        private class ObjectMother
-//        {
-//            private Mock<OwinMiddleware> OwinMiddleware { get; }
-//            private Mock<IOwinContext> OwinContext { get; }
-//            private WireMockMiddlewareOptions WireMockMiddlewareOptions { get; }
-
-//            public ObjectMother()
-//            {
-//                OwinContext = new Mock<IOwinContext>();
-//                OwinMiddleware = new Mock<OwinMiddleware>(null);
-//                WireMockMiddlewareOptions = new WireMockMiddlewareOptions();
-//            }
-
-//            public WireMockMiddleware Create()
-//            {
-//                return new WireMockMiddleware(OwinMiddleware.Object, WireMockMiddlewareOptions);
-//            }
-//        }
-//    }
-//}
+        [Fact]
+        public void WireMockMiddleware_Invoke()
+        {
+        }
+    }
+}

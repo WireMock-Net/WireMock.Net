@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
@@ -11,17 +10,19 @@ using WireMock.Http;
 using WireMock.Serialization;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
+using IContext = Microsoft.Owin.IOwinContext;
+using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
+using Next = Microsoft.Owin.OwinMiddleware;
 #else
 using Microsoft.AspNetCore.Http;
+using OwinMiddleware = System.Object;
+using IContext = Microsoft.AspNetCore.Http.HttpContext;
+using Next = Microsoft.AspNetCore.Http.RequestDelegate;
 #endif
 
 namespace WireMock.Owin
 {
-#if !USE_ASPNETCORE
     internal class WireMockMiddleware : OwinMiddleware
-#else
-    internal class WireMockMiddleware
-#endif
     {
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly WireMockMiddlewareOptions _options;
@@ -30,22 +31,27 @@ namespace WireMock.Owin
         private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
 #if !USE_ASPNETCORE
-        public WireMockMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
+        public WireMockMiddleware(Next next, WireMockMiddlewareOptions options) : base(next)
         {
             _options = options;
         }
 #else
-        public WireMockMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
+        public WireMockMiddleware(Next next, WireMockMiddlewareOptions options)
         {
             _options = options;
         }
 #endif
 
 #if !USE_ASPNETCORE
-        public override async Task Invoke(IOwinContext ctx)
+        public override Task Invoke(IContext ctx)
 #else
-        public async Task Invoke(HttpContext ctx)
+        public Task Invoke(IContext ctx)
 #endif
+        {
+            return InvokeInternal(ctx);
+        }
+
+        private async Task InvokeInternal(IContext ctx)
         {
             var request = await _requestMapper.MapAsync(ctx.Request);
 
