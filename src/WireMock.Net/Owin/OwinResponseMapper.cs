@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Util;
 #if !USE_ASPNETCORE
-using IResponse = Microsoft.Owin.IOwinResponse;
+using System.Net;
 using Microsoft.Owin;
+using IResponse = Microsoft.Owin.IOwinResponse;
 #else
 using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -27,9 +27,9 @@ namespace WireMock.Owin
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
 #if !USE_ASPNETCORE
-        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IOwinResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #else
-        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<HttpResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
+        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
 #endif
             { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
         };
