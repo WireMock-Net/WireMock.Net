@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using Xunit;
@@ -54,8 +53,13 @@ namespace WireMock.Net.Tests.Owin
             _requestMapperMock = new Mock<IOwinRequestMapper>();
             _requestMapperMock.SetupAllProperties();
 
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", new BodyData { BodyAsJson = new { x = 1 } });
+            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
+            
+
             _responseMapperMock = new Mock<IOwinResponseMapper>();
             _responseMapperMock.SetupAllProperties();
+            _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
 
             _matcherMock = new Mock<IMappingMatcher>();
             _matcherMock.SetupAllProperties();
@@ -69,17 +73,6 @@ namespace WireMock.Net.Tests.Owin
         [Fact]
         public async void WireMockMiddleware_Invoke_NoMatch()
         {
-            // Assign
-            var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
-            var body = new BodyData
-            {
-                BodyAsJson = new { x = 1 }
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body, headers);
-
-            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
-            _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
-
             // Act
             await _sut.Invoke(_contextMock.Object);
 
@@ -88,6 +81,16 @@ namespace WireMock.Net.Tests.Owin
 
             Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == 404 && ((StatusModel)r.BodyAsJson).Status == "No matching mapping found";
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
+        }
+
+        [Fact]
+        public async void WireMockMiddleware_Invoke_RequestLogExpirationDurationIsDefined()
+        {
+            // Assign
+            _optionsMock.SetupGet(o => o.RequestLogExpirationDuration).Returns(1);
+
+            // Act
+            await _sut.Invoke(_contextMock.Object);
         }
     }
 }
