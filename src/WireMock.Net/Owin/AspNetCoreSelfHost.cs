@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using WireMock.HttpsCertificate;
 using WireMock.Logging;
+using WireMock.Owin.Mappers;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -17,7 +19,7 @@ namespace WireMock.Owin
     internal class AspNetCoreSelfHost : IOwinSelfHost
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly WireMockMiddlewareOptions _options;
+        private readonly IWireMockMiddlewareOptions _options;
         private readonly string[] _urls;
         private readonly IWireMockLogger _logger;
         private Exception _runningException;
@@ -32,7 +34,7 @@ namespace WireMock.Owin
 
         public Exception RunningException => _runningException;
 
-        public AspNetCoreSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
+        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
             Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
@@ -54,13 +56,20 @@ namespace WireMock.Owin
         public Task StartAsync()
         {
             _host = new WebHostBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<IWireMockMiddlewareOptions>(_options);
+                    services.AddSingleton<IMappingMatcher, MappingMatcher>();
+                    services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
+                    services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
+                })
                 .Configure(appBuilder =>
                 {
-                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>(_options);
+                    appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
 
                     _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
 
-                    appBuilder.UseMiddleware<WireMockMiddleware>(_options);
+                    appBuilder.UseMiddleware<WireMockMiddleware>();
 
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
@@ -104,7 +113,7 @@ namespace WireMock.Owin
         {
             try
             {
-                var appLifetime = (IApplicationLifetime) _host.Services.GetService(typeof(IApplicationLifetime));
+                var appLifetime = (IApplicationLifetime)_host.Services.GetService(typeof(IApplicationLifetime));
                 appLifetime.ApplicationStarted.Register(() => IsStarted = true);
 
 #if NETSTANDARD1_3

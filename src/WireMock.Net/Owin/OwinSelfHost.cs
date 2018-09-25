@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using WireMock.Http;
 using WireMock.Logging;
+using WireMock.Owin.Mappers;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -15,12 +15,12 @@ namespace WireMock.Owin
 {
     internal class OwinSelfHost : IOwinSelfHost
     {
-        private readonly WireMockMiddlewareOptions _options;
+        private readonly IWireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly IWireMockLogger _logger;
         private Exception _runningException;
 
-        public OwinSelfHost([NotNull] WireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
+        public OwinSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
         {
             Check.NotNull(options, nameof(options));
             Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
@@ -74,11 +74,15 @@ namespace WireMock.Owin
 
             try
             {
+                var requestMapper = new OwinRequestMapper();
+                var responseMapper = new OwinResponseMapper();
+                var matcher = new MappingMatcher(_options);
+
                 Action<IAppBuilder> startup = app =>
                 {
-                    app.Use<GlobalExceptionMiddleware>(_options);
+                    app.Use<GlobalExceptionMiddleware>(_options, responseMapper);
                     _options.PreWireMockMiddlewareInit?.Invoke(app);
-                    app.Use<WireMockMiddleware>(_options);
+                    app.Use<WireMockMiddleware>(_options, requestMapper, responseMapper, matcher);
                     _options.PostWireMockMiddlewareInit?.Invoke(app);
                 };
 

@@ -3,44 +3,59 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
+using IContext = Microsoft.Owin.IOwinContext;
+using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
+using Next = Microsoft.Owin.OwinMiddleware;
 #else
-using Microsoft.AspNetCore.Http;
+using OwinMiddleware = System.Object;
+using IContext = Microsoft.AspNetCore.Http.HttpContext;
+using Next = Microsoft.AspNetCore.Http.RequestDelegate;
 #endif
+using WireMock.Owin.Mappers;
+using WireMock.Validation;
 
 namespace WireMock.Owin
 {
-#if !USE_ASPNETCORE
     internal class GlobalExceptionMiddleware : OwinMiddleware
-#else
-    internal class GlobalExceptionMiddleware
-#endif
     {
-        private readonly WireMockMiddlewareOptions _options;
+        private readonly IWireMockMiddlewareOptions _options;
+        private readonly IOwinResponseMapper _responseMapper;
 
 #if !USE_ASPNETCORE
-        public GlobalExceptionMiddleware(OwinMiddleware next, WireMockMiddlewareOptions options) : base(next)
+        public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper) : base(next)
         {
+            Check.NotNull(options, nameof(options));
+            Check.NotNull(responseMapper, nameof(responseMapper));
+
             _options = options;
+            _responseMapper = responseMapper;
         }
 #else
-        public GlobalExceptionMiddleware(RequestDelegate next, WireMockMiddlewareOptions options)
+        public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper)
         {
+            Check.NotNull(options, nameof(options));
+            Check.NotNull(responseMapper, nameof(responseMapper));
+
             Next = next;
             _options = options;
+            _responseMapper = responseMapper;
         }
 #endif
 
 #if USE_ASPNETCORE
-        public RequestDelegate Next { get; }
+        public Next Next { get; }
 #endif
-
-        private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
 
 #if !USE_ASPNETCORE
-        public override async Task Invoke(IOwinContext ctx)
+        public override Task Invoke(IContext ctx)
 #else
-        public async Task Invoke(HttpContext ctx)
+        public Task Invoke(IContext ctx)
 #endif
+        {
+            return InvokeInternal(ctx);
+        }
+
+        private async Task InvokeInternal(IContext ctx)
         {
             try
             {

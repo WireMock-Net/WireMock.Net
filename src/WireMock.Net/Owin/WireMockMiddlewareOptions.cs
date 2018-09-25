@@ -7,12 +7,12 @@ using WireMock.Util;
 #if !USE_ASPNETCORE
 using Owin;
 #else
-using Microsoft.AspNetCore.Builder;
+using IAppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 #endif
 
 namespace WireMock.Owin
 {
-    internal class WireMockMiddlewareOptions
+    internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
     {
         public IWireMockLogger Logger { get; set; }
 
@@ -32,14 +32,8 @@ namespace WireMock.Owin
 
         public int? MaxRequestLogCount { get; set; }
 
-#if !USE_ASPNETCORE
         public Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
 
         public Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
-#else
-        public Action<IApplicationBuilder> PreWireMockMiddlewareInit { get; set; }
-
-        public Action<IApplicationBuilder> PostWireMockMiddlewareInit { get; set; }
-#endif
     }
 }

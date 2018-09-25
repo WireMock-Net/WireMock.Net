@@ -21,7 +21,7 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher).IsNotNull();
         }
 
@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var options = server.GetPrivateFieldValue<WireMockMiddlewareOptions>("_options");
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
             Check.That(options.AuthorizationMatcher).IsNull();
         }
 

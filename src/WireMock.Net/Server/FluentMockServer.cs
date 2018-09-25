@@ -29,7 +29,7 @@ namespace WireMock.Server
 
         private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
-        private readonly WireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
+        private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
         /// <summary>
         /// Gets a value indicating whether this server is started.

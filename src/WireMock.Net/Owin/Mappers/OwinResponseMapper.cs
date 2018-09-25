@@ -16,12 +16,12 @@ using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
 #endif
 
-namespace WireMock.Owin
+namespace WireMock.Owin.Mappers
 {
     /// <summary>
     /// OwinResponseMapper
     /// </summary>
-    public class OwinResponseMapper
+    public class OwinResponseMapper : IOwinResponseMapper
     {
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
@@ -34,11 +34,7 @@ namespace WireMock.Owin
             { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
         };
 
-        /// <summary>
-        /// Map ResponseMessage to IResponse.
-        /// </summary>
-        /// <param name="responseMessage">The ResponseMessage</param>
-        /// <param name="response">The OwinResponse/HttpResponse</param>
+        /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
         public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
         {
             if (responseMessage == null)

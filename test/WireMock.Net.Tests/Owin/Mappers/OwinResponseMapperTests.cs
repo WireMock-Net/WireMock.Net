@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using WireMock.Owin;
 using Xunit;
 using Moq;
 using System.Threading.Tasks;
 using System.Threading;
+using WireMock.Owin.Mappers;
 using WireMock.Util;
 #if NET452
 using Microsoft.Owin;
@@ -17,7 +17,7 @@ using Response = Microsoft.AspNetCore.Http.HttpResponse;
 using Microsoft.Extensions.Primitives;
 #endif
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests.Owin.Mappers
 {
     public class OwinResponseMapperTests
     {

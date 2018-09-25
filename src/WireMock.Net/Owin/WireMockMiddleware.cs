@@ -7,14 +7,15 @@ using WireMock.Matchers;
 using WireMock.Util;
 using Newtonsoft.Json;
 using WireMock.Http;
+using WireMock.Owin.Mappers;
 using WireMock.Serialization;
+using WireMock.Validation;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
 using Next = Microsoft.Owin.OwinMiddleware;
 #else
-using Microsoft.AspNetCore.Http;
 using OwinMiddleware = System.Object;
 using IContext = Microsoft.AspNetCore.Http.HttpContext;
 using Next = Microsoft.AspNetCore.Http.RequestDelegate;
@@ -25,20 +26,35 @@ namespace WireMock.Owin
     internal class WireMockMiddleware : OwinMiddleware
     {
         private static readonly Task CompletedTask = Task.FromResult(false);
-        private readonly WireMockMiddlewareOptions _options;
-
-        private readonly OwinRequestMapper _requestMapper = new OwinRequestMapper();
-        private readonly OwinResponseMapper _responseMapper = new OwinResponseMapper();
+        private readonly IWireMockMiddlewareOptions _options;
+        private readonly IOwinRequestMapper _requestMapper;
+        private readonly IOwinResponseMapper _responseMapper;
+        private readonly IMappingMatcher _mappingMatcher;
 
 #if !USE_ASPNETCORE
-        public WireMockMiddleware(Next next, WireMockMiddlewareOptions options) : base(next)
+        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
         {
+            Check.NotNull(options, nameof(options));
+            Check.NotNull(requestMapper, nameof(requestMapper));
+            Check.NotNull(responseMapper, nameof(responseMapper));
+            Check.NotNull(mappingMatcher, nameof(mappingMatcher));
+
             _options = options;
+            _requestMapper = requestMapper;
+            _responseMapper = responseMapper;
+            _mappingMatcher = mappingMatcher;
         }
 #else
-        public WireMockMiddleware(Next next, WireMockMiddlewareOptions options)
+        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
         {
+            Check.NotNull(options, nameof(options));
+            Check.NotNull(requestMapper, nameof(requestMapper));
+            Check.NotNull(responseMapper, nameof(responseMapper));
+
             _options = options;
+            _requestMapper = requestMapper;
+            _responseMapper = responseMapper;
+            _mappingMatcher = mappingMatcher;
         }
 #endif
 
@@ -57,8 +73,7 @@ namespace WireMock.Owin
 
             bool logRequest = false;
             ResponseMessage response = null;
-            Mapping targetMapping = null;
-            RequestMatchResult requestMatchResult = null;
+            (Mapping TargetMapping, RequestMatchResult RequestMatchResult) result = (null, null);
             try
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
@@ -73,36 +88,8 @@ namespace WireMock.Owin
                     }
                 }
 
-                var mappings = _options.Mappings.Values
-                    .Select(m => new
-                    {
-                        Mapping = m,
-                        MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _options.Scenarios.ContainsKey(m.Scenario) ? _options.Scenarios[m.Scenario].NextState : null)
-                    })
-                    .ToList();
-
-                if (_options.AllowPartialMapping)
-                {
-                    var partialMappings = mappings
-                        .Where(pm => pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch || !pm.Mapping.IsAdminInterface)
-                        .OrderBy(m => m.MatchResult)
-                        .ThenBy(m => m.Mapping.Priority)
-                        .ToList();
-
-                    var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.AverageTotalScore > 0.0);
-
-                    targetMapping = bestPartialMatch?.Mapping;
-                    requestMatchResult = bestPartialMatch?.MatchResult;
-                }
-                else
-                {
-                    var perfectMatch = mappings
-                        .OrderBy(m => m.Mapping.Priority)
-                        .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
-
-                    targetMapping = perfectMatch?.Mapping;
-                    requestMatchResult = perfectMatch?.MatchResult;
-                }
+                result = _mappingMatcher.Match(request);
+                var targetMapping = result.TargetMapping;
 
                 if (targetMapping == null)
                 {
@@ -151,9 +138,9 @@ namespace WireMock.Owin
                     Guid = Guid.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
-                    MappingGuid = targetMapping?.Guid,
-                    MappingTitle = targetMapping?.Title,
-                    RequestMatchResult = requestMatchResult
+                    MappingGuid = result.TargetMapping?.Guid,
+                    MappingTitle = result.TargetMapping?.Title,
+                    RequestMatchResult = result.RequestMatchResult
                 };
 
                 LogRequest(log, logRequest);
