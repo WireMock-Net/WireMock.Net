@@ -9,11 +9,9 @@ namespace WireMock
     /// <summary>
     /// The Mapping.
     /// </summary>
-    public class Mapping
+    public class Mapping : IMapping
     {
-        /// <summary>
-        /// Gets the unique identifier.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Guid" />
         public Guid Guid { get; }
 
         /// <summary>

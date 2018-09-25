@@ -14,31 +14,30 @@ namespace WireMock.Net.Tests.Owin
 {
     public class MappingMatcherTests
     {
-        private Mock<IWireMockMiddlewareOptions> _options;
+        private Mock<IWireMockMiddlewareOptions> _optionsMock;
 
         private IMappingMatcher _sut;
 
         public MappingMatcherTests()
         {
-            _options = new Mock<IWireMockMiddlewareOptions>();
-            _options.SetupAllProperties();
-            _options.Setup(o => o.Mappings).Returns(new ConcurrentDictionary<Guid, Mapping>());
-            _options.Setup(o => o.LogEntries).Returns(new ConcurentObservableCollection<LogEntry>());
-            _options.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
-            
-            _sut = new MappingMatcher(_options.Object);
+            _optionsMock = new Mock<IWireMockMiddlewareOptions>();
+            _optionsMock.SetupAllProperties();
+            _optionsMock.Setup(o => o.Mappings).Returns(new ConcurrentDictionary<Guid, IMapping>());
+            _optionsMock.Setup(o => o.LogEntries).Returns(new ConcurentObservableCollection<LogEntry>());
+            _optionsMock.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
+
+            _sut = new MappingMatcher(_optionsMock.Object);
         }
 
         [Fact]
         public void MappingMatcher_Match_NoMappingsDefined()
         {
             // Assign
-            var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
             var body = new BodyData
             {
                 BodyAsJson = new { x = 1 }
             };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body);
 
             // Act
             var result = _sut.Match(request);
@@ -48,36 +47,35 @@ namespace WireMock.Net.Tests.Owin
             Check.That(result.RequestMatchResult).IsNull();
         }
 
-        //[Fact]
-        //public void MappingMatcher_Match_AllowPartialMapping()
-        //{
-        //    // Assign
-        //    var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
-        //    var body = new BodyData
-        //    {
-        //        BodyAsJson = new { x = 1 }
-        //    };
-        //    var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body, headers);
+        [Fact]
+        public void MappingMatcher_Match_AllowPartialMapping()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = new { x = 1 }
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body);
 
-        //    _options.SetupGet(o => o.AllowPartialMapping).Returns(true);
+            _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
 
-        //    var mappingMock = new Mock<Mapping>();
-        //    var partialMatchResult = new RequestMatchResult();
-        //    partialMatchResult.AddScore(typeof(object), 0.1);
+            var mappingMock = new Mock<IMapping>();
+            var partialMatchResult = new RequestMatchResult();
+            partialMatchResult.AddScore(typeof(object), 0.1);
 
-        //    mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Returns(partialMatchResult);
+            mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Returns(partialMatchResult);
 
-        //    var mappings = new ConcurrentDictionary<Guid, Mapping>();
-        //    mappings.TryAdd(Guid.NewGuid(), mappingMock.Object);
+            var mappings = new ConcurrentDictionary<Guid, IMapping>();
+            mappings.TryAdd(Guid.NewGuid(), mappingMock.Object);
 
-        //    _options.Setup(o => o.Mappings).Returns(mappings);
+            _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
-        //    // Act
-        //    var result = _sut.Match(request);
+            // Act
+            var result = _sut.Match(request);
 
-        //    // Assert and Verify
-        //    Check.That(result.Mapping).IsNotNull();
-        //    Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.1);
-        //}
+            // Assert and Verify
+            Check.That(result.Mapping).IsNotNull();
+            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.1);
+        }
     }
 }

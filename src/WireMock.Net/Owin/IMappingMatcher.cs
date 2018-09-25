@@ -4,6 +4,6 @@ namespace WireMock.Owin
 {
     internal interface IMappingMatcher
     {
-        (Mapping Mapping, RequestMatchResult RequestMatchResult) Match(RequestMessage request);
+        (IMapping Mapping, RequestMatchResult RequestMatchResult) Match(RequestMessage request);
     }
 }

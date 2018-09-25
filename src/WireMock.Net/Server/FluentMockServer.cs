@@ -53,7 +53,7 @@ namespace WireMock.Server
         /// Gets the mappings.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<Mapping> Mappings => _options.Mappings.Values.ToArray();
+        public IEnumerable<IMapping> Mappings => _options.Mappings.Values.ToArray();
 
         /// <summary>
         /// Gets the scenarios.
@@ -424,7 +424,7 @@ namespace WireMock.Server
             return new RespondWithAProvider(RegisterMapping, requestMatcher);
         }
 
-        private void RegisterMapping(Mapping mapping)
+        private void RegisterMapping(IMapping mapping)
         {
             // Check a mapping exists with the same Guid, if so, replace it.
             if (_options.Mappings.ContainsKey(mapping.Guid))

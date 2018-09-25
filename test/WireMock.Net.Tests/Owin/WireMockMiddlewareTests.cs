@@ -35,35 +35,35 @@ namespace WireMock.Net.Tests.Owin
     {
         private WireMockMiddleware _sut;
 
-        private Mock<IWireMockMiddlewareOptions> _options;
-        private Mock<IOwinRequestMapper> _requestMapper;
-        private Mock<IOwinResponseMapper> _responseMapper;
-        private Mock<IMappingMatcher> _matcher;
-        private Mock<IContext> _context;
+        private Mock<IWireMockMiddlewareOptions> _optionsMock;
+        private Mock<IOwinRequestMapper> _requestMapperMock;
+        private Mock<IOwinResponseMapper> _responseMapperMock;
+        private Mock<IMappingMatcher> _matcherMock;
+        private Mock<IContext> _contextMock;
 
         public WireMockMiddlewareTests()
         {
-            _options = new Mock<IWireMockMiddlewareOptions>();
-            _options.SetupAllProperties();
-            _options.Setup(o => o.Mappings).Returns(new ConcurrentDictionary<Guid, Mapping>());
-            _options.Setup(o => o.LogEntries).Returns(new ConcurentObservableCollection<LogEntry>());
-            _options.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
-            _options.Setup(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()));
-            _options.Setup(o => o.Logger.DebugRequestResponse(It.IsAny<LogEntryModel>(), false));
+            _optionsMock = new Mock<IWireMockMiddlewareOptions>();
+            _optionsMock.SetupAllProperties();
+            _optionsMock.Setup(o => o.Mappings).Returns(new ConcurrentDictionary<Guid, IMapping>());
+            _optionsMock.Setup(o => o.LogEntries).Returns(new ConcurentObservableCollection<LogEntry>());
+            _optionsMock.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
+            _optionsMock.Setup(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()));
+            _optionsMock.Setup(o => o.Logger.DebugRequestResponse(It.IsAny<LogEntryModel>(), false));
 
-            _requestMapper = new Mock<IOwinRequestMapper>();
-            _requestMapper.SetupAllProperties();
+            _requestMapperMock = new Mock<IOwinRequestMapper>();
+            _requestMapperMock.SetupAllProperties();
 
-            _responseMapper = new Mock<IOwinResponseMapper>();
-            _responseMapper.SetupAllProperties();
+            _responseMapperMock = new Mock<IOwinResponseMapper>();
+            _responseMapperMock.SetupAllProperties();
 
-            _matcher = new Mock<IMappingMatcher>();
-            _matcher.SetupAllProperties();
-            _matcher.Setup(m => m.Match(It.IsAny<RequestMessage>())).Returns(((Mapping)null, (RequestMatchResult)null));
+            _matcherMock = new Mock<IMappingMatcher>();
+            _matcherMock.SetupAllProperties();
+            _matcherMock.Setup(m => m.Match(It.IsAny<RequestMessage>())).Returns(((IMapping)null, (RequestMatchResult)null));
 
-            _context = new Mock<IContext>();
+            _contextMock = new Mock<IContext>();
 
-            _sut = new WireMockMiddleware(null, _options.Object, _requestMapper.Object, _responseMapper.Object, _matcher.Object);
+            _sut = new WireMockMiddleware(null, _optionsMock.Object, _requestMapperMock.Object, _responseMapperMock.Object, _matcherMock.Object);
         }
 
         [Fact]
@@ -77,17 +77,17 @@ namespace WireMock.Net.Tests.Owin
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body, headers);
 
-            _requestMapper.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
-            _responseMapper.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
+            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
+            _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
 
             // Act
-            await _sut.Invoke(_context.Object);
+            await _sut.Invoke(_contextMock.Object);
 
             // Assert and Verify
-            _options.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+            _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
             Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == 404 && ((StatusModel)r.BodyAsJson).Status == "No matching mapping found";
-            _responseMapper.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
+            _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
     }
 }

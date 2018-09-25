@@ -15,7 +15,7 @@ namespace WireMock.Owin
             _options = options;
         }
 
-        public (Mapping Mapping, RequestMatchResult RequestMatchResult) Match(RequestMessage request)
+        public (IMapping Mapping, RequestMatchResult RequestMatchResult) Match(RequestMessage request)
         {
             var mappings = _options.Mappings.Values
                 .Select(m => new
@@ -28,7 +28,7 @@ namespace WireMock.Owin
             if (_options.AllowPartialMapping)
             {
                 var partialMappings = mappings
-                    .Where(pm => pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch || !pm.Mapping.IsAdminInterface)
+                    .Where(pm => (pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
                     .OrderBy(m => m.MatchResult)
                     .ThenBy(m => m.Mapping.Priority)
                     .ToList();

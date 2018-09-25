@@ -73,7 +73,7 @@ namespace WireMock.Owin
 
             bool logRequest = false;
             ResponseMessage response = null;
-            (Mapping TargetMapping, RequestMatchResult RequestMatchResult) result = (null, null);
+            (IMapping TargetMapping, RequestMatchResult RequestMatchResult) result = (null, null);
             try
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))

@@ -10,7 +10,7 @@ namespace WireMock.Serialization
 {
     internal static class MappingConverter
     {
-        public static MappingModel ToMappingModel(Mapping mapping)
+        public static MappingModel ToMappingModel(IMapping mapping)
         {
             var request = (Request)mapping.RequestMatcher;
             var response = (Response)mapping.Provider;
