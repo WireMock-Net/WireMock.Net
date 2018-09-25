@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WireMock.Matchers;
@@ -16,31 +15,6 @@ namespace WireMock.Net.Tests
     public class FluentMockServerTests
     {
         [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_bodyAsCallback()
-        {
-            // Assign
-            var _server = FluentMockServer.Start();
-
-            _server
-                .Given(Request.Create()
-                    .WithPath("/foo")
-                    .UsingGet())
-                .RespondWith(Response.Create()
-                    .WithStatusCode(500)
-                    .WithHeader("H1", "X1")
-                    .WithBody(req => $"path: {req.Path}"));
-
-            // Act
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
-
-            // Assert
-            string content = await response.Content.ReadAsStringAsync();
-            Check.That(content).IsEqualTo("path: /foo");
-            Check.That((int)response.StatusCode).IsEqualTo(500);
-            Check.That(response.Headers.GetValues("H1")).ContainsExactly("X1");
-        }
-
-        [Fact]
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given
@@ -53,21 +27,6 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(response).IsEqualTo("Hello World?");
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_404_for_unexpected_request()
-        {
-            // given
-            string path = $"/foo{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
-
-            // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
-
-            // then
-            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
-            Check.That((int)response.StatusCode).IsEqualTo(404);
         }
 
         [Fact]
@@ -217,23 +176,6 @@ namespace WireMock.Net.Tests
         //    // then
         //    Check.That(result).Contains("google");
         //}
-
-        [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_callback()
-        {
-            // Assign
-            var _server = FluentMockServer.Start();
-
-            _server
-                .Given(Request.Create().WithPath("/foo").UsingGet())
-                .RespondWith(Response.Create().WithCallback(req => new ResponseMessage { Body = req.Path + "Bar" }));
-
-            // Act
-            string response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
-
-            // Assert
-            Check.That(response).IsEqualTo("/fooBar");
-        }
 
 #if !NET452
         [Fact]

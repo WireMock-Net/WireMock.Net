@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Moq;
 using NFluent;
 using WireMock.Logging;
@@ -33,11 +32,7 @@ namespace WireMock.Net.Tests.Owin
         public void MappingMatcher_Match_NoMappingsDefined()
         {
             // Assign
-            var body = new BodyData
-            {
-                BodyAsJson = new { x = 1 }
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
             var result = _sut.Match(request);
@@ -51,11 +46,7 @@ namespace WireMock.Net.Tests.Owin
         public void MappingMatcher_Match_AllowPartialMapping()
         {
             // Assign
-            var body = new BodyData
-            {
-                BodyAsJson = new { x = 1 }
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", body);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
 
