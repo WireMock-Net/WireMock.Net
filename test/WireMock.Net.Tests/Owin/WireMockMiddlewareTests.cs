@@ -17,15 +17,11 @@ using System.Collections.Generic;
 #if NET452
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
-using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
-using Next = Microsoft.Owin.OwinMiddleware;
 using IRequest = Microsoft.Owin.IOwinRequest;
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
 using Microsoft.AspNetCore.Http;
-using OwinMiddleware = System.Object;
 using IContext = Microsoft.AspNetCore.Http.HttpContext;
-using Next = Microsoft.AspNetCore.Http.RequestDelegate;
 using IRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
 #endif
