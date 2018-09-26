@@ -49,9 +49,14 @@ namespace WireMock.ResponseBuilders
         public ResponseMessage ResponseMessage { get; }
 
         /// <summary>
-        /// A delegate to execute to generate the response
+        /// A delegate to execute to generate the response.
         /// </summary>
         public Func<RequestMessage, ResponseMessage> Callback { get; private set; }
+
+        /// <summary>
+        /// Defines if the method WithCallback(...) is used.
+        /// </summary>
+        public bool WithCallbackUsed { get; private set; }
 
         /// <summary>
         /// Creates this instance.
@@ -171,7 +176,7 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(bodyFactory, nameof(bodyFactory));
 
-            return WithCallback(req => new ResponseMessage
+            return WithCallbackInternal(false, req => new ResponseMessage
             {
                 Body = bodyFactory(req),
                 BodyDestination = destination,
@@ -341,6 +346,15 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(callbackHandler, nameof(callbackHandler));
 
+            return WithCallbackInternal(true, callbackHandler);
+        }
+
+        /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
+        private IResponseBuilder WithCallbackInternal(bool withCallbackUsed, Func<RequestMessage, ResponseMessage> callbackHandler)
+        {
+            Check.NotNull(callbackHandler, nameof(callbackHandler));
+
+            WithCallbackUsed = withCallbackUsed;
             Callback = callbackHandler;
 
             return this;
@@ -364,13 +378,16 @@ namespace WireMock.ResponseBuilders
             {
                 var callbackResponseMessage = Callback(requestMessage);
 
-                // Copy StatusCode from ResponseMessage
-                callbackResponseMessage.StatusCode = ResponseMessage.StatusCode;
-
-                // Copy Headers from ResponseMessage (if defined)
-                if (ResponseMessage.Headers != null)
+                if (!WithCallbackUsed)
                 {
-                    callbackResponseMessage.Headers = ResponseMessage.Headers;
+                    // Copy StatusCode from ResponseMessage
+                    callbackResponseMessage.StatusCode = ResponseMessage.StatusCode;
+
+                    // Copy Headers from ResponseMessage (if defined)
+                    if (ResponseMessage.Headers != null)
+                    {
+                        callbackResponseMessage.Headers = ResponseMessage.Headers;
+                    }
                 }
 
                 return callbackResponseMessage;

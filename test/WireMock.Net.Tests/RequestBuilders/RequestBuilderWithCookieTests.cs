@@ -2,9 +2,7 @@
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.RequestBuilders;
-using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -24,7 +22,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void RequestBuilder_WithCookie_String_IExactMatcher()
+        public void RequestBuilder_WithCookie_String_IStringMatcher()
         {
             // Act
             var requestBuilder = (Request)Request.Create().WithCookie("c", new ExactMatcher("v"));

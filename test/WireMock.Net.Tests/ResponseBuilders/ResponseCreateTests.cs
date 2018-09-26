@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
@@ -9,14 +8,12 @@ namespace WireMock.Net.Tests.ResponseBuilderTests
 {
     public class ResponseCreateTests
     {
-        private const string ClientIp = "::1";
-
         [Fact]
-        public async Task Response_Create()
+        public async Task Response_Create_Func()
         {
             // Assign
             var responseMessage = new ResponseMessage { StatusCode = 500 };
-            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
+            var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "::1");
 
             var response = Response.Create(() => responseMessage);
 

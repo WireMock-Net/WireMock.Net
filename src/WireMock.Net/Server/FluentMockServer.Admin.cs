@@ -256,7 +256,7 @@ namespace WireMock.Server
             return responseMessage;
         }
 
-        private Mapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders)
+        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders)
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
@@ -371,7 +371,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("Mappings saved to disk");
         }
 
-        private void SaveMappingToFile(Mapping mapping, string folder = null)
+        private void SaveMappingToFile(IMapping mapping, string folder = null)
         {
             if (folder == null)
             {

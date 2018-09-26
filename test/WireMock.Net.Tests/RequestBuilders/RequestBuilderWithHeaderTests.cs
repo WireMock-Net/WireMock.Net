@@ -60,7 +60,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void RequestBuilder_WithHeader_String_IExactMatcher()
+        public void RequestBuilder_WithHeader_String_IStringMatcher()
         {
             // Act
             var requestBuilder = (Request)Request.Create().WithHeader("h", new ExactMatcher("v"));
