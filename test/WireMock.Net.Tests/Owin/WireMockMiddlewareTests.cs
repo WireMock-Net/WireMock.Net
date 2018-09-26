@@ -129,8 +129,6 @@ namespace WireMock.Net.Tests.Owin
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
-
-
         [Fact]
         public async void WireMockMiddleware_Invoke_RequestLogExpirationDurationIsDefined()
         {
