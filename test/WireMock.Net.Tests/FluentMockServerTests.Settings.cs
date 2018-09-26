@@ -1,5 +1,7 @@
 using System.Linq;
+using Moq;
 using NFluent;
+using WireMock.Logging;
 using WireMock.Owin;
 using WireMock.Server;
 using WireMock.Settings;
@@ -9,6 +11,14 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerSettingsTests
     {
+        private Mock<IWireMockLogger> _loggerMock;
+
+        public FluentMockServerSettingsTests()
+        {
+            _loggerMock = new Mock<IWireMockLogger>();
+            _loggerMock.Setup(l => l.Info(It.IsAny<string>(), It.IsAny<object[]>()));
+        }
+
         [Fact]
         public void FluentMockServer_FluentMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
         {
@@ -92,6 +102,39 @@ namespace WireMock.Net.Tests
             var mappings = server.Mappings.ToArray();
             Check.That(mappings.Count()).IsEqualTo(1);
             Check.That(mappings[0].Priority).IsEqualTo(0);
+        }
+
+        [Fact]
+        public void FluentMockServer_FluentMockServerSettings_AllowPartialMapping()
+        {
+            // Assign and Act
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                Logger = _loggerMock.Object,
+                AllowPartialMapping = true
+            });
+
+            // Assert
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+            Check.That(options.AllowPartialMapping).IsTrue();
+
+            // Verify
+            _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));
+        }
+
+        [Fact]
+        public void FluentMockServer_FluentMockServerSettings_RequestLogExpirationDuration()
+        {
+            // Assign and Act
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                Logger = _loggerMock.Object,
+                RequestLogExpirationDuration = 1
+            });
+
+            // Assert
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+            Check.That(options.RequestLogExpirationDuration).IsEqualTo(1);
         }
     }
 }

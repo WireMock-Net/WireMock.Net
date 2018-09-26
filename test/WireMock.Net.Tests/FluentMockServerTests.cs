@@ -30,26 +30,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Should_find_a_request_satisfying_a_request_spec()
-        {
-            // Assign
-            string path = $"/bar_{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
-
-            // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
-
-            // then
-            var result = _server.FindLogEntries(Request.Create().WithPath(new RegexMatcher("^/b.*"))).ToList();
-            Check.That(result).HasSize(1);
-
-            var requestLogged = result.First();
-            Check.That(requestLogged.RequestMessage.Path).IsEqualTo(path);
-            Check.That(requestLogged.RequestMessage.Url).IsEqualTo("http://localhost:" + _server.Ports[0] + path);
-        }
-
-        [Fact]
         public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
