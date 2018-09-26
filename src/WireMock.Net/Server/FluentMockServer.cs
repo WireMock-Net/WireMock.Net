@@ -265,6 +265,11 @@ namespace WireMock.Server
                 InitProxyAndRecord(settings);
             }
 
+            if (settings.RequestLogExpirationDuration != null)
+            {
+                SetRequestLogExpirationDuration(settings.RequestLogExpirationDuration);
+            }
+
             if (settings.MaxRequestLogCount != null)
             {
                 SetMaxRequestLogCount(settings.MaxRequestLogCount);
