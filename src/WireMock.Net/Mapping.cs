@@ -14,54 +14,38 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.Guid" />
         public Guid Guid { get; }
 
-        /// <summary>
-        /// Gets the unique title.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Title" />
         public string Title { get; }
 
-        /// <summary>
-        /// The full filename path for this mapping (only defined for static mappings).
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Path" />
         public string Path { get; set; }
 
-        /// <summary>
-        /// Gets the priority.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Priority" />
         public int Priority { get; }
 
-        /// <summary>
-        /// Scenario.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Scenario" />
         [CanBeNull]
         public string Scenario { get; }
 
-        /// <summary>
-        /// Execution state condition for the current mapping.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.ExecutionConditionState" />
         [CanBeNull]
         public string ExecutionConditionState { get; }
 
-        /// <summary>
-        /// The next state which will be signaled after the current mapping execution.
-        /// In case the value is null, state will not be changed.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.NextState" />
         [CanBeNull]
         public string NextState { get; }
 
-        /// <summary>
-        /// The Request matcher.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.RequestMatcher" />
         public IRequestMatcher RequestMatcher { get; }
 
-        /// <summary>
-        /// The Provider.
-        /// </summary>
+        /// <inheritdoc cref="IMapping.Provider" />
         public IResponseProvider Provider { get; }
 
-        /// <summary>
-        /// Is State started ?
-        /// </summary>
+        /// <inheritdoc cref="IMapping.IsStartState" />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
+
+        /// <inheritdoc cref="IMapping.IsAdminInterface" />
+        public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -88,22 +72,13 @@ namespace WireMock
             NextState = nextState;
         }
 
-        /// <summary>
-        /// The response to.
-        /// </summary>
-        /// <param name="requestMessage">The request message.</param>
-        /// <returns>The <see cref="ResponseMessage"/>.</returns>
+        /// <inheritdoc cref="IMapping.ResponseToAsync" />
         public async Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage)
         {
             return await Provider.ProvideResponseAsync(requestMessage);
         }
 
-        /// <summary>
-        /// Gets the RequestMatchResult based on the RequestMessage.
-        /// </summary>
-        /// <param name="requestMessage">The request message.</param>
-        /// <param name="nextState">The Next State.</param>
-        /// <returns>The <see cref="RequestMatchResult"/>.</returns>
+        /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
         public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState)
         {
             var result = new RequestMatchResult();
@@ -126,13 +101,5 @@ namespace WireMock
 
             return result;
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this mapping is an Admin Interface.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
     }
 }

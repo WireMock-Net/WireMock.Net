@@ -66,6 +66,14 @@ namespace WireMock
         bool IsStartState { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this mapping is an Admin Interface.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
+        /// </value>
+        bool IsAdminInterface { get; }
+
+        /// <summary>
         /// ResponseToAsync
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
@@ -79,13 +87,5 @@ namespace WireMock
         /// <param name="nextState">The Next State.</param>
         /// <returns>The <see cref="RequestMatchResult"/>.</returns>
         RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
-
-        /// <summary>
-        /// Gets a value indicating whether this mapping is an Admin Interface.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
-        /// </value>
-        bool IsAdminInterface { get; }
     }
 }
