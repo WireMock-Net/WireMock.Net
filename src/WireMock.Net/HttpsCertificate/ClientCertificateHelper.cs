@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace WireMock.HttpsCertificate
@@ -26,6 +25,7 @@ namespace WireMock.HttpsCertificate
                         throw new FileNotFoundException("No certificate found with specified Thumbprint or SubjectName.", thumbprintOrSubjectName);
                     }
                 }
+
                 // Use the first matching certificate.
                 return matchingCertificates[0];
             }

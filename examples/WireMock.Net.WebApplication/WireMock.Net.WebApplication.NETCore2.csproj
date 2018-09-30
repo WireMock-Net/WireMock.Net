@@ -6,6 +6,7 @@
     <StartupObject>WireMock.Net.WebApplication.Program</StartupObject>
     <AssemblyName>WireMock.Net.WebApplication</AssemblyName>
     <RootNamespace>WireMock.Net.WebApplication</RootNamespace>
+    <UserSecretsId>efcf4a18-fd7c-4622-825d-336d65290599</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
