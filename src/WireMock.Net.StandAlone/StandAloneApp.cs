@@ -46,7 +46,7 @@ namespace WireMock.Net.StandAlone
                 StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
                 ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
                 WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
-                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping", true),
+                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping", false),
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
