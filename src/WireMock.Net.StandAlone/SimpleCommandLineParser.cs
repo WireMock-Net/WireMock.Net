@@ -7,24 +7,49 @@ namespace WireMock.Net.StandAlone
     // Based on http://blog.gauffin.org/2014/12/simple-command-line-parser/
     internal class SimpleCommandLineParser
     {
+        private const string Sigil = "--";
+        private const string SigilAzureServiceFabric = "'--";
+
+        private enum SigilType
+        {
+            Normal,
+            AzureServiceFabric
+        }
+
         private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>();
 
         public void Parse(string[] args)
         {
+            SigilType sigil = SigilType.Normal;
             string currentName = null;
 
             var values = new List<string>();
             foreach (string arg in args)
             {
-                if (arg.StartsWith("--"))
+                if (arg.StartsWith(Sigil))
                 {
+                    sigil = SigilType.Normal;
+
                     if (!string.IsNullOrEmpty(currentName))
                     {
                         Arguments[currentName] = values.ToArray();
                     }
 
                     values.Clear();
-                    currentName = arg.Substring(2);
+                    currentName = arg.Substring(Sigil.Length);
+                }
+                // Azure Service Fabric passes the command line parameter surrounded with single quotes.
+                else if (arg.StartsWith(SigilAzureServiceFabric))
+                {
+                    sigil = SigilType.AzureServiceFabric;
+
+                    if (!string.IsNullOrEmpty(currentName))
+                    {
+                        Arguments[currentName] = values.ToArray();
+                    }
+
+                    values.Clear();
+                    currentName = arg.Substring(SigilAzureServiceFabric.Length);
                 }
                 else if (string.IsNullOrEmpty(currentName))
                 {
@@ -32,7 +57,14 @@ namespace WireMock.Net.StandAlone
                 }
                 else
                 {
-                    values.Add(arg);
+                    if (sigil == SigilType.Normal)
+                    {
+                        values.Add(arg);
+                    }
+                    else
+                    {
+                        values.Add(arg.Substring(0, arg.Length - 1));
+                    }
                 }
             }
 
