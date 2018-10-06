@@ -38,7 +38,7 @@ namespace WireMock.Net.StandAlone
                     values.Clear();
                     currentName = arg.Substring(Sigil.Length);
                 }
-                // Azure Service Fabric passes the command line parameter surrounded with single quotes.
+                // Azure Service Fabric passes the command line parameter surrounded with single quotes. (https://github.com/Microsoft/service-fabric/issues/234)
                 else if (arg.StartsWith(SigilAzureServiceFabric))
                 {
                     sigil = SigilType.AzureServiceFabric;
