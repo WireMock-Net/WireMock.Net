@@ -2,7 +2,7 @@ using NFluent;
 using WireMock.Net.StandAlone;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests.StandAlone
 {
     public class SimpleCommandLineParserTests
     {
@@ -62,6 +62,42 @@ namespace WireMock.Net.Tests
             Check.That(value1).IsEqualTo("one");
             Check.That(value2).IsEqualTo("two");
             Check.That(value3).IsEqualTo("three");
+        }
+
+        [Fact]
+        public void SimpleCommandLineParser_Parse_GetBoolValue()
+        {
+            // Assign
+            _parser.Parse(new[] { "'--test1", "false'", "--test2", "true" });
+
+            // Act
+            bool value1 = _parser.GetBoolValue("test1");
+            bool value2 = _parser.GetBoolValue("test2");
+            bool value3 = _parser.GetBoolValue("test3", true);
+
+            // Assert
+            Check.That(value1).IsEqualTo(false);
+            Check.That(value2).IsEqualTo(true);
+            Check.That(value3).IsEqualTo(true);
+        }
+
+        [Fact]
+        public void SimpleCommandLineParser_Parse_GetIntValue()
+        {
+            // Assign
+            _parser.Parse(new[] { "'--test1", "42'", "--test2", "55" });
+
+            // Act
+            int? value1 = _parser.GetIntValue("test1");
+            int? value2 = _parser.GetIntValue("test2");
+            int? value3 = _parser.GetIntValue("test3", 100);
+            int? value4 = _parser.GetIntValue("test4");
+
+            // Assert
+            Check.That(value1).IsEqualTo(42);
+            Check.That(value2).IsEqualTo(55);
+            Check.That(value3).IsEqualTo(100);
+            Check.That(value4).IsNull();
         }
     }
 }
