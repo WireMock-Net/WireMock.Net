@@ -30,14 +30,14 @@ namespace WireMock.Net.Tests.Owin
 {
     public class WireMockMiddlewareTests
     {
-        private WireMockMiddleware _sut;
+        private readonly WireMockMiddleware _sut;
 
-        private Mock<IWireMockMiddlewareOptions> _optionsMock;
-        private Mock<IOwinRequestMapper> _requestMapperMock;
-        private Mock<IOwinResponseMapper> _responseMapperMock;
-        private Mock<IMappingMatcher> _matcherMock;
-        private Mock<IMapping> _mappingMock;
-        private Mock<IContext> _contextMock;
+        private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
+        private readonly Mock<IOwinRequestMapper> _requestMapperMock;
+        private readonly Mock<IOwinResponseMapper> _responseMapperMock;
+        private readonly Mock<IMappingMatcher> _matcherMock;
+        private readonly Mock<IMapping> _mappingMock;
+        private readonly Mock<IContext> _contextMock;
 
         public WireMockMiddlewareTests()
         {

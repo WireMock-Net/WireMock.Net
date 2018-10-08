@@ -4,7 +4,7 @@ using WireMock.Models;
 using WireMock.ResponseBuilders;
 using Xunit;
 
-namespace WireMock.Net.Tests.ResponseBuilderTests
+namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseCreateTests
     {

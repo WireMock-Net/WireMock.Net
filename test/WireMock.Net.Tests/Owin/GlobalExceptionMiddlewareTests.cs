@@ -16,11 +16,11 @@ namespace WireMock.Net.Tests.Owin
 {
     public class GlobalExceptionMiddlewareTests
     {
-        private Mock<IWireMockMiddlewareOptions> _optionsMock;
-        private Mock<IOwinResponseMapper> _responseMapperMock;
-        private Mock<IContext> _contextMock;
+        private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
+        private readonly Mock<IOwinResponseMapper> _responseMapperMock;
+        private readonly Mock<IContext> _contextMock;
 
-        private GlobalExceptionMiddleware _sut;
+        private readonly GlobalExceptionMiddleware _sut;
 
         public GlobalExceptionMiddlewareTests()
         {

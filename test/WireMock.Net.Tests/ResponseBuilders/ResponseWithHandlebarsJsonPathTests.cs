@@ -7,7 +7,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests.ResponseBuilderTests
+namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsJsonPathTests
     {

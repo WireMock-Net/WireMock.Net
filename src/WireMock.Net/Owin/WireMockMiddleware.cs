@@ -50,6 +50,7 @@ namespace WireMock.Owin
             Check.NotNull(options, nameof(options));
             Check.NotNull(requestMapper, nameof(requestMapper));
             Check.NotNull(responseMapper, nameof(responseMapper));
+            Check.NotNull(mappingMatcher, nameof(mappingMatcher));
 
             _options = options;
             _requestMapper = requestMapper;

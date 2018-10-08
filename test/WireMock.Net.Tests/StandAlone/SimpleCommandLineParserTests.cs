@@ -6,7 +6,7 @@ namespace WireMock.Net.Tests.StandAlone
 {
     public class SimpleCommandLineParserTests
     {
-        SimpleCommandLineParser _parser;
+        private readonly SimpleCommandLineParser _parser;
 
         public SimpleCommandLineParserTests()
         {

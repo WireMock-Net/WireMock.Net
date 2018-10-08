@@ -11,7 +11,7 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerSettingsTests
     {
-        private Mock<IWireMockLogger> _loggerMock;
+        private readonly Mock<IWireMockLogger> _loggerMock;
 
         public FluentMockServerSettingsTests()
         {

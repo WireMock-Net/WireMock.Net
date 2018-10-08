@@ -37,14 +37,12 @@ namespace WireMock.Owin
 
                 return (bestPartialMatch?.Mapping, bestPartialMatch?.MatchResult);
             }
-            else
-            {
-                var perfectMatch = mappings
-                    .OrderBy(m => m.Mapping.Priority)
-                    .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
 
-                return (perfectMatch?.Mapping, perfectMatch?.MatchResult);
-            }
+            var perfectMatch = mappings
+                .OrderBy(m => m.Mapping.Priority)
+                .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
+
+            return (perfectMatch?.Mapping, perfectMatch?.MatchResult);
         }
     }
 }

@@ -65,18 +65,18 @@ namespace WireMock.Net.Tests
             staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
             staticMappingHandlerMock.Setup(m => m.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()));
 
-            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 FileSystemHandler = staticMappingHandlerMock.Object
             });
 
-            _server
+            server
                 .Given(Request.Create().WithPath($"/foo_{Guid.NewGuid()}"))
                 .WithGuid(guid)
                 .RespondWith(Response.Create().WithBody("save test"));
 
             // Act
-            _server.SaveStaticMappings();
+            server.SaveStaticMappings();
 
             // Assert and Verify
             staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
@@ -90,12 +90,12 @@ namespace WireMock.Net.Tests
             var guid = Guid.Parse("04ee4872-9efd-4770-90d3-88d445265d0d");
             string title = "documentdb_root_title";
 
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "documentdb_root.json");
-            _server.ReadStaticMappingAndAddOrUpdate(folder);
+            server.ReadStaticMappingAndAddOrUpdate(folder);
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
 
             Check.That(mappings.First().RequestMatcher).IsNotNull();
@@ -109,11 +109,11 @@ namespace WireMock.Net.Tests
         {
             string guid = "00000002-ee28-4f29-ae63-1ac9b0802d86";
 
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", guid + ".json");
-            _server.ReadStaticMappingAndAddOrUpdate(folder);
+            server.ReadStaticMappingAndAddOrUpdate(folder);
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
 
             Check.That(mappings.First().RequestMatcher).IsNotNull();
@@ -138,10 +138,10 @@ namespace WireMock.Net.Tests
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(folder, output);
 
-            var _server = FluentMockServer.Start();
-            _server.ReadStaticMappingAndAddOrUpdate(folder);
+            var server = FluentMockServer.Start();
+            server.ReadStaticMappingAndAddOrUpdate(folder);
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
 
             Check.That(mappings.First().RequestMatcher).IsNotNull();
@@ -159,13 +159,13 @@ namespace WireMock.Net.Tests
             staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
             staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>())).Returns(new string[0]);
 
-            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 FileSystemHandler = staticMappingHandlerMock.Object
             });
 
             // Act
-            _server.ReadStaticMappings();
+            server.ReadStaticMappings();
 
             // Assert and Verify
             staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
@@ -178,30 +178,30 @@ namespace WireMock.Net.Tests
         {
             // Assign
             string mapping = "{\"Request\": {\"Path\": {\"Matchers\": [{\"Name\": \"WildcardMatcher\",\"Pattern\": \"/static/mapping\"}]},\"Methods\": [\"get\"]},\"Response\": {\"BodyAsJson\": { \"body\": \"static mapping\" }}}";
-            var _staticMappingHandlerMock = new Mock<IFileSystemHandler>();
-            _staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns(mapping);
+            var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns(mapping);
 
-            var _server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                FileSystemHandler = _staticMappingHandlerMock.Object
+                FileSystemHandler = staticMappingHandlerMock.Object
             });
 
             // Act
-            _server.ReadStaticMappingAndAddOrUpdate(@"c:\test.json");
+            server.ReadStaticMappingAndAddOrUpdate(@"c:\test.json");
 
             // Assert and Verify
-            _staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\test.json"), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\test.json"), Times.Once);
         }
 
         [Fact]
         public void FluentMockServer_Admin_ReadStaticMappings()
         {
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
-            _server.ReadStaticMappings(folder);
+            server.ReadStaticMappings(folder);
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(3);
         }
 
@@ -215,13 +215,13 @@ namespace WireMock.Net.Tests
             {
                 Logger = loggerMock.Object
             };
-            var _server = FluentMockServer.Start(settings);
+            var server = FluentMockServer.Start(settings);
 
             // Act
-            _server.ReadStaticMappings(Guid.NewGuid().ToString());
+            server.ReadStaticMappings(Guid.NewGuid().ToString());
 
             // Assert
-            Check.That(_server.Mappings).HasSize(0);
+            Check.That(server.Mappings).HasSize(0);
 
             // Verify
             loggerMock.Verify(l => l.Info(It.Is<string>(s => s.StartsWith("The Static Mapping folder")), It.IsAny<object[]>()), Times.Once);
@@ -231,15 +231,15 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_WithGuid_Get()
         {
             Guid guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
+            server.Given(Request.Create().WithPath("/foo1").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
 
-            _server.Given(Request.Create().WithPath("/foo2").UsingGet())
+            server.Given(Request.Create().WithPath("/foo2").UsingGet())
                 .RespondWith(Response.Create().WithStatusCode(202).WithBody("2"));
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
         }
 
@@ -247,12 +247,12 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_WithGuidAsString_Get()
         {
             string guid = "90356dba-b36c-469a-a17e-669cd84f1f05";
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo100").UsingGet()).WithGuid(guid)
+            server.Given(Request.Create().WithPath("/foo100").UsingGet()).WithGuid(guid)
                 .RespondWith(Response.Create().WithStatusCode(201).WithBody("1"));
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
         }
 
@@ -260,23 +260,23 @@ namespace WireMock.Net.Tests
         public void FluentMockServer_Admin_Mappings_Add_SameGuid()
         {
             var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             var response1 = Response.Create().WithStatusCode(500);
-            _server.Given(Request.Create().UsingGet())
+            server.Given(Request.Create().UsingGet())
                 .WithGuid(guid)
                 .RespondWith(response1);
 
-            var mappings1 = _server.Mappings.ToArray();
+            var mappings1 = server.Mappings.ToArray();
             Check.That(mappings1).HasSize(1);
             Check.That(mappings1.First().Guid).Equals(guid);
 
             var response2 = Response.Create().WithStatusCode(400);
-            _server.Given(Request.Create().WithPath("/2").UsingGet())
+            server.Given(Request.Create().WithPath("/2").UsingGet())
                 .WithGuid(guid)
                 .RespondWith(response2);
 
-            var mappings2 = _server.Mappings.ToArray();
+            var mappings2 = server.Mappings.ToArray();
             Check.That(mappings2).HasSize(1);
             Check.That(mappings2.First().Guid).Equals(guid);
             Check.That(mappings2.First().Provider).Equals(response2);
@@ -285,22 +285,22 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Admin_Mappings_AtPriority()
         {
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             // given
-            _server.Given(Request.Create().WithPath("/1").UsingGet())
+            server.Given(Request.Create().WithPath("/1").UsingGet())
                 .AtPriority(2)
                 .RespondWith(Response.Create().WithStatusCode(200));
 
-            _server.Given(Request.Create().WithPath("/1").UsingGet())
+            server.Given(Request.Create().WithPath("/1").UsingGet())
                 .AtPriority(1)
                 .RespondWith(Response.Create().WithStatusCode(400));
 
-            var mappings = _server.Mappings.ToArray();
+            var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/1");
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/1");
 
             // then
             Check.That((int)response.StatusCode).IsEqualTo(400);
@@ -310,14 +310,14 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Requests_Get()
         {
             // given
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo");
 
             // then
-            Check.That(_server.LogEntries).HasSize(1);
-            var requestLogged = _server.LogEntries.First();
+            Check.That(server.LogEntries).HasSize(1);
+            var requestLogged = server.LogEntries.First();
             Check.That(requestLogged.RequestMessage.Method).IsEqualTo("GET");
             Check.That(requestLogged.RequestMessage.BodyAsBytes).IsNull();
         }
@@ -328,20 +328,20 @@ namespace WireMock.Net.Tests
             // Assign
             var client = new HttpClient();
             // Act
-            var _server = FluentMockServer.Start();
-            _server.SetMaxRequestLogCount(2);
+            var server = FluentMockServer.Start();
+            server.SetMaxRequestLogCount(2);
 
-            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo1");
-            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo2");
-            await client.GetAsync("http://localhost:" + _server.Ports[0] + "/foo3");
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo1");
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo2");
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo3");
 
             // Assert
-            Check.That(_server.LogEntries).HasSize(2);
+            Check.That(server.LogEntries).HasSize(2);
 
-            var requestLoggedA = _server.LogEntries.First();
+            var requestLoggedA = server.LogEntries.First();
             Check.That(requestLoggedA.RequestMessage.Path).EndsWith("/foo2");
 
-            var requestLoggedB = _server.LogEntries.Last();
+            var requestLoggedB = server.LogEntries.Last();
             Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
         }
 
@@ -354,10 +354,10 @@ namespace WireMock.Net.Tests
             {
                 FileSystemHandler = fileMock.Object
             };
-            var _server = FluentMockServer.Start(settings);
+            var server = FluentMockServer.Start(settings);
 
             // Act
-            _server.WatchStaticMappings();
+            server.WatchStaticMappings();
 
             // Verify
             fileMock.Verify(f => f.GetMappingFolder(), Times.Once);
