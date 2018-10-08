@@ -103,18 +103,18 @@ namespace WireMock.Owin
 #endif
                 .Build();
 
-            return Task.Run(() =>
-            {
-                StartServers();
-            }, _cts.Token);
+            return RunHost(_cts.Token);
         }
 
-        private void StartServers()
+        private Task RunHost(CancellationToken token)
         {
             try
             {
                 var appLifetime = (IApplicationLifetime)_host.Services.GetService(typeof(IApplicationLifetime));
-                appLifetime.ApplicationStarted.Register(() => IsStarted = true);
+                appLifetime.ApplicationStarted.Register(() =>
+                {
+                    IsStarted = true;
+                });
 
 #if NETSTANDARD1_3
                 _logger.Info("WireMock.Net server using netstandard1.3");
@@ -123,21 +123,24 @@ namespace WireMock.Owin
 #elif NET46
                 _logger.Info("WireMock.Net server using .net 4.6.1 or higher");
 #endif
-
 #if NETSTANDARD1_3
-                _host.Run(_cts.Token);
+
+                return Task.Run(() =>
+                {
+                    _host.Run(token);
+                });
 #else
-                _host.RunAsync(_cts.Token).Wait();
+                return _host.RunAsync(token);
 #endif
             }
             catch (Exception e)
             {
                 _runningException = e;
                 _logger.Error(e.ToString());
-            }
-            finally
-            {
+
                 IsStarted = false;
+
+                return Task.CompletedTask;
             }
         }
 
