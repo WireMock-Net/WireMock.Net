@@ -124,7 +124,6 @@ namespace WireMock.Owin
                 _logger.Info("WireMock.Net server using .net 4.6.1 or higher");
 #endif
 #if NETSTANDARD1_3
-
                 return Task.Run(() =>
                 {
                     _host.Run(token);

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -24,10 +25,10 @@ namespace WireMock.Server
     /// </summary>
     public partial class FluentMockServer : IDisposable
     {
+        private const int ServerStartDelayInMs = 100;
+
         private readonly IWireMockLogger _logger;
         private readonly IFileSystemHandler _fileSystemHandler;
-
-        private const int ServerStartDelay = 100;
         private readonly IOwinSelfHost _httpServer;
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
@@ -231,7 +232,7 @@ namespace WireMock.Server
                         throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
                     }
 
-                    ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelay);
+                    ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelayInMs);
                 }
             }
 
