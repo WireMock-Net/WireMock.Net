@@ -11,7 +11,6 @@ using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
-#if NET452
     public class ResponseWithProxyTests : IDisposable
     {
         private readonly FluentMockServer _server;
@@ -48,5 +47,4 @@ namespace WireMock.Net.Tests.ResponseBuilders
             _server?.Dispose();
         }
     }
-#endif
 }
