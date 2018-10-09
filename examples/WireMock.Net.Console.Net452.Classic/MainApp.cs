@@ -59,10 +59,20 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
-                    .WithPath("/httpbin")
+                    .UsingPost()
+                    .WithHeader("postmanecho", "post")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://httpbin.org" })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com/post" })
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingGet()
+                    .WithHeader("postmanecho", "get")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com/get" })
                 );
 
             server
