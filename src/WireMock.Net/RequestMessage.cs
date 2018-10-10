@@ -100,6 +100,11 @@ namespace WireMock
         public byte[] BodyAsBytes { get; }
 
         /// <summary>
+        /// The detected body type. Convenience getter for Handlebars.
+        /// </summary>
+        public string DetectedBodyType { get; }
+
+        /// <summary>
         /// Gets the Host
         /// </summary>
         public string Host { get; }
@@ -118,11 +123,6 @@ namespace WireMock
         /// Gets the origin
         /// </summary>
         public string Origin { get; }
-
-        ///// <summary>
-        ///// The body encoding.
-        ///// </summary>
-        //public Encoding BodyEncoding { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage"/> class.
@@ -156,10 +156,11 @@ namespace WireMock
 
             BodyData = bodyData;
 
-            // Convenience getters for Handlebars
+            // Convenience getters for e.g. Handlebars
             Body = BodyData?.BodyAsString;
             BodyAsJson = BodyData?.BodyAsJson;
             BodyAsBytes = BodyData?.BodyAsBytes;
+            DetectedBodyType = BodyData?.DetectedBodyType.ToString();
 
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
