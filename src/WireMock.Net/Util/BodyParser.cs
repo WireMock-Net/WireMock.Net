@@ -11,6 +11,8 @@ namespace WireMock.Util
 {
     internal static class BodyParser
     {
+        private static readonly Encoding DefaultEncoding = Encoding.UTF8;
+
         /*
             HEAD - No defined body semantics.
             GET - No defined body semantics.
@@ -73,15 +75,16 @@ namespace WireMock.Util
 
             var data = new BodyData
             {
+                BodyAsBytes = await ReadBytesAsync(stream),
+                DetectedBodyType = BodyType.Bytes,
                 DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentTypeHeaderValue)
             };
 
-            // Try to get as String
+            // Try to get the body as String
             try
             {
-                var stringData = await ReadStringAsync(stream);
-                data.BodyAsString = stringData.Content;
-                data.Encoding = stringData.Encoding;
+                data.BodyAsString = DefaultEncoding.GetString(data.BodyAsBytes);
+                data.Encoding = DefaultEncoding;
                 data.DetectedBodyType = BodyType.String;
 
                 // If string is not null or empty, try to get as Json
@@ -89,7 +92,7 @@ namespace WireMock.Util
                 {
                     try
                     {
-                        data.BodyAsJson = JsonConvert.DeserializeObject(stringData.Content, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                        data.BodyAsJson = JsonConvert.DeserializeObject(data.BodyAsString, new JsonSerializerSettings { Formatting = Formatting.Indented });
                         data.DetectedBodyType = BodyType.Json;
                     }
                     catch
@@ -100,23 +103,11 @@ namespace WireMock.Util
             }
             catch
             {
-                // Reading as string failed, just read as bytes
-                data.BodyAsBytes = await ReadBytesAsync(stream);
-                data.DetectedBodyType = BodyType.Bytes;
+                // Reading as string failed, just ignore
             }
 
             return data;
         }
-        private static async Task<(string Content, Encoding Encoding)> ReadStringAsync(Stream stream)
-        {
-            using (var streamReader = new StreamReader(stream))
-            {
-                string content = await streamReader.ReadToEndAsync();
-
-                return (content, streamReader.CurrentEncoding);
-            }
-        }
-
         private static async Task<byte[]> ReadBytesAsync(Stream stream)
         {
             using (var memoryStream = new MemoryStream())

@@ -19,7 +19,7 @@ namespace WireMock.Net.Tests.Util
             var body = await BodyParser.Parse(memoryStream, "application/json");
 
             // Assert
-            Check.That(body.BodyAsBytes).IsNull();
+            Check.That(body.BodyAsBytes).IsNotNull();
             Check.That(body.BodyAsJson).IsNotNull();
             Check.That(body.BodyAsString).Equals("{ \"x\": 1 }");
             Check.That(body.DetectedBodyType).IsEqualTo(BodyType.Json);
@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests.Util
             var body = await BodyParser.Parse(memoryStream, "application/vnd.api+json");
 
             // Assert
-            Check.That(body.BodyAsBytes).IsNull();
+            Check.That(body.BodyAsBytes).IsNotNull();
             Check.That(body.BodyAsJson).IsNotNull();
             Check.That(body.BodyAsString).Equals("{ \"x\": 1 }");
             Check.That(body.DetectedBodyType).IsEqualTo(BodyType.Json);
@@ -53,7 +53,7 @@ namespace WireMock.Net.Tests.Util
             var body = await BodyParser.Parse(memoryStream, "application/xml; charset=UTF-8");
 
             // Assert
-            Check.That(body.BodyAsBytes).IsNull();
+            Check.That(body.BodyAsBytes).IsNotNull();
             Check.That(body.BodyAsJson).IsNull();
             Check.That(body.BodyAsString).Equals("<xml>hello</xml>");
             Check.That(body.DetectedBodyType).IsEqualTo(BodyType.String);
@@ -70,7 +70,7 @@ namespace WireMock.Net.Tests.Util
             var body = await BodyParser.Parse(memoryStream, "something");
 
             // Assert
-            Check.That(body.BodyAsBytes).IsNull();
+            Check.That(body.BodyAsBytes).IsNotNull();
             Check.That(body.BodyAsJson).IsNull();
             Check.That(body.BodyAsString).Equals("hello");
             Check.That(body.DetectedBodyType).IsEqualTo(BodyType.String);
