@@ -15,7 +15,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "abc" };
+            var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -34,7 +34,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch_NoMatch()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "abc" };
+            var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -53,7 +53,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch_NoMatch_WithDefaultValue()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "abc" };
+            var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -72,7 +72,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch2()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "https://localhost:5000/" };
+            var body = new BodyData { BodyAsString = "https://localhost:5000/", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -91,7 +91,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "{{\\test" };
+            var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -110,7 +110,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch_WithDefaultValue()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "{{\\test" };
+            var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -129,7 +129,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public void Response_ProvideResponse_Handlebars_RegexMatch2_Throws()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "{{\\test" };
+            var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 

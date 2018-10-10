@@ -287,14 +287,14 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>
-        public IResponseBuilder WithBodyFromBase64(string bodyAsbase64, Encoding encoding = null)
+        public IResponseBuilder WithBodyFromBase64(string bodyAsBase64, Encoding encoding = null)
         {
-            Check.NotNull(bodyAsbase64, nameof(bodyAsbase64));
+            Check.NotNull(bodyAsBase64, nameof(bodyAsBase64));
 
             encoding = encoding ?? Encoding.UTF8;
 
             ResponseMessage.BodyDestination = null;
-            ResponseMessage.Body = encoding.GetString(Convert.FromBase64String(bodyAsbase64));
+            ResponseMessage.Body = encoding.GetString(Convert.FromBase64String(bodyAsBase64));
             ResponseMessage.BodyEncoding = encoding;
 
             return this;

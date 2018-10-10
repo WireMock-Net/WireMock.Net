@@ -35,7 +35,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "whatever"
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
@@ -53,7 +54,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "whatever"
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
 
@@ -71,7 +73,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "whatever"
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
@@ -89,7 +92,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "Hello world!"
+                BodyAsString = "Hello world!",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -107,7 +111,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "xxx"
+                BodyAsString = "xxx",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 

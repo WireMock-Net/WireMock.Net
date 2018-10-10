@@ -26,5 +26,9 @@ namespace WireMock.Util
         /// The body (as bytearray).
         /// </summary>
         public byte[] BodyAsBytes { get; set; }
+
+        public BodyType DetectedBodyType { get; set; }
+
+        public BodyType DetectedBodyTypeFromContentType { get; set; }
     }
 }

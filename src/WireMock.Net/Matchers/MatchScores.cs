@@ -39,7 +39,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Calculates the score from multiple funcs.
+        /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>
@@ -49,7 +49,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Calculates the score from multiple funcs.
+        /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>

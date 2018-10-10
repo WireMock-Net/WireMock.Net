@@ -28,6 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
                 Encoding = Encoding.UTF8
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
@@ -49,7 +50,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "whatever"
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
@@ -106,7 +108,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
 
@@ -127,7 +130,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
@@ -148,7 +152,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
@@ -170,7 +175,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -193,6 +199,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
                 Encoding = Encoding.UTF8
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_array"), "POST", ClientIp, bodyData);

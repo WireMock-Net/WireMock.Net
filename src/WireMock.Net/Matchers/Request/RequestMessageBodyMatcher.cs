@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -93,6 +94,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageBodyMatcher([NotNull] IMatcher matcher)
         {
             Check.NotNull(matcher, nameof(matcher));
+
             Matcher = matcher;
         }
 
@@ -109,47 +111,41 @@ namespace WireMock.Matchers.Request
             if (Matcher is IObjectMatcher objectMatcher)
             {
                 // If the body is a JSON object, try to match.
-                if (requestMessage.BodyAsJson != null)
+                if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
                 {
-                    return objectMatcher.IsMatch(requestMessage.BodyAsJson);
+                    return objectMatcher.IsMatch(requestMessage.BodyData.BodyAsJson);
                 }
 
                 // If the body is a byte array, try to match.
-                if (requestMessage.BodyAsBytes != null)
+                if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Bytes)
                 {
-                    return objectMatcher.IsMatch(requestMessage.BodyAsBytes);
+                    return objectMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
                 }
             }
 
             // Check if the matcher is a IStringMatcher
             if (Matcher is IStringMatcher stringMatcher)
             {
-                // If the  body is a JSON object, try to use Body (string) to match.
-                if (requestMessage.BodyAsJson != null && requestMessage.Body != null)
+                // If the body is a Json or a String, use the BodyAsString to match on.
+                if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json || requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
                 {
-                    return stringMatcher.IsMatch(requestMessage.Body);
-                }
-
-                // If the string body is defined, try to match.
-                if (requestMessage.Body != null)
-                {
-                    return stringMatcher.IsMatch(requestMessage.Body);
+                    return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
                 }
             }
 
             if (Func != null)
             {
-                return MatchScores.ToScore(requestMessage.Body != null && Func(requestMessage.Body));
-            }
-
-            if (DataFunc != null)
-            {
-                return MatchScores.ToScore(requestMessage.BodyAsBytes != null && DataFunc(requestMessage.BodyAsBytes));
+                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.String && Func(requestMessage.BodyData.BodyAsString));
             }
 
             if (JsonFunc != null)
             {
-                return MatchScores.ToScore(requestMessage.BodyAsJson != null && JsonFunc(requestMessage.BodyAsJson));
+                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.Json && JsonFunc(requestMessage.BodyData.BodyAsJson));
+            }
+
+            if (DataFunc != null)
+            {
+                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.Bytes && DataFunc(requestMessage.BodyData.BodyAsBytes));
             }
 
             return MatchScores.Mismatch;

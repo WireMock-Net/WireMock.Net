@@ -24,15 +24,12 @@ namespace WireMock
         public int Priority { get; }
 
         /// <inheritdoc cref="IMapping.Scenario" />
-        [CanBeNull]
         public string Scenario { get; }
 
         /// <inheritdoc cref="IMapping.ExecutionConditionState" />
-        [CanBeNull]
         public string ExecutionConditionState { get; }
 
         /// <inheritdoc cref="IMapping.NextState" />
-        [CanBeNull]
         public string NextState { get; }
 
         /// <inheritdoc cref="IMapping.RequestMatcher" />
@@ -79,7 +76,7 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState)
+        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, string nextState)
         {
             var result = new RequestMatchResult();
 

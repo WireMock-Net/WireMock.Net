@@ -43,7 +43,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     { "Id", new JValue(9) },
                     { "Name", new JValue("Test") }
-                }
+                },
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
@@ -72,7 +73,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     { "Id", new JValue(9) },
                     { "Name", new JValue("Test") }
-                }
+                },
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
@@ -101,7 +103,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     { "Id", new JValue(9) },
                     { "Name", new JValue("Test") }
-                }
+                },
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
@@ -124,7 +127,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public void Response_ProvideResponse_Handlebars_Linq_Throws_NotSupportedException()
         {
             // Assign
-            var body = new BodyData { BodyAsJson = new { x = "x" }};
+            var body = new BodyData
+            {
+                BodyAsJson = new { x = "x" },
+                DetectedBodyType = BodyType.Json
+            };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
@@ -178,7 +185,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     { "Id", new JValue(9) },
                     { "Name", new JValue("Test") }
-                }
+                },
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
@@ -205,7 +213,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     { "Id", new JValue(9) },
                     { "Name", new JValue("Test") }
-                }
+                },
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);

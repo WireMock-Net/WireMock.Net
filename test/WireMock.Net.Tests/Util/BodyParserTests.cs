@@ -22,6 +22,8 @@ namespace WireMock.Net.Tests.Util
             Check.That(body.BodyAsBytes).IsNull();
             Check.That(body.BodyAsJson).IsNotNull();
             Check.That(body.BodyAsString).Equals("{ \"x\": 1 }");
+            Check.That(body.DetectedBodyType).IsEqualTo(BodyType.Json);
+            Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.Json);
         }
 
         [Fact] // http://jsonapi.org/
@@ -37,6 +39,8 @@ namespace WireMock.Net.Tests.Util
             Check.That(body.BodyAsBytes).IsNull();
             Check.That(body.BodyAsJson).IsNotNull();
             Check.That(body.BodyAsString).Equals("{ \"x\": 1 }");
+            Check.That(body.DetectedBodyType).IsEqualTo(BodyType.Json);
+            Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.Json);
         }
 
         [Fact]
@@ -52,6 +56,25 @@ namespace WireMock.Net.Tests.Util
             Check.That(body.BodyAsBytes).IsNull();
             Check.That(body.BodyAsJson).IsNull();
             Check.That(body.BodyAsString).Equals("<xml>hello</xml>");
+            Check.That(body.DetectedBodyType).IsEqualTo(BodyType.String);
+            Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.String);
+        }
+
+        [Fact]
+        public async Task BodyParser_Parse_Something()
+        {
+            // Assign
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("hello"));
+
+            // Act
+            var body = await BodyParser.Parse(memoryStream, "something");
+
+            // Assert
+            Check.That(body.BodyAsBytes).IsNull();
+            Check.That(body.BodyAsJson).IsNull();
+            Check.That(body.BodyAsString).Equals("hello");
+            Check.That(body.DetectedBodyType).IsEqualTo(BodyType.String);
+            Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.Bytes);
         }
     }
 }

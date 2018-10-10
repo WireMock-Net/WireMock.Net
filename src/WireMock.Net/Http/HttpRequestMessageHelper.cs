@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using MimeKit;
 using Newtonsoft.Json;
+using WireMock.Util;
 
 namespace WireMock.Http
 {
@@ -22,32 +23,32 @@ namespace WireMock.Http
             }
 
             // Set Body if present
-            if (requestMessage.BodyAsBytes != null)
+            if (requestMessage.BodyData?.DetectedBodyType == BodyType.Bytes)
             {
-                httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyAsBytes);
+                httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
             }
-            else if (requestMessage.BodyAsJson != null)
+            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
             {
                 if (contentType != null)
                 {
-                    var encoding = requestMessage.BodyEncoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
-                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyAsJson), encoding, contentType.MimeType);
+                    var encoding = requestMessage.BodyData.Encoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
+                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), encoding, contentType.MimeType);
                 }
                 else
                 {
-                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyAsJson), requestMessage.BodyEncoding);
+                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), requestMessage.BodyData.Encoding);
                 }
             }
-            else if (requestMessage.Body != null)
+            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.String)
             {
                 if (contentType != null)
                 {
-                    var encoding = requestMessage.BodyEncoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
-                    httpRequestMessage.Content = new StringContent(requestMessage.Body, encoding, contentType.MimeType);
+                    var encoding = requestMessage.BodyData.Encoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
+                    httpRequestMessage.Content = new StringContent(requestMessage.BodyData.BodyAsString, encoding, contentType.MimeType);
                 }
                 else
                 {
-                    httpRequestMessage.Content = new StringContent(requestMessage.Body, requestMessage.BodyEncoding);
+                    httpRequestMessage.Content = new StringContent(requestMessage.BodyData.BodyAsString, requestMessage.BodyData.Encoding);
                 }
             }
 

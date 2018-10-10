@@ -47,7 +47,7 @@ namespace WireMock.Owin.Mappers
             }
 
             BodyData body = null;
-            if (request.Body != null && ShouldParseBody(method))
+            if (request.Body != null && BodyParser.ShouldParseBody(method))
             {
                 body = await BodyParser.Parse(request.Body, request.ContentType);
             }
@@ -68,22 +68,6 @@ namespace WireMock.Owin.Mappers
                 : connection.RemoteIpAddress.ToString();
 #endif
             return (urldetails, clientIP);
-        }
-
-        private bool ShouldParseBody(string method)
-        {
-            /*
-                HEAD - No defined body semantics.
-                GET - No defined body semantics.
-                PUT - Body supported.
-                POST - Body supported.
-                DELETE - No defined body semantics.
-                TRACE - Body not supported.
-                OPTIONS - Body supported but no semantics on usage (maybe in the future).
-                CONNECT - No defined body semantics
-                PATCH - Body supported.
-            */
-            return new[] { "PUT", "POST", "OPTIONS", "PATCH" }.Contains(method.ToUpper());
         }
     }
 }

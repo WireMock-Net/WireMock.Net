@@ -48,7 +48,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                       ]
                     }
                   ]
-                }"
+                }",
+                DetectedBodyType = BodyType.String
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
@@ -71,7 +72,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async Task Response_ProvideResponse_Handlebars_JsonPath_SelectToken_Number_ResponseBodyAsJson()
         {
             // Assign
-            var body = new BodyData { BodyAsString = "{ \"Price\": 99 }" };
+            var body = new BodyData
+            {
+                BodyAsString = "{ \"Price\": 99 }",
+                DetectedBodyType = BodyType.String
+            };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -123,7 +128,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                       ]
                     }
                   ]
-                }"
+                }",
+                DetectedBodyType = BodyType.String
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
@@ -175,7 +181,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                       ]
                     }
                   ]
-                }")
+                }"),
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
@@ -227,7 +234,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                       ]
                     }
                   ]
-                }"
+                }",
+                DetectedBodyType = BodyType.String
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
@@ -279,7 +287,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                       ]
                     }
                   ]
-                }")
+                }"),
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
@@ -307,7 +316,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                     'Lambton Quay',
                     'Willis Street'
                   ]
-                }")
+                }"),
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);

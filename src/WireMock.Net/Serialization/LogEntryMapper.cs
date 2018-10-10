@@ -2,6 +2,7 @@
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Util;
 
 namespace WireMock.Serialization
 {
@@ -22,16 +23,17 @@ namespace WireMock.Serialization
                     AbsoluteUrl = logEntry.RequestMessage.AbsoluteUrl,
                     Query = logEntry.RequestMessage.Query,
                     Method = logEntry.RequestMessage.Method,
-                    Body = logEntry.RequestMessage.Body,
-                    BodyAsJson = logEntry.RequestMessage.BodyAsJson,
-                    BodyAsBytes = logEntry.RequestMessage.BodyAsBytes,
+                    Body = logEntry.RequestMessage?.BodyData?.BodyAsString,
+                    BodyAsJson = logEntry.RequestMessage?.BodyData?.BodyAsJson,
+                    BodyAsBytes = logEntry.RequestMessage?.BodyData?.BodyAsBytes,
+                    DetectedBodyType = (logEntry.RequestMessage?.BodyData?.DetectedBodyType ?? BodyType.None).ToString(),
                     Headers = logEntry.RequestMessage.Headers,
                     Cookies = logEntry.RequestMessage.Cookies,
-                    BodyEncoding = logEntry.RequestMessage.BodyEncoding != null ? new EncodingModel
+                    BodyEncoding = logEntry.RequestMessage?.BodyData?.Encoding != null ? new EncodingModel
                     {
-                        EncodingName = logEntry.RequestMessage.BodyEncoding.EncodingName,
-                        CodePage = logEntry.RequestMessage.BodyEncoding.CodePage,
-                        WebName = logEntry.RequestMessage.BodyEncoding.WebName
+                        EncodingName = logEntry.RequestMessage.BodyData.Encoding.EncodingName,
+                        CodePage = logEntry.RequestMessage.BodyData.Encoding.CodePage,
+                        WebName = logEntry.RequestMessage.BodyData.Encoding.WebName
                     } : null
                 },
                 Response = new LogResponseModel

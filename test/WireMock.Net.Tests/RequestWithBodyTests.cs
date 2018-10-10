@@ -24,7 +24,8 @@ namespace WireMock.Net.Tests
             // Act
             var body = new BodyData
             {
-                BodyAsString = "b"
+                BodyAsString = "b",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
@@ -42,7 +43,8 @@ namespace WireMock.Net.Tests
             // Act
             var body = new BodyData
             {
-                BodyAsJson = 123
+                BodyAsJson = 123,
+                DetectedBodyType = BodyType.Json
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
@@ -60,7 +62,8 @@ namespace WireMock.Net.Tests
             // Act
             var body = new BodyData
             {
-                BodyAsBytes = new byte[0]
+                BodyAsBytes = new byte[0],
+                DetectedBodyType = BodyType.Bytes
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
@@ -78,7 +81,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "cat"
+                BodyAsString = "cat",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
@@ -96,7 +100,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "Hello world!"
+                BodyAsString = "Hello world!",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -119,7 +124,8 @@ namespace WireMock.Net.Tests
                         <todo-item id='a1'>abc</todo-item>
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
-                    </todo-list>"
+                    </todo-list>",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -142,7 +148,8 @@ namespace WireMock.Net.Tests
                         <todo-item id='a1'>abc</todo-item>
                         <todo-item id='a2'>def</todo-item>
                         <todo-item id='a3'>xyz</todo-item>
-                    </todo-list>"
+                    </todo-list>",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -160,7 +167,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }"
+                BodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -178,7 +186,8 @@ namespace WireMock.Net.Tests
             // when
             var body = new BodyData
             {
-                BodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }"
+                BodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
@@ -199,7 +208,8 @@ namespace WireMock.Net.Tests
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
                 BodyAsString = jsonString,
-                Encoding = Encoding.UTF8
+                Encoding = Encoding.UTF8,
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
@@ -221,7 +231,8 @@ namespace WireMock.Net.Tests
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
                 BodyAsString = jsonString,
-                Encoding = Encoding.UTF8
+                Encoding = Encoding.UTF8,
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
@@ -243,7 +254,8 @@ namespace WireMock.Net.Tests
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
                 BodyAsString = jsonString,
-                Encoding = Encoding.UTF8
+                Encoding = Encoding.UTF8,
+                DetectedBodyType = BodyType.Json
             };
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
@@ -263,7 +275,8 @@ namespace WireMock.Net.Tests
 
             var bodyData = new BodyData
             {
-                BodyAsJson = DateTime.MinValue
+                BodyAsJson = DateTime.MinValue,
+                DetectedBodyType = BodyType.Json
             };
 
             // Act
@@ -283,7 +296,8 @@ namespace WireMock.Net.Tests
 
             var bodyData = new BodyData
             {
-                BodyAsBytes = new byte[] { 123 }
+                BodyAsBytes = new byte[] { 123 },
+                DetectedBodyType = BodyType.Bytes
             };
 
             // Act

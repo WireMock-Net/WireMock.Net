@@ -94,7 +94,7 @@ namespace WireMock.Owin
                 IsStarted = true;
 
                 // WaitHandle is signaled when the token is cancelled,
-                // which will be more efficent than Thread.Sleep in while loop
+                // which will be more efficient than Thread.Sleep in while loop
                 _cts.Token.WaitHandle.WaitOne();
             }
             catch (Exception e)

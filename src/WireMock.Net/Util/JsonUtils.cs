@@ -92,7 +92,7 @@ namespace WireMock.Util
 
         private static void ProcessItem(JToken node, string path, string propertyName, List<string> lines)
         {
-            string castText = string.Empty;
+            string castText;
             switch (node.Type)
             {
                 case JTokenType.Boolean:
@@ -132,8 +132,7 @@ namespace WireMock.Util
                     break;
 
                 default:
-                    throw new NotSupportedException(
-                        $"JTokenType '{node.Type}' cannot be converted to a Dynamic Linq cast operator.");
+                    throw new NotSupportedException($"JTokenType '{node.Type}' cannot be converted to a Dynamic Linq cast operator.");
             }
 
             if (!string.IsNullOrEmpty(propertyName))
