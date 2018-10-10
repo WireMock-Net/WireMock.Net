@@ -32,6 +32,11 @@ steps:
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
 
+# Build in release mode and Publish to MyGet
+- script: |
+    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration Release
+    nuget push ./src/WireMock.Net/bin/Release/*.nupkg $(MyGetKey) -Source https://www.myget.org/F/wiremock-net/api/v2/package
+
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
