@@ -34,8 +34,8 @@ steps:
 
 # Build in release mode and Publish to MyGet
 - script: |
-    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration Release
-    nuget push ./src/WireMock.Net/bin/Release/*.nupkg $(MyGetKey) -Source https://www.myget.org/F/wiremock-net/api/v2/package
+    dotnet pack ./src/WireMock.Net/WireMock.Net.csproj --configuration Release
+    for /F %a in ('dir /b .\src\WireMock.Net\bin\Release\*.nupkg') do dotnet nuget push .\src\WireMock.Net\bin\Release\%a --api-key $(MyGetKey) --source https://www.myget.org/F/wiremock-net/api/v2/package
 
 - task: PublishTestResults@2
   inputs:
