@@ -1,82 +1,82 @@
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Mapping.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Mapping.cs
 FN:14,System.Guid WireMock.Mapping::get_Guid()
 FNDA:541,System.Guid WireMock.Mapping::get_Guid()
 DA:15,541
-FN:19,System.String WireMock.Mapping::get_Title()
+FN:17,System.String WireMock.Mapping::get_Title()
 FNDA:42,System.String WireMock.Mapping::get_Title()
-DA:20,42
-FN:24,System.String WireMock.Mapping::get_Path()
+DA:18,42
+FN:20,System.String WireMock.Mapping::get_Path()
 FNDA:250,System.String WireMock.Mapping::get_Path()
-DA:25,250
-FN:29,System.Int32 WireMock.Mapping::get_Priority()
+DA:21,250
+FN:23,System.Int32 WireMock.Mapping::get_Priority()
 FNDA:118,System.Int32 WireMock.Mapping::get_Priority()
-DA:30,118
-FN:35,System.String WireMock.Mapping::get_Scenario()
-FNDA:1014,System.String WireMock.Mapping::get_Scenario()
-DA:36,1014
-FN:41,System.String WireMock.Mapping::get_ExecutionConditionState()
+DA:24,118
+FN:27,System.String WireMock.Mapping::get_Scenario()
+FNDA:1016,System.String WireMock.Mapping::get_Scenario()
+DA:28,1016
+FN:31,System.String WireMock.Mapping::get_ExecutionConditionState()
 FNDA:37,System.String WireMock.Mapping::get_ExecutionConditionState()
-DA:42,37
-FN:48,System.String WireMock.Mapping::get_NextState()
-FNDA:28,System.String WireMock.Mapping::get_NextState()
-DA:49,28
-FN:53,WireMock.Matchers.Request.IRequestMatcher WireMock.Mapping::get_RequestMatcher()
+DA:32,37
+FN:35,System.String WireMock.Mapping::get_NextState()
+FNDA:29,System.String WireMock.Mapping::get_NextState()
+DA:36,29
+FN:38,WireMock.Matchers.Request.IRequestMatcher WireMock.Mapping::get_RequestMatcher()
 FNDA:284,WireMock.Matchers.Request.IRequestMatcher WireMock.Mapping::get_RequestMatcher()
-DA:54,284
-FN:58,WireMock.ResponseProviders.IResponseProvider WireMock.Mapping::get_Provider()
+DA:39,284
+FN:41,WireMock.ResponseProviders.IResponseProvider WireMock.Mapping::get_Provider()
 FNDA:323,WireMock.ResponseProviders.IResponseProvider WireMock.Mapping::get_Provider()
-DA:59,323
-FN:63,System.Boolean WireMock.Mapping::get_IsStartState()
-FNDA:8,System.Boolean WireMock.Mapping::get_IsStartState()
-DA:64,8
-BRDA:64,6,0,8
-BRDA:64,14,0,8
-BRDA:64,22,0,5
-BRDA:64,14,1,3
-BRDA:64,22,1,3
-BRDA:64,6,1,0
-FN:107,WireMock.Matchers.Request.RequestMatchResult WireMock.Mapping::GetRequestMatchResult(WireMock.RequestMessage,System.String)
-FNDA:279,WireMock.Matchers.Request.RequestMatchResult WireMock.Mapping::GetRequestMatchResult(WireMock.RequestMessage,System.String)
-DA:108,279
-DA:109,279
-DA:111,279
-DA:114,279
-DA:115,30
-DA:116,30
-DA:117,30
-DA:125,30
-DA:127,279
-DA:128,279
-BRDA:114,32,0,30
-BRDA:114,32,1,279
-FN:135,System.Boolean WireMock.Mapping::get_IsAdminInterface()
+DA:42,323
+FN:44,System.Boolean WireMock.Mapping::get_IsStartState()
+FNDA:9,System.Boolean WireMock.Mapping::get_IsStartState()
+DA:45,9
+BRDA:45,6,0,9
+BRDA:45,14,0,9
+BRDA:45,22,0,5
+BRDA:45,14,1,4
+BRDA:45,22,1,4
+BRDA:45,6,1,0
+FN:47,System.Boolean WireMock.Mapping::get_IsAdminInterface()
 FNDA:110,System.Boolean WireMock.Mapping::get_IsAdminInterface()
-DA:136,110
-BRDA:136,11,0,86
-BRDA:136,24,0,86
-BRDA:136,11,1,24
-BRDA:136,24,1,24
-FN:77,System.Void WireMock.Mapping::.ctor(System.Guid,System.String,System.String,WireMock.Matchers.Request.IRequestMatcher,WireMock.ResponseProviders.IResponseProvider,System.Int32,System.String,System.String,System.String)
+DA:48,110
+BRDA:48,11,0,86
+BRDA:48,24,0,86
+BRDA:48,11,1,24
+BRDA:48,24,1,24
+FN:82,WireMock.Matchers.Request.RequestMatchResult WireMock.Mapping::GetRequestMatchResult(WireMock.RequestMessage,System.String)
+FNDA:279,WireMock.Matchers.Request.RequestMatchResult WireMock.Mapping::GetRequestMatchResult(WireMock.RequestMessage,System.String)
+DA:83,279
+DA:84,279
+DA:86,279
+DA:89,279
+DA:90,30
+DA:91,30
+DA:92,30
+DA:100,30
+DA:102,279
+DA:103,279
+BRDA:89,32,0,30
+BRDA:89,32,1,279
+FN:61,System.Void WireMock.Mapping::.ctor(System.Guid,System.String,System.String,WireMock.Matchers.Request.IRequestMatcher,WireMock.ResponseProviders.IResponseProvider,System.Int32,System.String,System.String,System.String)
 FNDA:250,System.Void WireMock.Mapping::.ctor(System.Guid,System.String,System.String,WireMock.Matchers.Request.IRequestMatcher,WireMock.ResponseProviders.IResponseProvider,System.Int32,System.String,System.String,System.String)
-DA:78,250
-DA:79,250
-DA:80,250
-DA:81,250
-DA:82,250
-DA:83,250
-DA:84,250
-DA:85,250
-DA:86,250
-DA:87,250
-DA:88,250
-DA:89,250
-FN:96,System.Void WireMock.Mapping/<ResponseToAsync>d__31::MoveNext()
-FNDA:35,System.Void WireMock.Mapping/<ResponseToAsync>d__31::MoveNext()
-DA:97,35
-DA:98,35
-DA:99,35
-BRDA:98,50,0,1
-BRDA:98,50,1,35
+DA:62,250
+DA:63,250
+DA:64,250
+DA:65,250
+DA:66,250
+DA:67,250
+DA:68,250
+DA:69,250
+DA:70,250
+DA:71,250
+DA:72,250
+DA:73,250
+FN:76,System.Void WireMock.Mapping/<ResponseToAsync>d__33::MoveNext()
+FNDA:35,System.Void WireMock.Mapping/<ResponseToAsync>d__33::MoveNext()
+DA:77,35
+DA:78,35
+DA:79,35
+BRDA:78,50,0,1
+BRDA:78,50,1,35
 LF:36
 LH:36
 BRF:14
@@ -84,22 +84,22 @@ BRH:13
 FNF:14
 FNH:14
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\RequestMessage.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\RequestMessage.cs
 FN:20,System.String WireMock.RequestMessage::get_ClientIP()
 FNDA:60,System.String WireMock.RequestMessage::get_ClientIP()
 DA:21,60
 FN:25,System.String WireMock.RequestMessage::get_Url()
-FNDA:61,System.String WireMock.RequestMessage::get_Url()
-DA:26,61
+FNDA:60,System.String WireMock.RequestMessage::get_Url()
+DA:26,60
 FN:30,System.String WireMock.RequestMessage::get_AbsoluteUrl()
-FNDA:55,System.String WireMock.RequestMessage::get_AbsoluteUrl()
-DA:31,55
+FNDA:54,System.String WireMock.RequestMessage::get_AbsoluteUrl()
+DA:31,54
 FN:35,System.DateTime WireMock.RequestMessage::get_DateTime()
 FNDA:101,System.DateTime WireMock.RequestMessage::get_DateTime()
 DA:36,101
 FN:40,System.String WireMock.RequestMessage::get_Path()
-FNDA:616,System.String WireMock.RequestMessage::get_Path()
-DA:41,616
+FNDA:615,System.String WireMock.RequestMessage::get_Path()
+DA:41,615
 FN:45,System.String WireMock.RequestMessage::get_AbsolutePath()
 FNDA:255,System.String WireMock.RequestMessage::get_AbsolutePath()
 DA:46,255
@@ -113,14 +113,14 @@ FN:60,System.String WireMock.RequestMessage::get_Method()
 FNDA:350,System.String WireMock.RequestMessage::get_Method()
 DA:61,350
 FN:65,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Headers()
-FNDA:189,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Headers()
-DA:66,189
+FNDA:188,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Headers()
+DA:66,188
 FN:70,System.Collections.Generic.IDictionary`2<System.String,System.String> WireMock.RequestMessage::get_Cookies()
 FNDA:74,System.Collections.Generic.IDictionary`2<System.String,System.String> WireMock.RequestMessage::get_Cookies()
 DA:71,74
 FN:75,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Query()
-FNDA:104,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Query()
-DA:76,104
+FNDA:103,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.RequestMessage::get_Query()
+DA:76,103
 FN:80,System.String WireMock.RequestMessage::get_RawQuery()
 FNDA:200,System.String WireMock.RequestMessage::get_RawQuery()
 DA:81,200
@@ -128,11 +128,11 @@ FN:85,System.String WireMock.RequestMessage::get_Body()
 FNDA:107,System.String WireMock.RequestMessage::get_Body()
 DA:86,107
 FN:90,System.Object WireMock.RequestMessage::get_BodyAsJson()
-FNDA:302,System.Object WireMock.RequestMessage::get_BodyAsJson()
-DA:91,302
+FNDA:300,System.Object WireMock.RequestMessage::get_BodyAsJson()
+DA:91,300
 FN:95,System.Byte[] WireMock.RequestMessage::get_BodyAsBytes()
-FNDA:271,System.Byte[] WireMock.RequestMessage::get_BodyAsBytes()
-DA:96,271
+FNDA:270,System.Byte[] WireMock.RequestMessage::get_BodyAsBytes()
+DA:96,270
 FN:100,System.String WireMock.RequestMessage::get_Host()
 FNDA:201,System.String WireMock.RequestMessage::get_Host()
 DA:101,201
@@ -211,7 +211,7 @@ DA:142,200
 DA:143,200
 DA:145,200
 DA:146,200
-DA:147,199
+DA:147,200
 DA:148,200
 DA:150,200
 DA:151,200
@@ -219,8 +219,8 @@ DA:153,200
 DA:154,200
 DA:155,200
 DA:156,200
-DA:158,365
-DA:159,199
+DA:158,366
+DA:159,200
 DA:160,200
 DA:161,200
 DA:162,200
@@ -245,40 +245,40 @@ BRH:27
 FNF:24
 FNH:24
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseMessage.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseMessage.cs
 FN:16,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.ResponseMessage::get_Headers()
-FNDA:564,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.ResponseMessage::get_Headers()
-DA:17,564
+FNDA:562,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.ResponseMessage::get_Headers()
+DA:17,562
 FN:21,System.Int32 WireMock.ResponseMessage::get_StatusCode()
-FNDA:465,System.Int32 WireMock.ResponseMessage::get_StatusCode()
-DA:22,465
+FNDA:464,System.Int32 WireMock.ResponseMessage::get_StatusCode()
+DA:22,464
 FN:26,System.String WireMock.ResponseMessage::get_BodyOriginal()
-FNDA:73,System.String WireMock.ResponseMessage::get_BodyOriginal()
-DA:27,73
+FNDA:72,System.String WireMock.ResponseMessage::get_BodyOriginal()
+DA:27,72
 FN:31,System.String WireMock.ResponseMessage::get_BodyDestination()
 FNDA:123,System.String WireMock.ResponseMessage::get_BodyDestination()
 DA:32,123
 FN:36,System.String WireMock.ResponseMessage::get_Body()
-FNDA:251,System.String WireMock.ResponseMessage::get_Body()
-DA:37,251
+FNDA:249,System.String WireMock.ResponseMessage::get_Body()
+DA:37,249
 FN:41,System.Object WireMock.ResponseMessage::get_BodyAsJson()
-FNDA:290,System.Object WireMock.ResponseMessage::get_BodyAsJson()
-DA:42,290
+FNDA:288,System.Object WireMock.ResponseMessage::get_BodyAsJson()
+DA:42,288
 FN:46,System.Nullable`1<System.Boolean> WireMock.ResponseMessage::get_BodyAsJsonIndented()
 FNDA:35,System.Nullable`1<System.Boolean> WireMock.ResponseMessage::get_BodyAsJsonIndented()
 DA:47,35
 FN:51,System.Byte[] WireMock.ResponseMessage::get_BodyAsBytes()
-FNDA:168,System.Byte[] WireMock.ResponseMessage::get_BodyAsBytes()
-DA:52,168
+FNDA:166,System.Byte[] WireMock.ResponseMessage::get_BodyAsBytes()
+DA:52,166
 FN:56,System.String WireMock.ResponseMessage::get_BodyAsFile()
-FNDA:110,System.String WireMock.ResponseMessage::get_BodyAsFile()
-DA:57,110
+FNDA:108,System.String WireMock.ResponseMessage::get_BodyAsFile()
+DA:57,108
 FN:61,System.Nullable`1<System.Boolean> WireMock.ResponseMessage::get_BodyAsFileIsCached()
 FNDA:59,System.Nullable`1<System.Boolean> WireMock.ResponseMessage::get_BodyAsFileIsCached()
 DA:62,59
 FN:66,System.Text.Encoding WireMock.ResponseMessage::get_BodyEncoding()
-FNDA:483,System.Text.Encoding WireMock.ResponseMessage::get_BodyEncoding()
-DA:67,483
+FNDA:481,System.Text.Encoding WireMock.ResponseMessage::get_BodyEncoding()
+DA:67,481
 FN:74,System.Void WireMock.ResponseMessage::AddHeader(System.String,System.String)
 FNDA:0,System.Void WireMock.ResponseMessage::AddHeader(System.String,System.String)
 DA:75,0
@@ -302,7 +302,7 @@ BRH:1
 FNF:13
 FNH:12
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseMessageBuilder.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseMessageBuilder.cs
 FN:14,WireMock.ResponseMessage WireMock.ResponseMessageBuilder::Create(System.String,System.Int32,System.Nullable`1<System.Guid>)
 FNDA:18,WireMock.ResponseMessage WireMock.ResponseMessageBuilder::Create(System.String,System.Int32,System.Nullable`1<System.Guid>)
 DA:15,18
@@ -327,7 +327,7 @@ BRH:2
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ScenarioState.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ScenarioState.cs
 FN:10,System.String WireMock.ScenarioState::get_Name()
 FNDA:7,System.String WireMock.ScenarioState::get_Name()
 DA:11,7
@@ -347,7 +347,7 @@ BRH:0
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Validation\Check.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Validation\Check.cs
 FN:19,T WireMock.Validation.Check::Condition(T,System.Predicate`1<T>,System.String)
 FNDA:24,T WireMock.Validation.Check::Condition(T,System.Predicate`1<T>,System.String)
 DA:20,24
@@ -362,16 +362,16 @@ DA:32,23
 BRDA:24,37,0,1
 BRDA:24,37,1,23
 FN:35,T WireMock.Validation.Check::NotNull(T,System.String)
-FNDA:4004,T WireMock.Validation.Check::NotNull(T,System.String)
-DA:36,4004
-DA:37,4004
+FNDA:4052,T WireMock.Validation.Check::NotNull(T,System.String)
+DA:36,4052
+DA:37,4053
 DA:38,2
 DA:39,2
 DA:41,2
-DA:44,4002
-DA:45,4002
+DA:44,4050
+DA:45,4051
 BRDA:37,12,0,2
-BRDA:37,12,1,4002
+BRDA:37,12,1,4050
 FN:48,T WireMock.Validation.Check::NotNull(T,System.String,System.String)
 FNDA:0,T WireMock.Validation.Check::NotNull(T,System.String,System.String)
 DA:49,0
@@ -385,10 +385,10 @@ DA:59,0
 BRDA:50,12,0,0
 BRDA:50,12,1,0
 FN:62,System.Collections.Generic.IList`1<T> WireMock.Validation.Check::NotNullOrEmpty(System.Collections.Generic.IList`1<T>,System.String)
-FNDA:456,System.Collections.Generic.IList`1<T> WireMock.Validation.Check::NotNullOrEmpty(System.Collections.Generic.IList`1<T>,System.String)
-DA:63,456
-DA:64,456
-DA:66,456
+FNDA:455,System.Collections.Generic.IList`1<T> WireMock.Validation.Check::NotNullOrEmpty(System.Collections.Generic.IList`1<T>,System.String)
+DA:63,455
+DA:64,455
+DA:66,455
 DA:67,0
 DA:68,0
 DA:70,0
@@ -466,7 +466,7 @@ BRH:13
 FNF:8
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Validation\CoreStrings.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Validation\CoreStrings.cs
 FN:12,System.String WireMock.Validation.CoreStrings::ArgumentPropertyNull(System.String,System.String)
 FNDA:0,System.String WireMock.Validation.CoreStrings::ArgumentPropertyNull(System.String,System.String)
 DA:13,0
@@ -494,7 +494,7 @@ BRH:0
 FNF:4
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\BodyData.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\BodyData.cs
 FN:12,System.Text.Encoding WireMock.Util.BodyData::get_Encoding()
 FNDA:93,System.Text.Encoding WireMock.Util.BodyData::get_Encoding()
 DA:13,93
@@ -514,7 +514,7 @@ BRH:0
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\BodyParser.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\BodyParser.cs
 FN:12,System.Void WireMock.Util.BodyParser::.cctor()
 FNDA:1,System.Void WireMock.Util.BodyParser::.cctor()
 DA:13,1
@@ -618,7 +618,7 @@ BRH:11
 FNF:6
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\ConcurentObservableCollection.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\ConcurentObservableCollection.cs
 FN:33,System.Void WireMock.Util.ConcurentObservableCollection`1::ClearItems()
 FNDA:1,System.Void WireMock.Util.ConcurentObservableCollection`1::ClearItems()
 DA:34,1
@@ -676,7 +676,7 @@ BRH:0
 FNF:8
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\DictionaryExtensions.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\DictionaryExtensions.cs
 FN:20,System.Void WireMock.Util.DictionaryExtensions::Loop(System.Collections.Generic.IDictionary`2<TKey,TValue>,System.Action`2<TKey,TValue>)
 FNDA:0,System.Void WireMock.Util.DictionaryExtensions::Loop(System.Collections.Generic.IDictionary`2<TKey,TValue>,System.Action`2<TKey,TValue>)
 DA:21,0
@@ -700,7 +700,7 @@ BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\EnhancedFileSystemWatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\EnhancedFileSystemWatcher.cs
 FN:35,System.Int32 WireMock.Util.EnhancedFileSystemWatcher::get_Interval()
 FNDA:0,System.Int32 WireMock.Util.EnhancedFileSystemWatcher::get_Interval()
 DA:36,0
@@ -853,7 +853,7 @@ BRH:0
 FNF:16
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\FileHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\FileHelper.cs
 FN:14,System.String WireMock.Util.FileHelper::ReadAllTextWithRetryAndDelay(WireMock.Handlers.IFileSystemHandler,System.String)
 FNDA:2,System.String WireMock.Util.FileHelper::ReadAllTextWithRetryAndDelay(WireMock.Handlers.IFileSystemHandler,System.String)
 DA:15,2
@@ -879,7 +879,7 @@ BRH:2
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\JsonUtils.cs
 FN:11,T WireMock.Util.JsonUtils::ParseJTokenToObject(System.Object)
 FNDA:11,T WireMock.Util.JsonUtils::ParseJTokenToObject(System.Object)
 DA:12,11
@@ -1016,7 +1016,7 @@ BRH:33
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\PortUtils.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\PortUtils.cs
 FN:18,System.Int32 WireMock.Util.PortUtils::FindFreeTcpPort()
 FNDA:46,System.Int32 WireMock.Util.PortUtils::FindFreeTcpPort()
 DA:19,46
@@ -1057,7 +1057,7 @@ BRH:4
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\RegexUtils.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\RegexUtils.cs
 FN:8,System.Collections.Generic.Dictionary`2<System.String,System.String> WireMock.Util.RegexUtils::GetNamedGroups(System.Text.RegularExpressions.Regex,System.String)
 FNDA:3,System.Collections.Generic.Dictionary`2<System.String,System.String> WireMock.Util.RegexUtils::GetNamedGroups(System.Text.RegularExpressions.Regex,System.String)
 DA:9,3
@@ -1083,7 +1083,7 @@ BRH:4
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\UrlUtils.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\UrlUtils.cs
 FN:14,WireMock.Models.UrlDetails WireMock.Util.UrlUtils::Parse(System.Uri,Microsoft.AspNetCore.Http.PathString)
 FNDA:51,WireMock.Models.UrlDetails WireMock.Util.UrlUtils::Parse(System.Uri,Microsoft.AspNetCore.Http.PathString)
 DA:15,51
@@ -1114,7 +1114,7 @@ BRH:4
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Util\WireMockList.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Util\WireMockList.cs
 FN:39,System.String WireMock.Util.WireMockList`1::ToString()
 FNDA:11,System.String WireMock.Util.WireMockList`1::ToString()
 DA:40,11
@@ -1130,8 +1130,8 @@ DA:18,30
 FN:23,System.Void WireMock.Util.WireMockList`1::.ctor(T[])
 FNDA:206,System.Void WireMock.Util.WireMockList`1::.ctor(T[])
 DA:24,206
-DA:25,205
-DA:26,205
+DA:25,206
+DA:26,206
 FN:31,System.Void WireMock.Util.WireMockList`1::.ctor(System.Collections.Generic.IEnumerable`1<T>)
 FNDA:0,System.Void WireMock.Util.WireMockList`1::.ctor(System.Collections.Generic.IEnumerable`1<T>)
 DA:32,0
@@ -1144,7 +1144,7 @@ BRH:1
 FNF:4
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsHelpers.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsHelpers.cs
 FN:5,System.Void WireMock.Transformers.HandlebarsHelpers::Register()
 FNDA:1,System.Void WireMock.Transformers.HandlebarsHelpers::Register()
 DA:6,1
@@ -1159,7 +1159,7 @@ BRH:0
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsJsonPath.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsJsonPath.cs
 FN:12,System.Void WireMock.Transformers.HandleBarsJsonPath::Register()
 FNDA:1,System.Void WireMock.Transformers.HandleBarsJsonPath::Register()
 DA:13,1
@@ -1230,7 +1230,7 @@ BRH:16
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsLinq.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsLinq.cs
 FN:14,System.Void WireMock.Transformers.HandleBarsLinq::Register()
 FNDA:1,System.Void WireMock.Transformers.HandleBarsLinq::Register()
 DA:15,1
@@ -1306,7 +1306,7 @@ BRH:15
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsRegex.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Transformers\HandleBarsRegex.cs
 FN:12,System.Void WireMock.Transformers.HandleBarsRegex::Register()
 FNDA:1,System.Void WireMock.Transformers.HandleBarsRegex::Register()
 DA:13,1
@@ -1375,7 +1375,7 @@ BRH:19
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Transformers\ResponseMessageTransformer.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Transformers\ResponseMessageTransformer.cs
 FN:18,WireMock.ResponseMessage WireMock.Transformers.ResponseMessageTransformer::Transform(WireMock.RequestMessage,WireMock.ResponseMessage)
 FNDA:32,WireMock.ResponseMessage WireMock.Transformers.ResponseMessageTransformer::Transform(WireMock.RequestMessage,WireMock.ResponseMessage)
 DA:19,32
@@ -1503,7 +1503,7 @@ BRH:26
 FNF:5
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Settings\FluentMockServerSettings.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Settings\FluentMockServerSettings.cs
 FN:15,System.Nullable`1<System.Int32> WireMock.Settings.FluentMockServerSettings::get_Port()
 FNDA:123,System.Nullable`1<System.Int32> WireMock.Settings.FluentMockServerSettings::get_Port()
 DA:16,123
@@ -1562,7 +1562,7 @@ BRH:0
 FNF:17
 FNH:17
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Settings\ProxyAndRecordSettings.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Settings\ProxyAndRecordSettings.cs
 FN:11,System.String WireMock.Settings.ProxyAndRecordSettings::get_Url()
 FNDA:4,System.String WireMock.Settings.ProxyAndRecordSettings::get_Url()
 DA:12,4
@@ -1585,7 +1585,7 @@ BRH:0
 FNF:5
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.Admin.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.Admin.cs
 FN:58,System.Void WireMock.Server.FluentMockServer::InitAdmin()
 FNDA:11,System.Void WireMock.Server.FluentMockServer::InitAdmin()
 DA:59,11
@@ -2352,67 +2352,66 @@ BRH:99
 FNF:33
 FNH:19
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.cs
-FN:37,System.Boolean WireMock.Server.FluentMockServer::get_IsStarted()
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.cs
+FN:38,System.Boolean WireMock.Server.FluentMockServer::get_IsStarted()
 FNDA:0,System.Boolean WireMock.Server.FluentMockServer::get_IsStarted()
-DA:38,0
-BRDA:38,6,0,0
-BRDA:38,6,1,0
-FN:43,System.Collections.Generic.List`1<System.Int32> WireMock.Server.FluentMockServer::get_Ports()
+DA:39,0
+BRDA:39,6,0,0
+BRDA:39,6,1,0
+FN:44,System.Collections.Generic.List`1<System.Int32> WireMock.Server.FluentMockServer::get_Ports()
 FNDA:20,System.Collections.Generic.List`1<System.Int32> WireMock.Server.FluentMockServer::get_Ports()
-DA:44,20
-FN:49,System.String[] WireMock.Server.FluentMockServer::get_Urls()
+DA:45,20
+FN:50,System.String[] WireMock.Server.FluentMockServer::get_Urls()
 FNDA:64,System.String[] WireMock.Server.FluentMockServer::get_Urls()
-DA:50,64
-FN:55,System.Collections.Generic.IEnumerable`1<WireMock.IMapping> WireMock.Server.FluentMockServer::get_Mappings()
+DA:51,64
+FN:56,System.Collections.Generic.IEnumerable`1<WireMock.IMapping> WireMock.Server.FluentMockServer::get_Mappings()
 FNDA:18,System.Collections.Generic.IEnumerable`1<WireMock.IMapping> WireMock.Server.FluentMockServer::get_Mappings()
-DA:56,18
-FN:61,System.Collections.Concurrent.ConcurrentDictionary`2<System.String,WireMock.ScenarioState> WireMock.Server.FluentMockServer::get_Scenarios()
+DA:57,18
+FN:62,System.Collections.Concurrent.ConcurrentDictionary`2<System.String,WireMock.ScenarioState> WireMock.Server.FluentMockServer::get_Scenarios()
 FNDA:13,System.Collections.Concurrent.ConcurrentDictionary`2<System.String,WireMock.ScenarioState> WireMock.Server.FluentMockServer::get_Scenarios()
-DA:62,13
-FN:68,System.Void WireMock.Server.FluentMockServer::Dispose()
+DA:63,13
+FN:69,System.Void WireMock.Server.FluentMockServer::Dispose()
 FNDA:0,System.Void WireMock.Server.FluentMockServer::Dispose()
-DA:69,0
 DA:70,0
 DA:71,0
 DA:72,0
-FN:78,System.Void WireMock.Server.FluentMockServer::Dispose(System.Boolean)
+DA:73,0
+FN:79,System.Void WireMock.Server.FluentMockServer::Dispose(System.Boolean)
 FNDA:0,System.Void WireMock.Server.FluentMockServer::Dispose(System.Boolean)
-DA:79,0
 DA:80,0
 DA:81,0
 DA:82,0
 DA:83,0
 DA:84,0
-BRDA:80,12,0,0
-BRDA:80,12,1,0
-FN:94,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(WireMock.Settings.IFluentMockServerSettings)
+DA:85,0
+BRDA:81,12,0,0
+BRDA:81,12,1,0
+FN:95,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(WireMock.Settings.IFluentMockServerSettings)
 FNDA:16,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(WireMock.Settings.IFluentMockServerSettings)
-DA:95,16
 DA:96,16
-DA:98,16
+DA:97,16
 DA:99,16
-FN:108,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.Nullable`1<System.Int32>,System.Boolean)
+DA:100,16
+FN:109,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.Nullable`1<System.Int32>,System.Boolean)
 FNDA:26,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.Nullable`1<System.Int32>,System.Boolean)
-DA:109,26
 DA:110,26
 DA:111,26
 DA:112,26
 DA:113,26
 DA:114,26
 DA:115,26
-FN:123,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.String[])
+DA:116,25
+FN:124,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.String[])
 FNDA:1,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::Start(System.String[])
-DA:124,1
 DA:125,1
-DA:127,1
+DA:126,1
 DA:128,1
 DA:129,1
 DA:130,1
 DA:131,1
-FN:140,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.Nullable`1<System.Int32>,System.Boolean)
+DA:132,1
+FN:141,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.Nullable`1<System.Int32>,System.Boolean)
 FNDA:4,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.Nullable`1<System.Int32>,System.Boolean)
-DA:141,4
 DA:142,4
 DA:143,4
 DA:144,4
@@ -2420,250 +2419,251 @@ DA:145,4
 DA:146,4
 DA:147,4
 DA:148,4
-FN:156,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.String[])
+DA:149,4
+FN:157,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.String[])
 FNDA:0,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterface(System.String[])
-DA:157,0
 DA:158,0
-DA:160,0
+DA:159,0
 DA:161,0
 DA:162,0
 DA:163,0
 DA:164,0
 DA:165,0
-FN:173,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterfaceAndReadStaticMappings(System.String[])
+DA:166,0
+FN:174,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterfaceAndReadStaticMappings(System.String[])
 FNDA:0,WireMock.Server.FluentMockServer WireMock.Server.FluentMockServer::StartWithAdminInterfaceAndReadStaticMappings(System.String[])
-DA:174,0
 DA:175,0
-DA:177,0
+DA:176,0
 DA:178,0
 DA:179,0
 DA:180,0
 DA:181,0
 DA:182,0
 DA:183,0
-FN:283,System.Void WireMock.Server.FluentMockServer::Stop()
+DA:184,0
+FN:284,System.Void WireMock.Server.FluentMockServer::Stop()
 FNDA:2,System.Void WireMock.Server.FluentMockServer::Stop()
-DA:284,2
 DA:285,2
 DA:286,2
 DA:287,2
-BRDA:285,8,0,0
-BRDA:285,8,1,2
-BRDA:286,21,1,2
-BRDA:286,21,0,2
-FN:294,System.Void WireMock.Server.FluentMockServer::AddCatchAllMapping()
+DA:288,2
+BRDA:286,8,0,0
+BRDA:286,8,1,2
+BRDA:287,21,1,2
+BRDA:287,21,0,2
+FN:295,System.Void WireMock.Server.FluentMockServer::AddCatchAllMapping()
 FNDA:0,System.Void WireMock.Server.FluentMockServer::AddCatchAllMapping()
-DA:295,0
 DA:296,0
 DA:297,0
 DA:298,0
 DA:299,0
 DA:300,0
-BRDA:296,67,0,0
-BRDA:296,67,1,0
-FN:306,System.Void WireMock.Server.FluentMockServer::Reset()
+DA:301,0
+BRDA:297,67,0,0
+BRDA:297,67,1,0
+FN:307,System.Void WireMock.Server.FluentMockServer::Reset()
 FNDA:0,System.Void WireMock.Server.FluentMockServer::Reset()
-DA:307,0
 DA:308,0
-DA:310,0
+DA:309,0
 DA:311,0
-FN:317,System.Void WireMock.Server.FluentMockServer::ResetMappings()
+DA:312,0
+FN:318,System.Void WireMock.Server.FluentMockServer::ResetMappings()
 FNDA:2,System.Void WireMock.Server.FluentMockServer::ResetMappings()
-DA:318,2
-DA:319,18
-DA:320,4
+DA:319,2
+DA:320,18
 DA:321,4
 DA:322,4
-DA:323,2
-BRDA:319,24,0,1
-BRDA:319,24,1,2
-BRDA:319,103,1,4
-BRDA:319,103,0,2
-FN:330,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.Guid)
+DA:323,4
+DA:324,2
+BRDA:320,24,0,1
+BRDA:320,24,1,2
+BRDA:320,103,1,4
+BRDA:320,103,0,2
+FN:331,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.Guid)
 FNDA:0,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.Guid)
-DA:331,0
-DA:333,0
+DA:332,0
 DA:334,0
 DA:335,0
-DA:338,0
+DA:336,0
 DA:339,0
-BRDA:333,20,0,0
-BRDA:333,20,1,0
-FN:341,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.String)
+DA:340,0
+BRDA:334,20,0,0
+BRDA:334,20,1,0
+FN:342,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.String)
 FNDA:0,System.Boolean WireMock.Server.FluentMockServer::DeleteMapping(System.String)
-DA:342,0
-DA:344,0
+DA:343,0
 DA:345,0
 DA:346,0
-FN:353,System.Void WireMock.Server.FluentMockServer::AddGlobalProcessingDelay(System.TimeSpan)
+DA:347,0
+FN:354,System.Void WireMock.Server.FluentMockServer::AddGlobalProcessingDelay(System.TimeSpan)
 FNDA:1,System.Void WireMock.Server.FluentMockServer::AddGlobalProcessingDelay(System.TimeSpan)
-DA:354,1
 DA:355,1
 DA:356,1
-FN:362,System.Void WireMock.Server.FluentMockServer::AllowPartialMapping(System.Boolean)
+DA:357,1
+FN:363,System.Void WireMock.Server.FluentMockServer::AllowPartialMapping(System.Boolean)
 FNDA:1,System.Void WireMock.Server.FluentMockServer::AllowPartialMapping(System.Boolean)
-DA:363,1
 DA:364,1
 DA:365,1
 DA:366,1
-FN:374,System.Void WireMock.Server.FluentMockServer::SetBasicAuthentication(System.String,System.String)
+DA:367,1
+FN:375,System.Void WireMock.Server.FluentMockServer::SetBasicAuthentication(System.String,System.String)
 FNDA:3,System.Void WireMock.Server.FluentMockServer::SetBasicAuthentication(System.String,System.String)
-DA:375,3
 DA:376,3
 DA:377,3
-DA:379,3
+DA:378,3
 DA:380,3
 DA:381,3
-FN:387,System.Void WireMock.Server.FluentMockServer::RemoveBasicAuthentication()
+DA:382,3
+FN:388,System.Void WireMock.Server.FluentMockServer::RemoveBasicAuthentication()
 FNDA:1,System.Void WireMock.Server.FluentMockServer::RemoveBasicAuthentication()
-DA:388,1
 DA:389,1
 DA:390,1
-FN:397,System.Void WireMock.Server.FluentMockServer::SetMaxRequestLogCount(System.Nullable`1<System.Int32>)
+DA:391,1
+FN:398,System.Void WireMock.Server.FluentMockServer::SetMaxRequestLogCount(System.Nullable`1<System.Int32>)
 FNDA:1,System.Void WireMock.Server.FluentMockServer::SetMaxRequestLogCount(System.Nullable`1<System.Int32>)
-DA:398,1
 DA:399,1
 DA:400,1
-FN:407,System.Void WireMock.Server.FluentMockServer::SetRequestLogExpirationDuration(System.Nullable`1<System.Int32>)
+DA:401,1
+FN:408,System.Void WireMock.Server.FluentMockServer::SetRequestLogExpirationDuration(System.Nullable`1<System.Int32>)
 FNDA:1,System.Void WireMock.Server.FluentMockServer::SetRequestLogExpirationDuration(System.Nullable`1<System.Int32>)
-DA:408,1
 DA:409,1
 DA:410,1
-FN:416,System.Void WireMock.Server.FluentMockServer::ResetScenarios()
+DA:411,1
+FN:417,System.Void WireMock.Server.FluentMockServer::ResetScenarios()
 FNDA:0,System.Void WireMock.Server.FluentMockServer::ResetScenarios()
-DA:417,0
 DA:418,0
 DA:419,0
-FN:427,WireMock.Server.IRespondWithAProvider WireMock.Server.FluentMockServer::Given(WireMock.Matchers.Request.IRequestMatcher)
+DA:420,0
+FN:428,WireMock.Server.IRespondWithAProvider WireMock.Server.FluentMockServer::Given(WireMock.Matchers.Request.IRequestMatcher)
 FNDA:249,WireMock.Server.IRespondWithAProvider WireMock.Server.FluentMockServer::Given(WireMock.Matchers.Request.IRequestMatcher)
-DA:428,249
 DA:429,249
 DA:430,249
-FN:432,System.Void WireMock.Server.FluentMockServer::RegisterMapping(WireMock.IMapping)
+DA:431,249
+FN:433,System.Void WireMock.Server.FluentMockServer::RegisterMapping(WireMock.IMapping)
 FNDA:249,System.Void WireMock.Server.FluentMockServer::RegisterMapping(WireMock.IMapping)
-DA:433,249
-DA:435,249
-DA:436,1
+DA:434,249
+DA:436,249
 DA:437,1
 DA:438,1
-DA:440,248
+DA:439,1
 DA:441,248
 DA:442,248
-DA:443,249
-BRDA:435,25,0,1
-BRDA:435,25,1,248
-FN:31,System.Void WireMock.Server.FluentMockServer::.ctor(WireMock.Settings.IFluentMockServerSettings)
+DA:443,248
+DA:444,249
+BRDA:436,25,0,1
+BRDA:436,25,1,248
+FN:32,System.Void WireMock.Server.FluentMockServer::.ctor(WireMock.Settings.IFluentMockServerSettings)
 FNDA:47,System.Void WireMock.Server.FluentMockServer::.ctor(WireMock.Settings.IFluentMockServerSettings)
-DA:32,47
-DA:185,47
+DA:33,47
 DA:186,47
 DA:187,47
-DA:189,47
+DA:188,47
 DA:190,47
-DA:192,47
+DA:191,47
 DA:193,47
-DA:195,47
-DA:196,1
+DA:194,47
+DA:196,47
 DA:197,1
 DA:198,1
-DA:200,46
+DA:199,1
 DA:201,46
 DA:202,46
 DA:203,46
-DA:205,47
+DA:204,46
 DA:206,47
 DA:207,47
-DA:210,47
-DA:214,47
-DA:216,47
-DA:218,47
+DA:208,47
+DA:211,47
+DA:215,47
+DA:217,47
 DA:219,47
-DA:220,480
-DA:221,433
-DA:223,433
+DA:220,47
+DA:221,47
+DA:222,0
 DA:224,0
 DA:225,0
-DA:229,433
+DA:226,0
 DA:230,0
 DA:231,0
-DA:234,433
-DA:235,433
-DA:236,47
-DA:238,47
-DA:239,1
+DA:232,0
+DA:235,0
+DA:236,0
+DA:237,47
+DA:239,47
 DA:240,1
 DA:241,1
-DA:243,47
-DA:244,11
+DA:242,1
+DA:244,47
 DA:245,11
-DA:246,1
+DA:246,11
 DA:247,1
 DA:248,1
-DA:250,11
+DA:249,1
 DA:251,11
-DA:253,47
-DA:254,0
+DA:252,11
+DA:254,47
 DA:255,0
 DA:256,0
-DA:258,47
-DA:259,0
+DA:257,0
+DA:259,47
 DA:260,0
 DA:261,0
-DA:263,47
-DA:264,2
+DA:262,0
+DA:264,47
 DA:265,2
 DA:266,2
-DA:268,47
-DA:269,1
+DA:267,2
+DA:269,47
 DA:270,1
 DA:271,1
-DA:273,47
-DA:274,0
+DA:272,1
+DA:274,47
 DA:275,0
 DA:276,0
-DA:277,47
-BRDA:187,117,0,0
-BRDA:187,117,1,47
-BRDA:190,151,0,0
-BRDA:190,151,1,47
-BRDA:195,230,0,1
-BRDA:195,230,1,46
-BRDA:201,284,0,46
-BRDA:201,284,1,0
-BRDA:202,352,0,46
-BRDA:202,352,1,0
-BRDA:220,664,1,433
-BRDA:223,528,0,0
-BRDA:223,528,1,433
-BRDA:229,585,0,0
-BRDA:229,585,1,433
-BRDA:220,664,0,47
-BRDA:238,719,0,1
-BRDA:238,719,1,47
-BRDA:243,765,0,11
-BRDA:245,779,0,1
-BRDA:245,779,1,10
-BRDA:245,802,0,1
-BRDA:245,802,1,11
-BRDA:243,765,1,47
-BRDA:253,867,0,0
-BRDA:253,867,1,47
-BRDA:258,913,0,0
-BRDA:258,913,1,47
-BRDA:263,938,0,2
-BRDA:263,938,1,47
-BRDA:268,968,0,1
-BRDA:268,968,1,47
-BRDA:273,1003,0,0
-BRDA:273,1003,1,47
+DA:277,0
+DA:278,46
+BRDA:188,117,0,0
+BRDA:188,117,1,47
+BRDA:191,151,0,0
+BRDA:191,151,1,47
+BRDA:196,230,0,1
+BRDA:196,230,1,46
+BRDA:202,284,0,46
+BRDA:202,284,1,0
+BRDA:203,352,0,46
+BRDA:203,352,1,0
+BRDA:221,664,1,0
+BRDA:224,528,0,0
+BRDA:224,528,1,0
+BRDA:230,585,0,0
+BRDA:230,585,1,0
+BRDA:221,664,0,47
+BRDA:239,719,0,1
+BRDA:239,719,1,47
+BRDA:244,765,0,11
+BRDA:246,779,0,1
+BRDA:246,779,1,10
+BRDA:246,802,0,1
+BRDA:246,802,1,11
+BRDA:244,765,1,47
+BRDA:254,867,0,0
+BRDA:254,867,1,47
+BRDA:259,913,0,0
+BRDA:259,913,1,47
+BRDA:264,938,0,2
+BRDA:264,938,1,47
+BRDA:269,968,0,1
+BRDA:269,968,1,47
+BRDA:274,1003,0,0
+BRDA:274,1003,1,46
 LF:193
-LH:129
+LH:124
 BRF:52
-BRH:34
+BRH:31
 FNF:29
 FNH:19
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.LogEntries.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Server\FluentMockServer.LogEntries.cs
 FN:21,System.Void WireMock.Server.FluentMockServer::add_LogEntriesChanged(System.Collections.Specialized.NotifyCollectionChangedEventHandler)
 FNDA:2,System.Void WireMock.Server.FluentMockServer::add_LogEntriesChanged(System.Collections.Specialized.NotifyCollectionChangedEventHandler)
 DA:22,2
@@ -2725,10 +2725,10 @@ BRH:0
 FNF:6
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Server\RespondWithAProvider.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Server\RespondWithAProvider.cs
 FN:20,System.Guid WireMock.Server.RespondWithAProvider::get_Guid()
-FNDA:523,System.Guid WireMock.Server.RespondWithAProvider::get_Guid()
-DA:21,523
+FNDA:522,System.Guid WireMock.Server.RespondWithAProvider::get_Guid()
+DA:21,522
 FN:38,System.Void WireMock.Server.RespondWithAProvider::RespondWith(WireMock.ResponseProviders.IResponseProvider)
 FNDA:249,System.Void WireMock.Server.RespondWithAProvider::RespondWith(WireMock.ResponseProviders.IResponseProvider)
 DA:39,249
@@ -2758,11 +2758,11 @@ DA:68,10
 DA:70,10
 DA:71,10
 FN:74,WireMock.Server.IRespondWithAProvider WireMock.Server.RespondWithAProvider::AtPriority(System.Int32)
-FNDA:222,WireMock.Server.IRespondWithAProvider WireMock.Server.RespondWithAProvider::AtPriority(System.Int32)
-DA:75,222
-DA:76,222
-DA:78,222
-DA:79,222
+FNDA:221,WireMock.Server.IRespondWithAProvider WireMock.Server.RespondWithAProvider::AtPriority(System.Int32)
+DA:75,221
+DA:76,221
+DA:78,221
+DA:79,221
 FN:82,WireMock.Server.IRespondWithAProvider WireMock.Server.RespondWithAProvider::InScenario(System.String)
 FNDA:10,WireMock.Server.IRespondWithAProvider WireMock.Server.RespondWithAProvider::InScenario(System.String)
 DA:83,10
@@ -2805,76 +2805,76 @@ BRH:2
 FNF:11
 FNH:11
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Serialization\LogEntryMapper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Serialization\LogEntryMapper.cs
 FN:10,WireMock.Admin.Requests.LogEntryModel WireMock.Serialization.LogEntryMapper::Map(WireMock.Logging.LogEntry)
-FNDA:54,WireMock.Admin.Requests.LogEntryModel WireMock.Serialization.LogEntryMapper::Map(WireMock.Logging.LogEntry)
-DA:11,54
-DA:12,54
-DA:13,54
-DA:14,54
-DA:15,54
-DA:16,54
-DA:17,54
-DA:18,54
-DA:19,54
-DA:20,54
-DA:21,54
-DA:22,54
-DA:23,54
-DA:24,54
-DA:25,54
-DA:26,54
-DA:27,54
-DA:28,54
-DA:29,54
-DA:30,54
-DA:31,54
-DA:32,54
-DA:33,54
-DA:34,54
-DA:35,54
-DA:36,54
-DA:37,54
-DA:38,54
-DA:39,54
-DA:40,54
-DA:41,54
-DA:42,54
-DA:43,54
-DA:44,54
-DA:45,54
-DA:46,54
-DA:47,54
-DA:48,54
-DA:49,54
-DA:50,54
-DA:51,54
-DA:52,54
-DA:53,54
-DA:54,54
-DA:55,54
-DA:56,54
-DA:57,54
-DA:58,54
-DA:59,54
-DA:60,54
-DA:61,54
-DA:62,54
-DA:63,134
-DA:64,134
-DA:65,134
-DA:66,134
-DA:67,134
-DA:68,54
-DA:69,54
+FNDA:53,WireMock.Admin.Requests.LogEntryModel WireMock.Serialization.LogEntryMapper::Map(WireMock.Logging.LogEntry)
+DA:11,53
+DA:12,53
+DA:13,53
+DA:14,53
+DA:15,53
+DA:16,53
+DA:17,53
+DA:18,53
+DA:19,53
+DA:20,53
+DA:21,53
+DA:22,53
+DA:23,53
+DA:24,53
+DA:25,53
+DA:26,53
+DA:27,53
+DA:28,53
+DA:29,53
+DA:30,53
+DA:31,53
+DA:32,53
+DA:33,53
+DA:34,53
+DA:35,53
+DA:36,53
+DA:37,53
+DA:38,53
+DA:39,53
+DA:40,53
+DA:41,53
+DA:42,53
+DA:43,53
+DA:44,53
+DA:45,53
+DA:46,53
+DA:47,53
+DA:48,53
+DA:49,53
+DA:50,53
+DA:51,53
+DA:52,53
+DA:53,53
+DA:54,53
+DA:55,53
+DA:56,53
+DA:57,53
+DA:58,53
+DA:59,53
+DA:60,53
+DA:61,53
+DA:62,53
+DA:63,133
+DA:64,133
+DA:65,133
+DA:66,133
+DA:67,133
+DA:68,53
+DA:69,53
 DA:70,54
 BRDA:12,271,0,45
 BRDA:12,271,1,9
 BRDA:12,542,0,0
-BRDA:12,542,1,54
+BRDA:12,542,1,53
 BRDA:12,666,0,19
 BRDA:12,666,1,35
-BRDA:12,769,0,1
+BRDA:12,769,0,2
 BRDA:12,769,1,35
 LF:60
 LH:60
@@ -2883,7 +2883,7 @@ BRH:7
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Serialization\MappingConverter.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Serialization\MappingConverter.cs
 FN:13,WireMock.Admin.Mappings.MappingModel WireMock.Serialization.MappingConverter::ToMappingModel(WireMock.IMapping)
 FNDA:2,WireMock.Admin.Mappings.MappingModel WireMock.Serialization.MappingConverter::ToMappingModel(WireMock.IMapping)
 DA:14,2
@@ -3081,7 +3081,7 @@ BRH:34
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Serialization\MatcherMapper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Serialization\MatcherMapper.cs
 FN:13,WireMock.Matchers.IMatcher WireMock.Serialization.MatcherMapper::Map(WireMock.Admin.Mappings.MatcherModel)
 FNDA:26,WireMock.Matchers.IMatcher WireMock.Serialization.MatcherMapper::Map(WireMock.Admin.Mappings.MatcherModel)
 DA:14,26
@@ -3209,7 +3209,7 @@ BRH:59
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseProviders\DynamicAsyncResponseProvider.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseProviders\DynamicAsyncResponseProvider.cs
 FN:19,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.DynamicAsyncResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 FNDA:0,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.DynamicAsyncResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 DA:20,0
@@ -3229,7 +3229,7 @@ BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseProviders\DynamicResponseProvider.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseProviders\DynamicResponseProvider.cs
 FN:19,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.DynamicResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 FNDA:8,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.DynamicResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 DA:20,8
@@ -3249,7 +3249,7 @@ BRH:0
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseProviders\ProxyAsyncResponseProvider.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseProviders\ProxyAsyncResponseProvider.cs
 FN:23,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.ProxyAsyncResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 FNDA:0,System.Threading.Tasks.Task`1<WireMock.ResponseMessage> WireMock.ResponseProviders.ProxyAsyncResponseProvider::ProvideResponseAsync(WireMock.RequestMessage)
 DA:24,0
@@ -3271,7 +3271,7 @@ BRH:0
 FNF:2
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\ResponseBuilders\Response.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\ResponseBuilders\Response.cs
 FN:28,System.Nullable`1<System.TimeSpan> WireMock.ResponseBuilders.Response::get_Delay()
 FNDA:80,System.Nullable`1<System.TimeSpan> WireMock.ResponseBuilders.Response::get_Delay()
 DA:29,80
@@ -3583,7 +3583,7 @@ BRH:41
 FNF:33
 FNH:27
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\RequestBuilders\Request.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\RequestBuilders\Request.cs
 FN:23,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::Create()
 FNDA:312,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::Create()
 DA:24,312
@@ -3637,15 +3637,15 @@ DA:95,66
 DA:96,66
 DA:97,66
 FN:100,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(System.String[])
-FNDA:197,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(System.String[])
-DA:101,197
-DA:102,197
+FNDA:196,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(System.String[])
+DA:101,196
+DA:102,196
 DA:103,197
 FN:106,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(WireMock.Matchers.MatchBehaviour,System.String[])
 FNDA:197,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(WireMock.Matchers.MatchBehaviour,System.String[])
 DA:107,197
 DA:108,197
-DA:110,197
+DA:110,196
 DA:111,197
 DA:112,197
 FN:115,WireMock.RequestBuilders.IRequestBuilder WireMock.RequestBuilders.Request::WithPath(System.Func`2<System.String,System.Boolean>[])
@@ -3911,10 +3911,10 @@ BRH:8
 FNF:49
 FNH:47
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\AspNetCoreSelfHost.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\AspNetCoreSelfHost.cs
 FN:28,System.Boolean WireMock.Owin.AspNetCoreSelfHost::get_IsStarted()
-FNDA:531,System.Boolean WireMock.Owin.AspNetCoreSelfHost::get_IsStarted()
-DA:29,531
+FNDA:96,System.Boolean WireMock.Owin.AspNetCoreSelfHost::get_IsStarted()
+DA:29,96
 FN:30,System.Collections.Generic.List`1<System.String> WireMock.Owin.AspNetCoreSelfHost::get_Urls()
 FNDA:94,System.Collections.Generic.List`1<System.String> WireMock.Owin.AspNetCoreSelfHost::get_Urls()
 DA:31,94
@@ -3922,8 +3922,8 @@ FN:32,System.Collections.Generic.List`1<System.Int32> WireMock.Owin.AspNetCoreSe
 FNDA:141,System.Collections.Generic.List`1<System.Int32> WireMock.Owin.AspNetCoreSelfHost::get_Ports()
 DA:33,141
 FN:34,System.Exception WireMock.Owin.AspNetCoreSelfHost::get_RunningException()
-FNDA:433,System.Exception WireMock.Owin.AspNetCoreSelfHost::get_RunningException()
-DA:35,433
+FNDA:0,System.Exception WireMock.Owin.AspNetCoreSelfHost::get_RunningException()
+DA:35,0
 FN:56,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::StartAsync()
 FNDA:47,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::StartAsync()
 DA:57,47
@@ -3975,35 +3975,32 @@ DA:102,47
 DA:103,47
 DA:104,47
 DA:106,47
-DA:107,94
-DA:108,94
-DA:109,49
+DA:107,47
+FN:109,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::RunHost(System.Threading.CancellationToken)
+FNDA:47,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::RunHost(System.Threading.CancellationToken)
 DA:110,47
-FN:112,System.Void WireMock.Owin.AspNetCoreSelfHost::StartServers()
-FNDA:47,System.Void WireMock.Owin.AspNetCoreSelfHost::StartServers()
+DA:112,47
 DA:113,47
-DA:115,47
-DA:116,47
+DA:114,47
+DA:115,94
+DA:116,94
 DA:117,94
 DA:122,47
-DA:130,47
-DA:132,2
-DA:133,0
-DA:134,0
+DA:132,47
 DA:135,0
 DA:136,0
 DA:137,0
-DA:139,2
-DA:140,2
-DA:141,2
-DA:142,2
-FN:144,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::StopAsync()
+DA:138,0
+DA:140,0
+DA:142,0
+DA:144,47
+FN:146,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::StopAsync()
 FNDA:2,System.Threading.Tasks.Task WireMock.Owin.AspNetCoreSelfHost::StopAsync()
-DA:145,2
-DA:146,2
+DA:147,2
 DA:148,2
-DA:152,2
+DA:150,2
 DA:154,2
+DA:156,2
 FN:20,System.Void WireMock.Owin.AspNetCoreSelfHost::.ctor(WireMock.Owin.IWireMockMiddlewareOptions,System.String[])
 FNDA:47,System.Void WireMock.Owin.AspNetCoreSelfHost::.ctor(WireMock.Owin.IWireMockMiddlewareOptions,System.String[])
 DA:21,47
@@ -4025,14 +4022,14 @@ BRDA:42,73,0,0
 BRDA:42,73,1,47
 BRDA:44,147,1,47
 BRDA:44,147,0,47
-LF:93
-LH:88
+LF:90
+LH:83
 BRF:18
 BRH:12
 FNF:8
-FNH:8
+FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\GlobalExceptionMiddleware.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\GlobalExceptionMiddleware.cs
 FN:45,Microsoft.AspNetCore.Http.RequestDelegate WireMock.Owin.GlobalExceptionMiddleware::get_Next()
 FNDA:46,Microsoft.AspNetCore.Http.RequestDelegate WireMock.Owin.GlobalExceptionMiddleware::get_Next()
 DA:46,46
@@ -4040,7 +4037,7 @@ FN:53,System.Threading.Tasks.Task WireMock.Owin.GlobalExceptionMiddleware::Invok
 FNDA:46,System.Threading.Tasks.Task WireMock.Owin.GlobalExceptionMiddleware::Invoke(Microsoft.AspNetCore.Http.HttpContext)
 DA:54,46
 DA:55,46
-DA:56,46
+DA:56,45
 FN:33,System.Void WireMock.Owin.GlobalExceptionMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate,WireMock.Owin.IWireMockMiddlewareOptions,WireMock.Owin.Mappers.IOwinResponseMapper)
 FNDA:48,System.Void WireMock.Owin.GlobalExceptionMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate,WireMock.Owin.IWireMockMiddlewareOptions,WireMock.Owin.Mappers.IOwinResponseMapper)
 DA:34,48
@@ -4082,7 +4079,7 @@ BRH:7
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\MappingMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\MappingMatcher.cs
 FN:18,System.ValueTuple`2<WireMock.IMapping,WireMock.Matchers.Request.RequestMatchResult> WireMock.Owin.MappingMatcher::Match(WireMock.RequestMessage)
 FNDA:49,System.ValueTuple`2<WireMock.IMapping,WireMock.Matchers.Request.RequestMatchResult> WireMock.Owin.MappingMatcher::Match(WireMock.RequestMessage)
 DA:19,49
@@ -4103,11 +4100,10 @@ DA:34,1
 DA:36,2
 DA:38,1
 DA:41,48
-DA:42,48
-DA:43,85
-DA:44,329
-DA:46,48
-DA:48,49
+DA:42,85
+DA:43,329
+DA:45,48
+DA:46,49
 BRDA:28,73,0,1
 BRDA:30,86,0,1
 BRDA:30,86,1,1
@@ -4115,21 +4111,21 @@ BRDA:30,122,0,1
 BRDA:30,122,1,1
 BRDA:30,158,0,1
 BRDA:30,158,1,1
-BRDA:36,201,0,1
-BRDA:36,201,1,1
-BRDA:38,235,0,0
-BRDA:38,235,1,1
-BRDA:38,249,0,0
-BRDA:38,249,1,1
+BRDA:36,203,0,1
+BRDA:36,203,1,1
+BRDA:38,237,0,0
+BRDA:38,237,1,1
+BRDA:38,251,0,0
+BRDA:38,251,1,1
 BRDA:28,73,1,48
-BRDA:42,278,0,1
-BRDA:42,278,1,48
-BRDA:42,314,0,1
-BRDA:42,314,1,48
-BRDA:46,348,0,12
-BRDA:46,348,1,36
-BRDA:46,362,0,12
-BRDA:46,362,1,36
+BRDA:41,279,0,1
+BRDA:41,279,1,48
+BRDA:41,315,0,1
+BRDA:41,315,1,48
+BRDA:45,347,0,12
+BRDA:45,347,1,36
+BRDA:45,359,0,12
+BRDA:45,359,1,36
 FN:10,System.Void WireMock.Owin.MappingMatcher::.ctor(WireMock.Owin.IWireMockMiddlewareOptions)
 FNDA:50,System.Void WireMock.Owin.MappingMatcher::.ctor(WireMock.Owin.IWireMockMiddlewareOptions)
 DA:11,50
@@ -4137,40 +4133,39 @@ DA:12,50
 DA:13,50
 DA:15,50
 DA:16,50
-LF:28
-LH:28
+LF:27
+LH:27
 BRF:30
 BRH:26
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\WireMockMiddleware.cs
-FN:65,System.Threading.Tasks.Task WireMock.Owin.WireMockMiddleware::Invoke(Microsoft.AspNetCore.Http.HttpContext)
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\WireMockMiddleware.cs
+FN:66,System.Threading.Tasks.Task WireMock.Owin.WireMockMiddleware::Invoke(Microsoft.AspNetCore.Http.HttpContext)
 FNDA:50,System.Threading.Tasks.Task WireMock.Owin.WireMockMiddleware::Invoke(Microsoft.AspNetCore.Http.HttpContext)
-DA:66,50
 DA:67,50
-DA:68,50
-FN:154,System.Void WireMock.Owin.WireMockMiddleware::LogRequest(WireMock.Logging.LogEntry,System.Boolean)
-FNDA:50,System.Void WireMock.Owin.WireMockMiddleware::LogRequest(WireMock.Logging.LogEntry,System.Boolean)
-DA:155,50
-DA:156,50
-DA:158,50
-DA:159,40
+DA:68,49
+DA:69,50
+FN:155,System.Void WireMock.Owin.WireMockMiddleware::LogRequest(WireMock.Logging.LogEntry,System.Boolean)
+FNDA:49,System.Void WireMock.Owin.WireMockMiddleware::LogRequest(WireMock.Logging.LogEntry,System.Boolean)
+DA:156,49
+DA:157,49
+DA:159,50
 DA:160,40
 DA:161,40
-DA:163,50
-DA:164,3
+DA:162,40
+DA:164,50
 DA:165,3
-DA:166,8
-DA:167,1
+DA:166,3
+DA:167,8
 DA:168,1
 DA:169,1
-DA:170,3
-DA:172,50
-DA:173,1
+DA:170,1
+DA:171,3
+DA:173,50
 DA:174,1
-DA:176,4
-DA:177,1
+DA:175,1
+DA:177,4
 DA:178,1
 DA:179,1
 DA:180,1
@@ -4178,19 +4173,20 @@ DA:181,1
 DA:182,1
 DA:183,1
 DA:184,1
-DA:185,50
-BRDA:158,48,0,40
-BRDA:158,48,1,50
-BRDA:163,91,0,3
-BRDA:166,171,1,1
-BRDA:166,171,0,3
-BRDA:163,91,1,50
-BRDA:172,197,0,1
-BRDA:176,348,1,1
-BRDA:179,306,0,1
-BRDA:179,306,1,1
-BRDA:176,348,0,1
-BRDA:172,197,1,50
+DA:185,1
+DA:186,50
+BRDA:159,48,0,40
+BRDA:159,48,1,50
+BRDA:164,91,0,3
+BRDA:167,171,1,1
+BRDA:167,171,0,3
+BRDA:164,91,1,50
+BRDA:173,197,0,1
+BRDA:177,348,1,1
+BRDA:180,306,0,1
+BRDA:180,306,1,1
+BRDA:177,348,0,1
+BRDA:173,197,1,50
 FN:47,System.Void WireMock.Owin.WireMockMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate,WireMock.Owin.IWireMockMiddlewareOptions,WireMock.Owin.Mappers.IOwinRequestMapper,WireMock.Owin.Mappers.IOwinResponseMapper,WireMock.Owin.IMappingMatcher)
 FNDA:51,System.Void WireMock.Owin.WireMockMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate,WireMock.Owin.IWireMockMiddlewareOptions,WireMock.Owin.Mappers.IOwinRequestMapper,WireMock.Owin.Mappers.IOwinResponseMapper,WireMock.Owin.IMappingMatcher)
 DA:48,51
@@ -4198,72 +4194,72 @@ DA:49,51
 DA:50,51
 DA:51,51
 DA:52,51
-DA:54,51
+DA:53,51
 DA:55,51
 DA:56,51
 DA:57,51
 DA:58,51
+DA:59,51
 FN:27,System.Void WireMock.Owin.WireMockMiddleware::.cctor()
 FNDA:1,System.Void WireMock.Owin.WireMockMiddleware::.cctor()
 DA:28,1
-FN:78,System.Boolean WireMock.Owin.WireMockMiddleware/<>c::<InvokeInternal>b__7_0(WireMock.IMapping)
+FN:79,System.Boolean WireMock.Owin.WireMockMiddleware/<>c::<InvokeInternal>b__7_0(WireMock.IMapping)
 FNDA:489,System.Boolean WireMock.Owin.WireMockMiddleware/<>c::<InvokeInternal>b__7_0(WireMock.IMapping)
-DA:79,489
-BRDA:79,1,0,0
-BRDA:79,1,1,279
-FN:70,System.Void WireMock.Owin.WireMockMiddleware/<InvokeInternal>d__7::MoveNext()
-FNDA:50,System.Void WireMock.Owin.WireMockMiddleware/<InvokeInternal>d__7::MoveNext()
-DA:71,50
-DA:72,50
-DA:74,50
-DA:75,50
-DA:76,50
-DA:78,50
-DA:80,30
-DA:82,30
-DA:83,4
+DA:80,489
+BRDA:80,1,0,0
+BRDA:80,1,1,279
+FN:71,System.Void WireMock.Owin.WireMockMiddleware/<InvokeInternal>d__7::MoveNext()
+FNDA:49,System.Void WireMock.Owin.WireMockMiddleware/<InvokeInternal>d__7::MoveNext()
+DA:72,49
+DA:73,49
+DA:75,49
+DA:76,49
+DA:77,49
+DA:79,49
+DA:81,30
+DA:83,30
 DA:84,4
 DA:85,4
 DA:86,4
 DA:87,4
 DA:88,4
-DA:89,30
-DA:91,50
+DA:89,4
+DA:90,30
 DA:92,50
-DA:94,50
-DA:95,13
+DA:93,50
+DA:95,50
 DA:96,13
 DA:97,13
 DA:98,13
 DA:99,13
-DA:102,37
-DA:104,37
-DA:105,2
+DA:100,13
+DA:103,37
+DA:105,37
 DA:106,2
 DA:107,2
 DA:108,2
 DA:109,2
 DA:110,2
 DA:111,2
-DA:113,0
-DA:115,35
-DA:116,1
+DA:112,2
+DA:114,0
+DA:116,35
 DA:117,1
 DA:118,1
-DA:120,35
-DA:122,35
-DA:123,9
+DA:119,1
+DA:121,35
+DA:123,35
 DA:124,9
 DA:125,9
 DA:126,9
 DA:127,9
-DA:128,35
-DA:129,0
+DA:128,9
+DA:129,35
 DA:130,0
 DA:131,0
 DA:132,0
 DA:133,0
-DA:135,50
+DA:134,0
 DA:136,50
 DA:137,50
 DA:138,50
@@ -4273,71 +4269,72 @@ DA:141,50
 DA:142,50
 DA:143,50
 DA:144,50
-DA:146,50
-DA:148,50
+DA:145,50
+DA:147,50
 DA:149,50
-DA:151,35
-DA:152,50
-BRDA:72,93,0,0
-BRDA:72,93,1,50
-BRDA:76,240,0,52
-BRDA:76,240,1,52
-BRDA:76,249,0,51
-BRDA:76,255,0,50
-BRDA:79,299,0,1
-BRDA:79,299,1,50
-BRDA:79,491,1,30
-BRDA:82,394,0,8
-BRDA:82,394,1,22
-BRDA:82,412,0,4
-BRDA:82,412,1,30
-BRDA:79,491,0,50
-BRDA:94,588,0,13
-BRDA:94,588,1,37
-BRDA:104,697,0,10
-BRDA:104,697,1,27
-BRDA:104,725,0,2
-BRDA:107,770,0,0
-BRDA:107,770,1,2
-BRDA:107,822,0,2
-BRDA:107,822,1,0
-BRDA:104,725,1,35
-BRDA:115,908,0,27
-BRDA:115,942,0,26
-BRDA:115,942,1,1
-BRDA:115,908,1,8
-BRDA:115,968,0,1
-BRDA:117,1015,0,1
-BRDA:76,249,1,1
-BRDA:117,1015,1,1
-BRDA:115,968,1,35
-BRDA:120,1126,0,1
-BRDA:76,255,1,1
-BRDA:120,1126,1,35
-BRDA:122,1247,0,9
-BRDA:122,1247,1,35
-BRDA:136,1568,0,13
-BRDA:136,1568,1,37
-BRDA:136,1612,0,13
-BRDA:136,1612,1,37
-BRDA:148,1723,0,0
-BRDA:148,1723,1,50
-BRDA:149,1820,0,0
-BRDA:149,1833,0,0
-BRDA:149,1833,1,0
-BRDA:149,1820,1,50
-BRDA:149,1862,1,15
-BRDA:149,1862,0,35
-BRDA:151,1897,0,0
-BRDA:151,1897,1,35
-LF:107
-LH:101
+DA:150,50
+DA:152,35
+DA:153,50
+BRDA:73,93,0,0
+BRDA:73,93,1,50
+BRDA:77,240,0,51
+BRDA:77,240,1,51
+BRDA:77,249,0,50
+BRDA:77,255,0,49
+BRDA:80,299,0,1
+BRDA:80,299,1,50
+BRDA:80,491,1,30
+BRDA:83,394,0,9
+BRDA:83,394,1,21
+BRDA:83,412,0,4
+BRDA:83,412,1,30
+BRDA:80,491,0,50
+BRDA:95,588,0,13
+BRDA:95,588,1,37
+BRDA:105,697,0,10
+BRDA:105,697,1,27
+BRDA:105,725,0,2
+BRDA:108,770,0,0
+BRDA:108,770,1,2
+BRDA:108,822,0,2
+BRDA:108,822,1,0
+BRDA:105,725,1,35
+BRDA:116,908,0,27
+BRDA:116,942,0,26
+BRDA:116,942,1,1
+BRDA:116,908,1,8
+BRDA:116,968,0,1
+BRDA:118,1015,0,1
+BRDA:77,249,1,1
+BRDA:118,1015,1,1
+BRDA:116,968,1,35
+BRDA:121,1126,0,1
+BRDA:77,255,1,1
+BRDA:121,1126,1,35
+BRDA:123,1247,0,9
+BRDA:123,1247,1,35
+BRDA:137,1568,0,13
+BRDA:137,1568,1,37
+BRDA:137,1612,0,13
+BRDA:137,1612,1,37
+BRDA:149,1723,0,0
+BRDA:149,1723,1,50
+BRDA:150,1820,0,0
+BRDA:150,1833,0,0
+BRDA:150,1833,1,0
+BRDA:150,1820,1,50
+BRDA:150,1862,1,15
+BRDA:150,1862,0,35
+BRDA:152,1897,0,0
+BRDA:152,1897,1,35
+LF:108
+LH:102
 BRF:66
 BRH:57
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\WireMockMiddlewareOptions.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\WireMockMiddlewareOptions.cs
 FN:16,WireMock.Logging.IWireMockLogger WireMock.Owin.WireMockMiddlewareOptions::get_Logger()
 FNDA:151,WireMock.Logging.IWireMockLogger WireMock.Owin.WireMockMiddlewareOptions::get_Logger()
 DA:17,151
@@ -4378,7 +4375,7 @@ BRH:0
 FNF:11
 FNH:11
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\Mappers\OwinRequestMapper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\Mappers\OwinRequestMapper.cs
 FN:58,System.ValueTuple`2<WireMock.Models.UrlDetails,System.String> WireMock.Owin.Mappers.OwinRequestMapper::ParseRequest(Microsoft.AspNetCore.Http.HttpRequest)
 FNDA:46,System.ValueTuple`2<WireMock.Models.UrlDetails,System.String> WireMock.Owin.Mappers.OwinRequestMapper::ParseRequest(Microsoft.AspNetCore.Http.HttpRequest)
 DA:59,46
@@ -4387,7 +4384,7 @@ DA:65,46
 DA:66,46
 DA:67,46
 DA:68,46
-DA:70,46
+DA:70,45
 DA:71,46
 BRDA:66,47,0,46
 BRDA:66,47,1,0
@@ -4403,9 +4400,9 @@ DA:25,46
 DA:27,46
 DA:29,46
 DA:30,46
-DA:31,46
-DA:32,46
-DA:33,262
+DA:31,45
+DA:32,45
+DA:33,260
 DA:34,62
 DA:35,62
 DA:36,62
@@ -4426,7 +4423,7 @@ DA:52,7
 DA:53,7
 DA:55,46
 DA:56,46
-BRDA:30,102,0,46
+BRDA:30,102,0,45
 BRDA:33,225,1,62
 BRDA:33,225,0,46
 BRDA:30,102,1,46
@@ -4447,11 +4444,11 @@ BRH:10
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Owin\Mappers\OwinResponseMapper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Owin\Mappers\OwinResponseMapper.cs
 FN:75,System.Void WireMock.Owin.Mappers.OwinResponseMapper::SetResponseHeaders(WireMock.ResponseMessage,Microsoft.AspNetCore.Http.HttpResponse)
-FNDA:52,System.Void WireMock.Owin.Mappers.OwinResponseMapper::SetResponseHeaders(WireMock.ResponseMessage,Microsoft.AspNetCore.Http.HttpResponse)
-DA:76,52
-DA:78,202
+FNDA:51,System.Void WireMock.Owin.Mappers.OwinResponseMapper::SetResponseHeaders(WireMock.ResponseMessage,Microsoft.AspNetCore.Http.HttpResponse)
+DA:76,51
+DA:78,201
 DA:79,23
 DA:80,23
 DA:81,19
@@ -4493,15 +4490,15 @@ DA:52,51
 DA:53,0
 DA:54,0
 DA:55,0
-DA:56,51
+DA:56,50
 DA:57,15
 DA:58,15
 DA:59,15
 DA:60,15
 DA:61,15
-DA:62,36
+DA:62,35
 DA:63,19
-DA:64,19
+DA:64,18
 DA:65,19
 DA:67,52
 DA:69,52
@@ -4514,16 +4511,16 @@ BRDA:40,29,1,52
 BRDA:48,83,0,1
 BRDA:48,83,1,51
 BRDA:52,125,0,0
-BRDA:52,125,1,51
+BRDA:52,125,1,50
 BRDA:56,174,0,15
 BRDA:58,216,0,15
 BRDA:58,216,1,0
 BRDA:60,288,0,0
 BRDA:60,288,1,15
-BRDA:56,174,1,36
-BRDA:62,346,0,19
+BRDA:56,174,1,35
+BRDA:62,346,0,18
 BRDA:64,362,0,0
-BRDA:64,362,1,19
+BRDA:64,362,1,18
 BRDA:62,346,1,52
 BRDA:69,435,0,35
 BRDA:71,483,0,0
@@ -4536,7 +4533,7 @@ BRH:20
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Models\UrlDetails.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Models\UrlDetails.cs
 FN:13,System.Uri WireMock.Models.UrlDetails::get_Url()
 FNDA:1203,System.Uri WireMock.Models.UrlDetails::get_Url()
 DA:14,1203
@@ -4569,7 +4566,7 @@ BRH:0
 FNF:5
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\ExactMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\ExactMatcher.cs
 FN:15,WireMock.Matchers.MatchBehaviour WireMock.Matchers.ExactMatcher::get_MatchBehaviour()
 FNDA:23,WireMock.Matchers.MatchBehaviour WireMock.Matchers.ExactMatcher::get_MatchBehaviour()
 DA:16,23
@@ -4606,7 +4603,7 @@ BRH:0
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\ExactObjectMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\ExactObjectMatcher.cs
 FN:16,WireMock.Matchers.MatchBehaviour WireMock.Matchers.ExactObjectMatcher::get_MatchBehaviour()
 FNDA:5,WireMock.Matchers.MatchBehaviour WireMock.Matchers.ExactObjectMatcher::get_MatchBehaviour()
 DA:17,5
@@ -4654,7 +4651,7 @@ BRH:2
 FNF:7
 FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\JsonMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\JsonMatcher.cs
 FN:13,System.Object WireMock.Matchers.JsonMatcher::get_Value()
 FNDA:7,System.Object WireMock.Matchers.JsonMatcher::get_Value()
 DA:14,7
@@ -4732,7 +4729,7 @@ BRH:10
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\JSONPathMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\JSONPathMatcher.cs
 FN:18,WireMock.Matchers.MatchBehaviour WireMock.Matchers.JsonPathMatcher::get_MatchBehaviour()
 FNDA:14,WireMock.Matchers.MatchBehaviour WireMock.Matchers.JsonPathMatcher::get_MatchBehaviour()
 DA:19,14
@@ -4812,7 +4809,7 @@ BRH:9
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\LinqMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\LinqMatcher.cs
 FN:17,WireMock.Matchers.MatchBehaviour WireMock.Matchers.LinqMatcher::get_MatchBehaviour()
 FNDA:8,WireMock.Matchers.MatchBehaviour WireMock.Matchers.LinqMatcher::get_MatchBehaviour()
 DA:18,8
@@ -4878,7 +4875,7 @@ BRH:4
 FNF:9
 FNH:9
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\MatchBehaviourHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\MatchBehaviourHelper.cs
 FN:17,System.Double WireMock.Matchers.MatchBehaviourHelper::Convert(WireMock.Matchers.MatchBehaviour,System.Double)
 FNDA:758,System.Double WireMock.Matchers.MatchBehaviourHelper::Convert(WireMock.Matchers.MatchBehaviour,System.Double)
 DA:18,758
@@ -4898,7 +4895,7 @@ BRH:4
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\MatchScores.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\MatchScores.cs
 FN:36,System.Double WireMock.Matchers.MatchScores::ToScore(System.Boolean)
 FNDA:718,System.Double WireMock.Matchers.MatchScores::ToScore(System.Boolean)
 DA:37,718
@@ -4927,7 +4924,7 @@ BRH:4
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\RegexMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\RegexMatcher.cs
 FN:19,WireMock.Matchers.MatchBehaviour WireMock.Matchers.RegexMatcher::get_MatchBehaviour()
 FNDA:370,WireMock.Matchers.MatchBehaviour WireMock.Matchers.RegexMatcher::get_MatchBehaviour()
 DA:20,370
@@ -4975,20 +4972,20 @@ DA:46,8
 DA:47,8
 DA:48,8
 FN:55,System.Void WireMock.Matchers.RegexMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
-FNDA:408,System.Void WireMock.Matchers.RegexMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
-DA:56,408
+FNDA:407,System.Void WireMock.Matchers.RegexMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
+DA:56,407
 DA:57,408
 DA:58,408
 DA:60,408
 DA:61,408
-DA:62,408
+DA:62,407
 DA:64,408
 DA:65,408
 DA:66,64
 DA:67,64
 DA:68,64
 DA:70,818
-DA:71,408
+DA:71,407
 BRDA:65,57,0,64
 BRDA:65,57,1,408
 LF:41
@@ -4998,7 +4995,7 @@ BRH:4
 FNF:9
 FNH:9
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\SimMetricsMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\SimMetricsMatcher.cs
 FN:19,WireMock.Matchers.MatchBehaviour WireMock.Matchers.SimMetricsMatcher::get_MatchBehaviour()
 FNDA:4,WireMock.Matchers.MatchBehaviour WireMock.Matchers.SimMetricsMatcher::get_MatchBehaviour()
 DA:20,4
@@ -5089,7 +5086,7 @@ BRH:2
 FNF:9
 FNH:9
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\WildcardMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\WildcardMatcher.cs
 FN:55,System.String[] WireMock.Matchers.WildcardMatcher::GetPatterns()
 FNDA:3,System.String[] WireMock.Matchers.WildcardMatcher::GetPatterns()
 DA:56,3
@@ -5104,23 +5101,23 @@ DA:20,30
 DA:21,30
 DA:22,30
 FN:29,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String,System.Boolean)
-FNDA:266,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String,System.Boolean)
-DA:30,266
-DA:31,266
-DA:32,266
+FNDA:264,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String,System.Boolean)
+DA:30,264
+DA:31,265
+DA:32,265
 FN:38,System.Void WireMock.Matchers.WildcardMatcher::.ctor(System.String[],System.Boolean)
 FNDA:30,System.Void WireMock.Matchers.WildcardMatcher::.ctor(System.String[],System.Boolean)
 DA:39,30
 DA:40,30
 DA:41,30
 FN:48,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
-FNDA:603,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
-DA:49,603
-DA:50,301
-DA:51,301
-DA:52,301
+FNDA:602,System.Void WireMock.Matchers.WildcardMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[],System.Boolean)
+DA:49,602
+DA:50,300
+DA:51,300
+DA:52,300
 BRDA:49,9,0,1
-BRDA:49,9,1,301
+BRDA:49,9,1,299
 LF:17
 LH:17
 BRF:2
@@ -5128,7 +5125,7 @@ BRH:2
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\XPathMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\XPathMatcher.cs
 FN:20,WireMock.Matchers.MatchBehaviour WireMock.Matchers.XPathMatcher::get_MatchBehaviour()
 FNDA:4,WireMock.Matchers.MatchBehaviour WireMock.Matchers.XPathMatcher::get_MatchBehaviour()
 DA:21,4
@@ -5178,20 +5175,20 @@ BRH:2
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMatchResult.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMatchResult.cs
 FN:16,System.Double WireMock.Matchers.Request.RequestMatchResult::get_TotalScore()
-FNDA:1824,System.Double WireMock.Matchers.Request.RequestMatchResult::get_TotalScore()
-DA:17,1824
+FNDA:1822,System.Double WireMock.Matchers.Request.RequestMatchResult::get_TotalScore()
+DA:17,1822
 FN:24,System.Int32 WireMock.Matchers.Request.RequestMatchResult::get_TotalNumber()
-FNDA:1865,System.Int32 WireMock.Matchers.Request.RequestMatchResult::get_TotalNumber()
-DA:25,1865
+FNDA:1863,System.Int32 WireMock.Matchers.Request.RequestMatchResult::get_TotalNumber()
+DA:25,1863
 FN:32,System.Boolean WireMock.Matchers.Request.RequestMatchResult::get_IsPerfectMatch()
-FNDA:316,System.Boolean WireMock.Matchers.Request.RequestMatchResult::get_IsPerfectMatch()
-DA:33,316
+FNDA:315,System.Boolean WireMock.Matchers.Request.RequestMatchResult::get_IsPerfectMatch()
+DA:33,315
 FN:40,System.Double WireMock.Matchers.Request.RequestMatchResult::get_AverageTotalScore()
-FNDA:41,System.Double WireMock.Matchers.Request.RequestMatchResult::get_AverageTotalScore()
-DA:41,41
-BRDA:41,6,0,41
+FNDA:40,System.Double WireMock.Matchers.Request.RequestMatchResult::get_AverageTotalScore()
+DA:41,40
+BRDA:41,6,0,40
 BRDA:41,6,1,0
 FN:45,System.Collections.Generic.IList`1<System.Collections.Generic.KeyValuePair`2<System.Type,System.Double>> WireMock.Matchers.Request.RequestMatchResult::get_MatchDetails()
 FNDA:751,System.Collections.Generic.IList`1<System.Collections.Generic.KeyValuePair`2<System.Type,System.Double>> WireMock.Matchers.Request.RequestMatchResult::get_MatchDetails()
@@ -5220,7 +5217,7 @@ BRH:1
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageBodyMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageBodyMatcher.cs
 FN:14,System.Func`2<System.String,System.Boolean> WireMock.Matchers.Request.RequestMessageBodyMatcher::get_Func()
 FNDA:6,System.Func`2<System.String,System.Boolean> WireMock.Matchers.Request.RequestMessageBodyMatcher::get_Func()
 DA:15,6
@@ -5347,7 +5344,7 @@ BRH:23
 FNF:13
 FNH:13
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageClientIPMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageClientIPMatcher.cs
 FN:16,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessageClientIPMatcher::get_Matchers()
 FNDA:7,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessageClientIPMatcher::get_Matchers()
 DA:17,7
@@ -5403,7 +5400,7 @@ BRH:4
 FNF:7
 FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageCompositeMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageCompositeMatcher.cs
 FN:20,System.Collections.Generic.IEnumerable`1<WireMock.Matchers.Request.IRequestMatcher> WireMock.Matchers.Request.RequestMessageCompositeMatcher::get_RequestMatchers()
 FNDA:657,System.Collections.Generic.IEnumerable`1<WireMock.Matchers.Request.IRequestMatcher> WireMock.Matchers.Request.RequestMessageCompositeMatcher::get_RequestMatchers()
 DA:21,657
@@ -5423,10 +5420,10 @@ BRDA:39,37,1,328
 BRDA:44,63,0,327
 BRDA:44,63,1,1
 FN:27,System.Void WireMock.Matchers.Request.RequestMessageCompositeMatcher::.ctor(System.Collections.Generic.IEnumerable`1<WireMock.Matchers.Request.IRequestMatcher>,WireMock.Matchers.Request.CompositeMatcherType)
-FNDA:315,System.Void WireMock.Matchers.Request.RequestMessageCompositeMatcher::.ctor(System.Collections.Generic.IEnumerable`1<WireMock.Matchers.Request.IRequestMatcher>,WireMock.Matchers.Request.CompositeMatcherType)
-DA:28,315
-DA:29,315
-DA:30,315
+FNDA:314,System.Void WireMock.Matchers.Request.RequestMessageCompositeMatcher::.ctor(System.Collections.Generic.IEnumerable`1<WireMock.Matchers.Request.IRequestMatcher>,WireMock.Matchers.Request.CompositeMatcherType)
+DA:28,314
+DA:29,314
+DA:30,314
 DA:32,315
 DA:33,315
 DA:34,315
@@ -5437,7 +5434,7 @@ BRH:4
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageCookieMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageCookieMatcher.cs
 FN:19,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,System.String>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageCookieMatcher::get_Funcs()
 FNDA:10,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,System.String>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageCookieMatcher::get_Funcs()
 DA:20,10
@@ -5516,7 +5513,7 @@ BRH:9
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageHeaderMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageHeaderMatcher.cs
 FN:21,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,System.String[]>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageHeaderMatcher::get_Funcs()
 FNDA:49,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,System.String[]>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageHeaderMatcher::get_Funcs()
 DA:22,49
@@ -5606,7 +5603,7 @@ BRH:13
 FNF:9
 FNH:9
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageMethodMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageMethodMatcher.cs
 FN:17,System.String[] WireMock.Matchers.Request.RequestMessageMethodMatcher::get_Methods()
 FNDA:287,System.String[] WireMock.Matchers.Request.RequestMessageMethodMatcher::get_Methods()
 DA:18,287
@@ -5636,7 +5633,7 @@ BRH:0
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageParamMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageParamMatcher.cs
 FN:19,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageParamMatcher::get_Funcs()
 FNDA:11,System.Func`2<System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>>,System.Boolean>[] WireMock.Matchers.Request.RequestMessageParamMatcher::get_Funcs()
 DA:20,11
@@ -5729,7 +5726,7 @@ BRH:17
 FNF:9
 FNH:9
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessagePathMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessagePathMatcher.cs
 FN:16,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessagePathMatcher::get_Matchers()
 FNDA:593,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessagePathMatcher::get_Matchers()
 DA:17,593
@@ -5760,17 +5757,17 @@ BRDA:71,79,0,1
 BRDA:71,79,1,0
 BRDA:69,65,1,0
 FN:28,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[])
-FNDA:395,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[])
-DA:29,395
-DA:30,197
-DA:31,197
+FNDA:392,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.MatchBehaviour,System.String[])
+DA:29,392
+DA:30,196
+DA:31,196
 FN:36,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.IStringMatcher[])
-FNDA:263,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.IStringMatcher[])
-DA:37,263
-DA:38,263
-DA:39,263
-DA:41,263
-DA:42,263
+FNDA:262,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(WireMock.Matchers.IStringMatcher[])
+DA:37,262
+DA:38,262
+DA:39,262
+DA:41,262
+DA:42,262
 FN:47,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(System.Func`2<System.String,System.Boolean>[])
 FNDA:1,System.Void WireMock.Matchers.Request.RequestMessagePathMatcher::.ctor(System.Func`2<System.String,System.Boolean>[])
 DA:48,1
@@ -5785,7 +5782,7 @@ BRH:4
 FNF:7
 FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageScenarioAndStateMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageScenarioAndStateMatcher.cs
 FN:35,System.Double WireMock.Matchers.Request.RequestMessageScenarioAndStateMatcher::GetMatchingScore(WireMock.RequestMessage,WireMock.Matchers.Request.RequestMatchResult)
 FNDA:30,System.Double WireMock.Matchers.Request.RequestMessageScenarioAndStateMatcher::GetMatchingScore(WireMock.RequestMessage,WireMock.Matchers.Request.RequestMatchResult)
 DA:36,30
@@ -5813,7 +5810,7 @@ BRH:2
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageUrlMatcher.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Matchers\Request\RequestMessageUrlMatcher.cs
 FN:16,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessageUrlMatcher::get_Matchers()
 FNDA:5,System.Collections.Generic.IReadOnlyList`1<WireMock.Matchers.IStringMatcher> WireMock.Matchers.Request.RequestMessageUrlMatcher::get_Matchers()
 DA:17,5
@@ -5869,19 +5866,19 @@ BRH:4
 FNF:7
 FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Logging\LogEntry.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Logging\LogEntry.cs
 FN:16,System.Guid WireMock.Logging.LogEntry::get_Guid()
 FNDA:104,System.Guid WireMock.Logging.LogEntry::get_Guid()
 DA:17,104
 FN:24,WireMock.RequestMessage WireMock.Logging.LogEntry::get_RequestMessage()
-FNDA:893,WireMock.RequestMessage WireMock.Logging.LogEntry::get_RequestMessage()
-DA:25,893
+FNDA:888,WireMock.RequestMessage WireMock.Logging.LogEntry::get_RequestMessage()
+DA:25,888
 FN:32,WireMock.ResponseMessage WireMock.Logging.LogEntry::get_ResponseMessage()
-FNDA:752,WireMock.ResponseMessage WireMock.Logging.LogEntry::get_ResponseMessage()
-DA:33,752
+FNDA:747,WireMock.ResponseMessage WireMock.Logging.LogEntry::get_ResponseMessage()
+DA:33,747
 FN:40,WireMock.Matchers.Request.RequestMatchResult WireMock.Logging.LogEntry::get_RequestMatchResult()
-FNDA:279,WireMock.Matchers.Request.RequestMatchResult WireMock.Logging.LogEntry::get_RequestMatchResult()
-DA:41,279
+FNDA:277,WireMock.Matchers.Request.RequestMatchResult WireMock.Logging.LogEntry::get_RequestMatchResult()
+DA:41,277
 FN:48,System.Nullable`1<System.Guid> WireMock.Logging.LogEntry::get_MappingGuid()
 FNDA:104,System.Nullable`1<System.Guid> WireMock.Logging.LogEntry::get_MappingGuid()
 DA:49,104
@@ -5895,7 +5892,7 @@ BRH:0
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Logging\WireMockConsoleLogger.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Logging\WireMockConsoleLogger.cs
 FN:22,System.Void WireMock.Logging.WireMockConsoleLogger::Debug(System.String,System.Object[])
 FNDA:0,System.Void WireMock.Logging.WireMockConsoleLogger::Debug(System.String,System.Object[])
 DA:23,0
@@ -5943,7 +5940,7 @@ BRH:0
 FNF:7
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Logging\WireMockNullLogger.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Logging\WireMockNullLogger.cs
 FN:12,System.Void WireMock.Logging.WireMockNullLogger::Debug(System.String,System.Object[])
 FNDA:44,System.Void WireMock.Logging.WireMockNullLogger::Debug(System.String,System.Object[])
 DA:13,44
@@ -5971,7 +5968,7 @@ BRH:0
 FNF:5
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Http\HttpClientHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Http\HttpClientHelper.cs
 FN:13,System.Net.Http.HttpClient WireMock.Http.HttpClientHelper::CreateHttpClient(System.String)
 FNDA:2,System.Net.Http.HttpClient WireMock.Http.HttpClientHelper::CreateHttpClient(System.String)
 DA:14,2
@@ -6021,7 +6018,7 @@ BRH:3
 FNF:2
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Http\HttpRequestMessageHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Http\HttpRequestMessageHelper.cs
 FN:13,System.Net.Http.HttpRequestMessage WireMock.Http.HttpRequestMessageHelper::Create(WireMock.RequestMessage,System.String)
 FNDA:7,System.Net.Http.HttpRequestMessage WireMock.Http.HttpRequestMessageHelper::Create(WireMock.RequestMessage,System.String)
 DA:14,7
@@ -6122,7 +6119,7 @@ BRH:34
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Http\HttpResponseMessageHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Http\HttpResponseMessageHelper.cs
 FN:21,System.Boolean WireMock.Http.HttpResponseMessageHelper/<>c::<Create>b__0_1(System.Collections.Generic.KeyValuePair`2<System.String,System.Collections.Generic.IEnumerable`1<System.String>>)
 FNDA:0,System.Boolean WireMock.Http.HttpResponseMessageHelper/<>c::<Create>b__0_1(System.Collections.Generic.KeyValuePair`2<System.String,System.Collections.Generic.IEnumerable`1<System.String>>)
 DA:22,0
@@ -6195,30 +6192,30 @@ BRH:0
 FNF:3
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\HttpsCertificate\ClientCertificateHelper.cs
-FN:9,System.Security.Cryptography.X509Certificates.X509Certificate2 WireMock.HttpsCertificate.ClientCertificateHelper::GetCertificate(System.String)
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\HttpsCertificate\ClientCertificateHelper.cs
+FN:8,System.Security.Cryptography.X509Certificates.X509Certificate2 WireMock.HttpsCertificate.ClientCertificateHelper::GetCertificate(System.String)
 FNDA:0,System.Security.Cryptography.X509Certificates.X509Certificate2 WireMock.HttpsCertificate.ClientCertificateHelper::GetCertificate(System.String)
+DA:9,0
 DA:10,0
-DA:11,0
-DA:13,0
-DA:15,0
+DA:12,0
+DA:14,0
+DA:17,0
 DA:18,0
 DA:19,0
-DA:20,0
+DA:21,0
 DA:22,0
 DA:23,0
-DA:24,0
-DA:26,0
-DA:28,0
+DA:25,0
+DA:27,0
 DA:30,0
 DA:33,0
 DA:35,0
 DA:39,0
 DA:40,0
-BRDA:19,44,0,0
-BRDA:23,73,0,0
-BRDA:23,73,1,0
-BRDA:19,44,1,0
+BRDA:18,44,0,0
+BRDA:22,73,0,0
+BRDA:22,73,1,0
+BRDA:18,44,1,0
 LF:17
 LH:0
 BRF:4
@@ -6226,7 +6223,7 @@ BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\HttpsCertificate\PublicCertificateHelper.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\HttpsCertificate\PublicCertificateHelper.cs
 FN:85,System.Security.Cryptography.X509Certificates.X509Certificate2 WireMock.HttpsCertificate.PublicCertificateHelper::GetX509Certificate2()
 FNDA:0,System.Security.Cryptography.X509Certificates.X509Certificate2 WireMock.HttpsCertificate.PublicCertificateHelper::GetX509Certificate2()
 DA:86,0
@@ -6240,7 +6237,7 @@ BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Handlers\LocalFileSystemHandler.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Handlers\LocalFileSystemHandler.cs
 FN:16,System.Boolean WireMock.Handlers.LocalFileSystemHandler::FolderExists(System.String)
 FNDA:3,System.Boolean WireMock.Handlers.LocalFileSystemHandler::FolderExists(System.String)
 DA:17,3
@@ -6287,7 +6284,7 @@ BRH:0
 FNF:7
 FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Settings\SettingsModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Settings\SettingsModel.cs
 FN:10,System.Nullable`1<System.Int32> WireMock.Admin.Settings.SettingsModel::get_GlobalProcessingDelay()
 FNDA:8,System.Nullable`1<System.Int32> WireMock.Admin.Settings.SettingsModel::get_GlobalProcessingDelay()
 DA:11,8
@@ -6307,7 +6304,7 @@ BRH:0
 FNF:4
 FNH:4
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Scenarios\ScenarioStateModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Scenarios\ScenarioStateModel.cs
 FN:10,System.String WireMock.Admin.Scenarios.ScenarioStateModel::get_Name()
 FNDA:0,System.String WireMock.Admin.Scenarios.ScenarioStateModel::get_Name()
 DA:11,0
@@ -6327,10 +6324,10 @@ BRH:0
 FNF:4
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Requests\LogEntryModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Requests\LogEntryModel.cs
 FN:12,System.Guid WireMock.Admin.Requests.LogEntryModel::get_Guid()
-FNDA:62,System.Guid WireMock.Admin.Requests.LogEntryModel::get_Guid()
-DA:13,62
+FNDA:61,System.Guid WireMock.Admin.Requests.LogEntryModel::get_Guid()
+DA:13,61
 FN:17,WireMock.Admin.Requests.LogRequestModel WireMock.Admin.Requests.LogEntryModel::get_Request()
 FNDA:78,WireMock.Admin.Requests.LogRequestModel WireMock.Admin.Requests.LogEntryModel::get_Request()
 DA:18,78
@@ -6353,10 +6350,10 @@ BRH:0
 FNF:6
 FNH:6
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Requests\LogRequestMatchModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Requests\LogRequestMatchModel.cs
 FN:15,System.Double WireMock.Admin.Requests.LogRequestMatchModel::get_TotalScore()
-FNDA:35,System.Double WireMock.Admin.Requests.LogRequestMatchModel::get_TotalScore()
-DA:16,35
+FNDA:34,System.Double WireMock.Admin.Requests.LogRequestMatchModel::get_TotalScore()
+DA:16,34
 FN:23,System.Int32 WireMock.Admin.Requests.LogRequestMatchModel::get_TotalNumber()
 FNDA:35,System.Int32 WireMock.Admin.Requests.LogRequestMatchModel::get_TotalNumber()
 DA:24,35
@@ -6376,10 +6373,10 @@ BRH:0
 FNF:5
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Requests\LogRequestModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Requests\LogRequestModel.cs
 FN:15,System.String WireMock.Admin.Requests.LogRequestModel::get_ClientIP()
-FNDA:62,System.String WireMock.Admin.Requests.LogRequestModel::get_ClientIP()
-DA:16,62
+FNDA:61,System.String WireMock.Admin.Requests.LogRequestModel::get_ClientIP()
+DA:16,61
 FN:20,System.DateTime WireMock.Admin.Requests.LogRequestModel::get_DateTime()
 FNDA:62,System.DateTime WireMock.Admin.Requests.LogRequestModel::get_DateTime()
 DA:21,62
@@ -6390,14 +6387,14 @@ FN:30,System.String WireMock.Admin.Requests.LogRequestModel::get_AbsolutePath()
 FNDA:62,System.String WireMock.Admin.Requests.LogRequestModel::get_AbsolutePath()
 DA:31,62
 FN:35,System.String WireMock.Admin.Requests.LogRequestModel::get_Url()
-FNDA:62,System.String WireMock.Admin.Requests.LogRequestModel::get_Url()
-DA:36,62
+FNDA:61,System.String WireMock.Admin.Requests.LogRequestModel::get_Url()
+DA:36,61
 FN:40,System.String WireMock.Admin.Requests.LogRequestModel::get_AbsoluteUrl()
-FNDA:62,System.String WireMock.Admin.Requests.LogRequestModel::get_AbsoluteUrl()
-DA:41,62
+FNDA:61,System.String WireMock.Admin.Requests.LogRequestModel::get_AbsoluteUrl()
+DA:41,61
 FN:45,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.Admin.Requests.LogRequestModel::get_Query()
-FNDA:58,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.Admin.Requests.LogRequestModel::get_Query()
-DA:46,58
+FNDA:57,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.Admin.Requests.LogRequestModel::get_Query()
+DA:46,57
 FN:50,System.String WireMock.Admin.Requests.LogRequestModel::get_Method()
 FNDA:66,System.String WireMock.Admin.Requests.LogRequestModel::get_Method()
 DA:51,66
@@ -6414,11 +6411,11 @@ FN:70,System.Object WireMock.Admin.Requests.LogRequestModel::get_BodyAsJson()
 FNDA:62,System.Object WireMock.Admin.Requests.LogRequestModel::get_BodyAsJson()
 DA:71,62
 FN:75,System.Byte[] WireMock.Admin.Requests.LogRequestModel::get_BodyAsBytes()
-FNDA:58,System.Byte[] WireMock.Admin.Requests.LogRequestModel::get_BodyAsBytes()
-DA:76,58
+FNDA:57,System.Byte[] WireMock.Admin.Requests.LogRequestModel::get_BodyAsBytes()
+DA:76,57
 FN:80,WireMock.Admin.Mappings.EncodingModel WireMock.Admin.Requests.LogRequestModel::get_BodyEncoding()
-FNDA:62,WireMock.Admin.Mappings.EncodingModel WireMock.Admin.Requests.LogRequestModel::get_BodyEncoding()
-DA:81,62
+FNDA:61,WireMock.Admin.Mappings.EncodingModel WireMock.Admin.Requests.LogRequestModel::get_BodyEncoding()
+DA:81,61
 LF:14
 LH:14
 BRF:0
@@ -6426,25 +6423,25 @@ BRH:0
 FNF:14
 FNH:14
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Requests\LogResponseModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Requests\LogResponseModel.cs
 FN:14,System.Int32 WireMock.Admin.Requests.LogResponseModel::get_StatusCode()
-FNDA:120,System.Int32 WireMock.Admin.Requests.LogResponseModel::get_StatusCode()
-DA:15,120
+FNDA:118,System.Int32 WireMock.Admin.Requests.LogResponseModel::get_StatusCode()
+DA:15,118
 FN:19,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.Admin.Requests.LogResponseModel::get_Headers()
 FNDA:66,System.Collections.Generic.IDictionary`2<System.String,WireMock.Util.WireMockList`1<System.String>> WireMock.Admin.Requests.LogResponseModel::get_Headers()
 DA:20,66
 FN:24,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyDestination()
-FNDA:58,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyDestination()
-DA:25,58
+FNDA:57,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyDestination()
+DA:25,57
 FN:29,System.String WireMock.Admin.Requests.LogResponseModel::get_Body()
-FNDA:58,System.String WireMock.Admin.Requests.LogResponseModel::get_Body()
-DA:30,58
+FNDA:57,System.String WireMock.Admin.Requests.LogResponseModel::get_Body()
+DA:30,57
 FN:34,System.Object WireMock.Admin.Requests.LogResponseModel::get_BodyAsJson()
 FNDA:66,System.Object WireMock.Admin.Requests.LogResponseModel::get_BodyAsJson()
 DA:35,66
 FN:39,System.Byte[] WireMock.Admin.Requests.LogResponseModel::get_BodyAsBytes()
-FNDA:58,System.Byte[] WireMock.Admin.Requests.LogResponseModel::get_BodyAsBytes()
-DA:40,58
+FNDA:57,System.Byte[] WireMock.Admin.Requests.LogResponseModel::get_BodyAsBytes()
+DA:40,57
 FN:44,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyAsFile()
 FNDA:58,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyAsFile()
 DA:45,58
@@ -6452,8 +6449,8 @@ FN:49,System.Nullable`1<System.Boolean> WireMock.Admin.Requests.LogResponseModel
 FNDA:58,System.Nullable`1<System.Boolean> WireMock.Admin.Requests.LogResponseModel::get_BodyAsFileIsCached()
 DA:50,58
 FN:54,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyOriginal()
-FNDA:58,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyOriginal()
-DA:55,58
+FNDA:57,System.String WireMock.Admin.Requests.LogResponseModel::get_BodyOriginal()
+DA:55,57
 FN:59,WireMock.Admin.Mappings.EncodingModel WireMock.Admin.Requests.LogResponseModel::get_BodyEncoding()
 FNDA:66,WireMock.Admin.Mappings.EncodingModel WireMock.Admin.Requests.LogResponseModel::get_BodyEncoding()
 DA:60,66
@@ -6464,7 +6461,7 @@ BRH:0
 FNF:10
 FNH:10
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\BodyModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\BodyModel.cs
 FN:10,WireMock.Admin.Mappings.MatcherModel WireMock.Admin.Mappings.BodyModel::get_Matcher()
 FNDA:18,WireMock.Admin.Mappings.MatcherModel WireMock.Admin.Mappings.BodyModel::get_Matcher()
 DA:11,18
@@ -6475,7 +6472,7 @@ BRH:0
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\ClientIPModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\ClientIPModel.cs
 FN:10,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.ClientIPModel::get_Matchers()
 FNDA:0,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.ClientIPModel::get_Matchers()
 DA:11,0
@@ -6486,7 +6483,7 @@ BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\CookieModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\CookieModel.cs
 FN:12,System.String WireMock.Admin.Mappings.CookieModel::get_Name()
 FNDA:0,System.String WireMock.Admin.Mappings.CookieModel::get_Name()
 DA:13,0
@@ -6500,7 +6497,7 @@ BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\EncodingModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\EncodingModel.cs
 FN:10,System.Int32 WireMock.Admin.Mappings.EncodingModel::get_CodePage()
 FNDA:87,System.Int32 WireMock.Admin.Mappings.EncodingModel::get_CodePage()
 DA:11,87
@@ -6517,7 +6514,7 @@ BRH:0
 FNF:3
 FNH:3
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\HeaderModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\HeaderModel.cs
 FN:12,System.String WireMock.Admin.Mappings.HeaderModel::get_Name()
 FNDA:0,System.String WireMock.Admin.Mappings.HeaderModel::get_Name()
 DA:13,0
@@ -6531,7 +6528,7 @@ BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\MappingModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\MappingModel.cs
 FN:12,System.Nullable`1<System.Guid> WireMock.Admin.Mappings.MappingModel::get_Guid()
 FNDA:25,System.Nullable`1<System.Guid> WireMock.Admin.Mappings.MappingModel::get_Guid()
 DA:13,25
@@ -6563,7 +6560,7 @@ BRH:0
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\MatcherModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\MatcherModel.cs
 FN:10,System.String WireMock.Admin.Mappings.MatcherModel::get_Name()
 FNDA:57,System.String WireMock.Admin.Mappings.MatcherModel::get_Name()
 DA:11,57
@@ -6586,7 +6583,7 @@ BRH:0
 FNF:5
 FNH:5
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\ParamModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\ParamModel.cs
 FN:10,System.String WireMock.Admin.Mappings.ParamModel::get_Name()
 FNDA:0,System.String WireMock.Admin.Mappings.ParamModel::get_Name()
 DA:11,0
@@ -6600,7 +6597,7 @@ BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\PathModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\PathModel.cs
 FN:10,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.PathModel::get_Matchers()
 FNDA:42,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.PathModel::get_Matchers()
 DA:11,42
@@ -6611,7 +6608,7 @@ BRH:0
 FNF:1
 FNH:1
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\RequestModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\RequestModel.cs
 FN:12,System.Object WireMock.Admin.Mappings.RequestModel::get_ClientIP()
 FNDA:19,System.Object WireMock.Admin.Mappings.RequestModel::get_ClientIP()
 DA:13,19
@@ -6643,7 +6640,7 @@ BRH:0
 FNF:8
 FNH:8
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\ResponseModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\ResponseModel.cs
 FN:12,System.Nullable`1<System.Int32> WireMock.Admin.Mappings.ResponseModel::get_StatusCode()
 FNDA:36,System.Nullable`1<System.Int32> WireMock.Admin.Mappings.ResponseModel::get_StatusCode()
 DA:13,36
@@ -6699,7 +6696,7 @@ BRH:0
 FNF:16
 FNH:16
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\StatusModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\StatusModel.cs
 FN:12,System.Nullable`1<System.Guid> WireMock.Admin.Mappings.StatusModel::get_Guid()
 FNDA:36,System.Nullable`1<System.Guid> WireMock.Admin.Mappings.StatusModel::get_Guid()
 DA:13,36
@@ -6713,7 +6710,7 @@ BRH:0
 FNF:2
 FNH:2
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net\Admin\Mappings\UrlModel.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net\Admin\Mappings\UrlModel.cs
 FN:10,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.UrlModel::get_Matchers()
 FNDA:0,WireMock.Admin.Mappings.MatcherModel[] WireMock.Admin.Mappings.UrlModel::get_Matchers()
 DA:11,0
@@ -6724,99 +6721,123 @@ BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net.StandAlone\SimpleCommandLineParser.cs
-FN:9,System.Collections.Generic.IDictionary`2<System.String,System.String[]> WireMock.Net.StandAlone.SimpleCommandLineParser::get_Arguments()
-FNDA:0,System.Collections.Generic.IDictionary`2<System.String,System.String[]> WireMock.Net.StandAlone.SimpleCommandLineParser::get_Arguments()
-DA:10,0
-FN:12,System.Void WireMock.Net.StandAlone.SimpleCommandLineParser::Parse(System.String[])
-FNDA:0,System.Void WireMock.Net.StandAlone.SimpleCommandLineParser::Parse(System.String[])
-DA:13,0
-DA:14,0
-DA:16,0
-DA:17,0
-DA:18,0
-DA:19,0
-DA:20,0
-DA:21,0
-DA:22,0
-DA:23,0
-DA:24,0
-DA:26,0
-DA:27,0
-DA:28,0
-DA:29,0
-DA:30,0
-DA:31,0
-DA:32,0
-DA:34,0
-DA:35,0
-DA:36,0
-DA:37,0
-DA:39,0
-DA:40,0
-DA:41,0
-DA:42,0
-DA:43,0
-BRDA:17,155,1,0
-BRDA:19,41,0,0
-BRDA:21,57,0,0
-BRDA:21,57,1,0
-BRDA:19,41,1,0
-BRDA:29,109,0,0
-BRDA:29,109,1,0
-BRDA:17,155,0,0
-BRDA:39,173,0,0
-BRDA:39,173,1,0
-FN:45,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::Contains(System.String)
-FNDA:0,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::Contains(System.String)
-DA:46,0
-DA:47,0
-DA:48,0
-FN:50,System.String[] WireMock.Net.StandAlone.SimpleCommandLineParser::GetValues(System.String,System.String[])
-FNDA:0,System.String[] WireMock.Net.StandAlone.SimpleCommandLineParser::GetValues(System.String,System.String[])
-DA:51,0
-DA:52,0
-DA:53,0
-BRDA:52,8,0,0
-BRDA:52,8,1,0
-FN:55,T WireMock.Net.StandAlone.SimpleCommandLineParser::GetValue(System.String,System.Func`2<System.String[],T>,T)
-FNDA:0,T WireMock.Net.StandAlone.SimpleCommandLineParser::GetValue(System.String,System.Func`2<System.String[],T>,T)
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net.StandAlone\SimpleCommandLineParser.cs
+FN:18,System.Collections.Generic.IDictionary`2<System.String,System.String[]> WireMock.Net.StandAlone.SimpleCommandLineParser::get_Arguments()
+FNDA:47,System.Collections.Generic.IDictionary`2<System.String,System.String[]> WireMock.Net.StandAlone.SimpleCommandLineParser::get_Arguments()
+DA:19,47
+FN:21,System.Void WireMock.Net.StandAlone.SimpleCommandLineParser::Parse(System.String[])
+FNDA:5,System.Void WireMock.Net.StandAlone.SimpleCommandLineParser::Parse(System.String[])
+DA:22,5
+DA:23,5
+DA:24,5
+DA:26,5
+DA:27,67
+DA:28,26
+DA:29,26
+DA:30,7
+DA:31,7
+DA:33,7
+DA:34,6
+DA:35,6
+DA:36,6
+DA:38,7
+DA:39,7
+DA:40,7
+DA:42,19
+DA:43,6
+DA:44,6
+DA:46,6
+DA:47,2
+DA:48,2
+DA:49,2
+DA:51,6
+DA:52,6
+DA:53,6
+DA:54,13
+DA:55,0
 DA:56,0
 DA:57,0
-DA:58,0
-BRDA:57,8,0,0
-BRDA:57,8,1,0
-FN:60,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::GetBoolValue(System.String,System.Boolean)
-FNDA:0,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::GetBoolValue(System.String,System.Boolean)
-DA:61,0
-DA:62,0
-DA:63,0
-DA:64,0
-DA:65,0
-DA:66,0
-DA:67,0
-FN:69,System.Nullable`1<System.Int32> WireMock.Net.StandAlone.SimpleCommandLineParser::GetIntValue(System.String,System.Nullable`1<System.Int32>)
-FNDA:0,System.Nullable`1<System.Int32> WireMock.Net.StandAlone.SimpleCommandLineParser::GetIntValue(System.String,System.Nullable`1<System.Int32>)
-DA:70,0
-DA:71,0
-DA:72,0
-DA:73,0
-DA:74,0
-DA:75,0
-DA:76,0
-FN:78,System.String WireMock.Net.StandAlone.SimpleCommandLineParser::GetStringValue(System.String,System.String)
-FNDA:0,System.String WireMock.Net.StandAlone.SimpleCommandLineParser::GetStringValue(System.String,System.String)
-DA:79,0
-DA:80,0
-DA:81,0
-LF:54
-LH:0
-BRF:20
-BRH:0
+DA:59,13
+DA:60,13
+DA:61,7
+DA:62,7
+DA:63,7
+DA:65,6
+DA:66,6
+DA:67,6
+DA:68,13
+DA:69,26
+DA:71,5
+DA:72,5
+DA:73,5
+DA:74,5
+DA:75,5
+BRDA:27,301,1,26
+BRDA:29,45,0,7
+BRDA:33,63,0,6
+BRDA:33,63,1,7
+BRDA:29,45,1,19
+BRDA:42,133,0,6
+BRDA:46,151,0,2
+BRDA:46,151,1,6
+BRDA:42,133,1,13
+BRDA:54,212,0,0
+BRDA:54,212,1,13
+BRDA:60,247,0,7
+BRDA:60,247,1,6
+BRDA:27,301,0,5
+BRDA:71,319,0,5
+BRDA:71,319,1,5
+FN:77,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::Contains(System.String)
+FNDA:16,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::Contains(System.String)
+DA:78,16
+DA:79,16
+DA:80,16
+FN:82,System.String[] WireMock.Net.StandAlone.SimpleCommandLineParser::GetValues(System.String,System.String[])
+FNDA:0,System.String[] WireMock.Net.StandAlone.SimpleCommandLineParser::GetValues(System.String,System.String[])
+DA:83,0
+DA:84,0
+DA:85,0
+BRDA:84,8,0,0
+BRDA:84,8,1,0
+FN:87,T WireMock.Net.StandAlone.SimpleCommandLineParser::GetValue(System.String,System.Func`2<System.String[],T>,T)
+FNDA:16,T WireMock.Net.StandAlone.SimpleCommandLineParser::GetValue(System.String,System.Func`2<System.String[],T>,T)
+DA:88,16
+DA:89,16
+DA:90,16
+BRDA:89,8,0,3
+BRDA:89,8,1,13
+FN:92,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::GetBoolValue(System.String,System.Boolean)
+FNDA:3,System.Boolean WireMock.Net.StandAlone.SimpleCommandLineParser::GetBoolValue(System.String,System.Boolean)
+DA:93,3
+DA:94,3
+DA:95,5
+DA:96,5
+DA:97,5
+DA:98,5
+DA:99,3
+FN:101,System.Nullable`1<System.Int32> WireMock.Net.StandAlone.SimpleCommandLineParser::GetIntValue(System.String,System.Nullable`1<System.Int32>)
+FNDA:4,System.Nullable`1<System.Int32> WireMock.Net.StandAlone.SimpleCommandLineParser::GetIntValue(System.String,System.Nullable`1<System.Int32>)
+DA:102,4
+DA:103,4
+DA:104,6
+DA:105,6
+DA:106,6
+DA:107,6
+DA:108,4
+FN:110,System.String WireMock.Net.StandAlone.SimpleCommandLineParser::GetStringValue(System.String,System.String)
+FNDA:9,System.String WireMock.Net.StandAlone.SimpleCommandLineParser::GetStringValue(System.String,System.String)
+DA:111,9
+DA:112,18
+DA:113,9
+LF:72
+LH:66
+BRF:26
+BRH:20
 FNF:8
-FNH:0
+FNH:7
 end_of_record
-SF:C:\Users\azureuser\Documents\Github\WireMock.Net\src\WireMock.Net.StandAlone\StandAloneApp.cs
+SF:C:\Users\StefHeyenrath\Documents\GitHub\WireMock.Net\src\WireMock.Net.StandAlone\StandAloneApp.cs
 FN:20,WireMock.Server.FluentMockServer WireMock.Net.StandAlone.StandAloneApp::Start(WireMock.Settings.IFluentMockServerSettings)
 FNDA:0,WireMock.Server.FluentMockServer WireMock.Net.StandAlone.StandAloneApp::Start(WireMock.Settings.IFluentMockServerSettings)
 DA:21,0

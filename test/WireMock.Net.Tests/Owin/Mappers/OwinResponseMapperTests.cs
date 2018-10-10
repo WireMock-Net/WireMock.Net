@@ -21,17 +21,17 @@ namespace WireMock.Net.Tests.Owin.Mappers
 {
     public class OwinResponseMapperTests
     {
-        private static Task completedTask = Task.FromResult(true);
-        private OwinResponseMapper _sut;
-        private Mock<IResponse> _responseMock;
-        private Mock<Stream> _stream;
-        private Mock<IHeaderDictionary> _headers;
+        private static readonly Task CompletedTask = Task.FromResult(true);
+        private readonly OwinResponseMapper _sut;
+        private readonly Mock<IResponse> _responseMock;
+        private readonly Mock<Stream> _stream;
+        private readonly Mock<IHeaderDictionary> _headers;
 
         public OwinResponseMapperTests()
         {
             _stream = new Mock<Stream>();
             _stream.SetupAllProperties();
-            _stream.Setup(s => s.WriteAsync(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(completedTask);
+            _stream.Setup(s => s.WriteAsync(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(CompletedTask);
 
             _headers = new Mock<IHeaderDictionary>();
             _headers.SetupAllProperties();
@@ -156,7 +156,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
 
             // Assert
 #if NET452
-            _headers.Verify(h => h.AppendValues("h", new string[] { "x", "y" } ), Times.Once);
+            _headers.Verify(h => h.AppendValues("h", new string[] { "x", "y" }), Times.Once);
 #else
             var v = new StringValues();
             _headers.Verify(h => h.TryGetValue("h", out v), Times.Once);

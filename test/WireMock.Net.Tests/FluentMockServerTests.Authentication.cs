@@ -1,4 +1,3 @@
-using System.Linq;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Owin;

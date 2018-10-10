@@ -13,9 +13,8 @@ namespace WireMock.Net.Tests.Owin
 {
     public class MappingMatcherTests
     {
-        private Mock<IWireMockMiddlewareOptions> _optionsMock;
-
-        private IMappingMatcher _sut;
+        private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
+        private readonly IMappingMatcher _sut;
 
         public MappingMatcherTests()
         {

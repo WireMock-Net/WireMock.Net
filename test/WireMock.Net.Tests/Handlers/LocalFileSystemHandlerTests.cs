@@ -8,13 +8,13 @@ namespace WireMock.Net.Tests.Handlers
 {
     public class LocalFileSystemHandlerTests
     {
-        private LocalFileSystemHandler sut = new LocalFileSystemHandler();
+        private readonly LocalFileSystemHandler _sut = new LocalFileSystemHandler();
 
         [Fact]
         public void LocalFileSystemHandler_GetMappingFolder()
         {
             // Act
-            string result = sut.GetMappingFolder();
+            string result = _sut.GetMappingFolder();
 
             // Assert
             Check.That(result).EndsWith(Path.Combine("__admin", "mappings"));
@@ -24,14 +24,14 @@ namespace WireMock.Net.Tests.Handlers
         public void LocalFileSystemHandler_CreateFolder_Throws()
         {
             // Act
-            Check.ThatCode(() => sut.CreateFolder(null)).Throws<ArgumentNullException>();
+            Check.ThatCode(() => _sut.CreateFolder(null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
         public void LocalFileSystemHandler_WriteMappingFile_Throws()
         {
             // Act
-            Check.ThatCode(() => sut.WriteMappingFile(null, null)).Throws<ArgumentNullException>();
+            Check.ThatCode(() => _sut.WriteMappingFile(null, null)).Throws<ArgumentNullException>();
         }
     }
 }

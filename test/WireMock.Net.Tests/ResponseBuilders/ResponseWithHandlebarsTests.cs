@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-#if NET452
-using Microsoft.Owin;
-#else
-using Microsoft.AspNetCore.Http;
-#endif
 using Newtonsoft.Json;
 using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
+#if NET452
+using Microsoft.Owin;
+#else
+using Microsoft.AspNetCore.Http;
+#endif
 
-namespace WireMock.Net.Tests.ResponseBuilderTests
+namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsTests
     {

@@ -1,10 +1,8 @@
 ﻿using NFluent;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -18,12 +16,12 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
         {
             // given
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyFromBase64("SGVsbG8gV29ybGQ/"));
+            server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyFromBase64("SGVsbG8gV29ybGQ/"));
 
             // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
 
             // then
             Check.That(response).IsEqualTo("Hello World?");
@@ -33,14 +31,14 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + "/foo");
-            _server.ResetLogEntries();
+            await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo");
+            server.ResetLogEntries();
 
             // then
-            Check.That(_server.LogEntries).IsEmpty();
+            Check.That(server.LogEntries).IsEmpty();
         }
 
         [Fact]
@@ -48,9 +46,9 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create()
                     .WithPath(path)
                     .UsingGet())
@@ -58,12 +56,11 @@ namespace WireMock.Net.Tests
                     .WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
-            _server.ResetMappings();
+            server.ResetMappings();
 
             // then
-            Check.That(_server.Mappings).IsEmpty();
-            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + path))
-                .ThrowsAny();
+            Check.That(server.Mappings).IsEmpty();
+            Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path)).ThrowsAny();
         }
 
         [Fact]
@@ -73,16 +70,16 @@ namespace WireMock.Net.Tests
             string path = $"/foo_{Guid.NewGuid()}";
             string pathToRedirect = $"/bar_{Guid.NewGuid()}";
 
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create()
                     .WithPath(path)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(307)
                     .WithHeader("Location", pathToRedirect));
-            _server
+            server
                 .Given(Request.Create()
                     .WithPath(pathToRedirect)
                     .UsingGet())
@@ -91,7 +88,7 @@ namespace WireMock.Net.Tests
                     .WithBody("REDIRECT SUCCESSFUL"));
 
             // Act
-            var response = await new HttpClient().GetStringAsync($"http://localhost:{_server.Ports[0]}{path}");
+            var response = await new HttpClient().GetStringAsync($"http://localhost:{server.Ports[0]}{path}");
 
             // Assert
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
@@ -101,9 +98,9 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_delay_responses_for_a_given_route()
         {
             // given
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create()
                     .WithPath("/*"))
                 .RespondWith(Response.Create()
@@ -113,7 +110,7 @@ namespace WireMock.Net.Tests
             // when
             var watch = new Stopwatch();
             watch.Start();
-            await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
             watch.Stop();
 
             // then
@@ -124,16 +121,16 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Should_delay_responses()
         {
             // given
-            var _server = FluentMockServer.Start();
-            _server.AddGlobalProcessingDelay(TimeSpan.FromMilliseconds(200));
-            _server
+            var server = FluentMockServer.Start();
+            server.AddGlobalProcessingDelay(TimeSpan.FromMilliseconds(200));
+            server
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create().WithBody(@"{ msg: ""Hello world!""}"));
 
             // when
             var watch = new Stopwatch();
             watch.Start();
-            await new HttpClient().GetStringAsync("http://localhost:" + _server.Ports[0] + "/foo");
+            await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
             watch.Stop();
 
             // then

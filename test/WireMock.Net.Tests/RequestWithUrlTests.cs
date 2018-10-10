@@ -1,5 +1,4 @@
-﻿using System;
-using NFluent;
+﻿using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;

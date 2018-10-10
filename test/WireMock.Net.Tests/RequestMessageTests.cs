@@ -1,5 +1,4 @@
-﻿using System;
-using NFluent;
+﻿using NFluent;
 using WireMock.Models;
 using WireMock.Util;
 using Xunit;

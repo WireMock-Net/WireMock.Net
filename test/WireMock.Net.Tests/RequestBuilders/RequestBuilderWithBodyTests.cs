@@ -5,7 +5,7 @@ using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests.RequestBuilders
 {
     public class RequestBuilderWithBodyTests
     {
