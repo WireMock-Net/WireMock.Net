@@ -79,6 +79,26 @@ namespace WireMock.Net.Tests.Http
 
             // Assert
             Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json");
+        }
+
+        [Fact]
+        public async void HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson_UTF8()
+        {
+            // Assign
+            var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json; charset=utf-8" } } };
+            var body = new BodyData
+            {
+                BodyAsJson = new { x = 42 },
+                DetectedBodyType = BodyType.Json
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
+
+            // Act
+            var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+            // Assert
+            Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
             Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json; charset=utf-8");
         }
 
@@ -98,7 +118,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=utf-8");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml");
         }
 
         [Fact]

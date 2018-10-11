@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
+using JetBrains.Annotations;
 using MimeKit;
 using Newtonsoft.Json;
 using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Http
 {
     internal static class HttpRequestMessageHelper
     {
-        public static HttpRequestMessage Create(RequestMessage requestMessage, string url)
+        internal static HttpRequestMessage Create([NotNull] RequestMessage requestMessage, [NotNull] string url)
         {
+            Check.NotNull(requestMessage, nameof(requestMessage));
+            Check.NotNullOrEmpty(url, nameof(url));
+
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
             ContentType contentType = null;
@@ -22,40 +26,25 @@ namespace WireMock.Http
                 ContentType.TryParse(value, out contentType);
             }
 
-            // Set Body if present
-            if (requestMessage.BodyData?.DetectedBodyType == BodyType.Bytes)
+            switch (requestMessage.BodyData?.DetectedBodyType)
             {
-                httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
-            }
-            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
-            {
-                if (contentType != null)
-                {
-                    var encoding = requestMessage.BodyData.Encoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
-                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), encoding, contentType.MimeType);
-                }
-                else
-                {
-                    httpRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), requestMessage.BodyData.Encoding);
-                }
-            }
-            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.String)
-            {
-                if (contentType != null)
-                {
-                    var encoding = requestMessage.BodyData.Encoding ?? Encoding.GetEncoding(contentType.Charset ?? "UTF-8");
-                    httpRequestMessage.Content = new StringContent(requestMessage.BodyData.BodyAsString, encoding, contentType.MimeType);
-                }
-                else
-                {
-                    httpRequestMessage.Content = new StringContent(requestMessage.BodyData.BodyAsString, requestMessage.BodyData.Encoding);
-                }
+                case BodyType.Bytes:
+                    httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
+                    break;
+
+                case BodyType.Json:
+                    httpRequestMessage.Content = StringContentHelper.Create(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), contentType);
+                    break;
+
+                case BodyType.String:
+                    httpRequestMessage.Content = StringContentHelper.Create(requestMessage.BodyData.BodyAsString, contentType);
+                    break;
             }
 
             // Overwrite the host header
             httpRequestMessage.Headers.Host = new Uri(url).Authority;
 
-            // Set other headers if present and if not excluded
+            // Set other headers if present
             if (requestMessage.Headers == null || requestMessage.Headers.Count == 0)
             {
                 return httpRequestMessage;
@@ -64,6 +53,7 @@ namespace WireMock.Http
             var excludeHeaders = new List<string> { HttpKnownHeaderNames.Host, HttpKnownHeaderNames.ContentLength };
             if (contentType != null)
             {
+                // Content-Type should be set on the content
                 excludeHeaders.Add(HttpKnownHeaderNames.ContentType);
             }
 
