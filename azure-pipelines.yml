@@ -2,7 +2,7 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  buildConfiguration: 'Debug'
+  buildConfiguration: 'Release'
   buildId: "1$(Build.BuildId)"
 
 steps:
@@ -32,9 +32,8 @@ steps:
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
 
-# Build in release mode and Publish to MyGet
+# Publish to MyGet
 - script: |
-    dotnet build ./src/WireMock.Net/WireMock.Net.csproj --configuration Release
     dotnet nuget push ./src/WireMock.Net/bin/Release/*.nupkg --no-symbols --api-key $(MyGetKey) --source https://www.myget.org/F/wiremock-net/api/v2/package
 
 - task: PublishTestResults@2
