@@ -43,7 +43,7 @@ steps:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
 
-# Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/ 
+# Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/
 - task: DotNetCoreCLI@2
   displayName: Build Release
   inputs:
