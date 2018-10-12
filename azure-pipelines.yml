@@ -2,6 +2,7 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
+  Prerelease: 'ci'
   buildId: "1$(Build.BuildId)"
   buildProjects: '**/src/**/*.csproj'
 
@@ -59,7 +60,6 @@ steps:
     packagesToPack: $(buildProjects)
     nobuild: true
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
-    versioningScheme: 'byPrereleaseNumber'
     verbosityPack: 'normal'
 
 - task: PublishBuildArtifacts@1

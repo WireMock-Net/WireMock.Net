@@ -2,7 +2,6 @@
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
-    <Version>1.0.4.18</Version>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
