@@ -3,6 +3,7 @@ pool:
 
 variables:
   buildId: "1$(Build.BuildId)"
+  buildProjects: '**/src/**/*.csproj'
 
 steps:
 # Print buildId
@@ -13,7 +14,7 @@ steps:
 # Install SonarScanner
 - script: |
     dotnet tool install --global dotnet-sonarscanner
-  displayName: 'Install SonarScanner'
+  displayName: Install SonarScanner
 
 # Begin SonarScanner
 # See also
@@ -23,7 +24,7 @@ steps:
 #
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /d:sonar.organization="stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
-  displayName: 'Begin SonarScanner'
+  displayName: Begin SonarScanner
 
 # Build source, tests and run tests for net452 and netcoreapp2.1 (with coverage)
 - script: |
@@ -34,13 +35,42 @@ steps:
 # End SonarScanner
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
-  displayName: 'End SonarScanner'
-
-# Publish to MyGet
-#- script: |
-#    dotnet nuget push ./src/WireMock.Net/bin/Release/*.nupkg --no-symbols --api-key $(MyGetKey) --source https://www.myget.org/F/wiremock-net
+  displayName: End SonarScanner
 
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
+# Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/ 
+- task: DotNetCoreCLI@2
+  displayName: Build Release
+  inputs:
+    command: 'build'
+    arguments: /p:Configuration=Release # https://github.com/MicrosoftDocs/vsts-docs/issues/1976
+    projects: $(buildProjects)
+
+- task: DotNetCoreCLI@2
+  displayName: Pack
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+  inputs:
+    command: pack
+    projects: $(buildProjects)
+    nobuild: true
+    packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+    versioningScheme: 'byPrereleaseNumber'
+    verbosityPack: 'normal'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+
+- task: DotNetCoreCLI@2
+  displayName: Push to MyGet
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+  inputs:
+    command: custom
+    custom: nuget
+    arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg --source https://www.myget.org/F/wiremock-net/api/v3/index.json --no-service-endpoint --api-key $(MyGetKey)

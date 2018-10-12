@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Compile Remove="FluentMockServerTests.Proxy.cs" />
+    <Compile Remove="FluentMockServerTests.Proxy2.cs" />
   </ItemGroup>
 
   <ItemGroup>
