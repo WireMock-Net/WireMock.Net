@@ -1,115 +1,46 @@
 ﻿using NFluent;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using WireMock.Settings;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerProxy2Tests : IDisposable
+    public class FluentMockServerProxy2Tests
     {
-        private readonly ITestOutputHelper _output;
-        private readonly CancellationTokenSource _cts;
-        private Guid _guid;
-        private string _url;
-
-        public FluentMockServerProxy2Tests(ITestOutputHelper output)
-        {
-            _output = output;
-
-            _cts = new CancellationTokenSource();
-        }
-
-        //private Task Run()
-        //{
-            
-        //    return Task.Run(() =>
-        //    {
-        //        _guid = Guid.NewGuid();
-
-        //        var targetServer = FluentMockServer.Start();
-        //        targetServer.Given(Request.Create().UsingPost().WithPath($"/{_guid}"))
-        //            .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
-
-        //        _url = targetServer.Urls[0];
-
-        //        //while (!_cts.IsCancellationRequested)
-        //        //{
-        //        //    Thread.Sleep(100);
-        //        //}
-        //    }, _cts.Token);
-        //}
-
-        private void X()
-        {
-            _guid = Guid.NewGuid();
-
-            var targetServer = FluentMockServer.Start();
-            targetServer.Given(Request.Create().UsingPost().WithPath($"/{_guid}"))
-                .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
-
-            _url = targetServer.Urls[0];
-
-            // Thread.Sleep(TimeSpan.FromSeconds(3));
-
-            _output.WriteLine(targetServer.Urls[0]);
-
-            //while (!_cts.IsCancellationRequested)
-            //{
-            //    Thread.Sleep(100);
-            //}
-        }
-
         [Fact]
-        public void FluentMockServer_ProxyAndRecordSettings_ShouldProxyContentTypeHeader()
+        public async Task FluentMockServer_ProxyAndRecordSettings_ShouldProxy()
         {
             // Assign
-            _output.WriteLine("This is output fr");
-            //var t = new Thread(X);
-            //t.Start();
-            X();
-            _output.WriteLine("started");
+            var server = FluentMockServer.Start();
 
-            Thread.Sleep(TimeSpan.FromSeconds(4));
+            server.Given(Request.Create().UsingPost().WithHeader("prx", "1"))
+                .RespondWith(Response.Create().WithProxy(server.Urls[0]));
 
-            _output.WriteLine("sleep 4 done");
-
-            var server = FluentMockServer.Start(
-                new FluentMockServerSettings
-                {
-                    ProxyAndRecordSettings = new ProxyAndRecordSettings
-                    {
-                        Url = _url
-                    }
-                }
-            );
-
-            _output.WriteLine("started 2");
-            _output.WriteLine(server.Urls[0]);
+            server.Given(Request.Create().UsingPost())
+                .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
 
             // Act
-            var response = new HttpClient().PostAsync(new Uri($"{server.Urls[0]}/{_guid}"), new StringContent("{ \"x\": 1 }", Encoding.UTF8, "application/json")).Result;
-            //string content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{server.Urls[0]}/TST"),
+                Content = new StringContent("test")
+            };
+            request.Headers.Add("prx", "1");
 
-            //// Assert
-            //Check.That(content).IsEqualTo("{\"p\":42}");
-            //Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
-            //Check.That(response.Content.Headers.GetValues("Content-Type").First()).IsEqualTo("application/json");
-        }
+            // Assert
+            var response = await new HttpClient().SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
 
-        public void Dispose()
-        {
-            _cts.Cancel();
+            Check.That(content).IsEqualTo("{\"p\":42}");
+            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);
+            Check.That(response.Content.Headers.GetValues("Content-Type").First()).IsEqualTo("application/json");
         }
     }
 }
