@@ -27,9 +27,12 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 | &nbsp;&nbsp;**Sonar Coverage** | [![Sonar Coverage](https://sonarcloud.io/api/project_badges/measure?project=wiremock&metric=coverage)](https://sonarcloud.io/component_measures?id=wiremock&metric=coverage) |
 | &nbsp;&nbsp;**Coveralls** | [![Coverage Status](https://coveralls.io/repos/github/WireMock-Net/WireMock.Net/badge.svg?branch=master)](https://coveralls.io/github/WireMock-Net/WireMock.Net?branch=master) |
 | |
-| ***Nuget*** | &nbsp; |
+| ***NuGet*** | &nbsp; |
 | &nbsp;&nbsp;**WireMock.Net** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |
 | &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net.StandAlone](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |
+| ***MyGet (previews)*** | &nbsp; |
+| &nbsp;&nbsp;**WireMock.Net** | [![MyGet Badge WireMock.Net](https://buildstats.info/myget/wiremock-net/WireMock.Net)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net) |
+| &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![MyGet Badge WireMock.Net.StandAlone](https://buildstats.info/myget/wiremock-net/WireMock.Net.StandAlone)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.StandAlone) |
 
 ## Development
 For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
