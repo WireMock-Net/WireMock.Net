@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using MimeKit;
 using Newtonsoft.Json;
+using WireMock.Matchers;
 using WireMock.Validation;
 
 namespace WireMock.Util
@@ -26,17 +28,17 @@ namespace WireMock.Util
         */
         private static readonly string[] AllowedBodyParseMethods = { "PUT", "POST", "OPTIONS", "PATCH" };
 
-        private static readonly string[] JsonContentTypes = {
-            "application/json",
-            "application/vnd.api+json"
+        private static readonly IStringMatcher[] JsonContentTypesMatchers = {
+            new WildcardMatcher("application/json", true),
+            new WildcardMatcher("application/vnd.*+json", true)
         };
 
-        private static readonly string[] TextContentTypes =
+        private static readonly IStringMatcher[] TextContentTypeMatchers =
         {
-            "text/",
-            "application/javascript", "application/typescript",
-            "application/xml", "application/xhtml+xml",
-            "application/x-www-form-urlencoded"
+            new WildcardMatcher("text/*", true),
+            new RegexMatcher("^application\\/(java|type)script$", true),
+            new WildcardMatcher("application/*xml", true),
+            new WildcardMatcher("application/x-www-form-urlencoded", true)
         };
 
         public static bool ParseBodyAsIsValid([CanBeNull] string parseBodyAs)
@@ -49,19 +51,19 @@ namespace WireMock.Util
             return AllowedBodyParseMethods.Contains(method, StringComparer.OrdinalIgnoreCase);
         }
 
-        public static BodyType DetectBodyTypeFromContentType([CanBeNull] string contentTypeHeaderValue)
+        public static BodyType DetectBodyTypeFromContentType([CanBeNull] string contentTypeValue)
         {
-            if (string.IsNullOrEmpty(contentTypeHeaderValue))
+            if (string.IsNullOrEmpty(contentTypeValue) || !ContentType.TryParse(contentTypeValue, out ContentType contentType))
             {
                 return BodyType.Bytes;
             }
 
-            if (TextContentTypes.Any(text => contentTypeHeaderValue.StartsWith(text, StringComparison.OrdinalIgnoreCase)))
+            if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
             {
                 return BodyType.String;
             }
 
-            if (JsonContentTypes.Any(text => contentTypeHeaderValue.StartsWith(text, StringComparison.OrdinalIgnoreCase)))
+            if (JsonContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
             {
                 return BodyType.Json;
             }
@@ -69,7 +71,7 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentTypeHeaderValue)
+        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType)
         {
             Check.NotNull(stream, nameof(stream));
 
@@ -77,7 +79,7 @@ namespace WireMock.Util
             {
                 BodyAsBytes = await ReadBytesAsync(stream),
                 DetectedBodyType = BodyType.Bytes,
-                DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentTypeHeaderValue)
+                DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentType)
             };
 
             // Try to get the body as String

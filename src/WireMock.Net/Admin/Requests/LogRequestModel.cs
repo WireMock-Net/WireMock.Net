@@ -81,13 +81,23 @@ namespace WireMock.Admin.Requests
         public EncodingModel BodyEncoding { get; set; }
 
         /// <summary>
-        /// The DetectedBodyType, valid value are:
+        /// The DetectedBodyType, valid values are:
         /// 
-        /// - null
+        /// - None
         /// - String
         /// - Json
         /// - Bytes
         /// </summary>
         public string DetectedBodyType { get; set; }
+
+        /// <summary>
+        /// The DetectedBodyTypeFromContentType, valid values are:
+        /// 
+        /// - None
+        /// - String
+        /// - Json
+        /// - Bytes
+        /// </summary>
+        public string DetectedBodyTypeFromContentType { get; set; }
     }
 }
