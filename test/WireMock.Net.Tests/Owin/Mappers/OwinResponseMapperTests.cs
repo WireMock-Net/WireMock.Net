@@ -96,7 +96,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),
-                Body = body
+                BodyData = new BodyData { DetectedBodyType = BodyType.String, BodyAsString = body }
             };
 
             // Act
@@ -114,7 +114,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),
-                BodyAsBytes = bytes
+                BodyData = new BodyData { DetectedBodyType = BodyType.Bytes, BodyAsBytes = bytes }
             };
 
             // Act
@@ -128,11 +128,11 @@ namespace WireMock.Net.Tests.Owin.Mappers
         public async void OwinResponseMapper_MapAsync_BodyAsJson()
         {
             // Assign
+            var json = new { t = "x", i = (string)null };
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),
-                BodyAsJson = new { t = "x", i = (string)null },
-                BodyAsJsonIndented = false
+                BodyData = new BodyData { DetectedBodyType = BodyType.Json, BodyAsJson = json, BodyAsJsonIndented = false }
             };
 
             // Act

@@ -178,9 +178,12 @@ namespace WireMock.ResponseBuilders
 
             return WithCallbackInternal(false, req => new ResponseMessage
             {
-                Body = bodyFactory(req),
-                BodyDestination = destination,
-                BodyEncoding = encoding ?? Encoding.UTF8
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = bodyFactory(req),
+                    Encoding = encoding ?? Encoding.UTF8
+                }
             });
         }
 
@@ -190,19 +193,20 @@ namespace WireMock.ResponseBuilders
             Check.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = destination;
+            ResponseMessage.BodyData = new BodyData();
 
             switch (destination)
             {
                 case BodyDestinationFormat.String:
                     var enc = encoding ?? Encoding.UTF8;
-                    ResponseMessage.BodyAsBytes = null;
-                    ResponseMessage.Body = enc.GetString(body);
-                    ResponseMessage.BodyEncoding = enc;
+                    ResponseMessage.BodyData.DetectedBodyType = BodyType.String;
+                    ResponseMessage.BodyData.BodyAsString = enc.GetString(body);
+                    ResponseMessage.BodyData.Encoding = enc;
                     break;
 
                 default:
-                    ResponseMessage.BodyAsBytes = body;
-                    ResponseMessage.BodyEncoding = null;
+                    ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
+                    ResponseMessage.BodyData.BodyAsBytes = body;
                     break;
             }
 
@@ -214,20 +218,20 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(filename, nameof(filename));
 
-            ResponseMessage.BodyEncoding = null;
-            ResponseMessage.BodyAsFileIsCached = cache;
+            ResponseMessage.BodyData = new BodyData
+            {
+                BodyAsFileIsCached = cache
+            };
 
             if (cache)
             {
-                ResponseMessage.Body = null;
-                ResponseMessage.BodyAsBytes = File.ReadAllBytes(filename);
-                ResponseMessage.BodyAsFile = null;
+                ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
+                ResponseMessage.BodyData.BodyAsBytes = File.ReadAllBytes(filename);
             }
             else
             {
-                ResponseMessage.Body = null;
-                ResponseMessage.BodyAsBytes = null;
-                ResponseMessage.BodyAsFile = filename;
+                ResponseMessage.BodyData.DetectedBodyType = BodyType.File;
+                ResponseMessage.BodyData.BodyAsFile = filename;
             }
 
             return this;
@@ -241,26 +245,27 @@ namespace WireMock.ResponseBuilders
             encoding = encoding ?? Encoding.UTF8;
 
             ResponseMessage.BodyDestination = destination;
-            ResponseMessage.BodyEncoding = encoding;
+
+            ResponseMessage.BodyData = new BodyData
+            {
+                Encoding = encoding
+            };
 
             switch (destination)
             {
                 case BodyDestinationFormat.Bytes:
-                    ResponseMessage.Body = null;
-                    ResponseMessage.BodyAsJson = null;
-                    ResponseMessage.BodyAsBytes = encoding.GetBytes(body);
+                    ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
+                    ResponseMessage.BodyData.BodyAsBytes= encoding.GetBytes(body);
                     break;
 
                 case BodyDestinationFormat.Json:
-                    ResponseMessage.Body = null;
-                    ResponseMessage.BodyAsJson = JsonConvert.DeserializeObject(body);
-                    ResponseMessage.BodyAsBytes = null;
+                    ResponseMessage.BodyData.DetectedBodyType = BodyType.Json;
+                    ResponseMessage.BodyData.BodyAsJson = JsonConvert.DeserializeObject(body);
                     break;
 
                 default:
-                    ResponseMessage.Body = body;
-                    ResponseMessage.BodyAsJson = null;
-                    ResponseMessage.BodyAsBytes = null;
+                    ResponseMessage.BodyData.DetectedBodyType = BodyType.String;
+                    ResponseMessage.BodyData.BodyAsString = body;
                     break;
             }
 
@@ -273,10 +278,14 @@ namespace WireMock.ResponseBuilders
             Check.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = null;
-            ResponseMessage.BodyAsJson = body;
-            ResponseMessage.BodyEncoding = encoding;
-            ResponseMessage.BodyAsJsonIndented = indented;
-
+            ResponseMessage.BodyData = new BodyData
+            {
+                Encoding = encoding,
+                DetectedBodyType = BodyType.Json,
+                BodyAsJson = body,
+                BodyAsJsonIndented = indented
+            };
+            
             return this;
         }
 
@@ -293,9 +302,12 @@ namespace WireMock.ResponseBuilders
 
             encoding = encoding ?? Encoding.UTF8;
 
-            ResponseMessage.BodyDestination = null;
-            ResponseMessage.Body = encoding.GetString(Convert.FromBase64String(bodyAsBase64));
-            ResponseMessage.BodyEncoding = encoding;
+            ResponseMessage.BodyData = new BodyData
+            {
+                Encoding = encoding,
+                DetectedBodyType = BodyType.String,
+                BodyAsString = encoding.GetString(Convert.FromBase64String(bodyAsBase64))
+            };
 
             return this;
         }

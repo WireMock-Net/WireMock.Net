@@ -23,6 +23,11 @@
         /// <summary>
         /// Body is a Byte array
         /// </summary>
-        Bytes
+        Bytes,
+
+        /// <summary>
+        /// Body is a File
+        /// </summary>
+        File
     }
 }

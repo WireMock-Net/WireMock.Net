@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("/pathtest");
         }
@@ -58,7 +58,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("Test_123");
         }
@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
         }
@@ -118,7 +118,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
         }
@@ -199,7 +199,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"].ToString()).IsEmpty();
         }
 
@@ -227,7 +227,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"].ToString()).IsEmpty();
         }
     }

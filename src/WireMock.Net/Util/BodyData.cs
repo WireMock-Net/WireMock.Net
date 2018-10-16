@@ -28,6 +28,21 @@ namespace WireMock.Util
         public byte[] BodyAsBytes { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.
+        /// </summary>
+        public bool? BodyAsJsonIndented { get; set; }
+
+        /// <summary>
+        /// Gets or sets the body as a file.
+        /// </summary>
+        public string BodyAsFile { get; set; }
+
+        /// <summary>
+        /// Is the body as file cached?
+        /// </summary>
+        public bool? BodyAsFileIsCached { get; set; }
+
+        /// <summary>
         /// The detected body type (detection based on body content).
         /// </summary>
         public BodyType DetectedBodyType { get; set; }

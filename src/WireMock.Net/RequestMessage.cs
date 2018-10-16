@@ -105,6 +105,11 @@ namespace WireMock
         public string DetectedBodyType { get; }
 
         /// <summary>
+        /// The detected body type from the Content-Type header. Convenience getter for Handlebars.
+        /// </summary>
+        public string DetectedBodyTypeFromContentType { get; }
+
+        /// <summary>
         /// Gets the Host
         /// </summary>
         public string Host { get; }
@@ -161,6 +166,7 @@ namespace WireMock
             BodyAsJson = BodyData?.BodyAsJson;
             BodyAsBytes = BodyData?.BodyAsBytes;
             DetectedBodyType = BodyData?.DetectedBodyType.ToString();
+            DetectedBodyTypeFromContentType = BodyData?.DetectedBodyTypeFromContentType.ToString();
 
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;

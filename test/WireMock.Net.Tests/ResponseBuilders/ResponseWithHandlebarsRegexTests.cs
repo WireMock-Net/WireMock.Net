@@ -27,7 +27,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("abc");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("abc");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("");
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("d");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("d");
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("5000-https");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("5000-https");
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("");
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // assert
-            Check.That(responseMessage.Body).Equals("x");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("x");
         }
 
         [Fact]
