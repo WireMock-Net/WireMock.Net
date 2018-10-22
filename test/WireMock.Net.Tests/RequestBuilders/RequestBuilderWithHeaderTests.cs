@@ -73,7 +73,7 @@ namespace WireMock.Net.Tests.RequestBuilders
         public void RequestBuilder_WithHeader_FuncIDictionary()
         {
             // Act
-            var requestBuilder = (Request)Request.Create().WithHeader((IDictionary<string, string[]> x) => true);
+            var requestBuilder = (Request)Request.Create().WithHeader(x => true);
 
             // Assert
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");

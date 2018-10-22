@@ -12,6 +12,39 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private const string ClientIp = "::1";
 
+        [Theory]
+        [InlineData("Content-Length", "1024")]
+        [InlineData("Transfer-Encoding", "identity")]
+        [InlineData("Location", "http://test")]
+        public async Task Response_ProvideResponse_WithHeader_SingleValue(string headerName, string headerValue)
+        {
+            // Assign
+            var requestMock = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
+            IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValue);
+
+            // Act
+            var response = await builder.ProvideResponseAsync(requestMock);
+
+            // Assert
+            Check.That(response.Headers[headerName].ToString()).Equals(headerValue);
+        }
+
+        [Theory]
+        [InlineData("Test", new[] { "one" })]
+        [InlineData("Test", new[] { "a", "b" })]
+        public async Task Response_ProvideResponse_WithHeader_MultipleValues(string headerName, string[] headerValues)
+        {
+            // Assign
+            var requestMock = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
+            IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValues);
+
+            // Act
+            var response = await builder.ProvideResponseAsync(requestMock);
+
+            // Assert
+            Check.That(response.Headers[headerName].ToArray()).Equals(headerValues);
+        }
+
         [Fact]
         public async Task Response_ProvideResponse_WithHeaders_SingleValue()
         {
