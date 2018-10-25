@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using WireMock.Models;
+using WireMock.Validation;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 #else
@@ -13,6 +14,8 @@ namespace WireMock.Util
     {
         public static UrlDetails Parse([NotNull] Uri uri, PathString pathBase)
         {
+            Check.NotNull(uri, nameof(uri));
+
             if (!pathBase.HasValue)
             {
                 return new UrlDetails(uri, uri);
@@ -26,7 +29,7 @@ namespace WireMock.Util
 
         private static string RemoveFirst(string text, string search)
         {
-            int pos = text.IndexOf(search);
+            int pos = text.IndexOf(search, StringComparison.Ordinal);
             if (pos < 0)
             {
                 return text;

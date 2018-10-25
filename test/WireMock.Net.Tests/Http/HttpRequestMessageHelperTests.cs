@@ -17,11 +17,7 @@ namespace WireMock.Net.Tests.Http
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "x", new[] { "value-1" } } };
-            var body = new BodyData
-            {
-                BodyAsString = "<xml>hello</xml>"
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, null, headers);
 
             // Act
             var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -36,7 +32,8 @@ namespace WireMock.Net.Tests.Http
             // Assign
             var body = new BodyData
             {
-                BodyAsBytes = Encoding.UTF8.GetBytes("hi")
+                BodyAsBytes = Encoding.UTF8.GetBytes("hi"),
+                DetectedBodyType = BodyType.Bytes
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
 
@@ -53,7 +50,8 @@ namespace WireMock.Net.Tests.Http
             // Assign
             var body = new BodyData
             {
-                BodyAsJson = new { x = 42 }
+                BodyAsJson = new { x = 42 },
+                DetectedBodyType = BodyType.Json
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
 
@@ -71,7 +69,28 @@ namespace WireMock.Net.Tests.Http
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
             var body = new BodyData
             {
-                BodyAsJson = new { x = 42 }
+                BodyAsJson = new { x = 42 },
+                DetectedBodyType = BodyType.Json
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
+
+            // Act
+            var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+            // Assert
+            Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json");
+        }
+
+        [Fact]
+        public async void HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson_UTF8()
+        {
+            // Assign
+            var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json; charset=utf-8" } } };
+            var body = new BodyData
+            {
+                BodyAsJson = new { x = 42 },
+                DetectedBodyType = BodyType.Json
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
 
@@ -90,7 +109,8 @@ namespace WireMock.Net.Tests.Http
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml" } } };
             var body = new BodyData
             {
-                BodyAsString = "<xml>hello</xml>"
+                BodyAsString = "<xml>hello</xml>",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
@@ -98,7 +118,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=utf-8");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml");
         }
 
         [Fact]
@@ -108,7 +128,8 @@ namespace WireMock.Net.Tests.Http
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml; charset=UTF-8" } } };
             var body = new BodyData
             {
-                BodyAsString = "<xml>hello</xml>"
+                BodyAsString = "<xml>hello</xml>",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 
@@ -126,7 +147,8 @@ namespace WireMock.Net.Tests.Http
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml; charset=Ascii" } } };
             var body = new BodyData
             {
-                BodyAsString = "<xml>hello</xml>"
+                BodyAsString = "<xml>hello</xml>",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, headers);
 

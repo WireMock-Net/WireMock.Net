@@ -24,7 +24,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
                 ReadStaticMappings = false,
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = "https://www.google.com",
+                    Url = "http://postman-echo.com/post",
                     //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
                     SaveMappingToFile = false,

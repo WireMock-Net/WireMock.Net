@@ -28,6 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
                 Encoding = Encoding.UTF8
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
@@ -40,7 +41,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
         }
 
         [Fact]
@@ -49,7 +50,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "whatever"
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
@@ -61,7 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test http://localhost/foo /foo POSt");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
         }
 
         [Fact]
@@ -79,7 +81,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("http://localhost/a/b http://localhost/wiremock/a/b /a/b /wiremock/a/b");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("http://localhost/a/b http://localhost/wiremock/a/b /a/b /wiremock/a/b");
         }
 
         [Fact]
@@ -97,7 +99,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("a wiremock");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
         }
 
         [Fact]
@@ -106,7 +108,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
 
@@ -118,7 +121,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test keya=1 idx=1 idx=2 keyb=5");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
         }
 
         [Fact]
@@ -127,7 +130,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
@@ -137,7 +141,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
             Check.That(responseMessage.Headers).ContainsKey("x");
             Check.That(responseMessage.Headers["x"]).ContainsExactly("text/plain");
         }
@@ -148,7 +152,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
@@ -158,7 +163,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
             Check.That(responseMessage.Headers).ContainsKey("x");
             Check.That(responseMessage.Headers["x"]).Contains("text/plain");
             Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
@@ -170,7 +175,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "abc"
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
             };
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
@@ -182,7 +188,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("test http://localhost:1234 1234 http localhost");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
         }
 
         [Fact]
@@ -193,6 +199,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
                 Encoding = Encoding.UTF8
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_array"), "POST", ClientIp, bodyData);
@@ -205,7 +212,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
         }
     }
 }

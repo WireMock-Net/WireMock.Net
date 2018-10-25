@@ -17,12 +17,12 @@ namespace WireMock.Transformers
 
         public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
-            bool bodyIsJson = original.BodyAsJson != null;
+            bool bodyIsJson = original.BodyData.DetectedBodyType == BodyType.Json;
             var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
 
             if (!bodyIsJson)
             {
-                responseMessage.BodyOriginal = original.Body;
+                responseMessage.BodyOriginal = original.BodyData.BodyAsString;
             }
 
             var template = new { request = requestMessage };
@@ -57,7 +57,7 @@ namespace WireMock.Transformers
         private static void TransformBodyAsJson(object template, ResponseMessage original, ResponseMessage responseMessage)
         {
             JToken jToken;
-            switch (original.BodyAsJson)
+            switch (original.BodyData.BodyAsJson)
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject;
@@ -68,13 +68,18 @@ namespace WireMock.Transformers
                     break;
 
                 default:
-                    jToken = JObject.FromObject(original.BodyAsJson);
+                    jToken = JObject.FromObject(original.BodyData.BodyAsJson);
                     break;
             }
 
             WalkNode(jToken, template);
 
-            responseMessage.BodyAsJson = jToken;
+            responseMessage.BodyData = new BodyData
+            {
+                DetectedBodyType = original.BodyData.DetectedBodyType,
+                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                BodyAsJson = jToken
+            };
         }
 
         private static void WalkNode(JToken node, object template)
@@ -127,9 +132,14 @@ namespace WireMock.Transformers
 
         private static void TransformBodyAsString(object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBody = Handlebars.Compile(original.Body);
+            var templateBody = Handlebars.Compile(original.BodyData.BodyAsString);
 
-            responseMessage.Body = templateBody(template);
+            responseMessage.BodyData = new BodyData
+            {
+                DetectedBodyType = original.BodyData.DetectedBodyType,
+                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                BodyAsString = templateBody(template)
+            };
         }
     }
 }

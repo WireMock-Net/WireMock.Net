@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -67,7 +68,7 @@ namespace WireMock.Net.Tests
             {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri($"{server.Urls[0]}{path}"),
-                Content = new StringContent("stringContent")
+                Content = new StringContent("stringContent", Encoding.ASCII)
             };
             requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
             requestMessage.Content.Headers.Add("bbb", "test");
@@ -75,7 +76,7 @@ namespace WireMock.Net.Tests
 
             // then
             var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Body).IsEqualTo("stringContent");
+            Check.That(receivedRequest.BodyData.BodyAsString).IsEqualTo("stringContent");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
             Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
             Check.That(receivedRequest.Headers).ContainsKey("bbb");
@@ -158,7 +159,7 @@ namespace WireMock.Net.Tests
 
             // Assert
             var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Body).IsEqualTo("");
+            Check.That(receivedRequest.BodyData.BodyAsString).IsEqualTo("");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
             Check.That(receivedRequest.Headers["Content-Type"].First()).Contains("text/plain");
         }

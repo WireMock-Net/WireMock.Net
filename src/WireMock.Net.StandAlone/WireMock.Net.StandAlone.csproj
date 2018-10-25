@@ -2,7 +2,6 @@
   <PropertyGroup>
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
-    <Version>1.0.4.18</Version>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -23,6 +22,8 @@
     <ProjectGuid>{B6269AAC-170A-43D5-8B9A-579DED3D9A95}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

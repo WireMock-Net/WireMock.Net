@@ -36,7 +36,7 @@ namespace WireMock.Admin.Requests
         public string Url { get; set; }
 
         /// <summary>
-        /// The absolete URL.
+        /// The absolute URL.
         /// </summary>
         public string AbsoluteUrl { get; set; }
 
@@ -56,7 +56,7 @@ namespace WireMock.Admin.Requests
         public IDictionary<string, WireMockList<string>> Headers { get; set; }
 
         /// <summary>
-        /// Tthe Cookies.
+        /// The Cookies.
         /// </summary>
         public IDictionary<string, string> Cookies { get; set; }
 
@@ -79,5 +79,25 @@ namespace WireMock.Admin.Requests
         /// The body encoding.
         /// </summary>
         public EncodingModel BodyEncoding { get; set; }
+
+        /// <summary>
+        /// The DetectedBodyType, valid values are:
+        /// 
+        /// - None
+        /// - String
+        /// - Json
+        /// - Bytes
+        /// </summary>
+        public string DetectedBodyType { get; set; }
+
+        /// <summary>
+        /// The DetectedBodyTypeFromContentType, valid values are:
+        /// 
+        /// - None
+        /// - String
+        /// - Json
+        /// - Bytes
+        /// </summary>
+        public string DetectedBodyTypeFromContentType { get; set; }
     }
 }

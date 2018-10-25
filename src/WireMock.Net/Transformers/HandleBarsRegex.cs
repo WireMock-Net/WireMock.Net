@@ -50,14 +50,12 @@ namespace WireMock.Transformers
 
             string ParseAsString(object arg)
             {
-                if (arg is string)
+                if (arg is string argAsString)
                 {
-                    return (string) arg;
+                    return argAsString;
                 }
-                else
-                {
-                    throw new NotSupportedException($"The value '{arg}' with type '{arg?.GetType()}' cannot be used in Handlebars Regex.");
-                }
+
+                throw new NotSupportedException($"The value '{arg}' with type '{arg?.GetType()}' cannot be used in Handlebars Regex.");
             }
 
             return (ParseAsString(arguments[0]), ParseAsString(arguments[1]), arguments.Length == 3 ? arguments[2] : null);
