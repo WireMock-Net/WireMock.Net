@@ -63,7 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"]["Name"].ToString()).Equals("Acme Co");
         }
@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyAsJson);
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["x"].Value<long>()).Equals(99);
         }
 
@@ -143,7 +143,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
@@ -196,7 +196,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
@@ -249,7 +249,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("%0:Anvil%%1:Elbow Grease%");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
         }
 
         [Fact]
@@ -302,7 +302,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request);
 
             // Assert
-            Check.That(responseMessage.Body).Equals("%0:Anvil%%1:Elbow Grease%");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
         }
 
         [Fact]

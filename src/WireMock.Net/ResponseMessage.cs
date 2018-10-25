@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -32,39 +31,9 @@ namespace WireMock
         public string BodyDestination { get; set; }
 
         /// <summary>
-        /// Gets or sets the body as a string.
+        /// The Body.
         /// </summary>
-        public string Body { get; set; }
-
-        /// <summary>
-        /// Gets or sets the body as a json object.
-        /// </summary>
-        public object BodyAsJson { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.
-        /// </summary>
-        public bool? BodyAsJsonIndented { get; set; }
-
-        /// <summary>
-        /// Gets or sets the body as bytes.
-        /// </summary>
-        public byte[] BodyAsBytes { get; set; }
-
-        /// <summary>
-        /// Gets or sets the body as a file.
-        /// </summary>
-        public string BodyAsFile { get; set; }
-
-        /// <summary>
-        /// Is the body as file cached?
-        /// </summary>
-        public bool? BodyAsFileIsCached { get; set; }
-
-        /// <summary>
-        /// Gets or sets the body encoding.
-        /// </summary>
-        public Encoding BodyEncoding { get; set; } = new UTF8Encoding(false);
+        public BodyData BodyData { get; set; }
 
         /// <summary>
         /// Adds the header.

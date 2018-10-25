@@ -26,6 +26,9 @@ namespace WireMock.Serialization
 
             if (logEntry.RequestMessage.BodyData != null)
             {
+                logRequestModel.DetectedBodyType = logEntry.RequestMessage.BodyData.DetectedBodyType.ToString();
+                logRequestModel.DetectedBodyTypeFromContentType = logEntry.RequestMessage.BodyData.DetectedBodyTypeFromContentType.ToString();
+
                 switch (logEntry.RequestMessage.BodyData.DetectedBodyType)
                 {
                     case BodyType.String:
@@ -42,9 +45,6 @@ namespace WireMock.Serialization
                         break;
                 }
 
-                logRequestModel.DetectedBodyType = logEntry.RequestMessage.BodyData.DetectedBodyType.ToString();
-                logRequestModel.DetectedBodyTypeFromContentType = logEntry.RequestMessage.BodyData.DetectedBodyTypeFromContentType.ToString();
-
                 logRequestModel.BodyEncoding = logEntry.RequestMessage.BodyData.Encoding != null
                     ? new EncodingModel
                     {
@@ -58,23 +58,46 @@ namespace WireMock.Serialization
             var logResponseModel = new LogResponseModel
             {
                 StatusCode = logEntry.ResponseMessage.StatusCode,
-                BodyDestination = logEntry.ResponseMessage.BodyDestination,
-                Body = logEntry.ResponseMessage.Body,
-                BodyAsJson = logEntry.ResponseMessage.BodyAsJson,
-                BodyAsBytes = logEntry.ResponseMessage.BodyAsBytes,
-                BodyOriginal = logEntry.ResponseMessage.BodyOriginal,
-                BodyAsFile = logEntry.ResponseMessage.BodyAsFile,
-                BodyAsFileIsCached = logEntry.ResponseMessage.BodyAsFileIsCached,
-                Headers = logEntry.ResponseMessage.Headers,
-                BodyEncoding = logEntry.ResponseMessage.BodyEncoding != null
+                Headers = logEntry.ResponseMessage.Headers
+            };
+
+            if (logEntry.ResponseMessage.BodyData != null)
+            {
+                logResponseModel.BodyOriginal = logEntry.ResponseMessage.BodyOriginal;
+                logResponseModel.BodyDestination = logEntry.ResponseMessage.BodyDestination;
+
+                logResponseModel.DetectedBodyType = logEntry.ResponseMessage.BodyData.DetectedBodyType;
+                logResponseModel.DetectedBodyTypeFromContentType = logEntry.ResponseMessage.BodyData.DetectedBodyTypeFromContentType;
+
+                switch (logEntry.ResponseMessage.BodyData.DetectedBodyType)
+                {
+                    case BodyType.String:
+                        logResponseModel.Body = logEntry.ResponseMessage.BodyData.BodyAsString;
+                        break;
+
+                    case BodyType.Json:
+                        logResponseModel.BodyAsJson = logEntry.ResponseMessage.BodyData.BodyAsJson;
+                        break;
+
+                    case BodyType.Bytes:
+                        logResponseModel.BodyAsBytes = logEntry.ResponseMessage.BodyData.BodyAsBytes;
+                        break;
+
+                    case BodyType.File:
+                        logResponseModel.BodyAsFile = logEntry.ResponseMessage.BodyData.BodyAsFile;
+                        logResponseModel.BodyAsFileIsCached = logEntry.ResponseMessage.BodyData.BodyAsFileIsCached;
+                        break;
+                }
+
+                logResponseModel.BodyEncoding = logEntry.ResponseMessage.BodyData.Encoding != null
                     ? new EncodingModel
                     {
-                        EncodingName = logEntry.ResponseMessage.BodyEncoding.EncodingName,
-                        CodePage = logEntry.ResponseMessage.BodyEncoding.CodePage,
-                        WebName = logEntry.ResponseMessage.BodyEncoding.WebName
+                        EncodingName = logEntry.ResponseMessage.BodyData.Encoding.EncodingName,
+                        CodePage = logEntry.ResponseMessage.BodyData.Encoding.CodePage,
+                        WebName = logEntry.ResponseMessage.BodyData.Encoding.WebName
                     }
-                    : null
-            };
+                    : null;
+            }
 
             return new LogEntryModel
             {

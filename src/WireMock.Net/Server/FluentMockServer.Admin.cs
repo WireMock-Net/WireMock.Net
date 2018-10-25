@@ -764,9 +764,13 @@ namespace WireMock.Server
         {
             return new ResponseMessage
             {
-                Body = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings),
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings)
+                },
                 StatusCode = 200,
-                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
+                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }
 

@@ -100,22 +100,40 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
                 mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
-                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyAsJson;
-                mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyAsJsonIndented;
-                mappingModel.Response.Body = response.ResponseMessage.Body;
-                mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyAsBytes;
-                mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyAsFile;
-                mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyAsFileIsCached;
                 mappingModel.Response.UseTransformer = response.UseTransformer;
 
-                if (response.ResponseMessage.BodyEncoding != null && response.ResponseMessage.BodyEncoding.WebName != "utf-8")
+                if (response.ResponseMessage.BodyData != null)
                 {
-                    mappingModel.Response.BodyEncoding = new EncodingModel
+                    switch (response.ResponseMessage.BodyData?.DetectedBodyType)
                     {
-                        EncodingName = response.ResponseMessage.BodyEncoding.EncodingName,
-                        CodePage = response.ResponseMessage.BodyEncoding.CodePage,
-                        WebName = response.ResponseMessage.BodyEncoding.WebName
-                    };
+                        case BodyType.String:
+                            mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
+                            break;
+
+                        case BodyType.Json:
+                            mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
+                            mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                            break;
+
+                        case BodyType.Bytes:
+                            mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
+                            break;
+
+                        case BodyType.File:
+                            mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
+                            mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
+                            break;
+                    }
+
+                    if (response.ResponseMessage.BodyData.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+                    {
+                        mappingModel.Response.BodyEncoding = new EncodingModel
+                        {
+                            EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
+                            CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
+                            WebName = response.ResponseMessage.BodyData.Encoding.WebName
+                        };
+                    }
                 }
             }
 
