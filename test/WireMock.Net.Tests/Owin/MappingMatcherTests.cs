@@ -21,7 +21,7 @@ namespace WireMock.Net.Tests.Owin
             _optionsMock = new Mock<IWireMockMiddlewareOptions>();
             _optionsMock.SetupAllProperties();
             _optionsMock.Setup(o => o.Mappings).Returns(new ConcurrentDictionary<Guid, IMapping>());
-            _optionsMock.Setup(o => o.LogEntries).Returns(new ConcurentObservableCollection<LogEntry>());
+            _optionsMock.Setup(o => o.LogEntries).Returns(new ConcurrentObservableCollection<LogEntry>());
             _optionsMock.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
 
             _sut = new MappingMatcher(_optionsMock.Object);

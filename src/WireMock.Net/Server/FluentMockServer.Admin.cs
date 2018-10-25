@@ -274,13 +274,13 @@ namespace WireMock.Server
                 }
             });
 
-            if (requestMessage.BodyAsJson != null)
+            if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
             {
-                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyAsJson));
+                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson));
             }
-            else if (requestMessage.Body != null)
+            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.String)
             {
-                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.Body));
+                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsString));
             }
 
             var response = Response.Create(responseMessage);
@@ -764,9 +764,13 @@ namespace WireMock.Server
         {
             return new ResponseMessage
             {
-                Body = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings),
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings)
+                },
                 StatusCode = 200,
-                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
+                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }
 
@@ -777,9 +781,17 @@ namespace WireMock.Server
 
         private T DeserializeObject<T>(RequestMessage requestMessage)
         {
-            return requestMessage.Body != null ?
-                JsonConvert.DeserializeObject<T>(requestMessage.Body) :
-                ((JObject)requestMessage.BodyAsJson).ToObject<T>();
+            if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
+            {
+                return JsonConvert.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
+            }
+
+            if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
+            {
+                return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
+            }
+
+            return default(T);
         }
     }
 }

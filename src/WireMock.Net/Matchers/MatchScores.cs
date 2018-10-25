@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WireMock.Matchers
@@ -11,7 +12,7 @@ namespace WireMock.Matchers
         /// <summary>
         /// The tolerance
         /// </summary>
-        public const double Tolerance = 0.0001;
+        public const double Tolerance = 0.000001;
 
         /// <summary>
         /// The default mismatch score
@@ -29,6 +30,16 @@ namespace WireMock.Matchers
         public const double AlmostPerfect = 0.99;
 
         /// <summary>
+        /// Is the value a perfect match?
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>true/false</returns>
+        public static bool IsPerfect(double value)
+        {
+            return Math.Abs(value - Perfect) < Tolerance;
+        }
+
+        /// <summary>
         /// Convert a bool to the score.
         /// </summary>
         /// <param name="value">if set to <c>true</c> [value].</param>
@@ -39,7 +50,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Calculates the score from multiple funcs.
+        /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>
@@ -49,7 +60,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Calculates the score from multiple funcs.
+        /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>

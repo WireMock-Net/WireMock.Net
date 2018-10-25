@@ -16,9 +16,17 @@ namespace WireMock
             var response = new ResponseMessage
             {
                 StatusCode = statusCode,
-                Headers = ContentTypeJsonHeaders,
-                BodyAsJson = message != null ? new StatusModel { Status = message, Guid = guid } : null
+                Headers = ContentTypeJsonHeaders
             };
+
+            if (message != null)
+            {
+                response.BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.Json,
+                    BodyAsJson = new StatusModel { Status = message, Guid = guid }
+                };
+            }
 
             return response;
         }

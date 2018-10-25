@@ -1,5 +1,7 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NFluent;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Serialization;
 using Xunit;
@@ -36,7 +38,7 @@ namespace WireMock.Net.Tests.Serialization
             var matcherMock2 = new Mock<IStringMatcher>();
 
             // Act
-            var models = MatcherMapper.Map(new [] { matcherMock1.Object, matcherMock2.Object });
+            var models = MatcherMapper.Map(new[] { matcherMock1.Object, matcherMock2.Object });
 
             // Assert
             Check.That(models).HasSize(2);
@@ -72,6 +74,62 @@ namespace WireMock.Net.Tests.Serialization
 
             // Assert
             Check.That(model.IgnoreCase).Equals(true);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_Null()
+        {
+            // Act
+            var result = MatcherMapper.Map((MatcherModel)null);
+
+            // Assert
+            Check.That(result).IsNull();
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_Exception()
+        {
+            // Assign
+            var model = new MatcherModel { Name = "test" };
+
+            // Act and Assert
+            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_LinqMatcher_Pattern()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "LinqMatcher",
+                Pattern = "p"
+            };
+
+            // Act
+            var matcher = (LinqMatcher)MatcherMapper.Map(model);
+
+            // Assert
+            Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
+            Check.That(matcher.GetPatterns()).ContainsExactly("p");
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_LinqMatcher_Patterns()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "LinqMatcher",
+                Patterns = new[] { "p1", "p2" }
+            };
+
+            // Act
+            var matcher = (LinqMatcher)MatcherMapper.Map(model);
+
+            // Assert
+            Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
+            Check.That(matcher.GetPatterns()).ContainsExactly("p1", "p2");
         }
     }
 }

@@ -16,7 +16,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var body = new BodyData
             {
-                BodyAsString = "b"
+                BodyAsString = "b",
+                DetectedBodyType = BodyType.String
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
@@ -43,7 +44,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var body = new BodyData
             {
-                BodyAsBytes = new byte[] { 1 }
+                BodyAsBytes = new byte[] { 1 },
+                DetectedBodyType = BodyType.Bytes
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
@@ -70,7 +72,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var body = new BodyData
             {
-                BodyAsJson = new { value = 42 }
+                BodyAsJson = new { value = 42 },
+                DetectedBodyType = BodyType.Json
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
@@ -84,10 +87,10 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.0d);
+            Check.That(score).IsEqualTo(0.5d);
 
             // Verify
-            stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Never);
+            stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -97,7 +100,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             var body = new BodyData
             {
                 BodyAsJson = new { value = 42 },
-                BodyAsString = "orig"
+                BodyAsString = "orig",
+                DetectedBodyType = BodyType.Json
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
             stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
@@ -123,7 +127,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var body = new BodyData
             {
-                BodyAsJson = 42
+                BodyAsJson = 42,
+                DetectedBodyType = BodyType.Json
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();
             objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);
@@ -149,7 +154,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var body = new BodyData
             {
-                BodyAsBytes = new byte[] { 1 }
+                BodyAsBytes = new byte[] { 1 },
+                DetectedBodyType = BodyType.Bytes
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();
             objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);

@@ -24,10 +24,7 @@ namespace WireMock.Http
                     contentTypeHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
                 }
 
-                var body = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
-                responseMessage.Body = body.BodyAsString;
-                responseMessage.BodyAsJson = body.BodyAsJson;
-                responseMessage.BodyAsBytes = body.BodyAsBytes;
+                responseMessage.BodyData = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
             }
 
             foreach (var header in headers)

@@ -4,36 +4,112 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using MimeKit;
 using Newtonsoft.Json;
+using WireMock.Matchers;
+using WireMock.Validation;
 
 namespace WireMock.Util
 {
     internal static class BodyParser
     {
-        private static readonly string[] JsonContentTypes =
-        {
-            "application/json",
-            "application/vnd.api+json"
+        private static readonly Encoding DefaultEncoding = Encoding.UTF8;
+
+        /*
+            HEAD - No defined body semantics.
+            GET - No defined body semantics.
+            PUT - Body supported.
+            POST - Body supported.
+            DELETE - No defined body semantics.
+            TRACE - Body not supported.
+            OPTIONS - Body supported but no semantics on usage (maybe in the future).
+            CONNECT - No defined body semantics
+            PATCH - Body supported.
+        */
+        private static readonly string[] AllowedBodyParseMethods = { "PUT", "POST", "OPTIONS", "PATCH" };
+
+        private static readonly IStringMatcher[] JsonContentTypesMatchers = {
+            new WildcardMatcher("application/json", true),
+            new WildcardMatcher("application/vnd.*+json", true)
         };
 
-        private static readonly string[] TextContentTypes =
+        private static readonly IStringMatcher[] TextContentTypeMatchers =
         {
-            "text/",
-            "application/javascript", "application/typescript",
-            "application/xml", "application/xhtml+xml",
-            "application/x-www-form-urlencoded"
+            new WildcardMatcher("text/*", true),
+            new RegexMatcher("^application\\/(java|type)script$", true),
+            new WildcardMatcher("application/*xml", true),
+            new WildcardMatcher("application/x-www-form-urlencoded", true)
         };
 
-        private static async Task<Tuple<string, Encoding>> ReadStringAsync(Stream stream)
+        public static bool ParseBodyAsIsValid([CanBeNull] string parseBodyAs)
         {
-            using (var streamReader = new StreamReader(stream))
-            {
-                string content = await streamReader.ReadToEndAsync();
-
-                return new Tuple<string, Encoding>(content, streamReader.CurrentEncoding);
-            }
+            return Enum.TryParse(parseBodyAs, out BodyType _);
         }
 
+        public static bool ShouldParseBody([CanBeNull] string method)
+        {
+            return AllowedBodyParseMethods.Contains(method, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public static BodyType DetectBodyTypeFromContentType([CanBeNull] string contentTypeValue)
+        {
+            if (string.IsNullOrEmpty(contentTypeValue) || !ContentType.TryParse(contentTypeValue, out ContentType contentType))
+            {
+                return BodyType.Bytes;
+            }
+
+            if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            {
+                return BodyType.String;
+            }
+
+            if (JsonContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            {
+                return BodyType.Json;
+            }
+
+            return BodyType.Bytes;
+        }
+
+        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType)
+        {
+            Check.NotNull(stream, nameof(stream));
+
+            var data = new BodyData
+            {
+                BodyAsBytes = await ReadBytesAsync(stream),
+                DetectedBodyType = BodyType.Bytes,
+                DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentType)
+            };
+
+            // Try to get the body as String
+            try
+            {
+                data.BodyAsString = DefaultEncoding.GetString(data.BodyAsBytes);
+                data.Encoding = DefaultEncoding;
+                data.DetectedBodyType = BodyType.String;
+
+                // If string is not null or empty, try to get as Json
+                if (!string.IsNullOrEmpty(data.BodyAsString))
+                {
+                    try
+                    {
+                        data.BodyAsJson = JsonConvert.DeserializeObject(data.BodyAsString, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                        data.DetectedBodyType = BodyType.Json;
+                    }
+                    catch
+                    {
+                        // JsonConvert failed, just ignore.
+                    }
+                }
+            }
+            catch
+            {
+                // Reading as string failed, just ignore
+            }
+
+            return data;
+        }
         private static async Task<byte[]> ReadBytesAsync(Stream stream)
         {
             using (var memoryStream = new MemoryStream())
@@ -41,48 +117,6 @@ namespace WireMock.Util
                 await stream.CopyToAsync(memoryStream);
                 return memoryStream.ToArray();
             }
-        }
-
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentTypeHeaderValue)
-        {
-            var data = new BodyData();
-
-            if (contentTypeHeaderValue != null && TextContentTypes.Any(text => contentTypeHeaderValue.StartsWith(text, StringComparison.OrdinalIgnoreCase)))
-            {
-                try
-                {
-                    var stringData = await ReadStringAsync(stream);
-                    data.BodyAsString = stringData.Item1;
-                    data.Encoding = stringData.Item2;
-                }
-                catch
-                {
-                    // Reading as string failed, just get the ByteArray.
-                    data.BodyAsBytes = await ReadBytesAsync(stream);
-                }
-            }
-            else if (contentTypeHeaderValue != null && JsonContentTypes.Any(json => contentTypeHeaderValue.StartsWith(json, StringComparison.OrdinalIgnoreCase)))
-            {
-                var stringData = await ReadStringAsync(stream);
-                data.BodyAsString = stringData.Item1;
-                data.Encoding = stringData.Item2;
-
-                try
-                {
-                    data.BodyAsJson = JsonConvert.DeserializeObject(stringData.Item1, new JsonSerializerSettings { Formatting = Formatting.Indented });
-                }
-                catch
-                {
-                    // JsonConvert failed, just set the Body as string.
-                    data.BodyAsString = stringData.Item1;
-                }
-            }
-            else
-            {
-                data.BodyAsBytes = await ReadBytesAsync(stream);
-            }
-
-            return data;
         }
     }
 }

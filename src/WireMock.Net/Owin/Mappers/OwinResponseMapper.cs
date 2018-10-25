@@ -45,23 +45,25 @@ namespace WireMock.Owin.Mappers
             response.StatusCode = responseMessage.StatusCode;
 
             byte[] bytes = null;
-            if (responseMessage.BodyAsBytes != null)
+            switch (responseMessage.BodyData?.DetectedBodyType)
             {
-                bytes = responseMessage.BodyAsBytes;
-            }
-            else if (responseMessage.BodyAsFile != null)
-            {
-                bytes = File.ReadAllBytes(responseMessage.BodyAsFile);
-            }
-            else if (responseMessage.BodyAsJson != null)
-            {
-                Formatting formatting = responseMessage.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
-                string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
-                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(jsonBody);
-            }
-            else if (responseMessage.Body != null)
-            {
-                bytes = (responseMessage.BodyEncoding ?? _utf8NoBom).GetBytes(responseMessage.Body);
+                case BodyType.String:
+                    bytes = (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString);
+                    break;
+
+                case BodyType.Json:
+                    Formatting formatting = responseMessage.BodyData.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+                    string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
+                    bytes = (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
+                    break;
+
+                case BodyType.Bytes:
+                    bytes = responseMessage.BodyData.BodyAsBytes;
+                    break;
+
+                case BodyType.File:
+                    bytes = File.ReadAllBytes(responseMessage.BodyData.BodyAsFile);
+                    break;
             }
 
             SetResponseHeaders(responseMessage, response);
