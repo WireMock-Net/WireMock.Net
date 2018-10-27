@@ -1,5 +1,0 @@
-https://github.com/GitTools/GitReleaseNotes
-
-GitReleaseNotes.exe . /OutputFile CHANGELOG.md /Version 1.0.4.18
-
-GitReleaseNotes.exe . /OutputFile CHANGELOG.md /allTags
