@@ -150,8 +150,6 @@
 - [#113](https://github.com/WireMock-Net/WireMock.Net/issues/113) - Feature: Add BodyAsJsonIndented for response message
 - [#114](https://github.com/WireMock-Net/WireMock.Net/issues/114) - Feature: Add PathSegments in Transform
 
-# 1.0.3.13 (24 March 2018)
-
 # 1.0.3.12 (24 March 2018)
 - [#100](https://github.com/WireMock-Net/WireMock.Net/issues/100) - Issue: JsonPathMatcher - not working for rootless jsons?
 
@@ -170,10 +168,6 @@
 # 1.0.3.7 (09 March 2018)
 - [#104](https://github.com/WireMock-Net/WireMock.Net/issues/104) - Issue: PlatformNotSupportedException
 
-# 1.0.3.6 (08 March 2018)
-
-# 1.0.3.5 (08 March 2018)
-
 # 1.0.3.4 (04 March 2018)
 - [#95](https://github.com/WireMock-Net/WireMock.Net/pull/95) - Unittest fix contributed by [StefH](https://github.com/StefH)
 - [#96](https://github.com/WireMock-Net/WireMock.Net/pull/96) - Replace log4net by custom logger (#94) contributed by [StefH](https://github.com/StefH)
@@ -189,12 +183,12 @@
 - [#91](https://github.com/WireMock-Net/WireMock.Net/issues/91) - Bug: WireMock.Net is not matching application/json http requests using JSONPathMatcher
 
 # 1.0.3.2 (14 February 2018)
-- [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by [StefH](https://github.com/StefH)
 - [#90](https://github.com/WireMock-Net/WireMock.Net/pull/90) - Concurrent issue (#88) contributed by [StefH](https://github.com/StefH)
-- [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
 - [#88](https://github.com/WireMock-Net/WireMock.Net/issues/88) - Bug: Standalone server throws 500 error when receiving concurrent requests
 
 # 1.0.3.1 (14 February 2018)
+- [#89](https://github.com/WireMock-Net/WireMock.Net/pull/89) - Add log4net logging contributed by [StefH](https://github.com/StefH)
+- [#87](https://github.com/WireMock-Net/WireMock.Net/issues/87) - Feature: Add logging
 
 # 1.0.3.0 (05 February 2018)
 - [#80](https://github.com/WireMock-Net/WireMock.Net/issues/80) - Feature: When using proxy, in case Content-Type is JSON, use BodyAsJson in Response
@@ -285,10 +279,6 @@
 - [#23](https://github.com/WireMock-Net/WireMock.Net/issues/23) - Consider port to .Net Core
 - [#25](https://github.com/WireMock-Net/WireMock.Net/issues/25) - Upgrade to vs2017
 
-# 1.0.1.5 (21 March 2017)
-
-# 1.0.1.3 (20 March 2017)
-
 # 1.0.1.2 (27 February 2017)
 - [#24](https://github.com/WireMock-Net/WireMock.Net/pull/24) - Body Encoding contributed by [sbebrys](https://github.com/sbebrys)
 - [#8](https://github.com/WireMock-Net/WireMock.Net/issues/8) - admin rest api
@@ -311,6 +301,4 @@
 - [#16](https://github.com/WireMock-Net/WireMock.Net/issues/16) - Stub priority
 - [#17](https://github.com/WireMock-Net/WireMock.Net/issues/17) - Add JsonBody to response
 - [#18](https://github.com/WireMock-Net/WireMock.Net/issues/18) - Listen on more ip-address/ports
-
-# 1.0.0.0 (17 January 2017)
 
