@@ -8,28 +8,20 @@ namespace WireMock.Net.StandAlone
     internal class SimpleCommandLineParser
     {
         private const string Sigil = "--";
-        private const string SigilAzureServiceFabric = "'--";
-
-        private enum SigilType
-        {
-            Normal,
-            AzureServiceFabric
-        }
 
         private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>();
 
-        public void Parse(string[] args)
+        public void Parse(string[] arguments)
         {
-            SigilType sigil = SigilType.Normal;
             string currentName = null;
 
             var values = new List<string>();
-            foreach (string arg in args)
+
+            // Split a single argument on a space character to fix issue (e.g. Azure Service Fabric) when an argument is supplied like "--x abc" or '--x abc'
+            foreach (string arg in arguments.SelectMany(arg => arg.Split(' ')))
             {
                 if (arg.StartsWith(Sigil))
                 {
-                    sigil = SigilType.Normal;
-
                     if (!string.IsNullOrEmpty(currentName))
                     {
                         Arguments[currentName] = values.ToArray();
@@ -38,33 +30,13 @@ namespace WireMock.Net.StandAlone
                     values.Clear();
                     currentName = arg.Substring(Sigil.Length);
                 }
-                // Azure Service Fabric passes the command line parameter surrounded with single quotes. (https://github.com/Microsoft/service-fabric/issues/234)
-                else if (arg.StartsWith(SigilAzureServiceFabric))
-                {
-                    sigil = SigilType.AzureServiceFabric;
-
-                    if (!string.IsNullOrEmpty(currentName))
-                    {
-                        Arguments[currentName] = values.ToArray();
-                    }
-
-                    values.Clear();
-                    currentName = arg.Substring(SigilAzureServiceFabric.Length);
-                }
                 else if (string.IsNullOrEmpty(currentName))
                 {
                     Arguments[arg] = new string[0];
                 }
                 else
                 {
-                    if (sigil == SigilType.Normal)
-                    {
-                        values.Add(arg);
-                    }
-                    else
-                    {
-                        values.Add(arg.Substring(0, arg.Length - 1));
-                    }
+                    values.Add(arg);
                 }
             }
 
