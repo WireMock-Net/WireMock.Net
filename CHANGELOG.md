@@ -1,3 +1,6 @@
+# 1.0.4.19 (31 October 2018)
+- [#220](https://github.com/WireMock-Net/WireMock.Net/pull/220) - Update SimpleCommandLineParser to handle arguments with key and value contributed by [StefH](https://github.com/StefH)
+
 # 1.0.4.18 (27 October 2018)
 - [#207](https://github.com/WireMock-Net/WireMock.Net/pull/207) - Rewrite some unit-integration-tests to unit-tests (#206) contributed by [StefH](https://github.com/StefH)
 - [#208](https://github.com/WireMock-Net/WireMock.Net/pull/208) - Refactor contributed by [StefH](https://github.com/StefH)
