@@ -12,11 +12,10 @@ steps:
     echo "BuildId = $(buildId)"
   displayName: 'Print buildId'
 
-# Install Tools (SonarScanner and Codecov)
+# Install Tools (SonarScanner)
 - script: |
     dotnet tool install --global dotnet-sonarscanner
-    nuget install codecov -Version 1.1.0
-  displayName: Install Tools (SonarScanner and Codecov)
+  displayName: Install Tools (SonarScanner)
 
 # Begin SonarScanner
 # See also
@@ -41,7 +40,7 @@ steps:
 
 # Upload coverage to codecov.io
 - script: |
-    %USERPROFILE%\Codecov.1.1.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
+    %USERPROFILE%\.nuget\packages\codecov\1.1.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
 - task: PublishTestResults@2
