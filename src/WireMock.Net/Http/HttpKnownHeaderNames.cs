@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Linq;
+
 namespace WireMock.Http
 {
     /// <summary>
@@ -9,6 +12,29 @@ namespace WireMock.Http
     /// </summary>
     internal static class HttpKnownHeaderNames
     {
+        // https://docs.microsoft.com/en-us/dotnet/api/system.net.webheadercollection.isrestricted
+        private static readonly string[] RestrictedResponseHeaders =
+        {
+            Accept,
+            Connection,
+            ContentLength,
+            ContentType,
+            Date,
+            Expect,
+            Host,
+            IfModifiedSince,
+            Range,
+            Referer,
+            TransferEncoding,
+            UserAgent,
+            ProxyConnection
+        };
+
+        /// <summary>Tests whether the specified HTTP header can be set for the response.</summary>
+        /// <param name="headerName">The header to test.</param>
+        /// <returns>true if the header is restricted; otherwise, false.</returns>
+        public static bool IsRestrictedResponseHeader(string headerName) => RestrictedResponseHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase);
+
         public const string Accept = "Accept";
         public const string AcceptCharset = "Accept-Charset";
         public const string AcceptEncoding = "Accept-Encoding";
