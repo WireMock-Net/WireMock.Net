@@ -8,8 +8,6 @@ using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Util;
 #if !USE_ASPNETCORE
-using System.Net;
-using Microsoft.Owin;
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
 using Microsoft.AspNetCore.Http;
@@ -85,16 +83,15 @@ namespace WireMock.Owin.Mappers
                 }
                 else
                 {
-#if !USE_ASPNETCORE
-                    // For non-NETSTANDARD, check if this response header can be added (#148)
-                    if (!WebHeaderCollection.IsRestricted(pair.Key, true))
+                    // Check if this response header can be added (#148 and #227)
+                    if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(pair.Key))
                     {
+#if !USE_ASPNETCORE
                         response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
-                    }
 #else
-                    // NETSTANDARD can add any header (or so it seems)
-                    response.Headers.Append(pair.Key, pair.Value.ToArray());
+                        response.Headers.Append(pair.Key, pair.Value.ToArray());
 #endif
+                    }
                 }
             }
         }
