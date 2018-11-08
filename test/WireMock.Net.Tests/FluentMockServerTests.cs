@@ -154,25 +154,23 @@ namespace WireMock.Net.Tests
         //    Check.That(result).Contains("google");
         //}
 
-#if !NET452
         [Fact]
-        public async Task FluentMockServer_Should_not_exclude_restrictedResponseHeader_for_ASPNETCORE()
+        public async Task FluentMockServer_Should_exclude_restrictedResponseHeader()
         {
             // Assign
             string path = $"/foo_{Guid.NewGuid()}";
-            var _server = FluentMockServer.Start();
+            var server = FluentMockServer.Start();
 
-            _server
+            server
                 .Given(Request.Create().WithPath(path).UsingGet())
-                .RespondWith(Response.Create().WithHeader("Keep-Alive", "k").WithHeader("test", "t"));
+                .RespondWith(Response.Create().WithHeader("Transfer-Encoding", "chunked").WithHeader("test", "t"));
 
             // Act
-            var response = await new HttpClient().GetAsync("http://localhost:" + _server.Ports[0] + path);
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + path);
 
             // Assert
             Check.That(response.Headers.Contains("test")).IsTrue();
-            Check.That(response.Headers.Contains("Keep-Alive")).IsTrue();
+            Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
         }
-#endif
     }
 }
