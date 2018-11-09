@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
@@ -12,7 +13,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         private const string ClientIp = "::1";
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch()
         {
             // Assign
             var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
@@ -31,7 +32,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch_NoMatch()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch_NoMatch()
         {
             // Assign
             var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
@@ -50,7 +51,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch_NoMatch_WithDefaultValue()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch_NoMatch_WithDefaultValue()
         {
             // Assign
             var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
@@ -69,7 +70,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch2()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch2()
         {
             // Assign
             var body = new BodyData { BodyAsString = "https://localhost:5000/", DetectedBodyType = BodyType.String };
@@ -88,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch2_NoMatch()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
@@ -107,7 +108,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_RegexMatch2_NoMatch_WithDefaultValue()
+        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch2_NoMatch_WithDefaultValue()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
@@ -126,7 +127,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponse_Handlebars_RegexMatch2_Throws()
+        public void Response_ProvideResponseAsync_Handlebars_RegexMatch2_Throws()
         {
             // Assign
             var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
