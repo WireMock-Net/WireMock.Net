@@ -1,3 +1,9 @@
+# 1.0.4.21 (09 November 2018)
+- [#221](https://github.com/WireMock-Net/WireMock.Net/pull/221) - Update dependencies [feature] contributed by [StefH](https://github.com/StefH)
+- [#229](https://github.com/WireMock-Net/WireMock.Net/pull/229) - Fix proxy tests [test] contributed by [StefH](https://github.com/StefH)
+- [#230](https://github.com/WireMock-Net/WireMock.Net/pull/230) - Add HandleBars Random functionality (#219) [feature] contributed by [StefH](https://github.com/StefH)
+- [#219](https://github.com/WireMock-Net/WireMock.Net/issues/219) - Feature: random value helper [feature]
+
 # 1.0.4.20 (07 November 2018)
 - [#222](https://github.com/WireMock-Net/WireMock.Net/pull/222) - Codecov contributed by [StefH](https://github.com/StefH)
 - [#224](https://github.com/WireMock-Net/WireMock.Net/pull/224) - Fixed issue 223: Example for WireMock as Windows Service throws Exception because of WireMockConsoleLogger contributed by [paulssn](https://github.com/paulssn)
@@ -311,3 +317,4 @@
 - [#16](https://github.com/WireMock-Net/WireMock.Net/issues/16) - Stub priority [feature]
 - [#17](https://github.com/WireMock-Net/WireMock.Net/issues/17) - Add JsonBody to response [feature]
 - [#18](https://github.com/WireMock-Net/WireMock.Net/issues/18) - Listen on more ip-address/ports [feature]
+
