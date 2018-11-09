@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using HandlebarsDotNet;
 using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
@@ -12,20 +14,36 @@ namespace WireMock.Transformers
         {
             Handlebars.RegisterHelper("Random", (writer, context, arguments) =>
             {
-                var fieldOptions = GetFieldOptionsFromArguments(arguments);
-
-                dynamic randomizer = RandomizerFactory.GetRandomizerAsDynamic(fieldOptions);
-                if (randomizer.GetType().GetMethod("GenerateAsString") != null)
-                {
-                    string valueAsString = randomizer.GenerateAsString();
-                    writer.WriteSafeString(valueAsString);
-                }
-                else
-                {
-                    object valueAsObject = randomizer.Generate();
-                    writer.WriteSafeString(valueAsObject);
-                }
+                object value = GetValue(arguments);
+                writer.Write(value);
             });
+
+            Handlebars.RegisterHelper("Random", (writer, options, context, arguments) =>
+            {
+                object value = GetValue(arguments);
+                options.Template(writer, value);
+            });
+        }
+
+        private static object GetValue(object[] arguments)
+        {
+            var fieldOptions = GetFieldOptionsFromArguments(arguments);
+            dynamic randomizer = RandomizerFactory.GetRandomizerAsDynamic(fieldOptions);
+
+            // Format DateTime as ISO 8601
+            if (fieldOptions is IFieldOptionsDateTime)
+            {
+                DateTime? date = randomizer.Generate();
+                return date.HasValue ? date.Value.ToString("s", CultureInfo.InvariantCulture) : null;
+            }
+
+            // If the IFieldOptionsGuid defines Uppercase, use the 'GenerateAsString' method.
+            if (fieldOptions is IFieldOptionsGuid fieldOptionsGuid)
+            {
+                return fieldOptionsGuid.Uppercase ? randomizer.GenerateAsString() : randomizer.Generate();
+            }
+
+            return randomizer.Generate();
         }
 
         private static FieldOptionsAbstract GetFieldOptionsFromArguments(object[] arguments)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Net;
 using Newtonsoft.Json;
 using WireMock.Logging;
@@ -398,7 +399,23 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request.Create().WithPath("/random"))
                 .RespondWith(Response.Create()
-                    .WithBody("Text:{{Random Type=\"Text\" Min=8 Max=20}}\r\nDateTime:{{Random Type=\"DateTime\"}}\r\nGuid:{{Random Type=\"Guid\" Uppercase=true}}")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new
+                    {
+                        Text = "{{Random Type=\"Text\" Min=8 Max=20}}",
+                        TextLipsum = "{{Random Type=\"TextLipsum\"}}",
+                        TimeSpan1 = "{{Random Type=\"TimeSpan\" Format=\"c\" IncludeMilliseconds=false}}",
+                        TimeSpan2 = "{{Random Type=\"TimeSpan\"}}",
+                        DateTime1 = "{{Random Type=\"DateTime\"}}",
+                        DateTime2 = DateTime.Now,
+                        DateTime3 = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
+                        Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
+                        Guid2 = "{{Random Type=\"Guid\"}}",
+                        Integer1 = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
+                        Integer2 = "{{#Random Type=\"Integer\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
+                        Double1 = "{{Random Type=\"Double\" Min=10 Max=99}}",
+                        Double2 = "{{Random Type=\"Double\" Min=100 Max=999}}"
+                    })
                     .WithTransformer()
                 );
 
