@@ -9,6 +9,8 @@
             HandleBarsJsonPath.Register();
 
             HandleBarsLinq.Register();
+
+            HandleBarsRandom.Register();
         }
     }
 }

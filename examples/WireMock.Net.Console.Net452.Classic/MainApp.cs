@@ -395,6 +395,13 @@ namespace WireMock.Net.ConsoleApplication
                     })
                 );
 
+            server
+                .Given(Request.Create().WithPath("/random"))
+                .RespondWith(Response.Create()
+                    .WithBody("Text:{{Random Type=\"Text\" Min=8 Max=20}}\r\nDateTime:{{Random Type=\"DateTime\"}}\r\nGuid:{{Random Type=\"Guid\" Uppercase=true}}")
+                    .WithTransformer()
+                );
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();
