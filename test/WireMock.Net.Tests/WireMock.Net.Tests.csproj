@@ -11,6 +11,8 @@
 
     <!-- https://github.com/tonerdo/coverlet/issues/6 -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <SonarQubeTestProject>True</SonarQubeTestProject>
+    <SonarQubeExclude>True</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>
