@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -61,6 +62,28 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(guid1.ToUpper()).IsNotEqualTo(guid1);
             string guid2 = j["Guid2"].Value<string>();
             Check.That(guid2.ToUpper()).IsEqualTo(guid2);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_StringList()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithBodyAsJson(new
+                {
+                    StringValue = "{{Random Type=\"StringList\" Values=[\"a\", \"b\", \"c\"]}}"
+                })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            string value = j["StringValue"].Value<string>();
+            Check.That(new[] { "a", "b", "c" }.Contains(value)).IsTrue();
         }
 
         [Fact]

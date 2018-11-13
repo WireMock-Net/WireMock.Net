@@ -9,15 +9,15 @@ namespace WireMock.Transformers
 {
     internal static class HandleBarsJsonPath
     {
-        public static void Register()
+        public static void Register(IHandlebars handlebarsContext)
         {
-            Handlebars.RegisterHelper("JsonPath.SelectToken", (writer, context, arguments) =>
+            handlebarsContext.RegisterHelper("JsonPath.SelectToken", (writer, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonpath) = ParseArguments(arguments);
+                (JObject valueToProcess, string jsonPath) = ParseArguments(arguments);
 
                 try
                 {
-                    var result = valueToProcess.SelectToken(jsonpath);
+                    var result = valueToProcess.SelectToken(jsonPath);
                     writer.WriteSafeString(result);
                 }
                 catch (JsonException)
@@ -26,13 +26,13 @@ namespace WireMock.Transformers
                 }
             });
 
-            Handlebars.RegisterHelper("JsonPath.SelectTokens", (writer, options, context, arguments) =>
+            handlebarsContext.RegisterHelper("JsonPath.SelectTokens", (writer, options, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonpath) = ParseArguments(arguments);
+                (JObject valueToProcess, string jsonPath) = ParseArguments(arguments);
 
                 try
                 {
-                    var values = valueToProcess.SelectTokens(jsonpath);
+                    var values = valueToProcess.SelectTokens(jsonPath);
                     if (values != null)
                     {
                         options.Template(writer, values.ToDictionary(value => value.Path, value => value));

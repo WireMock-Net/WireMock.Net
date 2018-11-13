@@ -10,9 +10,16 @@ namespace WireMock.Transformers
 {
     internal static class ResponseMessageTransformer
     {
+        private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
+        {
+            UnresolvedBindingFormatter = "{0}"
+        };
+
+        private static readonly IHandlebars HandlebarsContext = Handlebars.Create(HandlebarsConfiguration);
+
         static ResponseMessageTransformer()
         {
-            HandlebarsHelpers.Register();
+            HandlebarsHelpers.Register(HandlebarsContext);
         }
 
         public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
@@ -40,9 +47,9 @@ namespace WireMock.Transformers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)
             {
-                var templateHeaderKey = Handlebars.Compile(header.Key);
+                var templateHeaderKey = HandlebarsContext.Compile(header.Key);
                 var templateHeaderValues = header.Value
-                    .Select(Handlebars.Compile)
+                    .Select(HandlebarsContext.Compile)
                     .Select(func => func(template))
                     .ToArray();
 
@@ -109,7 +116,7 @@ namespace WireMock.Transformers
                     return;
                 }
 
-                var templateForStringValue = Handlebars.Compile(stringValue);
+                var templateForStringValue = HandlebarsContext.Compile(stringValue);
                 string transformedString = templateForStringValue(template);
                 if (!string.Equals(stringValue, transformedString))
                 {
@@ -132,7 +139,7 @@ namespace WireMock.Transformers
 
         private static void TransformBodyAsString(object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBody = Handlebars.Compile(original.BodyData.BodyAsString);
+            var templateBody = HandlebarsContext.Compile(original.BodyData.BodyAsString);
 
             responseMessage.BodyData = new BodyData
             {
