@@ -407,14 +407,16 @@ namespace WireMock.Net.ConsoleApplication
                         TimeSpan1 = "{{Random Type=\"TimeSpan\" Format=\"c\" IncludeMilliseconds=false}}",
                         TimeSpan2 = "{{Random Type=\"TimeSpan\"}}",
                         DateTime1 = "{{Random Type=\"DateTime\"}}",
-                        DateTime2 = DateTime.Now,
-                        DateTime3 = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
+                        DateTimeNow = DateTime.Now,
+                        DateTimeToString = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
                         Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
                         Guid2 = "{{Random Type=\"Guid\"}}",
                         Integer1 = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
                         Integer2 = "{{#Random Type=\"Integer\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
                         Double1 = "{{Random Type=\"Double\" Min=10 Max=99}}",
-                        Double2 = "{{Random Type=\"Double\" Min=100 Max=999}}"
+                        Double2 = "{{Random Type=\"Double\" Min=100 Max=999}}",
+                        IP4Address = "{{Random Type=\"IPv4Address\"}}",
+                        IP6Address = "{{Random Type=\"IPv6Address\"}}"
                     })
                     .WithTransformer()
                 );
