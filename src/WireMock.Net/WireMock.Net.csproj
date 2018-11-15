@@ -24,6 +24,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <CodeAnalysisRuleSet>WireMock.Net.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -52,6 +53,10 @@
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
     <PackageReference Include="RestEase" Version="1.4.7" />
     <PackageReference Include="MimeKitLite" Version="2.0.7" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.9" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.3" />
   </ItemGroup>
