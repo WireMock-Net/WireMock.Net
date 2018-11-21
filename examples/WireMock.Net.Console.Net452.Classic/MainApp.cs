@@ -415,8 +415,9 @@ namespace WireMock.Net.ConsoleApplication
                         Integer2 = "{{#Random Type=\"Integer\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
                         Double1 = "{{Random Type=\"Double\" Min=10 Max=99}}",
                         Double2 = "{{Random Type=\"Double\" Min=100 Max=999}}",
-                        IP4Address = "{{Random Type=\"IPv4Address\"}}",
-                        IP6Address = "{{Random Type=\"IPv6Address\"}}"
+                        IP4Address = "{{Random Type=\"IPv4Address\" Min=\"10.2.3.4\"}}",
+                        IP6Address = "{{Random Type=\"IPv6Address\"}}",
+                        MACAddress = "{{Random Type=\"MACAddress\" Separator=\"-\"}}"
                     })
                     .WithTransformer()
                 );
