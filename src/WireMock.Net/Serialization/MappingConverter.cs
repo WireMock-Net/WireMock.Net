@@ -102,42 +102,47 @@ namespace WireMock.Serialization
                 mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
                 mappingModel.Response.UseTransformer = response.UseTransformer;
 
-                if (response.ResponseMessage.BodyData != null)
-                {
-                    switch (response.ResponseMessage.BodyData?.DetectedBodyType)
-                    {
-                        case BodyType.String:
-                            mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
-                            break;
-
-                        case BodyType.Json:
-                            mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
-                            mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
-                            break;
-
-                        case BodyType.Bytes:
-                            mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
-                            break;
-
-                        case BodyType.File:
-                            mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
-                            mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
-                            break;
-                    }
-
-                    if (response.ResponseMessage.BodyData.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
-                    {
-                        mappingModel.Response.BodyEncoding = new EncodingModel
-                        {
-                            EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
-                            CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
-                            WebName = response.ResponseMessage.BodyData.Encoding.WebName
-                        };
-                    }
-                }
+                MapBodyData(response, mappingModel);
             }
 
             return mappingModel;
+        }
+
+        private static void MapBodyData(Response response, MappingModel mappingModel)
+        {
+            if (response.ResponseMessage.BodyData != null)
+            {
+                switch (response.ResponseMessage.BodyData?.DetectedBodyType)
+                {
+                    case BodyType.String:
+                        mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
+                        break;
+
+                    case BodyType.Json:
+                        mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
+                        mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                        break;
+
+                    case BodyType.Bytes:
+                        mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
+                        break;
+
+                    case BodyType.File:
+                        mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
+                        mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
+                        break;
+                }
+
+                if (response.ResponseMessage.BodyData.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+                {
+                    mappingModel.Response.BodyEncoding = new EncodingModel
+                    {
+                        EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
+                        CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
+                        WebName = response.ResponseMessage.BodyData.Encoding.WebName
+                    };
+                }
+            }
         }
 
         private static IDictionary<string, object> Map(IDictionary<string, WireMockList<string>> dictionary)

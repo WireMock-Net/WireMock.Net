@@ -38,8 +38,9 @@ namespace WireMock.Net.StandAlone
         {
             Check.NotNull(args, nameof(args));
 
-            var parser = new SimpleCommandLineParser();
-            parser.Parse(args);
+            var parser = new CommandLineParser.CommandLineParser();
+            var p = new CommandLineArguments();
+            parser.ExtractArgumentAttributes(p);
 
             var settings = new FluentMockServerSettings
             {
