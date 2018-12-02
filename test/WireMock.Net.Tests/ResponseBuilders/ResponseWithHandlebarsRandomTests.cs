@@ -34,7 +34,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
-            Check.That(j["Text"]).IsNotNull();
+            Check.That(j["Text"].Value<string>()).IsNotEmpty();
             Check.That(j["Integer"].Value<int>()).IsEqualTo(1000);
             Check.That(j["Long"].Value<int>()).IsStrictlyGreaterThan(77777777).And.IsStrictlyLessThan(99999999);
         }

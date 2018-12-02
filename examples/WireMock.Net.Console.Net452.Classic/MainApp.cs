@@ -402,6 +402,9 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new
                     {
+                        Xeger1 = "{{Xeger \"\\w{4}\\d{5}$\"}}",
+                        Xeger2 = "{{Xeger \"\\d{5}$\"}}",
+                        TextRegex = "{{Random Type=\"TextRegex\" Pattern=\"[1-9][0-9]{3}[A-Z]{2}\"}}",
                         Text = "{{Random Type=\"Text\" Min=8 Max=20}}",
                         TextLipsum = "{{Random Type=\"TextLipsum\"}}",
                         TimeSpan1 = "{{Random Type=\"TimeSpan\" Format=\"c\" IncludeMilliseconds=false}}",
