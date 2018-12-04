@@ -36,7 +36,28 @@ namespace WireMock.Net.Tests.ResponseBuilders
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
             Check.That(j["Text"].Value<string>()).IsNotEmpty();
             Check.That(j["Integer"].Value<int>()).IsEqualTo(1000);
-            Check.That(j["Long"].Value<int>()).IsStrictlyGreaterThan(77777777).And.IsStrictlyLessThan(99999999);
+            Check.That(j["Long"].Value<long>()).IsStrictlyGreaterThan(77777777).And.IsStrictlyLessThan(99999999);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Boolean()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithBodyAsJson(new
+                {
+                    Value = "{{Random Type=\"Boolean\"}}"
+                })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request);
+
+            // Assert
+            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
         }
 
         [Fact]
