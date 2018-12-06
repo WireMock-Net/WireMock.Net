@@ -120,21 +120,32 @@ namespace WireMock.Transformers
                 string transformedString = templateForStringValue(template);
                 if (!string.Equals(stringValue, transformedString))
                 {
-                    JToken value;
-                    try
-                    {
-                        // Try to convert this string into a real JsonObject
-                        value = JToken.Parse(transformedString);
-                    }
-                    catch (JsonException)
-                    {
-                        // Ignore JsonException and just convert to JToken
-                        value = transformedString;
-                    }
-
-                    node.Replace(value);
+                    ReplaceNodeValue(node, transformedString);
                 }
             }
+        }
+
+        private static void ReplaceNodeValue(JToken node, string stringValue)
+        {
+            if (bool.TryParse(stringValue, out bool valueAsBoolean))
+            {
+                node.Replace(valueAsBoolean);
+                return;
+            }
+
+            JToken value;
+            try
+            {
+                // Try to convert this string into a JsonObject
+                value = JToken.Parse(stringValue);
+            }
+            catch (JsonException)
+            {
+                // Ignore JsonException and just keep string value and convert to JToken
+                value = stringValue;
+            }
+
+            node.Replace(value);
         }
 
         private static void TransformBodyAsString(object template, ResponseMessage original, ResponseMessage responseMessage)

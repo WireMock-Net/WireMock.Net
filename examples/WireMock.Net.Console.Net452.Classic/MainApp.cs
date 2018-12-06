@@ -388,11 +388,10 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(500)
                     .WithBody(requestMessage =>
                     {
-                        string returnStr = JsonConvert.SerializeObject(new
+                        return JsonConvert.SerializeObject(new
                         {
                             Message = "Test error"
                         });
-                        return returnStr;
                     })
                 );
 
@@ -402,22 +401,28 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new
                     {
+                        Xeger1 = "{{Xeger \"\\w{4}\\d{5}\"}}",
+                        Xeger2 = "{{Xeger \"\\d{5}\"}}",
+                        TextRegexPostcode = "{{Random Type=\"TextRegex\" Pattern=\"[1-9][0-9]{3}[A-Z]{2}\"}}",
                         Text = "{{Random Type=\"Text\" Min=8 Max=20}}",
                         TextLipsum = "{{Random Type=\"TextLipsum\"}}",
+                        IBAN = "{{Random Type=\"IBAN\" CountryCode=\"NL\"}}",
                         TimeSpan1 = "{{Random Type=\"TimeSpan\" Format=\"c\" IncludeMilliseconds=false}}",
                         TimeSpan2 = "{{Random Type=\"TimeSpan\"}}",
                         DateTime1 = "{{Random Type=\"DateTime\"}}",
                         DateTimeNow = DateTime.Now,
-                        DateTimeToString = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
+                        DateTimeNowToString = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
                         Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
                         Guid2 = "{{Random Type=\"Guid\"}}",
-                        Integer1 = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
-                        Integer2 = "{{#Random Type=\"Integer\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
-                        Double1 = "{{Random Type=\"Double\" Min=10 Max=99}}",
-                        Double2 = "{{Random Type=\"Double\" Min=100 Max=999}}",
+                        Boolean = "{{Random Type=\"Boolean\"}}",
+                        Integer = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
+                        Long = "{{#Random Type=\"Long\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
+                        Double = "{{Random Type=\"Double\" Min=10 Max=99}}",
+                        Float = "{{Random Type=\"Float\" Min=100 Max=999}}",
                         IP4Address = "{{Random Type=\"IPv4Address\" Min=\"10.2.3.4\"}}",
                         IP6Address = "{{Random Type=\"IPv6Address\"}}",
-                        MACAddress = "{{Random Type=\"MACAddress\" Separator=\"-\"}}"
+                        MACAddress = "{{Random Type=\"MACAddress\" Separator=\"-\"}}",
+                        StringListValue = "{{Random Type=\"StringList\" Values=[\"a\", \"b\", \"c\"]}}"
                     })
                     .WithTransformer()
                 );
