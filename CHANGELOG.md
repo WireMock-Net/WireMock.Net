@@ -1,3 +1,6 @@
+# 1.0.5 (07 December 2018)
+- [#236](https://github.com/WireMock-Net/WireMock.Net/pull/236) - Add Random Regex (using Fare) [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.4.21 (30 November 2018)
 - [#221](https://github.com/WireMock-Net/WireMock.Net/pull/221) - Update dependencies [feature] contributed by [StefH](https://github.com/StefH)
 - [#229](https://github.com/WireMock-Net/WireMock.Net/pull/229) - Fix proxy tests [test] contributed by [StefH](https://github.com/StefH)
