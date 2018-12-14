@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -213,21 +214,27 @@ namespace WireMock.Server
 #endif
             Ports = _httpServer.Ports;
 
-            _httpServer.StartAsync();
+            var startTask = _httpServer.StartAsync();
 
             using (var ctsStartTimeout = new CancellationTokenSource(settings.StartTimeout))
             {
                 while (!_httpServer.IsStarted)
                 {
-                    // Throw out exception if service start fails
+                    // Throw exception if service start fails
                     if (_httpServer.RunningException != null)
                     {
-                        throw new Exception($"Service start failed with error: {_httpServer.RunningException.Message}", _httpServer.RunningException);
+                        throw new WireMockException($"Service start failed with error: {_httpServer.RunningException.Message}", _httpServer.RunningException);
                     }
 
-                    // Respect start timeout setting by throwing TimeoutException
                     if (ctsStartTimeout.IsCancellationRequested)
                     {
+                        // In case of an aggregate exception, throw the exception.
+                        if (startTask.Exception != null)
+                        {
+                            throw new WireMockException($"Service start failed with error: {startTask.Exception.Message}", startTask.Exception);
+                        }
+
+                        // Else throw TimeoutException
                         throw new TimeoutException($"Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}");
                     }
 

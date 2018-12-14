@@ -13,6 +13,8 @@ namespace WireMock.Transformers
             HandleBarsLinq.Register(handlebarsContext);
 
             HandleBarsRandom.Register(handlebarsContext);
+
+            HandleBarsXeger.Register(handlebarsContext);
         }
     }
 }

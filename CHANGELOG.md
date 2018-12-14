@@ -1,8 +1,16 @@
-# 1.0.4.21 (09 November 2018)
+# 1.0.5 (07 December 2018)
+- [#236](https://github.com/WireMock-Net/WireMock.Net/pull/236) - Add Random Regex (using Fare) [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.0.4.21 (30 November 2018)
 - [#221](https://github.com/WireMock-Net/WireMock.Net/pull/221) - Update dependencies [feature] contributed by [StefH](https://github.com/StefH)
 - [#229](https://github.com/WireMock-Net/WireMock.Net/pull/229) - Fix proxy tests [test] contributed by [StefH](https://github.com/StefH)
 - [#230](https://github.com/WireMock-Net/WireMock.Net/pull/230) - Add HandleBars Random functionality (#219) [feature] contributed by [StefH](https://github.com/StefH)
+- [#231](https://github.com/WireMock-Net/WireMock.Net/pull/231) - Use RandomDataGenerator.Net 1.0.3.0 contributed by [StefH](https://github.com/StefH)
+- [#232](https://github.com/WireMock-Net/WireMock.Net/pull/232) - Add SonarLint checks [feature] contributed by [StefH](https://github.com/StefH)
+- [#233](https://github.com/WireMock-Net/WireMock.Net/pull/233) - RandomDataGenerator.Net 1.0.4 [feature] contributed by [StefH](https://github.com/StefH)
+- [#235](https://github.com/WireMock-Net/WireMock.Net/pull/235) - Check aggregate exception during startup [bug] contributed by [StefH](https://github.com/StefH)
 - [#219](https://github.com/WireMock-Net/WireMock.Net/issues/219) - Feature: random value helper [feature]
+- [#234](https://github.com/WireMock-Net/WireMock.Net/issues/234) - Timeout Exception on VSTS Test Platform (Azure DevOps), with private build agent
 
 # 1.0.4.20 (07 November 2018)
 - [#222](https://github.com/WireMock-Net/WireMock.Net/pull/222) - Codecov contributed by [StefH](https://github.com/StefH)
