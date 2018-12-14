@@ -59,6 +59,14 @@ namespace WireMock.Client
         Task<StatusModel> PostMappingAsync([Body] MappingModel mapping);
 
         /// <summary>
+        /// Add new mappings.
+        /// </summary>
+        /// <param name="mappings">MappingModels</param>
+        [Post("__admin/mappings")]
+        [Header("Content-Type", "application/json")]
+        Task<StatusModel> PostMappingsAsync([Body] IList<MappingModel> mappings);
+
+        /// <summary>
         /// Delete all mappings.
         /// </summary>
         [Delete("__admin/mappings")]
