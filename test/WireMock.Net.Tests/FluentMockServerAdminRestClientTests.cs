@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using NFluent;
+using RestEase;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using NFluent;
-using RestEase;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Client;
@@ -19,7 +19,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_GetSettingsAsync()
         {
-            // Assign
+            // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
             var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
 
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_PostSettingsAsync()
         {
-            // Assign
+            // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
             var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
 
@@ -44,7 +44,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_PutSettingsAsync()
         {
-            // Assign
+            // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
             var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
 
@@ -57,22 +57,15 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_PostMappingAsync()
         {
-            // Assign
+            // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
             var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
 
             // Act
             var model = new MappingModel
             {
-                Request = new RequestModel
-                {
-                    Path = "/1"
-                },
-                Response = new ResponseModel
-                {
-                    Body = "txt",
-                    StatusCode = 200
-                },
+                Request = new RequestModel { Path = "/1" },
+                Response = new ResponseModel { Body = "txt", StatusCode = 200 },
                 Priority = 500,
                 Title = "test"
             };
@@ -91,9 +84,40 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task IFluentMockServerAdmin_PostMappingsAsync()
+        {
+            // Arrange
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var model1 = new MappingModel
+            {
+                Request = new RequestModel { Path = "/1" },
+                Response = new ResponseModel { Body = "txt 1" },
+                Title = "test 1"
+            };
+            var model2 = new MappingModel
+            {
+                Request = new RequestModel { Path = "/2" },
+                Response = new ResponseModel { Body = "txt 2" },
+                Title = "test 2"
+            };
+            var result = await api.PostMappingsAsync(new[] { model1, model2 });
+
+            // Assert
+            Check.That(result).IsNotNull();
+            Check.That(result.Status).IsNotNull();
+            Check.That(result.Guid).IsNull();
+            Check.That(server.Mappings.Where(m => !m.IsAdminInterface)).HasSize(2);
+
+            server.Stop();
+        }
+
+        [Fact]
         public async Task IFluentMockServerAdmin_FindRequestsAsync()
         {
-            // given
+            // Arrange
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 StartAdminInterface = true,
@@ -103,10 +127,10 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
-            // when
+            // Act
             var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } });
 
-            // then
+            // Assert
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
             Check.That(requestLogged.Request.Method).IsEqualTo("GET");
@@ -117,7 +141,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_GetRequestsAsync()
         {
-            // given
+            // Arrange
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 StartAdminInterface = true,
@@ -127,10 +151,10 @@ namespace WireMock.Net.Tests
             await new HttpClient().GetAsync(serverUrl + "/foo");
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
-            // when
+            // Act
             var requests = await api.GetRequestsAsync();
 
-            // then
+            // Assert
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
             Check.That(requestLogged.Request.Method).IsEqualTo("GET");
@@ -141,7 +165,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_GetRequestsAsync_JsonApi()
         {
-            // given
+            // Arrange
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 StartAdminInterface = true,
@@ -159,13 +183,14 @@ namespace WireMock.Net.Tests
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(jsonApiContentType);
 
             var response = await new HttpClient().SendAsync(request);
+            Check.That(response).IsNotNull();
 
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
-            // when
+            // Act
             var requests = await api.GetRequestsAsync();
 
-            // then
+            // Assert
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
             Check.That(requestLogged.Request.Method).IsEqualTo("POST");
@@ -176,7 +201,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task IFluentMockServerAdmin_GetRequestsAsync_Json()
         {
-            // given
+            // Arrange
             var server = FluentMockServer.Start(new FluentMockServerSettings
             {
                 StartAdminInterface = true,
@@ -193,13 +218,14 @@ namespace WireMock.Net.Tests
             request.Content = new StringContent(data);
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(jsonApiContentType);
             var response = await new HttpClient().SendAsync(request);
+            Check.That(response).IsNotNull();
 
             var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
 
-            // when
+            // Act
             var requests = await api.GetRequestsAsync();
 
-            // then
+            // Assert
             Check.That(requests).HasSize(1);
             var requestLogged = requests.First();
             Check.That(requestLogged.Request.Method).IsEqualTo("POST");
