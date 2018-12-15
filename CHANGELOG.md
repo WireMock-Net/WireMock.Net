@@ -1,3 +1,9 @@
+# 1.0.6 (15 December 2018)
+- [#242](https://github.com/WireMock-Net/WireMock.Net/pull/242) - Post multiple Mappings [feature] contributed by [StefH](https://github.com/StefH)
+- [#237](https://github.com/WireMock-Net/WireMock.Net/issues/237) - Port not released [question]
+- [#239](https://github.com/WireMock-Net/WireMock.Net/issues/239) - Not able to hit the mock server if AllowPartialMapping is not set to true [question]
+- [#240](https://github.com/WireMock-Net/WireMock.Net/issues/240) - How to submit mappings for multiple request, responses [feature]
+
 # 1.0.5 (07 December 2018)
 - [#236](https://github.com/WireMock-Net/WireMock.Net/pull/236) - Add Random Regex (using Fare) [feature] contributed by [StefH](https://github.com/StefH)
 
