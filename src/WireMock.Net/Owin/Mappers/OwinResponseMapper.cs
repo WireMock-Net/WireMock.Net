@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Util;
+using WireMock.Validation;
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
@@ -21,6 +22,7 @@ namespace WireMock.Owin.Mappers
     /// </summary>
     public class OwinResponseMapper : IOwinResponseMapper
     {
+        private readonly IFileSystemHandler _fileSystemHandler;
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
@@ -31,6 +33,17 @@ namespace WireMock.Owin.Mappers
 #endif
             { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
         };
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fileSystemHandler">The IFileSystemHandler.</param>
+        public OwinResponseMapper(IFileSystemHandler fileSystemHandler)
+        {
+            Check.NotNull(fileSystemHandler, nameof(fileSystemHandler));
+
+            _fileSystemHandler = fileSystemHandler;
+        }
 
         /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
         public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
@@ -60,7 +73,7 @@ namespace WireMock.Owin.Mappers
                     break;
 
                 case BodyType.File:
-                    bytes = File.ReadAllBytes(responseMessage.BodyData.BodyAsFile);
+                    bytes = _fileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
                     break;
             }
 

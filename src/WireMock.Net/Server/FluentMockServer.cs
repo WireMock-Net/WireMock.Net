@@ -203,6 +203,7 @@ namespace WireMock.Server
                 Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
+            _options.FileSystemHandler = settings.FileSystemHandler;
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _logger;

@@ -4,6 +4,7 @@ using Xunit;
 using Moq;
 using System.Threading.Tasks;
 using System.Threading;
+using WireMock.Handlers;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
 #if NET452
@@ -26,6 +27,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
         private readonly Mock<IResponse> _responseMock;
         private readonly Mock<Stream> _stream;
         private readonly Mock<IHeaderDictionary> _headers;
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock;
 
         public OwinResponseMapperTests()
         {
@@ -46,20 +48,23 @@ namespace WireMock.Net.Tests.Owin.Mappers
             _responseMock.SetupGet(r => r.Body).Returns(_stream.Object);
             _responseMock.SetupGet(r => r.Headers).Returns(_headers.Object);
 
-            _sut = new OwinResponseMapper();
+            _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            _fileSystemHandlerMock.SetupAllProperties();
+
+            _sut = new OwinResponseMapper(_fileSystemHandlerMock.Object);
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_Null()
+        public async Task OwinResponseMapper_MapAsync_Null()
         {
             // Act
             await _sut.MapAsync(null, _responseMock.Object);
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_StatusCode()
+        public async Task OwinResponseMapper_MapAsync_StatusCode()
         {
-            // Assign
+            // Arrange
             var responseMessage = new ResponseMessage
             {
                 StatusCode = 302
@@ -73,9 +78,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_NoBody()
+        public async Task OwinResponseMapper_MapAsync_NoBody()
         {
-            // Assign
+            // Arrange
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>()
@@ -89,9 +94,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_Body()
+        public async Task OwinResponseMapper_MapAsync_Body()
         {
-            // Assign
+            // Arrange
             string body = "abc";
             var responseMessage = new ResponseMessage
             {
@@ -107,9 +112,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_BodyAsBytes()
+        public async Task OwinResponseMapper_MapAsync_BodyAsBytes()
         {
-            // Assign
+            // Arrange
             var bytes = new byte[] { 48, 49 };
             var responseMessage = new ResponseMessage
             {
@@ -125,9 +130,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_BodyAsJson()
+        public async Task OwinResponseMapper_MapAsync_BodyAsJson()
         {
-            // Assign
+            // Arrange
             var json = new { t = "x", i = (string)null };
             var responseMessage = new ResponseMessage
             {
@@ -143,9 +148,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
-        public async void OwinResponseMapper_MapAsync_SetResponseHeaders()
+        public async Task OwinResponseMapper_MapAsync_SetResponseHeaders()
         {
-            // Assign
+            // Arrange
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>> { { "h", new WireMockList<string>("x", "y") } }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
@@ -35,5 +36,8 @@ namespace WireMock.Owin
         public Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
 
         public Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.FileSystemHandler"/>
+        public IFileSystemHandler FileSystemHandler { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 #if !USE_ASPNETCORE
@@ -34,5 +35,7 @@ namespace WireMock.Owin
         Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
 
         Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
+
+        IFileSystemHandler FileSystemHandler { get; set; }
     }
 }

@@ -1,13 +1,13 @@
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Settings;
 using WireMock.Transformers;
@@ -21,6 +21,7 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
+        private readonly IFileSystemHandler _fileSystemHandler = new LocalFileSystemHandler();
         private HttpClient _httpClientForProxy;
 
         /// <summary>
@@ -226,7 +227,7 @@ namespace WireMock.ResponseBuilders
             if (cache)
             {
                 ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
-                ResponseMessage.BodyData.BodyAsBytes = File.ReadAllBytes(filename);
+                ResponseMessage.BodyData.BodyAsBytes = _fileSystemHandler.ReadResponseBodyAsFile(filename);
             }
             else
             {
@@ -255,7 +256,7 @@ namespace WireMock.ResponseBuilders
             {
                 case BodyDestinationFormat.Bytes:
                     ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
-                    ResponseMessage.BodyData.BodyAsBytes= encoding.GetBytes(body);
+                    ResponseMessage.BodyData.BodyAsBytes = encoding.GetBytes(body);
                     break;
 
                 case BodyDestinationFormat.Json:
@@ -285,7 +286,7 @@ namespace WireMock.ResponseBuilders
                 BodyAsJson = body,
                 BodyAsJsonIndented = indented
             };
-            
+
             return this;
         }
 
