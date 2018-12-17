@@ -132,7 +132,7 @@ namespace WireMock.Server
                 return;
             }
 
-            foreach (string filename in _fileSystemHandler.EnumerateFiles(folder).Where(f => f.EndsWith(".json")).OrderBy(f => f))
+            foreach (string filename in _fileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
             {
                 _logger.Info("Reading Static MappingFile : '{0}'", filename);
 
