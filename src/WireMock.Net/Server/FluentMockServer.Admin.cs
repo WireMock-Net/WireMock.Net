@@ -206,14 +206,17 @@ namespace WireMock.Server
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-            MappingModel mappingModel = JsonConvert.DeserializeObject<MappingModel>(_fileSystemHandler.ReadMappingFile(path));
-            if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+            var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(_fileSystemHandler.ReadMappingFile(path)));
+            foreach (var mappingModel in mappingModels)
             {
-                DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
-            }
-            else
-            {
-                DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+                if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+                {
+                    DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+                }
+                else
+                {
+                    DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+                }
             }
         }
         #endregion
@@ -414,7 +417,7 @@ namespace WireMock.Server
         {
             try
             {
-                var mappingModels = DeserializeObjectArray<MappingModel>(requestMessage);
+                var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
                 if (mappingModels.Length == 1)
                 {
                     Guid? guid = DeserializeAndAddOrUpdateMapping(mappingModels[0]);
@@ -802,22 +805,27 @@ namespace WireMock.Server
             return default(T);
         }
 
-        private T[] DeserializeObjectArray<T>(RequestMessage requestMessage)
+        private T[] DeserializeRequestMessageToArray<T>(RequestMessage requestMessage)
         {
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
             {
                 var bodyAsJson = requestMessage.BodyData.BodyAsJson;
 
-                if (bodyAsJson is JArray jArray)
-                {
-                    return jArray.ToObject<T[]>();
-                }
-
-                var value = ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
-                return new[] { value };
+                return DeserializeObjectToArray<T>(bodyAsJson);
             }
 
             return default(T[]);
+        }
+
+        private T[] DeserializeObjectToArray<T>(object value)
+        {
+            if (value is JArray jArray)
+            {
+                return jArray.ToObject<T[]>();
+            }
+
+            var singleResult = ((JObject)value).ToObject<T>();
+            return new[] { singleResult };
         }
     }
 }
