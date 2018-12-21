@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Globalization;
 using System.Net;
-using Newtonsoft.Json;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -39,7 +39,7 @@ namespace WireMock.Net.ConsoleApplication
 
             server.SetBasicAuthentication("a", "b");
 
-            server.AllowPartialMapping();
+            // server.AllowPartialMapping();
 
             server
                 .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
@@ -425,6 +425,17 @@ namespace WireMock.Net.ConsoleApplication
                         StringListValue = "{{Random Type=\"StringList\" Values=[\"a\", \"b\", \"c\"]}}"
                     })
                     .WithTransformer()
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/xpathsoap")
+                    .WithBody(new XPathMatcher("//*[local-name() = 'getMyData']"))
+                )
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/xml")
+                    .WithBody("<xml>ok</xml>")
                 );
 
             System.Console.WriteLine("Press any key to stop the server");
