@@ -21,7 +21,7 @@ namespace Wiremock.Net.Service
 
             protected override void OnStart(string[] args)
             {
-                Start();
+                Start(new WireMockNullLogger());
             }
 
             protected override void OnStop()
@@ -46,7 +46,7 @@ namespace Wiremock.Net.Service
             else
             {
                 // running as console app
-                Start();
+                Start(new WireMockConsoleLogger());
 
                 Console.WriteLine("Press any key to stop...");
                 Console.ReadKey(true);
@@ -55,14 +55,14 @@ namespace Wiremock.Net.Service
             }
         }
 
-        private static void Start()
+        private static void Start(IWireMockLogger logger)
         {
             _server = StandAloneApp.Start(new FluentMockServerSettings
             {
                 Urls = new[] { "http://*:9091/" },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
-                Logger = new WireMockConsoleLogger()
+                Logger = logger
             });
         }
 

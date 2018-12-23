@@ -1,3 +1,6 @@
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,9 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
@@ -412,11 +412,21 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsPost(RequestMessage requestMessage)
         {
-            Guid? guid;
             try
             {
-                var mappingModel = DeserializeObject<MappingModel>(requestMessage);
-                guid = DeserializeAndAddOrUpdateMapping(mappingModel);
+                var mappingModels = DeserializeObjectArray<MappingModel>(requestMessage);
+                if (mappingModels.Length == 1)
+                {
+                    Guid? guid = DeserializeAndAddOrUpdateMapping(mappingModels[0]);
+                    return ResponseMessageBuilder.Create("Mapping added", 201, guid);
+                }
+
+                foreach (var mappingModel in mappingModels)
+                {
+                    DeserializeAndAddOrUpdateMapping(mappingModel);
+                }
+
+                return ResponseMessageBuilder.Create("Mappings added", 201);
             }
             catch (ArgumentException a)
             {
@@ -428,8 +438,6 @@ namespace WireMock.Server
                 _logger.Error("HttpStatusCode set to 500 {0}", e);
                 return ResponseMessageBuilder.Create(e.ToString(), 500);
             }
-
-            return ResponseMessageBuilder.Create("Mapping added", 201, guid);
         }
 
         private Guid? DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
@@ -792,6 +800,24 @@ namespace WireMock.Server
             }
 
             return default(T);
+        }
+
+        private T[] DeserializeObjectArray<T>(RequestMessage requestMessage)
+        {
+            if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
+            {
+                var bodyAsJson = requestMessage.BodyData.BodyAsJson;
+
+                if (bodyAsJson is JArray jArray)
+                {
+                    return jArray.ToObject<T[]>();
+                }
+
+                var value = ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
+                return new[] { value };
+            }
+
+            return default(T[]);
         }
     }
 }

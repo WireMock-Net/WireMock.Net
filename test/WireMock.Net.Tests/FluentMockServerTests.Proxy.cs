@@ -16,7 +16,6 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerProxyTests
     {
-#if NET452
         [Fact]
         public async Task FluentMockServer_Proxy_Should_proxy_responses()
         {
@@ -63,7 +62,7 @@ namespace WireMock.Net.Tests
             };
             var server = FluentMockServer.Start(settings);
 
-            // when
+            // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
@@ -74,7 +73,7 @@ namespace WireMock.Net.Tests
             requestMessage.Content.Headers.Add("bbb", "test");
             await new HttpClient().SendAsync(requestMessage);
 
-            // then
+            // Assert
             var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.BodyData.BodyAsString).IsEqualTo("stringContent");
             Check.That(receivedRequest.Headers).ContainsKey("Content-Type");
@@ -92,7 +91,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
         {
-            // given
+            // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
             var serverForProxyForwarding = FluentMockServer.Start();
             serverForProxyForwarding
@@ -111,7 +110,7 @@ namespace WireMock.Net.Tests
             };
             var server = FluentMockServer.Start(settings);
 
-            // when
+            // Act
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
@@ -122,7 +121,7 @@ namespace WireMock.Net.Tests
             requestMessage.Headers.Add("ok", "ok-value");
             await new HttpClient().SendAsync(requestMessage);
 
-            // then
+            // Assert
             var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Headers).Not.ContainsKey("bbb");
             Check.That(receivedRequest.Headers).ContainsKey("ok");
@@ -337,6 +336,5 @@ namespace WireMock.Net.Tests
             string content2 = await response2.Content.ReadAsStringAsync();
             Check.That(content2).IsEqualTo("[]");
         }
-#endif
     }
 }

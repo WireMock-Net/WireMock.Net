@@ -1,14 +1,20 @@
-﻿namespace WireMock.Transformers
+﻿using HandlebarsDotNet;
+
+namespace WireMock.Transformers
 {
     internal static class HandlebarsHelpers
     {
-        public static void Register()
+        public static void Register(IHandlebars handlebarsContext)
         {
-            HandleBarsRegex.Register();
+            HandleBarsRegex.Register(handlebarsContext);
 
-            HandleBarsJsonPath.Register();
+            HandleBarsJsonPath.Register(handlebarsContext);
 
-            HandleBarsLinq.Register();
+            HandleBarsLinq.Register(handlebarsContext);
+
+            HandleBarsRandom.Register(handlebarsContext);
+
+            HandleBarsXeger.Register(handlebarsContext);
         }
     }
 }

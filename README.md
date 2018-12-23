@@ -5,10 +5,10 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 * HTTP response stubbing, matchable on URL/Path, headers, cookies and body content patterns
 * Runs in unit tests, as a standalone process, as windows service, as Azure or IIS or as docker
 * Configurable via a fluent DotNet API, JSON files and JSON over HTTP
-* Record/playback of stubs
+* Record/playback of stubs (proxying)
 * Per-request conditional proxying
 * Stateful behaviour simulation
-* Configurable response delays
+* Response transformation
 
 ## Info
 | | |

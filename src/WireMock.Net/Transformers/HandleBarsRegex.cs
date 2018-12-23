@@ -9,9 +9,9 @@ namespace WireMock.Transformers
 {
     internal static class HandleBarsRegex
     {
-        public static void Register()
+        public static void Register(IHandlebars handlebarsContext)
         {
-            Handlebars.RegisterHelper("Regex.Match", (writer, context, arguments) =>
+            handlebarsContext.RegisterHelper("Regex.Match", (writer, context, arguments) =>
             {
                 (string stringToProcess, string regexPattern, object defaultValue) = ParseArguments(arguments);
 
@@ -27,7 +27,7 @@ namespace WireMock.Transformers
                 }
             });
 
-            Handlebars.RegisterHelper("Regex.Match", (writer, options, context, arguments) =>
+            handlebarsContext.RegisterHelper("Regex.Match", (writer, options, context, arguments) =>
             {
                 (string stringToProcess, string regexPattern, object defaultValue) = ParseArguments(arguments);
 

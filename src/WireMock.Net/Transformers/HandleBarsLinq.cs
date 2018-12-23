@@ -11,9 +11,9 @@ namespace WireMock.Transformers
 {
     internal static class HandleBarsLinq
     {
-        public static void Register()
+        public static void Register(IHandlebars handlebarsContext)
         {
-            Handlebars.RegisterHelper("Linq", (writer, context, arguments) =>
+            handlebarsContext.RegisterHelper("Linq", (writer, context, arguments) =>
             {
                 (JToken valueToProcess, string linqStatement) = ParseArguments(arguments);
 
@@ -28,7 +28,7 @@ namespace WireMock.Transformers
                 }
             });
 
-            Handlebars.RegisterHelper("Linq", (writer, options, context, arguments) =>
+            handlebarsContext.RegisterHelper("Linq", (writer, options, context, arguments) =>
             {
                 (JToken valueToProcess, string linqStatement) = ParseArguments(arguments);
 
