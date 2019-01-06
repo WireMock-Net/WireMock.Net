@@ -1,6 +1,8 @@
-﻿using System;
+﻿using log4net.Config;
+using System;
+using System.IO;
 using System.ServiceProcess;
-using WireMock.Logging;
+using WireMock.Net.Service;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 using WireMock.Settings;
@@ -21,7 +23,7 @@ namespace Wiremock.Net.Service
 
             protected override void OnStart(string[] args)
             {
-                Start(new WireMockNullLogger());
+                Start();
             }
 
             protected override void OnStop()
@@ -35,6 +37,11 @@ namespace Wiremock.Net.Service
 
         static void Main(string[] args)
         {
+            //Setting the current directory explicitly is required if the application is running as Windows Service, 
+            //as the current directory of a Windows Service is %WinDir%\System32 per default.
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            XmlConfigurator.ConfigureAndWatch(new FileInfo("log4net.config"));
+
             // running as service
             if (!Environment.UserInteractive)
             {
@@ -46,7 +53,7 @@ namespace Wiremock.Net.Service
             else
             {
                 // running as console app
-                Start(new WireMockConsoleLogger());
+                Start();
 
                 Console.WriteLine("Press any key to stop...");
                 Console.ReadKey(true);
@@ -55,14 +62,14 @@ namespace Wiremock.Net.Service
             }
         }
 
-        private static void Start(IWireMockLogger logger)
+        private static void Start()
         {
             _server = StandAloneApp.Start(new FluentMockServerSettings
             {
                 Urls = new[] { "http://*:9091/" },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
-                Logger = logger
+                Logger = new WireMockLog4NetLogger()
             });
         }
 
