@@ -28,6 +28,11 @@
         /// <summary>
         /// Body is a File
         /// </summary>
-        File
+        File,
+
+        /// <summary>
+        /// Body is a MultiPart
+        /// </summary>
+        MultiPart
     }
 }
