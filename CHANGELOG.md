@@ -1,8 +1,15 @@
+# 1.0.6.1 (10 January 2019)
+- [#247](https://github.com/WireMock-Net/WireMock.Net/pull/247) - Issue 225 improve logging in example for wire mock as windows service contributed by [paulssn](https://github.com/paulssn)
+- [#249](https://github.com/WireMock-Net/WireMock.Net/pull/249) - Fixed &quot;Content-Type multipart/form-data&quot; [bug] contributed by [StefH](https://github.com/StefH)
+- [#225](https://github.com/WireMock-Net/WireMock.Net/issues/225) - Feature: Improve logging in example for WireMock as Windows Service [feature]
+- [#238](https://github.com/WireMock-Net/WireMock.Net/issues/238) - Localhost and free port problem [question]
+- [#245](https://github.com/WireMock-Net/WireMock.Net/issues/245) - Not able to match XML request body using XPathMatcher pattern [question]
+- [#248](https://github.com/WireMock-Net/WireMock.Net/issues/248) - Content-Type multipart/form-data is not seen as byte[] anymore
+
 # 1.0.6 (15 December 2018)
 - [#242](https://github.com/WireMock-Net/WireMock.Net/pull/242) - Post multiple Mappings [feature] contributed by [StefH](https://github.com/StefH)
 - [#237](https://github.com/WireMock-Net/WireMock.Net/issues/237) - Port not released [question]
 - [#239](https://github.com/WireMock-Net/WireMock.Net/issues/239) - Not able to hit the mock server if AllowPartialMapping is not set to true [question]
-- [#240](https://github.com/WireMock-Net/WireMock.Net/issues/240) - How to submit mappings for multiple request, responses [feature]
 
 # 1.0.5 (07 December 2018)
 - [#236](https://github.com/WireMock-Net/WireMock.Net/pull/236) - Add Random Regex (using Fare) [feature] contributed by [StefH](https://github.com/StefH)

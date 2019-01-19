@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using NFluent;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using NFluent;
 using WireMock.Util;
 using Xunit;
 
@@ -17,7 +17,7 @@ namespace WireMock.Net.Tests.Util
         [InlineData("application/vnd.test+json", "{ \"x\": 1 }", BodyType.Json, BodyType.Json)]
         public async Task BodyParser_Parse_ContentTypeJson(string contentType, string bodyAsJson, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
-            // Assign
+            // Arrange
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsJson));
 
             // Act
@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests.Util
         [InlineData("something", "hello", BodyType.String, BodyType.Bytes)]
         public async Task BodyParser_Parse_ContentTypeString(string contentType, string bodyAsString, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
-            // Assign
+            // Arrange
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
 
             // Act
@@ -50,11 +50,49 @@ namespace WireMock.Net.Tests.Util
             Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(detectedBodyTypeFromContentType);
         }
 
+        [Fact]
+        public async Task BodyParser_Parse_ContentTypeMultipart()
+        {
+            // Arrange
+            string contentType = "multipart/form-data";
+            string body = @"
+
+-----------------------------9051914041544843365972754266
+Content-Disposition: form-data; name=""text""
+
+text default
+-----------------------------9051914041544843365972754266
+Content-Disposition: form-data; name=""file1""; filename=""a.txt""
+Content-Type: text/plain
+
+Content of a txt
+
+-----------------------------9051914041544843365972754266
+Content-Disposition: form-data; name=""file2""; filename=""a.html""
+Content-Type: text/html
+
+<!DOCTYPE html><title>Content of a.html.</title>
+
+-----------------------------9051914041544843365972754266--";
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
+
+            // Act
+            var result = await BodyParser.Parse(memoryStream, contentType);
+
+            // Assert
+            Check.That(result.DetectedBodyType).IsEqualTo(BodyType.Bytes);
+            Check.That(result.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.MultiPart);
+            Check.That(result.BodyAsBytes).IsNotNull();
+            Check.That(result.BodyAsJson).IsNull();
+            Check.That(result.BodyAsString).IsNull();
+        }
+
         [Theory]
         [InlineData(null, "hello", BodyType.String, BodyType.Bytes)]
         public async Task BodyParser_Parse_ContentTypeIsNull(string contentType, string bodyAsString, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
-            // Assign
+            // Arrange
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
 
             // Act

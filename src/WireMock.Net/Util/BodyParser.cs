@@ -1,11 +1,11 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using MimeKit;
+using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using MimeKit;
-using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.Validation;
 
@@ -27,6 +27,10 @@ namespace WireMock.Util
             PATCH - Body supported.
         */
         private static readonly string[] AllowedBodyParseMethods = { "PUT", "POST", "OPTIONS", "PATCH" };
+
+        private static readonly IStringMatcher[] MultipartContentTypesMatchers = {
+            new WildcardMatcher("multipart/*", true)
+        };
 
         private static readonly IStringMatcher[] JsonContentTypesMatchers = {
             new WildcardMatcher("application/json", true),
@@ -68,6 +72,11 @@ namespace WireMock.Util
                 return BodyType.Json;
             }
 
+            if (MultipartContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            {
+                return BodyType.MultiPart;
+            }
+
             return BodyType.Bytes;
         }
 
@@ -81,6 +90,12 @@ namespace WireMock.Util
                 DetectedBodyType = BodyType.Bytes,
                 DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentType)
             };
+
+            // In case of MultiPart: never try to read as String but keep as-is
+            if (data.DetectedBodyTypeFromContentType == BodyType.MultiPart)
+            {
+                return data;
+            }
 
             // Try to get the body as String
             try
