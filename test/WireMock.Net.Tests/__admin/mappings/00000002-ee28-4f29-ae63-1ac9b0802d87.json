@@ -16,9 +16,9 @@
   },
   "Response": {
     "StatusCode": 200,
-    "BodyAsFile": "responsebody.json",
+    "BodyAsFile": "MyXmlResponse.xml",
     "Headers": {
-      "Content-Type": "application/json"
+      "Content-Type": "application/xml"
     }
   }
 }

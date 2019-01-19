@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
 using System.IO;
-using JetBrains.Annotations;
 using WireMock.Validation;
 
 namespace WireMock.Handlers
@@ -57,6 +57,16 @@ namespace WireMock.Handlers
             Check.NotNull(text, nameof(text));
 
             File.WriteAllText(path, text);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
+        public byte[] ReadResponseBodyAsFile(string path)
+        {
+            Check.NotNullOrEmpty(path, nameof(path));
+
+            // In case the path is a filename, the path will be adjusted to the MappingFolder.
+            // Else the path will just be as-is.
+            return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
         }
     }
 }

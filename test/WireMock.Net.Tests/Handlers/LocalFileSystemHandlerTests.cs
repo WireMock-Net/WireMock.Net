@@ -33,5 +33,12 @@ namespace WireMock.Net.Tests.Handlers
             // Act
             Check.ThatCode(() => _sut.WriteMappingFile(null, null)).Throws<ArgumentNullException>();
         }
+
+        [Fact]
+        public void LocalFileSystemHandler_ReadResponseBodyAsFile_Throws()
+        {
+            // Act
+            Check.ThatCode(() => _sut.ReadResponseBodyAsFile(null)).Throws<ArgumentNullException>();
+        }
     }
 }

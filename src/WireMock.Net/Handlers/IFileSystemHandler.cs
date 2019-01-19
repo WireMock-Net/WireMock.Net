@@ -10,7 +10,7 @@ namespace WireMock.Handlers
         /// <summary>
         /// Gets the folder where the static mappings are located. For local file system, this would be `{CurrentFolder}/__admin/mappings`.
         /// </summary>
-        /// <returns>The foldername.</returns>
+        /// <returns>The folder name.</returns>
         string GetMappingFolder();
 
         /// <summary>
@@ -37,6 +37,7 @@ namespace WireMock.Handlers
         /// Read a static mapping file as text.
         /// </summary>
         /// <param name="path">The path (folder + filename with .json extension).</param>
+        /// <returns>The file content as text.</returns>
         string ReadMappingFile(string path);
 
         /// <summary>
@@ -45,5 +46,12 @@ namespace WireMock.Handlers
         /// <param name="path">The path (folder + filename with .json extension).</param>
         /// <param name="text">The text.</param>
         void WriteMappingFile(string path, string text);
+
+        /// <summary>
+        /// Read a response body file as text.
+        /// </summary>
+        /// <param name="path">The path or filename from the file to read.</param>
+        /// <returns>The file content as bytes.</returns>
+        byte[] ReadResponseBodyAsFile(string path);
     }
 }

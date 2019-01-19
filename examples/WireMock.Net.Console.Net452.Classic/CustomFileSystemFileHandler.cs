@@ -43,5 +43,11 @@ namespace WireMock.Net.ConsoleApplication
         {
             File.WriteAllText(path, text);
         }
+
+        /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
+        public byte[] ReadResponseBodyAsFile(string path)
+        {
+            return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
+        }
     }
 }

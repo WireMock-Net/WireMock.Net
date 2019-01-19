@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.Handlers;
 using WireMock.HttpsCertificate;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
@@ -58,7 +59,8 @@ namespace WireMock.Owin
             _host = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddSingleton<IWireMockMiddlewareOptions>(_options);
+                    services.AddSingleton(_options.FileSystemHandler);
+                    services.AddSingleton(_options);
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
