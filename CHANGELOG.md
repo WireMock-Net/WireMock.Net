@@ -1,3 +1,8 @@
+# 1.0.7.0 (19 January 2019)
+- [#244](https://github.com/WireMock-Net/WireMock.Net/pull/244) - Fix BodyAsFile to also allow relative paths [feature] contributed by [StefH](https://github.com/StefH)
+- [#240](https://github.com/WireMock-Net/WireMock.Net/issues/240) - How to submit mappings for multiple request, responses [feature]
+- [#243](https://github.com/WireMock-Net/WireMock.Net/issues/243) - Not able to read response from file [question]
+
 # 1.0.6.1 (10 January 2019)
 - [#247](https://github.com/WireMock-Net/WireMock.Net/pull/247) - Issue 225 improve logging in example for wire mock as windows service contributed by [paulssn](https://github.com/paulssn)
 - [#249](https://github.com/WireMock-Net/WireMock.Net/pull/249) - Fixed &quot;Content-Type multipart/form-data&quot; [bug] contributed by [StefH](https://github.com/StefH)
@@ -179,7 +184,7 @@
 - [#124](https://github.com/WireMock-Net/WireMock.Net/issues/124) - Issue: Unable to get host to listen on ips other than 127.0.0.1 using StandAloneApp
 
 # 1.0.3.15 (05 April 2018)
-- [#117](https://github.com/WireMock-Net/WireMock.Net/pull/117) - Respect start timeout setting and expose exception from server startup contributed by [msft-eliang](https://github.com/msft-eliang)
+- [#117](https://github.com/WireMock-Net/WireMock.Net/pull/117) - Respect start timeout setting and expose exception from server startup contributed by [evanlwj](https://github.com/evanlwj)
 
 # 1.0.3.14 (01 April 2018)
 - [#111](https://github.com/WireMock-Net/WireMock.Net/issues/111) - Question: Adding wiki documentation on how to use WireMock.Net.WebApplication project
