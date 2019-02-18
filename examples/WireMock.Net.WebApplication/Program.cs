@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using WireMock.Settings;
 
 namespace WireMock.Net.WebApplication
@@ -21,7 +21,7 @@ namespace WireMock.Net.WebApplication
             serviceProvider.GetService<App>().Run();
         }
 
-        private static void ConfigureServices(IServiceCollection serviceCollection)
+        private static void ConfigureServices(IServiceCollection services)
         {
             // Build configuration
             var configuration = new ConfigurationBuilder()
@@ -30,28 +30,30 @@ namespace WireMock.Net.WebApplication
                 .AddEnvironmentVariables() // <-- this is needed to to override settings via the Azure Portal App Settings
                 .Build();
 
-            // Add LoggerFactory
+            // Add LoggerFactory and Logger
             var factory = new LoggerFactory();
-            serviceCollection.AddSingleton(factory
+            services.AddSingleton(factory
                 .AddConsole(configuration.GetSection("Logging"))
                 .AddDebug()
                 .AddAzureWebAppDiagnostics()
             );
+            services.AddSingleton(factory.CreateLogger("WireMock.Net Logger"));
 
-            serviceCollection.AddSingleton(factory.CreateLogger("WireMock.Net Logger"));
+            // Add ApplicationInsights
+            services.AddApplicationInsightsTelemetry();
 
             // Add access to generic IConfigurationRoot
-            serviceCollection.AddSingleton(configuration);
+            services.AddSingleton(configuration);
 
             // Add access to IFluentMockServerSettings
             var settings = configuration.GetSection("FluentMockServerSettings").Get<FluentMockServerSettings>();
-            serviceCollection.AddSingleton<IFluentMockServerSettings>(settings);
+            services.AddSingleton<IFluentMockServerSettings>(settings);
 
             // Add services
-            serviceCollection.AddTransient<IWireMockService, WireMockService>();
+            services.AddTransient<IWireMockService, WireMockService>();
 
             // Add app
-            serviceCollection.AddTransient<App>();
+            services.AddTransient<App>();
         }
     }
 }

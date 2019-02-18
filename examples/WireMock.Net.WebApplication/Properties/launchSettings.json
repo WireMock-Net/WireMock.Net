@@ -16,7 +16,8 @@
       "commandName": "IISExpress",
       "launchUrl": "__admin/settings",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ApplicationInsights:InstrumentationKey": "..."
       }
     },
     "WireMock.Net.WebApplication": {
@@ -24,14 +25,16 @@
       "launchBrowser": true,
       "launchUrl": "__admin/settings",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ApplicationInsights:InstrumentationKey": "..."
       },
       "applicationUrl": "http://localhost:56514/"
     },
     "IIS": {
       "commandName": "IIS",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "development"
+        "ASPNETCORE_ENVIRONMENT": "development",
+        "ApplicationInsights:InstrumentationKey": "..."
       }
     }
   }

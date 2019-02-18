@@ -44,10 +44,10 @@ namespace WireMock.Net.WebApplication
                 _logger.LogError(formatString, args);
             }
 
-            public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminrequest)
+            public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
             {
                 string message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
-                _logger.LogDebug("Admin[{0}] {1}", isAdminrequest, message);
+                _logger.LogDebug("Admin[{0}] {1}", isAdminRequest, message);
             }
         }
 
