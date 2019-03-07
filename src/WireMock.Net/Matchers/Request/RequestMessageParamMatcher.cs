@@ -25,6 +25,11 @@ namespace WireMock.Matchers.Request
         public string Key { get; }
 
         /// <summary>
+        /// Defines if the key should be matched using case-ignore.
+        /// </summary>
+        public bool? IgnoreCase { get; private set; }
+
+        /// <summary>
         /// The matchers.
         /// </summary>
         public IReadOnlyList<IStringMatcher> Matchers { get; }
@@ -34,7 +39,8 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="key">The key.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key) : this(matchBehaviour, key, (IStringMatcher[])null)
+        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase) : this(matchBehaviour, key, ignoreCase, (IStringMatcher[])null)
         {
         }
 
@@ -43,8 +49,9 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="key">The key.</param>
+        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <param name="values">The values.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, [CanBeNull] string[] values) : this(matchBehaviour, key, values?.Select(value => new ExactMatcher(matchBehaviour, value)).Cast<IStringMatcher>().ToArray())
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] string[] values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, value)).Cast<IStringMatcher>().ToArray())
         {
         }
 
@@ -53,13 +60,15 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="key">The key.</param>
+        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, [CanBeNull] IStringMatcher[] matchers)
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] IStringMatcher[] matchers)
         {
             Check.NotNull(key, nameof(key));
 
             _matchBehaviour = matchBehaviour;
             Key = key;
+            IgnoreCase = ignoreCase;
             Matchers = matchers;
         }
 
@@ -88,7 +97,7 @@ namespace WireMock.Matchers.Request
                 return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
             }
 
-            WireMockList<string> valuesPresentInRequestMessage = requestMessage.GetParameter(Key);
+            WireMockList<string> valuesPresentInRequestMessage = requestMessage.GetParameter(Key, IgnoreCase ?? false);
             if (valuesPresentInRequestMessage == null)
             {
                 // Key is not present at all, just return Mismatch

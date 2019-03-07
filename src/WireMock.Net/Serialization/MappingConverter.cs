@@ -66,6 +66,7 @@ namespace WireMock.Serialization
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
+                        IgnoreCase = pm.IgnoreCase,
                         Matchers = MatcherMapper.Map(pm.Matchers)
                     }).ToList() : null,
 

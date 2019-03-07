@@ -12,7 +12,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The requests.
     /// </summary>
-    public class Request : RequestMessageCompositeMatcher, IRequestBuilder
+    public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         private readonly IList<IRequestMatcher> _requestMatchers;
 
@@ -288,54 +288,6 @@ namespace WireMock.RequestBuilders
             Check.NotNull(func, nameof(func));
 
             _requestMatchers.Add(new RequestMessageBodyMatcher(func));
-            return this;
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour)"/>
-        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
-        {
-            Check.NotNull(key, nameof(key));
-
-            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key));
-            return this;
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, string[])"/>
-        public IRequestBuilder WithParam(string key, params string[] values)
-        {
-            return WithParam(key, MatchBehaviour.AcceptOnMatch, values);
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, IStringMatcher[])"/>
-        public IRequestBuilder WithParam(string key, params IStringMatcher[] matchers)
-        {
-            return WithParam(key, MatchBehaviour.AcceptOnMatch, matchers);
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, string[])"/>
-        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params string[] values)
-        {
-            Check.NotNull(key, nameof(key));
-
-            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, values));
-            return this;
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, IStringMatcher[])"/>
-        public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params IStringMatcher[] matchers)
-        {
-            Check.NotNull(key, nameof(key));
-
-            _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, matchers));
-            return this;
-        }
-
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
-        public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
-        {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
-
-            _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
             return this;
         }
 
