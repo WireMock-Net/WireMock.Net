@@ -40,6 +40,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void RequestMessage_ParseQuery_SingleKey_SingleValue_WithIgnoreCase()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost?foo=bar"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.GetParameter("FoO", true)).ContainsExactly("bar");
+        }
+
+        [Fact]
         public void RequestMessage_ParseQuery_MultipleKeys_MultipleValues()
         {
             // Assign

@@ -265,7 +265,7 @@ namespace WireMock.Server
             request.WithPath(requestMessage.Path);
             request.UsingMethod(requestMessage.Method);
 
-            requestMessage.Query.Loop((key, value) => request.WithParam(key, value.ToArray()));
+            requestMessage.Query.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
 
             var allBlackListedHeaders = new List<string>(blacklistedHeaders) { "Cookie" };
@@ -685,7 +685,8 @@ namespace WireMock.Server
             {
                 foreach (var paramModel in requestModel.Params.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithParam(paramModel.Name, paramModel.Matchers.Select(MatcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                    bool ignoreCase = paramModel?.IgnoreCase ?? false;
+                    requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers.Select(MatcherMapper.Map).Cast<IStringMatcher>().ToArray());
                 }
             }
 

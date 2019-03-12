@@ -1,8 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using JetBrains.Annotations;
 using WireMock.Models;
 using WireMock.Util;
 using WireMock.Validation;
@@ -211,15 +211,18 @@ namespace WireMock
         /// Get a query parameter.
         /// </summary>
         /// <param name="key">The key.</param>
+        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <returns>The query parameter.</returns>
-        public WireMockList<string> GetParameter(string key)
+        public WireMockList<string> GetParameter(string key, bool ignoreCase = false)
         {
             if (Query == null)
             {
                 return null;
             }
 
-            return Query.ContainsKey(key) ? Query[key] : null;
+            var query = !ignoreCase ? Query : new Dictionary<string, WireMockList<string>>(Query, StringComparer.OrdinalIgnoreCase);
+
+            return query.ContainsKey(key) ? query[key] : null;
         }
     }
 }
