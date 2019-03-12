@@ -1,3 +1,8 @@
+# 1.0.8.0 (12 March 2019)
+- [#254](https://github.com/WireMock-Net/WireMock.Net/pull/254) - RequestMessageParamMatcher supports Ignore Case for the key [feature] contributed by [StefH](https://github.com/StefH)
+- [#251](https://github.com/WireMock-Net/WireMock.Net/issues/251) - Problem with Request Match WithBody [question]
+- [#253](https://github.com/WireMock-Net/WireMock.Net/issues/253) - Request Path and query parameter keys are case-sensitive
+
 # 1.0.7.0 (19 January 2019)
 - [#244](https://github.com/WireMock-Net/WireMock.Net/pull/244) - Fix BodyAsFile to also allow relative paths [feature] contributed by [StefH](https://github.com/StefH)
 - [#240](https://github.com/WireMock-Net/WireMock.Net/issues/240) - How to submit mappings for multiple request, responses [feature]
