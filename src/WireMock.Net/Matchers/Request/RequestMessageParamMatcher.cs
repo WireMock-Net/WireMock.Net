@@ -1,7 +1,7 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -107,14 +107,20 @@ namespace WireMock.Matchers.Request
             if (Matchers != null && Matchers.Any())
             {
                 // Matchers are defined, just use the matchers to calculate the match score.
-                var scores = new List<double>();
-                foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
+                var total = new List<double>();
+                foreach (var matcher in Matchers)
                 {
-                    double score = Matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
-                    scores.Add(score);
+                    var scoresPerMatcher = new List<double>();
+                    foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
+                    {
+                        double score = matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
+                        scoresPerMatcher.Add(score);
+                    }
+
+                    total.Add(scoresPerMatcher.Sum());
                 }
 
-                return scores.Any() ? scores.Average() : MatchScores.Mismatch;
+                return total.Any() ? total.Average() : MatchScores.Mismatch;
             }
 
             if (Matchers == null || !Matchers.Any())

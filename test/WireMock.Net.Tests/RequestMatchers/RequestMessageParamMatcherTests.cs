@@ -24,7 +24,22 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Fact]
-        public void RequestMessageParamMatcher_GetMatchingScore_KeyWithValuesPresentInUrl_MatchExactOnStringValues()
+        public void RequestMessageParamMatcher_GetMatchingScore_KeyWithValuesPresentInUrl_MatchExactOnStringValues_Returns0_5()
+        {
+            // Assign
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost?key=test1"), "GET", "127.0.0.1");
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", false, new[] { "test1", "test2" });
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(0.5d);
+        }
+
+        [Fact]
+        public void RequestMessageParamMatcher_GetMatchingScore_KeyWithValuesPresentInUrl_MatchExactOnStringValues_Returns1_0()
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost?key=test1,test2"), "GET", "127.0.0.1");

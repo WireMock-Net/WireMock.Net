@@ -61,6 +61,18 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void RequestMessage_ParseQuery_SingleKey_MultipleValuesCommaSeparated()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost?key=1,2,3"), "POST", ClientIp);
+
+            // Assert
+            Check.That(request.GetParameter("key")).Contains("1");
+            Check.That(request.GetParameter("key")).Contains("2");
+            Check.That(request.GetParameter("key")).Contains("3");
+        }
+
+        [Fact]
         public void RequestMessage_ParseQuery_SingleKey_MultipleValues()
         {
             // Assign
