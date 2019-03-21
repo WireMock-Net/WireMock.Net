@@ -20,7 +20,7 @@ namespace WireMock.Net.Tests.RequestBuilders
 
             // Assert
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
-            Check.That(matchers.Count()).IsEqualTo(1);
+            Check.That(matchers.Count).IsEqualTo(1);
             Check.That(((RequestMessageBodyMatcher) matchers[0]).Matcher).IsEqualTo(matcher);
         }
     }
