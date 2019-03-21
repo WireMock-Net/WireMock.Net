@@ -106,21 +106,8 @@ namespace WireMock.Matchers.Request
 
             if (Matchers != null && Matchers.Any())
             {
-                // Matchers are defined, just use the matchers to calculate the match score.
-                var total = new List<double>();
-                foreach (var matcher in Matchers)
-                {
-                    var scoresPerMatcher = new List<double>();
-                    foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
-                    {
-                        double score = matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
-                        scoresPerMatcher.Add(score);
-                    }
-
-                    total.Add(scoresPerMatcher.Sum());
-                }
-
-                return total.Any() ? total.Average() : MatchScores.Mismatch;
+                // Return the score based on Matchers and valuesPresentInRequestMessage
+                return CalculateScore(valuesPresentInRequestMessage);
             }
 
             if (Matchers == null || !Matchers.Any())
@@ -130,6 +117,39 @@ namespace WireMock.Matchers.Request
             }
 
             return MatchScores.Mismatch;
+        }
+
+        private double CalculateScore(WireMockList<string> valuesPresentInRequestMessage)
+        {
+            var total = new List<double>();
+
+            if (Matchers.Count > valuesPresentInRequestMessage.Count)
+            {
+                foreach (var matcher in Matchers)
+                {
+                    double bestScore = 0d;
+                    foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
+                    {
+                        bestScore = matcher.IsMatch(valuePresentInRequestMessage);
+                        if (MatchScores.IsPerfect(bestScore))
+                        {
+                            break;
+                        }
+                    }
+
+                    total.Add(bestScore);
+                }
+            }
+            else
+            {
+                foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
+                {
+                    double score = Matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
+                    total.Add(score);
+                }
+            }
+
+            return total.Any() ? MatchScores.ToScore(total) : MatchScores.Mismatch;
         }
     }
 }
