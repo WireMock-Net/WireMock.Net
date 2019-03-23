@@ -123,21 +123,18 @@ namespace WireMock.Matchers.Request
         {
             var total = new List<double>();
 
-            if (Matchers.Count > valuesPresentInRequestMessage.Count)
+            // If the total patterns in all matchers > values in message, use the matcher as base
+            if (Matchers.Sum(m => m.GetPatterns().Length) > valuesPresentInRequestMessage.Count)
             {
                 foreach (var matcher in Matchers)
                 {
-                    double bestScore = 0d;
+                    double score = 0d;
                     foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
                     {
-                        bestScore = matcher.IsMatch(valuePresentInRequestMessage);
-                        if (MatchScores.IsPerfect(bestScore))
-                        {
-                            break;
-                        }
+                        score += matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
                     }
 
-                    total.Add(bestScore);
+                    total.Add(score);
                 }
             }
             else
