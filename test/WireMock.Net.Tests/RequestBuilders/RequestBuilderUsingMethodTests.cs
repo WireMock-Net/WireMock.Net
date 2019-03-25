@@ -16,7 +16,7 @@ namespace WireMock.Net.Tests.RequestBuilders
 
             // Assert 1
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
-            Check.That(matchers.Count()).IsEqualTo(1);
+            Check.That(matchers.Count).IsEqualTo(1);
             Check.That((matchers[0] as RequestMessageMethodMatcher).Methods).ContainsExactly("PATCH");
         }
 
@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests.RequestBuilders
 
             // Assert 1
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
-            Check.That(matchers.Count()).IsEqualTo(1);
+            Check.That(matchers.Count).IsEqualTo(1);
             Check.That(matchers[0]).IsInstanceOfType(typeof(RequestMessageMethodMatcher));
 
             // Act
@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests.RequestBuilders
 
             // Assert 2
             matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
-            Check.That(matchers.Count()).IsEqualTo(0);
+            Check.That(matchers.Count).IsEqualTo(0);
         }
     }
 }

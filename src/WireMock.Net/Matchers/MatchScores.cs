@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace WireMock.Matchers
@@ -54,6 +55,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static double ToScore(IEnumerable<bool> values)
         {
             return values.Any() ? values.Select(ToScore).Average() : Mismatch;
@@ -64,6 +66,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="values">The values.</param>
         /// <returns>average score</returns>
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static double ToScore(IEnumerable<double> values)
         {
             return values.Any() ? values.Average() : Mismatch;

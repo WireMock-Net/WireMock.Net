@@ -33,7 +33,33 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void ExactMatcher_IsMatch_MultiplePatterns()
+        public void ExactMatcher_IsMatch_WithSinglePattern_ReturnsMatch1_0()
+        {
+            // Assign
+            var matcher = new ExactMatcher("x");
+
+            // Act
+            double result = matcher.IsMatch("x");
+
+            // Assert
+            Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void ExactMatcher_IsMatch_WithSinglePattern_ReturnsMatch0_0()
+        {
+            // Assign
+            var matcher = new ExactMatcher("x");
+
+            // Act
+            double result = matcher.IsMatch("y");
+
+            // Assert
+            Check.That(result).IsEqualTo(0.0);
+        }
+
+        [Fact]
+        public void ExactMatcher_IsMatch_WithMultiplePatterns_ReturnsMatch0_5()
         {
             // Assign
             var matcher = new ExactMatcher("x", "y");
@@ -42,7 +68,7 @@ namespace WireMock.Net.Tests.Matchers
             double result = matcher.IsMatch("x");
 
             // Assert
-            Check.That(result).IsEqualTo(0.5d);
+            Check.That(result).IsEqualTo(1.0);
         }
 
         [Fact]

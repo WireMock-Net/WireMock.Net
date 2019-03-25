@@ -39,7 +39,12 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_values.Select(value => value.Equals(input))));
+            if (_values.Length == 1)
+            {
+                return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_values[0] == input));
+            }
+
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_values.Contains(input)));
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
