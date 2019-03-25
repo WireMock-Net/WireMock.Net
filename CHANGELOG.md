@@ -1,3 +1,7 @@
+# 1.0.9.0 (25 March 2019)
+- [#256](https://github.com/WireMock-Net/WireMock.Net/pull/256) - Fixed Multi Param Match logic contributed by [StefH](https://github.com/StefH)
+- [#255](https://github.com/WireMock-Net/WireMock.Net/issues/255) - ExactMatcher with array pattern not working? [bug]
+
 # 1.0.8.0 (12 March 2019)
 - [#254](https://github.com/WireMock-Net/WireMock.Net/pull/254) - RequestMessageParamMatcher supports Ignore Case for the key [feature] contributed by [StefH](https://github.com/StefH)
 - [#251](https://github.com/WireMock-Net/WireMock.Net/issues/251) - Problem with Request Match WithBody [question]
