@@ -19,6 +19,6 @@ namespace WireMock.ResponseBuilders
         /// </summary>
         /// <param name="milliseconds">The milliseconds to delay.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithDelay(int milliseconds);
+        IResponseBuilder WithDelay(double milliseconds);
     }
 }
