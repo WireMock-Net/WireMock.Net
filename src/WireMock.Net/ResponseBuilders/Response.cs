@@ -329,8 +329,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(double)"/>
-        public IResponseBuilder WithDelay(double milliseconds)
+        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(int)"/>
+        public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }

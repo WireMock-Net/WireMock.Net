@@ -77,7 +77,7 @@ namespace WireMock.Serialization
                 },
                 Response = new ResponseModel
                 {
-                    Delay = response.Delay?.TotalMilliseconds
+                    Delay = (int?) response.Delay?.TotalMilliseconds
                 }
             };
 
