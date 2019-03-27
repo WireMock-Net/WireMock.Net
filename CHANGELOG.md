@@ -1,3 +1,8 @@
+# 1.0.10.0 (27 March 2019)
+- [#260](https://github.com/WireMock-Net/WireMock.Net/pull/260) - Fix Response.Delay property serialization [bug] contributed by [StefH](https://github.com/StefH)
+- [#257](https://github.com/WireMock-Net/WireMock.Net/issues/257) - Doc: Update outdated  [question]
+- [#258](https://github.com/WireMock-Net/WireMock.Net/issues/258) - InvalidProgramException when following running as standalone process example with dotnetcore  [invalid]
+
 # 1.0.9.0 (25 March 2019)
 - [#256](https://github.com/WireMock-Net/WireMock.Net/pull/256) - Fixed Multi Param Match logic contributed by [StefH](https://github.com/StefH)
 - [#255](https://github.com/WireMock-Net/WireMock.Net/issues/255) - ExactMatcher with array pattern not working? [bug]
