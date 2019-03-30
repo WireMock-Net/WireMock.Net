@@ -67,7 +67,7 @@ namespace WireMock.Transformers
             switch (original.BodyData.BodyAsJson)
             {
                 case JObject bodyAsJObject:
-                    jToken = bodyAsJObject;
+                    jToken = bodyAsJObject.DeepClone();
                     break;
 
                 case Array bodyAsArray:
