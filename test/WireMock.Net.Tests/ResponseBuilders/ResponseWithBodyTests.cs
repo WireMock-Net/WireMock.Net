@@ -5,6 +5,7 @@ using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
+using Newtonsoft.Json.Linq;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
@@ -198,6 +199,37 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.StatusCode).IsEqualTo(500);
             Check.That(responseMessage.Headers["H1"].ToString()).IsEqualTo("X1");
             Check.That(responseMessage.Headers["H2"].ToString()).IsEqualTo("X2");
+        }
+        
+        [Fact]
+        public async Task Response_ProvideResponse_WithJsonBodyAndTransform_Func()
+        {
+            // Assign
+            const int request1Id = 1;
+            const int request2Id = 2;
+
+            var request1 = new RequestMessage(new UrlDetails($"http://localhost/test?id={request1Id}"), "GET", ClientIp);
+            var request2 = new RequestMessage(new UrlDetails($"http://localhost/test?id={request2Id}"), "GET", ClientIp);
+            
+            var response = Response.Create()
+                .WithStatusCode(200)
+                .WithBodyAsJson(JObject.Parse("{ \"id\": \"{{request.query.id}}\" }"))
+                .WithTransformer();
+
+            // Act
+            var response1Message = await response.ProvideResponseAsync(request1);
+            var response2Message = await response.ProvideResponseAsync(request2);
+
+            // Assert
+            Check.That(((JToken)response1Message.BodyData.BodyAsJson).SelectToken("id")?.Value<int>()).IsEqualTo(request1Id);
+            Check.That(response1Message.BodyData.BodyAsBytes).IsNull();
+            Check.That(response1Message.BodyData.BodyAsString).IsNull();
+            Check.That(response1Message.StatusCode).IsEqualTo(200);
+
+            Check.That(((JToken)response2Message.BodyData.BodyAsJson).SelectToken("id")?.Value<int>()).IsEqualTo(request2Id);
+            Check.That(response2Message.BodyData.BodyAsBytes).IsNull();
+            Check.That(response2Message.BodyData.BodyAsString).IsNull();
+            Check.That(response2Message.StatusCode).IsEqualTo(200);
         }
     }
 }
