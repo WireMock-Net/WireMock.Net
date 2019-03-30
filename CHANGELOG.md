@@ -1,3 +1,7 @@
+# 1.0.11.0 (30 March 2019)
+- [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [psypilat](https://github.com/psypilat)
+- [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [psypilat](https://github.com/psypilat)
+
 # 1.0.10.0 (27 March 2019)
 - [#260](https://github.com/WireMock-Net/WireMock.Net/pull/260) - Fix Response.Delay property serialization [bug] contributed by [StefH](https://github.com/StefH)
 - [#257](https://github.com/WireMock-Net/WireMock.Net/issues/257) - Doc: Update outdated  [question]
