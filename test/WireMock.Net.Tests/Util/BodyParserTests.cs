@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
-        public async Task BodyParser_Parse_ContentTypeMultipart()
+        public async Task BodyParser_Parse_WithUTF8EncodingAndContentTypeMultipart_DetectedBodyTypeEqualsString()
         {
             // Arrange
             string contentType = "multipart/form-data";
@@ -76,6 +76,26 @@ Content-Type: text/html
 -----------------------------9051914041544843365972754266--";
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
+
+            // Act
+            var result = await BodyParser.Parse(memoryStream, contentType);
+
+            // Assert
+            Check.That(result.DetectedBodyType).IsEqualTo(BodyType.String);
+            Check.That(result.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.MultiPart);
+            Check.That(result.BodyAsBytes).IsNotNull();
+            Check.That(result.BodyAsJson).IsNull();
+            Check.That(result.BodyAsString).IsNotNull();
+        }
+
+        [Fact]
+        public async Task BodyParser_Parse_WithUTF16EncodingAndContentTypeMultipart_DetectedBodyTypeEqualsString()
+        {
+            // Arrange
+            string contentType = "multipart/form-data";
+            string body = char.ConvertFromUtf32(0x1D161); //U+1D161 = MUSICAL SYMBOL SIXTEENTH NOTE
+
+            var memoryStream = new MemoryStream(Encoding.UTF32.GetBytes(body));
 
             // Act
             var result = await BodyParser.Parse(memoryStream, contentType);
