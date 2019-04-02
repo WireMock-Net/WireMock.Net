@@ -14,7 +14,7 @@ namespace WireMock.Util
     internal static class BodyParser
     {
         private static readonly Encoding DefaultEncoding = Encoding.UTF8;
-        private static readonly Encoding[] SupportedBodyAsStringEncodingForMultipart = { Encoding.UTF8, Encoding.UTF8 };
+        private static readonly Encoding[] SupportedBodyAsStringEncodingForMultipart = { Encoding.UTF8, Encoding.ASCII };
 
         /*
             HEAD - No defined body semantics.
