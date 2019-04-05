@@ -1,8 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using SimMetrics.Net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
-using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 
@@ -31,6 +31,10 @@ namespace WireMock.Serialization
 
                 case "ExactMatcher":
                     return new ExactMatcher(matchBehaviour, stringPatterns);
+
+                case "ExactObjectMatcher":
+                    var bytePattern = Convert.FromBase64String(stringPatterns[0]);
+                    return new ExactObjectMatcher(matchBehaviour, bytePattern);
 
                 case "RegexMatcher":
                     return new RegexMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
@@ -73,20 +77,33 @@ namespace WireMock.Serialization
                 return null;
             }
 
-            // If the matcher is a IStringMatcher, get the patterns.
-            // If the matcher is a IValueMatcher, get the value (can be string or object).
-            // Else empty array
-            object[] patterns = matcher is IStringMatcher stringMatcher ?
-                stringMatcher.GetPatterns().Cast<object>().ToArray() :
-                matcher is IValueMatcher valueMatcher ? new[] { valueMatcher.Value } :
-                new object[0];
-            bool? ignorecase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
+            object[] patterns = new object[0]; // Default empty array
+            switch (matcher)
+            {
+                // If the matcher is a IStringMatcher, get the patterns.
+                case IStringMatcher stringMatcher:
+                    patterns = stringMatcher.GetPatterns().Cast<object>().ToArray();
+                    break;
+
+                // If the matcher is a IValueMatcher, get the value (can be string or object).
+                case IValueMatcher valueMatcher:
+                    patterns = new[] { valueMatcher.Value };
+                    break;
+
+                // If the matcher is a ExactObjectMatcher, get the ValueAsObject or ValueAsBytes.
+                case ExactObjectMatcher exactObjectMatcher:
+                    patterns = new[] { exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes };
+                    break;
+            }
+
+            bool? ignoreCase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
+
             bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?)null;
 
             return new MatcherModel
             {
                 RejectOnMatch = rejectOnMatch,
-                IgnoreCase = ignorecase,
+                IgnoreCase = ignoreCase,
                 Name = matcher.Name,
                 Pattern = patterns.Length == 1 ? patterns.First() : null,
                 Patterns = patterns.Length > 1 ? patterns : null

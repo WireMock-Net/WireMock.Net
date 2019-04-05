@@ -1,5 +1,5 @@
-﻿using System;
-using NFluent;
+﻿using NFluent;
+using System;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Serialization;
@@ -51,6 +51,23 @@ namespace WireMock.Net.Tests.Serialization
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_ExactObjectMatcher_Pattern()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "ExactObjectMatcher",
+                Patterns = new object[] { "c3RlZg==" }
+            };
+
+            // Act
+            var matcher = (ExactObjectMatcher)MatcherMapper.Map(model);
+
+            // Assert
+            Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
         }
 
         [Fact]

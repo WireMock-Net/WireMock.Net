@@ -291,6 +291,36 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task FluentMockServer_Proxy_Should_set_Body_in_multipart_proxied_response()
+        {
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create()
+                    .WithBodyAsJson(new { i = 42 })
+            );
+
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
+
+            // Act
+            var uri = new Uri($"{server.Urls[0]}{path}");
+            var form = new MultipartFormDataContent
+            {
+                { new StringContent("data"), "test", "test.txt" }
+            };
+            var response = await new HttpClient().PostAsync(uri, form);
+
+            // Assert
+            string content = await response.Content.ReadAsStringAsync();
+            Check.That(content).IsEqualTo("{\"i\":42}");
+        }
+
+        [Fact]
         public async Task FluentMockServer_Proxy_Should_Not_overrule_AdminMappings()
         {
             // Assign

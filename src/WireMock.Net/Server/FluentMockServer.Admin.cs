@@ -277,13 +277,19 @@ namespace WireMock.Server
                 }
             });
 
-            if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
+            switch (requestMessage.BodyData?.DetectedBodyType)
             {
-                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson));
-            }
-            else if (requestMessage.BodyData?.DetectedBodyType == BodyType.String)
-            {
-                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsString));
+                case BodyType.Json:
+                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson));
+                    break;
+
+                case BodyType.String:
+                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsString));
+                    break;
+
+                case BodyType.Bytes:
+                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes));
+                    break;
             }
 
             var response = Response.Create(responseMessage);
