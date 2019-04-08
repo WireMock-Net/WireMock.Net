@@ -62,7 +62,7 @@ namespace WireMock.Net.Tests
 
             // Assert
             var mappings = server.Mappings;
-            Check.That(mappings.Count()).IsEqualTo(19);
+            Check.That(mappings.Count()).IsEqualTo(22);
             Check.That(mappings.All(m => m.Priority == int.MinValue)).IsTrue();
         }
 
@@ -81,8 +81,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             var mappings = server.Mappings;
-            Check.That(mappings.Count()).IsEqualTo(20);
-            Check.That(mappings.Count(m => m.Priority == int.MinValue)).IsEqualTo(19);
+            Check.That(mappings.Count()).IsEqualTo(23);
+            Check.That(mappings.Count(m => m.Priority == int.MinValue)).IsEqualTo(22);
             Check.That(mappings.Count(m => m.Priority == 1000)).IsEqualTo(1);
         }
 
