@@ -1,3 +1,7 @@
+# 1.0.12.0 (05 April 2019)
+- [#264](https://github.com/WireMock-Net/WireMock.Net/pull/264) - Proxy : also save multipart as string in mapping file contributed by [StefH](https://github.com/StefH)
+- [#263](https://github.com/WireMock-Net/WireMock.Net/issues/263) - Content-Type multipart/form-data is not serialized in proxy and recording mode [bug]
+
 # 1.0.11.0 (30 March 2019)
 - [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [psypilat](https://github.com/psypilat)
 - [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [psypilat](https://github.com/psypilat)

@@ -14,6 +14,7 @@ namespace WireMock.Util
     internal static class BodyParser
     {
         private static readonly Encoding DefaultEncoding = Encoding.UTF8;
+        private static readonly Encoding[] SupportedBodyAsStringEncodingForMultipart = { Encoding.UTF8, Encoding.ASCII };
 
         /*
             HEAD - No defined body semantics.
@@ -91,9 +92,19 @@ namespace WireMock.Util
                 DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentType)
             };
 
-            // In case of MultiPart: never try to read as String but keep as-is
+            // In case of MultiPart: check if the BodyAsBytes is a valid UTF8 or ASCII string, in that case read as String else keep as-is
             if (data.DetectedBodyTypeFromContentType == BodyType.MultiPart)
             {
+                if (BytesEncodingUtils.TryGetEncoding(data.BodyAsBytes, out Encoding encoding) &&
+                    SupportedBodyAsStringEncodingForMultipart.Select(x => x.Equals(encoding)).Any())
+                {
+                    data.BodyAsString = encoding.GetString(data.BodyAsBytes);
+                    data.Encoding = encoding;
+                    data.DetectedBodyType = BodyType.String;
+
+                    return data;
+                }
+
                 return data;
             }
 

@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using System.Linq;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -10,8 +10,9 @@ namespace WireMock.Matchers
     /// <seealso cref="IObjectMatcher" />
     public class ExactObjectMatcher : IObjectMatcher
     {
-        private readonly object _object;
-        private readonly byte[] _bytes;
+        public object ValueAsObject { get; }
+
+        public byte[] ValueAsBytes { get; }
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -33,7 +34,7 @@ namespace WireMock.Matchers
         {
             Check.NotNull(value, nameof(value));
 
-            _object = value;
+            ValueAsObject = value;
             MatchBehaviour = matchBehaviour;
         }
 
@@ -54,14 +55,14 @@ namespace WireMock.Matchers
         {
             Check.NotNull(value, nameof(value));
 
-            _bytes = value;
+            ValueAsBytes = value;
             MatchBehaviour = matchBehaviour;
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
         public double IsMatch(object input)
         {
-            bool equals = _object != null ? Equals(_object, input) : _bytes.SequenceEqual((byte[])input);
+            bool equals = ValueAsObject != null ? Equals(ValueAsObject, input) : ValueAsBytes.SequenceEqual((byte[])input);
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(equals));
         }
 
