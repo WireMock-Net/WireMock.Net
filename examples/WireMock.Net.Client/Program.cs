@@ -52,6 +52,12 @@ namespace WireMock.Net.Client
             var scenarioStates = api.GetScenariosAsync().Result;
             Console.WriteLine($"GetScenariosAsync = {JsonConvert.SerializeObject(scenarioStates)}");
 
+            var postFileResult = api.PostFileAsync("1.cs", "C# Hello").GetAwaiter().GetResult();
+            Console.WriteLine($"postFileResult = {JsonConvert.SerializeObject(postFileResult)}");
+
+            var getFileResult = api.GetFileAsync("1.cs").GetAwaiter().GetResult();
+            Console.WriteLine($"getFileResult = {getFileResult}");
+
             Console.WriteLine("Press any key to quit");
             Console.ReadKey();
         }

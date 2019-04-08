@@ -1,12 +1,15 @@
-﻿using NFluent;
+﻿using Moq;
+using NFluent;
 using RestEase;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Client;
+using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
@@ -232,6 +235,207 @@ namespace WireMock.Net.Tests
             Check.That(requestLogged.Request.Body).IsNotNull();
             Check.That(requestLogged.Request.Body).Contains("T000001");
         }
-    }
 
+        [Fact]
+        public async Task IFluentMockServerAdmin_PostFileAsync_Ascii()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var request = await api.PostFileAsync("filename.txt", "abc");
+
+            // Assert
+            Check.That(request.Guid).IsNull();
+            Check.That(request.Status).Contains("File");
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.WriteFile(It.Is<string>(p => p == "filename.txt"), It.IsAny<byte[]>()), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_PutFileAsync_Ascii()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+            filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            var request = await api.PutFileAsync("filename.txt", "abc-abc");
+
+            // Assert
+            Check.That(request.Guid).IsNull();
+            Check.That(request.Status).Contains("File");
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.WriteFile(It.Is<string>(p => p == "filename.txt"), It.IsAny<byte[]>()), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public void IFluentMockServerAdmin_PutFileAsync_NotFound()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act and Assert
+            Check.ThatAsyncCode(() => api.PutFileAsync("filename.txt", "xxx")).Throws<ApiException>();
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public void IFluentMockServerAdmin_GetFileAsync_NotFound()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+            filesystemHandlerMock.Setup(fs => fs.ReadFile(It.IsAny<string>())).Returns(Encoding.ASCII.GetBytes("Here's a string."));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act and Assert
+            Check.ThatAsyncCode(() => api.GetFileAsync("filename.txt")).Throws<ApiException>();
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_GetFileAsync_Found()
+        {
+            // Arrange
+            string data = "Here's a string.";
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+            filesystemHandlerMock.Setup(fs => fs.ReadFile(It.IsAny<string>())).Returns(Encoding.ASCII.GetBytes(data));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            string file = await api.GetFileAsync("filename.txt");
+
+            // Assert
+            Check.That(file).Equals(data);
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.ReadFile(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task IFluentMockServerAdmin_DeleteFileAsync_Ok()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+            filesystemHandlerMock.Setup(fs => fs.DeleteFile(It.IsAny<string>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act
+            await api.DeleteFileAsync("filename.txt");
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.DeleteFile(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+
+        [Fact]
+        public void IFluentMockServerAdmin_DeleteFileAsync_NotFound()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+            filesystemHandlerMock.Setup(fs => fs.DeleteFile(It.IsAny<string>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act and Assert
+            Check.ThatAsyncCode(() => api.DeleteFileAsync("filename.txt")).Throws<ApiException>();
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
+    }
 }

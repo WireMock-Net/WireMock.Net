@@ -34,15 +34,14 @@ namespace WireMock.Server
         private const int AdminPriority = int.MinValue;
         private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";
+        private const string AdminFiles = "/__admin/files";
         private const string AdminMappings = "/__admin/mappings";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
-        private const string AdminFiles = "/__admin/files";
 
-        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
-        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$");
-        private readonly RegexMatcher _adminFilesFilenamePathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/files\/.*$");
+        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
+        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
@@ -101,13 +100,14 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
 
             // __admin/files/{filename}
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPut()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
         }
         #endregion
 
-        #region StaticMappings        
+        #region StaticMappings
         /// <summary>
         /// Saves the static mappings.
         /// </summary>
@@ -608,44 +608,6 @@ namespace WireMock.Server
             ResetScenarios();
 
             return ResponseMessageBuilder.Create("Scenarios reset");
-        }
-        #endregion
-
-        #region Files/{filename}
-        private ResponseMessage FilePut(RequestMessage requestMessage)
-        {
-            string path = requestMessage.Path.Substring(AdminFiles.Length + 1);
-
-            var requestMessageBodyAsBytes = requestMessage.BodyAsBytes;
-
-            using (var fileStream = File.Create(path))
-            {
-                fileStream.Write(requestMessageBodyAsBytes, 0, requestMessageBodyAsBytes.Length);
-
-                return ResponseMessageBuilder.Create($"File stored as {fileStream.Name}");
-            }
-        }
-
-        private ResponseMessage FileGet(RequestMessage requestMessage)
-        {
-            var path = requestMessage.Path.Substring(AdminFiles.Length + 1);
-
-            if (!File.Exists(path)) { return ResponseMessageBuilder.Create("Failed to find file.", 404); }
-
-            var fileText = File.ReadAllText(path);
-
-            return ResponseMessageBuilder.Create(fileText);
-        }
-
-        private ResponseMessage FileDelete(RequestMessage requestMessage)
-        {
-            var path = requestMessage.Path.Substring(AdminFiles.Length + 1);
-
-            if (!File.Exists(path)) { return ResponseMessageBuilder.Create("Failed to find file.", 404); }
-
-            File.Delete(path);
-
-            return ResponseMessageBuilder.Create("File deleted.");
         }
         #endregion
 

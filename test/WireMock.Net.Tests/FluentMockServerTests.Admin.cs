@@ -1,18 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json;
 using NFluent;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using WireMock.Handlers;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -379,50 +374,6 @@ namespace WireMock.Net.Tests
             // Verify
             fileMock.Verify(f => f.GetMappingFolder(), Times.Once);
             fileMock.Verify(f => f.FolderExists(It.IsAny<string>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Admin_FilePut()
-        {
-            var client = new HttpClient();
-            var server = FluentMockServer.StartWithAdminInterface();
-
-            MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
-            multipartFormDataContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-            MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."));
-            multipartFormDataContent.Add(new StreamContent(ms));
-
-            var httpResponseMessage = await client.PutAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
-
-            Check.That(server.LogEntries.Count().Equals(1));
-            Check.That(File.Exists("filename.txt"));
-
-            Check.That(httpResponseMessage.StatusCode.Equals(HttpStatusCode.OK));
-        }
-
-        [Fact]
-        public async Task FluentMockServer_Admin_FileGet()
-        {
-            var client = new HttpClient();
-            var server = FluentMockServer.StartWithAdminInterface();
-
-            MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
-            multipartFormDataContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-            MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."));
-            multipartFormDataContent.Add(new StreamContent(ms));
-
-            var httpResponseMessagePut = await client.PutAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
-
-            var httpResponseMessageGet = await client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt");
-
-            Check.That(server.LogEntries.Count().Equals(2));
-
-            Check.That(httpResponseMessageGet.Content.ReadAsStringAsync().Result.Equals("Here's a string."));
-            Check.That(httpResponseMessageGet.StatusCode.Equals(HttpStatusCode.OK));
-
-            Check.That(File.Exists("filename.txt"));
         }
     }
 }
