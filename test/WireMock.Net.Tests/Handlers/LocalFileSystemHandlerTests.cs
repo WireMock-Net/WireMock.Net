@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NFluent;
+using System;
 using System.IO;
-using NFluent;
 using WireMock.Handlers;
 using Xunit;
 
@@ -39,6 +39,27 @@ namespace WireMock.Net.Tests.Handlers
         {
             // Act
             Check.ThatCode(() => _sut.ReadResponseBodyAsFile(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_ReadFile_Throws()
+        {
+            // Act
+            Check.ThatCode(() => _sut.ReadFile(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_WriteFile_Throws()
+        {
+            // Act
+            Check.ThatCode(() => _sut.WriteFile(null, null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_DeleteFile_Throws()
+        {
+            // Act
+            Check.ThatCode(() => _sut.DeleteFile(null)).Throws<ArgumentNullException>();
         }
     }
 }
