@@ -241,6 +241,8 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.GetMappingFolder()).Returns("__admin/mappings");
+            filesystemHandlerMock.Setup(fs => fs.FolderExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
 
             var server = FluentMockServer.Start(new FluentMockServerSettings
@@ -260,6 +262,8 @@ namespace WireMock.Net.Tests
             Check.That(request.Status).Contains("File");
 
             // Verify
+            filesystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.FolderExists(It.IsAny<string>()), Times.Once);
             filesystemHandlerMock.Verify(fs => fs.WriteFile(It.Is<string>(p => p == "filename.txt"), It.IsAny<byte[]>()), Times.Once);
             filesystemHandlerMock.VerifyNoOtherCalls();
 
