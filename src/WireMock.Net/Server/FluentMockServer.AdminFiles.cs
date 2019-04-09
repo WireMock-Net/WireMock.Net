@@ -15,6 +15,11 @@ namespace WireMock.Server
         {
             string path = requestMessage.Path.Substring(AdminFiles.Length + 1);
 
+            if (!_fileSystemHandler.FolderExists(_fileSystemHandler.GetMappingFolder()))
+            {
+                _fileSystemHandler.CreateFolder(_fileSystemHandler.GetMappingFolder());
+            }
+
             _fileSystemHandler.WriteFile(path, requestMessage.BodyAsBytes);
 
             return ResponseMessageBuilder.Create("File created");
