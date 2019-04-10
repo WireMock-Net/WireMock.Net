@@ -69,11 +69,11 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
-        public bool FileExists(string path)
+        public bool FileExists(string filename)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.Exists(AdjustPath(path));
+            return File.Exists(AdjustPath(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
@@ -86,11 +86,11 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
-        public void DeleteFile(string fileName)
+        public void DeleteFile(string filename)
         {
-            Check.NotNullOrEmpty(fileName, nameof(fileName));
+            Check.NotNullOrEmpty(filename, nameof(filename));
 
-            File.Delete(AdjustPath(fileName));
+            File.Delete(AdjustPath(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
