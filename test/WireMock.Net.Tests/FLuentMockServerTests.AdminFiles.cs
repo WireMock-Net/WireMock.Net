@@ -200,7 +200,6 @@ namespace WireMock.Net.Tests
             // Arrange
             using (var client = new HttpClient())
             {
-
                 var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
                 filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
 
