@@ -80,15 +80,30 @@ namespace WireMock.Server
             if (!_fileSystemHandler.FileExists(path))
             {
                 _logger.Info("The file '{0}' does not exist.", path);
-                return ResponseMessageBuilder.Create("File is not found", 404);
+                // Response is returned here with no body as a head request doesn't accept a body, only the status code.
+                return new ResponseMessage
+                       {
+                           StatusCode = 404,
+                           BodyData = new BodyData
+                                      {
+                                          BodyAsBytes = null,
+                                          DetectedBodyType = BodyType.None,
+                                          DetectedBodyTypeFromContentType = BodyType.None
+                                      }
+                       };
             }
 
-            var response = new ResponseMessage
-                           {
-                               StatusCode = 200
-                           };
-
-            return response;
+            // Response is returned here with no body as a head request doesn't accept a body, only the status code.
+            return new ResponseMessage
+                   {
+                       StatusCode = 204,
+                       BodyData = new BodyData
+                                  {
+                                      BodyAsBytes = null,
+                                      DetectedBodyType = BodyType.None,
+                                      DetectedBodyTypeFromContentType = BodyType.None
+                                  }
+                   };
         }
 
         private ResponseMessage FileDelete(RequestMessage requestMessage)

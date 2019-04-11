@@ -161,5 +161,69 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.bin")), Times.Once);
             filesystemHandlerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task FluentMockServer_Admin_Files_Head()
+        {
+            // Arrange
+            using (var client = new HttpClient())
+            {
+
+                var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+                filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+
+                var server = FluentMockServer.Start(new FluentMockServerSettings
+                                                    {
+                                                        UseSSL = false,
+                                                        StartAdminInterface = true,
+                                                        FileSystemHandler = filesystemHandlerMock.Object
+                                                    });
+
+                // Act
+                var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+                // Assert
+                Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NoContent);
+                Check.That(server.LogEntries.Count().Equals(1));
+
+                // Verify
+                filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
+                filesystemHandlerMock.VerifyNoOtherCalls();
+            }
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Admin_Files_Head_FileDoesNotExistsReturns404()
+        {
+            // Arrange
+            using (var client = new HttpClient())
+            {
+
+                var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+                filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+
+                var server = FluentMockServer.Start(new FluentMockServerSettings
+                                                    {
+                                                        UseSSL = false,
+                                                        StartAdminInterface = true,
+                                                        FileSystemHandler = filesystemHandlerMock.Object
+                                                    });
+
+                // Act
+                var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+                // Assert
+                Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NotFound);
+                Check.That(server.LogEntries.Count().Equals(1));
+
+                // Verify
+                filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
+                filesystemHandlerMock.VerifyNoOtherCalls();
+            }
+        }
     }
 }
