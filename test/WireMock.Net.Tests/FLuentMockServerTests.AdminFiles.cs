@@ -23,6 +23,8 @@ namespace WireMock.Net.Tests
             var client = new HttpClient();
 
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.GetMappingFolder()).Returns("__admin/mappings");
+            filesystemHandlerMock.Setup(fs => fs.FolderExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
 
             var server = FluentMockServer.Start(new FluentMockServerSettings
@@ -34,9 +36,7 @@ namespace WireMock.Net.Tests
 
             var multipartFormDataContent = new MultipartFormDataContent();
             multipartFormDataContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-            MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."));
-            multipartFormDataContent.Add(new StreamContent(ms));
+            multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
 
             // Act
             var httpResponseMessage = await client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
@@ -46,6 +46,45 @@ namespace WireMock.Net.Tests
             Check.That(server.LogEntries.Count().Equals(1));
 
             // Verify
+            filesystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.FolderExists(It.IsAny<string>()), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.WriteFile(It.Is<string>(p => p == "filename.txt"), It.IsAny<byte[]>()), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task FluentMockServer_Admin_Files_Post_MappingFolderDoesNotExistsButWillBeCreated()
+        {
+            // Arrange
+            var client = new HttpClient();
+
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.GetMappingFolder()).Returns("x");
+            filesystemHandlerMock.Setup(fs => fs.CreateFolder(It.IsAny<string>()));
+            filesystemHandlerMock.Setup(fs => fs.FolderExists(It.IsAny<string>())).Returns(false);
+            filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var multipartFormDataContent = new MultipartFormDataContent();
+            multipartFormDataContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
+
+            // Act
+            var httpResponseMessage = await client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
+
+            // Assert
+            Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.OK);
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.FolderExists(It.IsAny<string>()), Times.Once);
+            filesystemHandlerMock.Verify(fs => fs.CreateFolder(It.Is<string>(p => p == "x")), Times.Once);
             filesystemHandlerMock.Verify(fs => fs.WriteFile(It.Is<string>(p => p == "filename.txt"), It.IsAny<byte[]>()), Times.Once);
             filesystemHandlerMock.VerifyNoOtherCalls();
         }
@@ -69,7 +108,6 @@ namespace WireMock.Net.Tests
 
             var multipartFormDataContent = new MultipartFormDataContent();
             multipartFormDataContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
             multipartFormDataContent.Add(new StreamContent(new MemoryStream()));
 
             // Act

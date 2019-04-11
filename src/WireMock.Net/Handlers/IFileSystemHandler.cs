@@ -58,28 +58,28 @@ namespace WireMock.Handlers
         /// <summary>
         /// Delete a file.
         /// </summary>
-        /// <param name="path">The path (folder + filename).</param>
-        void DeleteFile([NotNull] string path);
+        /// <param name="filename">The filename.</param>
+        void DeleteFile([NotNull] string filename);
 
         /// <summary>
         /// Determines whether the given path refers to an existing file on disk.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="filename">The filename.</param>
         /// <returns>true if path refers to an existing file; false if the file does not exist.</returns>
-        bool FileExists([NotNull] string path);
+        bool FileExists([NotNull] string filename);
 
         /// <summary>
         /// Write a file.
         /// </summary>
-        /// <param name="path">The path (folder + filename).</param>
+        /// <param name="filename">The filename.</param>
         /// <param name="bytes">The bytes.</param>
-        void WriteFile([NotNull] string path, [NotNull] byte[] bytes);
+        void WriteFile([NotNull] string filename, [NotNull] byte[] bytes);
 
         /// <summary>
         /// Read a file as bytes.
         /// </summary>
-        /// <param name="path">The path (folder + filename).</param>
+        /// <param name="filename">The filename.</param>
         /// <returns>The file content as bytes.</returns>
-        byte[] ReadFile([NotNull] string path);
+        byte[] ReadFile([NotNull] string filename);
     }
 }

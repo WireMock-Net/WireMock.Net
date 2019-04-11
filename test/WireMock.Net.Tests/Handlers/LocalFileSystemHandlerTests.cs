@@ -21,42 +21,59 @@ namespace WireMock.Net.Tests.Handlers
         }
 
         [Fact]
-        public void LocalFileSystemHandler_CreateFolder_Throws()
+        public void LocalFileSystemHandler_CreateFolder_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.CreateFolder(null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void LocalFileSystemHandler_WriteMappingFile_Throws()
+        public void LocalFileSystemHandler_WriteMappingFile_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.WriteMappingFile(null, null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void LocalFileSystemHandler_ReadResponseBodyAsFile_Throws()
+        public void LocalFileSystemHandler_ReadResponseBodyAsFile_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.ReadResponseBodyAsFile(null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void LocalFileSystemHandler_ReadFile_Throws()
+        public void LocalFileSystemHandler_FileExists_ReturnsFalse()
+        {
+            // Act
+            var result = _sut.FileExists("x.x");
+
+            // Assert
+            Check.That(result).IsFalse();
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_FileExists_ThrowsArgumentNullException()
+        {
+            // Act
+            Check.ThatCode(() => _sut.FileExists(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_ReadFile_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.ReadFile(null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void LocalFileSystemHandler_WriteFile_Throws()
+        public void LocalFileSystemHandler_WriteFile_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.WriteFile(null, null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void LocalFileSystemHandler_DeleteFile_Throws()
+        public void LocalFileSystemHandler_DeleteFile_ThrowsArgumentNullException()
         {
             // Act
             Check.ThatCode(() => _sut.DeleteFile(null)).Throws<ArgumentNullException>();

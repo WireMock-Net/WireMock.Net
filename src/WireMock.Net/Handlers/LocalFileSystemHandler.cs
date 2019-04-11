@@ -69,46 +69,46 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
-        public bool FileExists(string path)
+        public bool FileExists(string filename)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.Exists(AdjustPath(path));
+            return File.Exists(AdjustPath(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
-        public void WriteFile(string path, byte[] bytes)
+        public void WriteFile(string filename, byte[] bytes)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNullOrEmpty(filename, nameof(filename));
             Check.NotNull(bytes, nameof(bytes));
 
-            File.WriteAllBytes(AdjustPath(path), bytes);
+            File.WriteAllBytes(AdjustPath(filename), bytes);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
-        public void DeleteFile(string path)
+        public void DeleteFile(string filename)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNullOrEmpty(filename, nameof(filename));
 
-            File.Delete(AdjustPath(path));
+            File.Delete(AdjustPath(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
-        public byte[] ReadFile(string path)
+        public byte[] ReadFile(string filename)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.ReadAllBytes(AdjustPath(path));
+            return File.ReadAllBytes(AdjustPath(filename));
         }
 
         /// <summary>
         /// Adjusts the path to the MappingFolder.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="filename">The path.</param>
         /// <returns>Adjusted path</returns>
-        private string AdjustPath(string path)
+        private string AdjustPath(string filename)
         {
-            return Path.Combine(GetMappingFolder(), path);
+            return Path.Combine(GetMappingFolder(), filename);
         }
     }
 }
