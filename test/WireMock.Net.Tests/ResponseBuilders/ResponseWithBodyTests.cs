@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
@@ -230,6 +231,54 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(response2Message.BodyData.BodyAsBytes).IsNull();
             Check.That(response2Message.BodyData.BodyAsString).IsNull();
             Check.That(response2Message.StatusCode).IsEqualTo(200);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_WithBodyAsFile()
+        {
+            var fileContents = "testFileContents" + Guid.NewGuid();
+            var bodyDataAsFile = new BodyData {BodyAsFile = fileContents};
+
+            var request1 = new RequestMessage(new UrlDetails("http://localhost/__admin/files/filename.txt"), "PUT", ClientIp, bodyDataAsFile);
+
+            var response = Response.Create().WithStatusCode(200).WithBody(fileContents);
+
+            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+
+            Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
+            Check.That(provideResponseAsync.BodyData.BodyAsString).Contains(fileContents);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_WithResponseAsFile()
+        {
+            var fileContents = "testFileContents" + Guid.NewGuid();
+            var bodyDataAsFile = new BodyData { BodyAsFile = fileContents };
+
+            var request1 = new RequestMessage(new UrlDetails("http://localhost/__admin/files/filename.txt"), "GET", ClientIp, bodyDataAsFile);
+
+            var response = Response.Create().WithStatusCode(200).WithBody(fileContents);
+
+            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+
+            Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
+            Check.That(provideResponseAsync.BodyData.BodyAsString).Contains(fileContents);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_WithResponseDeleted()
+        {
+            var fileContents = "testFileContents" + Guid.NewGuid();
+            var bodyDataAsFile = new BodyData { BodyAsFile = fileContents };
+
+            var request1 = new RequestMessage(new UrlDetails("http://localhost/__admin/files/filename.txt"), "DELETE", ClientIp, bodyDataAsFile);
+
+            var response = Response.Create().WithStatusCode(200).WithBody("File deleted.");
+
+            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+
+            Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
+            Check.That(provideResponseAsync.BodyData.BodyAsString).Contains("File deleted.");
         }
     }
 }

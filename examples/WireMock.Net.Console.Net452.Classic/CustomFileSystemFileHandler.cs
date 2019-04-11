@@ -49,5 +49,39 @@ namespace WireMock.Net.ConsoleApplication
         {
             return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
         }
+
+        /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
+        public bool FileExists(string path)
+        {
+            return File.Exists(AdjustPath(path));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
+        public void WriteFile(string path, byte[] bytes)
+        {
+            File.WriteAllBytes(AdjustPath(path), bytes);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
+        public void DeleteFile(string path)
+        {
+            File.Delete(AdjustPath(path));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
+        public byte[] ReadFile(string path)
+        {
+            return File.ReadAllBytes(AdjustPath(path));
+        }
+
+        /// <summary>
+        /// Adjusts the path to the MappingFolder.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Adjusted path</returns>
+        private string AdjustPath(string path)
+        {
+            return Path.Combine(GetMappingFolder(), path);
+        }
     }
 }

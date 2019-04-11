@@ -33,5 +33,13 @@ namespace WireMock
 
             return response;
         }
+
+        internal static ResponseMessage Create(int statusCode)
+        {
+            return new ResponseMessage
+            {
+                StatusCode = statusCode
+            };
+        }
     }
 }
