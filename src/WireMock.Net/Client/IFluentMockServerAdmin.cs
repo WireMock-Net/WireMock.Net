@@ -197,5 +197,12 @@ namespace WireMock.Client
         /// <param name="filename">The filename</param>
         [Delete("__admin/files/{filename}")]
         Task<StatusModel> DeleteFileAsync([Path] string filename);
+
+        /// <summary>
+        /// Check if a file exists
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        [Head("__admin/files/{filename}")]
+        Task FileExistsAsync([Path] string filename);
     }
 }

@@ -73,37 +73,22 @@ namespace WireMock.Server
             return response;
         }
 
+        /// <summary>
+        /// Checks if file exists.
+        /// Note: Response is returned with no body as a head request doesn't accept a body, only the status code.
+        /// </summary>
+        /// <param name="requestMessage">The request message.</param>
         private ResponseMessage FileHead(RequestMessage requestMessage)
         {
-            string path = requestMessage.Path.Substring(AdminFiles.Length + 1);
+            string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            if (!_fileSystemHandler.FileExists(path))
+            if (!_fileSystemHandler.FileExists(filename))
             {
-                _logger.Info("The file '{0}' does not exist.", path);
-                // Response is returned here with no body as a head request doesn't accept a body, only the status code.
-                return new ResponseMessage
-                       {
-                           StatusCode = 404,
-                           BodyData = new BodyData
-                                      {
-                                          BodyAsBytes = null,
-                                          DetectedBodyType = BodyType.None,
-                                          DetectedBodyTypeFromContentType = BodyType.None
-                                      }
-                       };
+                _logger.Info("The file '{0}' does not exist.", filename);
+                return ResponseMessageBuilder.Create(404);
             }
 
-            // Response is returned here with no body as a head request doesn't accept a body, only the status code.
-            return new ResponseMessage
-                   {
-                       StatusCode = 204,
-                       BodyData = new BodyData
-                                  {
-                                      BodyAsBytes = null,
-                                      DetectedBodyType = BodyType.None,
-                                      DetectedBodyTypeFromContentType = BodyType.None
-                                  }
-                   };
+            return ResponseMessageBuilder.Create(204);
         }
 
         private ResponseMessage FileDelete(RequestMessage requestMessage)

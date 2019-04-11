@@ -441,5 +441,31 @@ namespace WireMock.Net.Tests
 
             server.Stop();
         }
+
+        [Fact]
+        public void IFluentMockServerAdmin_FileExistsAsync_NotFound()
+        {
+            // Arrange
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
+
+            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+
+            // Act and Assert
+            Check.ThatAsyncCode(() => api.FileExistsAsync("filename.txt")).Throws<ApiException>();
+
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
+
+            server.Stop();
+        }
     }
 }

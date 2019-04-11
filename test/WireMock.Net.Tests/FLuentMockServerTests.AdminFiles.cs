@@ -16,12 +16,12 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerAdminFilesTests
     {
+        private readonly HttpClient _client = new HttpClient();
+
         [Fact]
         public async Task FluentMockServer_Admin_Files_Post_Ascii()
         {
             // Arrange
-            var client = new HttpClient();
-
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.GetMappingFolder()).Returns("__admin/mappings");
             filesystemHandlerMock.Setup(fs => fs.FolderExists(It.IsAny<string>())).Returns(true);
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
 
             // Act
-            var httpResponseMessage = await client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
+            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.OK);
@@ -56,8 +56,6 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Files_Post_MappingFolderDoesNotExistsButWillBeCreated()
         {
             // Arrange
-            var client = new HttpClient();
-
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.GetMappingFolder()).Returns("x");
             filesystemHandlerMock.Setup(fs => fs.CreateFolder(It.IsAny<string>()));
@@ -76,7 +74,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
 
             // Act
-            var httpResponseMessage = await client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
+            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.OK);
@@ -93,8 +91,6 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Files_GetAscii()
         {
             // Arrange
-            var client = new HttpClient();
-
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.ReadFile(It.IsAny<string>())).Returns(Encoding.ASCII.GetBytes("Here's a string."));
@@ -111,7 +107,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream()));
 
             // Act
-            var httpResponseMessageGet = await client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt");
+            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt");
 
             // Assert
             Check.That(httpResponseMessageGet.StatusCode).Equals(HttpStatusCode.OK);
@@ -130,8 +126,6 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Files_GetUTF16()
         {
             // Arrange
-            var client = new HttpClient();
-
             byte[] symbol = Encoding.UTF32.GetBytes(char.ConvertFromUtf32(0x1D161));
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
@@ -149,7 +143,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream()));
 
             // Act
-            var httpResponseMessageGet = await client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.bin");
+            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.bin");
 
             // Assert
             Check.That(httpResponseMessageGet.StatusCode).Equals(HttpStatusCode.OK);
@@ -166,62 +160,56 @@ namespace WireMock.Net.Tests
         public async Task FluentMockServer_Admin_Files_Head()
         {
             // Arrange
-            using (var client = new HttpClient())
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-                filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
 
-                var server = FluentMockServer.Start(new FluentMockServerSettings
-                                                    {
-                                                        UseSSL = false,
-                                                        StartAdminInterface = true,
-                                                        FileSystemHandler = filesystemHandlerMock.Object
-                                                    });
+            // Act
+            var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
+            var httpResponseMessage = await _client.SendAsync(httpRequestMessage);
 
-                // Act
-                var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+            // Assert
+            Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NoContent);
+            Check.That(server.LogEntries.Count().Equals(1));
 
-                // Assert
-                Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NoContent);
-                Check.That(server.LogEntries.Count().Equals(1));
-
-                // Verify
-                filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
-                filesystemHandlerMock.VerifyNoOtherCalls();
-            }
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
         public async Task FluentMockServer_Admin_Files_Head_FileDoesNotExistsReturns404()
         {
             // Arrange
-            using (var client = new HttpClient())
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
             {
-                var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-                filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
+                UseSSL = false,
+                StartAdminInterface = true,
+                FileSystemHandler = filesystemHandlerMock.Object
+            });
 
-                var server = FluentMockServer.Start(new FluentMockServerSettings
-                                                    {
-                                                        UseSSL = false,
-                                                        StartAdminInterface = true,
-                                                        FileSystemHandler = filesystemHandlerMock.Object
-                                                    });
+            // Act
+            var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
+            var httpResponseMessage = await _client.SendAsync(httpRequestMessage);
 
-                // Act
-                var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+            // Assert
+            Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NotFound);
+            Check.That(server.LogEntries.Count().Equals(1));
 
-                // Assert
-                Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NotFound);
-                Check.That(server.LogEntries.Count().Equals(1));
-
-                // Verify
-                filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
-                filesystemHandlerMock.VerifyNoOtherCalls();
-            }
+            // Verify
+            filesystemHandlerMock.Verify(fs => fs.FileExists(It.IsAny<string>()), Times.Once);
+            filesystemHandlerMock.VerifyNoOtherCalls();
         }
     }
 }
