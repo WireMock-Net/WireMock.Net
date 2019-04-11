@@ -1,3 +1,7 @@
+# 1.0.13.0 (11 April 2019)
+- [#266](https://github.com/WireMock-Net/WireMock.Net/pull/266) - [265] Add file upload to allow mocking of file operations contributed by [JackCreativeCrew](https://github.com/JackCreativeCrew)
+- [#265](https://github.com/WireMock-Net/WireMock.Net/issues/265) - File Upload [feature]
+
 # 1.0.12.0 (05 April 2019)
 - [#264](https://github.com/WireMock-Net/WireMock.Net/pull/264) - Proxy : also save multipart as string in mapping file contributed by [StefH](https://github.com/StefH)
 - [#263](https://github.com/WireMock-Net/WireMock.Net/issues/263) - Content-Type multipart/form-data is not serialized in proxy and recording mode [bug]
