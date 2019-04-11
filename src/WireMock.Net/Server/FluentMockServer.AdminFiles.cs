@@ -24,6 +24,7 @@ namespace WireMock.Server
 
             return ResponseMessageBuilder.Create("File created");
         }
+
         private ResponseMessage FilePut(RequestMessage requestMessage)
         {
             string path = requestMessage.Path.Substring(AdminFiles.Length + 1);
@@ -66,6 +67,24 @@ namespace WireMock.Server
                 response.BodyData.DetectedBodyType = BodyType.String;
                 response.BodyData.BodyAsString = encoding.GetString(bytes);
             }
+
+            return response;
+        }
+
+        private ResponseMessage FileHead(RequestMessage requestMessage)
+        {
+            string path = requestMessage.Path.Substring(AdminFiles.Length + 1);
+
+            if (!_fileSystemHandler.FileExists(path))
+            {
+                _logger.Info("The file '{0}' does not exist.", path);
+                return ResponseMessageBuilder.Create("File is not found", 404);
+            }
+
+            var response = new ResponseMessage
+                           {
+                               StatusCode = 200
+                           };
 
             return response;
         }

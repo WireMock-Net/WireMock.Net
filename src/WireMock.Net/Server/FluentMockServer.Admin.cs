@@ -103,6 +103,7 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPut()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
             Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
         }
         #endregion
