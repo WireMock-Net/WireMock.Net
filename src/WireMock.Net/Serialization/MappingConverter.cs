@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.ResponseProviders;
 using WireMock.Util;
 
 namespace WireMock.Serialization
@@ -80,7 +77,7 @@ namespace WireMock.Serialization
                 },
                 Response = new ResponseModel
                 {
-                    Delay = (int?) response.Delay?.TotalMilliseconds
+                    Delay = (int?)response.Delay?.TotalMilliseconds
                 }
             };
 
@@ -140,77 +137,6 @@ namespace WireMock.Serialization
                     }
                 }
             }
-
-            return mappingModel;
-        }
-
-        public static MappingModel ToAdminMappingModel(IMapping mapping)
-        {
-            var request = (Request)mapping.RequestMatcher;
-            var response = (DynamicResponseProvider)mapping.Provider;
-
-            var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>();
-            var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
-            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
-            var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
-            var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
-            var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
-            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-            var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
-
-            var mappingModel = new MappingModel
-            {
-                Guid = mapping.Guid,
-                Title = mapping.Title,
-                Priority = mapping.Priority,
-                Scenario = mapping.Scenario,
-                WhenStateIs = mapping.ExecutionConditionState,
-                SetStateTo = mapping.NextState,
-                Request = new RequestModel
-                {
-                    ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel
-                    {
-                        Matchers = MatcherMapper.Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                    } : null,
-
-                    Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
-                    {
-                        Matchers = MatcherMapper.Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                    } : null,
-
-                    Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
-                    {
-                        Matchers = MatcherMapper.Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
-                    } : null,
-
-                    Methods = methodMatcher?.Methods,
-
-                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
-                    {
-                        Name = hm.Name,
-                        Matchers = MatcherMapper.Map(hm.Matchers)
-                    }).ToList() : null,
-
-                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
-                    {
-                        Name = cm.Name,
-                        Matchers = MatcherMapper.Map(cm.Matchers)
-                    }).ToList() : null,
-
-                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
-                    {
-                        Name = pm.Key,
-                        IgnoreCase = pm.IgnoreCase,
-                        Matchers = MatcherMapper.Map(pm.Matchers)
-                    }).ToList() : null,
-
-                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
-                    {
-                        Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
-                    }
-                },
-                Response = new ResponseModel()
-            };
 
             return mappingModel;
         }
