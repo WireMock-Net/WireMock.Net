@@ -1,3 +1,7 @@
+# 1.0.14.0 (20 April 2019)
+- [#269](https://github.com/WireMock-Net/WireMock.Net/pull/269) - Add JmesPath matcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#268](https://github.com/WireMock-Net/WireMock.Net/issues/268) - Swagger UI for admin api [question]
+
 # 1.0.13.0 (11 April 2019)
 - [#266](https://github.com/WireMock-Net/WireMock.Net/pull/266) - [265] Add file upload to allow mocking of file operations contributed by [JackCreativeCrew](https://github.com/JackCreativeCrew)
 - [#265](https://github.com/WireMock-Net/WireMock.Net/issues/265) - File Upload [feature]
