@@ -8,7 +8,7 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 * Record/playback of stubs (proxying)
 * Per-request conditional proxying
 * Stateful behaviour simulation
-* Response transformation
+* Response templating / transformation using Handlebars and extensions
 
 ## Info
 | | |
