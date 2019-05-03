@@ -722,6 +722,11 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
             }
 
+            if (responseModel.UseTransformer)
+            {
+                responseBuilder = responseBuilder.WithTransformer();
+            }
+
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
                 if (string.IsNullOrEmpty(responseModel.X509Certificate2ThumbprintOrSubjectName))
@@ -776,11 +781,6 @@ namespace WireMock.Server
             else if (responseModel.BodyAsFile != null)
             {
                 responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile);
-            }
-
-            if (responseModel.UseTransformer)
-            {
-                responseBuilder = responseBuilder.WithTransformer();
             }
 
             return responseBuilder;
