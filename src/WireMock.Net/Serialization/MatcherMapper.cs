@@ -45,6 +45,9 @@ namespace WireMock.Serialization
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, stringPatterns);
 
+                case "JmesPathMatcher":
+                    return new JmesPathMatcher(matchBehaviour, stringPatterns);
+
                 case "XPathMatcher":
                     return new XPathMatcher(matchBehaviour, (string)matcher.Pattern);
 

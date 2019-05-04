@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WireMock.Util;
 
 namespace WireMock.Transformers
@@ -24,23 +24,24 @@ namespace WireMock.Transformers
 
         public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
-            bool bodyIsJson = original.BodyData.DetectedBodyType == BodyType.Json;
             var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
-
-            if (!bodyIsJson)
-            {
-                responseMessage.BodyOriginal = original.BodyData.BodyAsString;
-            }
 
             var template = new { request = requestMessage };
 
-            if (!bodyIsJson)
+            switch (original.BodyData.DetectedBodyType)
             {
-                TransformBodyAsString(template, original, responseMessage);
-            }
-            else
-            {
-                TransformBodyAsJson(template, original, responseMessage);
+                case BodyType.Json:
+                    TransformBodyAsJson(template, original, responseMessage);
+                    break;
+
+                case BodyType.File:
+                    TransformBodyAsFile(template, original, responseMessage);
+                    break;
+
+                case BodyType.String:
+                    responseMessage.BodyOriginal = original.BodyData.BodyAsString;
+                    TransformBodyAsString(template, original, responseMessage);
+                    break;
             }
 
             // Headers
@@ -150,13 +151,25 @@ namespace WireMock.Transformers
 
         private static void TransformBodyAsString(object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBody = HandlebarsContext.Compile(original.BodyData.BodyAsString);
+            var templateBodyAsString = HandlebarsContext.Compile(original.BodyData.BodyAsString);
 
             responseMessage.BodyData = new BodyData
             {
                 DetectedBodyType = original.BodyData.DetectedBodyType,
                 DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
-                BodyAsString = templateBody(template)
+                BodyAsString = templateBodyAsString(template)
+            };
+        }
+
+        private static void TransformBodyAsFile(object template, ResponseMessage original, ResponseMessage responseMessage)
+        {
+            var templateBodyAsFile = HandlebarsContext.Compile(original.BodyData.BodyAsFile);
+
+            responseMessage.BodyData = new BodyData
+            {
+                DetectedBodyType = original.BodyData.DetectedBodyType,
+                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                BodyAsFile = templateBodyAsFile(template)
             };
         }
     }

@@ -1,3 +1,17 @@
+# 1.0.15.0 (04 May 2019)
+- [#271](https://github.com/WireMock-Net/WireMock.Net/pull/271) - Support Dynamic response files using Handlebars templating [bug, feature] contributed by [StefH](https://github.com/StefH)
+- [#272](https://github.com/WireMock-Net/WireMock.Net/pull/272) - Add unit test for JsonPath and BodyAsFile mapping contributed by [denstorti](https://github.com/denstorti)
+- [#273](https://github.com/WireMock-Net/WireMock.Net/pull/273) - Dynamic response handlebars templating (2) [bug, feature] contributed by [StefH](https://github.com/StefH)
+- [#270](https://github.com/WireMock-Net/WireMock.Net/issues/270) - Dynamic response files using Handlebars templating [bug, question]
+
+# 1.0.14.0 (20 April 2019)
+- [#269](https://github.com/WireMock-Net/WireMock.Net/pull/269) - Add JmesPath matcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#268](https://github.com/WireMock-Net/WireMock.Net/issues/268) - Swagger UI for admin api [question]
+
+# 1.0.13.0 (11 April 2019)
+- [#266](https://github.com/WireMock-Net/WireMock.Net/pull/266) - [265] Add file upload to allow mocking of file operations contributed by [JackCreativeCrew](https://github.com/JackCreativeCrew)
+- [#265](https://github.com/WireMock-Net/WireMock.Net/issues/265) - File Upload [feature]
+
 # 1.0.12.0 (05 April 2019)
 - [#264](https://github.com/WireMock-Net/WireMock.Net/pull/264) - Proxy : also save multipart as string in mapping file contributed by [StefH](https://github.com/StefH)
 - [#263](https://github.com/WireMock-Net/WireMock.Net/issues/263) - Content-Type multipart/form-data is not serialized in proxy and recording mode [bug]

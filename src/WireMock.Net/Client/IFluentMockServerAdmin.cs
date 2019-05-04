@@ -167,5 +167,42 @@ namespace WireMock.Client
         /// </summary>
         [Post("__admin/scenarios")]
         Task<StatusModel> ResetScenariosAsync();
+
+        /// <summary>
+        /// Create a new File
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <param name="body">The body</param>
+        [Post("__admin/files/{filename}")]
+        Task<StatusModel> PostFileAsync([Path] string filename, [Body] string body);
+
+        /// <summary>
+        /// Update an existing File
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <param name="body">The body</param>
+        [Put("__admin/files/{filename}")]
+        Task<StatusModel> PutFileAsync([Path] string filename, [Body] string body);
+
+        /// <summary>
+        /// Get the content of an existing File
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        [Get("__admin/files/{filename}")]
+        Task<string> GetFileAsync([Path] string filename);
+
+        /// <summary>
+        /// Delete an existing File
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        [Delete("__admin/files/{filename}")]
+        Task<StatusModel> DeleteFileAsync([Path] string filename);
+
+        /// <summary>
+        /// Check if a file exists
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        [Head("__admin/files/{filename}")]
+        Task FileExistsAsync([Path] string filename);
     }
 }
