@@ -258,22 +258,5 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assert
             Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.json");
         }
-
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_WithBodyAsFile()
-        {
-            // Assign
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
-
-            var response = Response.Create()
-                .WithTransformer()
-                .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\test.xml"); // why use a \\ here ?
-
-            // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
-
-            // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
-        }
     }
 }
