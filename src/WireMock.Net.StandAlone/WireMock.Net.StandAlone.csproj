@@ -25,14 +25,14 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <CodeAnalysisRuleSet>WireMock.Net.StandAlone.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
