@@ -1,3 +1,8 @@
+# 1.0.16.0 (16 May 2019)
+- [#274](https://github.com/WireMock-Net/WireMock.Net/pull/274) - Sign Assembly [feature] contributed by [StefH](https://github.com/StefH)
+- [#160](https://github.com/WireMock-Net/WireMock.Net/issues/160) - Feature: Sign 'WireMock.Net' [feature]
+- [#267](https://github.com/WireMock-Net/WireMock.Net/issues/267) - Assembly does not have strong name
+
 # 1.0.15.0 (04 May 2019)
 - [#271](https://github.com/WireMock-Net/WireMock.Net/pull/271) - Support Dynamic response files using Handlebars templating [bug, feature] contributed by [StefH](https://github.com/StefH)
 - [#272](https://github.com/WireMock-Net/WireMock.Net/pull/272) - Add unit test for JsonPath and BodyAsFile mapping contributed by [denstorti](https://github.com/denstorti)
