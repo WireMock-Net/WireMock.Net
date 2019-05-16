@@ -27,7 +27,7 @@
     <CodeAnalysisRuleSet>WireMock.Net.StandAlone.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>true</DelaySign>
+    <!--<DelaySign>true</DelaySign>-->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
   
