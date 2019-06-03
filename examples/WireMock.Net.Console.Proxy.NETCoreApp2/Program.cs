@@ -27,7 +27,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
                     Url = "http://postman-echo.com/post",
                     //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
-                    SaveMappingToFile = false,
+                    SaveMappingToFile = true,
                     BlackListedHeaders = new[] { "dnt", "Content-Length" }
                 }
             });

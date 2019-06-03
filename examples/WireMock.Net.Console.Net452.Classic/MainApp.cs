@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -36,6 +37,12 @@ namespace WireMock.Net.ConsoleApplication
                 FileSystemHandler = new CustomFileSystemFileHandler()
             });
             System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
+
+            server.Given(Request.Create().UsingGet().WithPath("/foo")).RespondWith(Response.Create().WithStatusCode(202).WithBody(@"ok"));
+
+
+            string s = new HttpClient().GetStringAsync(url1 + "foo").Result;
+            System.Console.WriteLine(JsonConvert.SerializeObject(s, Formatting.Indented));
 
             server.SetBasicAuthentication("a", "b");
 
