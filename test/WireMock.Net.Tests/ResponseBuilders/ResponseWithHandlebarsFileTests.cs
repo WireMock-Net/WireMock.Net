@@ -35,6 +35,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 })
                 .WithTransformer();
 
+            response.SetPrivateFieldValue("_fileSystemHandler", _filesystemHandlerMock.Object);
             response.SetPrivateFieldValue("_responseMessageTransformer", new ResponseMessageTransformer(_filesystemHandlerMock.Object));
 
             // Act
@@ -62,6 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 })
                 .WithTransformer();
 
+            response.SetPrivateFieldValue("_fileSystemHandler", _filesystemHandlerMock.Object);
             response.SetPrivateFieldValue("_responseMessageTransformer", new ResponseMessageTransformer(_filesystemHandlerMock.Object));
 
             // Act

@@ -21,7 +21,7 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private readonly IFileSystemHandler _fileSystemHandler = new LocalFileSystemHandler();
+        private readonly IFileSystemHandler _fileSystemHandler;
         private readonly ResponseMessageTransformer _responseMessageTransformer;
         private HttpClient _httpClientForProxy;
 
@@ -95,6 +95,7 @@ namespace WireMock.ResponseBuilders
         {
             ResponseMessage = responseMessage;
 
+            _fileSystemHandler = new LocalFileSystemHandler();
             _responseMessageTransformer = new ResponseMessageTransformer(_fileSystemHandler);
         }
 
