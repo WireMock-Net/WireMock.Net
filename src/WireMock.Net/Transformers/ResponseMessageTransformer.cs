@@ -1,14 +1,17 @@
 ﻿using HandlebarsDotNet;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WireMock.Handlers;
 using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class ResponseMessageTransformer
+    internal class ResponseMessageTransformer
     {
         private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
         {
@@ -17,12 +20,14 @@ namespace WireMock.Transformers
 
         private static readonly IHandlebars HandlebarsContext = Handlebars.Create(HandlebarsConfiguration);
 
-        static ResponseMessageTransformer()
+        public ResponseMessageTransformer([NotNull] IFileSystemHandler fileSystemHandler)
         {
-            HandlebarsHelpers.Register(HandlebarsContext);
+            Check.NotNull(fileSystemHandler, nameof(fileSystemHandler));
+
+            HandlebarsHelpers.Register(HandlebarsContext, fileSystemHandler);
         }
 
-        public static ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
+        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
             var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
 
@@ -90,14 +95,14 @@ namespace WireMock.Transformers
             };
         }
 
-        private static void WalkNode(JToken node, object template)
+        private static void WalkNode(JToken node, object context)
         {
             if (node.Type == JTokenType.Object)
             {
                 // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JProperty child in node.Children<JProperty>().ToArray())
                 {
-                    WalkNode(child.Value, template);
+                    WalkNode(child.Value, context);
                 }
             }
             else if (node.Type == JTokenType.Array)
@@ -105,7 +110,7 @@ namespace WireMock.Transformers
                 // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JToken child in node.Children().ToArray())
                 {
-                    WalkNode(child, template);
+                    WalkNode(child, context);
                 }
             }
             else if (node.Type == JTokenType.String)
@@ -118,7 +123,7 @@ namespace WireMock.Transformers
                 }
 
                 var templateForStringValue = HandlebarsContext.Compile(stringValue);
-                string transformedString = templateForStringValue(template);
+                string transformedString = templateForStringValue(context);
                 if (!string.Equals(stringValue, transformedString))
                 {
                     ReplaceNodeValue(node, transformedString);
