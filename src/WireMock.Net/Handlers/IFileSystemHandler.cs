@@ -49,11 +49,18 @@ namespace WireMock.Handlers
         void WriteMappingFile([NotNull] string path, [NotNull] string text);
 
         /// <summary>
-        /// Read a response body file as text.
+        /// Read a response body file as byte[].
         /// </summary>
         /// <param name="path">The path or filename from the file to read.</param>
         /// <returns>The file content as bytes.</returns>
         byte[] ReadResponseBodyAsFile([NotNull] string path);
+
+        /// <summary>
+        /// Read a response body file as text.
+        /// </summary>
+        /// <param name="path">The path or filename from the file to read.</param>
+        /// <returns>The file content as text.</returns>
+        string ReadResponseBodyAsString([NotNull] string path);
 
         /// <summary>
         /// Delete a file.

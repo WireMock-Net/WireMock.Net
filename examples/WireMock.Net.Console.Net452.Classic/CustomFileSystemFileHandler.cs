@@ -50,6 +50,12 @@ namespace WireMock.Net.ConsoleApplication
             return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
         }
 
+        /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
+        public string ReadResponseBodyAsString(string path)
+        {
+            return File.ReadAllText(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
+        }
+
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
         public bool FileExists(string path)
         {
