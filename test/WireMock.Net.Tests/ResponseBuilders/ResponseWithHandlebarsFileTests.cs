@@ -1,7 +1,7 @@
-﻿using System;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using System;
 using System.Threading.Tasks;
 using WireMock.Handlers;
 using WireMock.Models;
@@ -11,19 +11,19 @@ using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
-    public class ResponseWithHandlebarsFileFragmentTests
+    public class ResponseWithHandlebarsFileTests
     {
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private const string ClientIp = "::1";
 
-        public ResponseWithHandlebarsFileFragmentTests()
+        public ResponseWithHandlebarsFileTests()
         {
             _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
         }
 
         [Fact]
-        public async Task Response_ProvideResponseAsync_Handlebars_FileFragment()
+        public async Task Response_ProvideResponseAsync_Handlebars_File()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    Data = "{{FileFragment \"x.json\"}}"
+                    Data = "{{File \"x.json\"}}"
                 })
                 .WithTransformer();
 
@@ -50,7 +50,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async Task Response_ProvideResponseAsync_Handlebars_FileFragment_Replace()
+        public async Task Response_ProvideResponseAsync_Handlebars_File_Replace()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234?id=x"), "GET", ClientIp);
@@ -58,7 +58,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    Data = "{{FileFragment \"{{request.query.id}}.json\"}}"
+                    Data = "{{File \"{{request.query.id}}.json\"}}"
                 })
                 .WithTransformer();
 
@@ -77,7 +77,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponseAsync_Handlebars_WithMissingArgument_ThrowsArgumentOutOfRangeException()
+        public void Response_ProvideResponseAsync_Handlebars_File_WithMissingArgument_ThrowsArgumentOutOfRangeException()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -85,11 +85,9 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    Data = "{{FileFragment}}"
+                    Data = "{{File}}"
                 })
                 .WithTransformer();
-
-            // response.SetPrivateFieldValue("_responseMessageTransformer", new ResponseMessageTransformer(_filesystemHandlerMock.Object));
 
             // Act
             Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentOutOfRangeException>();

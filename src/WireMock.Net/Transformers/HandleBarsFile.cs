@@ -5,17 +5,17 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsFileFragment
+    internal static class HandleBarsFile
     {
         public static void Register(IHandlebars handlebarsContext, IFileSystemHandler fileSystemHandler)
         {
-            handlebarsContext.RegisterHelper("FileFragment", (writer, context, arguments) =>
+            handlebarsContext.RegisterHelper("File", (writer, context, arguments) =>
             {
                 string value = ParseArgumentAndReadFileFragment(handlebarsContext, context, fileSystemHandler, arguments);
                 writer.Write(value);
             });
 
-            handlebarsContext.RegisterHelper("FileFragment", (writer, options, context, arguments) =>
+            handlebarsContext.RegisterHelper("File", (writer, options, context, arguments) =>
             {
                 string value = ParseArgumentAndReadFileFragment(handlebarsContext, context, fileSystemHandler, arguments);
                 options.Template(writer, value);
@@ -35,7 +35,7 @@ namespace WireMock.Transformers
                     return fileSystemHandler.ReadResponseBodyAsString(transformed);
             }
 
-            throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars FileFragment.");
+            throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars File.");
         }
     }
 }
