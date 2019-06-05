@@ -1,3 +1,7 @@
+# 1.0.17.0 (05 June 2019)
+- [#278](https://github.com/WireMock-Net/WireMock.Net/pull/278) - Add support for HandleBars File (to read a file) [feature] contributed by [StefH](https://github.com/StefH)
+- [#276](https://github.com/WireMock-Net/WireMock.Net/issues/276) - No server response in Postman and Receive Failure in Fiddler [invalid]
+
 # 1.0.16.0 (16 May 2019)
 - [#274](https://github.com/WireMock-Net/WireMock.Net/pull/274) - Sign Assembly [feature] contributed by [StefH](https://github.com/StefH)
 - [#160](https://github.com/WireMock-Net/WireMock.Net/issues/160) - Feature: Sign 'WireMock.Net' [feature]
