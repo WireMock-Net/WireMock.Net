@@ -21,7 +21,8 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private readonly IFileSystemHandler _fileSystemHandler = new LocalFileSystemHandler();
+        private readonly IFileSystemHandler _fileSystemHandler;
+        private readonly ResponseMessageTransformer _responseMessageTransformer;
         private HttpClient _httpClientForProxy;
 
         /// <summary>
@@ -93,6 +94,9 @@ namespace WireMock.ResponseBuilders
         private Response(ResponseMessage responseMessage)
         {
             ResponseMessage = responseMessage;
+
+            _fileSystemHandler = new LocalFileSystemHandler();
+            _responseMessageTransformer = new ResponseMessageTransformer(_fileSystemHandler);
         }
 
         /// <summary>
@@ -417,7 +421,7 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                return ResponseMessageTransformer.Transform(requestMessage, ResponseMessage);
+                return _responseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }
 
             // Just return normal defined ResponseMessage

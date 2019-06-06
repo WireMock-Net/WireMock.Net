@@ -1,10 +1,11 @@
 ﻿using HandlebarsDotNet;
+using WireMock.Handlers;
 
 namespace WireMock.Transformers
 {
     internal static class HandlebarsHelpers
     {
-        public static void Register(IHandlebars handlebarsContext)
+        public static void Register(IHandlebars handlebarsContext, IFileSystemHandler fileSystemHandler)
         {
             HandleBarsRegex.Register(handlebarsContext);
 
@@ -15,6 +16,8 @@ namespace WireMock.Transformers
             HandleBarsRandom.Register(handlebarsContext);
 
             HandleBarsXeger.Register(handlebarsContext);
+
+            HandleBarsFile.Register(handlebarsContext, fileSystemHandler);
         }
     }
 }
