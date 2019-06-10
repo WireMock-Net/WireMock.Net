@@ -24,7 +24,7 @@ namespace WireMock.Settings
         bool? UseSSL { get; set; }
 
         /// <summary>
-        /// Gets or sets wether to start admin interface.
+        /// Gets or sets whether to start admin interface.
         /// </summary>
         [PublicAPI]
         bool? StartAdminInterface { get; set; }

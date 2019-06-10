@@ -1,6 +1,6 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System;
 using WireMock.Handlers;
 using WireMock.Logging;
 
