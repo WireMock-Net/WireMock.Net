@@ -61,8 +61,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.15" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.7" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.17" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.8" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
   </ItemGroup>
 
