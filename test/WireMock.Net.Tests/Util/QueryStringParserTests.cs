@@ -189,6 +189,20 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
+        public void Parse_With1ParamContainingSpacesAndEqualSign()
+        {
+            // Assign
+            string query = "?q=SELECT Id from User where username='user@gmail.com'";
+
+            // Act
+            var result = QueryStringParser.Parse(query);
+
+            // Assert
+            result.Count.Should().Be(1);
+            result["q"].Should().Equal(new WireMockList<string>("SELECT Id from User where username='user@gmail.com'"));
+        }
+
+        [Fact]
         public void Parse_WithComplex()
         {
             // Assign
