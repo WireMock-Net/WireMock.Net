@@ -171,40 +171,7 @@ namespace WireMock
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
             RawQuery = WebUtility.UrlDecode(urlDetails.Url.Query);
-            Query = ParseQuery(RawQuery);
-        }
-
-        private static IDictionary<string, WireMockList<string>> ParseQuery(string queryString)
-        {
-            if (string.IsNullOrEmpty(queryString))
-            {
-                return null;
-            }
-
-            if (queryString.StartsWith("?"))
-            {
-                queryString = queryString.Substring(1);
-            }
-
-            return queryString.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
-                .Aggregate(new Dictionary<string, WireMockList<string>>(),
-                (dict, term) =>
-                {
-                    string[] parts = term.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-                    string key = parts[0];
-                    if (!dict.ContainsKey(key))
-                    {
-                        dict.Add(key, new WireMockList<string>());
-                    }
-
-                    if (parts.Length == 2)
-                    {
-                        string[] values = parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                        dict[key].AddRange(values);
-                    }
-
-                    return dict;
-                });
+            Query = QueryStringParser.Parse(RawQuery);
         }
 
         /// <summary>

@@ -438,6 +438,15 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("<xml>ok</xml>")
                 );
 
+            server.Given(Request.Create()
+                    .WithPath("/services/query/")
+                    .WithParam("q", "SELECT Id from User where username='user@gmail.com'")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.RequestBuilders

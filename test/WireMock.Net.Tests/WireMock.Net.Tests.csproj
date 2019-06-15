@@ -34,8 +34,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="5.7.0" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
-
     <PackageReference Include="RestEase" Version="1.4.7" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
