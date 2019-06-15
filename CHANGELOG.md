@@ -1,3 +1,10 @@
+# 1.0.19.0 (15 June 2019)
+- [#279](https://github.com/WireMock-Net/WireMock.Net/issues/279) - How to simulate disconnect? [question]
+- [#283](https://github.com/WireMock-Net/WireMock.Net/issues/283) - Support equal-sign in query [bug]
+
+# 1.0.18.0 (10 June 2019)
+- [#282](https://github.com/WireMock-Net/WireMock.Net/pull/282) - WireMock.Net.Standalone : Add --WireMockLogger commandline argument [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.17.0 (05 June 2019)
 - [#278](https://github.com/WireMock-Net/WireMock.Net/pull/278) - Add support for HandleBars File (to read a file) [feature] contributed by [StefH](https://github.com/StefH)
 - [#276](https://github.com/WireMock-Net/WireMock.Net/issues/276) - No server response in Postman and Receive Failure in Fiddler [invalid]

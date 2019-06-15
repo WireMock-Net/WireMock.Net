@@ -50,12 +50,17 @@ namespace WireMock.Net.StandAlone
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
-                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
+                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration")
             };
 
             if (logger != null)
             {
                 settings.Logger = logger;
+            }
+
+            if (parser.GetStringValue("WireMockLogger") == "WireMockConsoleLogger")
+            {
+                settings.Logger = new WireMockConsoleLogger();
             }
 
             if (parser.Contains("Port"))
@@ -82,9 +87,7 @@ namespace WireMock.Net.StandAlone
 
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
-            FluentMockServer server = Start(settings);
-
-            return server;
+            return Start(settings);
         }
     }
 }

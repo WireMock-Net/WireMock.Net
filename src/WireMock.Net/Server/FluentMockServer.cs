@@ -1,11 +1,11 @@
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -185,7 +185,7 @@ namespace WireMock.Server
 
         private FluentMockServer(IFluentMockServerSettings settings)
         {
-            settings.Logger = settings.Logger ?? new WireMockConsoleLogger();
+            settings.Logger = settings.Logger ?? new WireMockNullLogger();
 
             _logger = settings.Logger;
             _fileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
