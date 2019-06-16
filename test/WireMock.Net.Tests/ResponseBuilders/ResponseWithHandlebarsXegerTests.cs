@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using Xunit;
@@ -9,6 +11,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsXegerTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -26,7 +29,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -49,7 +52,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);

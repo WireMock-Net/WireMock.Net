@@ -82,6 +82,6 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IFluentMockServerSettings.FileSystemHandler"/>
         [PublicAPI]
         [JsonIgnore]
-        public IFileSystemHandler FileSystemHandler { get; set; } = new LocalFileSystemHandler();
+        public IFileSystemHandler FileSystemHandler { get; set; }
     }
 }

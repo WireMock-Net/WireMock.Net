@@ -1,7 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using System;
+using System.Threading.Tasks;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
@@ -11,11 +13,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsLinqTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Linq1_String0()
         {
             // Assign
-            var body = new BodyData { };
+            var body = new BodyData();
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234/pathtest"), "POST", "::1", body);
 
@@ -25,7 +29,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -55,7 +59,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -85,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -115,7 +119,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -140,14 +144,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object)).Throws<NotSupportedException>();
         }
 
         [Fact]
         public void Response_ProvideResponse_Handlebars_Linq1_Throws_ArgumentNullException()
         {
             // Assign
-            var body = new BodyData { };
+            var body = new BodyData();
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
@@ -156,14 +160,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object)).Throws<ArgumentNullException>();
         }
 
         [Fact]
         public void Response_ProvideResponse_Handlebars_Linq1_Throws_ArgumentException()
         {
             // Assign
-            var body = new BodyData { };
+            var body = new BodyData();
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
@@ -172,7 +176,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object)).Throws<ArgumentException>();
         }
 
         [Fact]
@@ -196,7 +200,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -224,7 +228,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);

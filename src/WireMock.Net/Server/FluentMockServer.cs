@@ -203,7 +203,7 @@ namespace WireMock.Server
                 Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
-            _options.FileSystemHandler = settings.FileSystemHandler;
+            _options.FileSystemHandler = _fileSystemHandler;
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _logger;
@@ -435,7 +435,7 @@ namespace WireMock.Server
         [PublicAPI]
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {
-            return new RespondWithAProvider(RegisterMapping, requestMatcher, saveToFile);
+            return new RespondWithAProvider(RegisterMapping, requestMatcher, _fileSystemHandler, saveToFile);
         }
 
         private void RegisterMapping(IMapping mapping, bool saveToFile)

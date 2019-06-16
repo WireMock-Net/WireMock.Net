@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
+using WireMock.Handlers;
 using WireMock.Settings;
-using WireMock.Validation;
 
 namespace WireMock.ResponseProviders
 {
     internal class ProxyAsyncResponseProvider : IResponseProvider
     {
-        private readonly Func<RequestMessage, IProxyAndRecordSettings, Task<ResponseMessage>> _responseMessageFunc;
-        private readonly IProxyAndRecordSettings _settings;
+        private readonly Func<RequestMessage, IFluentMockServerSettings, Task<ResponseMessage>> _responseMessageFunc;
+        private readonly IFluentMockServerSettings _settings;
 
-        public ProxyAsyncResponseProvider([NotNull] Func<RequestMessage, IProxyAndRecordSettings, Task<ResponseMessage>> responseMessageFunc, [NotNull] IProxyAndRecordSettings settings)
+        public ProxyAsyncResponseProvider(Func<RequestMessage, IFluentMockServerSettings, Task<ResponseMessage>> responseMessageFunc, IFluentMockServerSettings settings)
         {
-            Check.NotNull(responseMessageFunc, nameof(responseMessageFunc));
-            Check.NotNull(settings, nameof(settings));
-
             _responseMessageFunc = responseMessageFunc;
             _settings = settings;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
+        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFileSystemHandler fileSystemHandler)
         {
             return _responseMessageFunc(requestMessage, _settings);
         }

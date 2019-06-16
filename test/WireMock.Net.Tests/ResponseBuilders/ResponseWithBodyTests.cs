@@ -1,17 +1,20 @@
-﻿using System;
+﻿using Moq;
+using Newtonsoft.Json.Linq;
+using NFluent;
+using System;
 using System.Text;
 using System.Threading.Tasks;
-using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Xunit;
-using Newtonsoft.Json.Linq;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithBodyTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -28,7 +31,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.String, Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // then
             Check.That(responseMessage.BodyData.BodyAsString).Equals("01");
@@ -50,7 +53,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // then
             Check.That(responseMessage.BodyData.BodyAsBytes).ContainsExactly(new byte[] { 48, 49 });
@@ -72,7 +75,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody("test", null, Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // then
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
@@ -94,7 +97,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBodyAsJson(x, Encoding.ASCII);
 
             // act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // then
             Check.That(responseMessage.BodyData.BodyAsJson).Equals(x);
@@ -116,7 +119,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBodyAsJson(x, true);
 
             // act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // then
             Check.That(responseMessage.BodyData.BodyAsJson).Equals(x);
@@ -132,7 +135,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody("r", BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsBytes).IsNull();
@@ -150,7 +153,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody("r", BodyDestinationFormat.Bytes, Encoding.ASCII);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsNull();
@@ -168,7 +171,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithBody("{ \"value\": 42 }", BodyDestinationFormat.Json, Encoding.ASCII);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsNull();
@@ -190,7 +193,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithBody(req => $"path: {req.Path}");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("path: /test");
@@ -201,7 +204,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.Headers["H1"].ToString()).IsEqualTo("X1");
             Check.That(responseMessage.Headers["H2"].ToString()).IsEqualTo("X2");
         }
-        
+
         [Fact]
         public async Task Response_ProvideResponse_WithJsonBodyAndTransform_Func()
         {
@@ -211,15 +214,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request1 = new RequestMessage(new UrlDetails($"http://localhost/test?id={request1Id}"), "GET", ClientIp);
             var request2 = new RequestMessage(new UrlDetails($"http://localhost/test?id={request2Id}"), "GET", ClientIp);
-            
+
             var response = Response.Create()
                 .WithStatusCode(200)
                 .WithBodyAsJson(JObject.Parse("{ \"id\": \"{{request.query.id}}\" }"))
                 .WithTransformer();
 
             // Act
-            var response1Message = await response.ProvideResponseAsync(request1);
-            var response2Message = await response.ProvideResponseAsync(request2);
+            var response1Message = await response.ProvideResponseAsync(request1, _fileSystemHandlerMock.Object);
+            var response2Message = await response.ProvideResponseAsync(request2, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(((JToken)response1Message.BodyData.BodyAsJson).SelectToken("id")?.Value<int>()).IsEqualTo(request1Id);
@@ -237,13 +240,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async Task Response_ProvideResponse_WithBodyAsFile()
         {
             var fileContents = "testFileContents" + Guid.NewGuid();
-            var bodyDataAsFile = new BodyData {BodyAsFile = fileContents};
+            var bodyDataAsFile = new BodyData { BodyAsFile = fileContents };
 
             var request1 = new RequestMessage(new UrlDetails("http://localhost/__admin/files/filename.txt"), "PUT", ClientIp, bodyDataAsFile);
 
             var response = Response.Create().WithStatusCode(200).WithBody(fileContents);
 
-            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+            var provideResponseAsync = await response.ProvideResponseAsync(request1, _fileSystemHandlerMock.Object);
 
             Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
             Check.That(provideResponseAsync.BodyData.BodyAsString).Contains(fileContents);
@@ -259,7 +262,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create().WithStatusCode(200).WithBody(fileContents);
 
-            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+            var provideResponseAsync = await response.ProvideResponseAsync(request1, _fileSystemHandlerMock.Object);
 
             Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
             Check.That(provideResponseAsync.BodyData.BodyAsString).Contains(fileContents);
@@ -275,7 +278,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create().WithStatusCode(200).WithBody("File deleted.");
 
-            var provideResponseAsync = await response.ProvideResponseAsync(request1);
+            var provideResponseAsync = await response.ProvideResponseAsync(request1, _fileSystemHandlerMock.Object);
 
             Check.That(provideResponseAsync.StatusCode).IsEqualTo(200);
             Check.That(provideResponseAsync.BodyData.BodyAsString).Contains("File deleted.");

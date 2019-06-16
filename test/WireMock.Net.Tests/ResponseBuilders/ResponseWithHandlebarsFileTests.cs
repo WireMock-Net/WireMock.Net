@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
-using WireMock.Transformers;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
@@ -35,11 +34,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 })
                 .WithTransformer();
 
-            response.SetPrivateFieldValue("_fileSystemHandler", _filesystemHandlerMock.Object);
-            response.SetPrivateFieldValue("_responseMessageTransformer", new ResponseMessageTransformer(_filesystemHandlerMock.Object));
-
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _filesystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -63,11 +59,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 })
                 .WithTransformer();
 
-            response.SetPrivateFieldValue("_fileSystemHandler", _filesystemHandlerMock.Object);
-            response.SetPrivateFieldValue("_responseMessageTransformer", new ResponseMessageTransformer(_filesystemHandlerMock.Object));
-
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _filesystemHandlerMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -92,7 +85,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<ArgumentOutOfRangeException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _filesystemHandlerMock.Object)).Throws<ArgumentOutOfRangeException>();
 
             // Verify
             _filesystemHandlerMock.Verify(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()), Times.Never);

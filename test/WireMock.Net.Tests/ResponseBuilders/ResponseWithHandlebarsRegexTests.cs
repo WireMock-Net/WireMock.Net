@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
@@ -10,6 +12,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsRegexTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -25,7 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("abc");
@@ -44,7 +47,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("");
@@ -63,7 +66,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("d");
@@ -82,7 +85,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("5000-https");
@@ -101,7 +104,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("");
@@ -120,7 +123,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("x");
@@ -139,7 +142,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act and Assert
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object)).Throws<NotSupportedException>();
         }
     }
 }
