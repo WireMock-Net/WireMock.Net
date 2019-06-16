@@ -471,7 +471,7 @@ namespace WireMock.Server
 
             var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
-            var respondProvider = Given(requestBuilder);
+            var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
 
             if (guid != null)
             {
@@ -722,7 +722,7 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
             }
 
-            if (responseModel.UseTransformer)
+            if (responseModel.UseTransformer == true)
             {
                 responseBuilder = responseBuilder.WithTransformer();
             }

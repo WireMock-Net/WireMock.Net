@@ -375,5 +375,32 @@ namespace WireMock.Net.Tests
             fileMock.Verify(f => f.GetMappingFolder(), Times.Once);
             fileMock.Verify(f => f.FolderExists(It.IsAny<string>()), Times.Once);
         }
+
+        [Fact]
+        public void FluentMockServer_Admin_AddMappingsAndSaveToFile()
+        {
+            // Assign
+            string guid = "791a3f31-6946-aaaa-8e6f-0237c7442222";
+            var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
+            staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
+            staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
+            staticMappingHandlerMock.Setup(m => m.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()));
+
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                FileSystemHandler = staticMappingHandlerMock.Object
+            });
+
+            // Act
+            server
+                .Given(Request.Create().WithPath($"/foo_{Guid.NewGuid()}"), true)
+                .WithGuid(guid)
+                .RespondWith(Response.Create().WithBody("post and save test"));
+
+            // Assert and Verify
+            staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.WriteMappingFile(Path.Combine("folder", guid + ".json"), It.IsAny<string>()), Times.Once);
+        }
     }
 }
