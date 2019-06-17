@@ -1,7 +1,7 @@
 ﻿using System;
-using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
+using WireMock.Settings;
 
 namespace WireMock.Server
 {
@@ -18,7 +18,7 @@ namespace WireMock.Server
         private string _scenario;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
-        private readonly IFileSystemHandler _fileSystemHandler;
+        private readonly IFluentMockServerSettings _settings;
         private readonly bool _saveToFile;
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
@@ -28,13 +28,13 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="registrationCallback">The registration callback.</param>
         /// <param name="requestMatcher">The request matcher.</param>
-        /// <param name="fileSystemHandler">The fileSystemHandler.</param>
+        /// <param name="settings">The FluentMockServerSettings.</param>
         /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
-        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, IFileSystemHandler fileSystemHandler, bool saveToFile = false)
+        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, IFluentMockServerSettings settings, bool saveToFile = false)
         {
             _registrationCallback = registrationCallback;
             _requestMatcher = requestMatcher;
-            _fileSystemHandler = fileSystemHandler;
+            _settings = settings;
             _saveToFile = saveToFile;
         }
 
@@ -44,7 +44,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _fileSystemHandler, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>

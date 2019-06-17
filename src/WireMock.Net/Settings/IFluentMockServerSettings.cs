@@ -1,5 +1,6 @@
-﻿using System;
+﻿using HandlebarsDotNet;
 using JetBrains.Annotations;
+using System;
 using WireMock.Handlers;
 using WireMock.Logging;
 
@@ -112,5 +113,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         IFileSystemHandler FileSystemHandler { get; set; }
+
+        /// <summary>
+        /// Action which is called when output need to be transformed using Handlebars. [Optional]
+        /// </summary>
+        [PublicAPI]
+        Action<IHandlebars, IFileSystemHandler> HandlebarRegistrationCallback { get; set; }
     }
 }

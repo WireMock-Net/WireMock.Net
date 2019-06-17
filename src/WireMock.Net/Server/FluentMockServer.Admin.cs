@@ -164,10 +164,10 @@ namespace WireMock.Server
         {
             if (folder == null)
             {
-                folder = _fileSystemHandler.GetMappingFolder();
+                folder = _settings.FileSystemHandler.GetMappingFolder();
             }
 
-            if (!_fileSystemHandler.FolderExists(folder))
+            if (!_settings.FileSystemHandler.FolderExists(folder))
             {
                 return;
             }
@@ -302,7 +302,7 @@ namespace WireMock.Server
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _fileSystemHandler, request, response, 0, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null);
         }
         #endregion
 

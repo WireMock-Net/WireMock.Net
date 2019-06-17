@@ -1,9 +1,9 @@
 ﻿using JetBrains.Annotations;
 using System;
 using System.Threading.Tasks;
-using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
+using WireMock.Settings;
 
 namespace WireMock
 {
@@ -62,9 +62,9 @@ namespace WireMock
         IResponseProvider Provider { get; }
 
         /// <summary>
-        /// The FileSystemHandler.
+        /// The FluentMockServerSettings.
         /// </summary>
-        IFileSystemHandler FileSystemHandler { get; }
+        IFluentMockServerSettings Settings { get; }
 
         /// <summary>
         /// Is State started ?

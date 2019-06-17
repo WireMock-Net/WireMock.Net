@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Moq;
+using NFluent;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Moq;
-using NFluent;
-using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using WireMock.Util;
 using Xunit;
 
@@ -15,7 +15,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
-        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
         private readonly FluentMockServer _server;
         private readonly Guid _guid;
 
@@ -33,11 +33,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml" } } };
-            var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}/{_guid}"), "POST", "::1", new BodyData { DetectedBodyType = BodyType.Json,  BodyAsJson = new { a = 1 } }, headers);
+            var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}/{_guid}"), "POST", "::1", new BodyData { DetectedBodyType = BodyType.Json, BodyAsJson = new { a = 1 } }, headers);
             var response = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("{\"p\":42}");

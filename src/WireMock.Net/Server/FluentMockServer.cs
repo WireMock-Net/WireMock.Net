@@ -29,6 +29,7 @@ namespace WireMock.Server
 
         private readonly IWireMockLogger _logger;
         private readonly IFileSystemHandler _fileSystemHandler;
+        private readonly IFluentMockServerSettings _settings;
         private readonly IOwinSelfHost _httpServer;
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
@@ -185,6 +186,7 @@ namespace WireMock.Server
 
         private FluentMockServer(IFluentMockServerSettings settings)
         {
+            _settings = settings;
             settings.Logger = settings.Logger ?? new WireMockNullLogger();
 
             _logger = settings.Logger;
@@ -435,7 +437,7 @@ namespace WireMock.Server
         [PublicAPI]
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {
-            return new RespondWithAProvider(RegisterMapping, requestMatcher, _fileSystemHandler, saveToFile);
+            return new RespondWithAProvider(RegisterMapping, requestMatcher, _settings, saveToFile);
         }
 
         private void RegisterMapping(IMapping mapping, bool saveToFile)

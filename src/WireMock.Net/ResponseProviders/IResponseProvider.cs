@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using JetBrains.Annotations;
-using WireMock.Handlers;
+﻿using JetBrains.Annotations;
+using System.Threading.Tasks;
+using WireMock.Settings;
 
 namespace WireMock.ResponseProviders
 {
@@ -13,8 +13,8 @@ namespace WireMock.ResponseProviders
         /// The provide response.
         /// </summary>
         /// <param name="requestMessage">The request.</param>
-        /// <param name="fileSystemHandler">The fileSystemHandler.</param>
+        /// <param name="settings">The FluentMockServerSettings.</param>
         /// <returns>The <see cref="ResponseMessage"/>.</returns>
-        Task<ResponseMessage> ProvideResponseAsync([NotNull] RequestMessage requestMessage, [NotNull] IFileSystemHandler fileSystemHandler);
+        Task<ResponseMessage> ProvideResponseAsync([NotNull] RequestMessage requestMessage, [NotNull] IFluentMockServerSettings settings);
     }
 }

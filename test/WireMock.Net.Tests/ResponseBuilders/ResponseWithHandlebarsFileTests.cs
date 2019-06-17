@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
@@ -13,12 +14,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
     public class ResponseWithHandlebarsFileTests
     {
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
+        private readonly Mock<IFluentMockServerSettings> _settingsMock;
         private const string ClientIp = "::1";
 
         public ResponseWithHandlebarsFileTests()
         {
             _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settingsMock = new Mock<IFluentMockServerSettings>();
+            _settingsMock.SetupGet(s => s.FileSystemHandler).Returns(_filesystemHandlerMock.Object);
         }
 
         [Fact]
@@ -35,7 +40,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _filesystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -60,7 +65,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _filesystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -85,7 +90,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _filesystemHandlerMock.Object)).Throws<ArgumentOutOfRangeException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<ArgumentOutOfRangeException>();
 
             // Verify
             _filesystemHandlerMock.Verify(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()), Times.Never);
