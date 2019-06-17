@@ -1,6 +1,7 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
+using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
 
@@ -38,6 +39,9 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.Provider" />
         public IResponseProvider Provider { get; }
 
+        /// <inheritdoc cref="IMapping.FileSystemHandler" />
+        public IFileSystemHandler FileSystemHandler { get; }
+
         /// <inheritdoc cref="IMapping.IsStartState" />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
 
@@ -50,17 +54,21 @@ namespace WireMock
         /// <param name="guid">The unique identifier.</param>
         /// <param name="title">The unique title (can be null).</param>
         /// <param name="path">The full file path from this mapping title (can be null).</param>
+        /// <param name="fileSystemHandler">The fileSystemHandler.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
         /// <param name="scenario">The scenario. [Optional]</param>
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
-        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path, IRequestMatcher requestMatcher, IResponseProvider provider, int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState)
+        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path,
+            [NotNull] IFileSystemHandler fileSystemHandler, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
+            int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState)
         {
             Guid = guid;
             Title = title;
             Path = path;
+            FileSystemHandler = fileSystemHandler;
             RequestMatcher = requestMatcher;
             Provider = provider;
             Priority = priority;
@@ -72,7 +80,7 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.ResponseToAsync" />
         public async Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage)
         {
-            return await Provider.ProvideResponseAsync(requestMessage);
+            return await Provider.ProvideResponseAsync(requestMessage, FileSystemHandler);
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />

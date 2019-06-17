@@ -21,8 +21,6 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public class Response : IResponseBuilder
     {
-        private readonly IFileSystemHandler _fileSystemHandler;
-        private readonly ResponseMessageTransformer _responseMessageTransformer;
         private HttpClient _httpClientForProxy;
 
         /// <summary>
@@ -94,9 +92,6 @@ namespace WireMock.ResponseBuilders
         private Response(ResponseMessage responseMessage)
         {
             ResponseMessage = responseMessage;
-
-            _fileSystemHandler = new LocalFileSystemHandler();
-            _responseMessageTransformer = new ResponseMessageTransformer(_fileSystemHandler);
         }
 
         /// <summary>
@@ -225,18 +220,17 @@ namespace WireMock.ResponseBuilders
 
             ResponseMessage.BodyData = new BodyData
             {
-                BodyAsFileIsCached = cache
+                BodyAsFileIsCached = cache,
+                BodyAsFile = filename
             };
 
             if (cache && !UseTransformer)
             {
                 ResponseMessage.BodyData.DetectedBodyType = BodyType.Bytes;
-                ResponseMessage.BodyData.BodyAsBytes = _fileSystemHandler.ReadResponseBodyAsFile(filename);
             }
             else
             {
                 ResponseMessage.BodyData.DetectedBodyType = BodyType.File;
-                ResponseMessage.BodyData.BodyAsFile = filename;
             }
 
             return this;
@@ -377,12 +371,7 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <summary>
-        /// The provide response.
-        /// </summary>
-        /// <param name="requestMessage">The request.</param>
-        /// <returns>The <see cref="ResponseMessage"/>.</returns>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFileSystemHandler fileSystemHandler)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
 
@@ -421,10 +410,16 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                return _responseMessageTransformer.Transform(requestMessage, ResponseMessage);
+                var responseMessageTransformer = new ResponseMessageTransformer(fileSystemHandler);
+                return responseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }
 
-            // Just return normal defined ResponseMessage
+            if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
+            {
+                ResponseMessage.BodyData.BodyAsBytes = fileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
+                ResponseMessage.BodyData.BodyAsFile = null;
+            }
+
             return ResponseMessage;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
 
@@ -17,6 +18,8 @@ namespace WireMock.Server
         private string _scenario;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
+        private readonly IFileSystemHandler _fileSystemHandler;
+        private readonly bool _saveToFile;
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
 
@@ -25,10 +28,14 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="registrationCallback">The registration callback.</param>
         /// <param name="requestMatcher">The request matcher.</param>
-        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher)
+        /// <param name="fileSystemHandler">The fileSystemHandler.</param>
+        /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
+        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, IFileSystemHandler fileSystemHandler, bool saveToFile = false)
         {
             _registrationCallback = registrationCallback;
             _requestMatcher = requestMatcher;
+            _fileSystemHandler = fileSystemHandler;
+            _saveToFile = saveToFile;
         }
 
         /// <summary>
@@ -37,7 +44,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState));
+            _registrationCallback(new Mapping(Guid, _title, _path, _fileSystemHandler, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>

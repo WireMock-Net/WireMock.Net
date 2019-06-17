@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
@@ -10,6 +12,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHeadersTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private const string ClientIp = "::1";
 
         [Theory]
@@ -23,7 +26,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValue);
 
             // Act
-            var response = await builder.ProvideResponseAsync(requestMock);
+            var response = await builder.ProvideResponseAsync(requestMock, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(response.Headers[headerName].ToString()).Equals(headerValue);
@@ -39,7 +42,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValues);
 
             // Act
-            var response = await builder.ProvideResponseAsync(requestMock);
+            var response = await builder.ProvideResponseAsync(requestMock, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(response.Headers[headerName].ToArray()).Equals(headerValues);
@@ -54,7 +57,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.Headers["h"]).ContainsExactly("x");
@@ -69,7 +72,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.Headers["h"]).ContainsExactly("x");
@@ -84,7 +87,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.Headers["h"]).ContainsExactly("x");

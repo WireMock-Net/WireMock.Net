@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
@@ -18,6 +20,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsTests
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -38,7 +41,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
@@ -60,7 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
@@ -78,7 +81,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("http://localhost/a/b http://localhost/wiremock/a/b /a/b /wiremock/a/b");
@@ -96,7 +99,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
@@ -118,7 +121,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
@@ -138,7 +141,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
@@ -160,7 +163,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
@@ -185,7 +188,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
@@ -209,7 +212,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
@@ -226,7 +229,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\test.xml"); // why use a \\ here ?
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
@@ -253,7 +256,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithBodyFromFile(@"c:\\{{JsonPath.SelectToken request.body " + jsonPath + "}}\\test.json"); // why use a \\ here ?
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.json");

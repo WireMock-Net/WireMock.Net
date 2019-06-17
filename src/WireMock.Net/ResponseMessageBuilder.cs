@@ -27,7 +27,11 @@ namespace WireMock
                 response.BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.Json,
-                    BodyAsJson = new StatusModel { Status = message, Guid = guid }
+                    BodyAsJson = new StatusModel
+                    {
+                        Guid = guid,
+                        Status = message
+                    }
                 };
             }
 

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
+using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
 
@@ -59,6 +60,11 @@ namespace WireMock
         /// The Provider.
         /// </summary>
         IResponseProvider Provider { get; }
+
+        /// <summary>
+        /// The FileSystemHandler.
+        /// </summary>
+        IFileSystemHandler FileSystemHandler { get; }
 
         /// <summary>
         /// Is State started ?

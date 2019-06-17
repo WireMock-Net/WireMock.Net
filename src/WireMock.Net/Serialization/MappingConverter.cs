@@ -28,7 +28,7 @@ namespace WireMock.Serialization
             {
                 Guid = mapping.Guid,
                 Title = mapping.Title,
-                Priority = mapping.Priority,
+                Priority = mapping.Priority != 0 ? mapping.Priority : (int?) null,
                 Scenario = mapping.Scenario,
                 WhenStateIs = mapping.ExecutionConditionState,
                 SetStateTo = mapping.NextState,
@@ -66,7 +66,7 @@ namespace WireMock.Serialization
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
-                        IgnoreCase = pm.IgnoreCase,
+                        IgnoreCase = pm.IgnoreCase == true ? true : (bool?) null,
                         Matchers = MatcherMapper.Map(pm.Matchers)
                     }).ToList() : null,
 
@@ -92,7 +92,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.BodyAsFile = null;
                 mappingModel.Response.BodyAsFileIsCached = null;
-                mappingModel.Response.UseTransformer = false;
+                mappingModel.Response.UseTransformer = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyUrl;
             }
@@ -101,7 +101,10 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
                 mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
-                mappingModel.Response.UseTransformer = response.UseTransformer;
+                if (response.UseTransformer)
+                {
+                    mappingModel.Response.UseTransformer = response.UseTransformer;
+                }
 
                 if (response.ResponseMessage.BodyData != null)
                 {
@@ -113,7 +116,10 @@ namespace WireMock.Serialization
 
                         case BodyType.Json:
                             mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
-                            mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                            if (response.ResponseMessage.BodyData.BodyAsJsonIndented == true)
+                            {
+                                mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                            }
                             break;
 
                         case BodyType.Bytes:

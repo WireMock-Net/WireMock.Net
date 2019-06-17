@@ -58,9 +58,9 @@ namespace WireMock.Admin.Mappings
         public EncodingModel BodyEncoding { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [use transformer].
+        /// Use Handlebars transformer.
         /// </summary>
-        public bool UseTransformer { get; set; }
+        public bool? UseTransformer { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.

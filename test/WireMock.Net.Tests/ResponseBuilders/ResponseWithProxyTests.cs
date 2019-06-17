@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -13,6 +15,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
+        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
         private readonly FluentMockServer _server;
         private readonly Guid _guid;
 
@@ -34,7 +37,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request);
+            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("{\"p\":42}");

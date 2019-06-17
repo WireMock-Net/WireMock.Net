@@ -39,13 +39,18 @@ namespace WireMock.Admin.Mappings
         public string SetStateTo { get; set; }
 
         /// <summary>
-        /// The request.
+        /// The request model.
         /// </summary>
         public RequestModel Request { get; set; }
 
         /// <summary>
-        /// The response.
+        /// The response model.
         /// </summary>
         public ResponseModel Response { get; set; }
+
+        /// <summary>
+        /// Saves this mapping as a static mapping file.
+        /// </summary>
+        public bool? SaveToFile { get; set; }
     }
 }

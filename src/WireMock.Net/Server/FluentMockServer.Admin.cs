@@ -43,7 +43,7 @@ namespace WireMock.Server
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
-        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore
@@ -242,23 +242,23 @@ namespace WireMock.Server
                 respondProvider.AtPriority(ProxyPriority);
             }
 
-            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings.ProxyAndRecordSettings));
+            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IProxyAndRecordSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
-            var proxyUri = new Uri(settings.Url);
+            var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
             var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
 
-            if (settings.SaveMapping)
+            if (settings.ProxyAndRecordSettings.SaveMapping)
             {
-                var mapping = ToMapping(requestMessage, responseMessage, settings.BlackListedHeaders ?? new string[] { });
+                var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { });
                 _options.Mappings.TryAdd(mapping.Guid, mapping);
 
-                if (settings.SaveMappingToFile)
+                if (settings.ProxyAndRecordSettings.SaveMappingToFile)
                 {
                     SaveMappingToFile(mapping);
                 }
@@ -302,7 +302,7 @@ namespace WireMock.Server
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, request, response, 0, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _fileSystemHandler, request, response, 0, null, null, null);
         }
         #endregion
 
@@ -407,7 +407,7 @@ namespace WireMock.Server
 
             _logger.Info("Saving Mapping file {0}", filename);
 
-            _fileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _settings));
+            _fileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')
@@ -471,7 +471,7 @@ namespace WireMock.Server
 
             var responseBuilder = InitResponseBuilder(mappingModel.Response);
 
-            var respondProvider = Given(requestBuilder);
+            var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
 
             if (guid != null)
             {
@@ -722,7 +722,7 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
             }
 
-            if (responseModel.UseTransformer)
+            if (responseModel.UseTransformer == true)
             {
                 responseBuilder = responseBuilder.WithTransformer();
             }
@@ -793,7 +793,7 @@ namespace WireMock.Server
                 BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
-                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _settings)
+                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
                 },
                 StatusCode = 200,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }

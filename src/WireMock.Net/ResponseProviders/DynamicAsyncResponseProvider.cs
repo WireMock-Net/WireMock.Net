@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using WireMock.Validation;
+using WireMock.Handlers;
 
 namespace WireMock.ResponseProviders
 {
@@ -9,14 +8,12 @@ namespace WireMock.ResponseProviders
     {
         private readonly Func<RequestMessage, Task<ResponseMessage>> _responseMessageFunc;
 
-        public DynamicAsyncResponseProvider([NotNull] Func<RequestMessage, Task<ResponseMessage>> responseMessageFunc)
+        public DynamicAsyncResponseProvider(Func<RequestMessage, Task<ResponseMessage>> responseMessageFunc)
         {
-            Check.NotNull(responseMessageFunc, nameof(responseMessageFunc));
-
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
+        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFileSystemHandler fileSystemHandler)
         {
             return _responseMessageFunc(requestMessage);
         }

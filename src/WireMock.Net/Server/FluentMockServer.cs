@@ -203,7 +203,7 @@ namespace WireMock.Server
                 Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
-            _options.FileSystemHandler = settings.FileSystemHandler;
+            _options.FileSystemHandler = _fileSystemHandler;
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _logger;
@@ -430,14 +430,15 @@ namespace WireMock.Server
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>
+        /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         [PublicAPI]
-        public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
+        public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {
-            return new RespondWithAProvider(RegisterMapping, requestMatcher);
+            return new RespondWithAProvider(RegisterMapping, requestMatcher, _fileSystemHandler, saveToFile);
         }
 
-        private void RegisterMapping(IMapping mapping)
+        private void RegisterMapping(IMapping mapping, bool saveToFile)
         {
             // Check a mapping exists with the same Guid, if so, replace it.
             if (_options.Mappings.ContainsKey(mapping.Guid))
@@ -447,6 +448,11 @@ namespace WireMock.Server
             else
             {
                 _options.Mappings.TryAdd(mapping.Guid, mapping);
+            }
+
+            if (saveToFile)
+            {
+                SaveMappingToFile(mapping);
             }
         }
     }
