@@ -1,3 +1,6 @@
+# 1.0.20.0 (17 June 2019)
+- [#284](https://github.com/WireMock-Net/WireMock.Net/pull/284) - Add SaveToFile in the mapping [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.19.0 (15 June 2019)
 - [#279](https://github.com/WireMock-Net/WireMock.Net/issues/279) - How to simulate disconnect? [question]
 - [#283](https://github.com/WireMock-Net/WireMock.Net/issues/283) - Support equal-sign in query [bug]
