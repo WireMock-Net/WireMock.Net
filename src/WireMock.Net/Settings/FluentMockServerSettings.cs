@@ -85,9 +85,9 @@ namespace WireMock.Settings
         [JsonIgnore]
         public IFileSystemHandler FileSystemHandler { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.HandlebarRegistrationCallback"/>
+        /// <inheritdoc cref="IFluentMockServerSettings.HandlebarsRegistrationCallback"/>
         [PublicAPI]
         [JsonIgnore]
-        public Action<IHandlebars, IFileSystemHandler> HandlebarRegistrationCallback { get; set; }
+        public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
     }
 }

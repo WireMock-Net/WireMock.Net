@@ -409,7 +409,7 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarRegistrationCallback);
+                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
                 var responseMessageTransformer = new ResponseMessageTransformer(factory);
                 return responseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }

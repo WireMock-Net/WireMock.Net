@@ -115,9 +115,9 @@ namespace WireMock.Settings
         IFileSystemHandler FileSystemHandler { get; set; }
 
         /// <summary>
-        /// Action which is called when output need to be transformed using Handlebars. [Optional]
+        /// Action which can be used to add additional is Handlebar registrations. [Optional]
         /// </summary>
         [PublicAPI]
-        Action<IHandlebars, IFileSystemHandler> HandlebarRegistrationCallback { get; set; }
+        Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
     }
 }
