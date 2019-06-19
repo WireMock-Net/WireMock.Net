@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WireMock.Http;
+using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Util;
@@ -370,6 +371,7 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IFluentMockServerSettings)"/>
         public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));

@@ -63,6 +63,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, IStringMatcher[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, params IStringMatcher[] matchers)
         {
             return WithParam(key, matchBehaviour, false, matchers);
@@ -77,7 +78,7 @@ namespace WireMock.RequestBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{T}}, bool}[])"/>
+        /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
         public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
             Check.NotNullOrEmpty(funcs, nameof(funcs));
