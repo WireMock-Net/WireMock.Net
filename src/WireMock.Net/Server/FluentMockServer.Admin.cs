@@ -177,17 +177,23 @@ namespace WireMock.Server
             var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
             watcher.Created += (sender, args) =>
             {
-                _logger.Info("New MappingFile created : '{0}'", args.FullPath);
-                ReadStaticMappingAndAddOrUpdate(args.FullPath);
+                _logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
+                if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
+                {
+                    _logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+                }
             };
             watcher.Changed += (sender, args) =>
             {
-                _logger.Info("New MappingFile updated : '{0}'", args.FullPath);
-                ReadStaticMappingAndAddOrUpdate(args.FullPath);
+                _logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
+                if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
+                {
+                    _logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+                }
             };
             watcher.Deleted += (sender, args) =>
             {
-                _logger.Info("New MappingFile deleted : '{0}'", args.FullPath);
+                _logger.Info("MappingFile deleted : '{0}'", args.FullPath);
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
                 if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -208,24 +214,31 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="path">The path.</param>
         [PublicAPI]
-        public void ReadStaticMappingAndAddOrUpdate([NotNull] string path)
+        public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
         {
             Check.NotNull(path, nameof(path));
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-            var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(_fileSystemHandler.ReadMappingFile(path)));
-            foreach (var mappingModel in mappingModels)
+            if (FileHelper.TryReadMappingFileWithRetryAndDelay(_fileSystemHandler, path, out string value))
             {
-                if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(value));
+                foreach (var mappingModel in mappingModels)
                 {
-                    DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+                    if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+                    {
+                        DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+                    }
+                    else
+                    {
+                        DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+                    }
                 }
-                else
-                {
-                    DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
-                }
+
+                return true;
             }
+
+            return false;
         }
         #endregion
 

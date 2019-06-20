@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using FluentAssertions;
 using Moq;
-using NFluent;
+using System;
 using WireMock.Handlers;
 using WireMock.Util;
 using Xunit;
@@ -11,31 +10,36 @@ namespace WireMock.Net.Tests.Util
     public class FileHelperTests
     {
         [Fact]
-        public void FileHelper_ReadAllTextWithRetryAndDelay()
+        public void TryReadMappingFileWithRetryAndDelay_WithIFileSystemHandlerOk_ReturnsTrue()
         {
             // Assign
             var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
             staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Returns("text");
 
             // Act
-            string result = FileHelper.ReadAllTextWithRetryAndDelay(staticMappingHandlerMock.Object, @"c:\temp");
+            bool result = FileHelper.TryReadMappingFileWithRetryAndDelay(staticMappingHandlerMock.Object, @"c:\temp", out string value);
 
             // Assert
-            Check.That(result).Equals("text");
+            result.Should().BeTrue();
+            value.Should().Be("text");
 
             // Verify
             staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\temp"), Times.Once);
         }
 
         [Fact]
-        public void FileHelper_ReadAllTextWithRetryAndDelay_Throws()
+        public void TryReadMappingFileWithRetryAndDelay_WithIFileSystemHandlerThrows_ReturnsFalse()
         {
             // Assign
             var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
             staticMappingHandlerMock.Setup(m => m.ReadMappingFile(It.IsAny<string>())).Throws<NotSupportedException>();
 
             // Act
-            Check.ThatCode(() => FileHelper.ReadAllTextWithRetryAndDelay(staticMappingHandlerMock.Object, @"c:\temp")).Throws<IOException>();
+            bool result = FileHelper.TryReadMappingFileWithRetryAndDelay(staticMappingHandlerMock.Object, @"c:\temp", out string value);
+
+            // Assert
+            result.Should().BeFalse();
+            value.Should().BeNull();
 
             // Verify
             staticMappingHandlerMock.Verify(m => m.ReadMappingFile(@"c:\temp"), Times.Exactly(3));
