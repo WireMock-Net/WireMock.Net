@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WireMock.Handlers;
 using WireMock.Settings;
 
 namespace WireMock.ResponseProviders
