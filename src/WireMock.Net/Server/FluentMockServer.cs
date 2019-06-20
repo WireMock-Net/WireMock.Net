@@ -93,7 +93,7 @@ namespace WireMock.Server
         /// <param name="settings">The FluentMockServerSettings.</param>
         /// <returns>The <see cref="FluentMockServer"/>.</returns>
         [PublicAPI]
-        public static FluentMockServer Start(IFluentMockServerSettings settings)
+        public static FluentMockServer Start([NotNull] IFluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
