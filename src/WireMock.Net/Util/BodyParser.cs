@@ -65,7 +65,7 @@ namespace WireMock.Util
 
         public static bool ShouldParseBody([CanBeNull] string method)
         {
-            if (method == null)
+            if (String.IsNullOrEmpty(method))
             {
                 return false;
             }
