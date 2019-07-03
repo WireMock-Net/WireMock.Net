@@ -125,5 +125,28 @@ Content-Type: text/html
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
             Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(detectedBodyTypeFromContentType);
         }
+
+        [Theory]
+        [InlineData("HEAD", false)]
+        [InlineData("GET", false)]
+        [InlineData("PUT", true)]
+        [InlineData("POST", true)]
+        [InlineData("DELETE", false)]
+        [InlineData("TRACE", false)]
+        [InlineData("OPTIONS", true)]
+        [InlineData("CONNECT", false)]
+        [InlineData("PATCH", true)]
+        public void BodyParser_ShouldParseBody_ExpectedResultForKnownMethods(string method, bool resultShouldBe)
+        {
+            Check.That(BodyParser.ShouldParseBody(method)).Equals(resultShouldBe);
+        }
+
+        [Theory]
+        [InlineData("REPORT")]
+        [InlineData("SOME-UNKNOWN-METHOD")]
+        public void BodyParser_ShouldParseBody_DefaultIsTrueForUnknownMethods(string method)
+        {
+            Check.That(BodyParser.ShouldParseBody(method)).IsTrue();
+        }
     }
 }

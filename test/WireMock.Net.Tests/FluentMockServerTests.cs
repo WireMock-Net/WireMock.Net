@@ -1,6 +1,7 @@
 ﻿using NFluent;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WireMock.RequestBuilders;
@@ -171,6 +172,64 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.Headers.Contains("test")).IsTrue();
             Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
+        }
+
+        [Theory]
+        [InlineData("GET")]
+        [InlineData("TRACE")]
+        [InlineData("DELETE")]
+        public async Task FluentMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
+        {
+            // Assign
+            string content = "hello";
+            var server = FluentMockServer.Start();
+
+            server
+                .Given(Request.Create().WithBody(b => true))
+                .AtPriority(0)
+                .RespondWith(Response.Create().WithStatusCode(400));
+            server
+                .Given(Request.Create())
+                .AtPriority(1)
+                .RespondWith(Response.Create().WithStatusCode(200));
+
+            // Act
+            var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
+            request.Content = new StringContent(content);
+            var response = await new HttpClient().SendAsync(request);
+
+            // Assert
+            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+        }
+    
+        [Theory]
+        [InlineData("POST")]
+        [InlineData("PUT")]
+        [InlineData("OPTIONS")]
+        [InlineData("REPORT")]
+        [InlineData("SOME-UNKNOWN-METHOD")] // default behavior for unknown methods is to allow a body (see BodyParser.ShouldParseBody)
+        public async Task FluentMockServer_Should_not_exclude_body_for_supported_methods(string method)
+        {
+            // Assign
+            string content = "hello";
+            var server = FluentMockServer.Start();
+
+            server
+                .Given(Request.Create().WithBody(content))
+                .AtPriority(0)
+                .RespondWith(Response.Create().WithStatusCode(200));
+            server
+                .Given(Request.Create())
+                .AtPriority(1)
+                .RespondWith(Response.Create().WithStatusCode(400));
+
+            // Act
+            var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
+            request.Content = new StringContent(content);
+            var response = await new HttpClient().SendAsync(request);
+
+            // Assert
+            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         }
     }
 }
