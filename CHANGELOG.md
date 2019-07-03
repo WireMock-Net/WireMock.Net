@@ -1,3 +1,16 @@
+# 1.0.21.0 (03 July 2019)
+- [#286](https://github.com/WireMock-Net/WireMock.Net/pull/286) - Handlebars Extension [feature] contributed by [StefH](https://github.com/StefH)
+- [#293](https://github.com/WireMock-Net/WireMock.Net/pull/293) - workaround for AppContext.BaseDirectory being null on some platforms contributed by [eli-darkly](https://github.com/eli-darkly)
+- [#294](https://github.com/WireMock-Net/WireMock.Net/pull/294) - don't strip request body if we don't recognize the request method contributed by [eli-darkly](https://github.com/eli-darkly)
+- [#275](https://github.com/WireMock-Net/WireMock.Net/issues/275) - Server not starting up with 1.0.15 code [invalid, question]
+- [#280](https://github.com/WireMock-Net/WireMock.Net/issues/280) - Static Mapping Not work [question]
+- [#285](https://github.com/WireMock-Net/WireMock.Net/issues/285) - Need ability to add custom ResponseMessageTransformers [feature, question]
+- [#288](https://github.com/WireMock-Net/WireMock.Net/issues/288) - Allow setting root folder in LocalFileSystemHandler [feature, question]
+- [#289](https://github.com/WireMock-Net/WireMock.Net/issues/289) - Bug:  When WatchStaticMappings=true throws exceptions on updating the mapping files [bug]
+- [#290](https://github.com/WireMock-Net/WireMock.Net/issues/290) - Request body is dropped if verb is REPORT [bug]
+- [#291](https://github.com/WireMock-Net/WireMock.Net/issues/291) - Define multiple scenarios for the same url path and switch to it at run-time? [question]
+- [#292](https://github.com/WireMock-Net/WireMock.Net/issues/292) - Can't start server in Xamarin Android [bug]
+
 # 1.0.20.0 (17 June 2019)
 - [#284](https://github.com/WireMock-Net/WireMock.Net/pull/284) - Add SaveToFile in the mapping [feature] contributed by [StefH](https://github.com/StefH)
 
