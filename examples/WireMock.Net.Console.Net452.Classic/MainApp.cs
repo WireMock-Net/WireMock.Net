@@ -33,7 +33,8 @@ namespace WireMock.Net.ConsoleApplication
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); },
                 Logger = new WireMockConsoleLogger(),
 
-                FileSystemHandler = new CustomFileSystemFileHandler()
+                // Uncomment below if you want to use the CustomFileSystemFileHandler
+                // FileSystemHandler = new CustomFileSystemFileHandler()
             });
             System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
 
