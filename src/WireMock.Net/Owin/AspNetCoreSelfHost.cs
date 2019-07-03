@@ -56,7 +56,18 @@ namespace WireMock.Owin
 
         public Task StartAsync()
         {
-            _host = new WebHostBuilder()
+            var builder = new WebHostBuilder();
+
+            // Workaround for https://github.com/WireMock-Net/WireMock.Net/issues/292
+            // On some platforms, AppContext.BaseDirectory is null, which causes WebHostBuilder to fail if ContentRoot is not
+            // specified (even though we don't actually use that base path mechanism, since we have our own way of configuring
+            // a filesystem handler).
+            if (string.IsNullOrEmpty(AppContext.BaseDirectory))
+            {
+                builder.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
+            }
+
+            _host = builder
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton(_options.FileSystemHandler);
