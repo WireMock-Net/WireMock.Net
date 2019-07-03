@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireMock.Handlers;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -13,22 +12,19 @@ namespace WireMock.Transformers
 {
     internal class ResponseMessageTransformer
     {
-        private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
+        private readonly IHandlebarsContextFactory _factory;
+
+        public ResponseMessageTransformer([NotNull] IHandlebarsContextFactory factory)
         {
-            UnresolvedBindingFormatter = "{0}"
-        };
+            Check.NotNull(factory, nameof(factory));
 
-        private static readonly IHandlebars HandlebarsContext = Handlebars.Create(HandlebarsConfiguration);
-
-        public ResponseMessageTransformer([NotNull] IFileSystemHandler fileSystemHandler)
-        {
-            Check.NotNull(fileSystemHandler, nameof(fileSystemHandler));
-
-            HandlebarsHelpers.Register(HandlebarsContext, fileSystemHandler);
+            _factory = factory;
         }
 
         public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
         {
+            var handlebarsContext = _factory.Create();
+
             var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
 
             var template = new { request = requestMessage };
@@ -36,16 +32,16 @@ namespace WireMock.Transformers
             switch (original.BodyData.DetectedBodyType)
             {
                 case BodyType.Json:
-                    TransformBodyAsJson(template, original, responseMessage);
+                    TransformBodyAsJson(handlebarsContext, template, original, responseMessage);
                     break;
 
                 case BodyType.File:
-                    TransformBodyAsFile(template, original, responseMessage);
+                    TransformBodyAsFile(handlebarsContext, template, original, responseMessage);
                     break;
 
                 case BodyType.String:
                     responseMessage.BodyOriginal = original.BodyData.BodyAsString;
-                    TransformBodyAsString(template, original, responseMessage);
+                    TransformBodyAsString(handlebarsContext, template, original, responseMessage);
                     break;
             }
 
@@ -53,9 +49,9 @@ namespace WireMock.Transformers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)
             {
-                var templateHeaderKey = HandlebarsContext.Compile(header.Key);
+                var templateHeaderKey = handlebarsContext.Compile(header.Key);
                 var templateHeaderValues = header.Value
-                    .Select(HandlebarsContext.Compile)
+                    .Select(handlebarsContext.Compile)
                     .Select(func => func(template))
                     .ToArray();
 
@@ -67,7 +63,7 @@ namespace WireMock.Transformers
             return responseMessage;
         }
 
-        private static void TransformBodyAsJson(object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsJson(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
             JToken jToken;
             switch (original.BodyData.BodyAsJson)
@@ -85,7 +81,7 @@ namespace WireMock.Transformers
                     break;
             }
 
-            WalkNode(jToken, template);
+            WalkNode(handlebarsContext, jToken, template);
 
             responseMessage.BodyData = new BodyData
             {
@@ -95,14 +91,14 @@ namespace WireMock.Transformers
             };
         }
 
-        private static void WalkNode(JToken node, object context)
+        private static void WalkNode(IHandlebars handlebarsContext, JToken node, object context)
         {
             if (node.Type == JTokenType.Object)
             {
                 // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JProperty child in node.Children<JProperty>().ToArray())
                 {
-                    WalkNode(child.Value, context);
+                    WalkNode(handlebarsContext, child.Value, context);
                 }
             }
             else if (node.Type == JTokenType.Array)
@@ -110,7 +106,7 @@ namespace WireMock.Transformers
                 // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JToken child in node.Children().ToArray())
                 {
-                    WalkNode(child, context);
+                    WalkNode(handlebarsContext, child, context);
                 }
             }
             else if (node.Type == JTokenType.String)
@@ -122,7 +118,7 @@ namespace WireMock.Transformers
                     return;
                 }
 
-                var templateForStringValue = HandlebarsContext.Compile(stringValue);
+                var templateForStringValue = handlebarsContext.Compile(stringValue);
                 string transformedString = templateForStringValue(context);
                 if (!string.Equals(stringValue, transformedString))
                 {
@@ -154,9 +150,9 @@ namespace WireMock.Transformers
             node.Replace(value);
         }
 
-        private static void TransformBodyAsString(object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsString(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBodyAsString = HandlebarsContext.Compile(original.BodyData.BodyAsString);
+            var templateBodyAsString = handlebarsContext.Compile(original.BodyData.BodyAsString);
 
             responseMessage.BodyData = new BodyData
             {
@@ -166,9 +162,9 @@ namespace WireMock.Transformers
             };
         }
 
-        private static void TransformBodyAsFile(object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsFile(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBodyAsFile = HandlebarsContext.Compile(original.BodyData.BodyAsFile);
+            var templateBodyAsFile = handlebarsContext.Compile(original.BodyData.BodyAsFile);
 
             responseMessage.BodyData = new BodyData
             {

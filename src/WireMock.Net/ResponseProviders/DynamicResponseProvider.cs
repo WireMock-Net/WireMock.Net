@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WireMock.Handlers;
+using WireMock.Settings;
 
 namespace WireMock.ResponseProviders
 {
@@ -13,7 +13,7 @@ namespace WireMock.ResponseProviders
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFileSystemHandler fileSystemHandler)
+        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
         {
             return Task.FromResult(_responseMessageFunc(requestMessage));
         }

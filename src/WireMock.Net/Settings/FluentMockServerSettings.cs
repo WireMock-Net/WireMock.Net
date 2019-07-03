@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using HandlebarsDotNet;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using System;
 using WireMock.Handlers;
@@ -83,5 +84,10 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public IFileSystemHandler FileSystemHandler { get; set; }
+
+        /// <inheritdoc cref="IFluentMockServerSettings.HandlebarsRegistrationCallback"/>
+        [PublicAPI]
+        [JsonIgnore]
+        public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
     }
 }

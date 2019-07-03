@@ -7,8 +7,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using WireMock.Handlers;
 using WireMock.Http;
+using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Util;
@@ -371,7 +371,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFileSystemHandler fileSystemHandler)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IFluentMockServerSettings)"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
 
@@ -410,13 +411,14 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                var responseMessageTransformer = new ResponseMessageTransformer(fileSystemHandler);
+                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
+                var responseMessageTransformer = new ResponseMessageTransformer(factory);
                 return responseMessageTransformer.Transform(requestMessage, ResponseMessage);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
             {
-                ResponseMessage.BodyData.BodyAsBytes = fileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
+                ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
                 ResponseMessage.BodyData.BodyAsFile = null;
             }
 

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
-using WireMock.Handlers;
+using System;
+using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
+using WireMock.Settings;
 using WireMock.Util;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsJsonPathTests
     {
-        private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -63,7 +63,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -143,7 +143,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
@@ -196,7 +196,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
@@ -249,7 +249,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
@@ -302,7 +302,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
@@ -331,7 +331,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _fileSystemHandlerMock.Object)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<ArgumentNullException>();
         }
     }
 }
