@@ -27,8 +27,6 @@ namespace WireMock.Server
     {
         private const int ServerStartDelayInMs = 100;
 
-        private readonly IWireMockLogger _logger;
-        private readonly IFileSystemHandler _fileSystemHandler;
         private readonly IFluentMockServerSettings _settings;
         private readonly IOwinSelfHost _httpServer;
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -187,13 +185,13 @@ namespace WireMock.Server
         private FluentMockServer(IFluentMockServerSettings settings)
         {
             _settings = settings;
-            settings.Logger = settings.Logger ?? new WireMockNullLogger();
 
-            _logger = settings.Logger;
-            _fileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
+            // Set default values if not provided
+            _settings.Logger = settings.Logger ?? new WireMockNullLogger();
+            _settings.FileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
-            _logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
-            _logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
+            _settings.Logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
+            _settings.Logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
             if (settings.Urls != null)
             {
@@ -205,10 +203,10 @@ namespace WireMock.Server
                 Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
             }
 
-            _options.FileSystemHandler = _fileSystemHandler;
+            _options.FileSystemHandler = _settings.FileSystemHandler;
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
-            _options.Logger = _logger;
+            _options.Logger = _settings.Logger;
 
 #if USE_ASPNETCORE
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
@@ -371,7 +369,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void AllowPartialMapping(bool allow = true)
         {
-            _logger.Info("AllowPartialMapping is set to {0}", allow);
+            _settings.Logger.Info("AllowPartialMapping is set to {0}", allow);
             _options.AllowPartialMapping = allow;
         }
 

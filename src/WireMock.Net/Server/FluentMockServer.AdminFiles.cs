@@ -16,13 +16,13 @@ namespace WireMock.Server
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            string mappingFolder = _fileSystemHandler.GetMappingFolder();
-            if (!_fileSystemHandler.FolderExists(mappingFolder))
+            string mappingFolder = _settings.FileSystemHandler.GetMappingFolder();
+            if (!_settings.FileSystemHandler.FolderExists(mappingFolder))
             {
-                _fileSystemHandler.CreateFolder(mappingFolder);
+                _settings.FileSystemHandler.CreateFolder(mappingFolder);
             }
 
-            _fileSystemHandler.WriteFile(filename, requestMessage.BodyAsBytes);
+            _settings.FileSystemHandler.WriteFile(filename, requestMessage.BodyAsBytes);
 
             return ResponseMessageBuilder.Create("File created");
         }
@@ -31,13 +31,13 @@ namespace WireMock.Server
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            if (!_fileSystemHandler.FileExists(filename))
+            if (!_settings.FileSystemHandler.FileExists(filename))
             {
-                _logger.Info("The file '{0}' does not exist, updating file will be skipped.", filename);
+                _settings.Logger.Info("The file '{0}' does not exist, updating file will be skipped.", filename);
                 return ResponseMessageBuilder.Create("File is not found", 404);
             }
 
-            _fileSystemHandler.WriteFile(filename, requestMessage.BodyAsBytes);
+            _settings.FileSystemHandler.WriteFile(filename, requestMessage.BodyAsBytes);
 
             return ResponseMessageBuilder.Create("File updated");
         }
@@ -46,13 +46,13 @@ namespace WireMock.Server
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            if (!_fileSystemHandler.FileExists(filename))
+            if (!_settings.FileSystemHandler.FileExists(filename))
             {
-                _logger.Info("The file '{0}' does not exist.", filename);
+                _settings.Logger.Info("The file '{0}' does not exist.", filename);
                 return ResponseMessageBuilder.Create("File is not found", 404);
             }
 
-            byte[] bytes = _fileSystemHandler.ReadFile(filename);
+            byte[] bytes = _settings.FileSystemHandler.ReadFile(filename);
             var response = new ResponseMessage
             {
                 StatusCode = 200,
@@ -82,9 +82,9 @@ namespace WireMock.Server
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            if (!_fileSystemHandler.FileExists(filename))
+            if (!_settings.FileSystemHandler.FileExists(filename))
             {
-                _logger.Info("The file '{0}' does not exist.", filename);
+                _settings.Logger.Info("The file '{0}' does not exist.", filename);
                 return ResponseMessageBuilder.Create(404);
             }
 
@@ -95,13 +95,13 @@ namespace WireMock.Server
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
-            if (!_fileSystemHandler.FileExists(filename))
+            if (!_settings.FileSystemHandler.FileExists(filename))
             {
-                _logger.Info("The file '{0}' does not exist.", filename);
+                _settings.Logger.Info("The file '{0}' does not exist.", filename);
                 return ResponseMessageBuilder.Create("File is not deleted", 404);
             }
 
-            _fileSystemHandler.DeleteFile(filename);
+            _settings.FileSystemHandler.DeleteFile(filename);
             return ResponseMessageBuilder.Create("File deleted.");
         }
 
