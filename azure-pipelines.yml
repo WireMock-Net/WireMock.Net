@@ -38,6 +38,9 @@ steps:
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
   displayName: End SonarScanner
 
+- task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
+  displayName: 'WhiteSource Bolt'
+
 # Upload coverage to codecov.io
 - script: |
     %USERPROFILE%\.nuget\packages\codecov\1.1.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
