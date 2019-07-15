@@ -448,6 +448,8 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
 
+            System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();

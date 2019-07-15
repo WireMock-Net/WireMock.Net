@@ -47,12 +47,14 @@ namespace WireMock.Net.Tests
             server.ReadStaticMappings(folder);
 
             Check.That(server.Mappings).HasSize(5);
+            Check.That(server.MappingModels).HasSize(5);
 
             // Act
             server.ResetMappings();
 
             // Assert
             Check.That(server.Mappings).HasSize(0);
+            Check.That(server.MappingModels).HasSize(0);
         }
 
         [Fact]

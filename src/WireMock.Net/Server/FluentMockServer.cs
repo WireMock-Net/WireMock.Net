@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using WireMock.Admin.Mappings;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -54,6 +55,12 @@ namespace WireMock.Server
         /// </summary>
         [PublicAPI]
         public IEnumerable<IMapping> Mappings => _options.Mappings.Values.ToArray();
+
+        /// <summary>
+        /// Gets the mappings as MappingModels.
+        /// </summary>
+        [PublicAPI]
+        public IEnumerable<MappingModel> MappingModels => ToMappingModels();
 
         /// <summary>
         /// Gets the scenarios.
