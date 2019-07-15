@@ -1,3 +1,9 @@
+# 1.0.22.0 (15 July 2019)
+- [#297](https://github.com/WireMock-Net/WireMock.Net/pull/297) - FixNullRef (#295) contributed by [StefH](https://github.com/StefH)
+- [#178](https://github.com/WireMock-Net/WireMock.Net/issues/178) - Bug: Path matching fails when the URL contains encoded parts [bug, question]
+- [#295](https://github.com/WireMock-Net/WireMock.Net/issues/295) - NullRef in 1.0.21 [bug]
+- [#296](https://github.com/WireMock-Net/WireMock.Net/issues/296) - url param - how to accept either of multiple values [question]
+
 # 1.0.21.0 (03 July 2019)
 - [#286](https://github.com/WireMock-Net/WireMock.Net/pull/286) - Handlebars Extension [feature] contributed by [StefH](https://github.com/StefH)
 - [#293](https://github.com/WireMock-Net/WireMock.Net/pull/293) - workaround for AppContext.BaseDirectory being null on some platforms contributed by [eli-darkly](https://github.com/eli-darkly)
