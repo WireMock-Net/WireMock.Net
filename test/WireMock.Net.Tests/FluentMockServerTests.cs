@@ -175,9 +175,11 @@ namespace WireMock.Net.Tests
         }
 
         [Theory]
-        [InlineData("GET")]
-        [InlineData("TRACE")]
         [InlineData("DELETE")]
+#if !NET452
+        [InlineData("TRACE")]
+        [InlineData("GET")]
+#endif
         public async Task FluentMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
         {
             // Assign

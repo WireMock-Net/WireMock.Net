@@ -131,18 +131,18 @@ namespace WireMock.Server
         {
             if (folder == null)
             {
-                folder = _fileSystemHandler.GetMappingFolder();
+                folder = _settings.FileSystemHandler.GetMappingFolder();
             }
 
-            if (!_fileSystemHandler.FolderExists(folder))
+            if (!_settings.FileSystemHandler.FolderExists(folder))
             {
-                _logger.Info("The Static Mapping folder '{0}' does not exist, reading Static MappingFiles will be skipped.", folder);
+                _settings.Logger.Info("The Static Mapping folder '{0}' does not exist, reading Static MappingFiles will be skipped.", folder);
                 return;
             }
 
-            foreach (string filename in _fileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
+            foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
             {
-                _logger.Info("Reading Static MappingFile : '{0}'", filename);
+                _settings.Logger.Info("Reading Static MappingFile : '{0}'", filename);
 
                 try
                 {
@@ -150,7 +150,7 @@ namespace WireMock.Server
                 }
                 catch
                 {
-                    _logger.Error("Static MappingFile : '{0}' could not be read. This file will be skipped.", filename);
+                    _settings.Logger.Error("Static MappingFile : '{0}' could not be read. This file will be skipped.", filename);
                 }
             }
         }
@@ -172,28 +172,28 @@ namespace WireMock.Server
                 return;
             }
 
-            _logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
+            _settings.Logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
 
             var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
             watcher.Created += (sender, args) =>
             {
-                _logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
+                _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
                 {
-                    _logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+                    _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
             watcher.Changed += (sender, args) =>
             {
-                _logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
+                _settings.Logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
                 {
-                    _logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+                    _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
             watcher.Deleted += (sender, args) =>
             {
-                _logger.Info("MappingFile deleted : '{0}'", args.FullPath);
+                _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
                 if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -220,7 +220,7 @@ namespace WireMock.Server
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-            if (FileHelper.TryReadMappingFileWithRetryAndDelay(_fileSystemHandler, path, out string value))
+            if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
                 var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(value));
                 foreach (var mappingModel in mappingModels)
@@ -361,7 +361,7 @@ namespace WireMock.Server
 
             if (mapping == null)
             {
-                _logger.Warn("HttpStatusCode set to 404 : Mapping not found");
+                _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
                 return ResponseMessageBuilder.Create("Mapping not found", 404);
             }
 
@@ -405,12 +405,12 @@ namespace WireMock.Server
         {
             if (folder == null)
             {
-                folder = _fileSystemHandler.GetMappingFolder();
+                folder = _settings.FileSystemHandler.GetMappingFolder();
             }
 
-            if (!_fileSystemHandler.FolderExists(folder))
+            if (!_settings.FileSystemHandler.FolderExists(folder))
             {
-                _fileSystemHandler.CreateFolder(folder);
+                _settings.FileSystemHandler.CreateFolder(folder);
             }
 
             var model = MappingConverter.ToMappingModel(mapping);
@@ -418,9 +418,9 @@ namespace WireMock.Server
 
             string path = Path.Combine(folder, filename);
 
-            _logger.Info("Saving Mapping file {0}", filename);
+            _settings.Logger.Info("Saving Mapping file {0}", filename);
 
-            _fileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
+            _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')
@@ -460,12 +460,12 @@ namespace WireMock.Server
             }
             catch (ArgumentException a)
             {
-                _logger.Error("HttpStatusCode set to 400 {0}", a);
+                _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
                 return ResponseMessageBuilder.Create(a.Message, 400);
             }
             catch (Exception e)
             {
-                _logger.Error("HttpStatusCode set to 500 {0}", e);
+                _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
                 return ResponseMessageBuilder.Create(e.ToString(), 500);
             }
         }
@@ -540,7 +540,7 @@ namespace WireMock.Server
 
             if (entry == null)
             {
-                _logger.Warn("HttpStatusCode set to 404 : Request not found");
+                _settings.Logger.Warn("HttpStatusCode set to 404 : Request not found");
                 return ResponseMessageBuilder.Create("Request not found", 404);
             }
 
@@ -683,7 +683,7 @@ namespace WireMock.Server
 
             if (pathOrUrlRequired && !pathOrUrlmatchersValid)
             {
-                _logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
+                _settings.Logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
                 return null;
             }
 
