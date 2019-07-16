@@ -427,17 +427,14 @@ namespace WireMock.Server
         {
             return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
         }
+        private IEnumerable<MappingModel> ToMappingModels()
+        {
+            return Mappings.Where(m => !m.IsAdminInterface).Select(MappingConverter.ToMappingModel);
+        }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
         {
-            var result = new List<MappingModel>();
-            foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-            {
-                var model = MappingConverter.ToMappingModel(mapping);
-                result.Add(model);
-            }
-
-            return ToJson(result);
+            return ToJson(ToMappingModels());
         }
 
         private ResponseMessage MappingsPost(RequestMessage requestMessage)
