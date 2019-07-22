@@ -95,6 +95,13 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create().WithBody("XPathMatcher!"));
 
             server
+                .Given(Request.Create()
+                    .WithPath("/xpaths").UsingPost()
+                    .WithBody(new[] { new XPathMatcher("/todo-list[count(todo-item) = 3]"), new XPathMatcher("/todo-list[count(todo-item) = 4]") })
+                )
+                .RespondWith(Response.Create().WithBody("xpaths!"));
+
+            server
                 .Given(Request
                     .Create()
                     .WithPath("/jsonthings")

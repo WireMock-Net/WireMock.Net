@@ -22,12 +22,13 @@ namespace WireMock.Serialization
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
             var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
 
             var mappingModel = new MappingModel
             {
                 Guid = mapping.Guid,
                 Title = mapping.Title,
-                Priority = mapping.Priority != 0 ? mapping.Priority : (int?) null,
+                Priority = mapping.Priority != 0 ? mapping.Priority : (int?)null,
                 Scenario = mapping.Scenario,
                 WhenStateIs = mapping.ExecutionConditionState,
                 SetStateTo = mapping.NextState,
@@ -65,16 +66,9 @@ namespace WireMock.Serialization
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
-                        IgnoreCase = pm.IgnoreCase == true ? true : (bool?) null,
+                        IgnoreCase = pm.IgnoreCase == true ? true : (bool?)null,
                         Matchers = MatcherMapper.Map(pm.Matchers)
-                    }).ToList() : null,
-
-
-
-                    //Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
-                    //{
-                    //    Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
-                    //}
+                    }).ToList() : null
                 },
                 Response = new ResponseModel
                 {
@@ -82,19 +76,17 @@ namespace WireMock.Serialization
                 }
             };
 
-            if (methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m != "get"))
+            if (methodMatcher?.Methods != null && methodMatcher.Methods.All(m => m != "get") && bodyMatcher?.Matchers != null)
             {
                 mappingModel.Request.Body = new BodyModel();
 
-                var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-                if (bodyMatcher != null)
+                if (bodyMatcher.Matchers.Length == 1)
                 {
                     mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatcher.Matchers[0]);
                 }
-                else
+                else if (bodyMatcher.Matchers.Length > 1)
                 {
-                    var bodyMatchers = request.GetRequestMessageMatchers<RequestMessageBodyMatcher>();
-                    //mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatchers.Matchers[0]);
+                    mappingModel.Request.Body.Matchers = MatcherMapper.Map(bodyMatcher.Matchers);
                 }
             }
 
