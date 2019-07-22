@@ -716,8 +716,11 @@ namespace WireMock.Server
 
             if (requestModel.Body?.Matcher != null)
             {
-                var bodyMatcher = MatcherMapper.Map(requestModel.Body.Matcher);
-                requestBuilder = requestBuilder.WithBody(bodyMatcher);
+                requestBuilder = requestBuilder.WithBody(MatcherMapper.Map(requestModel.Body.Matcher));
+            }
+            else if (requestModel.Body?.Matchers != null)
+            {
+                requestBuilder = requestBuilder.WithBody(MatcherMapper.Map(requestModel.Body.Matchers));
             }
 
             return requestBuilder;

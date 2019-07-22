@@ -1,5 +1,6 @@
-using System;
 using JetBrains.Annotations;
+using System;
+using System.Linq;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -26,16 +27,16 @@ namespace WireMock.Matchers.Request
         public Func<object, bool> JsonFunc { get; }
 
         /// <summary>
-        /// The matcher.
+        /// The matchers.
         /// </summary>
-        public IMatcher Matcher { get; }
+        public IMatcher[] Matchers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] string body) : this(new WildcardMatcher(matchBehaviour, body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] string body) : this(new[] { new WildcardMatcher(matchBehaviour, body) }.Cast<IMatcher>().ToArray())
         {
         }
 
@@ -44,7 +45,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] body) : this(new ExactObjectMatcher(matchBehaviour, body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] body) : this(new[] { new ExactObjectMatcher(matchBehaviour, body) }.Cast<IMatcher>().ToArray())
         {
         }
 
@@ -53,7 +54,7 @@ namespace WireMock.Matchers.Request
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="body">The body.</param>
-        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] object body) : this(new ExactObjectMatcher(matchBehaviour, body))
+        public RequestMessageBodyMatcher(MatchBehaviour matchBehaviour, [NotNull] object body) : this(new[] { new ExactObjectMatcher(matchBehaviour, body) }.Cast<IMatcher>().ToArray())
         {
         }
 
@@ -90,25 +91,24 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
-        /// <param name="matcher">The matcher.</param>
-        public RequestMessageBodyMatcher([NotNull] IMatcher matcher)
+        /// <param name="matchers">The matchers.</param>
+        public RequestMessageBodyMatcher([NotNull] params IMatcher[] matchers)
         {
-            Check.NotNull(matcher, nameof(matcher));
-
-            Matcher = matcher;
+            Check.NotNull(matchers, nameof(matchers));
+            Matchers = matchers;
         }
 
         /// <see cref="IRequestMatcher.GetMatchingScore"/>
         public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
-            double score = IsMatch(requestMessage);
+            double score = CalculateMatchScore(requestMessage);
             return requestMatchResult.AddScore(GetType(), score);
         }
 
-        private double IsMatch(RequestMessage requestMessage)
+        private double CalculateMatchScore(RequestMessage requestMessage, IMatcher matcher)
         {
             // Check if the matcher is a IObjectMatcher
-            if (Matcher is IObjectMatcher objectMatcher)
+            if (matcher is IObjectMatcher objectMatcher)
             {
                 // If the body is a JSON object, try to match.
                 if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
@@ -124,13 +124,23 @@ namespace WireMock.Matchers.Request
             }
 
             // Check if the matcher is a IStringMatcher
-            if (Matcher is IStringMatcher stringMatcher)
+            if (matcher is IStringMatcher stringMatcher)
             {
                 // If the body is a Json or a String, use the BodyAsString to match on.
                 if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json || requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
                 {
                     return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
                 }
+            }
+
+            return MatchScores.Mismatch;
+        }
+
+        private double CalculateMatchScore(RequestMessage requestMessage)
+        {
+            if (Matchers != null && Matchers.Any())
+            {
+                return Matchers.Max(matcher => CalculateMatchScore(requestMessage, matcher));
             }
 
             if (Func != null)

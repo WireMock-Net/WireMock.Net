@@ -21,7 +21,6 @@ namespace WireMock.Serialization
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
-            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
             var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
 
             var mappingModel = new MappingModel
@@ -70,16 +69,34 @@ namespace WireMock.Serialization
                         Matchers = MatcherMapper.Map(pm.Matchers)
                     }).ToList() : null,
 
-                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
-                    {
-                        Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
-                    }
+
+
+                    //Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
+                    //{
+                    //    Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
+                    //}
                 },
                 Response = new ResponseModel
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
                 }
             };
+
+            if (methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m != "get"))
+            {
+                mappingModel.Request.Body = new BodyModel();
+
+                var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+                if (bodyMatcher != null)
+                {
+                    mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatcher.Matchers[0]);
+                }
+                else
+                {
+                    var bodyMatchers = request.GetRequestMessageMatchers<RequestMessageBodyMatcher>();
+                    //mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatchers.Matchers[0]);
+                }
+            }
 
             if (!string.IsNullOrEmpty(response.ProxyUrl))
             {
