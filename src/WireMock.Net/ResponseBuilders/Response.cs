@@ -419,7 +419,6 @@ namespace WireMock.ResponseBuilders
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
             {
                 ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
-                ResponseMessage.BodyData.BodyAsFile = null;
             }
 
             return ResponseMessage;
