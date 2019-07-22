@@ -1,3 +1,12 @@
+# 1.0.24.0 (22 July 2019)
+- [#302](https://github.com/WireMock-Net/WireMock.Net/pull/302) - Fixed bug 301 by not setting BodyAsFile to null after first use [bug] contributed by [rwwilden](https://github.com/rwwilden)
+- [#299](https://github.com/WireMock-Net/WireMock.Net/issues/299) - Get Mappings models instead of just IMapping interface [feature, question]
+- [#300](https://github.com/WireMock-Net/WireMock.Net/issues/300) - Integration with Azure Function [question]
+- [#301](https://github.com/WireMock-Net/WireMock.Net/issues/301) - Error thrown when calling mocked endpoint second time when using file-based response body [bug]
+
+# 1.0.23.0 (16 July 2019)
+- [#298](https://github.com/WireMock-Net/WireMock.Net/pull/298) - MappingModels [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.22.0 (15 July 2019)
 - [#297](https://github.com/WireMock-Net/WireMock.Net/pull/297) - FixNullRef (#295) contributed by [StefH](https://github.com/StefH)
 - [#178](https://github.com/WireMock-Net/WireMock.Net/issues/178) - Bug: Path matching fails when the URL contains encoded parts [bug, question]
