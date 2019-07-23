@@ -1,3 +1,7 @@
+# 1.0.25.0 (23 July 2019)
+- [#304](https://github.com/WireMock-Net/WireMock.Net/pull/304) - Support WithBody with multiple matchers [feature] contributed by [StefH](https://github.com/StefH)
+- [#303](https://github.com/WireMock-Net/WireMock.Net/issues/303) - Question: WithBody can't be used with multiple matching rules? [question]
+
 # 1.0.24.0 (22 July 2019)
 - [#302](https://github.com/WireMock-Net/WireMock.Net/pull/302) - Fixed bug 301 by not setting BodyAsFile to null after first use [bug] contributed by [rwwilden](https://github.com/rwwilden)
 - [#299](https://github.com/WireMock-Net/WireMock.Net/issues/299) - Get Mappings models instead of just IMapping interface [feature, question]
