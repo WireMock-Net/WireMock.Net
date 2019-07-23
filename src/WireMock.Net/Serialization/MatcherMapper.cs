@@ -10,6 +10,11 @@ namespace WireMock.Serialization
 {
     internal static class MatcherMapper
     {
+        public static IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
+        {
+            return matchers?.Select(Map).Where(m => m != null).ToArray();
+        }
+
         public static IMatcher Map([CanBeNull] MatcherModel matcher)
         {
             if (matcher == null)
@@ -70,7 +75,7 @@ namespace WireMock.Serialization
 
         public static MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
-            return matchers?.Select(Map).Where(x => x != null).ToArray();
+            return matchers?.Select(Map).Where(m => m != null).ToArray();
         }
 
         public static MatcherModel Map([CanBeNull] IMatcher matcher)

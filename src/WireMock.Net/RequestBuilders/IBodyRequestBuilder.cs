@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using System;
 using WireMock.Matchers;
 
 namespace WireMock.RequestBuilders
@@ -15,6 +15,13 @@ namespace WireMock.RequestBuilders
         /// <param name="matcher">The matcher.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] IMatcher matcher);
+
+        /// <summary>
+        /// WithBody: IMatcher[]
+        /// </summary>
+        /// <param name="matchers">The matchers.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody([NotNull] IMatcher[] matchers);
 
         /// <summary>
         /// WithBody: Body as string

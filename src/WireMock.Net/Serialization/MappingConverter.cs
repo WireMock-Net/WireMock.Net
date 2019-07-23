@@ -21,14 +21,14 @@ namespace WireMock.Serialization
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
-            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
             var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+            var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
 
             var mappingModel = new MappingModel
             {
                 Guid = mapping.Guid,
                 Title = mapping.Title,
-                Priority = mapping.Priority != 0 ? mapping.Priority : (int?) null,
+                Priority = mapping.Priority != 0 ? mapping.Priority : (int?)null,
                 Scenario = mapping.Scenario,
                 WhenStateIs = mapping.ExecutionConditionState,
                 SetStateTo = mapping.NextState,
@@ -66,20 +66,29 @@ namespace WireMock.Serialization
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
-                        IgnoreCase = pm.IgnoreCase == true ? true : (bool?) null,
+                        IgnoreCase = pm.IgnoreCase == true ? true : (bool?)null,
                         Matchers = MatcherMapper.Map(pm.Matchers)
-                    }).ToList() : null,
-
-                    Body = methodMatcher?.Methods != null && methodMatcher.Methods.Any(m => m == "get") ? null : new BodyModel
-                    {
-                        Matcher = bodyMatcher != null ? MatcherMapper.Map(bodyMatcher.Matcher) : null
-                    }
+                    }).ToList() : null
                 },
                 Response = new ResponseModel
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
                 }
             };
+
+            if (methodMatcher?.Methods != null && methodMatcher.Methods.All(m => m != "get") && bodyMatcher?.Matchers != null)
+            {
+                mappingModel.Request.Body = new BodyModel();
+
+                if (bodyMatcher.Matchers.Length == 1)
+                {
+                    mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatcher.Matchers[0]);
+                }
+                else if (bodyMatcher.Matchers.Length > 1)
+                {
+                    mappingModel.Request.Body.Matchers = MatcherMapper.Map(bodyMatcher.Matchers);
+                }
+            }
 
             if (!string.IsNullOrEmpty(response.ProxyUrl))
             {

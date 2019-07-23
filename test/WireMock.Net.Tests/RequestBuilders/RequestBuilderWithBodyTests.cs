@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using NFluent;
+﻿using FluentAssertions;
+using System.Collections.Generic;
+using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -20,8 +21,24 @@ namespace WireMock.Net.Tests.RequestBuilders
 
             // Assert
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
-            Check.That(matchers.Count).IsEqualTo(1);
-            Check.That(((RequestMessageBodyMatcher) matchers[0]).Matcher).IsEqualTo(matcher);
+            matchers.Should().HaveCount(1);
+            ((RequestMessageBodyMatcher)matchers[0]).Matchers.Should().Contain(matcher);
+        }
+
+        [Fact]
+        public void RequestBuilder_WithBody_IMatchers()
+        {
+            // Assign
+            var matcher1 = new WildcardMatcher("x");
+            var matcher2 = new WildcardMatcher("y");
+
+            // Act
+            var requestBuilder = (Request)Request.Create().WithBody(new[] { matcher1, matcher2 }.Cast<IMatcher>().ToArray());
+
+            // Assert
+            var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
+            matchers.Should().HaveCount(1);
+            ((RequestMessageBodyMatcher)matchers[0]).Matchers.Should().Contain(new[] { matcher1, matcher2 });
         }
     }
 }
