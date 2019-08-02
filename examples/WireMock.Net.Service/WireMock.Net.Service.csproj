@@ -56,8 +56,8 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="RestEase, Version=1.4.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestEase.1.4.7\lib\net45\RestEase.dll</HintPath>
+    <Reference Include="RestEase, Version=1.4.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestEase.1.4.10\lib\net45\RestEase.dll</HintPath>
     </Reference>
     <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
@@ -121,6 +121,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj">
+      <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
+      <Name>WireMock.Net.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj">
       <Project>{b6269aac-170a-43d5-8b9a-579ded3d9a95}</Project>
       <Name>WireMock.Net.StandAlone</Name>

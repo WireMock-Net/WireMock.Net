@@ -62,6 +62,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Net452
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NETCoreApp2", "examples\WireMock.Net.Console.NETCoreApp2\WireMock.Net.Console.NETCoreApp2.csproj", "{83645809-9E01-4E81-8733-BA9497554ABF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.RestClient", "src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj", "{B6269AAC-170A-43D6-8B9A-579DED3D9A96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Abstractions", "src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj", "{17A92E04-0552-4609-9763-C8E156B4A9E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +140,14 @@ Global
 		{83645809-9E01-4E81-8733-BA9497554ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83645809-9E01-4E81-8733-BA9497554ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83645809-9E01-4E81-8733-BA9497554ABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6269AAC-170A-43D6-8B9A-579DED3D9A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6269AAC-170A-43D6-8B9A-579DED3D9A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6269AAC-170A-43D6-8B9A-579DED3D9A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6269AAC-170A-43D6-8B9A-579DED3D9A96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A92E04-0552-4609-9763-C8E156B4A9E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A92E04-0552-4609-9763-C8E156B4A9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A92E04-0552-4609-9763-C8E156B4A9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A92E04-0552-4609-9763-C8E156B4A9E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +170,8 @@ Global
 		{1261BB9B-A7D4-456C-8985-3CE560361B8E} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{668F689E-57B4-422E-8846-C0FF643CA268} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{83645809-9E01-4E81-8733-BA9497554ABF} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{B6269AAC-170A-43D6-8B9A-579DED3D9A96} = {EF242EDF-7133-4277-9A0C-18744DE08707}
+		{17A92E04-0552-4609-9763-C8E156B4A9E2} = {EF242EDF-7133-4277-9A0C-18744DE08707}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF428BCC-C837-433B-87D2-15C7014B73E9}

@@ -24,7 +24,7 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var settings = await api.GetSettingsAsync();
@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var settings = new SettingsModel();
@@ -49,7 +49,7 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var settings = new SettingsModel();
@@ -62,7 +62,7 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var model = new MappingModel
@@ -91,7 +91,7 @@ namespace WireMock.Net.Tests
         {
             // Arrange
             var server = FluentMockServer.StartWithAdminInterface();
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var model1 = new MappingModel
@@ -128,7 +128,7 @@ namespace WireMock.Net.Tests
             });
             var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
-            var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
+            var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
             var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } });
@@ -152,7 +152,7 @@ namespace WireMock.Net.Tests
             });
             var serverUrl = "http://localhost:" + server.Ports[0];
             await new HttpClient().GetAsync(serverUrl + "/foo");
-            var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
+            var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
             var requests = await api.GetRequestsAsync();
@@ -188,7 +188,7 @@ namespace WireMock.Net.Tests
             var response = await new HttpClient().SendAsync(request);
             Check.That(response).IsNotNull();
 
-            var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
+            var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
             var requests = await api.GetRequestsAsync();
@@ -223,7 +223,7 @@ namespace WireMock.Net.Tests
             var response = await new HttpClient().SendAsync(request);
             Check.That(response).IsNotNull();
 
-            var api = RestClient.For<IFluentMockServerAdmin>(serverUrl);
+            var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
             var requests = await api.GetRequestsAsync();
@@ -252,7 +252,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var request = await api.PostFileAsync("filename.txt", "abc");
@@ -285,7 +285,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             var request = await api.PutFileAsync("filename.txt", "abc-abc");
@@ -316,7 +316,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act and Assert
             Check.ThatAsyncCode(() => api.PutFileAsync("filename.txt", "xxx")).Throws<ApiException>();
@@ -343,7 +343,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act and Assert
             Check.ThatAsyncCode(() => api.GetFileAsync("filename.txt")).Throws<ApiException>();
@@ -371,7 +371,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             string file = await api.GetFileAsync("filename.txt");
@@ -402,7 +402,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
             await api.DeleteFileAsync("filename.txt");
@@ -430,7 +430,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act and Assert
             Check.ThatAsyncCode(() => api.DeleteFileAsync("filename.txt")).Throws<ApiException>();
@@ -456,7 +456,7 @@ namespace WireMock.Net.Tests
                 FileSystemHandler = filesystemHandlerMock.Object
             });
 
-            var api = RestClient.For<IFluentMockServerAdmin>(server.Urls[0]);
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act and Assert
             Check.ThatAsyncCode(() => api.FileExistsAsync("filename.txt")).Throws<ApiException>();

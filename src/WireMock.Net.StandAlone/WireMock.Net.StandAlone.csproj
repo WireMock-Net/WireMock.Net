@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
+    <Description>Lightweight StandAlone Http Mocking Server for .Net</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
@@ -24,7 +24,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <CodeAnalysisRuleSet>WireMock.Net.StandAlone.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
     <!--<DelaySign>true</DelaySign>-->
@@ -45,8 +45,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
       <PrivateAssets>all</PrivateAssets>

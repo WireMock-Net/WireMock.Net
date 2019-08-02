@@ -24,6 +24,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
   </ItemGroup>
@@ -36,7 +38,7 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.7.0" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="RestEase" Version="1.4.7" />
+    <PackageReference Include="RestEase" Version="1.4.10" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MimeKitLite" Version="2.0.7" />

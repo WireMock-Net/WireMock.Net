@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="RestEase" Version="1.4.7" />
+    <PackageReference Include="RestEase" Version="1.4.10" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
   </ItemGroup>
 
