@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

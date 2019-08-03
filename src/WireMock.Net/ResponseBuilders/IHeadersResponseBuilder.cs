@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
-using WireMock.Util;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
+using WireMock.Types;
 
 namespace WireMock.ResponseBuilders
 {

@@ -3,8 +3,8 @@ using SimMetrics.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Models.Mappings;
 
 namespace WireMock.Serialization
 {

@@ -1,6 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
-using WireMock.Admin.Requests;
+﻿using Newtonsoft.Json;
+using System;
+using WireMock.Models.Requests;
 
 namespace WireMock.Logging
 {

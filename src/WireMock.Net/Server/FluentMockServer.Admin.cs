@@ -8,18 +8,19 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using WireMock.Admin.Mappings;
-using WireMock.Admin.Scenarios;
-using WireMock.Admin.Settings;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models.Mappings;
+using WireMock.Models.Scenarios;
+using WireMock.Models.Settings;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -786,10 +787,6 @@ namespace WireMock.Server
             else if (responseModel.BodyAsJson != null)
             {
                 responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
-            }
-            else if (responseModel.BodyFromBase64 != null)
-            {
-                responseBuilder = responseBuilder.WithBodyFromBase64(responseModel.BodyFromBase64, ToEncoding(responseModel.BodyEncoding));
             }
             else if (responseModel.BodyAsFile != null)
             {

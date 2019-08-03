@@ -1,11 +1,11 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using MimeKit;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using JetBrains.Annotations;
-using MimeKit;
-using Newtonsoft.Json;
-using WireMock.Util;
+using WireMock.Types;
 using WireMock.Validation;
 
 namespace WireMock.Http

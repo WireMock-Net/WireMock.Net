@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using WireMock.Models;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 

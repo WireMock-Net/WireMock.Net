@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Models.Requests;
 using WireMock.Net.StandAlone;
 using WireMock.Settings;
 

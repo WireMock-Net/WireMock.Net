@@ -11,6 +11,7 @@ using WireMock.Http;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -292,23 +293,6 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithBodyAsJson(object body, bool indented)
         {
             return WithBodyAsJson(body, null, indented);
-        }
-
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>
-        public IResponseBuilder WithBodyFromBase64(string bodyAsBase64, Encoding encoding = null)
-        {
-            Check.NotNull(bodyAsBase64, nameof(bodyAsBase64));
-
-            encoding = encoding ?? Encoding.UTF8;
-
-            ResponseMessage.BodyData = new BodyData
-            {
-                Encoding = encoding,
-                DetectedBodyType = BodyType.String,
-                BodyAsString = encoding.GetString(Convert.FromBase64String(bodyAsBase64))
-            };
-
-            return this;
         }
 
         /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer"/>

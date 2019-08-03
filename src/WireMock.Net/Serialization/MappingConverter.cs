@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
+using WireMock.Models.Mappings;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Util;
+using WireMock.Types;
 
 namespace WireMock.Serialization
 {

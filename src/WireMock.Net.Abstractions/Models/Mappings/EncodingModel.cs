@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin.Mappings
+﻿namespace WireMock.Models.Mappings
 {
     /// <summary>
     /// EncodingModel

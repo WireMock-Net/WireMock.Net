@@ -2,6 +2,7 @@
 using WireMock.Logging;
 using WireMock.Models;
 using WireMock.Serialization;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

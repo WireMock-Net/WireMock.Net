@@ -1,6 +1,6 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace WireMock.ResponseBuilders
 {
@@ -52,15 +52,6 @@ namespace WireMock.ResponseBuilders
         /// <param name="indented">Define whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithBodyAsJson([NotNull] object body, bool indented);
-
-        /// <summary>
-        /// WithBody : Create a string response based on a Base64 string (which will be decoded to a normal string).
-        /// </summary>
-        /// <param name="bodyAsBase64">The body.</param>
-        /// <param name="encoding">The Encoding.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        [Obsolete("Should not be used, will be removed in future.")]
-        IResponseBuilder WithBodyFromBase64([NotNull] string bodyAsBase64, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
         /// WithBodyFromFile : Create a ... response based on a File.

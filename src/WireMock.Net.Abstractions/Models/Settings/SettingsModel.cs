@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin.Settings
+﻿namespace WireMock.Models.Settings
 {
     /// <summary>
     /// Settings

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using WireMock.Admin.Mappings;
-using WireMock.Admin.Requests;
 using WireMock.Logging;
-using WireMock.Util;
+using WireMock.Models.Mappings;
+using WireMock.Models.Requests;
+using WireMock.Types;
 
 namespace WireMock.Serialization
 {

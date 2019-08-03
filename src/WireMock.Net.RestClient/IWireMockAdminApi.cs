@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using WireMock.Admin.Mappings;
-using WireMock.Admin.Requests;
-using WireMock.Admin.Scenarios;
-using WireMock.Admin.Settings;
+using WireMock.Models.Mappings;
+using WireMock.Models.Requests;
+using WireMock.Models.Scenarios;
+using WireMock.Models.Settings;
 
 namespace WireMock.Client
 {

@@ -1,9 +1,9 @@
-﻿namespace WireMock.Admin.Mappings
+﻿namespace WireMock.Models.Mappings
 {
     /// <summary>
-    /// ClientIPModel
+    /// UrlModel
     /// </summary>
-    public class ClientIPModel
+    public class UrlModel
     {
         /// <summary>
         /// Gets or sets the matchers.

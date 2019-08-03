@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Commonly used interfaces, classes, enumerations and types.</Description>
+    <Description>Commonly used interfaces, models, enumerations and types.</Description>
     <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
     <TargetFramework>netstandard1.0</TargetFramework>

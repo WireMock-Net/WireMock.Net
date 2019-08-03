@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WireMock.Admin.Requests
+namespace WireMock.Models.Requests
 {
     /// <summary>
     /// Request Log Model

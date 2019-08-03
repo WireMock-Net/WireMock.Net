@@ -14,21 +14,6 @@ namespace WireMock.Net.Tests
     public class FluentMockServerTests
     {
         [Fact]
-        public async Task FluentMockServer_Should_respond_to_request_bodyAsBase64()
-        {
-            // given
-            var server = FluentMockServer.Start();
-
-            server.Given(Request.Create().WithPath("/foo").UsingGet()).RespondWith(Response.Create().WithBodyFromBase64("SGVsbG8gV29ybGQ/"));
-
-            // when
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
-
-            // then
-            Check.That(response).IsEqualTo("Hello World?");
-        }
-
-        [Fact]
         public async Task FluentMockServer_Should_reset_requestlogs()
         {
             // given
@@ -203,7 +188,7 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         }
-    
+
         [Theory]
         [InlineData("POST")]
         [InlineData("PUT")]

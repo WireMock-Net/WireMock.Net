@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Http;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 #if !USE_ASPNETCORE

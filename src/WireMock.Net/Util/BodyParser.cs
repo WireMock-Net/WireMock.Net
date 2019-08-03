@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WireMock.Matchers;
+using WireMock.Types;
 using WireMock.Validation;
 
 namespace WireMock.Util

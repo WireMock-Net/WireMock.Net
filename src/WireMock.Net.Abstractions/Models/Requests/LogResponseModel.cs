@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using WireMock.Admin.Mappings;
-using WireMock.Util;
+using WireMock.Models.Mappings;
+using WireMock.Types;
 
-namespace WireMock.Admin.Requests
+namespace WireMock.Models.Requests
 {
     /// <summary>
     /// Response MessageModel

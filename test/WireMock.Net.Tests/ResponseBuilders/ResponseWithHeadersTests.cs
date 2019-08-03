@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
-using WireMock.Util;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders

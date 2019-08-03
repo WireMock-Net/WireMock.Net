@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WireMock.Admin.Requests
+namespace WireMock.Models.Requests
 {
     /// <summary>
     /// LogRequestMatchModel

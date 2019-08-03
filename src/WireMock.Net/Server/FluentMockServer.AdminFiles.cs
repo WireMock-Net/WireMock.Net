@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using WireMock.Matchers;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Server

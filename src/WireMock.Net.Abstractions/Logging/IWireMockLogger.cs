@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using WireMock.Admin.Requests;
+using WireMock.Models.Requests;
 
 namespace WireMock.Logging
 {

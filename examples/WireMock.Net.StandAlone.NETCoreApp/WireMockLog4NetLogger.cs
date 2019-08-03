@@ -1,7 +1,7 @@
 ﻿using log4net;
 using Newtonsoft.Json;
-using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Models.Requests;
 
 namespace WireMock.Net.StandAlone.NETCoreApp
 {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace WireMock.Admin.Mappings
+namespace WireMock.Models.Mappings
 {
     /// <summary>
-    /// Header Model
+    /// Cookie Model
     /// </summary>
-    public class HeaderModel
+    public class CookieModel
     {
         /// <summary>
         /// Gets or sets the name.
