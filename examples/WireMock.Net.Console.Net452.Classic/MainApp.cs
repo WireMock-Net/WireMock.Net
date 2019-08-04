@@ -422,6 +422,7 @@ namespace WireMock.Net.ConsoleApplication
                         DateTimeNowToString = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
                         Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
                         Guid2 = "{{Random Type=\"Guid\"}}",
+                        Guid3 = "{{Random Type=\"Guid\" Format=\"X\"}}",
                         Boolean = "{{Random Type=\"Boolean\"}}",
                         Integer = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
                         Long = "{{#Random Type=\"Long\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
