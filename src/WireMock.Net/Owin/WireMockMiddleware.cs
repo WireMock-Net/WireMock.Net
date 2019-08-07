@@ -118,7 +118,7 @@ namespace WireMock.Owin
                     await Task.Delay(_options.RequestProcessingDelay.Value);
                 }
 
-                response = await targetMapping.ResponseToAsync(request);
+                response = await targetMapping.ProvideResponseAsync(request);
 
                 if (targetMapping.Scenario != null)
                 {
@@ -129,7 +129,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                _options.Logger.Error("HttpStatusCode set to 500");
+                _options.Logger.Error($"Providing a Response for Mapping '{result.TargetMapping.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
                 response = ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500);
             }
             finally
