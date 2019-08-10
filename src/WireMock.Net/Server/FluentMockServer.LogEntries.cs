@@ -27,7 +27,7 @@ namespace WireMock.Server
         /// Gets the request logs.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries);
+        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToArray());
 
         /// <summary>
         /// The search log-entries based on matchers.

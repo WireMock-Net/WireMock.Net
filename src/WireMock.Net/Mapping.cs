@@ -77,8 +77,8 @@ namespace WireMock
             NextState = nextState;
         }
 
-        /// <inheritdoc cref="IMapping.ResponseToAsync" />
-        public async Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage)
+        /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
         {
             return await Provider.ProvideResponseAsync(requestMessage, Settings);
         }
