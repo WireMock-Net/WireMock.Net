@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>1.0.27</VersionPrefix>
+    <VersionPrefix>1.0.26</VersionPrefix>
   </PropertyGroup>
 
   <Choose>

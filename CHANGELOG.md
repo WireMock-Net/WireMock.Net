@@ -1,3 +1,11 @@
+# 1.0.26.0 (11 August 2019)
+- [#309](https://github.com/WireMock-Net/WireMock.Net/pull/309) - Fix LogEntries: collection was modified exception [bug] contributed by [StefH](https://github.com/StefH)
+- [#314](https://github.com/WireMock-Net/WireMock.Net/pull/314) - RequestLogExpirationDuration : use DateTime.UtcNow [bug] contributed by [StefH](https://github.com/StefH)
+- [#252](https://github.com/WireMock-Net/WireMock.Net/issues/252) - Proxy with Transform [help wanted]
+- [#305](https://github.com/WireMock-Net/WireMock.Net/issues/305) - Allow Custom SSL Certification? [question]
+- [#308](https://github.com/WireMock-Net/WireMock.Net/issues/308) - __admin/requests - &quot;Collection was modified&quot; exception [bug]
+- [#313](https://github.com/WireMock-Net/WireMock.Net/issues/313) - RequestLogExpirationDuration - bug [bug]
+
 # 1.0.25.0 (23 July 2019)
 - [#304](https://github.com/WireMock-Net/WireMock.Net/pull/304) - Support WithBody with multiple matchers [feature] contributed by [StefH](https://github.com/StefH)
 - [#303](https://github.com/WireMock-Net/WireMock.Net/issues/303) - Question: WithBody can't be used with multiple matching rules? [question]
