@@ -172,7 +172,7 @@ namespace WireMock.Owin
 
             if (_options.RequestLogExpirationDuration != null)
             {
-                var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
+                var checkTime = DateTime.UtcNow.AddHours(-_options.RequestLogExpirationDuration.Value);
 
                 for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
                 {
