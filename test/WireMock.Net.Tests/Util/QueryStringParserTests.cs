@@ -147,6 +147,20 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
+        public void Parse_With1ParamWithTwoEqualSigns()
+        {
+            // Assign
+            string query = "?key=value==what";
+
+            // Act
+            var result = QueryStringParser.Parse(query);
+
+            // Assert
+            result.Count.Should().Be(1);
+            result["key"].Should().Equal(new WireMockList<string>("value==what"));
+        }
+
+        [Fact]
         public void Parse_WithMultipleParamWithSameKeySeparatedBySemiColon()
         {
             // Assign
