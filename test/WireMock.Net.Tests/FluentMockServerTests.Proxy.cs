@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -104,11 +105,12 @@ namespace WireMock.Net.Tests
                 {
                     Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
-                    SaveMappingToFile = false,
+                    SaveMappingToFile = true,
                     BlackListedHeaders = new[] { "blacklisted" }
                 }
             };
             var server = FluentMockServer.Start(settings);
+            var defaultMapping = server.Mappings.First();
 
             // Act
             var requestMessage = new HttpRequestMessage
@@ -117,18 +119,65 @@ namespace WireMock.Net.Tests
                 RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("stringContent")
             };
-            requestMessage.Headers.Add("blacklisted", "test");
+            requestMessage.Headers.Add("blacklisted", "exact_match");
             requestMessage.Headers.Add("ok", "ok-value");
             await new HttpClient().SendAsync(requestMessage);
 
             // Assert
-            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
-            Check.That(receivedRequest.Headers).Not.ContainsKey("bbb");
-            Check.That(receivedRequest.Headers).ContainsKey("ok");
+            var mapping = server.Mappings.FirstOrDefault(m => m.Guid != defaultMapping.Guid);
+            Check.That(mapping).IsNotNull();
+            var matchers = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().Select(m => m.Name).ToList();
+            Check.That(matchers).Not.Contains("blacklisted");
+            Check.That(matchers).Contains("ok");
+        }        
+        
+        [Fact]
+        public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
+        {
+            // Assign
+            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create());
 
-            //var mapping = _server.Mappings.Last();
-            //var matcher = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
-            //Check.That(matcher).IsNull();
+            var settings = new FluentMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = serverForProxyForwarding.Urls[0],
+                    SaveMapping = true,
+                    SaveMappingToFile = false,
+                    BlackListedCookies = new[] { "ASP.NET_SessionId" }
+                }
+            };
+            var server = FluentMockServer.Start(settings);
+            var defaultMapping = server.Mappings.First();
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{server.Urls[0]}{path}"),
+                Content = new StringContent("stringContent")
+            };
+
+            var cookieContainer = new CookieContainer(3);
+            cookieContainer.Add(new Uri("http://localhost"), new Cookie("ASP.NET_SessionId", "exact_match"));
+            cookieContainer.Add(new Uri("http://localhost"), new Cookie("AsP.NeT_SessIonID", "case_mismatch"));
+            cookieContainer.Add(new Uri("http://localhost"), new Cookie("GoodCookie", "I_should_pass"));
+            
+            var handler = new HttpClientHandler { CookieContainer = cookieContainer };
+            await new HttpClient(handler).SendAsync(requestMessage);
+
+            // Assert
+            var mapping = server.Mappings.FirstOrDefault(m => m.Guid != defaultMapping.Guid);
+            Check.That(mapping).IsNotNull();
+
+            var matchers = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageCookieMatcher>().Select(m => m.Name).ToList();
+            Check.That(matchers).Not.Contains("ASP.NET_SessionId");
+            Check.That(matchers).Not.Contains("AsP.NeT_SessIonID");
+            Check.That(matchers).Contains("GoodCookie");
         }
 
         [Fact]
