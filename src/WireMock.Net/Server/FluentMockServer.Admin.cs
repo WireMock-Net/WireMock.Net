@@ -266,10 +266,14 @@ namespace WireMock.Server
 
             var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
 
-            if (settings.ProxyAndRecordSettings.SaveMapping)
+            if (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile)
             {
                 var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { });
-                _options.Mappings.TryAdd(mapping.Guid, mapping);
+
+                if (settings.ProxyAndRecordSettings.SaveMapping)
+                {
+                    _options.Mappings.TryAdd(mapping.Guid, mapping);
+                }
 
                 if (settings.ProxyAndRecordSettings.SaveMappingToFile)
                 {
