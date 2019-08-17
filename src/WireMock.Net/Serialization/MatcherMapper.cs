@@ -5,17 +5,27 @@ using JetBrains.Annotations;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Settings;
+using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
-    internal static class MatcherMapper
+    internal class MatcherMapper
     {
-        public static IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
+        private readonly IFluentMockServerSettings _settings;
+
+        public MatcherMapper(IFluentMockServerSettings settings)
+        {
+            Check.NotNull(settings, nameof(settings));
+            _settings = settings;
+        }
+
+        public IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
         {
             return matchers?.Select(Map).Where(m => m != null).ToArray();
         }
 
-        public static IMatcher Map([CanBeNull] MatcherModel matcher)
+        public IMatcher Map([CanBeNull] MatcherModel matcher)
         {
             if (matcher == null)
             {
@@ -76,12 +86,12 @@ namespace WireMock.Serialization
             }
         }
 
-        public static MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
+        public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
             return matchers?.Select(Map).Where(m => m != null).ToArray();
         }
 
-        public static MatcherModel Map([CanBeNull] IMatcher matcher)
+        public MatcherModel Map([CanBeNull] IMatcher matcher)
         {
             if (matcher == null)
             {

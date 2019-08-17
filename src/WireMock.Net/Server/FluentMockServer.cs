@@ -15,6 +15,7 @@ using WireMock.Matchers.Request;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
+using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Util;
 using WireMock.Validation;
@@ -31,6 +32,8 @@ namespace WireMock.Server
         private readonly IFluentMockServerSettings _settings;
         private readonly IOwinSelfHost _httpServer;
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
+        private readonly MappingConverter _mappingConverter;
+        private readonly MatcherMapper _matcherMapper;
 
         /// <summary>
         /// Gets a value indicating whether this server is started.
@@ -214,6 +217,9 @@ namespace WireMock.Server
             _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
             _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
             _options.Logger = _settings.Logger;
+
+            _matcherMapper = new MatcherMapper(_settings);
+            _mappingConverter = new MappingConverter(_matcherMapper);
 
 #if USE_ASPNETCORE
             _httpServer = new AspNetCoreSelfHost(_options, Urls);
