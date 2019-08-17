@@ -121,8 +121,8 @@ namespace WireMock.Settings
         Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
 
         /// <summary>
-        /// Allow the usage of CSharpCodeMatcher and CSScriptMatcher (default is not allowed).
+        /// Allow the usage of CSharpCodeMatcher (default is not allowed).
         /// </summary>
-        bool? AllowCSharpCode { get; set; }
+        bool? AllowCSharpCodeMatcher { get; set; }
     }
 }
