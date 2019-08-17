@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.Owin
     public class MappingMatcherTests
     {
         private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
-        private readonly IMappingMatcher _sut;
+        private readonly MappingMatcher _sut;
 
         public MappingMatcherTests()
         {
@@ -24,25 +24,50 @@ namespace WireMock.Net.Tests.Owin
             _optionsMock.Setup(o => o.LogEntries).Returns(new ConcurrentObservableCollection<LogEntry>());
             _optionsMock.Setup(o => o.Scenarios).Returns(new ConcurrentDictionary<string, ScenarioState>());
 
+            var loggerMock = new Mock<IWireMockLogger>();
+            loggerMock.SetupAllProperties();
+            loggerMock.Setup(l => l.Error(It.IsAny<string>()));
+            _optionsMock.Setup(o => o.Logger).Returns(loggerMock.Object);
+
             _sut = new MappingMatcher(_optionsMock.Object);
         }
 
         [Fact]
-        public void MappingMatcher_Match_NoMappingsDefined()
+        public void MappingMatcher_FindBestMatch_WhenNoMappingsDefined_ShouldReturnNull()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
-            Check.That(result.Mapping).IsNull();
-            Check.That(result.RequestMatchResult).IsNull();
+            Check.That(result).IsNull();
         }
 
         [Fact]
-        public void MappingMatcher_Match_GetBestMapping_Exact()
+        public void MappingMatcher_FindBestMatch_WhenMappingThrowsException_ShouldReturnNull()
+        {
+            // Assign
+            var mappingMock = new Mock<IMapping>();
+            mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Throws<Exception>();
+
+            var mappings = new ConcurrentDictionary<Guid, IMapping>();
+            mappings.TryAdd(Guid.NewGuid(), mappingMock.Object);
+
+            _optionsMock.Setup(o => o.Mappings).Returns(mappings);
+
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+
+            // Act
+            var result = _sut.FindBestMatch(request);
+
+            // Assert and Verify
+            Check.That(result).IsNull();
+        }
+
+        [Fact]
+        public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_ShouldReturnExactMatch()
         {
             // Assign
             var mappings = InitMappings(new[] { (Guid.Parse("00000000-0000-0000-0000-000000000001"), 0.1), (Guid.Parse("00000000-0000-0000-0000-000000000002"), 1.0) });
@@ -51,7 +76,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
             Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
@@ -59,7 +84,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public void MappingMatcher_Match_GetBestMapping_AllowPartialMapping()
+        public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsTrue_ShouldReturnAnyMatch()
         {
             // Assign
             _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
@@ -69,7 +94,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
             Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
