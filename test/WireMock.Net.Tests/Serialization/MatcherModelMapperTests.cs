@@ -1,19 +1,33 @@
 ﻿using NFluent;
 using System;
+using Moq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Serialization;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests.Serialization
 {
     public class MatcherModelMapperTests
     {
+        private readonly Mock<IFluentMockServerSettings> _settingsMock;
+
+        private readonly MatcherMapper _sut;
+
+        public MatcherModelMapperTests()
+        {
+            _settingsMock = new Mock<IFluentMockServerSettings>();
+            _settingsMock.SetupAllProperties();
+
+            _sut = new MatcherMapper(_settingsMock.Object);
+        }
+
         [Fact]
         public void MatcherModelMapper_Map_Null()
         {
             // Act
-            IMatcher matcher = MatcherMapper.Map((MatcherModel)null);
+            IMatcher matcher = _sut.Map((MatcherModel)null);
 
             // Assert
             Check.That(matcher).IsNull();
@@ -30,7 +44,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (ExactMatcher)MatcherMapper.Map(model);
+            var matcher = (ExactMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -47,7 +61,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (ExactMatcher)MatcherMapper.Map(model);
+            var matcher = (ExactMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -64,7 +78,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (ExactObjectMatcher)MatcherMapper.Map(model);
+            var matcher = (ExactObjectMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
@@ -82,7 +96,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (RegexMatcher)MatcherMapper.Map(model);
+            var matcher = (RegexMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -101,7 +115,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (WildcardMatcher)MatcherMapper.Map(model);
+            var matcher = (WildcardMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
@@ -119,7 +133,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (SimMetricsMatcher)MatcherMapper.Map(model);
+            var matcher = (SimMetricsMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -136,7 +150,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (SimMetricsMatcher)MatcherMapper.Map(model);
+            var matcher = (SimMetricsMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x");
@@ -153,7 +167,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
+            Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
         }
 
         [Fact]
@@ -167,7 +181,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
+            Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
         }
     }
 }

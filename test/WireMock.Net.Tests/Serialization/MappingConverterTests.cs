@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Moq;
-using System;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
@@ -13,6 +13,13 @@ namespace WireMock.Net.Tests.Serialization
     {
         private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
 
+        private readonly MappingConverter _sut;
+
+        public MappingConverterTests()
+        {
+            _sut = new MappingConverter(new MatcherMapper(_settingsMock.Object));
+        }
+
         [Fact]
         public void ToMappingModel()
         {
@@ -22,7 +29,7 @@ namespace WireMock.Net.Tests.Serialization
             var mapping = new Mapping(Guid.NewGuid(), "", null, _settingsMock.Object, request, response, 0, null, null, null);
 
             // Act
-            var model = MappingConverter.ToMappingModel(mapping);
+            var model = _sut.ToMappingModel(mapping);
 
             // Assert
             model.Should().NotBeNull();
@@ -40,7 +47,7 @@ namespace WireMock.Net.Tests.Serialization
             var mapping = new Mapping(Guid.NewGuid(), "", null, _settingsMock.Object, request, response, 42, null, null, null);
 
             // Act
-            var model = MappingConverter.ToMappingModel(mapping);
+            var model = _sut.ToMappingModel(mapping);
 
             // Assert
             model.Should().NotBeNull();
