@@ -11,7 +11,7 @@ namespace WireMock.Matchers
     {
         private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
 
-        private const string TemplateForIsMatchWithJObject = "{0} public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {1} }} }}";
+        private const string TemplateForIsMatchWithDynamic = "{0} public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {1} }} }}";
 
         private readonly string[] _usings =
         {
@@ -141,7 +141,7 @@ namespace WireMock.Matchers
 
         private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
         {
-            string template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithJObject;
+            string template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithDynamic;
             return string.Format(template, string.Join(Environment.NewLine, _usings.Select(u => $"using {u};")), pattern);
         }
 
