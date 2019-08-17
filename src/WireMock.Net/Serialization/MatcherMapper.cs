@@ -32,11 +32,8 @@ namespace WireMock.Serialization
             switch (matcherName)
             {
                 case "CSharpCodeMatcher":
-//#if USE_CSHARPCODEPROVIDER
-//                    return new CSharpCodeMatcher(matchBehaviour, stringPatterns);
-//#else
-                    throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3 or netstandard 2.0");
-//#endif
+                    return new CSharpCodeMatcher(matchBehaviour, stringPatterns);
+
                 case "LinqMatcher":
                     return new LinqMatcher(matchBehaviour, stringPatterns);
 

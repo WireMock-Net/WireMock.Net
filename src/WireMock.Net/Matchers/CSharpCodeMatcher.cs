@@ -8,8 +8,7 @@ namespace WireMock.Matchers
 {
     internal class CSharpCodeMatcher : IStringMatcher
     {
-        // protected const string Framework = "{0}; namespace WireMock {{ public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }} }}";
-        protected const string Framework = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
+        private const string Framework = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
 
         private readonly string[] _usings =
         {
@@ -49,7 +48,7 @@ namespace WireMock.Matchers
 
             if (input != null)
             {
-                match = MatchScores.ToScore(_patterns.Select(p => IsMatch(input, p)));
+                match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern)));
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
