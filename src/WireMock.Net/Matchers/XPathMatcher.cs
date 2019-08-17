@@ -59,6 +59,7 @@ namespace WireMock.Matchers
                 catch (Exception)
                 {
                     // just ignore exception
+                    // TODO add logging?
                 }
             }
 
