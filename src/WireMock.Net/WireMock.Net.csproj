@@ -32,6 +32,7 @@
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
 
+  <!--https://github.com/aspnet/RoslynCodeDomProvider/issues/51-->
   <Target Name="CheckIfShouldKillVBCSCompiler" />
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
