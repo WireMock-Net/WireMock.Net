@@ -28,21 +28,20 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public void MappingMatcher_Match_NoMappingsDefined()
+        public void MappingMatcher_FindBestMatch_NoMappingsDefined()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
-            Check.That(result.Mapping).IsNull();
-            Check.That(result.RequestMatchResult).IsNull();
+            Check.That(result).IsNull();
         }
 
         [Fact]
-        public void MappingMatcher_Match_GetBestMapping_Exact()
+        public void MappingMatcher_FindBestMatch_GetBestMapping_Exact()
         {
             // Assign
             var mappings = InitMappings(new[] { (Guid.Parse("00000000-0000-0000-0000-000000000001"), 0.1), (Guid.Parse("00000000-0000-0000-0000-000000000002"), 1.0) });
@@ -51,7 +50,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
             Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
@@ -59,7 +58,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public void MappingMatcher_Match_GetBestMapping_AllowPartialMapping()
+        public void MappingMatcher_FindBestMatch_GetBestMapping_AllowPartialMapping()
         {
             // Assign
             _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
@@ -69,7 +68,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
 
             // Act
-            var result = _sut.Match(request);
+            var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
             Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
