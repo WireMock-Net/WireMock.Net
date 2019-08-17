@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Exceptions;
 using WireMock.Validation;
@@ -7,7 +8,8 @@ namespace WireMock.Matchers
 {
     internal class CSharpCodeMatcher : IStringMatcher
     {
-        protected const string Framework = "{0}; namespace {1} {{ public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }} }}";
+        // protected const string Framework = "{0}; namespace WireMock {{ public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }} }}";
+        protected const string Framework = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
 
         private readonly string[] _usings =
         {
@@ -64,7 +66,8 @@ namespace WireMock.Matchers
                 GenerateExecutable = false,
                 ReferencedAssemblies =
                 {
-                    "System.dll"
+                    "System.dll",
+                    "System.Core.dll"
                 }
             };
 
@@ -78,16 +81,16 @@ namespace WireMock.Matchers
                     throw new WireMockException(string.Join(", ", errors));
                 }
 
-                object helper = compilerResults.CompiledAssembly.CreateInstance("WireMock.CodeHelper");
+                object helper = compilerResults.CompiledAssembly.CreateInstance("CodeHelper");
                 if (helper == null)
                 {
-                    throw new WireMockException("Unable to create instance from WireMock.CodeHelper");
+                    throw new WireMockException("Unable to create instance from CodeHelper");
                 }
 
                 var methodInfo = helper.GetType().GetMethod("IsMatch");
                 if (methodInfo == null)
                 {
-                    throw new WireMockException("Unable to find method 'IsMatch' in WireMock.CodeHelper");
+                    throw new WireMockException("Unable to find method 'IsMatch' in CodeHelper");
                 }
 
                 return (bool)methodInfo.Invoke(helper, new object[] { input });
@@ -102,23 +105,25 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException("Unable to create compile and execute code from WireMock.CodeHelper");
             }
-#else
+#elif NETSTANDARD2_0
             try
             {
                 var assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
                 dynamic script = csscript.GenericExtensions.CreateObject(assembly, "*");
                 return (bool)script.IsMatch(input);
             }
-            catch
+            catch (Exception ex)
             {
-                throw new WireMockException("Unable to create compile and execute code from WireMock.CodeHelper");
+                throw new WireMockException("Unable to create compile and execute code from WireMock.CodeHelper", ex);
             }
+#else
+            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
         }
 
         private string GetSource(string pattern)
         {
-            return string.Format(Framework, string.Join(";", _usings.Distinct().Select(u => "using " + u)), pattern);
+            return string.Format(Framework, string.Join(Environment.NewLine, _usings.Select(u => $"using {u};")), pattern);
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
