@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using WireMock.Matchers.Request;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -15,34 +16,41 @@ namespace WireMock.Owin
             _options = options;
         }
 
-        public (IMapping Mapping, RequestMatchResult RequestMatchResult) Match(RequestMessage request)
+        public MappingMatcherResult FindBestMatch(RequestMessage request)
         {
-            var mappings = _options.Mappings.Values
-                .Select(m => new
+            var mappings = new List<MappingMatcherResult>();
+            foreach (var mapping in _options.Mappings.Values)
+            {
+                try
                 {
-                    Mapping = m,
-                    MatchResult = m.GetRequestMatchResult(request, m.Scenario != null && _options.Scenarios.ContainsKey(m.Scenario) ? _options.Scenarios[m.Scenario].NextState : null)
-                })
-                .ToList();
+                    string scenario = mapping.Scenario != null && _options.Scenarios.ContainsKey(mapping.Scenario) ? _options.Scenarios[mapping.Scenario].NextState : null;
+
+                    mappings.Add(new MappingMatcherResult
+                    {
+                        Mapping = mapping,
+                        RequestMatchResult = mapping.GetRequestMatchResult(request, scenario)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Error($"Getting a Request MatchResult for Mapping '{mapping.Guid}' failed. This mapping will not be evaluated. Exception: {ex}");
+                }
+            }
 
             if (_options.AllowPartialMapping)
             {
                 var partialMappings = mappings
-                    .Where(pm => (pm.Mapping.IsAdminInterface && pm.MatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
-                    .OrderBy(m => m.MatchResult)
+                    .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
+                    .OrderBy(m => m.RequestMatchResult)
                     .ThenBy(m => m.Mapping.Priority)
                     .ToList();
 
-                var bestPartialMatch = partialMappings.FirstOrDefault(pm => pm.MatchResult.AverageTotalScore > 0.0);
-
-                return (bestPartialMatch?.Mapping, bestPartialMatch?.MatchResult);
+                return partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
             }
 
-            var perfectMatch = mappings
+            return mappings
                 .OrderBy(m => m.Mapping.Priority)
-                .FirstOrDefault(m => m.MatchResult.IsPerfectMatch);
-
-            return (perfectMatch?.Mapping, perfectMatch?.MatchResult);
+                .FirstOrDefault(m => m.RequestMatchResult.IsPerfectMatch);
         }
     }
 }
