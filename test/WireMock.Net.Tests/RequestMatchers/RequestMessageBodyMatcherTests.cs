@@ -183,6 +183,28 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Fact]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsJson_CSharpCodeMatcher()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsJson = new { value = 42 },
+                DetectedBodyType = BodyType.Json
+            };
+
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(new CSharpCodeMatcher(MatchBehaviour.AcceptOnMatch, "return it.value == 42;"));
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
         public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher()
         {
             // Assign
