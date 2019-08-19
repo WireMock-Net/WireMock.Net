@@ -105,7 +105,7 @@ namespace WireMock.Net.Tests
                 {
                     Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
-                    SaveMappingToFile = true,
+                    SaveMappingToFile = false,
                     BlackListedHeaders = new[] { "blacklisted" }
                 }
             };
