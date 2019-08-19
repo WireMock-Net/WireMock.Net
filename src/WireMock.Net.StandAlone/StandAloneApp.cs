@@ -82,7 +82,8 @@ namespace WireMock.Net.StandAlone
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
-                    BlackListedHeaders = parser.GetValues("BlackListedHeaders")
+                    BlackListedHeaders = parser.GetValues("BlackListedHeaders"),
+                    BlackListedCookies = parser.GetValues("BlackListedCookies")
                 };
             }
 
