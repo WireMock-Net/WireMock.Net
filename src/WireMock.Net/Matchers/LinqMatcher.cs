@@ -118,7 +118,6 @@ namespace WireMock.Matchers
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
-
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
