@@ -268,7 +268,7 @@ namespace WireMock.Server
 
             if (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile)
             {
-                var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { });
+                var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { }, settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { });
 
                 if (settings.ProxyAndRecordSettings.SaveMapping)
                 {
@@ -284,19 +284,25 @@ namespace WireMock.Server
             return responseMessage;
         }
 
-        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders)
+        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders, string[] blacklistedCookies)
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
             request.UsingMethod(requestMessage.Method);
 
             requestMessage.Query.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
-            requestMessage.Cookies.Loop((key, value) => request.WithCookie(key, value));
+            requestMessage.Cookies.Loop((key, value) =>
+            {
+                if (!blacklistedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    request.WithCookie(key, value);
+                }
+            });
 
             var allBlackListedHeaders = new List<string>(blacklistedHeaders) { "Cookie" };
             requestMessage.Headers.Loop((key, value) =>
             {
-                if (!allBlackListedHeaders.Any(b => string.Equals(key, b, StringComparison.OrdinalIgnoreCase)))
+                if (!allBlackListedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
                 {
                     request.WithHeader(key, value.ToArray());
                 }

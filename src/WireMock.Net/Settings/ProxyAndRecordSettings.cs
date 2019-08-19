@@ -26,5 +26,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IProxyAndRecordSettings.BlackListedHeaders"/>
         [PublicAPI]
         public string[] BlackListedHeaders { get; set; }
+
+        /// <inheritdoc cref="IProxyAndRecordSettings.BlackListedCookies"/>
+        [PublicAPI]
+        public string[] BlackListedCookies { get; set; }
     }
 }
