@@ -7,7 +7,12 @@ using WireMock.Validation;
 
 namespace WireMock.Matchers
 {
-    internal class CSharpCodeMatcher : IObjectMatcher
+    /// <summary>
+    /// CSharpCode / CS-Script Matcher
+    /// </summary>
+    /// <inheritdoc cref="IObjectMatcher"/>
+    /// <inheritdoc cref="IStringMatcher"/>
+    internal class CSharpCodeMatcher : IObjectMatcher, IStringMatcher
     {
         private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
 
@@ -110,7 +115,7 @@ namespace WireMock.Matchers
                 {
                     throw new WireMockException("Unable to find method 'IsMatch' in CodeHelper");
                 }
-                
+
                 return (bool)methodInfo.Invoke(helper, new[] { inputValue });
             }
 #elif NET46 || NET461

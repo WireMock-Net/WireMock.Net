@@ -9,8 +9,9 @@ namespace WireMock.Matchers
     /// <summary>
     /// System.Linq.Dynamic.Core Expression Matcher
     /// </summary>
+    /// <inheritdoc cref="IObjectMatcher"/>
     /// <inheritdoc cref="IStringMatcher"/>
-    public class LinqMatcher : IObjectMatcher
+    public class LinqMatcher : IObjectMatcher, IStringMatcher
     {
         private readonly string[] _patterns;
 
