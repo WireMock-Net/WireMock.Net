@@ -1,3 +1,13 @@
+# 1.0.28.0 (20 August 2019)
+- [#317](https://github.com/WireMock-Net/WireMock.Net/pull/317) - Make SaveMapping and SaveMappingToFile settings independent. [feature] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
+- [#319](https://github.com/WireMock-Net/WireMock.Net/pull/319) - Add blacklist for Request Cookies. contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
+- [#320](https://github.com/WireMock-Net/WireMock.Net/pull/320) - Remove coverlet folder from source control [doc] contributed by [StefH](https://github.com/StefH)
+- [#322](https://github.com/WireMock-Net/WireMock.Net/pull/322) - Fix MappingMatcher in case of an exception in LinqMatcher. [bug] contributed by [StefH](https://github.com/StefH)
+- [#323](https://github.com/WireMock-Net/WireMock.Net/pull/323) - Refactor MappingConverter &amp; MatcherMapper [refactor] contributed by [StefH](https://github.com/StefH)
+- [#326](https://github.com/WireMock-Net/WireMock.Net/pull/326) - Fix Parsing Guid in PUT Mapping [bug] contributed by [StefH](https://github.com/StefH)
+- [#318](https://github.com/WireMock-Net/WireMock.Net/issues/318) - Documentation: Add valid CLI parameters [doc, question]
+- [#325](https://github.com/WireMock-Net/WireMock.Net/issues/325) - Admin API: PUT Mapping, FormatException because of wrong parsing of the Query  [bug]
+
 # 1.0.27.0 (14 August 2019)
 - [#316](https://github.com/WireMock-Net/WireMock.Net/pull/316) - Handles case where parameter value contains == [feature] contributed by [lobsteropteryx](https://github.com/lobsteropteryx)
 - [#287](https://github.com/WireMock-Net/WireMock.Net/issues/287) - Error with parameter that contains a &quot;=&quot; character [bug, question]
