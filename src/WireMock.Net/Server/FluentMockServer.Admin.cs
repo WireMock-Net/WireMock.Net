@@ -366,7 +366,7 @@ namespace WireMock.Server
         #region Mapping/{guid}
         private ResponseMessage MappingGet(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
+            Guid guid = ParseGuidFromRequestMessage(requestMessage);
             var mapping = Mappings.FirstOrDefault(m => !m.IsAdminInterface && m.Guid == guid);
 
             if (mapping == null)
@@ -382,7 +382,7 @@ namespace WireMock.Server
 
         private ResponseMessage MappingPut(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.TrimStart(AdminMappings.ToCharArray()));
+            Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             Guid? guidFromPut = DeserializeAndAddOrUpdateMapping(mappingModel, guid);
@@ -392,7 +392,7 @@ namespace WireMock.Server
 
         private ResponseMessage MappingDelete(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
+            Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
             if (DeleteMapping(guid))
             {
@@ -400,6 +400,11 @@ namespace WireMock.Server
             }
 
             return ResponseMessageBuilder.Create("Mapping not found", 404);
+        }
+
+        private Guid ParseGuidFromRequestMessage(RequestMessage requestMessage)
+        {
+            return Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
         }
         #endregion Mapping/{guid}
 
@@ -543,7 +548,7 @@ namespace WireMock.Server
         #region Request/{guid}
         private ResponseMessage RequestGet(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
+            Guid guid = ParseGuidFromRequestMessage(requestMessage);
             var entry = LogEntries.FirstOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
 
             if (entry == null)
@@ -559,7 +564,7 @@ namespace WireMock.Server
 
         private ResponseMessage RequestDelete(RequestMessage requestMessage)
         {
-            Guid guid = Guid.Parse(requestMessage.Path.Substring(AdminRequests.Length + 1));
+            Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
             if (DeleteLogEntry(guid))
             {
