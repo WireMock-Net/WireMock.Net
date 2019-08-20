@@ -4,17 +4,30 @@ using System;
 using WireMock.Matchers;
 using WireMock.Models.Mappings;
 using WireMock.Serialization;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests.Serialization
 {
     public class MatcherMapperTests
     {
+        private readonly Mock<IFluentMockServerSettings> _settingsMock;
+
+        private readonly MatcherMapper _sut;
+
+        public MatcherMapperTests()
+        {
+            _settingsMock = new Mock<IFluentMockServerSettings>();
+            _settingsMock.SetupAllProperties();
+
+            _sut = new MatcherMapper(_settingsMock.Object);
+        }
+
         [Fact]
         public void MatcherMapper_Map_IMatcher_Null()
         {
             // Act
-            var model = MatcherMapper.Map((IMatcher)null);
+            var model = _sut.Map((IMatcher)null);
 
             // Assert
             Check.That(model).IsNull();
@@ -24,7 +37,7 @@ namespace WireMock.Net.Tests.Serialization
         public void MatcherMapper_Map_IMatchers_Null()
         {
             // Act
-            var model = MatcherMapper.Map((IMatcher[])null);
+            var model = _sut.Map((IMatcher[])null);
 
             // Assert
             Check.That(model).IsNull();
@@ -38,7 +51,7 @@ namespace WireMock.Net.Tests.Serialization
             var matcherMock2 = new Mock<IStringMatcher>();
 
             // Act
-            var models = MatcherMapper.Map(new[] { matcherMock1.Object, matcherMock2.Object });
+            var models = _sut.Map(new[] { matcherMock1.Object, matcherMock2.Object });
 
             // Assert
             Check.That(models).HasSize(2);
@@ -53,7 +66,7 @@ namespace WireMock.Net.Tests.Serialization
             matcherMock.Setup(m => m.GetPatterns()).Returns(new[] { "p1", "p2" });
 
             // Act
-            var model = MatcherMapper.Map(matcherMock.Object);
+            var model = _sut.Map(matcherMock.Object);
 
             // Assert
             Check.That(model.IgnoreCase).IsNull();
@@ -70,7 +83,7 @@ namespace WireMock.Net.Tests.Serialization
             matcherMock.Setup(m => m.IgnoreCase).Returns(true);
 
             // Act
-            var model = MatcherMapper.Map(matcherMock.Object);
+            var model = _sut.Map(matcherMock.Object);
 
             // Assert
             Check.That(model.IgnoreCase).Equals(true);
@@ -80,7 +93,7 @@ namespace WireMock.Net.Tests.Serialization
         public void MatcherMapper_Map_MatcherModel_Null()
         {
             // Act
-            var result = MatcherMapper.Map((MatcherModel)null);
+            var result = _sut.Map((MatcherModel)null);
 
             // Assert
             Check.That(result).IsNull();
@@ -93,7 +106,7 @@ namespace WireMock.Net.Tests.Serialization
             var model = new MatcherModel { Name = "test" };
 
             // Act and Assert
-            Check.ThatCode(() => MatcherMapper.Map(model)).Throws<NotSupportedException>();
+            Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
         }
 
         [Fact]
@@ -107,7 +120,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (LinqMatcher)MatcherMapper.Map(model);
+            var matcher = (LinqMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
@@ -125,7 +138,7 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             // Act
-            var matcher = (LinqMatcher)MatcherMapper.Map(model);
+            var matcher = (LinqMatcher)_sut.Map(model);
 
             // Assert
             Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);

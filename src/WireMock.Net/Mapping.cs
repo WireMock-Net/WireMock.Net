@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
@@ -77,8 +77,8 @@ namespace WireMock
             NextState = nextState;
         }
 
-        /// <inheritdoc cref="IMapping.ResponseToAsync" />
-        public async Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage)
+        /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
         {
             return await Provider.ProvideResponseAsync(requestMessage, Settings);
         }

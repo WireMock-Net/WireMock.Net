@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
 using System.Linq;
 using WireMock.Matchers;
 using Newtonsoft.Json;
@@ -74,7 +73,7 @@ namespace WireMock.Owin
 
             bool logRequest = false;
             ResponseMessage response = null;
-            (IMapping TargetMapping, RequestMatchResult RequestMatchResult) result = (null, null);
+            MappingMatcherResult result = null;
             try
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
@@ -89,9 +88,9 @@ namespace WireMock.Owin
                     }
                 }
 
-                result = _mappingMatcher.Match(request);
-                var targetMapping = result.TargetMapping;
+                result = _mappingMatcher.FindBestMatch(request);
 
+                var targetMapping = result?.Mapping;
                 if (targetMapping == null)
                 {
                     logRequest = true;
@@ -118,7 +117,7 @@ namespace WireMock.Owin
                     await Task.Delay(_options.RequestProcessingDelay.Value);
                 }
 
-                response = await targetMapping.ResponseToAsync(request);
+                response = await targetMapping.ProvideResponseAsync(request);
 
                 if (targetMapping.Scenario != null)
                 {
@@ -129,7 +128,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                _options.Logger.Error("HttpStatusCode set to 500");
+                _options.Logger.Error($"Providing a Response for Mapping '{result?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
                 response = ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500);
             }
             finally
@@ -139,9 +138,9 @@ namespace WireMock.Owin
                     Guid = Guid.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
-                    MappingGuid = result.TargetMapping?.Guid,
-                    MappingTitle = result.TargetMapping?.Title,
-                    RequestMatchResult = result.RequestMatchResult
+                    MappingGuid = result?.Mapping?.Guid,
+                    MappingTitle = result?.Mapping?.Title,
+                    RequestMatchResult = result?.RequestMatchResult
                 };
 
                 LogRequest(log, logRequest);
@@ -172,7 +171,7 @@ namespace WireMock.Owin
 
             if (_options.RequestLogExpirationDuration != null)
             {
-                var checkTime = DateTime.Now.AddHours(-_options.RequestLogExpirationDuration.Value);
+                var checkTime = DateTime.UtcNow.AddHours(-_options.RequestLogExpirationDuration.Value);
 
                 for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
                 {

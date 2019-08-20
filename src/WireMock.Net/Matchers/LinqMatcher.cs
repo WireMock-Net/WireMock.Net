@@ -56,11 +56,23 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
+            double match = MatchScores.Mismatch;
+
             // Convert a single input string to a Queryable string-list with 1 entry.
             IQueryable queryable = new[] { input }.AsQueryable();
 
-            // Use the Any(...) method to check if the result matches
-            double match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern)));
+            try
+            {
+                // Use the Any(...) method to check if the result matches
+                match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern)));
+
+                return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+            }
+            catch
+            {
+                // just ignore exception
+                // TODO add logging?
+            }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
@@ -68,6 +80,8 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
         public double IsMatch(object input)
         {
+            double match = MatchScores.Mismatch;
+
             JObject value;
             switch (input)
             {
@@ -83,16 +97,27 @@ namespace WireMock.Matchers
             // Convert a single object to a Queryable JObject-list with 1 entry.
             var queryable1 = new[] { value }.AsQueryable();
 
-            // Generate the DynamicLinq select statement.
-            string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
+            try
+            {
+                // Generate the DynamicLinq select statement.
+                string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
 
-            // Execute DynamicLinq Select statement.
-            var queryable2 = queryable1.Select(dynamicSelect);
+                // Execute DynamicLinq Select statement.
+                var queryable2 = queryable1.Select(dynamicSelect);
 
-            // Use the Any(...) method to check if the result matches.
-            double match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)));
+                // Use the Any(...) method to check if the result matches.
+                match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)));
+
+                return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+            }
+            catch
+            {
+                // just ignore exception
+                // TODO add logging?
+            }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>

@@ -1,11 +1,11 @@
-﻿using Moq;
-using Newtonsoft.Json;
-using NFluent;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Moq;
+using Newtonsoft.Json;
+using NFluent;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.RequestBuilders;

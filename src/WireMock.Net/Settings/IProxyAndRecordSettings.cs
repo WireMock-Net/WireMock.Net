@@ -30,5 +30,10 @@
         /// Defines a list from headers which will excluded from the saved mappings.
         /// </summary>
         string[] BlackListedHeaders { get; set; }
+
+        /// <summary>
+        /// Defines a list of cookies which will excluded from the saved mappings.
+        /// </summary>
+        string[] BlackListedCookies { get; set; }
     }
 }

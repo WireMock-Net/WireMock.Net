@@ -45,6 +45,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Util\CloneUtils.cs" />
     <Compile Remove="Util\IndexableDictionary.cs" />
     <Compile Remove="Util\NamedReaderWriterLocker.cs" />
   </ItemGroup>
@@ -63,6 +64,8 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.9" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
+    <!--<PackageReference Include="CloneExtensionsEx" Version="1.0.2" />-->
+    <!--<PackageReference Include="FastDeepCloner" Version="1.2.5" />-->
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">

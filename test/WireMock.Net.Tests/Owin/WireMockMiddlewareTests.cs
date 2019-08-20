@@ -9,7 +9,6 @@ using WireMock.Owin;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
 using WireMock.Matchers;
 using System.Collections.Generic;
 using WireMock.Models.Mappings;
@@ -61,7 +60,7 @@ namespace WireMock.Net.Tests.Owin
 
             _matcherMock = new Mock<IMappingMatcher>();
             _matcherMock.SetupAllProperties();
-            _matcherMock.Setup(m => m.Match(It.IsAny<RequestMessage>())).Returns(((IMapping)null, (RequestMatchResult)null));
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult());
 
             _contextMock = new Mock<IContext>();
 
@@ -92,7 +91,7 @@ namespace WireMock.Net.Tests.Owin
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
-            _matcherMock.Setup(m => m.Match(It.IsAny<RequestMessage>())).Returns((_mappingMock.Object, (RequestMatchResult)null));
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult { Mapping = _mappingMock.Object });
 
             // Act
             await _sut.Invoke(_contextMock.Object);
@@ -113,7 +112,7 @@ namespace WireMock.Net.Tests.Owin
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
-            _matcherMock.Setup(m => m.Match(It.IsAny<RequestMessage>())).Returns((_mappingMock.Object, (RequestMatchResult)null));
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult { Mapping = _mappingMock.Object });
 
             // Act
             await _sut.Invoke(_contextMock.Object);

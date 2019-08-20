@@ -4,13 +4,24 @@ using WireMock.Matchers.Request;
 using WireMock.Models.Mappings;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Util;
+using WireMock.Validation;
 using WireMock.Types;
 
 namespace WireMock.Serialization
 {
-    internal static class MappingConverter
+    internal class MappingConverter
     {
-        public static MappingModel ToMappingModel(IMapping mapping)
+        private readonly MatcherMapper _mapper;
+
+        public MappingConverter(MatcherMapper mapper)
+        {
+            Check.NotNull(mapper, nameof(mapper));
+
+            _mapper = mapper;
+        }
+
+        public MappingModel ToMappingModel(IMapping mapping)
         {
             var request = (Request)mapping.RequestMatcher;
             var response = (Response)mapping.Provider;
@@ -36,17 +47,17 @@ namespace WireMock.Serialization
                 {
                     ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel
                     {
-                        Matchers = MatcherMapper.Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
                     } : null,
 
                     Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
                     {
-                        Matchers = MatcherMapper.Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
                     } : null,
 
                     Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
                     {
-                        Matchers = MatcherMapper.Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
                     } : null,
 
                     Methods = methodMatcher?.Methods,
@@ -54,20 +65,20 @@ namespace WireMock.Serialization
                     Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
                     {
                         Name = hm.Name,
-                        Matchers = MatcherMapper.Map(hm.Matchers)
+                        Matchers = _mapper.Map(hm.Matchers)
                     }).ToList() : null,
 
                     Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
                     {
                         Name = cm.Name,
-                        Matchers = MatcherMapper.Map(cm.Matchers)
+                        Matchers = _mapper.Map(cm.Matchers)
                     }).ToList() : null,
 
                     Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
                         IgnoreCase = pm.IgnoreCase == true ? true : (bool?)null,
-                        Matchers = MatcherMapper.Map(pm.Matchers)
+                        Matchers = _mapper.Map(pm.Matchers)
                     }).ToList() : null
                 },
                 Response = new ResponseModel
@@ -82,11 +93,11 @@ namespace WireMock.Serialization
 
                 if (bodyMatcher.Matchers.Length == 1)
                 {
-                    mappingModel.Request.Body.Matcher = MatcherMapper.Map(bodyMatcher.Matchers[0]);
+                    mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatcher.Matchers[0]);
                 }
                 else if (bodyMatcher.Matchers.Length > 1)
                 {
-                    mappingModel.Request.Body.Matchers = MatcherMapper.Map(bodyMatcher.Matchers);
+                    mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatcher.Matchers);
                 }
             }
 

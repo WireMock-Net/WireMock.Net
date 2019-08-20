@@ -80,11 +80,11 @@ namespace WireMock
         bool IsAdminInterface { get; }
 
         /// <summary>
-        /// ResponseToAsync
+        /// ProvideResponseAsync
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>The <see cref="ResponseMessage"/>.</returns>
-        Task<ResponseMessage> ResponseToAsync(RequestMessage requestMessage);
+        Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage);
 
         /// <summary>
         /// Gets the RequestMatchResult based on the RequestMessage.

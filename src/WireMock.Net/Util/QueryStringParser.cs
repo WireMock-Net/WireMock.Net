@@ -19,11 +19,6 @@ namespace WireMock.Util
 
             string[] JoinParts(string[] parts)
             {
-                if (parts.Length > 2)
-                {
-                    return new[] { string.Join("=", parts, 1, parts.Length - 1) };
-                }
-
                 if (parts.Length > 1)
                 {
                     return parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries); // support "?key=1,2"
@@ -34,7 +29,7 @@ namespace WireMock.Util
 
             return queryString.TrimStart('?')
                 .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries) // Support "?key=value;key=anotherValue" and "?key=value&key=anotherValue"
-                .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
+                .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
                 .GroupBy(parts => parts[0], JoinParts)
                 .ToDictionary(grouping => grouping.Key, grouping => new WireMockList<string>(grouping.SelectMany(x => x)));
         }

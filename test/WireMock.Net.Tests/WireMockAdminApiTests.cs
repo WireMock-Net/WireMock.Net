@@ -1,11 +1,12 @@
-﻿using Moq;
-using NFluent;
-using RestEase;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
+using NFluent;
+using RestEase;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -55,6 +56,36 @@ namespace WireMock.Net.Tests
             var settings = new SettingsModel();
             var status = await api.PutSettingsAsync(settings);
             Check.That(status.Status).Equals("Settings updated");
+        }
+
+        // https://github.com/WireMock-Net/WireMock.Net/issues/325
+        [Fact]
+        public async Task IWireMockAdminApi_PutMappingAsync()
+        {
+            // Arrange
+            var server = FluentMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+            // Act
+            var model = new MappingModel
+            {
+                Request = new RequestModel { Path = "/1" },
+                Response = new ResponseModel { Body = "txt", StatusCode = 200 },
+                Priority = 500,
+                Title = "test"
+            };
+            var result = await api.PutMappingAsync(new Guid("a0000000-0000-0000-0000-000000000000"), model);
+
+            // Assert
+            Check.That(result).IsNotNull();
+            Check.That(result.Status).Equals("Mapping added or updated");
+            Check.That(result.Guid).IsNotNull();
+
+            var mapping = server.Mappings.Single(m => m.Priority == 500);
+            Check.That(mapping).IsNotNull();
+            Check.That(mapping.Title).Equals("test");
+
+            server.Stop();
         }
 
         [Fact]
