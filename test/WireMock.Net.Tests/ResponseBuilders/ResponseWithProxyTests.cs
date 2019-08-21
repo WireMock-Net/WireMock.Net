@@ -16,15 +16,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
-        private readonly FluentMockServer _server;
+        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
+        private readonly WireMockServer _server;
         private readonly Guid _guid;
 
         public ResponseWithProxyTests()
         {
             _guid = Guid.NewGuid();
 
-            _server = FluentMockServer.Start();
+            _server = WireMockServer.Start();
             _server.Given(Request.Create().UsingPost().WithPath($"/{_guid}"))
                 .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
         }

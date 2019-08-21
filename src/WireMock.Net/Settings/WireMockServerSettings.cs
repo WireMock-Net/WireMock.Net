@@ -8,84 +8,84 @@ using WireMock.Logging;
 namespace WireMock.Settings
 {
     /// <summary>
-    /// FluentMockServerSettings
+    /// WireMockServerSettings
     /// </summary>
-    public class FluentMockServerSettings : IFluentMockServerSettings
+    public class WireMockServerSettings : IWireMockServerSettings
     {
-        /// <inheritdoc cref="IFluentMockServerSettings.Port"/>
+        /// <inheritdoc cref="IWireMockServerSettings.Port"/>
         [PublicAPI]
         public int? Port { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.UseSSL"/>
+        /// <inheritdoc cref="IWireMockServerSettings.UseSSL"/>
         [PublicAPI]
         // ReSharper disable once InconsistentNaming
         public bool? UseSSL { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.StartAdminInterface"/>
+        /// <inheritdoc cref="IWireMockServerSettings.StartAdminInterface"/>
         [PublicAPI]
         public bool? StartAdminInterface { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.ReadStaticMappings"/>
+        /// <inheritdoc cref="IWireMockServerSettings.ReadStaticMappings"/>
         [PublicAPI]
         public bool? ReadStaticMappings { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.WatchStaticMappings"/>
+        /// <inheritdoc cref="IWireMockServerSettings.WatchStaticMappings"/>
         [PublicAPI]
         public bool? WatchStaticMappings { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.ProxyAndRecordSettings"/>
+        /// <inheritdoc cref="IWireMockServerSettings.ProxyAndRecordSettings"/>
         [PublicAPI]
         public IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.Urls"/>
+        /// <inheritdoc cref="IWireMockServerSettings.Urls"/>
         [PublicAPI]
         public string[] Urls { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.StartTimeout"/>
+        /// <inheritdoc cref="IWireMockServerSettings.StartTimeout"/>
         [PublicAPI]
         public int StartTimeout { get; set; } = 10000;
 
-        /// <inheritdoc cref="IFluentMockServerSettings.AllowPartialMapping"/>
+        /// <inheritdoc cref="IWireMockServerSettings.AllowPartialMapping"/>
         [PublicAPI]
         public bool? AllowPartialMapping { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.AdminUsername"/>
+        /// <inheritdoc cref="IWireMockServerSettings.AdminUsername"/>
         [PublicAPI]
         public string AdminUsername { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.AdminPassword"/>
+        /// <inheritdoc cref="IWireMockServerSettings.AdminPassword"/>
         [PublicAPI]
         public string AdminPassword { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.RequestLogExpirationDuration"/>
+        /// <inheritdoc cref="IWireMockServerSettings.RequestLogExpirationDuration"/>
         [PublicAPI]
         public int? RequestLogExpirationDuration { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.MaxRequestLogCount"/>
+        /// <inheritdoc cref="IWireMockServerSettings.MaxRequestLogCount"/>
         [PublicAPI]
         public int? MaxRequestLogCount { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.PreWireMockMiddlewareInit"/>
+        /// <inheritdoc cref="IWireMockServerSettings.PreWireMockMiddlewareInit"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PreWireMockMiddlewareInit { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.PostWireMockMiddlewareInit"/>
+        /// <inheritdoc cref="IWireMockServerSettings.PostWireMockMiddlewareInit"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.Logger"/>
+        /// <inheritdoc cref="IWireMockServerSettings.Logger"/>
         [PublicAPI]
         [JsonIgnore]
         public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
 
-        /// <inheritdoc cref="IFluentMockServerSettings.FileSystemHandler"/>
+        /// <inheritdoc cref="IWireMockServerSettings.FileSystemHandler"/>
         [PublicAPI]
         [JsonIgnore]
         public IFileSystemHandler FileSystemHandler { get; set; }
 
-        /// <inheritdoc cref="IFluentMockServerSettings.HandlebarsRegistrationCallback"/>
+        /// <inheritdoc cref="IWireMockServerSettings.HandlebarsRegistrationCallback"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }

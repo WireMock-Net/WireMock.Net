@@ -15,7 +15,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithBodyTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
         private const string ClientIp = "::1";
 
         [Fact]

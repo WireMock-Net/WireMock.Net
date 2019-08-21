@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
     public class ResponseWithHandlebarsFileTests
     {
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-        private readonly Mock<IFluentMockServerSettings> _settingsMock;
+        private readonly Mock<IWireMockServerSettings> _settingsMock;
         private const string ClientIp = "::1";
 
         public ResponseWithHandlebarsFileTests()
@@ -22,7 +22,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-            _settingsMock = new Mock<IFluentMockServerSettings>();
+            _settingsMock = new Mock<IWireMockServerSettings>();
             _settingsMock.SetupGet(s => s.FileSystemHandler).Returns(_filesystemHandlerMock.Object);
         }
 

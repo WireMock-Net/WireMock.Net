@@ -13,15 +13,15 @@ namespace WireMock.Net.StandAlone
     public static class StandAloneApp
     {
         /// <summary>
-        /// Start WireMock.Net standalone Server based on the FluentMockServerSettings.
+        /// Start WireMock.Net standalone Server based on the WireMockServerSettings.
         /// </summary>
-        /// <param name="settings">The FluentMockServerSettings</param>
+        /// <param name="settings">The WireMockServerSettings</param>
         [PublicAPI]
-        public static FluentMockServer Start([NotNull] IFluentMockServerSettings settings)
+        public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
-            var server = FluentMockServer.Start(settings);
+            var server = WireMockServer.Start(settings);
 
             settings.Logger.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
@@ -34,14 +34,14 @@ namespace WireMock.Net.StandAlone
         /// <param name="args">The commandline arguments</param>
         /// <param name="logger">The logger</param>
         [PublicAPI]
-        public static FluentMockServer Start([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
+        public static WireMockServer Start([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {
             Check.NotNull(args, nameof(args));
 
             var parser = new SimpleCommandLineParser();
             parser.Parse(args);
 
-            var settings = new FluentMockServerSettings
+            var settings = new WireMockServerSettings
             {
                 StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
                 ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),

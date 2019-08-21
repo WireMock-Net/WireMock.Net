@@ -8,7 +8,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp
     {
         static void Main(params string[] args)
         {
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
                 StartAdminInterface = true,

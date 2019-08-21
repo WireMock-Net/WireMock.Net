@@ -7,7 +7,7 @@ using WireMock.Util;
 
 namespace WireMock.Server
 {
-    public partial class FluentMockServer
+    public partial class WireMockServer
     {
         private readonly RegexMatcher _adminFilesFilenamePathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/files\/.*$");
         private static readonly Encoding[] FileBodyIsString = { Encoding.UTF8, Encoding.ASCII };

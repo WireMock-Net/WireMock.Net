@@ -11,18 +11,18 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerProxy2Tests
+    public class WireMockServerProxy2Tests
     {
         [Fact]
-        public async Task FluentMockServer_ProxyAndRecordSettings_ShouldProxy()
+        public async Task WireMockServer_ProxyAndRecordSettings_ShouldProxy()
         {
             // Assign
-            var serverAsProxy = FluentMockServer.Start();
+            var serverAsProxy = WireMockServer.Start();
             serverAsProxy.Given(Request.Create().UsingPost())
                 .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
 
             // Act
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server.Given(Request.Create().UsingPost().WithHeader("prx", "1"))
                 .RespondWith(Response.Create().WithProxy(serverAsProxy.Urls[0]));
 

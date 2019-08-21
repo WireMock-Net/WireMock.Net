@@ -2,7 +2,7 @@
 using WireMock.Matchers;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests.Matchers
 {
     public class MatchBehaviourHelperTests
     {

@@ -16,11 +16,11 @@ namespace WireMock.Net.Tests
     public class ObservableLogEntriesTest
     {
         [Fact]
-        public async void FluentMockServer_LogEntriesChanged()
+        public async void WireMockServer_LogEntriesChanged()
         {
             // Assign
             string path = $"/log_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create()
@@ -40,13 +40,13 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_LogEntriesChanged_Parallel()
+        public async Task WireMockServer_LogEntriesChanged_Parallel()
         {
             int expectedCount = 10;
 
             // Assign
             string path = $"/log_p_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create()

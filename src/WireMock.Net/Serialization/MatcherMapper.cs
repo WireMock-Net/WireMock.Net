@@ -12,9 +12,9 @@ namespace WireMock.Serialization
 {
     internal class MatcherMapper
     {
-        private readonly IFluentMockServerSettings _settings;
+        private readonly IWireMockServerSettings _settings;
 
-        public MatcherMapper(IFluentMockServerSettings settings)
+        public MatcherMapper(IWireMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
             _settings = settings;

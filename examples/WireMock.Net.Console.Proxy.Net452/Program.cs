@@ -11,7 +11,7 @@ namespace WireMock.Net.Console.Proxy.Net452
         static void Main(string[] args)
         {
             string[] urls = { "http://localhost:9091/", "https://localhost:9443/" };
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = urls,
                 StartAdminInterface = true,

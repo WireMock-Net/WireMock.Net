@@ -15,7 +15,7 @@ namespace WireMock.Net.StandAlone.NETCoreApp
         // private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
         private static int sleepTime = 30000;
-        private static FluentMockServer _server;
+        private static WireMockServer _server;
 
         static void Main(string[] args)
         {

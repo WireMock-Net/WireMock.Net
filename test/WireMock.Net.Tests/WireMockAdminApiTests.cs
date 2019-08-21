@@ -24,7 +24,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_GetSettingsAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_PostSettingsAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -49,7 +49,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_PutSettingsAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -63,7 +63,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_PutMappingAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -92,7 +92,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_PostMappingAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -121,7 +121,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_PostMappingsAsync()
         {
             // Arrange
-            var server = FluentMockServer.StartWithAdminInterface();
+            var server = WireMockServer.StartWithAdminInterface();
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
@@ -152,7 +152,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_FindRequestsAsync()
         {
             // Arrange
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 Logger = new WireMockNullLogger()
@@ -176,7 +176,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_GetRequestsAsync()
         {
             // Arrange
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 Logger = new WireMockNullLogger()
@@ -200,7 +200,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_GetRequestsAsync_JsonApi()
         {
             // Arrange
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 Logger = new WireMockNullLogger()
@@ -236,7 +236,7 @@ namespace WireMock.Net.Tests
         public async Task IWireMockAdminApi_GetRequestsAsync_Json()
         {
             // Arrange
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 Logger = new WireMockNullLogger()
@@ -276,7 +276,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FolderExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -309,7 +309,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.WriteFile(It.IsAny<string>(), It.IsAny<byte[]>()));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -340,7 +340,7 @@ namespace WireMock.Net.Tests
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -367,7 +367,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
             filesystemHandlerMock.Setup(fs => fs.ReadFile(It.IsAny<string>())).Returns(Encoding.ASCII.GetBytes("Here's a string."));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -395,7 +395,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.ReadFile(It.IsAny<string>())).Returns(Encoding.ASCII.GetBytes(data));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -426,7 +426,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(true);
             filesystemHandlerMock.Setup(fs => fs.DeleteFile(It.IsAny<string>()));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -454,7 +454,7 @@ namespace WireMock.Net.Tests
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
             filesystemHandlerMock.Setup(fs => fs.DeleteFile(It.IsAny<string>()));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,
@@ -480,7 +480,7 @@ namespace WireMock.Net.Tests
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.FileExists(It.IsAny<string>())).Returns(false);
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 UseSSL = false,
                 StartAdminInterface = true,

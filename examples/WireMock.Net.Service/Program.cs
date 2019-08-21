@@ -33,7 +33,7 @@ namespace Wiremock.Net.Service
         }
         #endregion
 
-        private static FluentMockServer _server;
+        private static WireMockServer _server;
 
         static void Main(string[] args)
         {
@@ -64,7 +64,7 @@ namespace Wiremock.Net.Service
 
         private static void Start()
         {
-            _server = StandAloneApp.Start(new FluentMockServerSettings
+            _server = StandAloneApp.Start(new WireMockServerSettings
             {
                 Urls = new[] { "http://*:9091/" },
                 StartAdminInterface = true,

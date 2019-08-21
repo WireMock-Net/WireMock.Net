@@ -7,9 +7,9 @@ using WireMock.Logging;
 namespace WireMock.Settings
 {
     /// <summary>
-    /// IFluentMockServerSettings
+    /// IWireMockServerSettings
     /// </summary>
-    public interface IFluentMockServerSettings
+    public interface IWireMockServerSettings
     {
         /// <summary>
         /// Gets or sets the port.

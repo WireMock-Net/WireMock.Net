@@ -10,7 +10,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseCreateTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
 
         [Fact]
         public async Task Response_Create_Func()

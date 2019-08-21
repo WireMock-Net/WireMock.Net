@@ -27,9 +27,9 @@ using WireMock.Validation;
 namespace WireMock.Server
 {
     /// <summary>
-    /// The fluent mock server.
+    /// The WireMock Server.
     /// </summary>
-    public partial class FluentMockServer
+    public partial class WireMockServer
     {
         private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
         private const int AdminPriority = int.MinValue;
@@ -246,7 +246,7 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(IFluentMockServerSettings settings)
+        private void InitProxyAndRecord(IWireMockServerSettings settings)
         {
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
 
@@ -259,7 +259,7 @@ namespace WireMock.Server
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);

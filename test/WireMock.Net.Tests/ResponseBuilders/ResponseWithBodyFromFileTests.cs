@@ -16,7 +16,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async Task Response_ProvideResponse_WithBodyFromFile()
         {
             // Arrange
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             string path = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", "MyXmlResponse.xml");
 

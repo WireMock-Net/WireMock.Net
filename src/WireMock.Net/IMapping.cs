@@ -62,9 +62,9 @@ namespace WireMock
         IResponseProvider Provider { get; }
 
         /// <summary>
-        /// The FluentMockServerSettings.
+        /// The WireMockServerSettings.
         /// </summary>
-        IFluentMockServerSettings Settings { get; }
+        IWireMockServerSettings Settings { get; }
 
         /// <summary>
         /// Is State started ?

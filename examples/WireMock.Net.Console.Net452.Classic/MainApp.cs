@@ -19,7 +19,7 @@ namespace WireMock.Net.ConsoleApplication
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
@@ -36,7 +36,7 @@ namespace WireMock.Net.ConsoleApplication
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
                 // FileSystemHandler = new CustomFileSystemFileHandler()
             });
-            System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
+            System.Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 

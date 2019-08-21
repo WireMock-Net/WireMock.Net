@@ -23,13 +23,13 @@ namespace WireMock.Net.Console.NETCoreApp
 
             string url = "http://localhost:9999/";
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { url },
                 StartAdminInterface = true,
                 Logger = new WireMockConsoleLogger()
             });
-            System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
+            System.Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 

@@ -12,7 +12,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithCallbackTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
 
         [Fact]
         public async Task Response_WithCallback()

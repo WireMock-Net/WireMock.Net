@@ -17,7 +17,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
             RunTestDifferentPort().Wait(20000); // prints "1"
             RunTestDifferentPort().Wait(20000); // prints "1"
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { "http://localhost:9091", "https://localhost:9443" },
                 StartAdminInterface = true,
@@ -44,7 +44,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
 
         private static async Task RunTestDifferentPort()
         {
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server.Given(Request.Create().WithPath("/").UsingGet())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("Hello"));

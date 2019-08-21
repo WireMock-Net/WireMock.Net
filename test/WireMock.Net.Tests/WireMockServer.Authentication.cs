@@ -6,13 +6,13 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerAuthenticationTests
+    public class WireMockServerAuthenticationTests
     {
         [Fact]
-        public void FluentMockServer_Authentication_SetBasicAuthentication()
+        public void WireMockServer_Authentication_SetBasicAuthentication()
         {
             // Assign
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             // Act
             server.SetBasicAuthentication("x", "y");
@@ -25,10 +25,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_Authentication_RemoveBasicAuthentication()
+        public void WireMockServer_Authentication_RemoveBasicAuthentication()
         {
             // Assign
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server.SetBasicAuthentication("x", "y");
 
             // Act

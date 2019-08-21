@@ -11,13 +11,13 @@ namespace WireMock.Net.Tests.Serialization
 {
     public class MatcherMapperTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock;
+        private readonly Mock<IWireMockServerSettings> _settingsMock;
 
         private readonly MatcherMapper _sut;
 
         public MatcherMapperTests()
         {
-            _settingsMock = new Mock<IFluentMockServerSettings>();
+            _settingsMock = new Mock<IWireMockServerSettings>();
             _settingsMock.SetupAllProperties();
 
             _sut = new MatcherMapper(_settingsMock.Object);

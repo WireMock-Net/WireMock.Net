@@ -15,14 +15,14 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerProxyTests
+    public class WireMockServerProxyTests
     {
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_proxy_responses()
+        public async Task WireMockServer_Proxy_Should_proxy_responses()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy("http://www.google.com"));
@@ -43,16 +43,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_request()
+        public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            var settings = new FluentMockServerSettings
+            var settings = new WireMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
@@ -61,7 +61,7 @@ namespace WireMock.Net.Tests
                     SaveMappingToFile = false
                 }
             };
-            var server = FluentMockServer.Start(settings);
+            var server = WireMockServer.Start(settings);
 
             // Act
             var requestMessage = new HttpRequestMessage
@@ -90,16 +90,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
+        public async Task WireMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            var settings = new FluentMockServerSettings
+            var settings = new WireMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
@@ -109,7 +109,7 @@ namespace WireMock.Net.Tests
                     BlackListedHeaders = new[] { "blacklisted" }
                 }
             };
-            var server = FluentMockServer.Start(settings);
+            var server = WireMockServer.Start(settings);
             var defaultMapping = server.Mappings.First();
 
             // Act
@@ -132,16 +132,16 @@ namespace WireMock.Net.Tests
         }        
         
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
+        public async Task WireMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            var settings = new FluentMockServerSettings
+            var settings = new WireMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
@@ -151,7 +151,7 @@ namespace WireMock.Net.Tests
                     BlackListedCookies = new[] { "ASP.NET_SessionId" }
                 }
             };
-            var server = FluentMockServer.Start(settings);
+            var server = WireMockServer.Start(settings);
             var defaultMapping = server.Mappings.First();
 
             // Act
@@ -181,16 +181,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
+        public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath("/*"))
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -213,18 +213,18 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_preserve_content_header_in_proxied_response()
+        public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_response()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithBody("body")
                     .WithHeader("Content-Type", "text/plain"));
 
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -244,20 +244,20 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
+        public async Task WireMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var settings = new FluentMockServerSettings { AllowPartialMapping = false };
+            var settings = new WireMockServerSettings { AllowPartialMapping = false };
 
-            var serverForProxyForwarding = FluentMockServer.Start(settings);
+            var serverForProxyForwarding = WireMockServer.Start(settings);
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.Redirect)
                     .WithHeader("Location", "/testpath"));
 
-            var server = FluentMockServer.Start(settings);
+            var server = WireMockServer.Start(settings);
             server
                 .Given(Request.Create().WithPath(path).UsingAnyMethod())
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -277,16 +277,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_preserve_cookie_header_in_proxied_request()
+        public async Task WireMockServer_Proxy_Should_preserve_cookie_header_in_proxied_request()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create());
 
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -309,18 +309,18 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_set_BodyAsJson_in_proxied_response()
+        public async Task WireMockServer_Proxy_Should_set_BodyAsJson_in_proxied_response()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithBodyAsJson(new { i = 42 })
                     .WithHeader("Content-Type", "application/json; charset=utf-8"));
 
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -340,18 +340,18 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_set_Body_in_multipart_proxied_response()
+        public async Task WireMockServer_Proxy_Should_set_Body_in_multipart_proxied_response()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create()
                     .WithBodyAsJson(new { i = 42 })
             );
 
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
@@ -370,16 +370,16 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_Proxy_Should_Not_overrule_AdminMappings()
+        public async Task WireMockServer_Proxy_Should_Not_overrule_AdminMappings()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid().ToString()}";
-            var serverForProxyForwarding = FluentMockServer.Start();
+            var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
                 .RespondWith(Response.Create().WithBody("ok"));
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 ReadStaticMappings = false,
