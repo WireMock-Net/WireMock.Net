@@ -27,7 +27,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
         /// <param name="value">The string value to check for equality.</param>
-        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         public JsonMatcher([NotNull] string value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
         {
         }
@@ -36,7 +36,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
         /// <param name="value">The object value to check for equality.</param>
-        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         public JsonMatcher([NotNull] object value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
         {
         }
@@ -46,7 +46,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The string value to check for equality.</param>
-        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] string value, bool ignoreCase = false)
         {
             Check.NotNull(value, nameof(value));
@@ -61,7 +61,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The object value to check for equality.</param>
-        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false)
         {
             Check.NotNull(value, nameof(value));
@@ -112,62 +112,52 @@ namespace WireMock.Matchers
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
         }
 
-        private bool DeepEquals(JToken jtokenValue, JToken jtokenInput)
+        private bool DeepEquals(JToken value, JToken input)
         {
             if (!IgnoreCase)
             {
-                return JToken.DeepEquals(jtokenValue, jtokenInput);
+                return JToken.DeepEquals(value, input);
             }
 
-            JToken jtokenValueCloned = jtokenValue.DeepClone();
-            JToken jtokenInputCloned = jtokenInput.DeepClone();
+            JToken renamedValue = Rename(value);
+            JToken renamedInput = Rename(input);
 
-            WalkNodeAndUpdateStringValuesToUpper(jtokenValueCloned);
-            WalkNodeAndUpdateStringValuesToUpper(jtokenInputCloned);
-
-            return JToken.DeepEquals(jtokenValueCloned, jtokenInputCloned);
+            return JToken.DeepEquals(renamedValue, renamedInput);
         }
 
-        private static void WalkNodeAndUpdateStringValuesToUpper(JToken node)
+        private static string ToUpper(string input)
         {
-            if (node.Type == JTokenType.Object)
-            {
-                // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JProperty child in node.Children<JProperty>().ToArray())
-                {
-                    WalkNodeAndUpdateStringValuesToUpper(child.Value);
-                }
-            }
-            else if (node.Type == JTokenType.Array)
-            {
-                // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JToken child in node.Children().ToArray())
-                {
-                    WalkNodeAndUpdateStringValuesToUpper(child);
-                }
-            }
-            else if (node.Type == JTokenType.String)
-            {
-                // In case of string, do a ToUpperInvariant().
-                string stringValue = node.Value<string>();
-                if (!string.IsNullOrEmpty(stringValue))
-                {
-                    string stringValueAsUpper = stringValue.ToUpperInvariant();
-                    JToken value;
-                    try
-                    {
-                        // Try to convert this string into a JsonObject
-                        value = JToken.Parse(stringValueAsUpper);
-                    }
-                    catch (JsonException)
-                    {
-                        // Ignore JsonException and just keep string value and convert to JToken
-                        value = stringValueAsUpper;
-                    }
+            return input?.ToUpperInvariant();
+        }
 
-                    node.Replace(value);
+        // https://stackoverflow.com/questions/11679804/json-net-rename-properties
+        private static JToken Rename(JToken json)
+        {
+            if (json is JProperty property)
+            {
+                JToken propertyValue = property.Value;
+                if (propertyValue.Type == JTokenType.String)
+                {
+                    string stringValue = propertyValue.Value<string>();
+                    propertyValue = ToUpper(stringValue);
                 }
+
+                return new JProperty(ToUpper(property.Name), Rename(propertyValue));
             }
+
+            if (json is JArray array)
+            {
+                var renamedValues = array.Select(Rename);
+                return new JArray(renamedValues);
+            }
+
+            if (json is JObject obj)
+            {
+                var renamedProperties = obj.Properties().Select(Rename);
+                return new JObject(renamedProperties);
+            }
+
+            return json;
         }
     }
 }

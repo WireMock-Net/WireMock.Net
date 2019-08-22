@@ -97,13 +97,13 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObject()
         {
             // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "test" }, true);
+            var matcher = new JsonMatcher(new { id = 1, Name = "test" }, true);
 
             // Act 
             var jobject = new JObject
             {
                 { "Id", new JValue(1) },
-                { "Name", new JValue("Test") }
+                { "NaMe", new JValue("Test") }
             };
             double match = matcher.IsMatch(jobject);
 
