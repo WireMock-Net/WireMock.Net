@@ -39,7 +39,7 @@ namespace WireMock.Server
         {
             var results = new Dictionary<LogEntry, RequestMatchResult>();
 
-            foreach (var log in _options.LogEntries)
+            foreach (var log in _options.LogEntries.ToList())
             {
                 var requestMatchResult = new RequestMatchResult();
                 foreach (var matcher in matchers)

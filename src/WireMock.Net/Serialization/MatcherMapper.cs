@@ -55,7 +55,7 @@ namespace WireMock.Serialization
                     return new RegexMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
 
                 case "JsonMatcher":
-                    return new JsonMatcher(matchBehaviour, matcher.Pattern);
+                    return new JsonMatcher(matchBehaviour, matcher.Pattern, matcher.IgnoreCase == true);
 
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, stringPatterns);
