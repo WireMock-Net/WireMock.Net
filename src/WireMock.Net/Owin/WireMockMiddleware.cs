@@ -162,10 +162,9 @@ namespace WireMock.Owin
 
             if (_options.MaxRequestLogCount != null)
             {
-                var amount = _options.LogEntries.Count - _options.MaxRequestLogCount.Value;
-                for (int i = 0; i < amount; i++)
+                foreach (var logEntry in _options.LogEntries.OrderBy(le => le.RequestMessage.DateTime).Take(_options.LogEntries.Count - _options.MaxRequestLogCount.Value).ToList())
                 {
-                    _options.LogEntries.RemoveAt(0);
+                    _options.LogEntries.Remove(logEntry);
                 }
             }
 
@@ -173,13 +172,9 @@ namespace WireMock.Owin
             {
                 var checkTime = DateTime.UtcNow.AddHours(-_options.RequestLogExpirationDuration.Value);
 
-                for (var i = _options.LogEntries.Count - 1; i >= 0; i--)
+                foreach (var logEntry in _options.LogEntries.Where(le => le.RequestMessage.DateTime < checkTime).ToList())
                 {
-                    var le = _options.LogEntries[i];
-                    if (le.RequestMessage.DateTime <= checkTime)
-                    {
-                        _options.LogEntries.RemoveAt(i);
-                    }
+                    _options.LogEntries.Remove(logEntry);
                 }
             }
         }

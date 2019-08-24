@@ -76,7 +76,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void JsonMatcher_IsMatch_JObject1()
+        public void JsonMatcher_IsMatch_JObject()
         {
             // Assign 
             var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
@@ -94,10 +94,42 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void JsonMatcher_IsMatch_JObject2()
+        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObject()
+        {
+            // Assign 
+            var matcher = new JsonMatcher(new { id = 1, Name = "test" }, true);
+
+            // Act 
+            var jobject = new JObject
+            {
+                { "Id", new JValue(1) },
+                { "NaMe", new JValue("Test") }
+            };
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_JObjectParsed()
         {
             // Assign 
             var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
+
+            // Act 
+            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectParsed()
+        {
+            // Assign 
+            var matcher = new JsonMatcher(new { Id = 1, Name = "TESt" }, true);
 
             // Act 
             var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
@@ -112,6 +144,24 @@ namespace WireMock.Net.Tests.Matchers
         {
             // Assign 
             var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+
+            // Act 
+            var jobject = new JObject
+            {
+                { "Id", new JValue(1) },
+                { "Name", new JValue("Test") }
+            };
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectAsString()
+        {
+            // Assign 
+            var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"test\" }", true);
 
             // Act 
             var jobject = new JObject
