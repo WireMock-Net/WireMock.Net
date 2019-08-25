@@ -280,12 +280,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WireMock.Net, Version=1.0.4.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.1.0.4.20\lib\net461\WireMock.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="WireMock.Net.StandAlone, Version=1.0.4.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.StandAlone.1.0.4.20\lib\net46\WireMock.Net.StandAlone.dll</HintPath>
-    </Reference>
     <Reference Include="XPath2, Version=1.0.7.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\XPath2.1.0.6.1\lib\net40\XPath2.dll</HintPath>
     </Reference>
@@ -301,6 +295,16 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj">
+      <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
+      <Name>WireMock.Net.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
+      <Project>{D3804228-91F4-4502-9595-39584E5A01AD}</Project>
+      <Name>WireMock.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

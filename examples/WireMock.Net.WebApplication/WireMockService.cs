@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WireMock.Logging;
 using WireMock.Models.Requests;
-using WireMock.Net.StandAlone;
+using WireMock.Server;
 using WireMock.Settings;
 
 namespace WireMock.Net.WebApplication
@@ -63,7 +63,7 @@ namespace WireMock.Net.WebApplication
         {
             _logger.LogInformation("WireMock.Net server starting");
 
-            StandAloneApp.Start(_settings);
+            WireMockServer.Start(_settings);
 
             _logger.LogInformation($"WireMock.Net server settings {JsonConvert.SerializeObject(_settings)}");
 

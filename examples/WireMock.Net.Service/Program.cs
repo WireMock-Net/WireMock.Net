@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.ServiceProcess;
 using WireMock.Net.Service;
-using WireMock.Net.StandAlone;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -12,7 +11,7 @@ namespace Wiremock.Net.Service
     public static class Program
     {
         #region Nested classes to support running as service
-        public const string ServiceName = "Wiremock.Net.Service";
+        public const string ServiceName = "WireMock.Net.Service";
 
         public class Service : ServiceBase
         {
@@ -64,7 +63,7 @@ namespace Wiremock.Net.Service
 
         private static void Start()
         {
-            _server = StandAloneApp.Start(new WireMockServerSettings
+            _server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { "http://*:9091/" },
                 StartAdminInterface = true,

@@ -13,17 +13,7 @@ namespace WireMock.Settings
         /// Parse commandline arguments into IWireMockServerSettings.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
-        [PublicAPI]
-        public static IWireMockServerSettings ParseArguments([NotNull] params string[] args)
-        {
-            return ParseArguments(args, null);
-        }
-
-        /// <summary>
-        /// Parse commandline arguments into IWireMockServerSettings.
-        /// </summary>
-        /// <param name="args">The commandline arguments</param>
-        /// <param name="logger">The logger</param>
+        /// <param name="logger">The logger (optional, can be null)</param>
         [PublicAPI]
         public static IWireMockServerSettings ParseArguments([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {

@@ -81,10 +81,6 @@
       <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
       <Name>WireMock.Net.Abstractions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj">
-      <Project>{b6269aac-170a-43d5-8b9a-579ded3d9a95}</Project>
-      <Name>WireMock.Net.StandAlone</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
       <Project>{d3804228-91f4-4502-9595-39584e5a01ad}</Project>
       <Name>WireMock.Net</Name>
