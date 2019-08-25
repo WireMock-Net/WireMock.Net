@@ -19,7 +19,7 @@ namespace WireMock.Net.StandAlone
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
         [PublicAPI]
-        [Obsolete("Will be removed in version 1.1.0")]
+        [Obsolete("Will be replaced by WireMockServer.Start(settings) in version 1.1.0")]
         public static FluentMockServer Start([NotNull] IFluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
@@ -37,7 +37,7 @@ namespace WireMock.Net.StandAlone
         /// <param name="args">The commandline arguments</param>
         /// <param name="logger">The logger</param>
         [PublicAPI]
-        [Obsolete("Will be replaced by WireMockServerSettingsParser.ParseArguments(args, logger) in version 1.1.0")]
+        [Obsolete("Will be replaced by `var settings = WireMockServerSettingsParser.ParseArguments(args, logger); WireMockServer.Start(settings);` in version 1.1.0")]
         public static FluentMockServer Start([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {
             Check.NotNull(args, nameof(args));
