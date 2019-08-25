@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+using HandlebarsDotNet;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -11,6 +14,23 @@ using WireMock.Settings;
 
 namespace WireMock.Net.ConsoleApplication
 {
+    public interface IHandleBarTransformer
+    {
+        string Name { get; }
+
+        void Render(TextWriter textWriter, dynamic context, object[] arguments);
+    }
+
+    public class CustomNameTransformer : IHandleBarTransformer
+    {
+        public string Name => "CustomName";
+
+        public void Render(TextWriter writer, dynamic context, object[] parameters)
+        {
+            /* Handlebar logic to render */
+        }
+    }
+
     public static class MainApp
     {
         public static void Run()
@@ -32,6 +52,12 @@ namespace WireMock.Net.ConsoleApplication
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); },
                 Logger = new WireMockConsoleLogger(),
+
+                HandlebarsRegistrationCallback = (handlebarsContext, fileSystemHandler) =>
+                {
+                    var transformer = new CustomNameTransformer();
+                    handlebarsContext.RegisterHelper(transformer.Name, transformer.Render);
+                }
 
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
                 // FileSystemHandler = new CustomFileSystemFileHandler()
