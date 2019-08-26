@@ -1,8 +1,7 @@
-﻿using Moq;
-using NFluent;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NFluent;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -16,7 +15,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
-        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private readonly WireMockServer _server;
         private readonly Guid _guid;
 
@@ -38,7 +37,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("{\"p\":42}");

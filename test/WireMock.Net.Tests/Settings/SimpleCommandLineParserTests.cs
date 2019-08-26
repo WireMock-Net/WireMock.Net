@@ -2,7 +2,7 @@ using NFluent;
 using WireMock.Settings;
 using Xunit;
 
-namespace WireMock.Net.Tests.StandAlone
+namespace WireMock.Net.Tests.Settings
 {
     public class SimpleCommandLineParserTests
     {

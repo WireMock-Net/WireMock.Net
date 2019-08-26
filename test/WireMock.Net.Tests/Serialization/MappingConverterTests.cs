@@ -11,13 +11,13 @@ namespace WireMock.Net.Tests.Serialization
 {
     public class MappingConverterTests
     {
-        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         private readonly MappingConverter _sut;
 
         public MappingConverterTests()
         {
-            _sut = new MappingConverter(new MatcherMapper(_settingsMock.Object));
+            _sut = new MappingConverter(new MatcherMapper(_settings));
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var request = Request.Create();
             var response = Response.Create();
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settingsMock.Object, request, response, 0, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -44,7 +44,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var request = Request.Create();
             var response = Response.Create().WithBodyAsJson(new { x = "x" }).WithTransformer();
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settingsMock.Object, request, response, 42, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);

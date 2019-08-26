@@ -1,7 +1,6 @@
-﻿using Moq;
-using NFluent;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -13,7 +12,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsRegexTests
     {
-        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
 
         [Fact]
@@ -29,7 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("abc");
@@ -48,7 +47,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("");
@@ -67,7 +66,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("d");
@@ -86,7 +85,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("5000-https");
@@ -105,7 +104,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("");
@@ -124,7 +123,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("x");
@@ -143,7 +142,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act and Assert
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<NotSupportedException>();
         }
     }
 }
