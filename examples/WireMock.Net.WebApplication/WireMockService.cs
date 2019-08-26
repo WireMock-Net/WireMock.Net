@@ -13,7 +13,7 @@ namespace WireMock.Net.WebApplication
         private static int sleepTime = 30000;
 
         private readonly ILogger _logger;
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
 
         private class Logger : IWireMockLogger
         {
@@ -51,7 +51,7 @@ namespace WireMock.Net.WebApplication
             }
         }
 
-        public WireMockService(ILogger logger, IWireMockServerSettings settings)
+        public WireMockService(ILogger logger, WireMockServerSettings settings)
         {
             _logger = logger;
             _settings = settings;

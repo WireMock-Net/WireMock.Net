@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsLinqTests
     {
-        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
+        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Linq1_String0()

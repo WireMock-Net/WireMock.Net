@@ -246,7 +246,7 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(IWireMockServerSettings settings)
+        private void InitProxyAndRecord(WireMockServerSettings settings)
         {
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
 
@@ -259,7 +259,7 @@ namespace WireMock.Server
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, WireMockServerSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);

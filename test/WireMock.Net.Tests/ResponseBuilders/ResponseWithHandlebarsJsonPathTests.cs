@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsJsonPathTests
     {
-        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
+        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
         private const string ClientIp = "::1";
 
         [Fact]

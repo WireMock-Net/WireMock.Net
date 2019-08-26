@@ -5,17 +5,17 @@ using WireMock.Validation;
 namespace WireMock.Settings
 {
     /// <summary>
-    /// A static helper class to parse commandline arguments into IWireMockServerSettings.
+    /// A static helper class to parse commandline arguments into WireMockServerSettings.
     /// </summary>
     public static class WireMockServerSettingsParser
     {
         /// <summary>
-        /// Parse commandline arguments into IWireMockServerSettings.
+        /// Parse commandline arguments into WireMockServerSettings.
         /// </summary>
         /// <param name="args">The commandline arguments</param>
         /// <param name="logger">The logger (optional, can be null)</param>
         [PublicAPI]
-        public static IWireMockServerSettings ParseArguments([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
+        public static WireMockServerSettings ParseArguments([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {
             Check.HasNoNulls(args, nameof(args));
 

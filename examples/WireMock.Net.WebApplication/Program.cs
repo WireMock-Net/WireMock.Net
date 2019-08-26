@@ -43,9 +43,9 @@ namespace WireMock.Net.WebApplication
             // Add access to generic IConfigurationRoot
             serviceCollection.AddSingleton(configuration);
 
-            // Add access to IWireMockServerSettings
+            // Add access to WireMockServerSettings
             var settings = configuration.GetSection("WireMockServerSettings").Get<WireMockServerSettings>();
-            serviceCollection.AddSingleton<IWireMockServerSettings>(settings);
+            serviceCollection.AddSingleton<WireMockServerSettings>(settings);
 
             // Add services
             serviceCollection.AddTransient<IWireMockService, WireMockService>();

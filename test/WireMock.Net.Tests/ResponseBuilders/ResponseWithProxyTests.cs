@@ -16,7 +16,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
-        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
+        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
         private readonly WireMockServer _server;
         private readonly Guid _guid;
 

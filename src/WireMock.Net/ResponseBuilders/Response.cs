@@ -329,7 +329,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
-        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
+        public IResponseBuilder WithProxy(ProxyAndRecordSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
@@ -355,8 +355,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, WireMockServerSettings)"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, WireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
 

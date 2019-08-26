@@ -11,7 +11,7 @@ namespace WireMock.Net.Tests.Serialization
 {
     public class MappingConverterTests
     {
-        private readonly Mock<IWireMockServerSettings> _settingsMock = new Mock<IWireMockServerSettings>();
+        private readonly Mock<WireMockServerSettings> _settingsMock = new Mock<WireMockServerSettings>();
 
         private readonly MappingConverter _sut;
 

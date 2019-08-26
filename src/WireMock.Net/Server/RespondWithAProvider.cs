@@ -18,7 +18,7 @@ namespace WireMock.Server
         private string _scenario;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
         private readonly bool _saveToFile;
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
@@ -30,7 +30,7 @@ namespace WireMock.Server
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
-        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, IWireMockServerSettings settings, bool saveToFile = false)
+        public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, WireMockServerSettings settings, bool saveToFile = false)
         {
             _registrationCallback = registrationCallback;
             _requestMatcher = requestMatcher;
