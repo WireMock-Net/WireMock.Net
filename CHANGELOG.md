@@ -1,3 +1,10 @@
+# 1.0.29.0 (29 August 2019)
+- [#328](https://github.com/WireMock-Net/WireMock.Net/pull/328) - Fix LogRequest : Index Out Of Bounds [bug] contributed by [StefH](https://github.com/StefH)
+- [#331](https://github.com/WireMock-Net/WireMock.Net/pull/331) - Fix: Collection was modified exception [bug] contributed by [theramis](https://github.com/theramis)
+- [#333](https://github.com/WireMock-Net/WireMock.Net/pull/333) - JsonMatcher support IgnoreCase [feature] contributed by [StefH](https://github.com/StefH)
+- [#327](https://github.com/WireMock-Net/WireMock.Net/issues/327) - Index must be within the bounds of the List - Bug [bug]
+- [#332](https://github.com/WireMock-Net/WireMock.Net/issues/332) - Case sensitive true is ignored for JsonMatcher [feature]
+
 # 1.0.28.0 (20 August 2019)
 - [#317](https://github.com/WireMock-Net/WireMock.Net/pull/317) - Make SaveMapping and SaveMappingToFile settings independent. [feature] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#319](https://github.com/WireMock-Net/WireMock.Net/pull/319) - Add blacklist for Request Cookies. contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
