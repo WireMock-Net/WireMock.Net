@@ -80,6 +80,8 @@ namespace WireMock.Matchers
             var inputValue = isMatchWithString ? input : JObject.FromObject(input);
             string source = GetSourceForIsMatchWithString(pattern, isMatchWithString);
 
+            object result = null;
+
 #if NET451 || NET452
             var compilerParams = new System.CodeDom.Compiler.CompilerParameters
             {
@@ -107,41 +109,74 @@ namespace WireMock.Matchers
                 object helper = compilerResults.CompiledAssembly.CreateInstance("CodeHelper");
                 if (helper == null)
                 {
-                    throw new WireMockException("Unable to create instance from CodeHelper");
+                    throw new WireMockException("CSharpCodeMatcher: Unable to create instance from WireMock.CodeHelper");
                 }
 
                 var methodInfo = helper.GetType().GetMethod("IsMatch");
                 if (methodInfo == null)
                 {
-                    throw new WireMockException("Unable to find method 'IsMatch' in CodeHelper");
+                    throw new WireMockException("CSharpCodeMatcher: Unable to find method 'IsMatch' in WireMock.CodeHelper");
                 }
 
-                return (bool)methodInfo.Invoke(helper, new[] { inputValue });
+                try
+                {
+                    result = methodInfo.Invoke(helper, new[] { inputValue });
+                }
+                catch
+                {
+                    throw new WireMockException("CSharpCodeMatcher: Unable to call method 'IsMatch' in WireMock.CodeHelper");
+                }
             }
 #elif NET46 || NET461
+            dynamic script;
             try
             {
-                dynamic script = CSScriptLibrary.CSScript.Evaluator.CompileCode(source).CreateObject("*");
-                return (bool)script.IsMatch(inputValue);
+                script = CSScriptLibrary.CSScript.Evaluator.CompileCode(source).CreateObject("*");
             }
             catch
             {
-                throw new WireMockException("Unable to create compile and execute code from WireMock.CodeHelper");
+                throw new WireMockException("CSharpCodeMatcher: Unable to create compiler for WireMock.CodeHelper");
+            }
+            
+            try
+            {
+                result = script.IsMatch(inputValue);
+            }
+            catch
+            {
+                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
             }
 #elif NETSTANDARD2_0
+            dynamic script;
             try
             {
                 var assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
-                dynamic script = csscript.GenericExtensions.CreateObject(assembly, "*");
-                return (bool)script.IsMatch(inputValue);
+                script = csscript.GenericExtensions.CreateObject(assembly, "*");
             }
             catch (Exception ex)
             {
-                throw new WireMockException("Unable to create compiler and execute code for WireMock.CodeHelper", ex);
+                throw new WireMockException("CSharpCodeMatcher: Unable to compile code for WireMock.CodeHelper", ex);
+            }
+
+            try
+            {
+                result = script.IsMatch(inputValue);
+            }
+            catch (Exception ex)
+            {
+                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
             }
 #else
             throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
+            try
+            {
+                return (bool)result;
+            }
+            catch
+            {
+                throw new WireMockException($"Unable to cast result '{result}' to bool");
+            }
         }
 
         private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
