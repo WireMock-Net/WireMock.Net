@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using JetBrains.Annotations;
-using MimeKit;
 using Newtonsoft.Json;
 using WireMock.Util;
 using WireMock.Validation;
@@ -19,11 +19,11 @@ namespace WireMock.Http
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 
-            ContentType contentType = null;
+            MediaTypeHeaderValue contentType = null;
             if (requestMessage.Headers != null && requestMessage.Headers.ContainsKey(HttpKnownHeaderNames.ContentType))
             {
                 var value = requestMessage.Headers[HttpKnownHeaderNames.ContentType].FirstOrDefault();
-                ContentType.TryParse(value, out contentType);
+                MediaTypeHeaderValue.TryParse(value, out contentType);
             }
 
             switch (requestMessage.BodyData?.DetectedBodyType)
