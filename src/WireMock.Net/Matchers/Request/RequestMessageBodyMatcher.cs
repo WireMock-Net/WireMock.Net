@@ -142,20 +142,20 @@ namespace WireMock.Matchers.Request
             {
                 return Matchers.Max(matcher => CalculateMatchScore(requestMessage, matcher));
             }
-            
-            if (Func != null && requestMessage?.BodyData?.BodyAsString != null)
+
+            if (Func != null)
             {
-                return MatchScores.ToScore(Func(requestMessage.BodyData.BodyAsString));
+                return MatchScores.ToScore(Func(requestMessage?.BodyData?.BodyAsString));
             }
 
-            if (JsonFunc != null && requestMessage?.BodyData?.BodyAsJson != null)
+            if (JsonFunc != null)
             {
-                return MatchScores.ToScore( JsonFunc(requestMessage.BodyData.BodyAsJson));
+                return MatchScores.ToScore(JsonFunc(requestMessage?.BodyData?.BodyAsJson));
             }
 
-            if (DataFunc != null && requestMessage?.BodyData?.BodyAsBytes != null)
+            if (DataFunc != null)
             {
-                return MatchScores.ToScore(DataFunc(requestMessage.BodyData.BodyAsBytes));
+                return MatchScores.ToScore(DataFunc(requestMessage?.BodyData?.BodyAsBytes));
             }
 
             return MatchScores.Mismatch;
