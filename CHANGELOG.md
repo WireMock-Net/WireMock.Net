@@ -1,5 +1,6 @@
 # 1.0.30.0 (31 August 2019)
 - [#338](https://github.com/WireMock-Net/WireMock.Net/pull/338) - Fix ContentType with parameters in Proxy Mode [bug] contributed by [StefH](https://github.com/StefH)
+- [#337](https://github.com/WireMock-Net/WireMock.Net/issues/337) - Proxy Missing header Content-Type - tried with Recording [bug]
 
 # 1.0.29.0 (29 August 2019)
 - [#328](https://github.com/WireMock-Net/WireMock.Net/pull/328) - Fix LogRequest : Index Out Of Bounds [bug] contributed by [StefH](https://github.com/StefH)
@@ -26,7 +27,7 @@
 # 1.0.26.0 (11 August 2019)
 - [#309](https://github.com/WireMock-Net/WireMock.Net/pull/309) - Fix LogEntries: collection was modified exception [bug] contributed by [StefH](https://github.com/StefH)
 - [#314](https://github.com/WireMock-Net/WireMock.Net/pull/314) - RequestLogExpirationDuration : use DateTime.UtcNow [bug] contributed by [StefH](https://github.com/StefH)
-- [#252](https://github.com/WireMock-Net/WireMock.Net/issues/252) - Proxy with Transform [help_wanted]
+- [#252](https://github.com/WireMock-Net/WireMock.Net/issues/252) - Proxy with Transform
 - [#308](https://github.com/WireMock-Net/WireMock.Net/issues/308) - __admin/requests - &quot;Collection was modified&quot; exception [bug]
 - [#313](https://github.com/WireMock-Net/WireMock.Net/issues/313) - RequestLogExpirationDuration - bug [bug]
 
