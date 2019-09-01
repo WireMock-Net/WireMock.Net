@@ -72,7 +72,7 @@ namespace WireMock.Http
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
             // Create ResponseMessage
-            return await HttpResponseMessageHelper.Create(httpResponseMessage, requiredUri, originalUri);
+            return await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri);
         }
     }
 }

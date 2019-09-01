@@ -1,12 +1,11 @@
-﻿using JetBrains.Annotations;
-using MimeKit;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Matchers;
 using WireMock.Validation;
 
@@ -58,21 +57,18 @@ namespace WireMock.Util
             new WildcardMatcher("application/x-www-form-urlencoded", true)
         };
 
-        public static bool ParseBodyAsIsValid([CanBeNull] string parseBodyAs)
-        {
-            return Enum.TryParse(parseBodyAs, out BodyType _);
-        }
-
         public static bool ShouldParseBody([CanBeNull] string method)
         {
-            if (String.IsNullOrEmpty(method))
+            if (string.IsNullOrEmpty(method))
             {
                 return false;
             }
-            if (BodyAllowedForMethods.TryGetValue(method.ToUpper(), out var allowed))
+
+            if (BodyAllowedForMethods.TryGetValue(method.ToUpper(), out bool allowed))
             {
                 return allowed;
             }
+
             // If we don't have any knowledge of this method, we should assume that a body *may*
             // be present, so we should parse it if it is. Therefore, if a new method is added to
             // the HTTP Method Registry, we only really need to add it to BodyAllowedForMethods if
@@ -82,22 +78,22 @@ namespace WireMock.Util
 
         public static BodyType DetectBodyTypeFromContentType([CanBeNull] string contentTypeValue)
         {
-            if (string.IsNullOrEmpty(contentTypeValue) || !ContentType.TryParse(contentTypeValue, out ContentType contentType))
+            if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out MediaTypeHeaderValue contentType))
             {
                 return BodyType.Bytes;
             }
 
-            if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
             {
                 return BodyType.String;
             }
 
-            if (JsonContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            if (JsonContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
             {
                 return BodyType.Json;
             }
 
-            if (MultipartContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MimeType))))
+            if (MultipartContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
             {
                 return BodyType.MultiPart;
             }
