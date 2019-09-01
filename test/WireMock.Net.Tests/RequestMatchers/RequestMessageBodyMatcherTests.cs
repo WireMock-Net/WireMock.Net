@@ -214,7 +214,6 @@ namespace WireMock.Net.Tests.RequestMatchers
             objectMatcherMock.Verify(m => m.IsMatch(It.IsAny<byte[]>()), Times.Once);
         }
 
-
         [Theory]
         [MemberData(nameof(MatchingScoreData))]
         public async Task RequestMessageBodyMatcher_GetMatchingScore_Funcs_Matching(object body, RequestMessageBodyMatcher matcher, bool shouldMatch)
@@ -283,6 +282,5 @@ namespace WireMock.Net.Tests.RequestMatchers
                 };
             }
         }
-        
     }
 }
