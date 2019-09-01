@@ -187,7 +187,7 @@ namespace WireMock.Net.Tests
             var server = FluentMockServer.Start();
 
             server
-                .Given(Request.Create().WithBody(b => true))
+                .Given(Request.Create().WithBody((byte[] bodyBytes) =>  bodyBytes != null))
                 .AtPriority(0)
                 .RespondWith(Response.Create().WithStatusCode(400));
             server
