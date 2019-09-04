@@ -323,6 +323,8 @@ namespace WireMock.Server
                     break;
             }
 
+            allBlackListedHeaders.ForEach(header => responseMessage.Headers.Remove(header));
+
             var response = Response.Create(responseMessage);
 
             return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null);
