@@ -145,17 +145,17 @@ namespace WireMock.Matchers.Request
 
             if (Func != null)
             {
-                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.String && Func(requestMessage.BodyData.BodyAsString));
+                return MatchScores.ToScore(Func(requestMessage?.BodyData?.BodyAsString));
             }
 
             if (JsonFunc != null)
             {
-                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.Json && JsonFunc(requestMessage.BodyData.BodyAsJson));
+                return MatchScores.ToScore(JsonFunc(requestMessage?.BodyData?.BodyAsJson));
             }
 
             if (DataFunc != null)
             {
-                return MatchScores.ToScore(requestMessage?.BodyData?.DetectedBodyType == BodyType.Bytes && DataFunc(requestMessage.BodyData.BodyAsBytes));
+                return MatchScores.ToScore(DataFunc(requestMessage?.BodyData?.BodyAsBytes));
             }
 
             return MatchScores.Mismatch;

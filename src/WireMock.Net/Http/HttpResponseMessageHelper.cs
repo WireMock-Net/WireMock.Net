@@ -9,7 +9,7 @@ namespace WireMock.Http
 {
     internal static class HttpResponseMessageHelper
     {
-        public static async Task<ResponseMessage> Create(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri)
+        public static async Task<ResponseMessage> CreateAsync(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri)
         {
             var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 

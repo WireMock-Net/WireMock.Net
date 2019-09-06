@@ -1,4 +1,10 @@
-﻿using Moq;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Moq;
+using Newtonsoft.Json;
 using NFluent;
 using System.Linq;
 using WireMock.Matchers;
@@ -208,6 +214,75 @@ namespace WireMock.Net.Tests.RequestMatchers
 
             // Verify
             objectMatcherMock.Verify(m => m.IsMatch(It.IsAny<byte[]>()), Times.Once);
+        }
+
+        [Theory]
+        [MemberData(nameof(MatchingScoreData))]
+        public async Task RequestMessageBodyMatcher_GetMatchingScore_Funcs_Matching(object body, RequestMessageBodyMatcher matcher, bool shouldMatch)
+        {
+            // assign
+            BodyData bodyData;
+            if (body is byte[] b)
+                bodyData = await BodyParser.Parse(new MemoryStream(b), null);
+            else if (body is string s)
+                bodyData = await BodyParser.Parse(new MemoryStream(Encoding.UTF8.GetBytes(s)), null);
+            else
+                throw new Exception();
+
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", bodyData);
+
+            // act
+            var result = new RequestMatchResult();
+            var score = matcher.GetMatchingScore(requestMessage, result);
+            
+            // assert
+            Check.That(score).IsEqualTo(shouldMatch ? 1d : 0d);
+        }
+
+        public static TheoryData<object, RequestMessageBodyMatcher, bool> MatchingScoreData
+        {
+            get
+            {
+                var json = "{'a':'b'}";
+                var str = "HelloWorld";
+                var bytes = new byte[] {0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00}; 
+
+                return new TheoryData<object, RequestMessageBodyMatcher, bool>
+                {
+                    // JSON match +++
+                    {json, new RequestMessageBodyMatcher((object o) => ((dynamic) o).a == "b"), true},
+                    {json, new RequestMessageBodyMatcher((string s) => s == json), true},
+                    {json, new RequestMessageBodyMatcher((byte[] b) => b.SequenceEqual(Encoding.UTF8.GetBytes(json))), true},
+                    
+                    // JSON no match ---
+                    {json, new RequestMessageBodyMatcher((object o) => false), false},
+                    {json, new RequestMessageBodyMatcher((string s) => false), false},
+                    {json, new RequestMessageBodyMatcher((byte[] b) => false), false},
+                    {json, new RequestMessageBodyMatcher(), false },
+                    
+                    // string match +++
+                    {str, new RequestMessageBodyMatcher((object o) => o == null), true},
+                    {str, new RequestMessageBodyMatcher((string s) => s == str), true},
+                    {str, new RequestMessageBodyMatcher((byte[] b) => b.SequenceEqual(Encoding.UTF8.GetBytes(str))), true},
+
+                    // string no match ---
+                    {str, new RequestMessageBodyMatcher((object o) => false), false},
+                    {str, new RequestMessageBodyMatcher((string s) => false), false},
+                    {str, new RequestMessageBodyMatcher((byte[] b) => false), false},
+                    {str, new RequestMessageBodyMatcher(), false },
+                    
+                    // binary match +++
+                    {bytes, new RequestMessageBodyMatcher((object o) => o == null), true},
+                    {bytes, new RequestMessageBodyMatcher((string s) => s == null), true},
+                    {bytes, new RequestMessageBodyMatcher((byte[] b) => b.SequenceEqual(bytes)), true},
+
+                    // binary no match ---
+                    {bytes, new RequestMessageBodyMatcher((object o) => false), false},
+                    {bytes, new RequestMessageBodyMatcher((string s) => false), false},
+                    {bytes, new RequestMessageBodyMatcher((byte[] b) => false), false},
+                    {bytes, new RequestMessageBodyMatcher(), false },
+                };
+            }
         }
     }
 }

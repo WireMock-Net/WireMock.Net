@@ -1,7 +1,7 @@
-﻿using NFluent;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using NFluent;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
@@ -49,6 +49,22 @@ namespace WireMock.Net.Tests.Util
             Check.That(body.BodyAsString).Equals(bodyAsString);
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
             Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(detectedBodyTypeFromContentType);
+        }
+
+        [Theory]
+        [InlineData(new byte[] {34, 97, 34}, BodyType.Json)]
+        [InlineData(new byte[] {97}, BodyType.String)]
+        [InlineData(new byte[] {0xFF, 0xD8, 0xFF, 0xE0}, BodyType.Bytes)]
+        public async Task BodyParser_Parse_DetectedBodyType(byte[] content, BodyType detectedBodyType)
+        {
+            // arrange
+            var memoryStream = new MemoryStream(content);
+
+            // act
+            var body = await BodyParser.Parse(memoryStream, null);
+
+            // assert
+            Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
         }
 
         [Fact]

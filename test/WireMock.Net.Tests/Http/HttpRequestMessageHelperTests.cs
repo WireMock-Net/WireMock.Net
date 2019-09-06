@@ -138,7 +138,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=utf-8");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=UTF-8");
         }
 
         [Fact]
@@ -157,7 +157,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=us-ascii");
+            Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=Ascii");
         }
     }
 }
