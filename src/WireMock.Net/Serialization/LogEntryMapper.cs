@@ -108,14 +108,14 @@ namespace WireMock.Serialization
                 Response = logResponseModel,
                 RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
                 {
+                    IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
                     TotalScore = logEntry.RequestMatchResult.TotalScore,
                     TotalNumber = logEntry.RequestMatchResult.TotalNumber,
-                    IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
                     AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore,
-                    MatchDetails = logEntry.RequestMatchResult.MatchDetails.Select(x => new
+                    MatchDetails = logEntry.RequestMatchResult.MatchDetails.Select(md => new
                     {
-                        Name = x.Key.Name.Replace("RequestMessage", string.Empty),
-                        Score = x.Value
+                        Name = md.MatcherType.Name.Replace("RequestMessage", string.Empty),
+                        Score = md.Score
                     } as object).ToList()
                 } : null
             };

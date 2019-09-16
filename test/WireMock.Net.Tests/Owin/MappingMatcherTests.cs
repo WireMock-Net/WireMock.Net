@@ -70,7 +70,10 @@ namespace WireMock.Net.Tests.Owin
         public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_ShouldReturnExactMatch()
         {
             // Assign
-            var mappings = InitMappings(new[] { (Guid.Parse("00000000-0000-0000-0000-000000000001"), 0.1), (Guid.Parse("00000000-0000-0000-0000-000000000002"), 1.0) });
+            var mappings = InitMappings(
+                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 0.1 }),
+                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 1.0 })
+            );
             _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
@@ -88,7 +91,10 @@ namespace WireMock.Net.Tests.Owin
         {
             // Assign
             _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
-            var mappings = InitMappings(new[] { (Guid.Parse("00000000-0000-0000-0000-000000000001"), 0.1), (Guid.Parse("00000000-0000-0000-0000-000000000002"), 0.9) });
+            var mappings = InitMappings(
+                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 0.1 }),
+                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 0.9 })
+            );
             _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
@@ -101,7 +107,27 @@ namespace WireMock.Net.Tests.Owin
             Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.9);
         }
 
-        private ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double match)[] matches)
+        [Fact]
+        public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_And_WithSameAverageScoreButMoreMatchers_ReturnsMatchWithMoreMatchers()
+        {
+            // Assign
+            var mappings = InitMappings(
+                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 1.0 }),
+                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 1.0, 1.0 })
+            );
+            _optionsMock.Setup(o => o.Mappings).Returns(mappings);
+
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+
+            // Act
+            var result = _sut.FindBestMatch(request);
+
+            // Assert and Verify
+            Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
+            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.9);
+        }
+
+        private ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double[] scores)[] matches)
         {
             var mappings = new ConcurrentDictionary<Guid, IMapping>();
 
@@ -110,9 +136,13 @@ namespace WireMock.Net.Tests.Owin
                 var mappingMock = new Mock<IMapping>();
                 mappingMock.SetupGet(m => m.Guid).Returns(match.guid);
 
-                var partialMatchResult = new RequestMatchResult();
-                partialMatchResult.AddScore(typeof(object), match.match);
-                mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Returns(partialMatchResult);
+                var requestMatchResult = new RequestMatchResult();
+                foreach (var score in match.scores)
+                {
+                    requestMatchResult.AddScore(typeof(object), score);
+                }
+
+                mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Returns(requestMatchResult);
 
                 mappings.TryAdd(match.guid, mappingMock.Object);
             }
