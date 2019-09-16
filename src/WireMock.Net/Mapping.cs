@@ -46,7 +46,7 @@ namespace WireMock
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
 
         /// <inheritdoc cref="IMapping.IsAdminInterface" />
-        public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
+        public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
