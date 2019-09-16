@@ -124,7 +124,7 @@ namespace WireMock.Net.Tests.Owin
 
             // Assert and Verify
             Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
-            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.9);
+            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(1.0);
         }
 
         private ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double[] scores)[] matches)
