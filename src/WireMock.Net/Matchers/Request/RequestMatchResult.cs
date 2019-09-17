@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WireMock.Matchers.Request
 {
@@ -14,7 +15,7 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The match-score.
         /// </value>
-        public double TotalScore { get; private set; }
+        public double TotalScore => MatchDetails.Sum(md => md.Score);
 
         /// <summary>
         /// Gets or sets the total number of matches.
@@ -22,7 +23,7 @@ namespace WireMock.Matchers.Request
         /// <value>
         /// The total number of matches.
         /// </value>
-        public int TotalNumber { get; private set; }
+        public int TotalNumber => MatchDetails.Count;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is perfect match.
@@ -43,12 +44,7 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Gets the match details.
         /// </summary>
-        public IList<KeyValuePair<Type, double>> MatchDetails { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMatchResult"/> class.
-        /// </summary>
-        public RequestMatchResult() => MatchDetails = new List<KeyValuePair<Type, double>>();
+        public IList<MatchDetail> MatchDetails { get; } = new List<MatchDetail>();
 
         /// <summary>
         /// Adds the score.
@@ -58,9 +54,7 @@ namespace WireMock.Matchers.Request
         /// <returns>The score.</returns>
         public double AddScore(Type matcherType, double score)
         {
-            TotalScore += score;
-            TotalNumber++;
-            MatchDetails.Add(new KeyValuePair<Type, double>(matcherType, score));
+            MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score });
 
             return score;
         }
@@ -76,7 +70,10 @@ namespace WireMock.Matchers.Request
         {
             var compareObj = (RequestMatchResult)obj;
 
-            return compareObj.AverageTotalScore.CompareTo(AverageTotalScore);
+            int averageTotalScoreResult = compareObj.AverageTotalScore.CompareTo(AverageTotalScore);
+
+            // In case the score is equal, prefer the one with the most matchers.
+            return averageTotalScoreResult == 0 ? compareObj.TotalNumber.CompareTo(TotalNumber) : averageTotalScoreResult;
         }
     }
 }
