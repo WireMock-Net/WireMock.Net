@@ -79,7 +79,6 @@ namespace WireMock
         /// </value>
         bool IsAdminInterface { get; }
         
-        
         /// <summary>
         /// Gets a value indicating whether this mapping is recorded by Proxy.
         /// </summary>
