@@ -27,7 +27,7 @@ namespace WireMock.Owin
 
         public ConcurrentDictionary<string, ScenarioState> Scenarios { get; } = new ConcurrentDictionary<string, ScenarioState>();
 
-        public ObservableCollection<LogEntry> LogEntries { get; } = new ConcurrentObservableCollection<LogEntry>();
+        public ConcurrentObservableCollection<LogEntry> LogEntries { get; } = new ConcurrentObservableCollection<LogEntry>();
 
         public int? RequestLogExpirationDuration { get; set; }
 
