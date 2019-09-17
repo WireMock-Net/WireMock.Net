@@ -78,6 +78,14 @@ namespace WireMock
         /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
         /// </value>
         bool IsAdminInterface { get; }
+        
+        /// <summary>
+        /// Gets a value indicating whether this mapping to be logged.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this mapping to be logged; otherwise, <c>false</c>.
+        /// </value>
+        bool LogMapping { get; }
 
         /// <summary>
         /// ProvideResponseAsync

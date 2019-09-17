@@ -7,6 +7,7 @@ using WireMock.Util;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
+using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Validation;
 #if !USE_ASPNETCORE
@@ -99,7 +100,7 @@ namespace WireMock.Owin
                     return;
                 }
 
-                logRequest = !targetMapping.IsAdminInterface;
+                logRequest = !targetMapping.IsAdminInterface || targetMapping.LogMapping;
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
