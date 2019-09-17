@@ -78,6 +78,15 @@ namespace WireMock
         /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
         /// </value>
         bool IsAdminInterface { get; }
+        
+        
+        /// <summary>
+        /// Gets a value indicating whether this mapping is recorded by Proxy.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this mapping is recorded by Proxy; otherwise, <c>false</c>.
+        /// </value>
+        bool IsRecordedByProxy { get; }
 
         /// <summary>
         /// ProvideResponseAsync
