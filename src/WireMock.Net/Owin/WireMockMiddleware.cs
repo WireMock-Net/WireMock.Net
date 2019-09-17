@@ -100,7 +100,7 @@ namespace WireMock.Owin
                     return;
                 }
 
-                logRequest = !targetMapping.IsAdminInterface || targetMapping.IsRecordedByProxy;
+                logRequest = !targetMapping.IsAdminInterface || targetMapping.LogMapping;
 
                 if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
                 {
@@ -113,7 +113,7 @@ namespace WireMock.Owin
                     }
                 }
 
-                if (!(targetMapping.IsAdminInterface || targetMapping.IsRecordedByProxy) && _options.RequestProcessingDelay > TimeSpan.Zero)
+                if (!targetMapping.IsAdminInterface && _options.RequestProcessingDelay > TimeSpan.Zero)
                 {
                     await Task.Delay(_options.RequestProcessingDelay.Value);
                 }

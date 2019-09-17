@@ -80,12 +80,12 @@ namespace WireMock
         bool IsAdminInterface { get; }
         
         /// <summary>
-        /// Gets a value indicating whether this mapping is recorded by Proxy.
+        /// Gets a value indicating whether this mapping to be logged.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this mapping is recorded by Proxy; otherwise, <c>false</c>.
+        /// <c>true</c> if this mapping to be logged; otherwise, <c>false</c>.
         /// </value>
-        bool IsRecordedByProxy { get; }
+        bool LogMapping { get; }
 
         /// <summary>
         /// ProvideResponseAsync

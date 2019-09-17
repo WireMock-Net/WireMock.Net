@@ -445,7 +445,7 @@ namespace WireMock.Server
 
         private IEnumerable<MappingModel> ToMappingModels()
         {
-            return Mappings.Where(m => !(m.IsAdminInterface || m.IsRecordedByProxy)).Select(_mappingConverter.ToMappingModel);
+            return Mappings.Where(m => !m.IsAdminInterface).Select(_mappingConverter.ToMappingModel);
         }
 
         private ResponseMessage MappingsGet(RequestMessage requestMessage)
