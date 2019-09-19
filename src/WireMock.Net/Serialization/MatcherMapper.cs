@@ -36,8 +36,7 @@ namespace WireMock.Serialization
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
-            string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.Cast<string>().ToArray() : new[] { matcher.Pattern as string };
-            object[] objectPatterns = matcher.Patterns ?? new[] { matcher.Pattern };
+            string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.OfType<string>().ToArray() : new[] { matcher.Pattern as string };
             MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
 
             switch (matcherName)
@@ -49,7 +48,7 @@ namespace WireMock.Serialization
                     return new ExactMatcher(matchBehaviour, stringPatterns);
 
                 case "ExactObjectMatcher":
-                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], objectPatterns[0]);
+                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
 
                 case "RegexMatcher":
                     return new RegexMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
@@ -83,22 +82,19 @@ namespace WireMock.Serialization
             }
         }
 
-        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern, object objectPattern)
+        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern)
         {
-            if (!string.IsNullOrEmpty(stringPattern))
+            byte[] bytePattern;
+            try
             {
-                try
-                {
-                    var bytePattern = Convert.FromBase64String(stringPattern);
-                    return new ExactObjectMatcher(matchBehaviour, bytePattern);
-                }
-                catch
-                {
-                    // Just continue
-                }
+                bytePattern = Convert.FromBase64String(stringPattern);
+            }
+            catch
+            {
+                throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
             }
 
-            return new ExactObjectMatcher(matchBehaviour, objectPattern);
+            return new ExactObjectMatcher(matchBehaviour, bytePattern);
         }
 
         public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)

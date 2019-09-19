@@ -1,6 +1,6 @@
-﻿using NFluent;
-using System;
+﻿using System;
 using Moq;
+using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Serialization;
@@ -68,7 +68,7 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void MatcherModelMapper_Map_ExactObjectMatcher_Pattern()
+        public void MatcherModelMapper_Map_ExactObjectMatcher_ValidBase64StringPattern()
         {
             // Assign
             var model = new MatcherModel
@@ -82,6 +82,20 @@ namespace WireMock.Net.Tests.Serialization
 
             // Assert
             Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_ExactObjectMatcher_InvalidBase64StringPattern()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "ExactObjectMatcher",
+                Patterns = new object[] { "_" }
+            };
+
+            // Act & Assert
+            Check.ThatCode(() => _sut.Map(model)).Throws<ArgumentException>();
         }
 
         [Fact]
