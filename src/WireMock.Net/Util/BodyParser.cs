@@ -59,7 +59,6 @@ namespace WireMock.Util
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
 
-
         public static bool ShouldParseBody([CanBeNull] string method)
         {
             if (string.IsNullOrEmpty(method))
