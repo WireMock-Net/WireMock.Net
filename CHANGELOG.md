@@ -1,3 +1,7 @@
+# 1.0.32.0 (20 September 2019)
+- [#348](https://github.com/WireMock-Net/WireMock.Net/pull/348) - When posting new mapping, use DateParseHandling.None [bug] contributed by [StefH](https://github.com/StefH)
+- [#347](https://github.com/WireMock-Net/WireMock.Net/issues/347) - Query string match on DateTimeOffset is not working [bug]
+
 # 1.0.31.0 (19 September 2019)
 - [#334](https://github.com/WireMock-Net/WireMock.Net/pull/334) - Fix issues with Proxy mode and Binary Request Bodies [bug] contributed by [andi0b](https://github.com/andi0b)
 - [#339](https://github.com/WireMock-Net/WireMock.Net/pull/339) - Fix ConcurrentObservableCollection [bug] contributed by [StefH](https://github.com/StefH)
