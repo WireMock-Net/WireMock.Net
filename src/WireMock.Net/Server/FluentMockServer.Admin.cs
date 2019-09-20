@@ -653,7 +653,7 @@ namespace WireMock.Server
                     var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
                     if (clientIPModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                     }
                 }
             }
@@ -671,7 +671,7 @@ namespace WireMock.Server
                     var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
                     if (pathModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                         pathOrUrlmatchersValid = true;
                     }
                 }
@@ -688,7 +688,7 @@ namespace WireMock.Server
                     var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                     if (urlModel?.Matchers != null)
                     {
-                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                        requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                         pathOrUrlmatchersValid = true;
                     }
                 }
@@ -709,7 +709,7 @@ namespace WireMock.Server
             {
                 foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
             }
 
@@ -717,7 +717,7 @@ namespace WireMock.Server
             {
                 foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
             }
 
@@ -726,7 +726,7 @@ namespace WireMock.Server
                 foreach (var paramModel in requestModel.Params.Where(c => c.Matchers != null))
                 {
                     bool ignoreCase = paramModel?.IgnoreCase ?? false;
-                    requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers.Select(_matcherMapper.Map).Cast<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
             }
 

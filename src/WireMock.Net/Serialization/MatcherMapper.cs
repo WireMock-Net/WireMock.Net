@@ -1,8 +1,8 @@
-﻿using JetBrains.Annotations;
-using SimMetrics.Net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
+using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Settings;
@@ -36,7 +36,7 @@ namespace WireMock.Serialization
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
-            string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.Cast<string>().ToArray() : new[] { matcher.Pattern as string };
+            string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.OfType<string>().ToArray() : new[] { matcher.Pattern as string };
             MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
 
             switch (matcherName)
@@ -48,8 +48,7 @@ namespace WireMock.Serialization
                     return new ExactMatcher(matchBehaviour, stringPatterns);
 
                 case "ExactObjectMatcher":
-                    var bytePattern = Convert.FromBase64String(stringPatterns[0]);
-                    return new ExactObjectMatcher(matchBehaviour, bytePattern);
+                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
 
                 case "RegexMatcher":
                     return new RegexMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
@@ -64,7 +63,7 @@ namespace WireMock.Serialization
                     return new JmesPathMatcher(matchBehaviour, stringPatterns);
 
                 case "XPathMatcher":
-                    return new XPathMatcher(matchBehaviour, (string)matcher.Pattern);
+                    return new XPathMatcher(matchBehaviour, stringPatterns);
 
                 case "WildcardMatcher":
                     return new WildcardMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
@@ -76,11 +75,26 @@ namespace WireMock.Serialization
                         throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
                     }
 
-                    return new SimMetricsMatcher(matchBehaviour, (string)matcher.Pattern, type);
+                    return new SimMetricsMatcher(matchBehaviour, stringPatterns, type);
 
                 default:
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
+        }
+
+        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern)
+        {
+            byte[] bytePattern;
+            try
+            {
+                bytePattern = Convert.FromBase64String(stringPattern);
+            }
+            catch
+            {
+                throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
+            }
+
+            return new ExactObjectMatcher(matchBehaviour, bytePattern);
         }
 
         public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
