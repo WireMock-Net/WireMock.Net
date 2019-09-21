@@ -2,7 +2,7 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  Prerelease: 'ci'
+  Prerelease: ''
   buildId: "1$(Build.BuildId)"
   buildProjects: '**/src/**/*.csproj'
 
