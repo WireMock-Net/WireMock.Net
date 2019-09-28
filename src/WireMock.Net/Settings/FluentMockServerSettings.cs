@@ -89,5 +89,9 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
+
+        /// <inheritdoc cref="IFluentMockServerSettings.AllowCSharpCodeMatcher"/>
+        [PublicAPI]
+        public bool? AllowCSharpCodeMatcher { get; set; }
     }
 }

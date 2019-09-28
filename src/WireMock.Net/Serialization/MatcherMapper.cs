@@ -41,6 +41,14 @@ namespace WireMock.Serialization
 
             switch (matcherName)
             {
+                case "CSharpCodeMatcher":
+                    if (_settings.AllowCSharpCodeMatcher == true)
+                    {
+                        return new CSharpCodeMatcher(matchBehaviour, stringPatterns);
+                    }
+
+                    throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because FluentMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
+
                 case "LinqMatcher":
                     return new LinqMatcher(matchBehaviour, stringPatterns);
 

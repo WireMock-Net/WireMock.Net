@@ -1,6 +1,6 @@
-﻿using HandlebarsDotNet;
+﻿using System;
+using HandlebarsDotNet;
 using JetBrains.Annotations;
-using System;
 using WireMock.Handlers;
 using WireMock.Logging;
 
@@ -115,9 +115,14 @@ namespace WireMock.Settings
         IFileSystemHandler FileSystemHandler { get; set; }
 
         /// <summary>
-        /// Action which can be used to add additional is Handlebar registrations. [Optional]
+        /// Action which can be used to add additional Handlebars registrations. [Optional]
         /// </summary>
         [PublicAPI]
         Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
+
+        /// <summary>
+        /// Allow the usage of CSharpCodeMatcher (default is not allowed).
+        /// </summary>
+        bool? AllowCSharpCodeMatcher { get; set; }
     }
 }
