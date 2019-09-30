@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -55,16 +56,44 @@ namespace WireMock.Server
             NullValueHandling = NullValueHandling.Include
         };
 
+        private class ContentTypeMatcher: IStringMatcher {
+            private Regex matcher;
+
+            public ContentTypeMatcher(string pattern) {
+                string raw = Regex.Escape(pattern);
+                string plusCharset = $"^{raw}(\\s*;\\s*charset=[a-z0-9-]+\\s*)?$";
+
+                matcher = new Regex(plusCharset, RegexOptions.IgnoreCase);
+                MatchBehaviour = WireMock.Matchers.MatchBehaviour.AcceptOnMatch;
+            }
+
+            public double IsMatch(string input)
+            {
+                return MatchScores.ToScore(matcher.IsMatch(input));
+            }
+
+            public string[] GetPatterns() {
+                string [] matchers = { matcher.ToString() };
+                return matchers;
+            }
+
+            public string Name => "ContentTypeMatcher";
+
+            public MatchBehaviour MatchBehaviour { get; }
+        }
+
         #region InitAdmin
         private void InitAdmin()
         {
+            ContentTypeMatcher jsonMatcher = new ContentTypeMatcher("application/json");
+
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, jsonMatcher)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, jsonMatcher)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
@@ -72,7 +101,7 @@ namespace WireMock.Server
 
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, jsonMatcher)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save
