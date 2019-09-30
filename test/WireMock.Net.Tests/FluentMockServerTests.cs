@@ -233,5 +233,19 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task FluentMockServer_Should_AcceptPostMappingsWithContentType()
+        {
+            // Arrange
+            var json = new StringContent("\"request\": {\"method\": \"GET\",\"url\": \"/some/thing\"},\"response\": {\"status\": 200,\"body\": \"Hello world!\",\"headers\": {\"Content-Type\": \"text/plain\"}}");
+            var server = FluentMockServer.Start();
+
+            // Act
+            var response = await new HttpClient().PostAsync($"http://localhost:{server.Ports[0]}/__admin/mappings", json);
+
+            // Assert
+            Check.That(response).IsEqualTo("Hello World?");
+        }
     }
 }
