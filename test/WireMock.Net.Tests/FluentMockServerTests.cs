@@ -239,19 +239,33 @@ namespace WireMock.Net.Tests
         [InlineData("application/json")]
         [InlineData("application/json; charset=ascii")]
         [InlineData("application/json; charset=utf-8")]
-        [InlineData("application/json; charset=UTF8-8")]
-        public async Task WireMockServer_Should_AcceptPostMappingsWithContentTypeAndAnyCharset(string contentType)
+        [InlineData("application/json; charset=UTF-8")]
+        public async Task WireMockServer_Should_AcceptPostMappingsWithContentTypeJsonAndAnyCharset(string contentType)
         {
             // Arrange
-            var json = new StringContent("\"request\": {\"method\": \"GET\",\"url\": \"/some/thing\"},\"response\": {\"status\": 200,\"body\": \"Hello world!\",\"headers\": {\"Content-Type\": \"text/plain\"}}");
-            json.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-            var server = FluentMockServer.Start();
+            string message = @"{
+                ""request"": {
+                    ""method"": ""GET"",
+                    ""url"": ""/some/thing""
+                },
+                ""response"": {
+                    ""status"": 200,
+                    ""body"": ""Hello world!"",
+                    ""headers"": {
+                        ""Content-Type"": ""text/plain""
+                    }
+                }
+            }";
+            var stringContent = new StringContent(message);
+            stringContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+            var server = FluentMockServer.StartWithAdminInterface();
 
             // Act
-            var response = await new HttpClient().PostAsync($"http://localhost:{server.Ports[0]}/__admin/mappings", json);
+            var response = await new HttpClient().PostAsync($"{server.Urls[0]}/__admin/mappings", stringContent);
 
             // Assert
-            Check.That(response).IsEqualTo("Hello World?");
+            Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
+            Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
         }
     }
 }

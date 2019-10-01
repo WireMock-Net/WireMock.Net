@@ -76,6 +76,9 @@ namespace WireMock.Serialization
                 case "WildcardMatcher":
                     return new WildcardMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
 
+                case "ContentTypeMatcher":
+                    return new ContentTypeMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
+
                 case "SimMetricsMatcher":
                     SimMetricType type = SimMetricType.Levenstein;
                     if (!string.IsNullOrEmpty(matcherType) && !Enum.TryParse(matcherType, out type))
