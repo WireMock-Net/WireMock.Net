@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Net.Http.Headers;
 using JetBrains.Annotations;
 
 namespace WireMock.Matchers
@@ -8,12 +7,12 @@ namespace WireMock.Matchers
     /// ContentTypeMatcher which accepts also all charsets
     /// </summary>
     /// <seealso cref="RegexMatcher" />
-    public class ContentTypeMatcher : RegexMatcher
+    public class ContentTypeMatcher : WildcardMatcher
     {
         private readonly string[] _patterns;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ContentTypeMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
@@ -22,7 +21,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ContentTypeMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="pattern">The pattern.</param>
@@ -32,7 +31,7 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ContentTypeMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
@@ -41,15 +40,25 @@ namespace WireMock.Matchers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WildcardMatcher"/> class.
+        /// Initializes a new instance of the <see cref="ContentTypeMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
-        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false) :
-            base(matchBehaviour, patterns.Select(pattern => $"^{Regex.Escape(pattern)}(\\s*;\\s*charset=[a-zA-Z0-9-]+\\s*)?$").ToArray(), ignoreCase)
+        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false) : base(matchBehaviour, patterns, ignoreCase)
         {
             _patterns = patterns;
+        }
+
+        /// <inheritdoc cref="RegexMatcher.IsMatch"/>
+        public override double IsMatch(string input)
+        {
+            if (string.IsNullOrEmpty(input) || !MediaTypeHeaderValue.TryParse(input, out MediaTypeHeaderValue contentType))
+            {
+                return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
+            }
+
+            return base.IsMatch(contentType.MediaType);
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
