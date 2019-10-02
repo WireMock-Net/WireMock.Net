@@ -20,7 +20,7 @@ namespace WireMock.Owin.Mappers
     internal class OwinRequestMapper : IOwinRequestMapper
     {
         /// <inheritdoc cref="IOwinRequestMapper.MapAsync"/>
-        public async Task<RequestMessage> MapAsync(IRequest request)
+        public async Task<RequestMessage> MapAsync(IRequest request, IWireMockMiddlewareOptions options)
         {
             (UrlDetails urldetails, string clientIP) = ParseRequest(request);
 
@@ -47,7 +47,7 @@ namespace WireMock.Owin.Mappers
             }
 
             BodyData body = null;
-            if (request.Body != null && BodyParser.ShouldParseBody(method))
+            if (request.Body != null && BodyParser.ShouldParseBody(method, options.AllowBodyForAllHttpMethods == true))
             {
                 body = await BodyParser.Parse(request.Body, request.ContentType);
             }

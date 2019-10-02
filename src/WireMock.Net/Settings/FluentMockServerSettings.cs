@@ -93,5 +93,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IFluentMockServerSettings.AllowCSharpCodeMatcher"/>
         [PublicAPI]
         public bool? AllowCSharpCodeMatcher { get; set; }
+
+        /// <inheritdoc cref="IFluentMockServerSettings.AllowBodyForAllHttpMethods"/>
+        [PublicAPI]
+        public bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

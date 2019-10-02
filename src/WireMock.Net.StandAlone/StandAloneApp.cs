@@ -52,6 +52,7 @@ namespace WireMock.Net.StandAlone
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
                 AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
+                AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods")
             };
 
             if (logger != null)

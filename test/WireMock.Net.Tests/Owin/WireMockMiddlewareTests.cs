@@ -52,7 +52,7 @@ namespace WireMock.Net.Tests.Owin
             _requestMapperMock = new Mock<IOwinRequestMapper>();
             _requestMapperMock.SetupAllProperties();
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
+            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
             _responseMapperMock = new Mock<IOwinResponseMapper>();
             _responseMapperMock.SetupAllProperties();
@@ -87,7 +87,7 @@ namespace WireMock.Net.Tests.Owin
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
-            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
+            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
@@ -108,7 +108,7 @@ namespace WireMock.Net.Tests.Owin
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]> { { "h", new[] { "x" } } });
-            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>())).ReturnsAsync(request);
+            _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
