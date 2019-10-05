@@ -40,8 +40,9 @@ namespace WireMock.Server
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
 
-        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
-        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
+        private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(ContentTypeJson, true);
+        private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
+        private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
         private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
@@ -60,11 +61,11 @@ namespace WireMock.Server
         {
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
@@ -72,7 +73,7 @@ namespace WireMock.Server
 
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save
