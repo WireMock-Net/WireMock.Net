@@ -15,6 +15,10 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool SaveMapping { get; set; } = true;
 
+        /// <inheritdoc cref="IProxyAndRecordSettings.SaveMappingForStatusCodePattern"/>
+        [PublicAPI]
+        public string SaveMappingForStatusCodePattern { get; set; } = "*";
+
         /// <inheritdoc cref="IProxyAndRecordSettings.SaveMappingToFile"/>
         [PublicAPI]
         public bool SaveMappingToFile { get; set; } = true;
