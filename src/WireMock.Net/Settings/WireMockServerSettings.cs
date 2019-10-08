@@ -120,10 +120,15 @@ namespace WireMock.Settings
         public IFileSystemHandler FileSystemHandler { get; set; }
 
         /// <summary>
-        /// Action which can be used to add additional Handlebar registrations. [Optional]
+        /// Action which can be used to add additional Handlebars registrations. [Optional]
         /// </summary>
         [PublicAPI]
-        [JsonIgnore]
         public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
+
+        /// <summary>
+        /// Allow the usage of CSharpCodeMatcher (default is not allowed).
+        /// </summary>
+        [PublicAPI]
+        public bool? AllowCSharpCodeMatcher { get; set; }
     }
 }

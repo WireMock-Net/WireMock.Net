@@ -26,6 +26,13 @@ namespace WireMock.Settings
         public bool SaveMappingToFile { get; set; } = true;
 
         /// <summary>
+        /// Only save request/response to the internal Mappings if the status code is included in this pattern. (Note that SaveMapping must also be set to true.)
+        /// The pattern can contain a single value like "200", but also ranges like "2xx", "100,300,600" or "100-299,6xx" are supported.
+        /// </summary>
+        [PublicAPI]
+        public string SaveMappingForStatusCodePattern { get; set; } = "*";
+
+        /// <summary>
         /// The clientCertificate thumbprint or subject name fragment to use.
         /// Example thumbprint : "D2DBF135A8D06ACCD0E1FAD9BFB28678DF7A9818". Example subject name: "www.google.com""
         /// </summary>

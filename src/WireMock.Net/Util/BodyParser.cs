@@ -58,6 +58,8 @@ namespace WireMock.Util
             new WildcardMatcher("application/x-www-form-urlencoded", true)
         };
 
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
+
         public static bool ShouldParseBody([CanBeNull] string method)
         {
             if (string.IsNullOrEmpty(method))
@@ -136,12 +138,12 @@ namespace WireMock.Util
                 data.Encoding = DefaultEncoding;
                 data.DetectedBodyType = BodyType.String;
 
-                // If string is not null or empty, try to get as Json
+                // If string is not null or empty, try to deserialize the string to a JObject
                 if (!string.IsNullOrEmpty(data.BodyAsString))
                 {
                     try
                     {
-                        data.BodyAsJson = JsonConvert.DeserializeObject(data.BodyAsString, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                        data.BodyAsJson = JsonConvert.DeserializeObject(data.BodyAsString, JsonSerializerSettings);
                         data.DetectedBodyType = BodyType.Json;
                     }
                     catch

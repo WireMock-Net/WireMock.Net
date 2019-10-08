@@ -71,7 +71,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-        public double IsMatch(string input)
+        public virtual double IsMatch(string input)
         {
             double match = MatchScores.Mismatch;
             if (input != null)

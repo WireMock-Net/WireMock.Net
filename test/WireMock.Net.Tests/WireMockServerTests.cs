@@ -1,9 +1,10 @@
-﻿using NFluent;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -172,7 +173,7 @@ namespace WireMock.Net.Tests
             var server = WireMockServer.Start();
 
             server
-                .Given(Request.Create().WithBody((byte[] bodyBytes) =>  bodyBytes != null))
+                .Given(Request.Create().WithBody((byte[] bodyBytes) => bodyBytes != null))
                 .AtPriority(0)
                 .RespondWith(Response.Create().WithStatusCode(400));
             server
@@ -217,6 +218,39 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+        }
+
+        [Theory]
+        [InlineData("application/json")]
+        [InlineData("application/json; charset=ascii")]
+        [InlineData("application/json; charset=utf-8")]
+        [InlineData("application/json; charset=UTF-8")]
+        public async Task WireMockServer_Should_AcceptPostMappingsWithContentTypeJsonAndAnyCharset(string contentType)
+        {
+            // Arrange
+            string message = @"{
+                ""request"": {
+                    ""method"": ""GET"",
+                    ""url"": ""/some/thing""
+                },
+                ""response"": {
+                    ""status"": 200,
+                    ""body"": ""Hello world!"",
+                    ""headers"": {
+                        ""Content-Type"": ""text/plain""
+                    }
+                }
+            }";
+            var stringContent = new StringContent(message);
+            stringContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+            var server = WireMockServer.StartWithAdminInterface();
+
+            // Act
+            var response = await new HttpClient().PostAsync($"{server.Urls[0]}/__admin/mappings", stringContent);
+
+            // Assert
+            Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
+            Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
         }
     }
 }

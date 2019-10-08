@@ -5,16 +5,48 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
 using NFluent;
+using WireMock.Logging;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests
 {
     public class ObservableLogEntriesTest
     {
+        [Fact]
+        public async void WireMockServer_LogEntriesChanged_WithException_Should_LogError()
+        {
+            // Assign
+            string path = $"/log_{Guid.NewGuid()}";
+            var loggerMock = new Mock<IWireMockLogger>();
+            loggerMock.Setup(l => l.Error(It.IsAny<string>(), It.IsAny<object[]>()));
+            var settings = new WireMockServerSettings
+            {
+                Logger = loggerMock.Object
+            };
+            var server = WireMockServer.Start(settings);
+
+            server
+                .Given(Request.Create()
+                    .WithPath(path)
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ msg: ""Hello world!""}"));
+
+            server.LogEntriesChanged += (sender, args) => throw new Exception();
+
+            // Act
+            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}");
+
+            // Assert
+            loggerMock.Verify(l => l.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+        }
+
         [Fact]
         public async void WireMockServer_LogEntriesChanged()
         {

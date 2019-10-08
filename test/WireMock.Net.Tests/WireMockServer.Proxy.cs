@@ -18,6 +18,35 @@ namespace WireMock.Net.Tests
     public class WireMockServerProxyTests
     {
         [Fact]
+        public async Task WireMockServer_Proxy_Should_log_proxied_requests()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            var server = WireMockServer.Start(settings);
+            
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            Check.That(server.Mappings).HasSize(2);
+            Check.That(server.LogEntries).HasSize(1);
+        }
+        
+        [Fact]
         public async Task WireMockServer_Proxy_Should_proxy_responses()
         {
             // Assign
@@ -39,6 +68,7 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(server.Mappings).HasSize(1);
+            Check.That(server.LogEntries).HasSize(1);
             Check.That(content).Contains("google");
         }
 

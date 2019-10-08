@@ -48,6 +48,9 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.IsAdminInterface" />
         public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
+        /// <inheritdoc cref="IMapping.LogMapping" />
+        public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>

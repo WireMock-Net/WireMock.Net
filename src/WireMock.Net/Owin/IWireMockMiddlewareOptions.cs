@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Util;
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -26,7 +26,7 @@ namespace WireMock.Owin
 
         ConcurrentDictionary<string, ScenarioState> Scenarios { get; }
 
-        ObservableCollection<LogEntry> LogEntries { get; }
+        ConcurrentObservableCollection<LogEntry> LogEntries { get; }
 
         int? RequestLogExpirationDuration { get; set; }
 

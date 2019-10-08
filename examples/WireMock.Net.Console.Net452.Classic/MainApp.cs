@@ -41,6 +41,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var server = WireMockServer.Start(new WireMockServerSettings
             {
+                AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,

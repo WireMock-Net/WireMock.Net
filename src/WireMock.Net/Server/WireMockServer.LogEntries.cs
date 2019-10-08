@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using JetBrains.Annotations;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
-using System.Linq;
 using WireMock.Matchers;
+using WireMock.Matchers.Request;
 
 namespace WireMock.Server
 {
@@ -19,7 +19,21 @@ namespace WireMock.Server
         [PublicAPI]
         public event NotifyCollectionChangedEventHandler LogEntriesChanged
         {
-            add => _options.LogEntries.CollectionChanged += value;
+            add
+            {
+                _options.LogEntries.CollectionChanged += (sender, eventRecordArgs) =>
+                {
+                    try
+                    {
+                        value(sender, eventRecordArgs);
+                    }
+                    catch (Exception exception)
+                    {
+                        _options.Logger.Error("Error calling the LogEntriesChanged event handler: {0}", exception.Message);
+                    }
+                };
+            }
+
             remove => _options.LogEntries.CollectionChanged -= value;
         }
 
@@ -27,7 +41,7 @@ namespace WireMock.Server
         /// Gets the request logs.
         /// </summary>
         [PublicAPI]
-        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToArray());
+        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToList());
 
         /// <summary>
         /// The search log-entries based on matchers.
@@ -73,7 +87,7 @@ namespace WireMock.Server
         public bool DeleteLogEntry(Guid guid)
         {
             // Check a logentry exists with the same GUID, if so, remove it.
-            var existing = _options.LogEntries.FirstOrDefault(m => m.Guid == guid);
+            var existing = _options.LogEntries.ToList().FirstOrDefault(m => m.Guid == guid);
             if (existing != null)
             {
                 _options.LogEntries.Remove(existing);
