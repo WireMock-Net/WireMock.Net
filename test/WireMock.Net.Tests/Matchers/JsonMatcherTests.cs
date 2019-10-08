@@ -202,7 +202,7 @@ namespace WireMock.Net.Tests.Matchers
             // Act 
             var jobject = new JObject
             {
-                { "Name", new JValue("2019-11-21T10:32:53.2210009+00:00") }
+                { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
             };
             double match = matcher.IsMatch(jobject);
 

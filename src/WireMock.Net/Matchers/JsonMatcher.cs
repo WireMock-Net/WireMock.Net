@@ -1,7 +1,8 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -11,6 +12,11 @@ namespace WireMock.Matchers
     /// </summary>
     public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     {
+        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
+        {
+            DateParseHandling = DateParseHandling.None
+        };
+
         /// <inheritdoc cref="IValueMatcher.Value"/>
         public object Value { get; }
 
@@ -93,7 +99,7 @@ namespace WireMock.Matchers
                             break;
 
                         case string stringValue:
-                            jtokenValue = JToken.Parse(stringValue);
+                            jtokenValue = JsonUtils.Parse(stringValue, _settings);
                             break;
 
                         default:
