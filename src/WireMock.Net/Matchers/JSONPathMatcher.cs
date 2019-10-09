@@ -93,10 +93,7 @@ namespace WireMock.Matchers
 
         private double IsMatch(JToken jtoken)
         {
-            // Wrap in array if needed
-            JToken tokenOrArray = jtoken is JArray ? jtoken : new JArray(jtoken);
-
-            return MatchScores.ToScore(_patterns.Select(pattern => tokenOrArray.SelectToken(pattern) != null));
+            return MatchScores.ToScore(_patterns.Select(pattern => jtoken.SelectToken(pattern) != null));
         }
     }
 }
