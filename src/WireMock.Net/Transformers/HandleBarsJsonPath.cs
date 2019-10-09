@@ -10,11 +10,6 @@ namespace WireMock.Transformers
 {
     internal static class HandleBarsJsonPath
     {
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings()
-        {
-            DateParseHandling = DateParseHandling.None
-        };
-
         public static void Register(IHandlebars handlebarsContext)
         {
             handlebarsContext.RegisterHelper("JsonPath.SelectToken", (writer, context, arguments) =>
@@ -62,7 +57,7 @@ namespace WireMock.Transformers
             switch (arguments[0])
             {
                 case string jsonAsString:
-                    valueToProcess = JsonUtils.Parse(jsonAsString, JsonSerializerSettings);
+                    valueToProcess = JsonUtils.Parse(jsonAsString);
                     break;
 
                 case JObject jsonAsJObject:

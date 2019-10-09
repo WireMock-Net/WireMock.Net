@@ -12,11 +12,6 @@ namespace WireMock.Matchers
     /// </summary>
     public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     {
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings()
-        {
-            DateParseHandling = DateParseHandling.None
-        };
-
         /// <inheritdoc cref="IValueMatcher.Value"/>
         public object Value { get; }
 
@@ -99,7 +94,7 @@ namespace WireMock.Matchers
                             break;
 
                         case string stringValue:
-                            jtokenValue = JsonUtils.Parse(stringValue, _jsonSerializerSettings);
+                            jtokenValue = JsonUtils.Parse(stringValue);
                             break;
 
                         default:
