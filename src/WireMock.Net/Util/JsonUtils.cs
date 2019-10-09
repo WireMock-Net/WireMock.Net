@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,22 @@ namespace WireMock.Util
 {
     internal static class JsonUtils
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            DateParseHandling = DateParseHandling.None
+        };
+
+        /// <summary>
+        /// Load a Newtonsoft.Json.Linq.JObject from a string that contains JSON.
+        /// Using : DateParseHandling = DateParseHandling.None
+        /// </summary>
+        /// <param name="json">A System.String that contains JSON.</param>
+        /// <returns>A Newtonsoft.Json.Linq.JObject populated from the string that contains JSON.</returns>
+        public static JObject Parse(string json)
+        {
+            return JsonConvert.DeserializeObject<JObject>(json, JsonSerializerSettings);
+        }
+
         public static T ParseJTokenToObject<T>(object value)
         {
             switch (value)

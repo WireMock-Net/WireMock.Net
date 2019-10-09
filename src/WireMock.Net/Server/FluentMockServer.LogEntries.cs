@@ -19,7 +19,21 @@ namespace WireMock.Server
         [PublicAPI]
         public event NotifyCollectionChangedEventHandler LogEntriesChanged
         {
-            add => _options.LogEntries.CollectionChanged += value;
+            add
+            {
+                _options.LogEntries.CollectionChanged += (sender, eventRecordArgs) =>
+                {
+                    try
+                    {
+                        value(sender, eventRecordArgs);
+                    }
+                    catch (Exception exception)
+                    {
+                        _options.Logger.Error("Error calling the LogEntriesChanged event handler: {0}", exception.Message);
+                    }
+                };
+            }
+
             remove => _options.LogEntries.CollectionChanged -= value;
         }
 

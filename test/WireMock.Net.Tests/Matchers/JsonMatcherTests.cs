@@ -192,5 +192,22 @@ namespace WireMock.Net.Tests.Matchers
             // Assert 
             Assert.Equal(0.0, match);
         }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_JObjectWithDateTimeOffsetAsString()
+        {
+            // Assign 
+            var matcher = new JsonMatcher("{ \"preferredAt\" : \"2019-11-21T10:32:53.2210009+00:00\" }");
+
+            // Act 
+            var jobject = new JObject
+            {
+                { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
+            };
+            double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
     }
 }
