@@ -5,7 +5,7 @@
         /// <inheritdoc cref="IFaultResponseBuilder.WithFault(FaultType, double?)"/>
         public IResponseBuilder WithFault(FaultType faultType, double? percentage = null)
         {
-            ResponseMessage.Fault = faultType;
+            ResponseMessage.FaultType = faultType;
             ResponseMessage.FaultPercentage = percentage;
 
             return this;

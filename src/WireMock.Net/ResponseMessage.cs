@@ -39,7 +39,7 @@ namespace WireMock
         /// <summary>
         /// The FaultType.
         /// </summary>
-        public FaultType Fault { get; set; }
+        public FaultType FaultType { get; set; }
 
         /// <summary>
         /// Gets or sets the Fault percentage.

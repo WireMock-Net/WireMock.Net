@@ -814,6 +814,11 @@ namespace WireMock.Server
                 responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile);
             }
 
+            if (responseModel.Fault != null && Enum.TryParse(responseModel.Fault.Type, out FaultType faultType))
+            {
+                responseBuilder.WithFault(faultType, responseModel.Fault.Percentage);
+            }
+
             return responseBuilder;
         }
 

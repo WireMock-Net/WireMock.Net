@@ -61,7 +61,7 @@ namespace WireMock.Owin.Mappers
             bool writeResponseHeaders = true;
             int? statusCode = responseMessage.StatusCode;
             byte[] bytes;
-            switch (responseMessage.Fault)
+            switch (responseMessage.FaultType)
             {
                 case FaultType.EMPTY_RESPONSE:
                     bytes = IsFault(responseMessage) ? new byte[0] : GetNormalBody(responseMessage);
