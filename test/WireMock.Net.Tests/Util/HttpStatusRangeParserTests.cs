@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System;
+using System.Net;
 using WireMock.Util;
 using Xunit;
 
@@ -49,9 +50,17 @@ namespace WireMock.Net.Tests.Util
 
         [InlineData("", 0, false)]
         [InlineData(",,,", 9999, false)]
+
+        [InlineData(null, 399, true)]
         public void HttpStatusRangeParser_ValidPattern_IsMatch(string pattern, int value, bool expectedResult)
         {
             HttpStatusRangeParser.IsMatch(pattern, value).Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public void HttpStatusRangeParser_ValidPattern_HttpStatusCode_IsMatch()
+        {
+            HttpStatusRangeParser.IsMatch("4xx", HttpStatusCode.BadRequest).Should().BeTrue();
         }
 
         [Theory]
