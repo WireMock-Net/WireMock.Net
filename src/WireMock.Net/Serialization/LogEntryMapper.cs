@@ -58,7 +58,9 @@ namespace WireMock.Serialization
             var logResponseModel = new LogResponseModel
             {
                 StatusCode = logEntry.ResponseMessage.StatusCode,
-                Headers = logEntry.ResponseMessage.Headers
+                Headers = logEntry.ResponseMessage.Headers,
+                FaultType = logEntry.ResponseMessage.FaultType.ToString(),
+                FaultPercentage = logEntry.ResponseMessage.FaultPercentage
             };
 
             if (logEntry.ResponseMessage.BodyData != null)
