@@ -267,7 +267,8 @@ namespace WireMock.Server
 
             var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
 
-            if (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile)
+            if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
+                (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))
             {
                 var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { }, settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { });
 

@@ -1,4 +1,6 @@
-﻿namespace WireMock.Settings
+﻿using JetBrains.Annotations;
+
+namespace WireMock.Settings
 {
     /// <summary>
     /// IProxyAndRecordSettings
@@ -16,7 +18,14 @@
         bool SaveMapping { get; set; }
 
         /// <summary>
-        /// Save the mapping for each request/response to also file. (Note that SaveMapping must also be set to true.)
+        /// Only save request/response to the internal Mappings if the status code is included in this pattern. (Note that SaveMapping must also be set to true.)
+        /// The pattern can contain a single value like "200", but also ranges like "2xx", "100,300,600" or "100-299,6xx" are supported.
+        /// </summary>
+        [CanBeNull]
+        string SaveMappingForStatusCodePattern { get; set; }
+
+        /// <summary>
+        /// Save the mapping for each request/response also to a file. (Note that SaveMapping must also be set to true.)
         /// </summary>
         bool SaveMappingToFile { get; set; }
 
