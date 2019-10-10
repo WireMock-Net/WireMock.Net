@@ -7,7 +7,7 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The BodyResponseBuilder interface.
     /// </summary>
-    public interface IBodyResponseBuilder : ITransformResponseBuilder
+    public interface IBodyResponseBuilder : IFaultResponseBuilder
     {
         /// <summary>
         /// WithBody : Create a ... response based on a string.

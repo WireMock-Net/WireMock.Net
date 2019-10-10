@@ -19,7 +19,7 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The Response.
     /// </summary>
-    public class Response : IResponseBuilder
+    public partial class Response : IResponseBuilder
     {
         private HttpClient _httpClientForProxy;
 

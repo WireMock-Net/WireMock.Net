@@ -53,9 +53,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="RequestBuilders\Request.WithFault.cs" />
     <Compile Remove="Util\CloneUtils.cs" />
     <Compile Remove="Util\IndexableDictionary.cs" />
     <Compile Remove="Util\NamedReaderWriterLocker.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ResponseBuilders\Response.WithFault.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,7 +76,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.8" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
     <!--<PackageReference Include="CloneExtensionsEx" Version="1.0.2" />-->
     <!--<PackageReference Include="FastDeepCloner" Version="1.2.5" />-->

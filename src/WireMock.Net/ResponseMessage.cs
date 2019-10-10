@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WireMock.ResponseBuilders;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -34,6 +35,16 @@ namespace WireMock
         /// The Body.
         /// </summary>
         public BodyData BodyData { get; set; }
+
+        /// <summary>
+        /// The FaultType.
+        /// </summary>
+        public FaultType Fault { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Fault percentage.
+        /// </summary>
+        public double? FaultPercentage { get; set; }
 
         /// <summary>
         /// Adds the header.
