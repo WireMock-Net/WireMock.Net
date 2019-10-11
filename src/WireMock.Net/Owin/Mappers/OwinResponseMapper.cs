@@ -137,7 +137,6 @@ namespace WireMock.Owin.Mappers
             return bytes;
         }
 
-
         private void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
         {
             // Set headers
