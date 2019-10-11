@@ -206,7 +206,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = 100, Times.Once);
-            _stream.Verify(s => s.WriteAsync(It.Is<byte[]>(bytes => bytes[0] == 97 && bytes[1] == 98), 0, It.Is<int>(count => count >= 100), It.IsAny<CancellationToken>()), Times.Once);
+            _stream.Verify(s => s.WriteAsync(It.Is<byte[]>(bytes => bytes[0] == 97 && bytes[1] == 98), 0, It.Is<int>(count => count >= 4), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -227,7 +227,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = 100, Times.Never);
-            _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 100), It.IsAny<CancellationToken>()), Times.Once);
+            _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 4), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
