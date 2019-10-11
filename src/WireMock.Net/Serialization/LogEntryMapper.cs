@@ -2,6 +2,7 @@
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.ResponseBuilders;
 using WireMock.Util;
 
 namespace WireMock.Serialization
@@ -58,10 +59,14 @@ namespace WireMock.Serialization
             var logResponseModel = new LogResponseModel
             {
                 StatusCode = logEntry.ResponseMessage.StatusCode,
-                Headers = logEntry.ResponseMessage.Headers,
-                FaultType = logEntry.ResponseMessage.FaultType.ToString(),
-                FaultPercentage = logEntry.ResponseMessage.FaultPercentage
+                Headers = logEntry.ResponseMessage.Headers
             };
+
+            if (logEntry.ResponseMessage.FaultType != FaultType.NONE)
+            {
+                logResponseModel.FaultType = logEntry.ResponseMessage.FaultType.ToString();
+                logResponseModel.FaultPercentage = logEntry.ResponseMessage.FaultPercentage;
+            }
 
             if (logEntry.ResponseMessage.BodyData != null)
             {

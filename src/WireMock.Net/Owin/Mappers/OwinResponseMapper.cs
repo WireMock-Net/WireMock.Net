@@ -68,7 +68,12 @@ namespace WireMock.Owin.Mappers
                     break;
 
                 case FaultType.MALFORMED_RESPONSE_CHUNK:
-                    bytes = IsFault(responseMessage) ? _randomizerBytes.Generate() : GetNormalBody(responseMessage);
+                    bytes = GetNormalBody(responseMessage);
+                    if (IsFault(responseMessage))
+                    {
+                        bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();
+                    }
+
                     break;
 
                 case FaultType.RANDOM_DATA_THEN_CLOSE:
