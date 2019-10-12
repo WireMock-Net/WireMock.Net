@@ -40,7 +40,7 @@ namespace WireMock.RequestBuilders
         /// <returns>A List{T}</returns>
         public IList<T> GetRequestMessageMatchers<T>() where T : IRequestMatcher
         {
-            return new ReadOnlyCollection<T>(_requestMatchers.Where(rm => rm is T).Cast<T>().ToList());
+            return new ReadOnlyCollection<T>(_requestMatchers.OfType<T>().ToList());
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace WireMock.RequestBuilders
         /// <returns>A RequestMatcher</returns>
         public T GetRequestMessageMatcher<T>() where T : IRequestMatcher
         {
-            return _requestMatchers.Where(rm => rm is T).Cast<T>().FirstOrDefault();
+            return _requestMatchers.OfType<T>().FirstOrDefault();
         }
 
         /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(IStringMatcher[])"/>

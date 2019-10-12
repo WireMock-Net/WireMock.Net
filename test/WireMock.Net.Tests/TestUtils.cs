@@ -52,12 +52,19 @@ namespace WireMock.Net.Tests
         public static void SetPrivatePropertyValue<T>(this object obj, string propertyName, T value)
         {
             Type t = obj.GetType();
-            if (t.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) == null)
+            PropertyInfo propertyInfo = null;
+            while (propertyInfo == null && t != null)
             {
-                throw new ArgumentOutOfRangeException(nameof(propertyName), $"Property {propertyName} was not found in Type {obj.GetType().FullName}");
+                propertyInfo = t.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                t = t.BaseType;
             }
 
-            t.InvokeMember(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, null, obj, new object[] { value });
+            if (propertyInfo == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(propertyName), $"Private property {propertyName} was not found in Type {obj.GetType().FullName}");
+            }
+
+            propertyInfo.SetValue(obj, value);
         }
     }
 }

@@ -49,8 +49,9 @@ namespace WireMock.Owin
             }
 
             return mappings
-                .OrderBy(m => m.Mapping.Priority)
-                .FirstOrDefault(m => m.RequestMatchResult.IsPerfectMatch);
+                .Where(m => m.RequestMatchResult.IsPerfectMatch)
+                .OrderBy(m => m.Mapping.Priority).ThenBy(m => m.RequestMatchResult)
+                .FirstOrDefault();
         }
     }
 }

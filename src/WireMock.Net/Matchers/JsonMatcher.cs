@@ -1,7 +1,8 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -93,7 +94,7 @@ namespace WireMock.Matchers
                             break;
 
                         case string stringValue:
-                            jtokenValue = JToken.Parse(stringValue);
+                            jtokenValue = JsonUtils.Parse(stringValue);
                             break;
 
                         default:

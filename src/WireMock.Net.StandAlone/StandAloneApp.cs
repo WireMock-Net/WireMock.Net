@@ -50,11 +50,12 @@ namespace WireMock.Net.StandAlone
                 StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
                 ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
                 WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
-                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping", false),
+                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
-                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration")
+                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
+                AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
             };
 
             if (logger != null)

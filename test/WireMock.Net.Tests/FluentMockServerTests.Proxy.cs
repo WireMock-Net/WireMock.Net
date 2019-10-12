@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -17,6 +18,35 @@ namespace WireMock.Net.Tests
 {
     public class FluentMockServerProxyTests
     {
+        [Fact]
+        public async Task FluentMockServer_Proxy_Should_log_proxied_requests()
+        {
+            // Assign
+            var settings = new FluentMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            var server = FluentMockServer.Start(settings);
+            
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            Check.That(server.Mappings).HasSize(2);
+            Check.That(server.LogEntries).HasSize(1);
+        }
+        
         [Fact]
         public async Task FluentMockServer_Proxy_Should_proxy_responses()
         {
@@ -39,6 +69,7 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(server.Mappings).HasSize(1);
+            Check.That(server.LogEntries).HasSize(1);
             Check.That(content).Contains("google");
         }
 
@@ -306,6 +337,43 @@ namespace WireMock.Net.Tests
             var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
             Check.That(receivedRequest.Cookies).IsNotNull();
             Check.That(receivedRequest.Cookies).ContainsPair("name", "value");
+        }
+
+        /// <summary>
+        /// Send some binary content in a request through the proxy and check that the same content
+        /// arrived at the target. As example a JPEG/JIFF header is used, which is not representable
+        /// in UTF8 and breaks if it is not treated as binary content. 
+        /// </summary>
+        [Fact]
+        public async Task FluentMockServer_Proxy_Should_preserve_binary_request_content()
+        {
+            // arrange
+            var jpegHeader = new byte[] {0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00};
+            var brokenJpegHeader = new byte[]
+                {0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00};
+
+            bool HasCorrectHeader(byte[] bytes) => bytes.SequenceEqual(jpegHeader);
+            bool HasBrokenHeader(byte[] bytes) => bytes.SequenceEqual(brokenJpegHeader);
+            
+            var serverForProxyForwarding = FluentMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithBody(HasCorrectHeader))
+                .RespondWith(Response.Create().WithSuccess());
+
+            serverForProxyForwarding
+                .Given(Request.Create().WithBody(HasBrokenHeader))
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.InternalServerError));
+            
+            var server = FluentMockServer.Start();
+            server
+                .Given(Request.Create())
+                .RespondWith(Response.Create().WithProxy(serverForProxyForwarding.Urls[0]));
+
+            // act
+            var response = await new HttpClient().PostAsync(server.Urls[0], new ByteArrayContent(jpegHeader));
+            
+            // assert
+            Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         }
 
         [Fact]

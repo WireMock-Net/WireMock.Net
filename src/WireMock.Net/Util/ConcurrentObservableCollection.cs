@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace WireMock.Util
 {
     /// <summary>
-    /// A special Collection that overrides methods of <see cref="ObservableCollection{T}"/> to make them thread safe
+    /// A special Collection that overrides methods of <see cref="ObservableCollection{T}"/> to make them thread safe.
     /// </summary>
     /// <typeparam name="T">The type of elements in the collection.</typeparam>
     /// <inheritdoc cref="ObservableCollection{T}" />
-    public class ConcurrentObservableCollection<T> : ObservableCollection<T>
+    internal class ConcurrentObservableCollection<T> : ObservableCollection<T>
     {
         private readonly object _lockObject = new object();
 
@@ -71,6 +72,14 @@ namespace WireMock.Util
             lock (_lockObject)
             {
                 base.MoveItem(oldIndex, newIndex);
+            }
+        }
+
+        public List<T> ToList()
+        {
+            lock (_lockObject)
+            {
+                return Items.ToList();
             }
         }
     }
