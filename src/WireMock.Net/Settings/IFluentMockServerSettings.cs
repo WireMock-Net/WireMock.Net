@@ -9,6 +9,7 @@ namespace WireMock.Settings
     /// <summary>
     /// IFluentMockServerSettings
     /// </summary>
+    [Obsolete("This interface will be removed and replaced by the class WireMockServerSettings in version 1.1.0")]
     public interface IFluentMockServerSettings
     {
         /// <summary>
