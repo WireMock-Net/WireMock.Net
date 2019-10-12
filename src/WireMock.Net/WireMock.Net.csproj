@@ -17,9 +17,9 @@
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
-    <DebugType>full</DebugType>
+    <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
+    <IncludeSymbols>True</IncludeSymbols>-->
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -31,6 +31,10 @@
     <!--<DelaySign>true</DelaySign>-->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
+
+  <!--<ItemGroup>
+    <None Include="WireMock.Net-Logo.png" Pack="true" PackagePath="../../"/>
+  </ItemGroup>-->
 
   <!--https://github.com/aspnet/RoslynCodeDomProvider/issues/51-->
   <Target Name="CheckIfShouldKillVBCSCompiler" />
