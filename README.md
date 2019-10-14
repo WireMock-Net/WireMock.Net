@@ -34,8 +34,8 @@ A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) w
 | | Official | Preview |
 | - | - | - |
 | &nbsp;&nbsp;**WireMock.Net** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |  [![MyGet Badge WireMock.Net](https://buildstats.info/myget/wiremock-net/WireMock.Net)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net)
+| &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |  [![MyGet Badge WireMock.Net.StandAlone](https://buildstats.info/myget/wiremock-net/WireMock.Net.StandAlone)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.StandAlone)
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://buildstats.info/nuget/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://buildstats.info/myget/wiremock-net/WireMock.Net.RestClient)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
-
 
 ## Development
 For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
