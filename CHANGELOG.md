@@ -1,18 +1,30 @@
+# 1.0.33.0 (12 October 2019)
+- [#311](https://github.com/WireMock-Net/WireMock.Net/pull/311) - fix jsonpath matcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#324](https://github.com/WireMock-Net/WireMock.Net/pull/324) - Add CSharpCodeMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#335](https://github.com/WireMock-Net/WireMock.Net/pull/335) - Mark some classes and methods obsolete for version 1.1.0 [doc] contributed by [StefH](https://github.com/StefH)
+- [#353](https://github.com/WireMock-Net/WireMock.Net/pull/353) - Fixed failing admin requests when content type includes a charset (based on idea from Paul Roub) [bug] contributed by [StefH](https://github.com/StefH)
+- [#355](https://github.com/WireMock-Net/WireMock.Net/pull/355) - Add Try-Catch to the event LogEntriesChanged [feature] contributed by [StefH](https://github.com/StefH)
+- [#357](https://github.com/WireMock-Net/WireMock.Net/pull/357) - Add Proxy Setting for: SaveMappingForStatusCodePattern to only save the mapping when the status code matches the pattern [feature] contributed by [StefH](https://github.com/StefH)
+- [#358](https://github.com/WireMock-Net/WireMock.Net/pull/358) - Fix JsonMatcher (parsing DateTimeOffset) contributed by [StefH](https://github.com/StefH)
+- [#306](https://github.com/WireMock-Net/WireMock.Net/issues/306) - Writing to the response body is invalid for responses with status code 204 [bug]
+- [#307](https://github.com/WireMock-Net/WireMock.Net/issues/307) - JsonPathMatcher always convert to JArray before matching [bug]
+- [#329](https://github.com/WireMock-Net/WireMock.Net/issues/329) - Feature: Add support for CSharpCodeMatcher [feature]
+- [#350](https://github.com/WireMock-Net/WireMock.Net/issues/350) - Admin requests fail when content type includes a charset [bug]
+- [#356](https://github.com/WireMock-Net/WireMock.Net/issues/356) - JsonMatcher not working when JSON contains a DateTimeOffset
+
 # 1.0.32.0 (20 September 2019)
 - [#348](https://github.com/WireMock-Net/WireMock.Net/pull/348) - When posting new mapping, use DateParseHandling.None [bug] contributed by [StefH](https://github.com/StefH)
 - [#347](https://github.com/WireMock-Net/WireMock.Net/issues/347) - Query string match on DateTimeOffset is not working [bug]
 
 # 1.0.31.0 (19 September 2019)
 - [#334](https://github.com/WireMock-Net/WireMock.Net/pull/334) - Fix issues with Proxy mode and Binary Request Bodies [bug] contributed by [andi0b](https://github.com/andi0b)
+- [#338](https://github.com/WireMock-Net/WireMock.Net/pull/338) - Fix ContentType with parameters in Proxy Mode [bug] contributed by [StefH](https://github.com/StefH)
 - [#339](https://github.com/WireMock-Net/WireMock.Net/pull/339) - Fix ConcurrentObservableCollection [bug] contributed by [StefH](https://github.com/StefH)
 - [#345](https://github.com/WireMock-Net/WireMock.Net/pull/345) - Fix CompareTo in RequestMatchResult [bug] contributed by [StefH](https://github.com/StefH)
 - [#346](https://github.com/WireMock-Net/WireMock.Net/pull/346) - Fix recorded requests skipped by request logger contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#327](https://github.com/WireMock-Net/WireMock.Net/issues/327) - Index must be within the bounds of the List - Bug [bug]
 - [#337](https://github.com/WireMock-Net/WireMock.Net/issues/337) - Proxy Missing header Content-Type - tried with Recording [bug]
 - [#344](https://github.com/WireMock-Net/WireMock.Net/issues/344) - Mapping adding order matters for multiple mappings? [bug]
-
-# 1.0.30.0 (31 August 2019)
-- [#338](https://github.com/WireMock-Net/WireMock.Net/pull/338) - Fix ContentType with parameters in Proxy Mode [bug] contributed by [StefH](https://github.com/StefH)
 
 # 1.0.29.0 (29 August 2019)
 - [#328](https://github.com/WireMock-Net/WireMock.Net/pull/328) - Fix LogRequest : Index Out Of Bounds [bug] contributed by [StefH](https://github.com/StefH)
@@ -21,26 +33,22 @@
 - [#332](https://github.com/WireMock-Net/WireMock.Net/issues/332) - Case sensitive true is ignored for JsonMatcher [feature]
 
 # 1.0.28.0 (20 August 2019)
+- [#309](https://github.com/WireMock-Net/WireMock.Net/pull/309) - Fix LogEntries: collection was modified exception [bug] contributed by [StefH](https://github.com/StefH)
+- [#314](https://github.com/WireMock-Net/WireMock.Net/pull/314) - RequestLogExpirationDuration : use DateTime.UtcNow [bug] contributed by [StefH](https://github.com/StefH)
+- [#316](https://github.com/WireMock-Net/WireMock.Net/pull/316) - Handles case where parameter value contains == [feature] contributed by [lobsteropteryx](https://github.com/lobsteropteryx)
 - [#317](https://github.com/WireMock-Net/WireMock.Net/pull/317) - Make SaveMapping and SaveMappingToFile settings independent. [feature] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#319](https://github.com/WireMock-Net/WireMock.Net/pull/319) - Add blacklist for Request Cookies. contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#320](https://github.com/WireMock-Net/WireMock.Net/pull/320) - Remove coverlet folder from source control [doc] contributed by [StefH](https://github.com/StefH)
 - [#322](https://github.com/WireMock-Net/WireMock.Net/pull/322) - Fix MappingMatcher in case of an exception in LinqMatcher. [bug] contributed by [StefH](https://github.com/StefH)
 - [#323](https://github.com/WireMock-Net/WireMock.Net/pull/323) - Refactor MappingConverter &amp; MatcherMapper [refactor] contributed by [StefH](https://github.com/StefH)
 - [#326](https://github.com/WireMock-Net/WireMock.Net/pull/326) - Fix Parsing Guid in PUT Mapping [bug] contributed by [StefH](https://github.com/StefH)
-- [#318](https://github.com/WireMock-Net/WireMock.Net/issues/318) - Documentation: Add valid CLI parameters [doc, question]
-- [#325](https://github.com/WireMock-Net/WireMock.Net/issues/325) - Admin API: PUT Mapping, FormatException because of wrong parsing of the Query  [bug]
-
-# 1.0.27.0 (14 August 2019)
-- [#316](https://github.com/WireMock-Net/WireMock.Net/pull/316) - Handles case where parameter value contains == [feature] contributed by [lobsteropteryx](https://github.com/lobsteropteryx)
-- [#287](https://github.com/WireMock-Net/WireMock.Net/issues/287) - Error with parameter that contains a &quot;=&quot; character [bug, question]
-- [#315](https://github.com/WireMock-Net/WireMock.Net/issues/315) - Wiki - Proxying: AtPriority() example not set on right object [doc]
-
-# 1.0.26.0 (11 August 2019)
-- [#309](https://github.com/WireMock-Net/WireMock.Net/pull/309) - Fix LogEntries: collection was modified exception [bug] contributed by [StefH](https://github.com/StefH)
-- [#314](https://github.com/WireMock-Net/WireMock.Net/pull/314) - RequestLogExpirationDuration : use DateTime.UtcNow [bug] contributed by [StefH](https://github.com/StefH)
 - [#252](https://github.com/WireMock-Net/WireMock.Net/issues/252) - Proxy with Transform
+- [#287](https://github.com/WireMock-Net/WireMock.Net/issues/287) - Error with parameter that contains a &quot;=&quot; character [bug, question]
 - [#308](https://github.com/WireMock-Net/WireMock.Net/issues/308) - __admin/requests - &quot;Collection was modified&quot; exception [bug]
 - [#313](https://github.com/WireMock-Net/WireMock.Net/issues/313) - RequestLogExpirationDuration - bug [bug]
+- [#315](https://github.com/WireMock-Net/WireMock.Net/issues/315) - Wiki - Proxying: AtPriority() example not set on right object [doc]
+- [#318](https://github.com/WireMock-Net/WireMock.Net/issues/318) - Documentation: Add valid CLI parameters [doc, question]
+- [#325](https://github.com/WireMock-Net/WireMock.Net/issues/325) - Admin API: PUT Mapping, FormatException because of wrong parsing of the Query  [bug]
 
 # 1.0.25.0 (23 July 2019)
 - [#304](https://github.com/WireMock-Net/WireMock.Net/pull/304) - Support WithBody with multiple matchers [feature] contributed by [StefH](https://github.com/StefH)

@@ -192,7 +192,8 @@ namespace WireMock.Server
             });
         }
 
-        private WireMockServer(WireMockServerSettings settings)
+        // TODO: make private
+        protected WireMockServer(WireMockServerSettings settings)
         {
             _settings = settings;
 

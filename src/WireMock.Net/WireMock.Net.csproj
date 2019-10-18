@@ -53,6 +53,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Settings\IFluentMockServerSettings.cs" />
+    <Compile Remove="Settings\IProxyAndRecordSettings.cs" />
     <Compile Remove="Util\CloneUtils.cs" />
     <Compile Remove="Util\IndexableDictionary.cs" />
     <Compile Remove="Util\NamedReaderWriterLocker.cs" />

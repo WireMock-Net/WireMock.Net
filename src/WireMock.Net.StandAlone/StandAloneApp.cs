@@ -1,15 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using JetBrains.Annotations;
+using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Validation;
-using JetBrains.Annotations;
-using WireMock.Logging;
 
 namespace WireMock.Net.StandAlone
 {
     /// <summary>
     /// The StandAloneApp
     /// </summary>
+    [Obsolete("This class will be removed in version 1.1.0")]
     public static class StandAloneApp
     {
         /// <summary>

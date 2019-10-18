@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Transformers
@@ -56,7 +57,7 @@ namespace WireMock.Transformers
             switch (arguments[0])
             {
                 case string jsonAsString:
-                    valueToProcess = JObject.Parse(jsonAsString);
+                    valueToProcess = JsonUtils.Parse(jsonAsString);
                     break;
 
                 case JObject jsonAsJObject:
@@ -67,7 +68,7 @@ namespace WireMock.Transformers
                     throw new NotSupportedException($"The value '{arguments[0]}' with type '{arguments[0]?.GetType()}' cannot be used in Handlebars JsonPath.");
             }
 
-            return (valueToProcess, (string) arguments[1]);
+            return (valueToProcess, (string)arguments[1]);
         }
     }
 }
