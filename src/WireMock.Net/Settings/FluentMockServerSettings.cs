@@ -10,7 +10,7 @@ namespace WireMock.Settings
     /// <summary>
     /// FluentMockServerSettings
     /// </summary>
-    [Obsolete("Will be replaced by WireMockServerSettings in version 1.1.0")]
+    [Obsolete("Will be replaced by WireMockServerSettings in version 2.x.x")]
     public class FluentMockServerSettings : IFluentMockServerSettings
     {
         /// <inheritdoc cref="IFluentMockServerSettings.Port"/>
