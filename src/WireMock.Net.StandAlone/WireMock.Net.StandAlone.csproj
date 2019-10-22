@@ -16,9 +16,9 @@
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
-    <DebugType>full</DebugType>
+    <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
+    <IncludeSymbols>True</IncludeSymbols>-->
     <ProjectGuid>{B6269AAC-170A-43D5-8B9A-579DED3D9A95}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
