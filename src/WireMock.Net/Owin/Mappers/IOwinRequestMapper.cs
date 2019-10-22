@@ -16,7 +16,8 @@ namespace WireMock.Owin.Mappers
         /// MapAsync IRequest to RequestMessage
         /// </summary>
         /// <param name="request">The OwinRequest/HttpRequest</param>
+        /// <param name="options">The WireMockMiddlewareOptions</param>
         /// <returns>RequestMessage</returns>
-        Task<RequestMessage> MapAsync(IRequest request);
+        Task<RequestMessage> MapAsync(IRequest request, IWireMockMiddlewareOptions options);
     }
 }

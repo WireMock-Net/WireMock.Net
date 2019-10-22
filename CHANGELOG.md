@@ -1,3 +1,9 @@
+# 1.0.34.0 (22 October 2019)
+- [#354](https://github.com/WireMock-Net/WireMock.Net/pull/354) - AllowBodyForAllHttpMethods [bug, feature] contributed by [StefH](https://github.com/StefH)
+- [#365](https://github.com/WireMock-Net/WireMock.Net/pull/365) - Bump Microsoft.AspNetCore.All from 2.0.8 to 2.0.9 in /examples/WireMock.Net.WebApplication [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#366](https://github.com/WireMock-Net/WireMock.Net/pull/366) - Update ObsoleteAnnotations [feature] contributed by [StefH](https://github.com/StefH)
+- [#352](https://github.com/WireMock-Net/WireMock.Net/issues/352) - DELETE request drops the body [feature, question]
+
 # 1.0.33.0 (12 October 2019)
 - [#311](https://github.com/WireMock-Net/WireMock.Net/pull/311) - fix jsonpath matcher [bug] contributed by [StefH](https://github.com/StefH)
 - [#324](https://github.com/WireMock-Net/WireMock.Net/pull/324) - Add CSharpCodeMatcher [feature] contributed by [StefH](https://github.com/StefH)

@@ -152,9 +152,26 @@ Content-Type: text/html
         [InlineData("OPTIONS", true)]
         [InlineData("CONNECT", false)]
         [InlineData("PATCH", true)]
-        public void BodyParser_ShouldParseBody_ExpectedResultForKnownMethods(string method, bool resultShouldBe)
+        public void BodyParser_ShouldParseBodyForMethodAndAllowAllIsFalse_ExpectedResultForKnownMethods(string method, bool resultShouldBe)
         {
-            Check.That(BodyParser.ShouldParseBody(method)).Equals(resultShouldBe);
+            Check.That(BodyParser.ShouldParseBody(method, false)).Equals(resultShouldBe);
+        }
+
+        [Theory]
+        [InlineData("HEAD")]
+        [InlineData("GET")]
+        [InlineData("PUT")]
+        [InlineData("POST")]
+        [InlineData("DELETE")]
+        [InlineData("TRACE")]
+        [InlineData("OPTIONS")]
+        [InlineData("CONNECT")]
+        [InlineData("PATCH")]
+        [InlineData("REPORT")]
+        [InlineData("SOME-UNKNOWN-METHOD")]
+        public void BodyParser_ShouldParseBodyForMethodAndAllowAllIsTrue_ExpectedResultShouldBeTrue(string method)
+        {
+            Check.That(BodyParser.ShouldParseBody(method, true)).IsTrue();
         }
 
         [Theory]
@@ -162,7 +179,7 @@ Content-Type: text/html
         [InlineData("SOME-UNKNOWN-METHOD")]
         public void BodyParser_ShouldParseBody_DefaultIsTrueForUnknownMethods(string method)
         {
-            Check.That(BodyParser.ShouldParseBody(method)).IsTrue();
+            Check.That(BodyParser.ShouldParseBody(method, false)).IsTrue();
         }
     }
 }

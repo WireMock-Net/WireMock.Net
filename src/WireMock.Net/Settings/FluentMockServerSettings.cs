@@ -10,7 +10,7 @@ namespace WireMock.Settings
     /// <summary>
     /// FluentMockServerSettings
     /// </summary>
-    [Obsolete("Will be replaced by WireMockServerSettings in version 1.1.0")]
+    [Obsolete("Will be replaced by WireMockServerSettings in version 2.x.x")]
     public class FluentMockServerSettings : IFluentMockServerSettings
     {
         /// <inheritdoc cref="IFluentMockServerSettings.Port"/>
@@ -94,5 +94,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IFluentMockServerSettings.AllowCSharpCodeMatcher"/>
         [PublicAPI]
         public bool? AllowCSharpCodeMatcher { get; set; }
+
+        /// <inheritdoc cref="IFluentMockServerSettings.AllowBodyForAllHttpMethods"/>
+        [PublicAPI]
+        public bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }
