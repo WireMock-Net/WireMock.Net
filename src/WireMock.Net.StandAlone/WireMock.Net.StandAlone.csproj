@@ -11,7 +11,7 @@
     <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
