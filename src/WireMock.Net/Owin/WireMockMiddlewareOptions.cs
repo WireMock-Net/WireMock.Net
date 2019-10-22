@@ -21,7 +21,7 @@ namespace WireMock.Owin
 
         public IStringMatcher AuthorizationMatcher { get; set; }
 
-        public bool AllowPartialMapping { get; set; }
+        public bool? AllowPartialMapping { get; set; }
 
         public ConcurrentDictionary<Guid, IMapping> Mappings { get; } = new ConcurrentDictionary<Guid, IMapping>();
 
@@ -39,5 +39,8 @@ namespace WireMock.Owin
 
         /// <inheritdoc cref="IWireMockMiddlewareOptions.FileSystemHandler"/>
         public IFileSystemHandler FileSystemHandler { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.AllowBodyForAllHttpMethods"/>
+        public bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

@@ -124,6 +124,13 @@ namespace WireMock.Settings
         /// <summary>
         /// Allow the usage of CSharpCodeMatcher (default is not allowed).
         /// </summary>
+        [PublicAPI]
         bool? AllowCSharpCodeMatcher { get; set; }
+
+        /// <summary>
+        /// Allow a Body for all HTTP Methods. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

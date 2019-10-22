@@ -24,5 +24,10 @@
         /// Gets or sets the MaxRequestLog count.
         /// </summary>
         public int? MaxRequestLogCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets wether to allow a body for all HTTP methods.
+        /// </summary>
+        public bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

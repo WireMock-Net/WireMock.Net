@@ -59,14 +59,19 @@ namespace WireMock.Util
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
 
-        public static bool ShouldParseBody([CanBeNull] string method)
+        public static bool ShouldParseBody([CanBeNull] string httpMethod, bool allowBodyForAllHttpMethods)
         {
-            if (string.IsNullOrEmpty(method))
+            if (string.IsNullOrEmpty(httpMethod))
             {
                 return false;
             }
 
-            if (BodyAllowedForMethods.TryGetValue(method.ToUpper(), out bool allowed))
+            if (allowBodyForAllHttpMethods)
+            {
+                return true;
+            }
+
+            if (BodyAllowedForMethods.TryGetValue(httpMethod.ToUpper(), out bool allowed))
             {
                 return allowed;
             }

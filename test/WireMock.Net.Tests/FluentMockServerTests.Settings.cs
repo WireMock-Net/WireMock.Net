@@ -116,7 +116,25 @@ namespace WireMock.Net.Tests
 
             // Assert
             var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AllowPartialMapping).IsTrue();
+            Check.That(options.AllowPartialMapping).Equals(true);
+
+            // Verify
+            _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));
+        }
+
+        [Fact]
+        public void FluentMockServer_FluentMockServerSettings_AllowBodyForAllHttpMethods()
+        {
+            // Assign and Act
+            var server = FluentMockServer.Start(new FluentMockServerSettings
+            {
+                Logger = _loggerMock.Object,
+                AllowBodyForAllHttpMethods = true
+            });
+
+            // Assert
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+            Check.That(options.AllowBodyForAllHttpMethods).Equals(true);
 
             // Verify
             _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));

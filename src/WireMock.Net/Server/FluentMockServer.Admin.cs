@@ -339,7 +339,8 @@ namespace WireMock.Server
                 AllowPartialMapping = _options.AllowPartialMapping,
                 MaxRequestLogCount = _options.MaxRequestLogCount,
                 RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
-                GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds
+                GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
+                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods
             };
 
             return ToJson(model);
@@ -359,6 +360,11 @@ namespace WireMock.Server
             if (settings.GlobalProcessingDelay != null)
             {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+            }
+
+            if (settings.AllowBodyForAllHttpMethods != null)
+            {
+                _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods.Value;
             }
 
             return ResponseMessageBuilder.Create("Settings updated");
