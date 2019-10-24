@@ -188,15 +188,17 @@ namespace WireMock.Net.Tests.Owin.Mappers
             _stream.Verify(s => s.WriteAsync(new byte[0], 0, 0, It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        [Fact]
-        public async Task OwinResponseMapper_MapAsync_WithFault_MALFORMED_RESPONSE_CHUNK()
+        [Theory]
+        [InlineData("abcd", BodyType.String)]
+        [InlineData("", BodyType.String)]
+        [InlineData(null, BodyType.None)]
+        public async Task OwinResponseMapper_MapAsync_WithFault_MALFORMED_RESPONSE_CHUNK(string body, BodyType detected)
         {
             // Arrange
-            string body = "abcd";
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),
-                BodyData = new BodyData { DetectedBodyType = BodyType.String, BodyAsString = body },
+                BodyData = new BodyData { DetectedBodyType = detected, BodyAsString = body },
                 StatusCode = 100,
                 FaultType = FaultType.MALFORMED_RESPONSE_CHUNK
             };
@@ -206,7 +208,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = 100, Times.Once);
-            _stream.Verify(s => s.WriteAsync(It.Is<byte[]>(bytes => bytes[0] == 97 && bytes[1] == 98), 0, It.Is<int>(count => count >= 4), It.IsAny<CancellationToken>()), Times.Once);
+            _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 0), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
