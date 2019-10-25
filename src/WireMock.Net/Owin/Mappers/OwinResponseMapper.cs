@@ -58,8 +58,6 @@ namespace WireMock.Owin.Mappers
                 return;
             }
 
-            bool writeResponseHeaders = true;
-            int? statusCode = responseMessage.StatusCode;
             byte[] bytes;
             switch (responseMessage.FaultType)
             {
@@ -76,26 +74,13 @@ namespace WireMock.Owin.Mappers
 
                     break;
 
-                case FaultType.RANDOM_DATA_THEN_CLOSE:
-                    bytes = IsFault(responseMessage) ? _randomizerBytes.Generate() : GetNormalBody(responseMessage);
-                    statusCode = null;
-                    writeResponseHeaders = false;
-                    break;
-
                 default:
                     bytes = GetNormalBody(responseMessage);
                     break;
             }
 
-            if (statusCode != null)
-            {
-                response.StatusCode = statusCode.Value;
-            }
-
-            if (writeResponseHeaders)
-            {
-                SetResponseHeaders(responseMessage, response);
-            }
+            response.StatusCode = responseMessage.StatusCode;
+            SetResponseHeaders(responseMessage, response);
 
             if (bytes != null)
             {

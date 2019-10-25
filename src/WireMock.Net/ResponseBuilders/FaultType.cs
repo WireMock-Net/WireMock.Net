@@ -18,11 +18,6 @@
         /// <summary>
         /// Send a defined status header, then garbage, then close the connection.
         /// </summary>
-        MALFORMED_RESPONSE_CHUNK,
-
-        /// <summary>
-        /// Send garbage then close the connection.
-        /// </summary>
-        RANDOM_DATA_THEN_CLOSE
+        MALFORMED_RESPONSE_CHUNK
     }
 }

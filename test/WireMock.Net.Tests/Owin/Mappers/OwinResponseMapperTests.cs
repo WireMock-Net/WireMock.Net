@@ -210,26 +210,5 @@ namespace WireMock.Net.Tests.Owin.Mappers
             _responseMock.VerifySet(r => r.StatusCode = 100, Times.Once);
             _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 0), It.IsAny<CancellationToken>()), Times.Once);
         }
-
-        [Fact]
-        public async Task OwinResponseMapper_MapAsync_WithFault_RANDOM_DATA_THEN_CLOSE()
-        {
-            // Arrange
-            string body = "abcd";
-            var responseMessage = new ResponseMessage
-            {
-                Headers = new Dictionary<string, WireMockList<string>>(),
-                BodyData = new BodyData { DetectedBodyType = BodyType.String, BodyAsString = body },
-                StatusCode = 100,
-                FaultType = FaultType.RANDOM_DATA_THEN_CLOSE
-            };
-
-            // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
-
-            // Assert
-            _responseMock.VerifySet(r => r.StatusCode = 100, Times.Never);
-            _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 4), It.IsAny<CancellationToken>()), Times.Once);
-        }
     }
 }

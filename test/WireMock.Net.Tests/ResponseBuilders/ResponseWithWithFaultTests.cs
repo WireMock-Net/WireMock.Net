@@ -15,7 +15,6 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
         [Theory]
         [InlineData(FaultType.EMPTY_RESPONSE)]
-        [InlineData(FaultType.RANDOM_DATA_THEN_CLOSE)]
         [InlineData(FaultType.MALFORMED_RESPONSE_CHUNK)]
         public async Task Response_ProvideResponse_WithFault(FaultType faultType)
         {
