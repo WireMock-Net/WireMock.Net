@@ -82,4 +82,4 @@ steps:
   inputs:
     command: custom
     custom: nuget
-    arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg --source https://www.myget.org/F/wiremock-net/api/v3/index.json --no-service-endpoint --api-key $(MyGetKey)
+    arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg --no-symbols --source https://www.myget.org/F/wiremock-net/api/v3/index.json --no-service-endpoint --api-key $(MyGetKey)
