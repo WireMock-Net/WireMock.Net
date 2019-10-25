@@ -1,13 +1,10 @@
-﻿using System;
-
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
     /// <summary>
     /// IProxyAndRecordSettings
     /// </summary>
-    [Obsolete("This interface will be removed and replaced by the class ProxyAndRecordSettings in version 2.x.x")]
     public interface IProxyAndRecordSettings
     {
         /// <summary>
