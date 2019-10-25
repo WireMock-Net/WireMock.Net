@@ -25,7 +25,6 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    [Obsolete("Will be replaced by WireMockServer in version 2.x.x")]
     public partial class FluentMockServer : IDisposable
     {
         private const int ServerStartDelayInMs = 100;
