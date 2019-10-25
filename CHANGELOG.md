@@ -1,3 +1,7 @@
+# 1.0.35.0 (25 October 2019)
+- [#367](https://github.com/WireMock-Net/WireMock.Net/pull/367) - No symbol NuGets [feature] contributed by [StefH](https://github.com/StefH)
+- [#368](https://github.com/WireMock-Net/WireMock.Net/pull/368) - Remove Obsolete annotations [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.34.0 (22 October 2019)
 - [#354](https://github.com/WireMock-Net/WireMock.Net/pull/354) - AllowBodyForAllHttpMethods [bug, feature] contributed by [StefH](https://github.com/StefH)
 - [#365](https://github.com/WireMock-Net/WireMock.Net/pull/365) - Bump Microsoft.AspNetCore.All from 2.0.8 to 2.0.9 in /examples/WireMock.Net.WebApplication [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
