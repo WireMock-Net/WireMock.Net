@@ -1,13 +1,14 @@
 ﻿using JetBrains.Annotations;
 using System;
 using WireMock.Matchers;
+using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The BodyRequestBuilder interface.
     /// </summary>
-    public interface IBodyRequestBuilder
+    public interface IBodyRequestBuilder : IRequestMatcher
     {
         /// <summary>
         /// WithBody: IMatcher

@@ -86,5 +86,10 @@ namespace WireMock.Admin.Mappings
         /// The client X509Certificate2 Thumbprint or SubjectName to use.
         /// </summary>
         public string X509Certificate2ThumbprintOrSubjectName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fault.
+        /// </summary>
+        public FaultModel Fault { get; set; }
     }
 }

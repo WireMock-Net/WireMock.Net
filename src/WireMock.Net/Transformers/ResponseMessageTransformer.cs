@@ -45,6 +45,9 @@ namespace WireMock.Transformers
                     break;
             }
 
+            responseMessage.FaultType = original.FaultType;
+            responseMessage.FaultPercentage = original.FaultPercentage;
+
             // Headers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)

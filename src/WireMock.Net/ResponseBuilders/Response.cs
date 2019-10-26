@@ -19,7 +19,7 @@ namespace WireMock.ResponseBuilders
     /// <summary>
     /// The Response.
     /// </summary>
-    public class Response : IResponseBuilder
+    public partial class Response : IResponseBuilder
     {
         private HttpClient _httpClientForProxy;
 
@@ -375,6 +375,7 @@ namespace WireMock.ResponseBuilders
         public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
+            Check.NotNull(settings, nameof(settings));
 
             if (Delay != null)
             {

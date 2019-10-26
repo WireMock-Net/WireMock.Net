@@ -1,15 +1,14 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using WireMock.Matchers;
-using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders
 {
     /// <summary>
     /// The HeadersAndCookieRequestBuilder interface.
     /// </summary>
-    public interface IHeadersAndCookiesRequestBuilder : IBodyRequestBuilder, IRequestMatcher, IParamsRequestBuilder
+    public interface IHeadersAndCookiesRequestBuilder : IParamsRequestBuilder
     {
         /// <summary>
         /// WithHeader: matching based on name, pattern and matchBehaviour.
