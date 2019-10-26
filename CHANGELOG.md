@@ -1,3 +1,7 @@
+# 1.0.36.0 (26 October 2019)
+- [#360](https://github.com/WireMock-Net/WireMock.Net/pull/360) - Add support for Faults [feature] contributed by [StefH](https://github.com/StefH)
+- [#343](https://github.com/WireMock-Net/WireMock.Net/issues/343) - Feature: Please provide support for Bad responses. [feature]
+
 # 1.0.35.0 (25 October 2019)
 - [#367](https://github.com/WireMock-Net/WireMock.Net/pull/367) - No symbol NuGets [feature] contributed by [StefH](https://github.com/StefH)
 - [#368](https://github.com/WireMock-Net/WireMock.Net/pull/368) - Remove Obsolete annotations [feature] contributed by [StefH](https://github.com/StefH)
