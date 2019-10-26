@@ -1,3 +1,6 @@
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,9 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -27,7 +27,7 @@ using WireMock.Validation;
 namespace WireMock.Server
 {
     /// <summary>
-    /// The WireMock Server.
+    /// The fluent mock server.
     /// </summary>
     public partial class WireMockServer
     {
@@ -340,7 +340,8 @@ namespace WireMock.Server
                 AllowPartialMapping = _options.AllowPartialMapping,
                 MaxRequestLogCount = _options.MaxRequestLogCount,
                 RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
-                GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds
+                GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
+                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods
             };
 
             return ToJson(model);
@@ -360,6 +361,11 @@ namespace WireMock.Server
             if (settings.GlobalProcessingDelay != null)
             {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+            }
+
+            if (settings.AllowBodyForAllHttpMethods != null)
+            {
+                _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods.Value;
             }
 
             return ResponseMessageBuilder.Create("Settings updated");
@@ -809,6 +815,11 @@ namespace WireMock.Server
             else if (responseModel.BodyAsFile != null)
             {
                 responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile);
+            }
+
+            if (responseModel.Fault != null && Enum.TryParse(responseModel.Fault.Type, out FaultType faultType))
+            {
+                responseBuilder.WithFault(faultType, responseModel.Fault.Percentage);
             }
 
             return responseBuilder;

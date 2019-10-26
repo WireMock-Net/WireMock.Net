@@ -115,6 +115,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.UseTransformer = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyUrl;
+                mappingModel.Response.Fault = null;
             }
             else
             {
@@ -161,6 +162,15 @@ namespace WireMock.Serialization
                             WebName = response.ResponseMessage.BodyData.Encoding.WebName
                         };
                     }
+                }
+
+                if (response.ResponseMessage.FaultType != FaultType.NONE)
+                {
+                    mappingModel.Response.Fault = new FaultModel
+                    {
+                        Type = response.ResponseMessage.FaultType.ToString(),
+                        Percentage = response.ResponseMessage.FaultPercentage
+                    };
                 }
             }
 

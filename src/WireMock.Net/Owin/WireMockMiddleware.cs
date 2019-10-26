@@ -69,7 +69,7 @@ namespace WireMock.Owin
 
         private async Task InvokeInternal(IContext ctx)
         {
-            var request = await _requestMapper.MapAsync(ctx.Request);
+            var request = await _requestMapper.MapAsync(ctx.Request, _options);
 
             bool logRequest = false;
             ResponseMessage response = null;

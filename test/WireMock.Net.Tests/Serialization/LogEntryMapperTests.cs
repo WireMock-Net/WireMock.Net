@@ -1,6 +1,8 @@
-﻿using NFluent;
+﻿using FluentAssertions;
+using NFluent;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Util;
@@ -60,8 +62,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var logEntry = new LogEntry
             {
-                RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"
-                ),
+                RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
                 ResponseMessage = new ResponseMessage
                 {
                     BodyData = new BodyData
@@ -88,6 +89,33 @@ namespace WireMock.Net.Tests.Serialization
             Check.That(result.Response.Body).IsNull();
             Check.That(result.Response.BodyAsJson).IsNull();
             Check.That(result.Response.BodyAsFile).IsEqualTo("test");
+        }
+
+        [Fact]
+        public void LogEntryMapper_Map_LogEntry_WithFault()
+        {
+            // Assign
+            var logEntry = new LogEntry
+            {
+                RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
+                ResponseMessage = new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        DetectedBodyType = BodyType.File,
+                        BodyAsFile = "test"
+                    },
+                    FaultType = FaultType.EMPTY_RESPONSE,
+                    FaultPercentage = 0.5
+                }
+            };
+
+            // Act
+            var result = LogEntryMapper.Map(logEntry);
+
+            // Assert
+            result.Response.FaultType.Should().Be("EMPTY_RESPONSE");
+            result.Response.FaultPercentage.Should().Be(0.5);
         }
     }
 }

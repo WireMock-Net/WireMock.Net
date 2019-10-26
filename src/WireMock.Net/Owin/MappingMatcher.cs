@@ -37,7 +37,7 @@ namespace WireMock.Owin
                 }
             }
 
-            if (_options.AllowPartialMapping)
+            if (_options.AllowPartialMapping == true)
             {
                 var partialMappings = mappings
                     .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)

@@ -9,7 +9,6 @@ namespace WireMock.Settings
     /// <summary>
     /// IFluentMockServerSettings
     /// </summary>
-    [Obsolete("This interface will be removed and replaced by the class WireMockServerSettings in version 1.1.0")]
     public interface IFluentMockServerSettings
     {
         /// <summary>
@@ -47,7 +46,7 @@ namespace WireMock.Settings
         /// Gets or sets if the proxy and record settings.
         /// </summary>
         [PublicAPI]
-        IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
+        ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the urls.
@@ -124,6 +123,13 @@ namespace WireMock.Settings
         /// <summary>
         /// Allow the usage of CSharpCodeMatcher (default is not allowed).
         /// </summary>
+        [PublicAPI]
         bool? AllowCSharpCodeMatcher { get; set; }
+
+        /// <summary>
+        /// Allow a Body for all HTTP Methods. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

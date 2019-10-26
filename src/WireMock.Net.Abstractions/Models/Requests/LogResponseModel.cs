@@ -68,5 +68,15 @@ namespace WireMock.Models.Requests
         /// The detected body type (detection based on Content-Type).
         /// </summary>
         public BodyType DetectedBodyTypeFromContentType { get; set; }
+
+        /// <summary>
+        /// The FaultType.
+        /// </summary>
+        public string FaultType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Fault percentage.
+        /// </summary>
+        public double? FaultPercentage { get; set; }
     }
 }

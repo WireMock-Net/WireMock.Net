@@ -11,7 +11,6 @@ namespace WireMock.Net.StandAlone
     /// <summary>
     /// The StandAloneApp
     /// </summary>
-    [Obsolete("This class will be removed in version 1.1.0")]
     public static class StandAloneApp
     {
         /// <summary>
@@ -19,7 +18,7 @@ namespace WireMock.Net.StandAlone
         /// </summary>
         /// <param name="settings">The FluentMockServerSettings</param>
         [PublicAPI]
-        public static WireMockServer Start([NotNull] WireMockServerSettings settings)
+        public static WireMockServer Start([NotNull] FluentMockServerSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
@@ -40,7 +39,7 @@ namespace WireMock.Net.StandAlone
         {
             Check.NotNull(args, nameof(args));
 
-            var settings = WireMockServerSettingsParser.ParseArguments(args);
+            var settings = (FluentMockServerSettings) WireMockServerSettingsParser.ParseArguments(args);
 
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 

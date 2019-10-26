@@ -9,7 +9,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The ParamsRequestBuilder interface.
     /// </summary>
-    public interface IParamsRequestBuilder
+    public interface IParamsRequestBuilder : IBodyRequestBuilder
     {
         /// <summary>
         /// WithParam: matching on key only.

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using RandomDataGenerator.FieldOptions;
+using RandomDataGenerator.Randomizers;
 using WireMock.Handlers;
 using WireMock.Http;
+using WireMock.ResponseBuilders;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
@@ -23,6 +26,8 @@ namespace WireMock.Owin.Mappers
     /// </summary>
     public class OwinResponseMapper : IOwinResponseMapper
     {
+        private readonly IRandomizerNumber<double> _randomizerDouble = RandomizerFactory.GetRandomizer(new FieldOptionsDouble { Min = 0, Max = 1 });
+        private readonly IRandomizerBytes _randomizerBytes = RandomizerFactory.GetRandomizer(new FieldOptionsBytes { Min = 100, Max = 200 });
         private readonly IFileSystemHandler _fileSystemHandler;
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
@@ -54,8 +59,43 @@ namespace WireMock.Owin.Mappers
                 return;
             }
 
-            response.StatusCode = responseMessage.StatusCode;
+            byte[] bytes;
+            switch (responseMessage.FaultType)
+            {
+                case FaultType.EMPTY_RESPONSE:
+                    bytes = IsFault(responseMessage) ? new byte[0] : GetNormalBody(responseMessage);
+                    break;
 
+                case FaultType.MALFORMED_RESPONSE_CHUNK:
+                    bytes = GetNormalBody(responseMessage) ?? new byte[0];
+                    if (IsFault(responseMessage))
+                    {
+                        bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();
+                    }
+
+                    break;
+
+                default:
+                    bytes = GetNormalBody(responseMessage);
+                    break;
+            }
+
+            response.StatusCode = responseMessage.StatusCode;
+            SetResponseHeaders(responseMessage, response);
+
+            if (bytes != null)
+            {
+                await response.Body.WriteAsync(bytes, 0, bytes.Length);
+            }
+        }
+
+        private bool IsFault(ResponseMessage responseMessage)
+        {
+            return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
+        }
+
+        private byte[] GetNormalBody(ResponseMessage responseMessage)
+        {
             byte[] bytes = null;
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
@@ -64,7 +104,9 @@ namespace WireMock.Owin.Mappers
                     break;
 
                 case BodyType.Json:
-                    Formatting formatting = responseMessage.BodyData.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+                    Formatting formatting = responseMessage.BodyData.BodyAsJsonIndented == true
+                        ? Formatting.Indented
+                        : Formatting.None;
                     string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     bytes = (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
                     break;
@@ -78,12 +120,7 @@ namespace WireMock.Owin.Mappers
                     break;
             }
 
-            SetResponseHeaders(responseMessage, response);
-
-            if (bytes != null)
-            {
-                await response.Body.WriteAsync(bytes, 0, bytes.Length);
-            }
+            return bytes;
         }
 
         private void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)

@@ -32,7 +32,8 @@ namespace WireMock.Settings
                 AdminPassword = parser.GetStringValue("AdminPassword"),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
-                AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher")
+                AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
+                AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods")
             };
 
             if (logger != null)

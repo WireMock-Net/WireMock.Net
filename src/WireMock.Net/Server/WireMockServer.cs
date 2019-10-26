@@ -192,7 +192,6 @@ namespace WireMock.Server
             });
         }
 
-        // TODO: make private
         protected WireMockServer(WireMockServerSettings settings)
         {
             _settings = settings;
@@ -255,6 +254,12 @@ namespace WireMock.Server
 
                     ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelayInMs);
                 }
+            }
+
+            if (settings.AllowBodyForAllHttpMethods == true)
+            {
+                _options.AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods;
+                _settings.Logger.Info("AllowBodyForAllHttpMethods is set to {0}", _settings.AllowBodyForAllHttpMethods == true);
             }
 
             if (settings.AllowPartialMapping == true)

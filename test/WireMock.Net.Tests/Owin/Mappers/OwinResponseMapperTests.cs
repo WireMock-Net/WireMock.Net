@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using WireMock.Handlers;
 using WireMock.Owin.Mappers;
+using WireMock.ResponseBuilders;
 using WireMock.Types;
 using WireMock.Util;
 #if NET452
@@ -98,7 +99,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
         public async Task OwinResponseMapper_MapAsync_Body()
         {
             // Arrange
-            string body = "abc";
+            string body = "abcd";
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),
@@ -109,7 +110,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             await _sut.MapAsync(responseMessage, _responseMock.Object);
 
             // Assert
-            _stream.Verify(s => s.WriteAsync(new byte[] { 97, 98, 99 }, 0, 3, It.IsAny<CancellationToken>()), Times.Once);
+            _stream.Verify(s => s.WriteAsync(new byte[] { 97, 98, 99, 100 }, 0, 4, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -167,6 +168,48 @@ namespace WireMock.Net.Tests.Owin.Mappers
             var v = new StringValues();
             _headers.Verify(h => h.TryGetValue("h", out v), Times.Once);
 #endif
+        }
+
+        [Fact]
+        public async Task OwinResponseMapper_MapAsync_WithFault_EMPTY_RESPONSE()
+        {
+            // Arrange
+            string body = "abc";
+            var responseMessage = new ResponseMessage
+            {
+                Headers = new Dictionary<string, WireMockList<string>>(),
+                BodyData = new BodyData { DetectedBodyType = BodyType.String, BodyAsString = body },
+                FaultType = FaultType.EMPTY_RESPONSE
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _stream.Verify(s => s.WriteAsync(new byte[0], 0, 0, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("abcd", BodyType.String)]
+        [InlineData("", BodyType.String)]
+        [InlineData(null, BodyType.None)]
+        public async Task OwinResponseMapper_MapAsync_WithFault_MALFORMED_RESPONSE_CHUNK(string body, BodyType detected)
+        {
+            // Arrange
+            var responseMessage = new ResponseMessage
+            {
+                Headers = new Dictionary<string, WireMockList<string>>(),
+                BodyData = new BodyData { DetectedBodyType = detected, BodyAsString = body },
+                StatusCode = 100,
+                FaultType = FaultType.MALFORMED_RESPONSE_CHUNK
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifySet(r => r.StatusCode = 100, Times.Once);
+            _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), 0, It.Is<int>(count => count >= 0), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

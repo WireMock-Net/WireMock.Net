@@ -19,7 +19,9 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool SaveMapping { get; set; } = true;
 
-        /// <inheritdoc cref="IProxyAndRecordSettings.SaveMappingToFile"/>
+        /// <summary>
+        /// Save the mapping for each request/response also to a file. (Note that SaveMapping must also be set to true.)
+        /// </summary>
         [PublicAPI]
         public bool SaveMappingToFile { get; set; } = true;
 

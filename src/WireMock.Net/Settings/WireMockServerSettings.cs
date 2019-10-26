@@ -1,7 +1,6 @@
-﻿using System;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
+using System;
 using WireMock.Handlers;
 using WireMock.Logging;
 
@@ -10,7 +9,7 @@ namespace WireMock.Settings
     /// <summary>
     /// WireMockServerSettings
     /// </summary>
-    public class WireMockServerSettings
+    public class WireMockServerSettings /*: IFluentMockServerSettings*/
     {
         /// <summary>
         /// Gets or sets the port.
@@ -19,16 +18,10 @@ namespace WireMock.Settings
         public int? Port { get; set; }
 
         /// <summary>
-        /// Gets or sets the urls.
-        /// </summary>
-        [PublicAPI]
-        public string[] Urls { get; set; }
-
-        /// <summary>
         /// Gets or sets the use SSL.
         /// </summary>
-        [PublicAPI]
         // ReSharper disable once InconsistentNaming
+        [PublicAPI]
         public bool? UseSSL { get; set; }
 
         /// <summary>
@@ -56,7 +49,13 @@ namespace WireMock.Settings
         public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
         /// <summary>
-        /// StartTimeout in milliseconds.
+        /// Gets or sets the urls.
+        /// </summary>
+        [PublicAPI]
+        public string[] Urls { get; set; }
+
+        /// <summary>
+        /// StartTimeout
         /// </summary>
         [PublicAPI]
         public int StartTimeout { get; set; } = 10000;
@@ -95,28 +94,24 @@ namespace WireMock.Settings
         /// Action which is called (with the IAppBuilder or IApplicationBuilder) before the internal WireMockMiddleware is initialized. [Optional]
         /// </summary>
         [PublicAPI]
-        [JsonIgnore]
         public Action<object> PreWireMockMiddlewareInit { get; set; }
 
         /// <summary>
         /// Action which is called (with the IAppBuilder or IApplicationBuilder) after the internal WireMockMiddleware is initialized. [Optional]
         /// </summary>
         [PublicAPI]
-        [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
 
         /// <summary>
         /// The IWireMockLogger which logs Debug, Info, Warning or Error
         /// </summary>
         [PublicAPI]
-        [JsonIgnore]
-        public IWireMockLogger Logger { get; set; } = new WireMockNullLogger();
+        public IWireMockLogger Logger { get; set; }
 
         /// <summary>
         /// Handler to interact with the file system to read and write static mapping files.
         /// </summary>
         [PublicAPI]
-        [JsonIgnore]
         public IFileSystemHandler FileSystemHandler { get; set; }
 
         /// <summary>
@@ -130,5 +125,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         public bool? AllowCSharpCodeMatcher { get; set; }
+
+        /// <summary>
+        /// Allow a Body for all HTTP Methods. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        public bool? AllowBodyForAllHttpMethods { get; set; }
     }
 }

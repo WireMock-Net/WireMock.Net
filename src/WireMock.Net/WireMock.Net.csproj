@@ -12,14 +12,14 @@
     <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
-    <DebugType>full</DebugType>
+    <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
+    <IncludeSymbols>True</IncludeSymbols>-->
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -31,6 +31,10 @@
     <!--<DelaySign>true</DelaySign>-->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
+
+  <!--<ItemGroup>
+    <None Include="WireMock.Net-Logo.png" Pack="true" PackagePath="../../"/>
+  </ItemGroup>-->
 
   <!--https://github.com/aspnet/RoslynCodeDomProvider/issues/51-->
   <Target Name="CheckIfShouldKillVBCSCompiler" />
@@ -53,7 +57,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Settings\IFluentMockServerSettings.cs" />
+    <Compile Remove="RequestBuilders\Request.WithFault.cs" />
     <Compile Remove="Settings\IProxyAndRecordSettings.cs" />
     <Compile Remove="Util\CloneUtils.cs" />
     <Compile Remove="Util\IndexableDictionary.cs" />
@@ -72,7 +76,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.9" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
     <!--<PackageReference Include="CloneExtensionsEx" Version="1.0.2" />-->
     <!--<PackageReference Include="FastDeepCloner" Version="1.2.5" />-->
