@@ -248,7 +248,7 @@ namespace WireMock.Server
 
         private void InitProxyAndRecord(IFluentMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings);
 
             var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
             if (settings.StartAdminInterface == true)

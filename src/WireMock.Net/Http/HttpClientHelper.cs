@@ -4,13 +4,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.HttpsCertificate;
+using WireMock.Settings;
 using WireMock.Validation;
 
 namespace WireMock.Http
 {
     internal static class HttpClientHelper
     {
-        public static HttpClient CreateHttpClient(string clientX509Certificate2ThumbprintOrSubjectName = null)
+        public static HttpClient CreateHttpClient(IProxyAndRecordSettings settings)
         {
 #if NETSTANDARD
             var handler = new HttpClientHandler
@@ -36,11 +37,11 @@ namespace WireMock.Http
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 #endif
 
-            if (!string.IsNullOrEmpty(clientX509Certificate2ThumbprintOrSubjectName))
+            if (!string.IsNullOrEmpty(settings.ClientX509Certificate2ThumbprintOrSubjectName))
             {
                 handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
-                var x509Certificate2 = ClientCertificateHelper.GetCertificate(clientX509Certificate2ThumbprintOrSubjectName);
+                var x509Certificate2 = ClientCertificateHelper.GetCertificate(settings.ClientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
             }
 
@@ -49,6 +50,17 @@ namespace WireMock.Http
 
             // If UseCookies enabled, httpClient ignores Cookie header
             handler.UseCookies = false;
+
+            if (settings.WebProxySettings != null)
+            {
+                handler.UseProxy = true;
+
+                handler.Proxy = new WebProxy(settings.WebProxySettings.Address);
+                if (settings.WebProxySettings.UserName != null && settings.WebProxySettings.Password != null)
+                {
+                    handler.Proxy.Credentials = new NetworkCredential(settings.WebProxySettings.UserName, settings.WebProxySettings.Password);
+                }
+            }
 
             var client = new HttpClient(handler);
 #if NET452 || NET46

@@ -21,8 +21,6 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public partial class Response : IResponseBuilder
     {
-        private HttpClient _httpClientForProxy;
-
         /// <summary>
         /// The delay
         /// </summary>
@@ -37,11 +35,6 @@ namespace WireMock.ResponseBuilders
         /// The Proxy URL to use.
         /// </summary>
         public string ProxyUrl { get; private set; }
-
-        /// <summary>
-        /// The client X509Certificate2 Thumbprint or SubjectName to use.
-        /// </summary>
-        public string ClientX509Certificate2ThumbprintOrSubjectName { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -331,25 +324,6 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
-        }
-
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
-        public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
-        {
-            Check.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
-
-            ProxyUrl = proxyUrl;
-            ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
-            return this;
-        }
-
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
-        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
-        {
-            Check.NotNull(settings, nameof(settings));
-
-            return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
         /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
