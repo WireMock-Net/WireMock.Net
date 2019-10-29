@@ -4,7 +4,7 @@ namespace WireMock.Server
 {
     public class FluentMockServer : WireMockServer
     {
-        public FluentMockServer(IFluentMockServerSettings settings) : base((WireMockServerSettings) settings)
+        public FluentMockServer(IFluentMockServerSettings settings) : base((IWireMockServerSettings) settings)
         {
         }
     }

@@ -3,7 +3,7 @@
     /// <summary>
     /// FluentMockServerSettings
     /// </summary>
-    public class FluentMockServerSettings : WireMockServerSettings/*, IFluentMockServerSettings*/
+    public class FluentMockServerSettings : WireMockServerSettings
     {
     }
 }

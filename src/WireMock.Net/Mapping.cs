@@ -40,7 +40,7 @@ namespace WireMock
         public IResponseProvider Provider { get; }
 
         /// <inheritdoc cref="IMapping.Settings" />
-        public WireMockServerSettings Settings { get; }
+        public IWireMockServerSettings Settings { get; }
 
         /// <inheritdoc cref="IMapping.IsStartState" />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
@@ -65,7 +65,7 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path,
-            [NotNull] WireMockServerSettings settings, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
+            [NotNull] IWireMockServerSettings settings, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
             int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState)
         {
             Guid = guid;

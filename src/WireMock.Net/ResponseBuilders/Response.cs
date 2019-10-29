@@ -355,8 +355,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, WireMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, WireMockServerSettings settings)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));

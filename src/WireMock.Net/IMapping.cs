@@ -64,7 +64,7 @@ namespace WireMock
         /// <summary>
         /// The WireMockServerSettings.
         /// </summary>
-        WireMockServerSettings Settings { get; }
+        IWireMockServerSettings Settings { get; }
 
         /// <summary>
         /// Is State started ?
