@@ -32,11 +32,6 @@ namespace WireMock.ResponseBuilders
         public bool UseTransformer { get; private set; }
 
         /// <summary>
-        /// The Proxy URL to use.
-        /// </summary>
-        public string ProxyUrl { get; private set; }
-
-        /// <summary>
         /// Gets the response message.
         /// </summary>
         public ResponseMessage ResponseMessage { get; }

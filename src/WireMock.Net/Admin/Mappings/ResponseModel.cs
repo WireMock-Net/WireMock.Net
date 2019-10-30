@@ -91,5 +91,10 @@ namespace WireMock.Admin.Mappings
         /// Gets or sets the fault.
         /// </summary>
         public FaultModel Fault { get; set; }
+
+        /// <summary>
+        /// Gets or sets the WebProxy settings.
+        /// </summary>
+        public WebProxyModel WebProxy { get; set; }
     }
 }
