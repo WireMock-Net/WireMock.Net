@@ -63,6 +63,7 @@ namespace WireMock.Settings
                     Url = proxyURL,
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
+                    SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
                     BlackListedHeaders = parser.GetValues("BlackListedHeaders"),
                     BlackListedCookies = parser.GetValues("BlackListedCookies")
