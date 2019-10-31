@@ -1,6 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 using System.Linq;
-using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
@@ -86,8 +85,19 @@ namespace WireMock.Net.StandAlone
                     SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
                     BlackListedHeaders = parser.GetValues("BlackListedHeaders"),
-                    BlackListedCookies = parser.GetValues("BlackListedCookies")                    
+                    BlackListedCookies = parser.GetValues("BlackListedCookies")
                 };
+
+                string proxyAddress = parser.GetStringValue("WebProxyAddress");
+                if (!string.IsNullOrEmpty(proxyAddress))
+                {
+                    settings.ProxyAndRecordSettings.WebProxySettings = new WebProxySettings
+                    {
+                        Address = proxyAddress,
+                        UserName = parser.GetStringValue("WebProxyUserName"),
+                        Password = parser.GetStringValue("WebProxyPassword")
+                    };
+                }
             }
 
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
