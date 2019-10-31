@@ -173,9 +173,14 @@ namespace WireMock.Server
                 return;
             }
 
-            _settings.Logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
+            bool includeSubdirectories = _settings.WatchStaticMappingsInSubdirectories == true;
+            string includeSubdirectoriesText = includeSubdirectories ? " and Subdirectories" : string.Empty;
+
+            _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
             var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
+            watcher.IncludeSubdirectories = includeSubdirectories;
+
             watcher.Created += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
