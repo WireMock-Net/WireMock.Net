@@ -141,7 +141,7 @@ namespace WireMock.Server
                 return;
             }
 
-            foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
+            foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder, _settings.WatchStaticMappingsInSubdirectories == true).OrderBy(f => f))
             {
                 _settings.Logger.Info("Reading Static MappingFile : '{0}'", filename);
 

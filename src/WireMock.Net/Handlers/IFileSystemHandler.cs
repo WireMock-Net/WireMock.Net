@@ -31,8 +31,9 @@ namespace WireMock.Handlers
         ///  Returns an enumerable collection of file names in a specified path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>An enumerable collection of the full names (including paths) for the files in the directory specified by path.</returns>
-        IEnumerable<string> EnumerateFiles([NotNull] string path);
+        /// <param name="includeSubdirectories">A value indicating whether subdirectories should also included when enumerating files.</param>
+        /// <returns>An enumerable collection of the full names (including paths) for the files in the directory (and optionally subdirectories) specified by path.</returns>
+        IEnumerable<string> EnumerateFiles([NotNull] string path, bool includeSubdirectories);
 
         /// <summary>
         /// Read a static mapping file as text.
