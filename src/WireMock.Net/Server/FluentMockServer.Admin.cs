@@ -39,6 +39,7 @@ namespace WireMock.Server
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
+        private const string QueryParamReloadStaticMappings = "reloadStaticMappings";
 
         private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(ContentTypeJson, true);
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
@@ -69,7 +70,7 @@ namespace WireMock.Server
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
-            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
+            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsReset));
 
             // __admin/mappings/{guid}
             Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
@@ -141,7 +142,7 @@ namespace WireMock.Server
                 return;
             }
 
-            foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder).OrderBy(f => f))
+            foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder, _settings.WatchStaticMappingsInSubdirectories == true).OrderBy(f => f))
             {
                 _settings.Logger.Info("Reading Static MappingFile : '{0}'", filename);
 
@@ -173,9 +174,14 @@ namespace WireMock.Server
                 return;
             }
 
-            _settings.Logger.Info("Watching folder '{0}' for new, updated and deleted MappingFiles.", folder);
+            bool includeSubdirectories = _settings.WatchStaticMappingsInSubdirectories == true;
+            string includeSubdirectoriesText = includeSubdirectories ? " and Subdirectories" : string.Empty;
+
+            _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
             var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
+            watcher.IncludeSubdirectories = includeSubdirectories;
+
             watcher.Created += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
@@ -550,6 +556,24 @@ namespace WireMock.Server
             ResetScenarios();
 
             return ResponseMessageBuilder.Create("Mappings deleted");
+        }
+
+        private ResponseMessage MappingsReset(RequestMessage requestMessage)
+        {
+            ResetMappings();
+
+            ResetScenarios();
+
+            string message = "Mappings reset";
+            if (requestMessage.Query.ContainsKey(QueryParamReloadStaticMappings) &&
+                bool.TryParse(requestMessage.Query[QueryParamReloadStaticMappings].ToString(), out bool reloadStaticMappings)
+                && reloadStaticMappings)
+            {
+                ReadStaticMappings();
+                message = $"{message} and static mappings reloaded";
+            }
+
+            return ResponseMessageBuilder.Create(message);
         }
         #endregion Mappings
 
