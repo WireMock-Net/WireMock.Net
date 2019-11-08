@@ -171,7 +171,7 @@ namespace WireMock.Net.Tests
             var staticMappingHandlerMock = new Mock<IFileSystemHandler>();
             staticMappingHandlerMock.Setup(m => m.GetMappingFolder()).Returns("folder");
             staticMappingHandlerMock.Setup(m => m.FolderExists(It.IsAny<string>())).Returns(true);
-            staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>())).Returns(new string[0]);
+            staticMappingHandlerMock.Setup(m => m.EnumerateFiles(It.IsAny<string>(), It.IsAny<bool>())).Returns(new string[0]);
 
             var server = WireMockServer.Start(new WireMockServerSettings
             {
@@ -184,7 +184,7 @@ namespace WireMock.Net.Tests
             // Assert and Verify
             staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
             staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
-            staticMappingHandlerMock.Verify(m => m.EnumerateFiles("folder"), Times.Once);
+            staticMappingHandlerMock.Verify(m => m.EnumerateFiles("folder", false), Times.Once);
         }
 
         [Fact]

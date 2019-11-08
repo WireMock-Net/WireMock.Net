@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="__admin\mappings\1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="__admin\mappings\array.json" />
   </ItemGroup>
 

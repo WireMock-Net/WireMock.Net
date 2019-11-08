@@ -12,129 +12,93 @@ namespace WireMock.Settings
     /// </summary>
     public class WireMockServerSettings : IWireMockServerSettings
     {
-        /// <summary>
-        /// Gets or sets the port.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.Port"/>
         [PublicAPI]
         public int? Port { get; set; }
 
-        /// <summary>
-        /// Gets or sets the use SSL.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.UseSSL"/>
         // ReSharper disable once InconsistentNaming
         [PublicAPI]
         public bool? UseSSL { get; set; }
 
-        /// <summary>
-        /// Gets or sets whether to start admin interface.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.StartAdminInterface"/>
         [PublicAPI]
         public bool? StartAdminInterface { get; set; }
 
-        /// <summary>
-        /// Gets or sets if the static mappings should be read at startup.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.ReadStaticMappings"/>
         [PublicAPI]
         public bool? ReadStaticMappings { get; set; }
 
-        /// <summary>
-        /// Watch the static mapping files + folder for changes when running.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.WatchStaticMappings"/>
         [PublicAPI]
         public bool? WatchStaticMappings { get; set; }
 
-        /// <summary>
-        /// Gets or sets if the proxy and record settings.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.WatchStaticMappingsInSubdirectories"/>
+        [PublicAPI]
+        public bool? WatchStaticMappingsInSubdirectories { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.ProxyAndRecordSettings"/>
         [PublicAPI]
         public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
-        /// <summary>
-        /// Gets or sets the urls.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.Urls"/>
         [PublicAPI]
         public string[] Urls { get; set; }
 
-        /// <summary>
-        /// StartTimeout
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.StartTimeout"/>
         [PublicAPI]
         public int StartTimeout { get; set; } = 10000;
 
-        /// <summary>
-        /// Allow Partial Mapping (default set to false).
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.AllowPartialMapping"/>
         [PublicAPI]
         public bool? AllowPartialMapping { get; set; }
 
-        /// <summary>
-        /// The username needed for __admin access.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.AdminUsername"/>
         [PublicAPI]
         public string AdminUsername { get; set; }
 
-        /// <summary>
-        /// The password needed for __admin access.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.AdminPassword"/>
         [PublicAPI]
         public string AdminPassword { get; set; }
 
-        /// <summary>
-        /// The RequestLog expiration in hours (optional).
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.RequestLogExpirationDuration"/>
         [PublicAPI]
         public int? RequestLogExpirationDuration { get; set; }
 
-        /// <summary>
-        /// The MaxRequestLog count (optional).
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.MaxRequestLogCount"/>
         [PublicAPI]
         public int? MaxRequestLogCount { get; set; }
 
-        /// <summary>
-        /// Action which is called (with the IAppBuilder or IApplicationBuilder) before the internal WireMockMiddleware is initialized. [Optional]
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.PreWireMockMiddlewareInit"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PreWireMockMiddlewareInit { get; set; }
 
-        /// <summary>
-        /// Action which is called (with the IAppBuilder or IApplicationBuilder) after the internal WireMockMiddleware is initialized. [Optional]
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.PostWireMockMiddlewareInit"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
 
-        /// <summary>
-        /// The IWireMockLogger which logs Debug, Info, Warning or Error
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.Logger"/>
         [PublicAPI]
         [JsonIgnore]
         public IWireMockLogger Logger { get; set; }
 
-        /// <summary>
-        /// Handler to interact with the file system to read and write static mapping files.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.FileSystemHandler"/>
         [PublicAPI]
         [JsonIgnore]
         public IFileSystemHandler FileSystemHandler { get; set; }
 
-        /// <summary>
-        /// Action which can be used to add additional Handlebars registrations. [Optional]
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.HandlebarsRegistrationCallback"/>
         [PublicAPI]
         [JsonIgnore]
         public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
 
-        /// <summary>
-        /// Allow the usage of CSharpCodeMatcher (default is not allowed).
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.AllowCSharpCodeMatcher"/>
         [PublicAPI]
         public bool? AllowCSharpCodeMatcher { get; set; }
 
-        /// <summary>
-        /// Allow a Body for all HTTP Methods. (default set to false).
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServerSettings.AllowBodyForAllHttpMethods"/>
         [PublicAPI]
         public bool? AllowBodyForAllHttpMethods { get; set; }
     }

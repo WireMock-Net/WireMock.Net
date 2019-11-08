@@ -191,7 +191,6 @@ namespace WireMock.Server
                 ReadStaticMappings = true
             });
         }
-
         protected WireMockServer(IWireMockServerSettings settings)
         {
             _settings = settings;

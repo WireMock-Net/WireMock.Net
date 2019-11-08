@@ -28,6 +28,7 @@ namespace WireMock.Settings
                 ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
                 WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
                 AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
+                WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),

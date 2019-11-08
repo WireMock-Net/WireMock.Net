@@ -43,6 +43,12 @@ namespace WireMock.Settings
         bool? WatchStaticMappings { get; set; }
 
         /// <summary>
+        /// A value indicating whether subdirectories within the static mappings path should be monitored.
+        /// </summary>
+        [PublicAPI]
+        bool? WatchStaticMappingsInSubdirectories { get; set; }
+
+        /// <summary>
         /// Gets or sets if the proxy and record settings.
         /// </summary>
         [PublicAPI]
