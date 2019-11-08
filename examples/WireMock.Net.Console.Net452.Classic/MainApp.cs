@@ -46,6 +46,7 @@ namespace WireMock.Net.ConsoleApplication
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
                 WatchStaticMappings = true,
+                WatchStaticMappingsInSubdirectories = true,
                 //ProxyAndRecordSettings = new ProxyAndRecordSettings
                 //{
                 //    SaveMapping = true
