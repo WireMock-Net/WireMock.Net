@@ -1,3 +1,8 @@
+# 1.0.37.0 (08 November 2019)
+- [#373](https://github.com/WireMock-Net/WireMock.Net/pull/373) - Make Sonar and WhiteSource optional in the Azure pipelines build [feature] contributed by [StefH](https://github.com/StefH)
+- [#374](https://github.com/WireMock-Net/WireMock.Net/pull/374) - WatchStaticMappingsInSubdirectories [feature] contributed by [StefH](https://github.com/StefH)
+- [#372](https://github.com/WireMock-Net/WireMock.Net/issues/372) - Reset in WireMock admin API not working fine. [feature, question]
+
 # 1.0.36.0 (26 October 2019)
 - [#360](https://github.com/WireMock-Net/WireMock.Net/pull/360) - Add support for Faults [feature] contributed by [StefH](https://github.com/StefH)
 - [#343](https://github.com/WireMock-Net/WireMock.Net/issues/343) - Feature: Please provide support for Bad responses. [feature]
@@ -15,7 +20,6 @@
 # 1.0.33.0 (12 October 2019)
 - [#311](https://github.com/WireMock-Net/WireMock.Net/pull/311) - fix jsonpath matcher [bug] contributed by [StefH](https://github.com/StefH)
 - [#324](https://github.com/WireMock-Net/WireMock.Net/pull/324) - Add CSharpCodeMatcher [feature] contributed by [StefH](https://github.com/StefH)
-- [#335](https://github.com/WireMock-Net/WireMock.Net/pull/335) - Mark some classes and methods obsolete for version 1.1.0 [doc] contributed by [StefH](https://github.com/StefH)
 - [#353](https://github.com/WireMock-Net/WireMock.Net/pull/353) - Fixed failing admin requests when content type includes a charset (based on idea from Paul Roub) [bug] contributed by [StefH](https://github.com/StefH)
 - [#355](https://github.com/WireMock-Net/WireMock.Net/pull/355) - Add Try-Catch to the event LogEntriesChanged [feature] contributed by [StefH](https://github.com/StefH)
 - [#357](https://github.com/WireMock-Net/WireMock.Net/pull/357) - Add Proxy Setting for: SaveMappingForStatusCodePattern to only save the mapping when the status code matches the pattern [feature] contributed by [StefH](https://github.com/StefH)
@@ -52,7 +56,6 @@
 - [#316](https://github.com/WireMock-Net/WireMock.Net/pull/316) - Handles case where parameter value contains == [feature] contributed by [lobsteropteryx](https://github.com/lobsteropteryx)
 - [#317](https://github.com/WireMock-Net/WireMock.Net/pull/317) - Make SaveMapping and SaveMappingToFile settings independent. [feature] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#319](https://github.com/WireMock-Net/WireMock.Net/pull/319) - Add blacklist for Request Cookies. contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
-- [#320](https://github.com/WireMock-Net/WireMock.Net/pull/320) - Remove coverlet folder from source control [doc] contributed by [StefH](https://github.com/StefH)
 - [#322](https://github.com/WireMock-Net/WireMock.Net/pull/322) - Fix MappingMatcher in case of an exception in LinqMatcher. [bug] contributed by [StefH](https://github.com/StefH)
 - [#323](https://github.com/WireMock-Net/WireMock.Net/pull/323) - Refactor MappingConverter &amp; MatcherMapper [refactor] contributed by [StefH](https://github.com/StefH)
 - [#326](https://github.com/WireMock-Net/WireMock.Net/pull/326) - Fix Parsing Guid in PUT Mapping [bug] contributed by [StefH](https://github.com/StefH)
@@ -60,8 +63,6 @@
 - [#287](https://github.com/WireMock-Net/WireMock.Net/issues/287) - Error with parameter that contains a &quot;=&quot; character [bug, question]
 - [#308](https://github.com/WireMock-Net/WireMock.Net/issues/308) - __admin/requests - &quot;Collection was modified&quot; exception [bug]
 - [#313](https://github.com/WireMock-Net/WireMock.Net/issues/313) - RequestLogExpirationDuration - bug [bug]
-- [#315](https://github.com/WireMock-Net/WireMock.Net/issues/315) - Wiki - Proxying: AtPriority() example not set on right object [doc]
-- [#318](https://github.com/WireMock-Net/WireMock.Net/issues/318) - Documentation: Add valid CLI parameters [doc, question]
 - [#325](https://github.com/WireMock-Net/WireMock.Net/issues/325) - Admin API: PUT Mapping, FormatException because of wrong parsing of the Query  [bug]
 
 # 1.0.25.0 (23 July 2019)
