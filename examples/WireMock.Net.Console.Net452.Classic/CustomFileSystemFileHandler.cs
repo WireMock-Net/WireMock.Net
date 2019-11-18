@@ -21,9 +21,9 @@ namespace WireMock.Net.ConsoleApplication
         }
 
         /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
-        public IEnumerable<string> EnumerateFiles(string path)
+        public IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
         {
-            return Directory.EnumerateFiles(path);
+            return includeSubdirectories ? Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories) : Directory.EnumerateFiles(path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>

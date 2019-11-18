@@ -75,8 +75,9 @@ namespace WireMock.Client
         /// <summary>
         /// Delete (reset) all mappings.
         /// </summary>
+        /// <param name="reloadStaticMappings">A value indicating whether to reload the static mappings after the reset.</param>
         [Post("__admin/mappings/reset")]
-        Task<StatusModel> ResetMappingsAsync();
+        Task<StatusModel> ResetMappingsAsync(bool? reloadStaticMappings = false);
 
         /// <summary>
         /// Get a mapping based on the guid
