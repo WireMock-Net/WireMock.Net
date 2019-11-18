@@ -1,8 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using WireMock.HttpsCertificate;
 using WireMock.Settings;
 using WireMock.Validation;
@@ -45,8 +45,7 @@ namespace WireMock.Http
                 handler.ClientCertificates.Add(x509Certificate2);
             }
 
-            // For proxy we shouldn't follow auto redirects
-            handler.AllowAutoRedirect = false;
+            handler.AllowAutoRedirect = settings.AllowAutoRedirect == true;
 
             // If UseCookies enabled, httpClient ignores Cookie header
             handler.UseCookies = false;

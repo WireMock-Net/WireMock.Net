@@ -49,5 +49,10 @@ namespace WireMock.Settings
         /// Defines the WebProxySettings.
         /// </summary>
         IWebProxySettings WebProxySettings { get; set; }
+
+        /// <summary>
+        /// Proxy requests should follow redirection (30x).
+        /// </summary>
+        bool? AllowAutoRedirect { get; set; }
     }
 }

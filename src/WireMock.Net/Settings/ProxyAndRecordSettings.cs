@@ -38,5 +38,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IProxyAndRecordSettings.WebProxySettings"/>
         [PublicAPI]
         public IWebProxySettings WebProxySettings { get; set; }
+
+        /// <inheritdoc cref="IProxyAndRecordSettings.AllowAutoRedirect"/>
+        [PublicAPI]
+        public bool? AllowAutoRedirect { get; set; }
     }
 }
