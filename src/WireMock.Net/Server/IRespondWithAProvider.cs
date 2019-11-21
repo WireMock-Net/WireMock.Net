@@ -62,6 +62,13 @@ namespace WireMock.Server
         IRespondWithAProvider InScenario(string scenario);
 
         /// <summary>
+        /// Sets the the scenario with an integer value.
+        /// </summary>
+        /// <param name="scenario">The scenario.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider InScenario(int scenario);
+
+        /// <summary>
         /// Execute this respond only in case the current state is equal to specified one.
         /// </summary>
         /// <param name="state">Any object which identifies the current state</param>
@@ -69,10 +76,24 @@ namespace WireMock.Server
         IRespondWithAProvider WhenStateIs(string state);
 
         /// <summary>
+        /// Execute this respond only in case the current state is equal to specified one.
+        /// </summary>
+        /// <param name="state">Any object which identifies the current state</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WhenStateIs(int state);
+
+        /// <summary>
         /// Once this mapping is executed the state will be changed to specified one.
         /// </summary>
         /// <param name="state">Any object which identifies the new state</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WillSetStateTo(string state);
+
+        /// <summary>
+        /// Once this mapping is executed the state will be changed to specified one.
+        /// </summary>
+        /// <param name="state">Any object which identifies the new state</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WillSetStateTo(int state);
     }
 }

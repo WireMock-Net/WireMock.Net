@@ -93,7 +93,13 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WhenStateIs"/>
+        /// <see cref="IRespondWithAProvider.InScenario(int)"/>
+        public IRespondWithAProvider InScenario(int scenario)
+        {
+            return InScenario(scenario.ToString());
+        }
+
+        /// <see cref="IRespondWithAProvider.WhenStateIs(string)"/>
         public IRespondWithAProvider WhenStateIs(string state)
         {
             if (string.IsNullOrEmpty(_scenario))
@@ -106,7 +112,13 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WillSetStateTo"/>
+        /// <see cref="IRespondWithAProvider.WhenStateIs(int)"/>
+        public IRespondWithAProvider WhenStateIs(int state)
+        {
+            return WhenStateIs(state.ToString());
+        }
+
+        /// <see cref="IRespondWithAProvider.WillSetStateTo(string)"/>
         public IRespondWithAProvider WillSetStateTo(string state)
         {
             if (string.IsNullOrEmpty(_scenario))
@@ -117,6 +129,12 @@ namespace WireMock.Server
             _nextState = state;
 
             return this;
+        }
+
+        /// <see cref="IRespondWithAProvider.WillSetStateTo(int)"/>
+        public IRespondWithAProvider WillSetStateTo(int state)
+        {
+            return WillSetStateTo(state.ToString());
         }
     }
 }
