@@ -62,6 +62,90 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task Scenarios_Should_Respect_Int_Valued_Scenarios_and_States()
+        {
+            // given
+            string path = $"/foo_{Guid.NewGuid()}";
+            var server = FluentMockServer.Start();
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario(1)
+                .WillSetStateTo(2)
+                .RespondWith(Response.Create().WithBody("Scenario 1, Setting State 2"));
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario(1)
+                .WhenStateIs(2)
+                .RespondWith(Response.Create().WithBody("Scenario 1, State 2"));
+
+            // when
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+
+            // then
+            Check.That(responseIntScenario).Equals("Scenario 1, Setting State 2");
+            Check.That(responseWithIntState).Equals("Scenario 1, State 2");
+        }
+
+        [Fact]
+        public async Task Scenarios_Should_Respect_Mixed_String_Scenario_and_Int_State()
+        {
+            // given
+            string path = $"/foo_{Guid.NewGuid()}";
+            var server = FluentMockServer.Start();
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario("state string")
+                .WillSetStateTo(1)
+                .RespondWith(Response.Create().WithBody("string state, Setting State 2"));
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario("state string")
+                .WhenStateIs(1)
+                .RespondWith(Response.Create().WithBody("string state, State 2"));
+
+            // when
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+
+            // then
+            Check.That(responseIntScenario).Equals("string state, Setting State 2");
+            Check.That(responseWithIntState).Equals("string state, State 2");
+        }
+
+        [Fact]
+        public async Task Scenarios_Should_Respect_Mixed_Int_Scenario_and_String_Scenario_and_String_State()
+        {
+            // given
+            string path = $"/foo_{Guid.NewGuid()}";
+            var server = FluentMockServer.Start();
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario(1)
+                .WillSetStateTo("Next State")
+                .RespondWith(Response.Create().WithBody("int state, Setting State 2"));
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario("1")
+                .WhenStateIs("Next State")
+                .RespondWith(Response.Create().WithBody("string state, State 2"));
+
+            // when
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+
+            // then
+            Check.That(responseIntScenario).Equals("int state, Setting State 2");
+            Check.That(responseWithIntState).Equals("string state, State 2");
+        }
+
+        [Fact]
         public async Task Scenarios_TodoList_Example()
         {
             // Assign
