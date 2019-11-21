@@ -67,10 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="responsebody.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
