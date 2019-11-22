@@ -11,7 +11,7 @@ namespace WireMock.ResponseBuilders
         /// WithBody : Create a fault response.
         /// </summary>
         /// <param name="faultType">The FaultType.</param>
-        /// <param name="percentage">The percentage when this fault should occur. When null, it's always.</param>
+        /// <param name="percentage">The percentage when this fault should occur. When null, it's always a fault.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithFault(FaultType faultType, [CanBeNull] double? percentage = null);
     }
