@@ -78,7 +78,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == 404 && ((StatusModel)r.BodyData.BodyAsJson).Status == "No matching mapping found";
+            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == (object)404 && ((StatusModel)r.BodyData.BodyAsJson).Status == "No matching mapping found";
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
@@ -99,7 +99,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == 401;
+            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == (object)401;
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
@@ -120,7 +120,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == 401;
+            Expression<Func<ResponseMessage, bool>> match = r => r.StatusCode == (object)401;
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
