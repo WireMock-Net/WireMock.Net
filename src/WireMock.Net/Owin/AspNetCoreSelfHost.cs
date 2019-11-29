@@ -106,7 +106,7 @@ namespace WireMock.Owin
                         PortUtils.TryExtract(url, out string protocol, out string host, out int port);
                         options.Listen(System.Net.IPAddress.Any, port, listenOptions =>
                         {
-                            listenOptions.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                            listenOptions.UseHttps(); // PublicCertificateHelper.GetX509Certificate2()
                         });
                     }
 #endif

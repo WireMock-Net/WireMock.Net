@@ -3,6 +3,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace WireMock.HttpsCertificate
 {
+    /// <summary>
+    /// Only used for NetStandard 1.3
+    /// </summary>
     internal static class PublicCertificateHelper
     {
         // 1] Generate using https://www.pluralsight.com/blog/software-development/selfcert-create-a-self-signed-certificate-interactively-gui-or-programmatically-in-net
