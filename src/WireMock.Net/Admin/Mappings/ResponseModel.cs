@@ -10,7 +10,7 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the HTTP status.
         /// </summary>
-        public int? StatusCode { get; set; }
+        public object StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the body destination (SameAsSource, String or Bytes).

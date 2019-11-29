@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using WireMock.Admin.Mappings;
-using WireMock.ResponseBuilders;
 using WireMock.Util;
 
 namespace WireMock.Admin.Requests
@@ -13,7 +12,7 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        public int StatusCode { get; set; } = 200;
+        public object StatusCode { get; set; } = 200;
 
         /// <summary>
         /// Gets the headers.

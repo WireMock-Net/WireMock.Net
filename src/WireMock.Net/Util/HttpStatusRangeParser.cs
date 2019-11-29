@@ -16,6 +16,26 @@ namespace WireMock.Util
         /// <param name="pattern">The pattern. (Can be null, in that case it's allowed.)</param>
         /// <param name="httpStatusCode">The value.</param>
         /// <exception cref="ArgumentException"><paramref name="pattern"/> is invalid.</exception>
+        public static bool IsMatch(string pattern, object httpStatusCode)
+        {
+            switch (httpStatusCode)
+            {
+                case int statusCodeAsInteger:
+                    return IsMatch(pattern, statusCodeAsInteger);
+
+                case string statusCodeAsString:
+                    return IsMatch(pattern, int.Parse(statusCodeAsString));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified pattern is match.
+        /// </summary>
+        /// <param name="pattern">The pattern. (Can be null, in that case it's allowed.)</param>
+        /// <param name="httpStatusCode">The value.</param>
+        /// <exception cref="ArgumentException"><paramref name="pattern"/> is invalid.</exception>
         public static bool IsMatch(string pattern, HttpStatusCode httpStatusCode)
         {
             return IsMatch(pattern, (int)httpStatusCode);

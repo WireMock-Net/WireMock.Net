@@ -25,7 +25,7 @@ namespace WireMock.Transformers
         {
             var handlebarsContext = _factory.Create();
 
-            var responseMessage = new ResponseMessage { StatusCode = original.StatusCode };
+            var responseMessage = new ResponseMessage();
 
             var template = new { request = requestMessage };
 
@@ -62,6 +62,18 @@ namespace WireMock.Transformers
             }
 
             responseMessage.Headers = newHeaders;
+
+            switch (original.StatusCode)
+            {
+                case int statusCodeAsInteger:
+                    responseMessage.StatusCode = statusCodeAsInteger;
+                    break;
+
+                case string statusCodeAsString:
+                    var templateForStatusCode = handlebarsContext.Compile(statusCodeAsString);
+                    responseMessage.StatusCode = templateForStatusCode(template);
+                    break;
+            }
 
             return responseMessage;
         }
