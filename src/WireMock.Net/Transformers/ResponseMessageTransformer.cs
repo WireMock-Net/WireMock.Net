@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Util;
@@ -87,7 +88,7 @@ namespace WireMock.Transformers
                     WalkNode(handlebarsContext, jToken, template);
                     break;
 
-                case JArray bodyAsArray:
+                case Array bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
                     WalkNode(handlebarsContext, jToken, template);
                     break;
