@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Util;
@@ -85,18 +84,23 @@ namespace WireMock.Transformers
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject.DeepClone();
+                    WalkNode(handlebarsContext, jToken, template);
                     break;
 
-                case Array bodyAsArray:
+                case JArray bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
+                    WalkNode(handlebarsContext, jToken, template);
+                    break;
+
+                case string bodyAsString:
+                    jToken = ReplaceSingleNode(handlebarsContext, bodyAsString, template);
                     break;
 
                 default:
                     jToken = JObject.FromObject(original.BodyData.BodyAsJson);
+                    WalkNode(handlebarsContext, jToken, template);
                     break;
             }
-
-            WalkNode(handlebarsContext, jToken, template);
 
             responseMessage.BodyData = new BodyData
             {
@@ -104,6 +108,24 @@ namespace WireMock.Transformers
                 DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
                 BodyAsJson = jToken
             };
+        }
+
+        private static JToken ReplaceSingleNode(IHandlebars handlebarsContext, string stringValue, object context)
+        {
+            var templateForStringValue = handlebarsContext.Compile(stringValue);
+            string transformedString = templateForStringValue(context);
+            if (!string.Equals(stringValue, transformedString))
+            {
+                const string property = "_";
+                JObject dummy = JObject.Parse($"{{ \"{property}\": null }}");
+                JToken node = dummy[property];
+
+                ReplaceNodeValue(node, transformedString);
+
+                return dummy[property];
+            }
+
+            return stringValue;
         }
 
         private static void WalkNode(IHandlebars handlebarsContext, JToken node, object context)

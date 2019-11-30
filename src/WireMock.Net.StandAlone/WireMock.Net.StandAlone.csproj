@@ -3,6 +3,7 @@
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
+    <!--<TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>-->
     <TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.StandAlone</AssemblyName>
@@ -27,7 +28,7 @@
     <CodeAnalysisRuleSet>WireMock.Net.StandAlone.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-    <!--<DelaySign>true</DelaySign>-->
+    <DelaySign>true</DelaySign>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
   
