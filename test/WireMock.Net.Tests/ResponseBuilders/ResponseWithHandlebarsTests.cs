@@ -307,7 +307,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{ \"name\":\"WireMock\" }");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
         }
     }
 }
