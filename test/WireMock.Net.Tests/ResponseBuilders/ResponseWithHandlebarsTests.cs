@@ -283,7 +283,31 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"test\"");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("\"test\"");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsHandlebarsString()
+        {
+            // Assign
+            string jsonString = "{ \"name\": \"WireMock\" }";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+            var response = Response.Create()
+                .WithBodyAsJson("{{{request.body}}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+
+            // Assert
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{ \"name\": \"WireMock\" }");
         }
     }
 }
