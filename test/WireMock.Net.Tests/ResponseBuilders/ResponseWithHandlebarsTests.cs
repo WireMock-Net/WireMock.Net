@@ -300,14 +300,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBodyAsJson("{{{request.body}}}")
+                .WithBodyAsJson("{{{request.bodyAsJson}}}")
                 .WithTransformer();
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{ \"name\": \"WireMock\" }");
+            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{ \"name\":\"WireMock\" }");
         }
     }
 }
