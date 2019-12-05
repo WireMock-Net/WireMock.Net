@@ -189,6 +189,20 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
+        public void Parse_With1ParamContainingEscapedAnd()
+        {
+            // Assign
+            string query = "?winkel=C%26A";
+
+            // Act
+            var result = QueryStringParser.Parse(query);
+
+            // Assert
+            result.Count.Should().Be(1);
+            result["winkel"].Should().Equal(new WireMockList<string>(new[] { "C&A" }));
+        }
+
+        [Fact]
         public void Parse_WithMultipleParamWithSameKey()
         {
             // Assign
@@ -227,12 +241,12 @@ namespace WireMock.Net.Tests.Util
 
             // Assert
             result.Count.Should().Be(6);
-            result["q"].Should().Equal(new WireMockList<string>("energy+edge"));
+            result["q"].Should().Equal(new WireMockList<string>("energy edge"));
             result["rls"].Should().Equal(new WireMockList<string>("com.microsoft:en-au"));
             result["ie"].Should().Equal(new WireMockList<string>("UTF-8"));
             result["oe"].Should().Equal(new WireMockList<string>("UTF-8"));
             result["startIndex"].Should().Equal(new WireMockList<string>());
-            result["startPage"].Should().Equal(new WireMockList<string>("1%22"));
+            result["startPage"].Should().Equal(new WireMockList<string>("1\""));
         }
     }
 }
