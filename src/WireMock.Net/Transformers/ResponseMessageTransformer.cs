@@ -180,10 +180,16 @@ namespace WireMock.Transformers
             }
             else
             {
-                original.BodyData.BodyAsString = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
-                original.BodyData.DetectedBodyType = BodyType.String;
+                string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+                var templateBodyAsString = handlebarsContext.Handlebars.Compile(text);
 
-                TransformBodyAsString(handlebarsContext, template, original, responseMessage);
+                responseMessage.BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                    BodyAsString = templateBodyAsString(template),
+                    BodyAsFile = transformedBodyAsFilename
+                };
             }
         }
     }

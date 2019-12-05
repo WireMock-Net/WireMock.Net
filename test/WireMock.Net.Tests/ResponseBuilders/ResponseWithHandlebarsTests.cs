@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -226,7 +227,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create()
                 .WithTransformer()
-                .WithBodyFromFile(@"c:\{{request.query.MyUniqueNumber}}\test.xml");
+                .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
@@ -239,17 +240,23 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async Task Response_ProvideResponse_Handlebars_WithBodyAsFile_And_TransformContentFromBodyAsFile()
         {
             // Assign
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("<xml MyUniqueNumber=\"{{request.query.MyUniqueNumber}}\"></xml>");
+
+            _settingsMock.SetupGet(s => s.FileSystemHandler).Returns(filesystemHandlerMock.Object);
+
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
             var response = Response.Create()
                 .WithTransformer(true)
-                .WithBodyFromFile("test.xml");
+                .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals("test.xml");
+            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+            Check.That(responseMessage.BodyData.DetectedBodyType).Equals(BodyType.String);
             Check.That(responseMessage.BodyData.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
         }
 
