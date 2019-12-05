@@ -226,13 +226,31 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create()
                 .WithTransformer()
-                .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\test.xml"); // why use a \\ here ?
+                .WithBodyFromFile(@"c:\{{request.query.MyUniqueNumber}}\test.xml");
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsFile_And_TransformContentFromBodyAsFile()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithTransformer(true)
+                .WithBodyFromFile("test.xml");
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsFile).Equals("test.xml");
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
         }
 
         [Fact]

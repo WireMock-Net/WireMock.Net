@@ -4,6 +4,6 @@ namespace WireMock.Transformers
 {
     interface IHandlebarsContextFactory
     {
-        IHandlebars Create();
+        IHandlebarsContext Create();
     }
 }
