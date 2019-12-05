@@ -203,6 +203,20 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
+        public void Parse_With1ParamContainingParentheses()
+        {
+            // Assign
+            string query = "?Transaction=(123)";
+
+            // Act
+            var result = QueryStringParser.Parse(query);
+
+            // Assert
+            result.Count.Should().Be(1);
+            result["Transaction"].Should().Equal(new WireMockList<string>(new[] { "(123)" }));
+        }
+
+        [Fact]
         public void Parse_WithMultipleParamWithSameKey()
         {
             // Assign
