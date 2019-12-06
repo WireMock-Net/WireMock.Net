@@ -35,6 +35,11 @@ namespace WireMock.ResponseBuilders
         public bool UseTransformer { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether to use the Handlerbars transformer for the content from the referenced BodyAsFile.
+        /// </summary>
+        public bool UseTransformerForBodyAsFile { get; private set; }
+
+        /// <summary>
         /// The Proxy URL to use.
         /// </summary>
         public string ProxyUrl { get; private set; }
@@ -295,10 +300,11 @@ namespace WireMock.ResponseBuilders
             return WithBodyAsJson(body, null, indented);
         }
 
-        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer"/>
-        public IResponseBuilder WithTransformer()
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
+        public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
             UseTransformer = true;
+            UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
             return this;
         }
 
@@ -398,7 +404,7 @@ namespace WireMock.ResponseBuilders
             {
                 var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
                 var responseMessageTransformer = new ResponseMessageTransformer(factory);
-                return responseMessageTransformer.Transform(requestMessage, ResponseMessage);
+                return responseMessageTransformer.Transform(requestMessage, ResponseMessage, UseTransformerForBodyAsFile);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)

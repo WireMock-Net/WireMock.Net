@@ -58,6 +58,11 @@ namespace WireMock.Models.Mappings
         public bool? UseTransformer { get; set; }
 
         /// <summary>
+        /// Use the Handlerbars transformer for the content from the referenced BodyAsFile.
+        /// </summary>
+        public bool? UseTransformerForBodyAsFile { get; set; }
+
+        /// <summary>
         /// Gets or sets the headers.
         /// </summary>
         public IDictionary<string, object> Headers { get; set; }

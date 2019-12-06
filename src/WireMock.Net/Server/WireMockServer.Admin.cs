@@ -786,7 +786,7 @@ namespace WireMock.Server
 
             if (responseModel.UseTransformer == true)
             {
-                responseBuilder = responseBuilder.WithTransformer();
+                responseBuilder = responseBuilder.WithTransformer(responseModel.UseTransformerForBodyAsFile == true);
             }
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
