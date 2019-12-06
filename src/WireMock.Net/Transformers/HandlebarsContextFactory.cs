@@ -20,15 +20,19 @@ namespace WireMock.Transformers
             _action = action;
         }
 
-        public IHandlebars Create()
+        public IHandlebarsContext Create()
         {
-            var handlebarsContext = Handlebars.Create(HandlebarsConfiguration);
+            var handlebars = Handlebars.Create(HandlebarsConfiguration);
 
-            HandlebarsHelpers.Register(handlebarsContext, _fileSystemHandler);
+            HandlebarsHelpers.Register(handlebars, _fileSystemHandler);
 
-            _action?.Invoke(handlebarsContext, _fileSystemHandler);
+            _action?.Invoke(handlebars, _fileSystemHandler);
 
-            return handlebarsContext;
+            return new HandlebarsContext
+            {
+                Handlebars = handlebars,
+                FileSystemHandler = _fileSystemHandler
+            };
         }
     }
 }

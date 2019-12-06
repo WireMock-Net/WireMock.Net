@@ -11,6 +11,6 @@
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithTransformer();
+        IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false);
     }
 }
