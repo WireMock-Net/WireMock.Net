@@ -1,4 +1,4 @@
-﻿namespace WireMock.Models.Scenarios
+﻿namespace WireMock.Admin.Scenarios
 {
     /// <summary>
     /// ScenarioStateModel

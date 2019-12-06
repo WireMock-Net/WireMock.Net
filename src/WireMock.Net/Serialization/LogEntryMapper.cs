@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using WireMock.Admin.Mappings;
+using WireMock.Admin.Requests;
 using WireMock.Logging;
-using WireMock.Models.Mappings;
-using WireMock.Models.Requests;
 using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Util;

@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NFluent;
 using System;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers;
-using WireMock.Models.Mappings;
 using WireMock.Serialization;
 using WireMock.Settings;
 using Xunit;

@@ -11,8 +11,8 @@ using WireMock.Util;
 using WireMock.Logging;
 using WireMock.Matchers;
 using System.Collections.Generic;
-using WireMock.Models.Mappings;
-using WireMock.Models.Requests;
+using WireMock.Admin.Mappings;
+using WireMock.Admin.Requests;
 #if NET452
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;

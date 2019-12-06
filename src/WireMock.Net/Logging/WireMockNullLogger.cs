@@ -1,4 +1,4 @@
-﻿using WireMock.Models.Requests;
+﻿using WireMock.Admin.Requests;
 
 namespace WireMock.Logging
 {

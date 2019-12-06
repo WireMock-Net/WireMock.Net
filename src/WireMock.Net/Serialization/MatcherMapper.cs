@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using SimMetrics.Net;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers;
-using WireMock.Models.Mappings;
 using WireMock.Settings;
 using WireMock.Validation;
 

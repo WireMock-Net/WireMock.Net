@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WireMock.Models.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// ResponseModel
