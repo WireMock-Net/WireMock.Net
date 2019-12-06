@@ -244,7 +244,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("<xml MyUniqueNumber=\"{{request.query.MyUniqueNumber}}\"></xml>");
 
-            _settingsMock.SetupGet(s => s.FileSystemHandler).Returns(filesystemHandlerMock.Object);
+            _settings.FileSystemHandler = filesystemHandlerMock.Object;
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
@@ -253,7 +253,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
