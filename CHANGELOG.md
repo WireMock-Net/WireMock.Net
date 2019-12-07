@@ -1,3 +1,10 @@
+# 1.0.39.0 (07 December 2019)
+- [#370](https://github.com/WireMock-Net/WireMock.Net/pull/370) - Add WebProxySettings (use when proxying requests) [feature] contributed by [StefH](https://github.com/StefH)
+- [#388](https://github.com/WireMock-Net/WireMock.Net/pull/388) - Transform body as file [bug] contributed by [StefH](https://github.com/StefH)
+- [#369](https://github.com/WireMock-Net/WireMock.Net/issues/369) - Question: Is there a way to provide a corporate proxy configuration? [feature]
+- [#375](https://github.com/WireMock-Net/WireMock.Net/issues/375) - Proxying does not follow redirects : make this configurable [feature]
+- [#386](https://github.com/WireMock-Net/WireMock.Net/issues/386) - Is transforming contents of XML file supported.? [bug]
+
 # 1.0.38.0 (30 November 2019)
 - [#376](https://github.com/WireMock-Net/WireMock.Net/pull/376) - Support int values for states and scenario naming [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
 - [#378](https://github.com/WireMock-Net/WireMock.Net/pull/378) - Set handlebars dependency for .net 4.5.1 to fixed value [bug] contributed by [StefH](https://github.com/StefH)
@@ -142,6 +149,7 @@
 # 1.0.7.0 (19 January 2019)
 - [#244](https://github.com/WireMock-Net/WireMock.Net/pull/244) - Fix BodyAsFile to also allow relative paths [feature] contributed by [StefH](https://github.com/StefH)
 - [#240](https://github.com/WireMock-Net/WireMock.Net/issues/240) - How to submit mappings for multiple request, responses [feature]
+- [#243](https://github.com/WireMock-Net/WireMock.Net/issues/243) - Not able to read response from file [bug]
 
 # 1.0.6.1 (10 January 2019)
 - [#247](https://github.com/WireMock-Net/WireMock.Net/pull/247) - Issue 225 improve logging in example for wire mock as windows service contributed by [paulssn](https://github.com/paulssn)

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using WireMock.Admin.Mappings;
-using WireMock.ResponseBuilders;
 using WireMock.Util;
 
 namespace WireMock.Admin.Requests
