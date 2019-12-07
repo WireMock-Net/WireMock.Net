@@ -4,6 +4,7 @@ using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Settings;
 using WireMock.Util;
 using WireMock.Validation;
 using WireMock.Types;
@@ -117,12 +118,14 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyUrl;
                 mappingModel.Response.Fault = null;
+                mappingModel.Response.WebProxy = MapWebProxy(response.WebProxySettings);
             }
             else
             {
+                mappingModel.Response.WebProxy = null;
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
-                mappingModel.Response.Headers = Map(response.ResponseMessage.Headers);
+                mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
                 if (response.UseTransformer)
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
@@ -182,14 +185,25 @@ namespace WireMock.Serialization
             return mappingModel;
         }
 
-        private static IDictionary<string, object> Map(IDictionary<string, WireMockList<string>> dictionary)
+        private static WebProxyModel MapWebProxy(IWebProxySettings settings)
         {
+            return settings != null ? new WebProxyModel
+            {
+                Address = settings.Address,
+                UserName = settings.UserName,
+                Password = settings.Password
+            } : null;
+        }
+
+        private static IDictionary<string, object> MapHeaders(IDictionary<string, WireMockList<string>> dictionary)
+        {
+            var newDictionary = new Dictionary<string, object>();
+
             if (dictionary == null || dictionary.Count == 0)
             {
-                return null;
+                return newDictionary;
             }
 
-            var newDictionary = new Dictionary<string, object>();
             foreach (var entry in dictionary)
             {
                 object value = entry.Value.Count == 1 ? (object)entry.Value.ToString() : entry.Value;

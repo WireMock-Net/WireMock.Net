@@ -21,6 +21,6 @@ namespace WireMock.ResponseBuilders
         /// </summary>
         /// <param name="settings">The IProxyAndRecordSettings.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithProxy([NotNull] ProxyAndRecordSettings settings);
+        IResponseBuilder WithProxy([NotNull] IProxyAndRecordSettings settings);
     }
 }

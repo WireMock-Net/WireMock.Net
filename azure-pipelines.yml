@@ -79,6 +79,7 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
 
+# https://github.com/NuGet/Home/issues/8148
 - task: DotNetCoreCLI@2
   displayName: Push to MyGet
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests

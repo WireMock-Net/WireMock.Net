@@ -39,7 +39,7 @@ namespace WireMock.Settings
 
         /// <inheritdoc cref="IWireMockServerSettings.ProxyAndRecordSettings"/>
         [PublicAPI]
-        public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
+        public IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.Urls"/>
         [PublicAPI]

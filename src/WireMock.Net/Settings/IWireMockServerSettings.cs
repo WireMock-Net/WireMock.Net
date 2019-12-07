@@ -52,7 +52,7 @@ namespace WireMock.Settings
         /// Gets or sets if the proxy and record settings.
         /// </summary>
         [PublicAPI]
-        ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
+        IProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the urls.

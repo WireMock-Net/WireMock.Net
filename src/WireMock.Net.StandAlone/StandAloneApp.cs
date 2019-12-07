@@ -1,6 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 using System.Linq;
-using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;

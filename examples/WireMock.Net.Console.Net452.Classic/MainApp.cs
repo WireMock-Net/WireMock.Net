@@ -108,6 +108,24 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request.Create()
                     .UsingGet()
+                    .WithHeader("postmanecho", "get2")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings
+                    {
+                        Url = "http://postman-echo.com/get",
+                        WebProxySettings = new WebProxySettings
+                        {
+                            Address = "http://company",
+                            UserName = "test",
+                            Password = "pwd"
+                        }
+                    })
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingGet()
                     .WithPath("/proxy-execute-keep-alive")
                 )
                 .RespondWith(Response.Create()

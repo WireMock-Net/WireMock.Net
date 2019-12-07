@@ -5,7 +5,7 @@ namespace WireMock.Settings
     /// <summary>
     /// ProxyAndRecordSettings
     /// </summary>
-    public class ProxyAndRecordSettings
+    public class ProxyAndRecordSettings : IProxyAndRecordSettings
     {
         /// <summary>
         /// The URL to proxy.
@@ -50,5 +50,13 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         public string[] BlackListedCookies { get; set; }
+
+        /// <inheritdoc cref="IProxyAndRecordSettings.WebProxySettings"/>
+        [PublicAPI]
+        public IWebProxySettings WebProxySettings { get; set; }
+
+        /// <inheritdoc cref="IProxyAndRecordSettings.AllowAutoRedirect"/>
+        [PublicAPI]
+        public bool? AllowAutoRedirect { get; set; }
     }
 }

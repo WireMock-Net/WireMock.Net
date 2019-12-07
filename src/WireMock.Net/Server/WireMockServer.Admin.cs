@@ -255,7 +255,7 @@ namespace WireMock.Server
 
         private void InitProxyAndRecord(IWireMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName);
+            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings);
 
             var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
             if (settings.StartAdminInterface == true)
@@ -791,12 +791,19 @@ namespace WireMock.Server
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
             {
-                if (string.IsNullOrEmpty(responseModel.X509Certificate2ThumbprintOrSubjectName))
+                var proxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    return responseBuilder.WithProxy(responseModel.ProxyUrl);
-                }
+                    Url = responseModel.ProxyUrl,
+                    ClientX509Certificate2ThumbprintOrSubjectName = responseModel.X509Certificate2ThumbprintOrSubjectName,
+                    WebProxySettings = responseModel.WebProxy != null ? new WebProxySettings
+                    {
+                        Address = responseModel.WebProxy.Address,
+                        UserName = responseModel.WebProxy.UserName,
+                        Password = responseModel.WebProxy.Password
+                    } : null
+                };
 
-                return responseBuilder.WithProxy(responseModel.ProxyUrl, responseModel.X509Certificate2ThumbprintOrSubjectName);
+                return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
             if (responseModel.StatusCode.HasValue)
