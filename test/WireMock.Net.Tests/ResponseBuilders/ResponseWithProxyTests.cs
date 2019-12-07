@@ -2,6 +2,7 @@
 using NFluent;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.RequestBuilders;
@@ -43,6 +44,28 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("{\"p\":42}");
             Check.That(responseMessage.StatusCode).IsEqualTo(201);
             Check.That(responseMessage.Headers["Content-Type"].ToString()).IsEqualTo("application/json");
+        }
+
+        [Fact]
+        public void Response_WithProxy_WebProxySettings()
+        {
+            // Assign
+            var settings = new ProxyAndRecordSettings
+            {
+                Url = "http://test.nl",
+                WebProxySettings = new WebProxySettings
+                {
+                    Address = "http://company",
+                    UserName = "x",
+                    Password = "y"
+                }
+            };
+            var response = Response.Create().WithProxy(settings);
+
+            // Act
+            var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}/{_guid}"), "GET", "::1");
+
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<HttpRequestException>();
         }
 
         public void Dispose()

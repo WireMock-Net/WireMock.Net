@@ -44,5 +44,15 @@ namespace WireMock.Settings
         /// Defines a list of cookies which will excluded from the saved mappings.
         /// </summary>
         string[] BlackListedCookies { get; set; }
+
+        /// <summary>
+        /// Defines the WebProxySettings.
+        /// </summary>
+        IWebProxySettings WebProxySettings { get; set; }
+
+        /// <summary>
+        /// Proxy requests should follow redirection (30x).
+        /// </summary>
+        bool? AllowAutoRedirect { get; set; }
     }
 }
