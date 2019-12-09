@@ -171,7 +171,7 @@ namespace WireMock
 
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;
-            RawQuery = WebUtility.UrlDecode(urlDetails.Url.Query);
+            RawQuery = urlDetails.Url.Query;
             Query = QueryStringParser.Parse(RawQuery);
         }
 
