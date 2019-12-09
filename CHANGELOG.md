@@ -1,3 +1,6 @@
+# 1.0.40.0 (09 December 2019)
+- [#389](https://github.com/WireMock-Net/WireMock.Net/pull/389) - Fix QueryStringParser [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.0.39.0 (07 December 2019)
 - [#370](https://github.com/WireMock-Net/WireMock.Net/pull/370) - Add WebProxySettings (use when proxying requests) [feature] contributed by [StefH](https://github.com/StefH)
 - [#388](https://github.com/WireMock-Net/WireMock.Net/pull/388) - Transform body as file [bug] contributed by [StefH](https://github.com/StefH)
