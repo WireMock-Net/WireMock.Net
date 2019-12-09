@@ -39,7 +39,7 @@ namespace WireMock.Net.ConsoleApplication
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3 },

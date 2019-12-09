@@ -126,7 +126,7 @@ namespace WireMock.Net.Tests
         public void WireMockServer_WireMockServerSettings_AllowBodyForAllHttpMethods()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Logger = _loggerMock.Object,
                 AllowBodyForAllHttpMethods = true

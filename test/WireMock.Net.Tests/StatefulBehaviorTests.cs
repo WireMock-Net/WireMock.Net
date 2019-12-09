@@ -66,7 +66,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -94,7 +94,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -122,7 +122,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
