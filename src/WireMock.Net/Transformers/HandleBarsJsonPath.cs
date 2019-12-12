@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Linq;
 using WireMock.Util;
 using WireMock.Validation;
@@ -14,7 +15,7 @@ namespace WireMock.Transformers
         {
             handlebarsContext.RegisterHelper("JsonPath.SelectToken", (writer, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonPath) = ParseArguments(arguments);
+                (JToken valueToProcess, string jsonPath) = ParseArguments(arguments);
 
                 try
                 {
@@ -29,7 +30,7 @@ namespace WireMock.Transformers
 
             handlebarsContext.RegisterHelper("JsonPath.SelectTokens", (writer, options, context, arguments) =>
             {
-                (JObject valueToProcess, string jsonPath) = ParseArguments(arguments);
+                (JToken valueToProcess, string jsonPath) = ParseArguments(arguments);
 
                 try
                 {
@@ -46,22 +47,26 @@ namespace WireMock.Transformers
             });
         }
 
-        private static (JObject valueToProcess, string jsonpath) ParseArguments(object[] arguments)
+        private static (JToken valueToProcess, string jsonpath) ParseArguments(object[] arguments)
         {
             Check.Condition(arguments, args => args.Length == 2, nameof(arguments));
             Check.NotNull(arguments[0], "arguments[0]");
             Check.NotNullOrEmpty(arguments[1] as string, "arguments[1]");
 
-            JObject valueToProcess;
+            JToken valueToProcess;
 
             switch (arguments[0])
             {
-                case string jsonAsString:
-                    valueToProcess = JsonUtils.Parse(jsonAsString);
+                case JToken tokenValue:
+                    valueToProcess = tokenValue;
                     break;
 
-                case JObject jsonAsJObject:
-                    valueToProcess = jsonAsJObject;
+                case string stringValue:
+                    valueToProcess = JsonUtils.Parse(stringValue);
+                    break;
+
+                case IEnumerable enumerableValue:
+                    valueToProcess = JArray.FromObject(enumerableValue);
                     break;
 
                 default:
