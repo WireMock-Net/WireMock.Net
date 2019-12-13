@@ -19,10 +19,10 @@ namespace WireMock.Util
         /// Using : DateParseHandling = DateParseHandling.None
         /// </summary>
         /// <param name="json">A System.String that contains JSON.</param>
-        /// <returns>A Newtonsoft.Json.Linq.JObject populated from the string that contains JSON.</returns>
-        public static JObject Parse(string json)
+        /// <returns>A Newtonsoft.Json.Linq.JToken populated from the string that contains JSON.</returns>
+        public static JToken Parse(string json)
         {
-            return JsonConvert.DeserializeObject<JObject>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<JToken>(json, JsonSerializerSettings);
         }
 
         public static T ParseJTokenToObject<T>(object value)

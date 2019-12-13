@@ -76,6 +76,24 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
+        public void JsonMatcher_IsMatch_JArray()
+        {
+            // Assign 
+            var matcher = new JsonMatcher(new[] { "x", "y" });
+
+            // Act 
+            var jArray = new JArray
+            {
+                "x",
+                "y"
+            };
+            double match = matcher.IsMatch(jArray);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
         public void JsonMatcher_IsMatch_JObject()
         {
             // Assign 
@@ -134,6 +152,24 @@ namespace WireMock.Net.Tests.Matchers
             // Act 
             var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
             double match = matcher.IsMatch(jobject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_JArrayAsString()
+        {
+            // Assign 
+            var matcher = new JsonMatcher("[ \"x\", \"y\" ]");
+
+            // Act 
+            var jArray = new JArray
+            {
+                "x",
+                "y"
+            };
+            double match = matcher.IsMatch(jArray);
 
             // Assert 
             Assert.Equal(1.0, match);
