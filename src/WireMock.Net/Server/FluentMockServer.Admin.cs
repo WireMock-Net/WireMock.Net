@@ -1,3 +1,6 @@
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,9 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
@@ -179,8 +179,10 @@ namespace WireMock.Server
 
             _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
-            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
-            watcher.IncludeSubdirectories = includeSubdirectories;
+            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            {
+                IncludeSubdirectories = includeSubdirectories
+            };
 
             watcher.Created += (sender, args) =>
             {
@@ -229,7 +231,7 @@ namespace WireMock.Server
 
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
-                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(value));
+                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonUtils.DeserializeObject(value));
                 foreach (var mappingModel in mappingModels)
                 {
                     if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -882,7 +884,7 @@ namespace WireMock.Server
         {
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
             {
-                return JsonConvert.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
+                return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
             }
 
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
