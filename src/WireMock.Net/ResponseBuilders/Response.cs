@@ -252,7 +252,7 @@ namespace WireMock.ResponseBuilders
 
                 case BodyDestinationFormat.Json:
                     ResponseMessage.BodyData.DetectedBodyType = BodyType.Json;
-                    ResponseMessage.BodyData.BodyAsJson = JsonConvert.DeserializeObject(body);
+                    ResponseMessage.BodyData.BodyAsJson = JsonUtils.DeserializeObject(body);
                     break;
 
                 default:
