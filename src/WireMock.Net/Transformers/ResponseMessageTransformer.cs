@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using HandlebarsDotNet;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,7 +32,7 @@ namespace WireMock.Transformers
             switch (original.BodyData.DetectedBodyType)
             {
                 case BodyType.Json:
-                    TransformBodyAsJson(handlebarsContext, template, original, responseMessage);
+                    TransformBodyAsJson(handlebarsContext.Handlebars, template, original, responseMessage);
                     break;
 
                 case BodyType.File:
@@ -40,7 +41,7 @@ namespace WireMock.Transformers
 
                 case BodyType.String:
                     responseMessage.BodyOriginal = original.BodyData.BodyAsString;
-                    TransformBodyAsString(handlebarsContext, template, original, responseMessage);
+                    TransformBodyAsString(handlebarsContext.Handlebars, template, original, responseMessage);
                     break;
             }
 
@@ -69,7 +70,7 @@ namespace WireMock.Transformers
                     break;
 
                 case string statusCodeAsString:
-                    var templateForStatusCode = handlebarsContext.Compile(statusCodeAsString);
+                    var templateForStatusCode = handlebarsContext.Handlebars.Compile(statusCodeAsString);
                     responseMessage.StatusCode = templateForStatusCode(template);
                     break;
             }
@@ -77,7 +78,7 @@ namespace WireMock.Transformers
             return responseMessage;
         }
 
-        private static void TransformBodyAsJson(IHandlebarsContext handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsJson(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
             JToken jToken;
             switch (original.BodyData.BodyAsJson)
@@ -155,7 +156,7 @@ namespace WireMock.Transformers
                     return;
                 }
 
-                var templateForStringValue = handlebarsContext.Handlebars.Compile(stringValue);
+                var templateForStringValue = handlebarsContext.Compile(stringValue);
                 string transformedString = templateForStringValue(context);
                 if (!string.Equals(stringValue, transformedString))
                 {
@@ -187,9 +188,9 @@ namespace WireMock.Transformers
             node.Replace(value);
         }
 
-        private static void TransformBodyAsString(IHandlebarsContext handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsString(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBodyAsString = handlebarsContext.Handlebars.Compile(original.BodyData.BodyAsString);
+            var templateBodyAsString = handlebarsContext.Compile(original.BodyData.BodyAsString);
 
             responseMessage.BodyData = new BodyData
             {

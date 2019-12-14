@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests
     {
         private const string ClientIp = "::1";
 
-        // [Fact] : TODO : this test fails???
+        [Fact]
         public void Request_WithPath_EncodedSpaces()
         {
             // Assign
