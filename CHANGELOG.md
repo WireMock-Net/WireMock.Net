@@ -1,5 +1,10 @@
+# 1.0.41.0 (14 December 2019)
+- [#392](https://github.com/WireMock-Net/WireMock.Net/pull/392) - Fix array in JsonMatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#390](https://github.com/WireMock-Net/WireMock.Net/issues/390) - JsonMatcher does not match a body containing an array of strings [bug]
+
 # 1.0.40.0 (09 December 2019)
 - [#389](https://github.com/WireMock-Net/WireMock.Net/pull/389) - Fix QueryStringParser [bug] contributed by [StefH](https://github.com/StefH)
+- [#387](https://github.com/WireMock-Net/WireMock.Net/issues/387) - Query string parameter value which contains %26 does not work with ExactMatcher [bug]
 
 # 1.0.39.0 (07 December 2019)
 - [#370](https://github.com/WireMock-Net/WireMock.Net/pull/370) - Add WebProxySettings (use when proxying requests) [feature] contributed by [StefH](https://github.com/StefH)
