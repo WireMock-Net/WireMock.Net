@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace WireMock.Util
 {
@@ -30,7 +31,7 @@ namespace WireMock.Util
                 .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries) // Support "?key=value;key=anotherValue" and "?key=value&key=anotherValue"
                 .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
                 .GroupBy(parts => parts[0], JoinParts)
-                .ToDictionary(grouping => grouping.Key, grouping => new WireMockList<string>(grouping.SelectMany(x => x)));
+                .ToDictionary(grouping => grouping.Key, grouping => new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode)));
         }
     }
 }

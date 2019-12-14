@@ -1,5 +1,4 @@
-﻿using HandlebarsDotNet;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,7 +20,7 @@ namespace WireMock.Transformers
             _factory = factory;
         }
 
-        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original)
+        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile)
         {
             var handlebarsContext = _factory.Create();
 
@@ -36,7 +35,7 @@ namespace WireMock.Transformers
                     break;
 
                 case BodyType.File:
-                    TransformBodyAsFile(handlebarsContext, template, original, responseMessage);
+                    TransformBodyAsFile(handlebarsContext, template, original, responseMessage, useTransformerForBodyAsFile);
                     break;
 
                 case BodyType.String:
@@ -52,9 +51,9 @@ namespace WireMock.Transformers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)
             {
-                var templateHeaderKey = handlebarsContext.Compile(header.Key);
+                var templateHeaderKey = handlebarsContext.Handlebars.Compile(header.Key);
                 var templateHeaderValues = header.Value
-                    .Select(handlebarsContext.Compile)
+                    .Select(handlebarsContext.Handlebars.Compile)
                     .Select(func => func(template))
                     .ToArray();
 
@@ -78,7 +77,7 @@ namespace WireMock.Transformers
             return responseMessage;
         }
 
-        private static void TransformBodyAsJson(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsJson(IHandlebarsContext handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
             JToken jToken;
             switch (original.BodyData.BodyAsJson)
@@ -156,7 +155,7 @@ namespace WireMock.Transformers
                     return;
                 }
 
-                var templateForStringValue = handlebarsContext.Compile(stringValue);
+                var templateForStringValue = handlebarsContext.Handlebars.Compile(stringValue);
                 string transformedString = templateForStringValue(context);
                 if (!string.Equals(stringValue, transformedString))
                 {
@@ -188,9 +187,9 @@ namespace WireMock.Transformers
             node.Replace(value);
         }
 
-        private static void TransformBodyAsString(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsString(IHandlebarsContext handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
         {
-            var templateBodyAsString = handlebarsContext.Compile(original.BodyData.BodyAsString);
+            var templateBodyAsString = handlebarsContext.Handlebars.Compile(original.BodyData.BodyAsString);
 
             responseMessage.BodyData = new BodyData
             {
@@ -200,16 +199,33 @@ namespace WireMock.Transformers
             };
         }
 
-        private static void TransformBodyAsFile(IHandlebars handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage)
+        private void TransformBodyAsFile(IHandlebarsContext handlebarsContext, object template, ResponseMessage original, ResponseMessage responseMessage, bool useTransformerForBodyAsFile)
         {
-            var templateBodyAsFile = handlebarsContext.Compile(original.BodyData.BodyAsFile);
+            var templateBodyAsFile = handlebarsContext.Handlebars.Compile(original.BodyData.BodyAsFile);
+            string transformedBodyAsFilename = templateBodyAsFile(template);
 
-            responseMessage.BodyData = new BodyData
+            if (!useTransformerForBodyAsFile)
             {
-                DetectedBodyType = original.BodyData.DetectedBodyType,
-                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
-                BodyAsFile = templateBodyAsFile(template)
-            };
+                responseMessage.BodyData = new BodyData
+                {
+                    DetectedBodyType = original.BodyData.DetectedBodyType,
+                    DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                    BodyAsFile = transformedBodyAsFilename
+                };
+            }
+            else
+            {
+                string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+                var templateBodyAsString = handlebarsContext.Handlebars.Compile(text);
+
+                responseMessage.BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                    BodyAsString = templateBodyAsString(template),
+                    BodyAsFile = transformedBodyAsFilename
+                };
+            }
         }
     }
 }

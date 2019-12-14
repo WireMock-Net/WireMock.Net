@@ -21,8 +21,6 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public partial class Response : IResponseBuilder
     {
-        private HttpClient _httpClientForProxy;
-
         /// <summary>
         /// The delay
         /// </summary>
@@ -34,14 +32,9 @@ namespace WireMock.ResponseBuilders
         public bool UseTransformer { get; private set; }
 
         /// <summary>
-        /// The Proxy URL to use.
+        /// Gets a value indicating whether to use the Handlerbars transformer for the content from the referenced BodyAsFile.
         /// </summary>
-        public string ProxyUrl { get; private set; }
-
-        /// <summary>
-        /// The client X509Certificate2 Thumbprint or SubjectName to use.
-        /// </summary>
-        public string ClientX509Certificate2ThumbprintOrSubjectName { get; private set; }
+        public bool UseTransformerForBodyAsFile { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -311,10 +304,11 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer"/>
-        public IResponseBuilder WithTransformer()
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
+        public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
             UseTransformer = true;
+            UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
             return this;
         }
 
@@ -331,25 +325,6 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
-        }
-
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
-        public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
-        {
-            Check.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
-
-            ProxyUrl = proxyUrl;
-            ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName;
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(clientX509Certificate2ThumbprintOrSubjectName);
-            return this;
-        }
-
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
-        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
-        {
-            Check.NotNull(settings, nameof(settings));
-
-            return WithProxy(settings.Url, settings.ClientX509Certificate2ThumbprintOrSubjectName);
         }
 
         /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
@@ -414,7 +389,7 @@ namespace WireMock.ResponseBuilders
             {
                 var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
                 var responseMessageTransformer = new ResponseMessageTransformer(factory);
-                return responseMessageTransformer.Transform(requestMessage, ResponseMessage);
+                return responseMessageTransformer.Transform(requestMessage, ResponseMessage, UseTransformerForBodyAsFile);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
