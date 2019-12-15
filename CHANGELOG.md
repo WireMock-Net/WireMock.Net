@@ -1,3 +1,7 @@
+# 1.0.42.0 (15 December 2019)
+- [#391](https://github.com/WireMock-Net/WireMock.Net/pull/391) - Correctly support DateTime pattern as string in ExactMatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#383](https://github.com/WireMock-Net/WireMock.Net/issues/383) - ExactMatcher does not accept ISO8601 DateTime? [bug]
+
 # 1.0.41.0 (14 December 2019)
 - [#392](https://github.com/WireMock-Net/WireMock.Net/pull/392) - Fix array in JsonMatcher [bug] contributed by [StefH](https://github.com/StefH)
 - [#390](https://github.com/WireMock-Net/WireMock.Net/issues/390) - JsonMatcher does not match a body containing an array of strings [bug]
