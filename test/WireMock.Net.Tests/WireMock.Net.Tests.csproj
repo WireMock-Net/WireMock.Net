@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Authors>Stef Heyenrath</Authors>
     <TargetFrameworks>net452;netcoreapp2.1</TargetFrameworks>
+    <!--<TargetFramework>netcoreapp2.1</TargetFramework>-->
     <DebugType>full</DebugType>
     <AssemblyName>WireMock.Net.Tests</AssemblyName>
     <PackageId>WireMock.Net.Tests</PackageId>
@@ -42,7 +43,7 @@
     <PackageReference Include="System.Threading" Version="4.3.0" />
     <PackageReference Include="RestEase" Version="1.4.7" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NFluent" Version="2.5.0" />

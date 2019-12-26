@@ -807,9 +807,15 @@ namespace WireMock.Server
                 return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
-            if (responseModel.StatusCode.HasValue)
+            switch (responseModel.StatusCode)
             {
-                responseBuilder = responseBuilder.WithStatusCode(responseModel.StatusCode.Value);
+                case int statusCodeAsInteger:
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInteger);
+                    break;
+
+                case string statusCodeAsString:
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
+                    break;
             }
 
             if (responseModel.Headers != null)

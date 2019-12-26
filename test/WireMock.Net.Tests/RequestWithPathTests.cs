@@ -13,21 +13,6 @@ namespace WireMock.Net.Tests
     {
         private const string ClientIp = "::1";
 
-        // [Fact] : TODO : this test fails???
-        public void Request_WithPath_EncodedSpaces()
-        {
-            // Assign
-            var spec = Request.Create().WithPath("/path/a%20b").UsingAnyMethod();
-
-            // when
-            var body = new BodyData();
-            var request = new RequestMessage(new UrlDetails("http://localhost/path/a%20b"), "GET", ClientIp, body);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
-
         [Fact]
         public void Request_WithPath_Spaces()
         {

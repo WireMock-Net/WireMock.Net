@@ -87,11 +87,7 @@ namespace WireMock.ResponseBuilders
             ResponseMessage = responseMessage;
         }
 
-        /// <summary>
-        /// The with status code.
-        /// </summary>
-        /// <param name="code">The code.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>\
+        /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(int)"/>
         [PublicAPI]
         public IResponseBuilder WithStatusCode(int code)
         {
@@ -99,11 +95,15 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <summary>
-        /// The with status code.
-        /// </summary>
-        /// <param name="code">The code.</param>
-        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(string)"/>
+        [PublicAPI]
+        public IResponseBuilder WithStatusCode(string code)
+        {
+            ResponseMessage.StatusCode = code;
+            return this;
+        }
+
+        /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(HttpStatusCode)"/>
         [PublicAPI]
         public IResponseBuilder WithStatusCode(HttpStatusCode code)
         {

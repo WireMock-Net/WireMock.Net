@@ -12,7 +12,7 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        public int StatusCode { get; set; } = 200;
+        public object StatusCode { get; set; } = 200;
 
         /// <summary>
         /// Gets the headers.
