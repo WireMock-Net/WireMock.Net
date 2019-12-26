@@ -19,10 +19,32 @@ namespace WireMock.Util
         /// Using : DateParseHandling = DateParseHandling.None
         /// </summary>
         /// <param name="json">A System.String that contains JSON.</param>
-        /// <returns>A Newtonsoft.Json.Linq.JObject populated from the string that contains JSON.</returns>
-        public static JObject Parse(string json)
+        /// <returns>A Newtonsoft.Json.Linq.JToken populated from the string that contains JSON.</returns>
+        public static JToken Parse(string json)
         {
-            return JsonConvert.DeserializeObject<JObject>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<JToken>(json, JsonSerializerSettings);
+        }
+
+        /// <summary>
+        /// Deserializes the JSON to a .NET object.
+        /// Using : DateParseHandling = DateParseHandling.None
+        /// </summary>
+        /// <param name="json">A System.String that contains JSON.</param>
+        /// <returns>The deserialized object from the JSON string.</returns>
+        public static object DeserializeObject(string json)
+        {
+            return JsonConvert.DeserializeObject(json, JsonSerializerSettings);
+        }
+
+        /// <summary>
+        /// Deserializes the JSON to the specified .NET type.
+        /// Using : DateParseHandling = DateParseHandling.None
+        /// </summary>
+        /// <param name="json">A System.String that contains JSON.</param>
+        /// <returns>The deserialized object from the JSON string.</returns>
+        public static T DeserializeObject<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
         }
 
         public static T ParseJTokenToObject<T>(object value)

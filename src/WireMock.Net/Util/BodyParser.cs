@@ -58,8 +58,6 @@ namespace WireMock.Util
             new WildcardMatcher("application/x-www-form-urlencoded", true)
         };
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
-
         public static bool ShouldParseBody([CanBeNull] string httpMethod, bool allowBodyForAllHttpMethods)
         {
             if (string.IsNullOrEmpty(httpMethod))
@@ -148,7 +146,7 @@ namespace WireMock.Util
                 {
                     try
                     {
-                        data.BodyAsJson = JsonConvert.DeserializeObject(data.BodyAsString, JsonSerializerSettings);
+                        data.BodyAsJson = JsonUtils.DeserializeObject(data.BodyAsString);
                         data.DetectedBodyType = BodyType.Json;
                     }
                     catch

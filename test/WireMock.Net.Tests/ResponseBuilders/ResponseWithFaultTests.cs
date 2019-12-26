@@ -8,7 +8,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
-    public class ResponseWithWithFaultTests
+    public class ResponseWithFaultTests
     {
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";

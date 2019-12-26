@@ -80,7 +80,17 @@ namespace WireMock.Owin.Mappers
                     break;
             }
 
-            response.StatusCode = responseMessage.StatusCode;
+            switch (responseMessage.StatusCode)
+            {
+                case int statusCodeAsInteger:
+                    response.StatusCode = statusCodeAsInteger;
+                    break;
+
+                case string statusCodeAsString:
+                    response.StatusCode = int.Parse(statusCodeAsString);
+                    break;
+            }
+
             SetResponseHeaders(responseMessage, response);
 
             if (bytes != null)

@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.Linq;
 using WireMock.Util;
 using WireMock.Validation;
@@ -85,7 +86,7 @@ namespace WireMock.Matchers
                     // Check if JToken or object
                     JToken jtokenInput = input is JToken tokenInput ? tokenInput : JObject.FromObject(input);
 
-                    // Check if JToken or string or object
+                    // Check if JToken, string, IEnumerable or object
                     JToken jtokenValue;
                     switch (Value)
                     {
@@ -95,6 +96,10 @@ namespace WireMock.Matchers
 
                         case string stringValue:
                             jtokenValue = JsonUtils.Parse(stringValue);
+                            break;
+
+                        case IEnumerable enumerableValue:
+                            jtokenValue = JArray.FromObject(enumerableValue);
                             break;
 
                         default:

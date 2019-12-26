@@ -180,8 +180,10 @@ namespace WireMock.Server
 
             _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
-            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs);
-            watcher.IncludeSubdirectories = includeSubdirectories;
+            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            {
+                IncludeSubdirectories = includeSubdirectories
+            };
 
             watcher.Created += (sender, args) =>
             {
@@ -230,7 +232,7 @@ namespace WireMock.Server
 
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
-                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonConvert.DeserializeObject(value));
+                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonUtils.DeserializeObject(value));
                 foreach (var mappingModel in mappingModels)
                 {
                     if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -806,9 +808,15 @@ namespace WireMock.Server
                 return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
-            if (responseModel.StatusCode.HasValue)
+            switch (responseModel.StatusCode)
             {
-                responseBuilder = responseBuilder.WithStatusCode(responseModel.StatusCode.Value);
+                case int statusCodeAsInteger:
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInteger);
+                    break;
+
+                case string statusCodeAsString:
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
+                    break;
             }
 
             if (responseModel.Headers != null)
@@ -879,7 +887,7 @@ namespace WireMock.Server
         {
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
             {
-                return JsonConvert.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
+                return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
             }
 
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
