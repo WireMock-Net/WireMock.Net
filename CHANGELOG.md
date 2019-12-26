@@ -1,3 +1,8 @@
+# 1.0.43.0 (26 December 2019)
+- [#385](https://github.com/WireMock-Net/WireMock.Net/pull/385) - StatusCode as string [feature] contributed by [StefH](https://github.com/StefH)
+- [#380](https://github.com/WireMock-Net/WireMock.Net/issues/380) - StatusCode is defined as integer (string is not possible) [bug]
+- [#382](https://github.com/WireMock-Net/WireMock.Net/issues/382) - Return same request body [feature]
+
 # 1.0.42.0 (15 December 2019)
 - [#391](https://github.com/WireMock-Net/WireMock.Net/pull/391) - Correctly support DateTime pattern as string in ExactMatcher [bug] contributed by [StefH](https://github.com/StefH)
 - [#383](https://github.com/WireMock-Net/WireMock.Net/issues/383) - ExactMatcher does not accept ISO8601 DateTime? [bug]
