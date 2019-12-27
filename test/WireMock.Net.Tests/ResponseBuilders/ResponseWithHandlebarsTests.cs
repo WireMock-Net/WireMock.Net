@@ -190,7 +190,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
@@ -306,7 +306,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("\"test\"");
@@ -330,7 +330,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
