@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System.Collections.Generic;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

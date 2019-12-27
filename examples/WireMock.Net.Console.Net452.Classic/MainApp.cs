@@ -39,7 +39,7 @@ namespace WireMock.Net.ConsoleApplication
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
 
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3 },
@@ -64,7 +64,7 @@ namespace WireMock.Net.ConsoleApplication
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
                 // FileSystemHandler = new CustomFileSystemFileHandler()
             });
-            System.Console.WriteLine("FluentMockServer listening at {0}", string.Join(",", server.Urls));
+            System.Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 
@@ -468,6 +468,7 @@ namespace WireMock.Net.ConsoleApplication
                         DateTimeNowToString = DateTime.Now.ToString("s", CultureInfo.InvariantCulture),
                         Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
                         Guid2 = "{{Random Type=\"Guid\"}}",
+                        Guid3 = "{{Random Type=\"Guid\" Format=\"X\"}}",
                         Boolean = "{{Random Type=\"Boolean\"}}",
                         Integer = "{{Random Type=\"Integer\" Min=1000 Max=9999}}",
                         Long = "{{#Random Type=\"Long\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WireMock.Admin.Mappings;
 using WireMock.Http;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock

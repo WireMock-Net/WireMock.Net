@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
+using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
 
 namespace WireMock.Client
@@ -12,7 +13,8 @@ namespace WireMock.Client
     /// <summary>
     /// The RestEase interface which defines all admin commands.
     /// </summary>
-    public interface IFluentMockServerAdmin
+    [BasePath("__admin")]
+    public interface IWireMockAdminApi
     {
         /// <summary>
         /// Authentication header
@@ -24,14 +26,14 @@ namespace WireMock.Client
         /// Get the settings.
         /// </summary>
         /// <returns>SettingsModel</returns>
-        [Get("__admin/settings")]
+        [Get("settings")]
         Task<SettingsModel> GetSettingsAsync();
 
         /// <summary>
         /// Update the settings.
         /// </summary>
         /// <param name="settings">SettingsModel</param>
-        [Put("__admin/settings")]
+        [Put("settings")]
         [Header("Content-Type", "application/json")]
         Task<StatusModel> PutSettingsAsync([Body] SettingsModel settings);
 
@@ -39,7 +41,7 @@ namespace WireMock.Client
         /// Update the settings
         /// </summary>
         /// <param name="settings">SettingsModel</param>
-        [Post("__admin/settings")]
+        [Post("settings")]
         [Header("Content-Type", "application/json")]
         Task<StatusModel> PostSettingsAsync([Body] SettingsModel settings);
 
@@ -47,14 +49,14 @@ namespace WireMock.Client
         /// Get the mappings.
         /// </summary>
         /// <returns>MappingModels</returns>
-        [Get("__admin/mappings")]
+        [Get("mappings")]
         Task<IList<MappingModel>> GetMappingsAsync();
 
         /// <summary>
         /// Add a new mapping.
         /// </summary>
         /// <param name="mapping">MappingModel</param>
-        [Post("__admin/mappings")]
+        [Post("mappings")]
         [Header("Content-Type", "application/json")]
         Task<StatusModel> PostMappingAsync([Body] MappingModel mapping);
 
@@ -62,14 +64,14 @@ namespace WireMock.Client
         /// Add new mappings.
         /// </summary>
         /// <param name="mappings">MappingModels</param>
-        [Post("__admin/mappings")]
+        [Post("mappings")]
         [Header("Content-Type", "application/json")]
         Task<StatusModel> PostMappingsAsync([Body] IList<MappingModel> mappings);
 
         /// <summary>
         /// Delete all mappings.
         /// </summary>
-        [Delete("__admin/mappings")]
+        [Delete("mappings")]
         Task<StatusModel> DeleteMappingsAsync();
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="guid">The Guid</param>
         /// <returns>MappingModel</returns>
-        [Get("__admin/mappings/{guid}")]
+        [Get("mappings/{guid}")]
         Task<MappingModel> GetMappingAsync([Path] Guid guid);
 
         /// <summary>
@@ -92,7 +94,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="guid">The Guid</param>
         /// <param name="mapping">MappingModel</param>
-        [Put("__admin/mappings/{guid}")]
+        [Put("mappings/{guid}")]
         [Header("Content-Type", "application/json")]
         Task<StatusModel> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping);
 
@@ -100,32 +102,32 @@ namespace WireMock.Client
         /// Delete a mapping based on the guid
         /// </summary>
         /// <param name="guid">The Guid</param>
-        [Delete("__admin/mappings/{guid}")]
+        [Delete("mappings/{guid}")]
         Task<StatusModel> DeleteMappingAsync([Path] Guid guid);
 
         /// <summary>
         /// Save the mappings
         /// </summary>
-        [Post("__admin/mappings/save")]
+        [Post("mappings/save")]
         Task<StatusModel> SaveMappingAsync();
 
         /// <summary>
         /// Get the requests.
         /// </summary>
         /// <returns>LogRequestModels</returns>
-        [Get("__admin/requests")]
+        [Get("requests")]
         Task<IList<LogEntryModel>> GetRequestsAsync();
 
         /// <summary>
         /// Delete all requests.
         /// </summary>
-        [Delete("__admin/requests")]
+        [Delete("requests")]
         Task<StatusModel> DeleteRequestsAsync();
 
         /// <summary>
         /// Delete (reset) all requests.
         /// </summary>
-        [Post("__admin/requests/reset")]
+        [Post("requests/reset")]
         Task<StatusModel> ResetRequestsAsync();
 
         /// <summary>
@@ -133,40 +135,40 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="guid">The Guid</param>
         /// <returns>MappingModel</returns>
-        [Get("__admin/requests/{guid}")]
+        [Get("requests/{guid}")]
         Task<LogEntryModel> GetRequestAsync([Path] Guid guid);
 
         /// <summary>
         /// Delete a request based on the guid
         /// </summary>
         /// <param name="guid">The Guid</param>
-        [Delete("__admin/requests/{guid}")]
+        [Delete("requests/{guid}")]
         Task<StatusModel> DeleteRequestAsync([Path] Guid guid);
 
         /// <summary>
         /// Find a request based on the criteria
         /// </summary>
         /// <param name="model">The RequestModel</param>
-        [Post("__admin/requests/find")]
+        [Post("requests/find")]
         [Header("Content-Type", "application/json")]
         Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model);
 
         /// <summary>
         /// Get all scenarios
         /// </summary>
-        [Get("__admin/scenarios")]
-        Task<IList<ScenarioState>> GetScenariosAsync();
+        [Get("scenarios")]
+        Task<IList<ScenarioStateModel>> GetScenariosAsync();
 
         /// <summary>
         /// Delete (reset) all scenarios
         /// </summary>
-        [Delete("__admin/scenarios")]
+        [Delete("scenarios")]
         Task<StatusModel> DeleteScenariosAsync();
 
         /// <summary>
         /// Delete (reset) all scenarios
         /// </summary>
-        [Post("__admin/scenarios")]
+        [Post("scenarios")]
         Task<StatusModel> ResetScenariosAsync();
 
         /// <summary>
@@ -174,7 +176,7 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="filename">The filename</param>
         /// <param name="body">The body</param>
-        [Post("__admin/files/{filename}")]
+        [Post("files/{filename}")]
         Task<StatusModel> PostFileAsync([Path] string filename, [Body] string body);
 
         /// <summary>
@@ -182,28 +184,28 @@ namespace WireMock.Client
         /// </summary>
         /// <param name="filename">The filename</param>
         /// <param name="body">The body</param>
-        [Put("__admin/files/{filename}")]
+        [Put("files/{filename}")]
         Task<StatusModel> PutFileAsync([Path] string filename, [Body] string body);
 
         /// <summary>
         /// Get the content of an existing File
         /// </summary>
         /// <param name="filename">The filename</param>
-        [Get("__admin/files/{filename}")]
+        [Get("files/{filename}")]
         Task<string> GetFileAsync([Path] string filename);
 
         /// <summary>
         /// Delete an existing File
         /// </summary>
         /// <param name="filename">The filename</param>
-        [Delete("__admin/files/{filename}")]
+        [Delete("files/{filename}")]
         Task<StatusModel> DeleteFileAsync([Path] string filename);
 
         /// <summary>
         /// Check if a file exists
         /// </summary>
         /// <param name="filename">The filename</param>
-        [Head("__admin/files/{filename}")]
+        [Head("files/{filename}")]
         Task FileExistsAsync([Path] string filename);
     }
 }

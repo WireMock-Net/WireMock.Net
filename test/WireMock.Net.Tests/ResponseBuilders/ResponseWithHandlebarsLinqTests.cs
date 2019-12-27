@@ -1,11 +1,11 @@
-﻿using Moq;
+﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NFluent;
-using System;
-using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsLinqTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Linq1_String0()
@@ -29,7 +29,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -59,7 +59,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -119,7 +119,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -144,7 +144,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<NotSupportedException>();
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -176,7 +176,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<ArgumentException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentException>();
         }
 
         [Fact]
@@ -200,7 +200,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
@@ -228,7 +228,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);

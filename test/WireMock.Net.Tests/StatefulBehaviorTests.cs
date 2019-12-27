@@ -18,7 +18,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -38,7 +38,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -66,7 +66,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -94,7 +94,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -122,7 +122,7 @@ namespace WireMock.Net.Tests
         {
             // given
             string path = $"/foo_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath(path).UsingGet())
@@ -149,7 +149,7 @@ namespace WireMock.Net.Tests
         public async Task Scenarios_TodoList_Example()
         {
             // Assign
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath("/todo/items").UsingGet())
@@ -203,7 +203,7 @@ namespace WireMock.Net.Tests
         public async Task Scenarios_Should_process_request_if_equals_state_and_multiple_state_defined()
         {
             // Assign
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create().WithPath("/state1").UsingGet())

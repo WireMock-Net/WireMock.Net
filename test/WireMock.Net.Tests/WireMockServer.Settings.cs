@@ -1,6 +1,6 @@
-using System.Linq;
 using Moq;
 using NFluent;
+using System.Linq;
 using WireMock.Logging;
 using WireMock.Owin;
 using WireMock.Server;
@@ -9,21 +9,21 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class FluentMockServerSettingsTests
+    public class WireMockServerSettingsTests
     {
         private readonly Mock<IWireMockLogger> _loggerMock;
 
-        public FluentMockServerSettingsTests()
+        public WireMockServerSettingsTests()
         {
             _loggerMock = new Mock<IWireMockLogger>();
             _loggerMock.Setup(l => l.Info(It.IsAny<string>(), It.IsAny<object[]>()));
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
+        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 AdminUsername = "u",
@@ -36,10 +36,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_StartAdminInterfaceFalse_BasicAuthenticationIsNotSet()
+        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceFalse_BasicAuthenticationIsNotSet()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = false,
                 AdminUsername = "u",
@@ -52,10 +52,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
+        public void WireMockServer_WireMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true
             });
@@ -67,10 +67,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is1000_When_StartAdminInterface_IsTrue()
+        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is1000_When_StartAdminInterface_IsTrue()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 StartAdminInterface = true,
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
@@ -87,10 +87,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is0_When_StartAdminInterface_IsFalse()
+        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is0_When_StartAdminInterface_IsFalse()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
@@ -105,10 +105,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_AllowPartialMapping()
+        public void WireMockServer_WireMockServerSettings_AllowPartialMapping()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Logger = _loggerMock.Object,
                 AllowPartialMapping = true
@@ -123,10 +123,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_AllowBodyForAllHttpMethods()
+        public void WireMockServer_WireMockServerSettings_AllowBodyForAllHttpMethods()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Logger = _loggerMock.Object,
                 AllowBodyForAllHttpMethods = true
@@ -141,10 +141,10 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void FluentMockServer_FluentMockServerSettings_RequestLogExpirationDuration()
+        public void WireMockServer_WireMockServerSettings_RequestLogExpirationDuration()
         {
             // Assign and Act
-            var server = FluentMockServer.Start(new FluentMockServerSettings
+            var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Logger = _loggerMock.Object,
                 RequestLogExpirationDuration = 1

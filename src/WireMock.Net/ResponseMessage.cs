@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using WireMock.ResponseBuilders;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 

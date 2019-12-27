@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Commonly used interfaces, models, enumerations and types.</Description>
+    <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
+    <Authors>Stef Heyenrath</Authors>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
+    <PackageId>WireMock.Net.Abstractions</PackageId>
+    <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
+    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
+    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
+    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
+    <RootNamespace>WireMock</RootNamespace>
+    <!--<DebugType>full</DebugType>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>-->
+    <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+    <!--<DelaySign>true</DelaySign>-->
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
+    <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

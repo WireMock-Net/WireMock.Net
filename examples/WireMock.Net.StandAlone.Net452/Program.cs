@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using log4net.Config;
+using WireMock.Server;
+using WireMock.Settings;
 
 namespace WireMock.Net.StandAlone.Net452
 {
@@ -10,7 +13,10 @@ namespace WireMock.Net.StandAlone.Net452
         {
             XmlConfigurator.Configure(new FileInfo("log4net.config"));
 
-            StandAloneApp.Start(args);
+            var settings = WireMockServerSettingsParser.ParseArguments(args);
+            settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
+
+            WireMockServer.Start(settings);
 
             Console.WriteLine("Press any key to stop the server");
             Console.ReadKey();

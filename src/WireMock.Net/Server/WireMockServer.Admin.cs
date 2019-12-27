@@ -20,6 +20,7 @@ using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -28,7 +29,7 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public partial class FluentMockServer
+    public partial class WireMockServer
     {
         private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
         private const int AdminPriority = int.MinValue;
@@ -254,7 +255,7 @@ namespace WireMock.Server
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
 
-        private void InitProxyAndRecord(IFluentMockServerSettings settings)
+        private void InitProxyAndRecord(IWireMockServerSettings settings)
         {
             _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings);
 
@@ -267,7 +268,7 @@ namespace WireMock.Server
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
@@ -849,10 +850,6 @@ namespace WireMock.Server
             else if (responseModel.BodyAsJson != null)
             {
                 responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
-            }
-            else if (responseModel.BodyFromBase64 != null)
-            {
-                responseBuilder = responseBuilder.WithBodyFromBase64(responseModel.BodyFromBase64, ToEncoding(responseModel.BodyEncoding));
             }
             else if (responseModel.BodyAsFile != null)
             {

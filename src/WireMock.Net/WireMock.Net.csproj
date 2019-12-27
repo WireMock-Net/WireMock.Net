@@ -65,17 +65,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ResponseBuilders\Response.WithFault.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <!--<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />-->
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-    <PackageReference Include="RestEase" Version="1.4.7" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -143,5 +138,9 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="CS-Script.Core" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
   </ItemGroup>
 </Project>

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using WireMock.Logging;
 using System.Linq;
 using WireMock.Matchers;
-using WireMock.Util;
 using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
 using WireMock.Serialization;
+using WireMock.Types;
 using WireMock.Validation;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;

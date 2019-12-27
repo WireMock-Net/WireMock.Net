@@ -1,8 +1,8 @@
 ﻿using log4net;
 using Newtonsoft.Json;
 using Wiremock.Net.Service;
-using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Models.Requests;
 
 namespace WireMock.Net.Service
 {

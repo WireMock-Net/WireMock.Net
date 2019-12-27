@@ -1,14 +1,14 @@
-﻿using Moq;
-using NFluent;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NFluent;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
@@ -16,15 +16,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithProxyTests : IDisposable
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
-        private readonly FluentMockServer _server;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+        private readonly WireMockServer _server;
         private readonly Guid _guid;
 
         public ResponseWithProxyTests()
         {
             _guid = Guid.NewGuid();
 
-            _server = FluentMockServer.Start();
+            _server = WireMockServer.Start();
             _server.Given(Request.Create().UsingPost().WithPath($"/{_guid}"))
                 .RespondWith(Response.Create().WithStatusCode(201).WithBodyAsJson(new { p = 42 }).WithHeader("Content-Type", "application/json"));
         }
@@ -38,7 +38,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("{\"p\":42}");
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Act
             var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}/{_guid}"), "GET", "::1");
 
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settingsMock.Object)).Throws<HttpRequestException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<HttpRequestException>();
         }
 
         public void Dispose()

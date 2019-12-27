@@ -12,8 +12,8 @@ namespace WireMock.Net.Client
     {
         static async Task Main(string[] args)
         {
-            // Create an implementation of the IFluentMockServerAdmin and pass in the base URL for the API.
-            var api = RestClient.For<IFluentMockServerAdmin>("http://localhost:9091");
+            // Create an implementation of the IWireMockAdminApi and pass in the base URL for the API.
+            var api = RestClient.For<IWireMockAdminApi>("http://localhost:9091");
 
             // Set BASIC Auth
             var value = Convert.ToBase64String(Encoding.ASCII.GetBytes("a:b"));

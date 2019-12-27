@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Linq;
-using WireMock.Util;
+using WireMock.Types;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request

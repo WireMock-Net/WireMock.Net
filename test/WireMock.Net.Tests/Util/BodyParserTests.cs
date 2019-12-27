@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

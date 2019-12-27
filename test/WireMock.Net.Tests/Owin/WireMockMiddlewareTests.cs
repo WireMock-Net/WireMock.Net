@@ -4,15 +4,15 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moq;
 using Xunit;
-using WireMock.Admin.Mappings;
 using WireMock.Models;
 using WireMock.Owin;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
-using WireMock.Admin.Requests;
 using WireMock.Logging;
 using WireMock.Matchers;
 using System.Collections.Generic;
+using WireMock.Admin.Mappings;
+using WireMock.Admin.Requests;
 #if NET452
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;

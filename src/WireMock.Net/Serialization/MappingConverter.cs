@@ -7,6 +7,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Util;
 using WireMock.Validation;
+using WireMock.Types;
 
 namespace WireMock.Serialization
 {

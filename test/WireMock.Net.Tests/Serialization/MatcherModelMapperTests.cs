@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
@@ -11,16 +10,13 @@ namespace WireMock.Net.Tests.Serialization
 {
     public class MatcherModelMapperTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         private readonly MatcherMapper _sut;
 
         public MatcherModelMapperTests()
         {
-            _settingsMock = new Mock<IFluentMockServerSettings>();
-            _settingsMock.SetupAllProperties();
-
-            _sut = new MatcherMapper(_settingsMock.Object);
+            _sut = new MatcherMapper(_settings);
         }
 
         [Fact]

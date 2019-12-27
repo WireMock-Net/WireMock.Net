@@ -9,6 +9,7 @@ using RandomDataGenerator.Randomizers;
 using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.ResponseBuilders;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 #if !USE_ASPNETCORE

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using NFluent;
-using Xunit;
-using WireMock.RequestBuilders;
+﻿using NFluent;
+using System.Collections.Generic;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.RequestBuilders;
+using WireMock.Types;
 using WireMock.Util;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {

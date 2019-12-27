@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WireMock.Admin.Mappings;
-using WireMock.Util;
+using WireMock.Types;
 
 namespace WireMock.Admin.Requests
 {

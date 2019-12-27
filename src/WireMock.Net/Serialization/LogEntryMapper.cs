@@ -2,6 +2,7 @@
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 

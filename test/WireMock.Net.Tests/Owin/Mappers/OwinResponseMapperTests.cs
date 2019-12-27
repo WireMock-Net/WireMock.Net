@@ -7,6 +7,7 @@ using System.Threading;
 using WireMock.Handlers;
 using WireMock.Owin.Mappers;
 using WireMock.ResponseBuilders;
+using WireMock.Types;
 using WireMock.Util;
 #if NET452
 using Microsoft.Owin;

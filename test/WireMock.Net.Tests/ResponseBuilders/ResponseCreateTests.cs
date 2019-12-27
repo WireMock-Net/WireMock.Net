@@ -1,6 +1,5 @@
-﻿using Moq;
+﻿using System.Threading.Tasks;
 using NFluent;
-using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -10,7 +9,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseCreateTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         [Fact]
         public async Task Response_Create_Func()
@@ -22,7 +21,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create(() => responseMessage);
 
             // Act
-            var providedResponse = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var providedResponse = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(providedResponse).Equals(responseMessage);

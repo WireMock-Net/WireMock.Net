@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace WireMock.Util
+namespace WireMock.Types
 {
     /// <summary>
     /// A special List which overrides the ToString() to return first value.

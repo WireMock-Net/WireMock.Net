@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
@@ -40,7 +40,7 @@ namespace WireMock
         public IResponseProvider Provider { get; }
 
         /// <inheritdoc cref="IMapping.Settings" />
-        public IFluentMockServerSettings Settings { get; }
+        public IWireMockServerSettings Settings { get; }
 
         /// <inheritdoc cref="IMapping.IsStartState" />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
@@ -57,7 +57,7 @@ namespace WireMock
         /// <param name="guid">The unique identifier.</param>
         /// <param name="title">The unique title (can be null).</param>
         /// <param name="path">The full file path from this mapping title (can be null).</param>
-        /// <param name="settings">The FluentMockServerSettings.</param>
+        /// <param name="settings">The WireMockServerSettings.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
@@ -65,7 +65,7 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path,
-            [NotNull] IFluentMockServerSettings settings, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
+            [NotNull] IWireMockServerSettings settings, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
             int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState)
         {
             Guid = guid;

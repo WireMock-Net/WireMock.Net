@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
+using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

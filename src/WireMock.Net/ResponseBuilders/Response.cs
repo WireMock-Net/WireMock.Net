@@ -11,6 +11,7 @@ using WireMock.Http;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
+using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -287,23 +288,6 @@ namespace WireMock.ResponseBuilders
             return WithBodyAsJson(body, null, indented);
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromBase64"/>
-        public IResponseBuilder WithBodyFromBase64(string bodyAsBase64, Encoding encoding = null)
-        {
-            Check.NotNull(bodyAsBase64, nameof(bodyAsBase64));
-
-            encoding = encoding ?? Encoding.UTF8;
-
-            ResponseMessage.BodyData = new BodyData
-            {
-                Encoding = encoding,
-                DetectedBodyType = BodyType.String,
-                BodyAsString = encoding.GetString(Convert.FromBase64String(bodyAsBase64))
-            };
-
-            return this;
-        }
-
         /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
         public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
@@ -346,8 +330,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IFluentMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using WireMock.Types;
 
 namespace WireMock.Util
 {

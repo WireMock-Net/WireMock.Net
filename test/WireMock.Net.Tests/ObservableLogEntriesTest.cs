@@ -19,18 +19,18 @@ namespace WireMock.Net.Tests
     public class ObservableLogEntriesTest
     {
         [Fact]
-        public async void FluentMockServer_LogEntriesChanged_WithException_Should_LogError()
+        public async void WireMockServer_LogEntriesChanged_WithException_Should_LogError()
         {
             // Assign
             string path = $"/log_{Guid.NewGuid()}";
             var loggerMock = new Mock<IWireMockLogger>();
             loggerMock.Setup(l => l.Error(It.IsAny<string>(), It.IsAny<object[]>()));
-            var settings = new FluentMockServerSettings
+            var settings = new WireMockServerSettings
             {
                 Logger = loggerMock.Object
             };
-            var server = FluentMockServer.Start(settings);
-            
+            var server = WireMockServer.Start(settings);
+
             server
                 .Given(Request.Create()
                     .WithPath(path)
@@ -48,11 +48,11 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async void FluentMockServer_LogEntriesChanged()
+        public async void WireMockServer_LogEntriesChanged()
         {
             // Assign
             string path = $"/log_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create()
@@ -72,13 +72,13 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task FluentMockServer_LogEntriesChanged_Parallel()
+        public async Task WireMockServer_LogEntriesChanged_Parallel()
         {
             int expectedCount = 10;
 
             // Assign
             string path = $"/log_p_{Guid.NewGuid()}";
-            var server = FluentMockServer.Start();
+            var server = WireMockServer.Start();
 
             server
                 .Given(Request.Create()

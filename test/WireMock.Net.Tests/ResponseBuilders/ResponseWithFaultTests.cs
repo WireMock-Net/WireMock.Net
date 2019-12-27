@@ -10,7 +10,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithFaultTests
     {
-        private readonly Mock<IFluentMockServerSettings> _settingsMock = new Mock<IFluentMockServerSettings>();
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
 
         [Theory]
@@ -23,7 +23,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Act
             var response = Response.Create().WithFault(faultType);
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             responseMessage.FaultType.Should().Be(faultType);
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Act
             var response = Response.Create().WithFault(faultType, percentage);
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
             responseMessage.FaultType.Should().Be(faultType);

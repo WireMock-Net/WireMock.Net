@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using NFluent;
+using System.Collections.Generic;
 using System.Text;
-using NFluent;
 using WireMock.Http;
 using WireMock.Models;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

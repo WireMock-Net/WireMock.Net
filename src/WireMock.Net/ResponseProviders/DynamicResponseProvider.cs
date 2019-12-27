@@ -13,7 +13,7 @@ namespace WireMock.ResponseProviders
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IFluentMockServerSettings settings)
+        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             return Task.FromResult(_responseMessageFunc(requestMessage));
         }

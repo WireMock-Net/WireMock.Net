@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using WireMock.Matchers;
-using WireMock.Util;
+using WireMock.Types;
 
 namespace WireMock.RequestBuilders
 {

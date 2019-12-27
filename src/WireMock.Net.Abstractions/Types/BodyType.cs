@@ -1,4 +1,4 @@
-﻿namespace WireMock.Util
+﻿namespace WireMock.Types
 {
     /// <summary>
     /// The BodyType

@@ -23,11 +23,6 @@ namespace WireMock.Admin.Mappings
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets or sets the body.
-        /// </summary>
-        public string BodyFromBase64 { get; set; }
-
-        /// <summary>
         /// Gets or sets the body (as JSON object).
         /// </summary>
         public object BodyAsJson { get; set; }

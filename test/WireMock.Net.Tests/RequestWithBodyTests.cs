@@ -1,11 +1,12 @@
-﻿using System;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NFluent;
+using System;
+using System.Text;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 

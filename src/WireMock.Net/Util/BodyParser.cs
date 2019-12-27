@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Matchers;
+using WireMock.Types;
 using WireMock.Validation;
 
 namespace WireMock.Util
