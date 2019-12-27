@@ -1,3 +1,6 @@
+# 1.1.0.0 (27 December 2019)
+- [#363](https://github.com/WireMock-Net/WireMock.Net/pull/363) - WireMock.Net version 1.1.x contributed by [StefH](https://github.com/StefH)
+
 # 1.0.43.0 (26 December 2019)
 - [#385](https://github.com/WireMock-Net/WireMock.Net/pull/385) - StatusCode as string [feature] contributed by [StefH](https://github.com/StefH)
 - [#380](https://github.com/WireMock-Net/WireMock.Net/issues/380) - StatusCode is defined as integer (string is not possible) [bug]
