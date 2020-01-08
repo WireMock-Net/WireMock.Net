@@ -58,7 +58,6 @@ namespace WireMock.Transformers
                 }
             });
 
-
             handlebarsContext.RegisterHelper("XPath.Evaluate", (writer, context, arguments) =>
             {
                 (XPathNavigator nav, string xpath) = ParseArguments(arguments);
