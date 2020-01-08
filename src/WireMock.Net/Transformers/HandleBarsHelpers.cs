@@ -17,6 +17,8 @@ namespace WireMock.Transformers
 
             HandleBarsXeger.Register(handlebarsContext);
 
+            HandleBarsXPath.Register(handlebarsContext);
+
             HandleBarsFile.Register(handlebarsContext, fileSystemHandler);
         }
     }
