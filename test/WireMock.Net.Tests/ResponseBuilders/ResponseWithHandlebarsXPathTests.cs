@@ -50,6 +50,34 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
+        public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Text_Request_BodyAsString()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"<todo-list>
+                                   <todo-item id='a1'>abc</todo-item>
+                                   <todo-item id='a2'>def</todo-item>
+                                   <todo-item id='a3'>xyz</todo-item>
+                                 </todo-list>",
+                DetectedBodyType = BodyType.String
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/xml")
+                .WithBody("{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]/text()\"}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("abc");
+        }
+
+        [Fact]
         public async Task Response_ProvideResponse_Handlebars_XPath_SelectNodes_Request_BodyAsString()
         {
             // Assign
@@ -105,6 +133,34 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).IsEqualIgnoringCase("True");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_XPath_Evaluate_Attribute_Request_BodyAsString()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = @"<todo-list>
+                                   <todo-item id='a1'>abc</todo-item>
+                                   <todo-item id='a2'>def</todo-item>
+                                   <todo-item id='a3'>xyz</todo-item>
+                                 </todo-list>",
+                DetectedBodyType = BodyType.String
+            };
+
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithHeader("Content-Type", "application/xml")
+                .WithBody("{{XPath.Evaluate request.body \"string(/todo-list/todo-item[1]/@id)\"}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("a1");
         }
     }
 }
