@@ -1,3 +1,7 @@
+# 1.1.1.0 (09 January 2020)
+- [#398](https://github.com/WireMock-Net/WireMock.Net/pull/398) - Feature/xpath transformer [feature] contributed by [kashifsoofi](https://github.com/kashifsoofi)
+- [#397](https://github.com/WireMock-Net/WireMock.Net/issues/397) - Question/Feature: Add support for selecting XPath in response template [feature]
+
 # 1.1.0.0 (27 December 2019)
 - [#363](https://github.com/WireMock-Net/WireMock.Net/pull/363) - WireMock.Net version 1.1.x contributed by [StefH](https://github.com/StefH)
 
