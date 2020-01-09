@@ -808,15 +808,13 @@ namespace WireMock.Server
                 return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
-            switch (responseModel.StatusCode)
+            if (responseModel.StatusCode is string)
             {
-                case int statusCodeAsInteger:
-                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInteger);
-                    break;
-
-                case string statusCodeAsString:
-                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
-                    break;
+                responseBuilder = responseBuilder.WithStatusCode((string) responseModel.StatusCode);
+            }
+            else
+            {
+                responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
             }
 
             if (responseModel.Headers != null)
