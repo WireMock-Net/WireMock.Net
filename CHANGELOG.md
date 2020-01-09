@@ -1,3 +1,7 @@
+# 1.1.2.0 (09 January 2020)
+- [#399](https://github.com/WireMock-Net/WireMock.Net/pull/399) - ResponseModel.StatusCode is deserialized as either string or long. [bug] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
+- [#400](https://github.com/WireMock-Net/WireMock.Net/issues/400) - StatusCode not built correctly when loaded from mapping file. [bug]
+
 # 1.1.1.0 (09 January 2020)
 - [#398](https://github.com/WireMock-Net/WireMock.Net/pull/398) - Feature/xpath transformer [feature] contributed by [kashifsoofi](https://github.com/kashifsoofi)
 - [#397](https://github.com/WireMock-Net/WireMock.Net/issues/397) - Question/Feature: Add support for selecting XPath in response template [feature]
