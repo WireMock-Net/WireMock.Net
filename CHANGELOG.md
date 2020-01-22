@@ -1,3 +1,7 @@
+# 1.1.3.0 (22 January 2020)
+- [#403](https://github.com/WireMock-Net/WireMock.Net/pull/403) - Fix for invalid cast exception contributed by [kashifsoofi](https://github.com/kashifsoofi)
+- [#402](https://github.com/WireMock-Net/WireMock.Net/issues/402) - Invalid Cast Exception  [bug]
+
 # 1.1.2.0 (09 January 2020)
 - [#399](https://github.com/WireMock-Net/WireMock.Net/pull/399) - ResponseModel.StatusCode is deserialized as either string or long. [bug] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
 - [#400](https://github.com/WireMock-Net/WireMock.Net/issues/400) - StatusCode not built correctly when loaded from mapping file. [bug]
