@@ -813,7 +813,7 @@ namespace WireMock.Server
             {
                 responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
             }
-            else if (responseModel.StatusCode is int statusCodeAsInt)
+            else if (responseModel.StatusCode is int statusCodeAsInt && statusCodeAsInt > 0)
             {
                 responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInt);
             }
