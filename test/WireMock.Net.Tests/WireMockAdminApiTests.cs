@@ -92,6 +92,8 @@ namespace WireMock.Net.Tests
 
         [Theory]
         [InlineData(null, 200)]
+        [InlineData(-1, 200)]
+        [InlineData(0, 200)]
         [InlineData(200, 200)]
         [InlineData("200", "200")]
         public async Task IWireMockAdminApi_PostMappingAsync(object statusCode, object expectedStatusCode)
