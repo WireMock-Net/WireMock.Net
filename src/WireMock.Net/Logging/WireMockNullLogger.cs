@@ -1,4 +1,5 @@
-﻿using WireMock.Admin.Requests;
+﻿using System;
+using WireMock.Admin.Requests;
 
 namespace WireMock.Logging
 {
@@ -26,8 +27,14 @@ namespace WireMock.Logging
             // Log nothing
         }
 
-        /// <see cref="IWireMockLogger.Error"/>
+        /// <see cref="IWireMockLogger.Error(string, object[])"/>
         public void Error(string formatString, params object[] args)
+        {
+            // Log nothing
+        }
+
+        /// <see cref="IWireMockLogger.Error(string, Exception)"/>
+        public void Error(string formatString, Exception exception)
         {
             // Log nothing
         }
