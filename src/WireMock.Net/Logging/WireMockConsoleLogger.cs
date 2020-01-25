@@ -36,10 +36,25 @@ namespace WireMock.Logging
             Console.WriteLine(Format("Warn", formatString, args));
         }
 
-        /// <see cref="IWireMockLogger.Error"/>
+        /// <see cref="IWireMockLogger.Error(string, object[])"/>
         public void Error(string formatString, params object[] args)
         {
             Console.WriteLine(Format("Error", formatString, args));
+        }
+
+        /// <see cref="IWireMockLogger.Error(string, Exception)"/>
+        public void Error(string formatString, Exception exception)
+        {
+            Console.WriteLine(Format("Error", formatString, exception.Message));
+
+            if (exception is AggregateException ae)
+            {
+                ae.Handle(ex =>
+                {
+                    Console.WriteLine(Format("Error", "Exception {0}", exception.Message));
+                    return true;
+                });
+            }
         }
 
         /// <see cref="IWireMockLogger.DebugRequestResponse"/>
