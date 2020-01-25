@@ -1,16 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF242EDF-7133-4277-9A0C-18744DE08707}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{197A0EE3-94E5-4807-BBCF-2F1BCA28A6AE}"
 	ProjectSection(SolutionItems) = preProject
 		.runsettings = .runsettings
+		azure-pipelines-ci-linux.yml = azure-pipelines-ci-linux.yml
+		azure-pipelines-ci.yml = azure-pipelines-ci.yml
 		azure-pipelines-linux.yml = azure-pipelines-linux.yml
 		azure-pipelines-nuget.yml = azure-pipelines-nuget.yml
-		azure-pipelines.yml = azure-pipelines.yml
 		build-info.md = build-info.md
 		CHANGELOG.md = CHANGELOG.md
 		Directory.Build.props = Directory.Build.props

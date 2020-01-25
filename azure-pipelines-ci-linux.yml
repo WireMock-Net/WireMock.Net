@@ -1,0 +1,13 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: |
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework netcoreapp2.1 --logger trx
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
