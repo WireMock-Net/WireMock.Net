@@ -126,7 +126,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.StatusCode).Equals(400);
+            Check.That(responseMessage.StatusCode).Equals("400");
         }
 
         [Fact]
