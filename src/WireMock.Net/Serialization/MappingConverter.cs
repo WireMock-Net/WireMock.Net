@@ -5,9 +5,8 @@ using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
-using WireMock.Util;
-using WireMock.Validation;
 using WireMock.Types;
+using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
