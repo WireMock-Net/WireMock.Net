@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -808,13 +809,17 @@ namespace WireMock.Server
                 return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
-            if (responseModel.StatusCode is string)
+            if (responseModel.StatusCode is string statusCodeAsString)
             {
-                responseBuilder = responseBuilder.WithStatusCode((string) responseModel.StatusCode);
+                responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
+            }
+            else if (responseModel.StatusCode is int statusCodeAsInt)
+            {
+                responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInt);
             }
             else
             {
-                responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
+                responseBuilder = responseBuilder.WithStatusCode(HttpStatusCode.OK);
             }
 
             if (responseModel.Headers != null)

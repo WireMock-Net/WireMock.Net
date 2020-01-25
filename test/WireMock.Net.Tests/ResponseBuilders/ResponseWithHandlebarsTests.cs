@@ -106,6 +106,53 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
+        public async Task Response_ProvideResponse_Handlebars_StatusCode()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithStatusCode("{{request.query.a}}")
+                .WithBody("test")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.StatusCode).Equals(400);
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_StatusCodeIsNull()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithBody("test")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.StatusCode).Equals(200);
+        }
+
+        [Fact]
         public async Task Response_ProvideResponse_Handlebars_Header()
         {
             // Assign
