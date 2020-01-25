@@ -8,6 +8,7 @@ variables:
   buildProjects: '**/src/**/*.csproj'
   buildConfiguration: 'Release'
 
+steps:
 - task: DotNetCoreCLI@2
   displayName: Build Release
   inputs:
