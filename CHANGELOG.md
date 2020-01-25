@@ -1,3 +1,6 @@
+# 1.1.4.0 (25 January 2020)
+- [#405](https://github.com/WireMock-Net/WireMock.Net/pull/405) - Fix logging an Exception Message (linux docker on azure) [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.1.3.0 (22 January 2020)
 - [#403](https://github.com/WireMock-Net/WireMock.Net/pull/403) - Fix for invalid cast exception contributed by [kashifsoofi](https://github.com/kashifsoofi)
 - [#402](https://github.com/WireMock-Net/WireMock.Net/issues/402) - Invalid Cast Exception  [bug]
