@@ -64,7 +64,7 @@ namespace WireMock.Owin
             catch (Exception ex)
             {
                 _options.Logger.Error("HttpStatusCode set to 500", ex);
-                await _responseMapper.MapAsync(ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500), ctx.Response, _options);
+                await _responseMapper.MapAsync(ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500), ctx.Response);
             }
         }
     }

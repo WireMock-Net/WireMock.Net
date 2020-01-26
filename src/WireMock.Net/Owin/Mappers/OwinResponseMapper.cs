@@ -29,7 +29,7 @@ namespace WireMock.Owin.Mappers
     {
         private readonly IRandomizerNumber<double> _randomizerDouble = RandomizerFactory.GetRandomizer(new FieldOptionsDouble { Min = 0, Max = 1 });
         private readonly IRandomizerBytes _randomizerBytes = RandomizerFactory.GetRandomizer(new FieldOptionsBytes { Min = 100, Max = 200 });
-        private readonly IFileSystemHandler _fileSystemHandler;
+        private readonly IWireMockMiddlewareOptions _options;
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
@@ -44,16 +44,16 @@ namespace WireMock.Owin.Mappers
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="fileSystemHandler">The IFileSystemHandler.</param>
-        public OwinResponseMapper(IFileSystemHandler fileSystemHandler)
+        /// <param name="options">The IWireMockMiddlewareOptions.</param>
+        public OwinResponseMapper(IWireMockMiddlewareOptions options)
         {
-            Check.NotNull(fileSystemHandler, nameof(fileSystemHandler));
+            Check.NotNull(options, nameof(options));
 
-            _fileSystemHandler = fileSystemHandler;
+            _options = options;
         }
 
         /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
-        public async Task MapAsync(ResponseMessage responseMessage, IResponse response, IWireMockMiddlewareOptions options)
+        public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
         {
             if (responseMessage == null)
             {
@@ -84,12 +84,13 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.StatusCode)
             {
                 case int statusCodeAsInteger:
-                    response.StatusCode = MapStatusCode(options, statusCodeAsInteger);
+                    response.StatusCode = MapStatusCode(statusCodeAsInteger);
                     break;
 
                 case string statusCodeAsString:
+                    // Note: this case will also match on null 
                     int.TryParse(statusCodeAsString, out int result);
-                    response.StatusCode = MapStatusCode(options, result);
+                    response.StatusCode = MapStatusCode(result);
                     break;
             }
 
@@ -101,9 +102,9 @@ namespace WireMock.Owin.Mappers
             }
         }
 
-        private int MapStatusCode(IWireMockMiddlewareOptions options, int code)
+        private int MapStatusCode(int code)
         {
-            if (options.AllowAnyHttpStatusCodeInResponse == true || Enum.IsDefined(typeof(HttpStatusCode), code))
+            if (_options.AllowAnyHttpStatusCodeInResponse == true || Enum.IsDefined(typeof(HttpStatusCode), code))
             {
                 return code;
             }
@@ -138,7 +139,7 @@ namespace WireMock.Owin.Mappers
                     break;
 
                 case BodyType.File:
-                    bytes = _fileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
+                    bytes = _options.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
                     break;
             }
 

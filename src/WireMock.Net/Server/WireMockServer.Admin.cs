@@ -813,9 +813,10 @@ namespace WireMock.Server
             {
                 responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
             }
-            else if (responseModel.StatusCode is int statusCodeAsInt)
+            else if (responseModel.StatusCode != null)
             {
-                responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInt);
+                // Convert to Int32 because Newtonsoft deserializes an 'object' with a number value to a long.
+                responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
             }
 
             if (responseModel.Headers != null)
@@ -872,7 +873,7 @@ namespace WireMock.Server
                     DetectedBodyType = BodyType.String,
                     BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
                 },
-                StatusCode = 200,
+                StatusCode = (int) HttpStatusCode.OK,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }

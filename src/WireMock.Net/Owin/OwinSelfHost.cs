@@ -75,7 +75,7 @@ namespace WireMock.Owin
             try
             {
                 var requestMapper = new OwinRequestMapper();
-                var responseMapper = new OwinResponseMapper(_options.FileSystemHandler);
+                var responseMapper = new OwinResponseMapper(_options);
                 var matcher = new MappingMatcher(_options);
 
                 Action<IAppBuilder> startup = app =>

@@ -69,7 +69,6 @@ namespace WireMock.Owin
             _host = builder
                 .ConfigureServices(services =>
                 {
-                    services.AddSingleton(_options.FileSystemHandler);
                     services.AddSingleton(_options);
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
