@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using WireMock.Util;

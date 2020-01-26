@@ -8,7 +8,6 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using WireMock.Handlers;
 using WireMock.HttpsCertificate;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;

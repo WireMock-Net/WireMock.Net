@@ -145,7 +145,7 @@ namespace WireMock.Owin
 
                 LogRequest(log, logRequest);
 
-                await _responseMapper.MapAsync(response, ctx.Response);
+                await _responseMapper.MapAsync(response, ctx.Response, _options);
             }
 
             await CompletedTask;

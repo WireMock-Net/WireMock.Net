@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
+using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
-using WireMock.Util;
 using WireMock.Validation;
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
@@ -24,7 +25,7 @@ namespace WireMock.Owin.Mappers
     /// <summary>
     /// OwinResponseMapper
     /// </summary>
-    public class OwinResponseMapper : IOwinResponseMapper
+    internal class OwinResponseMapper : IOwinResponseMapper
     {
         private readonly IRandomizerNumber<double> _randomizerDouble = RandomizerFactory.GetRandomizer(new FieldOptionsDouble { Min = 0, Max = 1 });
         private readonly IRandomizerBytes _randomizerBytes = RandomizerFactory.GetRandomizer(new FieldOptionsBytes { Min = 100, Max = 200 });
@@ -52,7 +53,7 @@ namespace WireMock.Owin.Mappers
         }
 
         /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
-        public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
+        public async Task MapAsync(ResponseMessage responseMessage, IResponse response, IWireMockMiddlewareOptions options)
         {
             if (responseMessage == null)
             {
@@ -83,11 +84,12 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.StatusCode)
             {
                 case int statusCodeAsInteger:
-                    response.StatusCode = statusCodeAsInteger;
+                    response.StatusCode = MapStatusCode(options, statusCodeAsInteger);
                     break;
 
                 case string statusCodeAsString:
-                    response.StatusCode = int.Parse(statusCodeAsString);
+                    int.TryParse(statusCodeAsString, out int result);
+                    response.StatusCode = MapStatusCode(options, result);
                     break;
             }
 
@@ -97,6 +99,16 @@ namespace WireMock.Owin.Mappers
             {
                 await response.Body.WriteAsync(bytes, 0, bytes.Length);
             }
+        }
+
+        private int MapStatusCode(IWireMockMiddlewareOptions options, int code)
+        {
+            if (options.AllowAnyHttpStatusCodeInResponse == true || Enum.IsDefined(typeof(HttpStatusCode), code))
+            {
+                return code;
+            }
+
+            return (int)HttpStatusCode.OK;
         }
 
         private bool IsFault(ResponseMessage responseMessage)
