@@ -49,10 +49,11 @@ namespace WireMock.Logging
         /// <summary>
         /// Writes the message at the Error level using the specified exception. 
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="formatString">The format string.</param>
         /// <param name="exception">The exception.</param>
         [PublicAPI]
-        void Error([NotNull] string message, [NotNull] Exception exception);
+        [StringFormatMethod("formatString")]
+        void Error([NotNull] string formatString, [NotNull] Exception exception);
 
         /// <summary>
         /// Writes the LogEntryModel (LogRequestModel, LogResponseModel and more).

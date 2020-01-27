@@ -491,12 +491,12 @@ namespace WireMock.Server
             }
             catch (ArgumentException a)
             {
-                _settings.Logger.Error("HttpStatusCode set to 400", a);
+                _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
                 return ResponseMessageBuilder.Create(a.Message, 400);
             }
             catch (Exception e)
             {
-                _settings.Logger.Error("HttpStatusCode set to 500", e);
+                _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
                 return ResponseMessageBuilder.Create(e.ToString(), 500);
             }
         }
