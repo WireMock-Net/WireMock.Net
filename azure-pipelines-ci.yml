@@ -51,7 +51,7 @@ steps:
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
 - task: PublishTestResults@2
-  condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes')) 
+  condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
