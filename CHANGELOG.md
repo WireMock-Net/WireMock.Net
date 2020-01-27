@@ -1,3 +1,6 @@
+# 1.1.6.0 (27 January 2020)
+- [#407](https://github.com/WireMock-Net/WireMock.Net/pull/407) - AllowAnyHttpStatusCodeInResponse [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.1.5.0 (25 January 2020)
 - [#405](https://github.com/WireMock-Net/WireMock.Net/pull/405) - Fix logging an Exception Message (linux docker on azure) [bug] contributed by [StefH](https://github.com/StefH)
 - [#406](https://github.com/WireMock-Net/WireMock.Net/pull/406) - Fixed StatusCode = null or &lt; 0 contributed by [StefH](https://github.com/StefH)
