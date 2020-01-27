@@ -491,12 +491,12 @@ namespace WireMock.Server
             }
             catch (ArgumentException a)
             {
-                _settings.Logger.Error("HttpStatusCode set to 400", a);
+                _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
                 return ResponseMessageBuilder.Create(a.Message, 400);
             }
             catch (Exception e)
             {
-                _settings.Logger.Error("HttpStatusCode set to 500", e);
+                _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
                 return ResponseMessageBuilder.Create(e.ToString(), 500);
             }
         }
@@ -813,13 +813,10 @@ namespace WireMock.Server
             {
                 responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
             }
-            else if (responseModel.StatusCode is int statusCodeAsInt && statusCodeAsInt > 0)
+            else if (responseModel.StatusCode != null)
             {
-                responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInt);
-            }
-            else
-            {
-                responseBuilder = responseBuilder.WithStatusCode(HttpStatusCode.OK);
+                // Convert to Int32 because Newtonsoft deserializes an 'object' with a number value to a long.
+                responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
             }
 
             if (responseModel.Headers != null)
@@ -876,7 +873,7 @@ namespace WireMock.Server
                     DetectedBodyType = BodyType.String,
                     BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
                 },
-                StatusCode = 200,
+                StatusCode = (int) HttpStatusCode.OK,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }

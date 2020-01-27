@@ -20,7 +20,7 @@ namespace WireMock
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        public object StatusCode { get; set; } = 200;
+        public object StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the body.

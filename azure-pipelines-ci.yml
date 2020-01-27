@@ -49,7 +49,9 @@ steps:
     %USERPROFILE%\.nuget\packages\codecov\1.1.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
+# https://github.com/microsoft/azure-pipelines-tasks/issues/12212
 - task: PublishTestResults@2
+  condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'

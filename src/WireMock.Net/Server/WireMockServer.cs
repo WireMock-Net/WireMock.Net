@@ -258,7 +258,13 @@ namespace WireMock.Server
             if (settings.AllowBodyForAllHttpMethods == true)
             {
                 _options.AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods;
-                _settings.Logger.Info("AllowBodyForAllHttpMethods is set to {0}", _settings.AllowBodyForAllHttpMethods == true);
+                _settings.Logger.Info("AllowBodyForAllHttpMethods is set to True");
+            }
+
+            if (settings.AllowAnyHttpStatusCodeInResponse == true)
+            {
+                _options.AllowAnyHttpStatusCodeInResponse = _settings.AllowAnyHttpStatusCodeInResponse;
+                _settings.Logger.Info("AllowAnyHttpStatusCodeInResponse is set to True");
             }
 
             if (settings.AllowPartialMapping == true)
