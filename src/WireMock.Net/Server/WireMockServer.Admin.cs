@@ -561,7 +561,7 @@ namespace WireMock.Server
                 var deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
                 if (deletedGuids != null)
                 {
-                    return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids?.ToArray())}]");
+                    return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
                 }
                 else
                 {
