@@ -147,9 +147,10 @@ namespace WireMock.Handlers
         /// <returns></returns>
         private string CleanPath(string path)
         {
-            path = path.Replace("/", @"\");
-            // remove leading \ character which would break Path.Combine
-            path = path.StartsWith(@"\") ? path.Substring(1, path.Length - 1) : path;
+            path = path.Replace('/', Path.DirectorySeparatorChar);
+            path = path.Replace('\\', Path.DirectorySeparatorChar);
+            // remove leading directory separator character which would break Path.Combine
+            path = path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1, path.Length - 1) : path;
 
             return path;
         }
