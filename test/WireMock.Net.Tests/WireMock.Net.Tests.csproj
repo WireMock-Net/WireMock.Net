@@ -83,6 +83,9 @@
     <None Update="__admin\mappings\MyXmlResponse.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="__admin\mappings\subdirectory\MyXmlResponse.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
