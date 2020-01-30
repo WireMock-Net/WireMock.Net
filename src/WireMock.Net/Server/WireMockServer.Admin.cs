@@ -558,9 +558,8 @@ namespace WireMock.Server
             // if we allow body for HTTP Delete & a body is defined
             if (_settings.AllowBodyForAllHttpMethods.HasValue && _settings.AllowBodyForAllHttpMethods.Value && !String.IsNullOrEmpty(requestMessage.Body))
             {
-                List<Guid> deletedGuids = new List<Guid>();
-                bool success = MappingsDeleteMappingFromBody(requestMessage, ref deletedGuids);
-                if (success)
+                IEnumerable<Guid> deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
+                if (deletedGuids != null)
                 {
                     return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{String.Join(", ", deletedGuids?.ToArray())}]");
                 }
@@ -580,8 +579,10 @@ namespace WireMock.Server
             }
         }
 
-        private bool MappingsDeleteMappingFromBody(RequestMessage requestMessage, ref List<Guid> deletedGuids)
+        private IEnumerable<Guid> MappingsDeleteMappingFromBody(RequestMessage requestMessage)
         {
+            List<Guid> deletedGuids = new List<Guid>();
+
             try
             {
                 var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
@@ -603,15 +604,15 @@ namespace WireMock.Server
             catch (ArgumentException a)
             {
                 _settings.Logger.Error("ArgumentException: {0}", a);
-                return false;
+                return null;
             }
             catch (Exception e)
             {
                 _settings.Logger.Error("Exception: {0}", e);
-                return false;
+                return null;
             }
 
-            return true;
+            return deletedGuids;
         }
 
         private ResponseMessage MappingsReset(RequestMessage requestMessage)
