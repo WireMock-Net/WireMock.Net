@@ -56,7 +56,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
         public string GetMappingFolder()
         {
-            return Path.Combine(_rootFolder, AdminMappingsFolder);
+            return CleanPath(Path.Combine(_rootFolder, AdminMappingsFolder));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
@@ -142,13 +142,13 @@ namespace WireMock.Handlers
         /// <summary>
         /// Robust handling of the user defined path.
         /// Gets the path string ready for Path.Combine method.
+        /// Also supports Unix and Windows platforms
         /// </summary>
         /// <param name="path">Path to clean</param>
         /// <returns></returns>
         private string CleanPath(string path)
         {
-            path = path.Replace('/', Path.DirectorySeparatorChar);
-            path = path.Replace('\\', Path.DirectorySeparatorChar);
+            path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             // remove leading directory separator character which would break Path.Combine
             path = path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1, path.Length - 1) : path;
 
