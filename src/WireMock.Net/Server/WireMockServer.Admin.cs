@@ -555,11 +555,63 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
         {
-            ResetMappings();
+            // if we allow body for HTTP Delete & a body is defined
+            if (_settings.AllowBodyForAllHttpMethods.HasValue && _settings.AllowBodyForAllHttpMethods.Value && !String.IsNullOrEmpty(requestMessage.Body))
+            {
+                List<Guid> deletedGuids = new List<Guid>();
+                bool success = MappingsDeleteMappingFromBody(requestMessage, ref deletedGuids);
+                if (success)
+                {
+                    return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{String.Join(", ", deletedGuids?.ToArray())}]");
+                }
+                else
+                {
+                    // return bad request
+                    return ResponseMessageBuilder.Create($"Poorly formed mapping JSON.", 400);
+                }
+            }
+            else
+            {
+                ResetMappings();
 
-            ResetScenarios();
+                ResetScenarios();
 
-            return ResponseMessageBuilder.Create("Mappings deleted");
+                return ResponseMessageBuilder.Create("Mappings deleted");
+            }
+        }
+
+        private bool MappingsDeleteMappingFromBody(RequestMessage requestMessage, ref List<Guid> deletedGuids)
+        {
+            try
+            {
+                var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
+                foreach (var mappingModel in mappingModels)
+                {
+                    if (mappingModel.Guid.HasValue)
+                    {
+                        if (DeleteMapping(mappingModel.Guid.Value))
+                        {
+                            deletedGuids.Add(mappingModel.Guid.Value);
+                        }
+                        else
+                        {
+                            _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
+                        }
+                    }
+                }
+            }
+            catch (ArgumentException a)
+            {
+                _settings.Logger.Error("ArgumentException: {0}", a);
+                return false;
+            }
+            catch (Exception e)
+            {
+                _settings.Logger.Error("Exception: {0}", e);
+                return false;
+            }
+
+            return true;
         }
 
         private ResponseMessage MappingsReset(RequestMessage requestMessage)
