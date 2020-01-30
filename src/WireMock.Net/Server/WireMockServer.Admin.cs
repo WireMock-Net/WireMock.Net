@@ -566,7 +566,7 @@ namespace WireMock.Server
                 else
                 {
                     // return bad request
-                    return ResponseMessageBuilder.Create($"Poorly formed mapping JSON.", 400);
+                    return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
                 }
             }
             else
