@@ -81,9 +81,9 @@ namespace WireMock.Handlers
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
-            // In case the path is a filename, the path will be adjusted to the MappingFolder.
+            // If the file exists at the given path relative to the MappingsFolder, then return that.
             // Else the path will just be as-is.
-            return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
+            return File.ReadAllBytes(File.Exists(Path.Combine(GetMappingFolder(), path)) ? Path.Combine(GetMappingFolder(), path) : path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
