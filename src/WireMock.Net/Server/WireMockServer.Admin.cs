@@ -556,7 +556,7 @@ namespace WireMock.Server
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
         {
             // if we allow body for HTTP Delete & a body is defined
-            if (_settings.AllowBodyForAllHttpMethods.HasValue && _settings.AllowBodyForAllHttpMethods.Value && !String.IsNullOrEmpty(requestMessage.Body))
+            if (!String.IsNullOrEmpty(requestMessage.Body))
             {
                 IEnumerable<Guid> deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
                 if (deletedGuids != null)
