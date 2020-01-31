@@ -56,7 +56,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
         public string GetMappingFolder()
         {
-            return CleanPath(Path.Combine(_rootFolder, AdminMappingsFolder));
+            return Path.Combine(_rootFolder, AdminMappingsFolder);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
