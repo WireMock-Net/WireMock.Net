@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Handlers
@@ -80,7 +81,7 @@ namespace WireMock.Handlers
         public byte[] ReadResponseBodyAsFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
-            path = CleanPath(path);
+            path = PathUtils.CleanPath(path);
             // If the file exists at the given path relative to the MappingsFolder, then return that.
             // Else the path will just be as-is.
             return File.ReadAllBytes(File.Exists(Path.Combine(GetMappingFolder(), path)) ? Path.Combine(GetMappingFolder(), path) : path);
@@ -90,7 +91,7 @@ namespace WireMock.Handlers
         public string ReadResponseBodyAsString(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
-            path = CleanPath(path);
+            path = PathUtils.CleanPath(path);
             // In case the path is a filename, the path will be adjusted to the MappingFolder.
             // Else the path will just be as-is.
             return File.ReadAllText(File.Exists(Path.Combine(GetMappingFolder(), path)) ? Path.Combine(GetMappingFolder(), path) : path);
@@ -137,22 +138,6 @@ namespace WireMock.Handlers
         private string AdjustPath(string filename)
         {
             return Path.Combine(GetMappingFolder(), filename);
-        }
-
-        /// <summary>
-        /// Robust handling of the user defined path.
-        /// Gets the path string ready for Path.Combine method.
-        /// Also supports Unix and Windows platforms
-        /// </summary>
-        /// <param name="path">Path to clean</param>
-        /// <returns></returns>
-        private string CleanPath(string path)
-        {
-            path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            // remove leading directory separator character which would break Path.Combine
-            path = path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1, path.Length - 1) : path;
-
-            return path;
         }
     }
 }
