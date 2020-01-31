@@ -6,7 +6,6 @@ namespace WireMock.Util
 {
     internal static class PathUtils
     {
-
         /// <summary>
         /// Robust handling of the user defined path.
         /// Gets the path string ready for Path.Combine method.
