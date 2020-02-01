@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -20,7 +21,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var server = WireMockServer.Start();
 
             string path = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", "MyXmlResponse.xml");
-
+            Console.WriteLine(path);
             server
                 .Given(
                     Request
