@@ -8,20 +8,23 @@ namespace WireMock.Util
     {
         /// <summary>
         /// Robust handling of the user defined path.
-        /// Gets the path string ready for Path.Combine method.
         /// Also supports Unix and Windows platforms
         /// </summary>
         /// <param name="path">Path to clean</param>
         /// <returns></returns>
         public static string CleanPath(string path)
         {
-            string cleanPath = path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-            // remove leading directory separator character which would break Path.Combine
-            cleanPath = cleanPath.TrimStart(new[] { Path.DirectorySeparatorChar });
+            return path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        }
 
-            Console.WriteLine($"Before CleanPath: {path}");
-            Console.WriteLine($"After CleanPath: {cleanPath}");
-            return cleanPath;
+        /// <summary>
+        /// Removes leading directory separator chars from the filepath, which could break Path.Combine
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string RemoveLeadingDirectorySeparators(string path)
+        {
+            return path.TrimStart(new[] { Path.DirectorySeparatorChar });
         }
     }
 }
