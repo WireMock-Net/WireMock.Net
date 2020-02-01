@@ -17,7 +17,11 @@ namespace WireMock.Util
         {
             string cleanPath = path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
             // remove leading directory separator character which would break Path.Combine
-            return cleanPath.TrimStart(new[] { Path.DirectorySeparatorChar });
+            cleanPath = cleanPath.TrimStart(new[] { Path.DirectorySeparatorChar });
+
+            Console.WriteLine($"Before CleanPath: {path}");
+            Console.WriteLine($"After CleanPath: {cleanPath}");
+            return cleanPath;
         }
     }
 }
