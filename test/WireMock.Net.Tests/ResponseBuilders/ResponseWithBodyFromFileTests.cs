@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
     public class ResponseWithBodyFromFileTests
     {
         [Fact]
-        public async Task Response_ProvideResponse_WithBodyFromFile()
+        public async Task Response_ProvideResponse_WithBodyFromFile_AbsolutePath()
         {
             // Arrange
             var server = WireMockServer.Start();
@@ -52,89 +52,65 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Arrange
             var server = WireMockServer.Start();
-            int path = 0;
-            List<string> pathList = new List<string>()
-            {
-                @"subdirectory/MyXmlResponse.xml",
-                @"subdirectory\MyXmlResponse.xml",
-                @"/subdirectory/MyXmlResponse.xml",
-                @"\subdirectory\MyXmlResponse.xml"
-            };
+            string path = @"subdirectory/MyXmlResponse.xml";
 
             server
                 .Given(
                     Request
                         .Create()
                         .UsingGet()
-                        .WithPath("/v1/content/path1")
+                        .WithPath("/v1/content")
                 )
                 .RespondWith(
                     Response
                         .Create()
                         .WithStatusCode(HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/xml")
-                        .WithBodyFromFile(pathList[path])
-                );
-
-            path++;
-            server
-                .Given(
-                    Request
-                        .Create()
-                        .UsingGet()
-                        .WithPath("/v1/content/path2")
-                )
-                .RespondWith(
-                    Response
-                        .Create()
-                        .WithStatusCode(HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/xml")
-                        .WithBodyFromFile(pathList[path])
-                );
-
-            path++;
-            server
-                .Given(
-                    Request
-                        .Create()
-                        .UsingGet()
-                        .WithPath("/v1/content/path3")
-                )
-                .RespondWith(
-                    Response
-                        .Create()
-                        .WithStatusCode(HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/xml")
-                        .WithBodyFromFile(pathList[path])
-                );
-
-            path++;
-            server
-                .Given(
-                    Request
-                        .Create()
-                        .UsingGet()
-                        .WithPath("/v1/content/path4")
-                )
-                .RespondWith(
-                    Response
-                        .Create()
-                        .WithStatusCode(HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/xml")
-                        .WithBodyFromFile(pathList[path])
+                        .WithBodyFromFile(path)
                 );
 
             // Act
-            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content/path1");
-            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content/path2");
-            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content/path3");
-            var response4 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content/path4");
+            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
 
             // Assert
             response1.Should().Contain("<hello>world</hello>");
             response2.Should().Contain("<hello>world</hello>");
             response3.Should().Contain("<hello>world</hello>");
-            response4.Should().Contain("<hello>world</hello>");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_WithBodyFromFile_InAdminMappingFolder()
+        {
+            // Arrange
+            var server = WireMockServer.Start();
+            string path = @"subdirectory/MyXmlResponse.xml";
+
+            server
+                .Given(
+                    Request
+                        .Create()
+                        .UsingGet()
+                        .WithPath("/v1/content")
+                )
+                .RespondWith(
+                    Response
+                        .Create()
+                        .WithStatusCode(HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/xml")
+                        .WithBodyFromFile(path)
+                );
+
+            // Act
+            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+
+            // Assert
+            response1.Should().Contain("<hello>world</hello>");
+            response2.Should().Contain("<hello>world</hello>");
+            response3.Should().Contain("<hello>world</hello>");
         }
     }
 }
