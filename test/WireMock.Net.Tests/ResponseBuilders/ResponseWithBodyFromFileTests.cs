@@ -85,7 +85,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Arrange
             var server = WireMockServer.Start();
-            string path = @"subdirectory/MyXmlResponse.xml";
+            string path = @"MyXmlResponse.xml";
 
             server
                 .Given(
