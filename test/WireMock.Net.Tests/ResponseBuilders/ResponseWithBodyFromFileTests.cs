@@ -23,7 +23,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             string path = Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", "MyXmlResponse.xml");
             Console.WriteLine(path);
             Console.WriteLine($"Checking if file {path} exists: {File.Exists(path)}");
-            foreach (var file in Directory.GetFiles(@"C:\Name\Folder\"))
+            foreach (var file in Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings")))
             {
                 Console.WriteLine(file); // full path
                 Console.WriteLine(System.IO.Path.GetFileName(file)); // file name
