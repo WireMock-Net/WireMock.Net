@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace WireMock.Util
 {
@@ -10,42 +8,29 @@ namespace WireMock.Util
         /// Robust handling of the user defined path.
         /// Also supports Unix and Windows platforms
         /// </summary>
-        /// <param name="path">Path to clean</param>
-        /// <returns></returns>
+        /// <param name="path">The path to clean</param>
         public static string CleanPath(string path)
         {
-            return path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+            return path?.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
         }
 
         /// <summary>
         /// Removes leading directory separator chars from the filepath, which could break Path.Combine
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">The path to remove the loading DirectorySeparatorChars</param>
         public static string RemoveLeadingDirectorySeparators(string path)
         {
-            return path.TrimStart(new[] { Path.DirectorySeparatorChar });
+            return path?.TrimStart(new[] { Path.DirectorySeparatorChar });
         }
 
+        /// <summary>
+        /// Combine two paths
+        /// </summary>
+        /// <param name="root">The root path</param>
+        /// <param name="path">The path</param>
         public static string Combine(string root, string path)
         {
-            return Path.Combine(root, PathUtils.RemoveLeadingDirectorySeparators(path));
-        }
-
-        public static string Combine(string root, params string[] paths)
-        {
-            List<string> cleanPaths = new List<string>();
-            cleanPaths.Add(PathUtils.CleanPath(root));
-
-            string curPath;
-            foreach(string path in paths)
-            {
-                curPath = PathUtils.CleanPath(path);
-                curPath = PathUtils.RemoveLeadingDirectorySeparators(curPath);
-                cleanPaths.Add(curPath);
-            }
-
-            return Path.Combine(cleanPaths.ToArray());
+            return Path.Combine(root, RemoveLeadingDirectorySeparators(path));
         }
     }
 }
