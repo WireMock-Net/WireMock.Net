@@ -437,9 +437,9 @@ namespace WireMock.Net.Tests
             var response = await new HttpClient().SendAsync(request);
 
             // Assert
-            Check.That(await response.Content.ReadAsStringAsync()).Equals("{\"Status\":\"Mappings deleted. Affected GUIDs: [00000002-ee28-4f29-ae63-1ac9b0802d86, 00000002-ee28-4f29-ae63-1ac9b0802d87]\"}");
-            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
             Check.That(server.MappingModels).HasSize(0);
+            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+            Check.That(await response.Content.ReadAsStringAsync()).Equals("{\"Status\":\"Mappings deleted. Affected GUIDs: [00000002-ee28-4f29-ae63-1ac9b0802d86, 00000002-ee28-4f29-ae63-1ac9b0802d87]\"}");
         }
 
         private string GetRequestBodyFromJsonsInFolder(string folder)
