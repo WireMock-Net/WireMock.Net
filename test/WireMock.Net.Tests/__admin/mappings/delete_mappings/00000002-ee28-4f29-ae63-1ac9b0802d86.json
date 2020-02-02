@@ -1,0 +1,50 @@
+{
+  "Guid": "00000002-ee28-4f29-ae63-1ac9b0802d86",
+  "Priority": 0,
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "ExactMatcher",
+          "Pattern": "/dbs"
+        }
+      ]
+    },
+    "Methods": [
+      "post"
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "WildcardMatcher",
+        "Pattern": "*db-abc*"
+      }
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Body": "{\"_rid\":\"\",\"Databases\":[{\"id\":\"db-abc\",\"_rid\":\"hBYWAA==\",\"_self\":\"dbs/hBYWAA==/\",\"_etag\":\"\\\"00008e00-0000-0000-0000-58b94f910000\\\"\",\"_colls\":\"colls/\",\"_users\":\"users/\",\"_ts\":1488539514}],\"_count\":1}",
+    "BodyEncoding": {
+      "CodePage": 65001,
+      "EncodingName": "Unicode (UTF-8)",
+      "WebName": "utf-8"
+    },
+    "UseTransformer": false,
+    "Headers": {
+      "x-ms-schemaversion": "1.3",
+      "Date": "Mon, 06 Mar 2017 10:56:43 GMT",
+      "x-ms-activity-id": "5e39429d-7fcc-4b75-93d6-519b7c582772",
+      "x-ms-item-count": "1",
+      "x-ms-resource-usage": "databases=1;",
+      "x-ms-gatewayversion": "version=1.11.164.3",
+      "x-ms-xp-role": "2",
+      "x-ms-session-token": "0:25908",
+      "x-ms-serviceversion": "version=1.11.150.2",
+      "Strict-Transport-Security": "max-age=31536000",
+      "Server": "Microsoft-HTTPAPI/2.0",
+      "x-ms-last-state-change-utc": "Fri, 24 Feb 2017 11:35:16.053 GMT",
+      "Content-Type": "application/json",
+      "x-ms-request-charge": "4.68",
+      "x-ms-resource-quota": "databases=100;"
+    }
+  }
+}

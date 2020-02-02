@@ -77,6 +77,12 @@
     <None Update="__admin\mappings\array.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="__admin\mappings\delete_mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\delete_mappings\00000002-ee28-4f29-ae63-1ac9b0802d87.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="__admin\mappings\documentdb_root.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

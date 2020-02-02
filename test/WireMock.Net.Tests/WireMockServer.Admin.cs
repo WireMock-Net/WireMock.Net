@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -403,6 +405,54 @@ namespace WireMock.Net.Tests
             staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
             staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
             staticMappingHandlerMock.Verify(m => m.WriteMappingFile(Path.Combine("folder", guid + ".json"), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async void WireMockServer_Admin_DeleteMappings()
+        {
+            // Arrange
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                AllowBodyForAllHttpMethods = true,
+                StartAdminInterface = true,
+                ReadStaticMappings = false,
+                WatchStaticMappings = false,
+                WatchStaticMappingsInSubdirectories = false
+            });
+            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "delete_mappings");
+            server.ReadStaticMappings(folder);
+
+            Check.That(server.MappingModels).HasSize(2);
+
+            string deleteBody = GetRequestBodyFromJsonsInFolder(folder);
+
+            // Act
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri($"http://localhost:{server.Ports[0]}/__admin/mappings"),
+                Content = new StringContent(deleteBody, Encoding.UTF8, "application/json")
+            };
+
+            var response = await new HttpClient().SendAsync(request);
+
+            // Assert
+            Check.That(await response.Content.ReadAsStringAsync()).Equals("{\"Status\":\"Mappings deleted. Affected GUIDs: [00000002-ee28-4f29-ae63-1ac9b0802d86, 00000002-ee28-4f29-ae63-1ac9b0802d87]\"}");
+            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+            Check.That(server.MappingModels).HasSize(0);
+        }
+
+        private string GetRequestBodyFromJsonsInFolder(string folder)
+        {
+            string[] mappingFiles = Directory.GetFiles(folder, "*.json");
+            string requestBody = "[";
+            foreach (string file in mappingFiles)
+            {
+                requestBody += $"{File.ReadAllText(file)},";
+            }
+            requestBody = $"{requestBody.TrimEnd(',')}]";
+
+            return requestBody;
         }
     }
 }
