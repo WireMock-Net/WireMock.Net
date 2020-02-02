@@ -26,5 +26,26 @@ namespace WireMock.Util
         {
             return path.TrimStart(new[] { Path.DirectorySeparatorChar });
         }
+
+        public static string Combine(string root, string path)
+        {
+            return Path.Combine(root, PathUtils.RemoveLeadingDirectorySeparators(path));
+        }
+
+        public static string Combine(string root, params string[] paths)
+        {
+            List<string> cleanPaths = new List<string>();
+            cleanPaths.Add(PathUtils.CleanPath(root));
+
+            string curPath;
+            foreach(string path in paths)
+            {
+                curPath = PathUtils.CleanPath(path);
+                curPath = PathUtils.RemoveLeadingDirectorySeparators(curPath);
+                cleanPaths.Add(curPath);
+            }
+
+            return Path.Combine(cleanPaths.ToArray());
+        }
     }
 }

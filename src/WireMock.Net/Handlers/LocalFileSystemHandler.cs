@@ -84,9 +84,7 @@ namespace WireMock.Handlers
             path = PathUtils.CleanPath(path);
             // If the file exists at the given path relative to the MappingsFolder, then return that.
             // Else the path will just be as-is.
-            return File.ReadAllBytes(File.Exists(Path.Combine(GetMappingFolder(), PathUtils.RemoveLeadingDirectorySeparators(path))) ?
-                Path.Combine(GetMappingFolder(), PathUtils.RemoveLeadingDirectorySeparators(path)) :
-                path);
+            return File.ReadAllBytes(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
@@ -96,9 +94,7 @@ namespace WireMock.Handlers
             path = PathUtils.CleanPath(path);
             // In case the path is a filename, the path will be adjusted to the MappingFolder.
             // Else the path will just be as-is.
-            return File.ReadAllText(File.Exists(Path.Combine(GetMappingFolder(), PathUtils.RemoveLeadingDirectorySeparators(path))) ?
-                Path.Combine(GetMappingFolder(), PathUtils.RemoveLeadingDirectorySeparators(path)) :
-                path);
+            return File.ReadAllText(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
