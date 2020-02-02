@@ -37,14 +37,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
 
             // Assert
-            response1.Should().Contain("<hello>world</hello>");
-            response2.Should().Contain("<hello>world</hello>");
-            response3.Should().Contain("<hello>world</hello>");
+            response.Should().Contain("<hello>world</hello>");
         }
 
         [Fact]
@@ -70,14 +66,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
 
             // Assert
-            response1.Should().Contain("<hello>world</hello>");
-            response2.Should().Contain("<hello>world</hello>");
-            response3.Should().Contain("<hello>world</hello>");
+            response.Should().Contain("<hello>world</hello>");
         }
 
         [Fact]
@@ -103,14 +95,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response1 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response2 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
-            var response3 = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
 
             // Assert
-            response1.Should().Contain("<hello>world</hello>");
-            response2.Should().Contain("<hello>world</hello>");
-            response3.Should().Contain("<hello>world</hello>");
+            response.Should().Contain("<hello>world</hello>");
         }
     }
 }
