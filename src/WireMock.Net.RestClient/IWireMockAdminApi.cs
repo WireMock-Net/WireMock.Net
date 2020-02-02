@@ -75,6 +75,14 @@ namespace WireMock.Client
         Task<StatusModel> DeleteMappingsAsync();
 
         /// <summary>
+        /// Delete mappings according to GUIDs
+        /// </summary>
+        /// <param name="mappings">MappingModels</param>
+        [Delete("mappings")]
+        [Header("Content-Type", "application/json")]
+        Task<StatusModel> DeleteMappingsAsync([Body] IList<MappingModel> mappings);
+
+        /// <summary>
         /// Delete (reset) all mappings.
         /// </summary>
         /// <param name="reloadStaticMappings">A value indicating whether to reload the static mappings after the reset.</param>
