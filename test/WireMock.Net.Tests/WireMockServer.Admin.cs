@@ -44,7 +44,6 @@ namespace WireMock.Net.Tests
         public void WireMockServer_Admin_ResetMappings()
         {
             var server = WireMockServer.Start();
-
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
             server.ReadStaticMappings(folder);
 
