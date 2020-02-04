@@ -161,7 +161,6 @@ namespace WireMock.Net.Tests
         }
 
         [Theory]
-        [InlineData("DELETE")]
 #if !NET452
         [InlineData("TRACE")]
         [InlineData("GET")]
@@ -195,6 +194,7 @@ namespace WireMock.Net.Tests
         [InlineData("PUT")]
         [InlineData("OPTIONS")]
         [InlineData("REPORT")]
+        [InlineData("DELETE")]
         [InlineData("SOME-UNKNOWN-METHOD")] // default behavior for unknown methods is to allow a body (see BodyParser.ShouldParseBody)
         public async Task WireMockServer_Should_not_exclude_body_for_supported_methods(string method)
         {
