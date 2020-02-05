@@ -160,8 +160,8 @@ namespace WireMock.Net.Tests
             Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
         }
 
-        [Theory]
 #if !NET452
+        [Theory]
         [InlineData("TRACE")]
         [InlineData("GET")]
 #endif
