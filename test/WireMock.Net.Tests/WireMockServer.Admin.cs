@@ -433,9 +433,9 @@ namespace WireMock.Net.Tests
 
             Check.That(server.MappingModels.Count()).Equals(3);
 
-            string guid1 = server.MappingModels.ElementAt(1).Guid.ToString();
-            string guid2 = server.MappingModels.ElementAt(2).Guid.ToString();
-            string guid3 = server.MappingModels.ElementAt(3).Guid.ToString();
+            string guid1 = server.MappingModels.ElementAt(0).Guid.ToString();
+            string guid2 = server.MappingModels.ElementAt(1).Guid.ToString();
+            string guid3 = server.MappingModels.ElementAt(2).Guid.ToString();
 
             string guidsJsonBody = $"[" +
                                      $"{guid1}," +
