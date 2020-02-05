@@ -412,46 +412,51 @@ namespace WireMock.Net.Tests
             // Arrange
             var server = WireMockServer.Start(new WireMockServerSettings
             {
-                AllowBodyForAllHttpMethods = true,
                 StartAdminInterface = true,
                 ReadStaticMappings = false,
                 WatchStaticMappings = false,
                 WatchStaticMappingsInSubdirectories = false
             });
-            string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings", "delete_mappings");
-            server.ReadStaticMappings(folder);
 
-            Check.That(server.MappingModels).HasSize(2);
+            server
+                .Given(Request.Create().WithPath("/path1"))
+                .AtPriority(0)
+                .RespondWith(Response.Create().WithStatusCode(200));
+            server
+                .Given(Request.Create().WithPath("/path2"))
+                .AtPriority(1)
+                .RespondWith(Response.Create().WithStatusCode(200));
+            server
+                .Given(Request.Create().WithPath("/path3"))
+                .AtPriority(2)
+                .RespondWith(Response.Create().WithStatusCode(200));
 
-            string deleteBody = GetRequestBodyFromJsonsInFolder(folder);
+            Check.That(server.MappingModels.Count()).Equals(3);
+
+            string guid1 = server.MappingModels.ElementAt(1).Guid.ToString();
+            string guid2 = server.MappingModels.ElementAt(2).Guid.ToString();
+            string guid3 = server.MappingModels.ElementAt(3).Guid.ToString();
+
+            string guidsJsonBody = $"[" +
+                                     $"{guid1}," +
+                                     $"{guid2}"  +
+                                   $"]";
 
             // Act
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Delete,
                 RequestUri = new Uri($"http://localhost:{server.Ports[0]}/__admin/mappings"),
-                Content = new StringContent(deleteBody, Encoding.UTF8, "application/json")
+                Content = new StringContent(guidsJsonBody, Encoding.UTF8, "application/json")
             };
 
             var response = await new HttpClient().SendAsync(request);
 
             // Assert
-            Check.That(server.MappingModels).HasSize(0);
+            Check.That(server.MappingModels).HasSize(1);
+            Check.That(server.MappingModels.First().Guid.ToString()).Equals(guid3);
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
-            Check.That(await response.Content.ReadAsStringAsync()).Equals("{\"Status\":\"Mappings deleted. Affected GUIDs: [00000002-ee28-4f29-ae63-1ac9b0802d86, 00000002-ee28-4f29-ae63-1ac9b0802d87]\"}");
-        }
-
-        private string GetRequestBodyFromJsonsInFolder(string folder)
-        {
-            string[] mappingFiles = Directory.GetFiles(folder, "*.json");
-            string requestBody = "[";
-            foreach (string file in mappingFiles)
-            {
-                requestBody += $"{File.ReadAllText(file)},";
-            }
-            requestBody = $"{requestBody.TrimEnd(',')}]";
-
-            return requestBody;
+            Check.That(await response.Content.ReadAsStringAsync()).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
         }
     }
 }
