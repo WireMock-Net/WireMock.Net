@@ -164,7 +164,6 @@ namespace WireMock.Net.Tests
         [Theory]
         [InlineData("TRACE")]
         [InlineData("GET")]
-#endif
         public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
         {
             // Assign
@@ -188,6 +187,7 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         }
+#endif
 
         [Theory]
         [InlineData("POST")]
