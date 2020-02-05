@@ -34,7 +34,7 @@ namespace WireMock.Util
             { "GET", false },
             { "PUT", true },
             { "POST", true },
-            { "DELETE", false },
+            { "DELETE", true },
             { "TRACE", false },
             { "OPTIONS", true },
             { "CONNECT", false },

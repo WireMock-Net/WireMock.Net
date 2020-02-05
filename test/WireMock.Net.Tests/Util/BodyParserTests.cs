@@ -148,7 +148,7 @@ Content-Type: text/html
         [InlineData("GET", false)]
         [InlineData("PUT", true)]
         [InlineData("POST", true)]
-        [InlineData("DELETE", false)]
+        [InlineData("DELETE", true)]
         [InlineData("TRACE", false)]
         [InlineData("OPTIONS", true)]
         [InlineData("CONNECT", false)]

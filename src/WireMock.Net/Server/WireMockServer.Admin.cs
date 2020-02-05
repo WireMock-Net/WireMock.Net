@@ -555,11 +555,63 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
         {
-            ResetMappings();
+            if (!string.IsNullOrEmpty(requestMessage.Body))
+            {
+                var deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
+                if (deletedGuids != null)
+                {
+                    return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
+                }
+                else
+                {
+                    // return bad request
+                    return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
+                }
+            }
+            else
+            {
+                ResetMappings();
 
-            ResetScenarios();
+                ResetScenarios();
 
-            return ResponseMessageBuilder.Create("Mappings deleted");
+                return ResponseMessageBuilder.Create("Mappings deleted");
+            }
+        }
+
+        private IEnumerable<Guid> MappingsDeleteMappingFromBody(RequestMessage requestMessage)
+        {
+            var deletedGuids = new List<Guid>();
+
+            try
+            {
+                var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
+                foreach (var mappingModel in mappingModels)
+                {
+                    if (mappingModel.Guid.HasValue)
+                    {
+                        if (DeleteMapping(mappingModel.Guid.Value))
+                        {
+                            deletedGuids.Add(mappingModel.Guid.Value);
+                        }
+                        else
+                        {
+                            _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
+                        }
+                    }
+                }
+            }
+            catch (ArgumentException a)
+            {
+                _settings.Logger.Error("ArgumentException: {0}", a);
+                return null;
+            }
+            catch (Exception e)
+            {
+                _settings.Logger.Error("Exception: {0}", e);
+                return null;
+            }
+
+            return deletedGuids;
         }
 
         private ResponseMessage MappingsReset(RequestMessage requestMessage)
@@ -873,7 +925,7 @@ namespace WireMock.Server
                     DetectedBodyType = BodyType.String,
                     BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
                 },
-                StatusCode = (int) HttpStatusCode.OK,
+                StatusCode = (int)HttpStatusCode.OK,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }

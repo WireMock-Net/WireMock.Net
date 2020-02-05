@@ -160,12 +160,10 @@ namespace WireMock.Net.Tests
             Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
         }
 
-        [Theory]
-        [InlineData("DELETE")]
 #if !NET452
+        [Theory]
         [InlineData("TRACE")]
         [InlineData("GET")]
-#endif
         public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
         {
             // Assign
@@ -189,12 +187,14 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         }
+#endif
 
         [Theory]
         [InlineData("POST")]
         [InlineData("PUT")]
         [InlineData("OPTIONS")]
         [InlineData("REPORT")]
+        [InlineData("DELETE")]
         [InlineData("SOME-UNKNOWN-METHOD")] // default behavior for unknown methods is to allow a body (see BodyParser.ShouldParseBody)
         public async Task WireMockServer_Should_not_exclude_body_for_supported_methods(string method)
         {
