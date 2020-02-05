@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -433,13 +434,17 @@ namespace WireMock.Net.Tests
 
             Check.That(server.MappingModels.Count()).Equals(3);
 
-            string guid1 = server.MappingModels.ElementAt(0).Guid.ToString();
-            string guid2 = server.MappingModels.ElementAt(1).Guid.ToString();
-            string guid3 = server.MappingModels.ElementAt(2).Guid.ToString();
+            Guid? guid1 = server.MappingModels.ElementAt(0).Guid;
+            Guid? guid2 = server.MappingModels.ElementAt(1).Guid;
+            Guid? guid3 = server.MappingModels.ElementAt(2).Guid;
+
+            Check.That(guid1).IsNotNull();
+            Check.That(guid2).IsNotNull();
+            Check.That(guid3).IsNotNull();
 
             string guidsJsonBody = $"[" +
-                                     $"{guid1}," +
-                                     $"{guid2}"  +
+                                     $"{{\"Guid\": \"{guid1}\"}}," +
+                                     $"{{\"Guid\": \"{guid2}\"}}" +
                                    $"]";
 
             // Act
@@ -453,8 +458,10 @@ namespace WireMock.Net.Tests
             var response = await new HttpClient().SendAsync(request);
 
             // Assert
-            Check.That(server.MappingModels).HasSize(1);
-            Check.That(server.MappingModels.First().Guid.ToString()).Equals(guid3);
+            IEnumerable<Guid> guids = server.MappingModels.Select(mapping => mapping.Guid.Value);
+            Check.That(!guids.Contains(guid1.Value));
+            Check.That(!guids.Contains(guid2.Value));
+            Check.That(guids.Contains(guid3.Value));
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
             Check.That(await response.Content.ReadAsStringAsync()).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
         }
