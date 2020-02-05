@@ -459,9 +459,9 @@ namespace WireMock.Net.Tests
 
             // Assert
             IEnumerable<Guid> guids = server.MappingModels.Select(mapping => mapping.Guid.Value);
-            Check.That(!guids.Contains(guid1.Value));
-            Check.That(!guids.Contains(guid2.Value));
-            Check.That(guids.Contains(guid3.Value));
+            Check.That(guids.Contains(guid1.Value)).IsFalse();
+            Check.That(guids.Contains(guid2.Value)).IsFalse();
+            Check.That(guids.Contains(guid3.Value)).IsTrue();
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
             Check.That(await response.Content.ReadAsStringAsync()).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
         }
