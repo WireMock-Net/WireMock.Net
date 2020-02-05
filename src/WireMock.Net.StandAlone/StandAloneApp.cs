@@ -23,7 +23,7 @@ namespace WireMock.Net.StandAlone
 
             var server = WireMockServer.Start(settings);
 
-            settings.Logger.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
+            settings.Logger?.Info("WireMock.Net server listening at {0}", string.Join(",", server.Urls));
 
             return server;
         }
@@ -38,9 +38,9 @@ namespace WireMock.Net.StandAlone
         {
             Check.NotNull(args, nameof(args));
 
-            var settings = WireMockServerSettingsParser.ParseArguments(args);
+            var settings = WireMockServerSettingsParser.ParseArguments(args, logger);
 
-            settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
+            settings.Logger?.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             return Start(settings);
         }
