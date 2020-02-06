@@ -1,9 +1,16 @@
+# 1.1.7.0 (06 February 2020)
+- [#409](https://github.com/WireMock-Net/WireMock.Net/pull/409) - Admin Delete with mappings in body [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#411](https://github.com/WireMock-Net/WireMock.Net/pull/411) - Improved relative path checking based on file existence [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#413](https://github.com/WireMock-Net/WireMock.Net/pull/413) - Fix new Delete with body missing from IWireMockAdminApi interface contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#414](https://github.com/WireMock-Net/WireMock.Net/pull/414) - Fix logger in StandAlone [bug] contributed by [StefH](https://github.com/StefH)
+- [#412](https://github.com/WireMock-Net/WireMock.Net/issues/412) - WireMock Standalone - null reference exception since settings.Logger [bug]
+
 # 1.1.6.0 (27 January 2020)
 - [#407](https://github.com/WireMock-Net/WireMock.Net/pull/407) - AllowAnyHttpStatusCodeInResponse [feature] contributed by [StefH](https://github.com/StefH)
 
 # 1.1.5.0 (25 January 2020)
 - [#405](https://github.com/WireMock-Net/WireMock.Net/pull/405) - Fix logging an Exception Message (linux docker on azure) [bug] contributed by [StefH](https://github.com/StefH)
-- [#406](https://github.com/WireMock-Net/WireMock.Net/pull/406) - Fixed StatusCode = null or &lt; 0 contributed by [StefH](https://github.com/StefH)
+- [#406](https://github.com/WireMock-Net/WireMock.Net/pull/406) - Fixed StatusCode = null or &lt; 0 [bug] contributed by [StefH](https://github.com/StefH)
 
 # 1.1.3.0 (22 January 2020)
 - [#403](https://github.com/WireMock-Net/WireMock.Net/pull/403) - Fix for invalid cast exception contributed by [kashifsoofi](https://github.com/kashifsoofi)
