@@ -20,19 +20,17 @@ namespace WireMock.Owin
         private readonly IWireMockLogger _logger;
         private Exception _runningException;
 
-        public OwinSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
+        public OwinSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] HostUrlOptions urlOptions)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNull(urlOptions, nameof(urlOptions));
 
             _logger = options.Logger ?? new WireMockConsoleLogger();
 
-            foreach (string uriPrefix in uriPrefixes)
+            foreach (var x in urlOptions.GetDetails())
             {
-                Urls.Add(uriPrefix);
-
-                PortUtils.TryExtract(uriPrefix, out string protocol, out string host, out int port);
-                Ports.Add(port);
+                Urls.Add(x.Url);
+                Ports.Add(x.Port);
             }
 
             _options = options;
