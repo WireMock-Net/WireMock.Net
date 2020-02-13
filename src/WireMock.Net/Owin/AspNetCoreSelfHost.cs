@@ -79,7 +79,7 @@ namespace WireMock.Owin
                 .UseKestrel(options =>
                 {
                     var urlDetails = _urlOptions.GetDetails();
-                    
+
 #if NETSTANDARD1_3
 
                     var urls = urlDetails.Select(u => u.Url);
@@ -88,23 +88,23 @@ namespace WireMock.Owin
                         options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                     }
 #else
-//throw new Exception("here?"+urlDetails.First().Url);
-                    foreach (var x in urlDetails)
+                    foreach (var detail in urlDetails)
                     {
-                        if (x.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                        if (detail.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                         {
-                            options.Listen(System.Net.IPAddress.Any, x.Port, listenOptions =>
+                            options.Listen(System.Net.IPAddress.Any, detail.Port, listenOptions =>
                             {
                                 listenOptions.UseHttps(); // PublicCertificateHelper.GetX509Certificate2()
                             });
                         }
                         else
                         {
-                            options.Listen(System.Net.IPAddress.Any, x.Port);
+                            options.Listen(System.Net.IPAddress.Any, detail.Port);
                         }
                     }
 #endif
                 })
+
 #if NETSTANDARD1_3
                 .UseUrls(_urlOptions.GetDetails().Select(u => u.Url).ToArray())
 #endif
@@ -123,6 +123,7 @@ namespace WireMock.Owin
                     var addresses = _host.ServerFeatures
                         .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()
                         .Addresses;
+
                     foreach (string address in addresses)
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost"));

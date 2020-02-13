@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -18,6 +17,7 @@ namespace WireMock.Owin
         private readonly IWireMockMiddlewareOptions _options;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly IWireMockLogger _logger;
+
         private Exception _runningException;
 
         public OwinSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] HostUrlOptions urlOptions)
@@ -25,15 +25,14 @@ namespace WireMock.Owin
             Check.NotNull(options, nameof(options));
             Check.NotNull(urlOptions, nameof(urlOptions));
 
+            _options = options;
             _logger = options.Logger ?? new WireMockConsoleLogger();
 
-            foreach (var x in urlOptions.GetDetails())
+            foreach (var detail in urlOptions.GetDetails())
             {
-                Urls.Add(x.Url);
-                Ports.Add(x.Port);
+                Urls.Add(detail.Url);
+                Ports.Add(detail.Port);
             }
-
-            _options = options;
         }
 
         public bool IsStarted { get; private set; }

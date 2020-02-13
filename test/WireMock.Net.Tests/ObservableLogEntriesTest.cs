@@ -96,9 +96,7 @@ namespace WireMock.Net.Tests
             var listOfTasks = new List<Task<HttpResponseMessage>>();
             for (var i = 0; i < expectedCount; i++)
             {
-                Thread.Sleep(10);
-                //throw new Exception(server.IsStarted + "Urls=" + string.Join(",", server.Urls)+ "ports=" + string.Join(",", server.Ports));
-                // Console.WriteLine("Urls=" + string.Join(",", server.Urls));
+                Thread.Sleep(50);
                 listOfTasks.Add(http.GetAsync($"{server.Urls[0]}{path}"));
             }
             var responses = await Task.WhenAll(listOfTasks);
