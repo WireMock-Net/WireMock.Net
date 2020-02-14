@@ -299,7 +299,7 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
-                    .WithPath("/does-need-a-key")
+                    .WithPath("/needs-a-key")
                     .UsingGet()
                     .WithHeader("api-key", "*", MatchBehaviour.AcceptOnMatch)
                     .UsingAnyMethod())
@@ -309,7 +309,7 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
-                    .WithPath("/doesnot-need-a-key")
+                    .WithPath("/needs-a-key")
                     .UsingGet()
                     .WithHeader("api-key", "*", MatchBehaviour.RejectOnMatch)
                     .UsingAnyMethod())
