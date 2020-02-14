@@ -26,9 +26,9 @@ namespace WireMock.Serialization
             var request = (Request)mapping.RequestMatcher;
             var response = (Response)mapping.Provider;
 
-            var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>();
-            var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>();
-            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>();
+            var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
+            var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
+            var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
             var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
             var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
             var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
@@ -45,36 +45,36 @@ namespace WireMock.Serialization
                 SetStateTo = mapping.NextState,
                 Request = new RequestModel
                 {
-                    ClientIP = clientIPMatchers != null && clientIPMatchers.Any() ? new ClientIPModel
+                    ClientIP = clientIPMatchers.Any() ? new ClientIPModel
                     {
-                        Matchers = _mapper.Map(clientIPMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(clientIPMatchers)
                     } : null,
 
-                    Path = pathMatchers != null && pathMatchers.Any() ? new PathModel
+                    Path = pathMatchers.Any() ? new PathModel
                     {
-                        Matchers = _mapper.Map(pathMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(pathMatchers)
                     } : null,
 
-                    Url = urlMatchers != null && urlMatchers.Any() ? new UrlModel
+                    Url = urlMatchers.Any() ? new UrlModel
                     {
-                        Matchers = _mapper.Map(urlMatchers.Where(m => m.Matchers != null).SelectMany(m => m.Matchers))
+                        Matchers = _mapper.Map(urlMatchers)
                     } : null,
 
                     Methods = methodMatcher?.Methods,
 
-                    Headers = headerMatchers != null && headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
+                    Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
                     {
                         Name = hm.Name,
                         Matchers = _mapper.Map(hm.Matchers)
                     }).ToList() : null,
 
-                    Cookies = cookieMatchers != null && cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
+                    Cookies = cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
                     {
                         Name = cm.Name,
                         Matchers = _mapper.Map(cm.Matchers)
                     }).ToList() : null,
 
-                    Params = paramsMatchers != null && paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
+                    Params = paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                     {
                         Name = pm.Key,
                         IgnoreCase = pm.IgnoreCase == true ? true : (bool?)null,
