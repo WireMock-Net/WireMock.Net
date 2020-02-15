@@ -102,7 +102,7 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool? AllowBodyForAllHttpMethods { get; set; }
 
-        /// <inheritdoc cref="IWireMockServerSettings.AllowAnyHttpStatusCodeInResponse"/>
-        public bool? AllowAnyHttpStatusCodeInResponse { get; set; }
+        /// <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>
+        public bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
     }
 }

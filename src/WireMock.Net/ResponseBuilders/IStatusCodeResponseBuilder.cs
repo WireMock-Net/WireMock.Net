@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using WireMock.Settings;
 
 namespace WireMock.ResponseBuilders
 {
@@ -9,6 +10,7 @@ namespace WireMock.ResponseBuilders
     {
         /// <summary>
         /// The with status code.
+        /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
@@ -16,6 +18,7 @@ namespace WireMock.ResponseBuilders
 
         /// <summary>
         /// The with status code.
+        /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
@@ -23,6 +26,7 @@ namespace WireMock.ResponseBuilders
 
         /// <summary>
         /// The with status code.
+        /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>

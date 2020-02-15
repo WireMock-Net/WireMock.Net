@@ -261,10 +261,10 @@ namespace WireMock.Server
                 _settings.Logger.Info("AllowBodyForAllHttpMethods is set to True");
             }
 
-            if (settings.AllowAnyHttpStatusCodeInResponse == true)
+            if (settings.AllowOnlyDefinedHttpStatusCodeInResponse == true)
             {
-                _options.AllowAnyHttpStatusCodeInResponse = _settings.AllowAnyHttpStatusCodeInResponse;
-                _settings.Logger.Info("AllowAnyHttpStatusCodeInResponse is set to True");
+                _options.AllowOnlyDefinedHttpStatusCodeInResponse = _settings.AllowOnlyDefinedHttpStatusCodeInResponse;
+                _settings.Logger.Info("AllowOnlyDefinedHttpStatusCodeInResponse is set to True");
             }
 
             if (settings.AllowPartialMapping == true)

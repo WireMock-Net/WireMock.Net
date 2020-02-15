@@ -139,9 +139,11 @@ namespace WireMock.Settings
         bool? AllowBodyForAllHttpMethods { get; set; }
 
         /// <summary>
-        /// Allow any HttpStatusCode in the response. Also null, 0, empty or invalid. (default set to false).
+        /// Allow only a HttpStatus Code in the response which is defined. (default set to false).
+        /// - false : also null, 0, empty or invalid HttpStatus codes are allowed.
+        /// - true  : only codes defined in <see cref="System.Net.HttpStatusCode"/> are allowed.
         /// </summary>
         /// [PublicAPI]
-        bool? AllowAnyHttpStatusCodeInResponse { get; set; }
+        bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
     }
 }

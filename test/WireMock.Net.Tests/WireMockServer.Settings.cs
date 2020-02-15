@@ -141,21 +141,21 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void WireMockServer_WireMockServerSettings_AllowAnyHttpStatusCodeInResponse()
+        public void WireMockServer_WireMockServerSettings_AllowOnlyDefinedHttpStatusCodeInResponse()
         {
             // Assign and Act
             var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Logger = _loggerMock.Object,
-                AllowAnyHttpStatusCodeInResponse = true
+                AllowOnlyDefinedHttpStatusCodeInResponse = true
             });
 
             // Assert
             var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AllowAnyHttpStatusCodeInResponse).Equals(true);
+            Check.That(options.AllowOnlyDefinedHttpStatusCodeInResponse).Equals(true);
 
             // Verify
-            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowAnyHttpStatusCodeInResponse") && s.Contains("True"))));
+            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowOnlyDefinedHttpStatusCodeInResponse") && s.Contains("True"))));
         }
 
         [Fact]
