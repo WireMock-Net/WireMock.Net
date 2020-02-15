@@ -108,7 +108,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
-            var matcher = new RequestMessageHeaderMatcher("h", new ExactMatcher("x"));
+            var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, "h", false, new ExactMatcher("x"));
 
             // Act
             var result = new RequestMatchResult();

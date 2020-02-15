@@ -52,33 +52,32 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="name">The name.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, [NotNull] string[] patterns, bool ignoreCase)
+        public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, bool ignoreCase, [NotNull] params string[] patterns) :
+            this(matchBehaviour, name, ignoreCase, patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray())
         {
-            Check.NotNull(name, nameof(name));
             Check.NotNull(patterns, nameof(patterns));
-
-            _matchBehaviour = matchBehaviour;
-            _ignoreCase = ignoreCase;
-            Name = name;
-            Matchers = patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageHeaderMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="name">The name.</param>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessageHeaderMatcher([NotNull] string name, [NotNull] params IStringMatcher[] matchers)
+        /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+        public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, bool ignoreCase, [NotNull] params IStringMatcher[] matchers)
         {
             Check.NotNull(name, nameof(name));
             Check.NotNull(matchers, nameof(matchers));
 
+            _matchBehaviour = matchBehaviour;
             Name = name;
             Matchers = matchers;
+            _ignoreCase = ignoreCase;
         }
 
         /// <summary>
@@ -125,7 +124,7 @@ namespace WireMock.Matchers.Request
             }
 
             WireMockList<string> list = headers[Name];
-            return Matchers.Max(m => list.Max(value => m.IsMatch(value))); // TODO : is this correct ?
+            return Matchers.Max(m => list.Max(m.IsMatch)); // TODO : is this correct ?
         }
     }
 }
