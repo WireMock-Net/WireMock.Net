@@ -124,11 +124,17 @@ namespace WireMock.Serialization
                 mappingModel.Response.WebProxy = null;
                 mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
                 mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
-                mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
+
+                if (response.ResponseMessage.Headers != null && response.ResponseMessage.Headers.Count > 0)
+                {
+                    mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
+                }
+
                 if (response.UseTransformer)
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
                 }
+
                 if (response.UseTransformerForBodyAsFile)
                 {
                     mappingModel.Response.UseTransformerForBodyAsFile = response.UseTransformerForBodyAsFile;
@@ -197,12 +203,6 @@ namespace WireMock.Serialization
         private static IDictionary<string, object> MapHeaders(IDictionary<string, WireMockList<string>> dictionary)
         {
             var newDictionary = new Dictionary<string, object>();
-
-            if (dictionary == null || dictionary.Count == 0)
-            {
-                return newDictionary;
-            }
-
             foreach (var entry in dictionary)
             {
                 object value = entry.Value.Count == 1 ? (object)entry.Value.ToString() : entry.Value;
