@@ -7,7 +7,7 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The MethodRequestBuilder interface.
     /// </summary>
-    public interface IMethodRequestBuilder : IHeadersAndCookiesRequestBuilder
+    public interface IMethodRequestBuilder : IHeadersRequestBuilder
     {
         /// <summary>
         /// UsingDelete: add HTTP Method matching on `DELETE` and matchBehaviour (optional).
