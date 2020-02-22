@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Moq;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
@@ -36,6 +35,7 @@ namespace WireMock.Net.Tests.Serialization
             model.Priority.Should().BeNull();
             model.Response.BodyAsJsonIndented.Should().BeNull();
             model.Response.UseTransformer.Should().BeNull();
+            model.Response.Headers.Should().BeNull();
         }
 
         [Fact]
