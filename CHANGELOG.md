@@ -1,3 +1,10 @@
+# 1.1.8.0 (22 February 2020)
+- [#419](https://github.com/WireMock-Net/WireMock.Net/pull/419) - Support multi line wild card matching [bug] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#421](https://github.com/WireMock-Net/WireMock.Net/pull/421) - Fix: do not return empty matchers array when Func has been used [bug] contributed by [StefH](https://github.com/StefH)
+- [#423](https://github.com/WireMock-Net/WireMock.Net/pull/423) - Fixes for Cookie and Header Reject on Match [bug] contributed by [StefH](https://github.com/StefH)
+- [#424](https://github.com/WireMock-Net/WireMock.Net/pull/424) - Don't return empty dictionary object for response headers in JSON mapping [feature] contributed by [StefH](https://github.com/StefH)
+- [#418](https://github.com/WireMock-Net/WireMock.Net/issues/418) - Body matching fails if body has newline [bug]
+
 # 1.1.7.0 (06 February 2020)
 - [#409](https://github.com/WireMock-Net/WireMock.Net/pull/409) - Admin Delete with mappings in body [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
 - [#411](https://github.com/WireMock-Net/WireMock.Net/pull/411) - Improved relative path checking based on file existence [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
