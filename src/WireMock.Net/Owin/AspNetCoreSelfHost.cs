@@ -73,6 +73,13 @@ namespace WireMock.Owin
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
+
+                    services.AddRequestDecompression(o =>
+                        {
+                            o.Providers.Add<DeflateDecompressionProvider>();
+                            o.Providers.Add<GzipDecompressionProvider>();
+                        });
+	            services.AddResponseCompression();
                 })
                 .Configure(appBuilder =>
                 {
@@ -83,6 +90,9 @@ namespace WireMock.Owin
                     appBuilder.UseMiddleware<WireMockMiddleware>();
 
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
+
+	            appBuilder.UseRequestDecompression();
+	            appBuilder.UseResponseCompression();
                 })
                 .UseKestrel(options =>
                 {
