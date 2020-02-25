@@ -1,14 +1,18 @@
+# 1.1.9.0 (25 February 2020)
+- [#431](https://github.com/WireMock-Net/WireMock.Net/pull/431) - Fix LinqMatcher for JSON int64 [bug] contributed by [StefH](https://github.com/StefH)
+- [#425](https://github.com/WireMock-Net/WireMock.Net/issues/425) - Allow 64 bit numbers in JSON [bug]
+
 # 1.1.8.0 (22 February 2020)
-- [#419](https://github.com/WireMock-Net/WireMock.Net/pull/419) - Support multi line wild card matching [bug] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#419](https://github.com/WireMock-Net/WireMock.Net/pull/419) - Support multi line wild card matching [bug] contributed by [NoahLerner](https://github.com/NoahLerner)
 - [#421](https://github.com/WireMock-Net/WireMock.Net/pull/421) - Fix: do not return empty matchers array when Func has been used [bug] contributed by [StefH](https://github.com/StefH)
 - [#423](https://github.com/WireMock-Net/WireMock.Net/pull/423) - Fixes for Cookie and Header Reject on Match [bug] contributed by [StefH](https://github.com/StefH)
 - [#424](https://github.com/WireMock-Net/WireMock.Net/pull/424) - Don't return empty dictionary object for response headers in JSON mapping [feature] contributed by [StefH](https://github.com/StefH)
 - [#418](https://github.com/WireMock-Net/WireMock.Net/issues/418) - Body matching fails if body has newline [bug]
 
 # 1.1.7.0 (06 February 2020)
-- [#409](https://github.com/WireMock-Net/WireMock.Net/pull/409) - Admin Delete with mappings in body [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
-- [#411](https://github.com/WireMock-Net/WireMock.Net/pull/411) - Improved relative path checking based on file existence [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
-- [#413](https://github.com/WireMock-Net/WireMock.Net/pull/413) - Fix new Delete with body missing from IWireMockAdminApi interface contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#409](https://github.com/WireMock-Net/WireMock.Net/pull/409) - Admin Delete with mappings in body [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#411](https://github.com/WireMock-Net/WireMock.Net/pull/411) - Improved relative path checking based on file existence [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#413](https://github.com/WireMock-Net/WireMock.Net/pull/413) - Fix new Delete with body missing from IWireMockAdminApi interface contributed by [NoahLerner](https://github.com/NoahLerner)
 - [#414](https://github.com/WireMock-Net/WireMock.Net/pull/414) - Fix logger in StandAlone [bug] contributed by [StefH](https://github.com/StefH)
 - [#412](https://github.com/WireMock-Net/WireMock.Net/issues/412) - WireMock Standalone - null reference exception since settings.Logger [bug]
 
@@ -59,7 +63,7 @@
 - [#386](https://github.com/WireMock-Net/WireMock.Net/issues/386) - Is transforming contents of XML file supported.? [bug]
 
 # 1.0.38.0 (30 November 2019)
-- [#376](https://github.com/WireMock-Net/WireMock.Net/pull/376) - Support int values for states and scenario naming [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#376](https://github.com/WireMock-Net/WireMock.Net/pull/376) - Support int values for states and scenario naming [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
 - [#378](https://github.com/WireMock-Net/WireMock.Net/pull/378) - Set handlebars dependency for .net 4.5.1 to fixed value [bug] contributed by [StefH](https://github.com/StefH)
 - [#381](https://github.com/WireMock-Net/WireMock.Net/pull/381) - Use dotnet default development certificate for .NET Core 2.x [feature] contributed by [StefH](https://github.com/StefH)
 - [#377](https://github.com/WireMock-Net/WireMock.Net/issues/377) - Unable to build against .NET 4.5.1 because of Handlebars [bug]
