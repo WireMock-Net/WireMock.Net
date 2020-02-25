@@ -52,7 +52,7 @@ namespace WireMock.Net.Tests.Util
                 {"Flt", new JValue(10.0f)},
                 {"Dbl", new JValue(Math.PI)},
                 {"Check", new JValue(true)},
-                {"Items", new JArray(new[] {new JValue(4), new JValue(8)})},
+                {"Items", new JArray(new[] { new JValue(4), new JValue(8) })},
                 {
                     "Child", new JObject
                     {
@@ -61,7 +61,8 @@ namespace WireMock.Net.Tests.Util
                         {"TS", new JValue(TimeSpan.FromMilliseconds(999))}
                     }
                 },
-                {"Id", new JValue(9)},
+                {"I", new JValue(9)},
+                {"L", new JValue(long.MaxValue)},
                 {"Name", new JValue("Test")}
             };
 
@@ -70,10 +71,10 @@ namespace WireMock.Net.Tests.Util
 
             // Assert
             var queryable = new[] { j }.AsQueryable().Select(line);
-            bool result = queryable.Any("Id > 4");
+            bool result = queryable.Any("I > 1 && L > 1");
             Check.That(result).IsTrue();
 
-            Check.That(line).IsEqualTo("new (Uri(U) as U, null as N, Guid(G) as G, double(Flt) as Flt, double(Dbl) as Dbl, bool(Check) as Check, (new [] { int(Items[0]), int(Items[1])}) as Items, new (int(Child.ChildId) as ChildId, DateTime(Child.ChildDateTime) as ChildDateTime, TimeSpan(Child.TS) as TS) as Child, int(Id) as Id, string(Name) as Name)");
+            Check.That(line).IsEqualTo("new (Uri(U) as U, null as N, Guid(G) as G, double(Flt) as Flt, double(Dbl) as Dbl, bool(Check) as Check, (new [] { long(Items[0]), long(Items[1])}) as Items, new (long(Child.ChildId) as ChildId, DateTime(Child.ChildDateTime) as ChildDateTime, TimeSpan(Child.TS) as TS) as Child, long(I) as I, long(L) as L, string(Name) as Name)");
         }
 
         [Fact]
@@ -82,7 +83,7 @@ namespace WireMock.Net.Tests.Util
             // Assign
             var j = new JObject
             {
-                {"B", new JValue(new byte[] {48, 49})}
+                { "B", new JValue(new byte[] {48, 49}) }
             };
 
             // Act and Assert
