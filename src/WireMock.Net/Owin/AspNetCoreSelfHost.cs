@@ -79,7 +79,7 @@ namespace WireMock.Owin
                             o.Providers.Add<DeflateDecompressionProvider>();
                             o.Providers.Add<GzipDecompressionProvider>();
                         });
-	            services.AddResponseCompression();
+                    services.AddResponseCompression();
                 })
                 .Configure(appBuilder =>
                 {
@@ -91,8 +91,8 @@ namespace WireMock.Owin
 
                     _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
 
-	            appBuilder.UseRequestDecompression();
-	            appBuilder.UseResponseCompression();
+                    appBuilder.UseRequestDecompression();
+                    appBuilder.UseResponseCompression();
                 })
                 .UseKestrel(options =>
                 {
