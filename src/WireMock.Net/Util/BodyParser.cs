@@ -127,8 +127,6 @@ namespace WireMock.Util
                     data.BodyAsString = encoding.GetString(data.BodyAsBytes);
                     data.Encoding = encoding;
                     data.DetectedBodyType = BodyType.String;
-
-                    return data;
                 }
 
                 return data;
