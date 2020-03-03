@@ -107,7 +107,7 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType)
+        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType, bool deserializeJson)
         {
             Check.NotNull(stream, nameof(stream));
 
@@ -142,7 +142,7 @@ namespace WireMock.Util
                 data.DetectedBodyType = BodyType.String;
 
                 // If string is not null or empty, try to deserialize the string to a JObject
-                if (!string.IsNullOrEmpty(data.BodyAsString))
+                if (deserializeJson && !string.IsNullOrEmpty(data.BodyAsString))
                 {
                     try
                     {

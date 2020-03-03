@@ -45,5 +45,8 @@ namespace WireMock.Owin
 
         /// <inheritdoc cref="IWireMockMiddlewareOptions.AllowAnyHttpStatusCodeInResponse"/>
         public bool? AllowAnyHttpStatusCodeInResponse { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.DisableResponseBodyParsing"/>
+        public bool? DisableJsonBodyParsing { get; set; }
     }
 }

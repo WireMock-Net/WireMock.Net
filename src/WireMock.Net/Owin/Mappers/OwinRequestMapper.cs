@@ -49,7 +49,7 @@ namespace WireMock.Owin.Mappers
             BodyData body = null;
             if (request.Body != null && BodyParser.ShouldParseBody(method, options.AllowBodyForAllHttpMethods == true))
             {
-                body = await BodyParser.Parse(request.Body, request.ContentType);
+                body = await BodyParser.Parse(request.Body, request.ContentType, !options.DisableJsonBodyParsing.GetValueOrDefault(false));
             }
 
             return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
