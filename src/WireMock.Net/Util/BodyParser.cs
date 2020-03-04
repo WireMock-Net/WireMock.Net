@@ -107,7 +107,7 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType, bool deserializeJson = true)
+        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType = null, bool deserializeJson = true)
         {
             Check.NotNull(stream, nameof(stream));
 
