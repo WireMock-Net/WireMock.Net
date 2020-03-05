@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Validation;
@@ -30,15 +31,15 @@ namespace WireMock.Util
         */
         private static readonly IDictionary<string, bool> BodyAllowedForMethods = new Dictionary<string, bool>
         {
-            { "HEAD", false },
-            { "GET", false },
-            { "PUT", true },
-            { "POST", true },
-            { "DELETE", true },
-            { "TRACE", false },
-            { "OPTIONS", true },
-            { "CONNECT", false },
-            { "PATCH", true }
+            { HttpRequestMethods.HEAD, false },
+            { HttpRequestMethods.GET, false },
+            { HttpRequestMethods.PUT, true },
+            { HttpRequestMethods.POST, true },
+            { HttpRequestMethods.DELETE, true },
+            { HttpRequestMethods.TRACE, false },
+            { HttpRequestMethods.OPTIONS, true },
+            { HttpRequestMethods.CONNECT, false },
+            { HttpRequestMethods.PATCH, true }
         };
 
         private static readonly IStringMatcher[] MultipartContentTypesMatchers = {
