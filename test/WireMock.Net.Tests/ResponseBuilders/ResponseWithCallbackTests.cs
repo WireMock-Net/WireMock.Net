@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -17,15 +17,49 @@ namespace WireMock.Net.Tests.ResponseBuilders
         public async Task Response_WithCallback()
         {
             // Assign
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            var response = Response.Create().WithCallback(req => new ResponseMessage { BodyData = new BodyData { DetectedBodyType = BodyType.String, BodyAsString = req.Path + "Bar" }, StatusCode = 302 });
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+            var response = Response.Create()
+                .WithCallback(request => new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        DetectedBodyType = BodyType.String,
+                        BodyAsString = request.Path + "Bar"
+                    },
+                    StatusCode = 302
+                });
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("/fooBar");
-            Check.That(responseMessage.StatusCode).IsEqualTo(302);
+            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
+            responseMessage.StatusCode.Should().Be(302);
+        }
+
+        [Fact]
+        public async Task Response_WithCallback_And_UseTransformer_Is_True()
+        {
+            // Assign
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+            var response = Response.Create()
+                .WithCallback(request => new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        DetectedBodyType = BodyType.String,
+                        BodyAsString = "{{request.Path}}Bar"
+                    },
+                    StatusCode = 302
+                })
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+
+            // Assert
+            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
+            responseMessage.StatusCode.Should().Be(302);
         }
     }
 }

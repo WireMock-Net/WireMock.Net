@@ -1,12 +1,10 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
@@ -341,25 +339,6 @@ namespace WireMock.ResponseBuilders
                 await Task.Delay(Delay.Value);
             }
 
-            if (Callback != null)
-            {
-                var callbackResponseMessage = Callback(requestMessage);
-
-                if (!WithCallbackUsed)
-                {
-                    // Copy StatusCode from ResponseMessage
-                    callbackResponseMessage.StatusCode = ResponseMessage.StatusCode;
-
-                    // Copy Headers from ResponseMessage (if defined)
-                    if (ResponseMessage.Headers != null)
-                    {
-                        callbackResponseMessage.Headers = ResponseMessage.Headers;
-                    }
-                }
-
-                return callbackResponseMessage;
-            }
-
             if (ProxyUrl != null && _httpClientForProxy != null)
             {
                 var requestUri = new Uri(requestMessage.Url);
@@ -369,19 +348,41 @@ namespace WireMock.ResponseBuilders
                 return await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, !settings.DisableJsonBodyParsing.GetValueOrDefault(false));
             }
 
+            ResponseMessage responseMessage;
+            if (Callback == null)
+            {
+                responseMessage = ResponseMessage;
+            }
+            else
+            {
+                responseMessage = Callback(requestMessage);
+
+                if (!WithCallbackUsed)
+                {
+                    // Copy StatusCode from ResponseMessage
+                    responseMessage.StatusCode = ResponseMessage.StatusCode;
+
+                    // Copy Headers from ResponseMessage (if defined)
+                    if (ResponseMessage.Headers != null)
+                    {
+                        responseMessage.Headers = ResponseMessage.Headers;
+                    }
+                }
+            }
+
             if (UseTransformer)
             {
                 var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
                 var responseMessageTransformer = new ResponseMessageTransformer(factory);
-                return responseMessageTransformer.Transform(requestMessage, ResponseMessage, UseTransformerForBodyAsFile);
+                return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
             {
-                ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
+                ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
-            return ResponseMessage;
+            return responseMessage;
         }
     }
 }
