@@ -1,3 +1,10 @@
+# 1.1.10.0 (05 March 2020)
+- [#427](https://github.com/WireMock-Net/WireMock.Net/pull/427) - Add UsingOptions, UsingConnect and UsingTrace [feature] contributed by [StefH](https://github.com/StefH)
+- [#434](https://github.com/WireMock-Net/WireMock.Net/pull/434) - Option to disable JSON deserialization [feature] contributed by [sebastianmattar](https://github.com/sebastianmattar)
+- [#435](https://github.com/WireMock-Net/WireMock.Net/pull/435) - Also call HandlebarsRegistrationCallback when using WithCallback(..) [feature] contributed by [StefH](https://github.com/StefH)
+- [#408](https://github.com/WireMock-Net/WireMock.Net/issues/408) - Intermittent threading errors with FindLogEntries [bug]
+- [#433](https://github.com/WireMock-Net/WireMock.Net/issues/433) - HandlebarsRegistrationCallback not fired [feature]
+
 # 1.1.9.0 (25 February 2020)
 - [#431](https://github.com/WireMock-Net/WireMock.Net/pull/431) - Fix LinqMatcher for JSON int64 [bug] contributed by [StefH](https://github.com/StefH)
 - [#425](https://github.com/WireMock-Net/WireMock.Net/issues/425) - Allow 64 bit numbers in JSON [bug]
