@@ -213,9 +213,10 @@ namespace WireMock.Server
             }
 
             _options.FileSystemHandler = _settings.FileSystemHandler;
-            _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
-            _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
+            _options.PreWireMockMiddlewareInit = _settings.PreWireMockMiddlewareInit;
+            _options.PostWireMockMiddlewareInit = _settings.PostWireMockMiddlewareInit;
             _options.Logger = _settings.Logger;
+            _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
 
             _matcherMapper = new MatcherMapper(_settings);
             _mappingConverter = new MappingConverter(_matcherMapper);

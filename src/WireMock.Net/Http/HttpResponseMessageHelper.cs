@@ -9,7 +9,7 @@ namespace WireMock.Http
 {
     internal static class HttpResponseMessageHelper
     {
-        public static async Task<ResponseMessage> CreateAsync(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri)
+        public static async Task<ResponseMessage> CreateAsync(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri, bool deserializeJson)
         {
             var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 
@@ -24,7 +24,7 @@ namespace WireMock.Http
                     contentTypeHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
                 }
 
-                responseMessage.BodyData = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault());
+                responseMessage.BodyData = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault(), deserializeJson);
             }
 
             foreach (var header in headers)
