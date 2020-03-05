@@ -275,7 +275,7 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
+            var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, !settings.DisableJsonBodyParsing.GetValueOrDefault(false));
 
             if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
                 (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))

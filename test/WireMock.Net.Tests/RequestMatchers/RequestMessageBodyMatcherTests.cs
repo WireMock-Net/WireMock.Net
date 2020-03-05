@@ -243,9 +243,9 @@ namespace WireMock.Net.Tests.RequestMatchers
             // assign
             BodyData bodyData;
             if (body is byte[] b)
-                bodyData = await BodyParser.Parse(new MemoryStream(b), null);
+                bodyData = await BodyParser.Parse(new MemoryStream(b), null, true);
             else if (body is string s)
-                bodyData = await BodyParser.Parse(new MemoryStream(Encoding.UTF8.GetBytes(s)), null);
+                bodyData = await BodyParser.Parse(new MemoryStream(Encoding.UTF8.GetBytes(s)), null, true);
             else
                 throw new Exception();
 
