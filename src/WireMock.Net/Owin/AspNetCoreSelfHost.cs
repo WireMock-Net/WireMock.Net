@@ -74,7 +74,7 @@ namespace WireMock.Owin
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
 
-                    services.AddRequestDecompression(o =>
+                    services.AddRequestDecompression(o => 
                         {
                             o.Providers.Add<DeflateDecompressionProvider>();
                             o.Providers.Add<GzipDecompressionProvider>();
