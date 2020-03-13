@@ -103,10 +103,15 @@ namespace WireMock.Settings
         public bool? AllowBodyForAllHttpMethods { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.AllowAnyHttpStatusCodeInResponse"/>
+        [PublicAPI]
         public bool? AllowAnyHttpStatusCodeInResponse { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.DisableJsonBodyParsing"/>
         [PublicAPI]
         public bool? DisableJsonBodyParsing { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.DisableDecompressingGZipAndDeflate"/>
+        [PublicAPI]
+        public bool? DisableDecompressingGZipAndDeflate { get; set; } = true;
     }
 }

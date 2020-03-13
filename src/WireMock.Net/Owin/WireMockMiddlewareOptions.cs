@@ -46,7 +46,10 @@ namespace WireMock.Owin
         /// <inheritdoc cref="IWireMockMiddlewareOptions.AllowAnyHttpStatusCodeInResponse"/>
         public bool? AllowAnyHttpStatusCodeInResponse { get; set; }
 
-        /// <inheritdoc cref="IWireMockMiddlewareOptions.DisableResponseBodyParsing"/>
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.DisableJsonBodyParsing"/>
         public bool? DisableJsonBodyParsing { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.DisableDecompressingGZipAndDeflate"/>
+        public bool? DisableDecompressingGZipAndDeflate { get; set; }
     }
 }

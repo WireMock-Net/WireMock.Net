@@ -260,6 +260,8 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Should_SupportRequestGZip()
         {
             // Arrange
+            // while(!Debugger.IsAttached) Task.Delay(500).Wait();
+
             const string body = "x";
             var server = WireMockServer.Start();
             server.Given(
