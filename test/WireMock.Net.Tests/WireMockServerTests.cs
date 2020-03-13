@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.RequestBuilders;
@@ -251,6 +254,38 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
             Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
+        }
+
+        [Fact]
+        public async Task WireMockServer_Should_SupportRequestGZip()
+        {
+            // Arrange
+            const string body = "x";
+            var server = WireMockServer.Start();
+            server.Given(
+                Request.Create()
+                    .WithPath("/foo")
+                    .WithBody("x")
+            )
+            .RespondWith(
+                Response.Create().WithBody("Hello world!")
+            );
+
+            // Act
+            byte[] textBytes = Encoding.UTF8.GetBytes(body);
+            var ms = new MemoryStream();
+            using (var gzip = new GZipStream(ms, CompressionMode.Compress, true))
+            {
+                gzip.Write(textBytes, 0, textBytes.Length);
+            }
+            ms.Position = 0;
+            var content = new StreamContent(ms);
+            content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            content.Headers.ContentEncoding.Add("gzip");
+            var response = await new HttpClient().PostAsync($"{server.Urls[0]}/foo", content);
+
+            // Assert
+            Check.That(await response.Content.ReadAsStringAsync()).Contains("Hello world!");
         }
     }
 }
