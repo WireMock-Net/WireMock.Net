@@ -34,8 +34,9 @@
     <None Include="WireMock.Net-Logo.png" Pack="true" PackagePath="../../"/>
   </ItemGroup>-->
 
-  <!--https://github.com/aspnet/RoslynCodeDomProvider/issues/51-->
-  <!--<Target Name="CheckIfShouldKillVBCSCompiler" />-->
+  <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
+  <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
+  <Target Name="CheckIfShouldKillVBCSCompiler" />
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
