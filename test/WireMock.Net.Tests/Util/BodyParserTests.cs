@@ -22,7 +22,7 @@ namespace WireMock.Net.Tests.Util
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsJson));
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(memoryStream, contentType, true);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -41,7 +41,7 @@ namespace WireMock.Net.Tests.Util
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(memoryStream, contentType, true);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -61,7 +61,23 @@ namespace WireMock.Net.Tests.Util
             var memoryStream = new MemoryStream(content);
 
             // act
-            var body = await BodyParser.Parse(memoryStream, null);
+            var body = await BodyParser.Parse(memoryStream, null, true);
+
+            // assert
+            Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 34, 97, 34 }, BodyType.String)]
+        [InlineData(new byte[] { 97 }, BodyType.String)]
+        [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, BodyType.Bytes)]
+        public async Task BodyParser_Parse_DetectedBodyTypeNoJsonParsing(byte[] content, BodyType detectedBodyType)
+        {
+            // arrange
+            var memoryStream = new MemoryStream(content);
+
+            // act
+            var body = await BodyParser.Parse(memoryStream, null, false);
 
             // assert
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
@@ -95,7 +111,7 @@ Content-Type: text/html
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
 
             // Act
-            var result = await BodyParser.Parse(memoryStream, contentType);
+            var result = await BodyParser.Parse(memoryStream, contentType, true);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.String);
@@ -115,7 +131,7 @@ Content-Type: text/html
             var memoryStream = new MemoryStream(Encoding.UTF32.GetBytes(body));
 
             // Act
-            var result = await BodyParser.Parse(memoryStream, contentType);
+            var result = await BodyParser.Parse(memoryStream, contentType, true);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.Bytes);
@@ -133,7 +149,7 @@ Content-Type: text/html
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(memoryStream, contentType, true);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();

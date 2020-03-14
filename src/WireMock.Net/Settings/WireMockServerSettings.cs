@@ -104,5 +104,9 @@ namespace WireMock.Settings
 
         /// <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>
         public bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.DisableJsonBodyParsing"/>
+        [PublicAPI]
+        public bool? DisableJsonBodyParsing { get; set; }
     }
 }

@@ -151,7 +151,7 @@ namespace WireMock.Util
                     break;
 
                 case JTokenType.Integer:
-                    castText = $"int({path})";
+                    castText = $"long({path})";
                     break;
 
                 case JTokenType.Null:

@@ -7,8 +7,15 @@ namespace WireMock.RequestBuilders
     /// <summary>
     /// The MethodRequestBuilder interface.
     /// </summary>
-    public interface IMethodRequestBuilder : IHeadersAndCookiesRequestBuilder
+    public interface IMethodRequestBuilder : IHeadersRequestBuilder
     {
+        /// <summary>
+        /// UsingConnect: add HTTP Method matching on `CONNECT` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingConnect(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
         /// <summary>
         /// UsingDelete: add HTTP Method matching on `DELETE` and matchBehaviour (optional).
         /// </summary>
@@ -24,7 +31,7 @@ namespace WireMock.RequestBuilders
         IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
-        /// Add HTTP Method matching on `HEAD` and matchBehaviour (optional).
+        /// UsingHead: Add HTTP Method matching on `HEAD` and matchBehaviour (optional).
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
@@ -45,11 +52,25 @@ namespace WireMock.RequestBuilders
         IRequestBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
+        /// UsingPut: add HTTP Method matching on `OPTIONS` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingOptions(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
         /// UsingPut: add HTTP Method matching on `PUT` and matchBehaviour (optional).
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+
+        /// <summary>
+        /// UsingTrace: add HTTP Method matching on `TRACE` and matchBehaviour (optional).
+        /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder UsingTrace(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
         /// <summary>
         /// UsingAnyMethod: add HTTP Method matching on any method.

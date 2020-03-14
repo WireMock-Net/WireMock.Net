@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Validation;
@@ -30,15 +31,15 @@ namespace WireMock.Util
         */
         private static readonly IDictionary<string, bool> BodyAllowedForMethods = new Dictionary<string, bool>
         {
-            { "HEAD", false },
-            { "GET", false },
-            { "PUT", true },
-            { "POST", true },
-            { "DELETE", true },
-            { "TRACE", false },
-            { "OPTIONS", true },
-            { "CONNECT", false },
-            { "PATCH", true }
+            { HttpRequestMethods.HEAD, false },
+            { HttpRequestMethods.GET, false },
+            { HttpRequestMethods.PUT, true },
+            { HttpRequestMethods.POST, true },
+            { HttpRequestMethods.DELETE, true },
+            { HttpRequestMethods.TRACE, false },
+            { HttpRequestMethods.OPTIONS, true },
+            { HttpRequestMethods.CONNECT, false },
+            { HttpRequestMethods.PATCH, true }
         };
 
         private static readonly IStringMatcher[] MultipartContentTypesMatchers = {
@@ -107,7 +108,7 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType)
+        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType = null, bool deserializeJson = true)
         {
             Check.NotNull(stream, nameof(stream));
 
@@ -127,8 +128,6 @@ namespace WireMock.Util
                     data.BodyAsString = encoding.GetString(data.BodyAsBytes);
                     data.Encoding = encoding;
                     data.DetectedBodyType = BodyType.String;
-
-                    return data;
                 }
 
                 return data;
@@ -142,7 +141,7 @@ namespace WireMock.Util
                 data.DetectedBodyType = BodyType.String;
 
                 // If string is not null or empty, try to deserialize the string to a JObject
-                if (!string.IsNullOrEmpty(data.BodyAsString))
+                if (deserializeJson && !string.IsNullOrEmpty(data.BodyAsString))
                 {
                     try
                     {

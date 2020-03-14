@@ -202,31 +202,36 @@ namespace WireMock.Server
             _settings.Logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _settings.Logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
+            HostUrlOptions urlOptions;
             if (settings.Urls != null)
             {
-                Urls = settings.Urls.ToArray();
+                urlOptions = new HostUrlOptions
+                {
+                    Urls = settings.Urls
+                };
             }
             else
             {
-                int port = settings.Port > 0 ? settings.Port.Value : PortUtils.FindFreeTcpPort();
-                Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
+                urlOptions = new HostUrlOptions
+                {
+                    UseSSL = settings.UseSSL == true
+                };
             }
 
             _options.FileSystemHandler = _settings.FileSystemHandler;
-            _options.PreWireMockMiddlewareInit = settings.PreWireMockMiddlewareInit;
-            _options.PostWireMockMiddlewareInit = settings.PostWireMockMiddlewareInit;
+            _options.PreWireMockMiddlewareInit = _settings.PreWireMockMiddlewareInit;
+            _options.PostWireMockMiddlewareInit = _settings.PostWireMockMiddlewareInit;
             _options.Logger = _settings.Logger;
+            _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
 
             _matcherMapper = new MatcherMapper(_settings);
             _mappingConverter = new MappingConverter(_matcherMapper);
 
 #if USE_ASPNETCORE
-            _httpServer = new AspNetCoreSelfHost(_options, Urls);
+            _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
-            _httpServer = new OwinSelfHost(_options, Urls);
+            _httpServer = new OwinSelfHost(_options, urlOptions);
 #endif
-            Ports = _httpServer.Ports;
-
             var startTask = _httpServer.StartAsync();
 
             using (var ctsStartTimeout = new CancellationTokenSource(settings.StartTimeout))
@@ -253,6 +258,9 @@ namespace WireMock.Server
 
                     ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelayInMs);
                 }
+
+                Urls = _httpServer.Urls.ToArray();
+                Ports = _httpServer.Ports;
             }
 
             if (settings.AllowBodyForAllHttpMethods == true)

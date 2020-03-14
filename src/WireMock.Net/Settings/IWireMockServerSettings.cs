@@ -145,5 +145,11 @@ namespace WireMock.Settings
         /// </summary>
         /// [PublicAPI]
         bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+        /// <summary>
+        /// Set to true to disable Json deserialization when processing requests. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? DisableJsonBodyParsing { get; set; }
     }
 }
