@@ -20,10 +20,10 @@ namespace WireMock.Owin
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly IWireMockMiddlewareOptions _options;
-        private readonly string[] _urls;
         private readonly IWireMockLogger _logger;
-        private Exception _runningException;
+        private readonly HostUrlOptions _urlOptions;
 
+        private Exception _runningException;
         private IWebHost _host;
 
         public bool IsStarted { get; private set; }
@@ -34,23 +34,15 @@ namespace WireMock.Owin
 
         public Exception RunningException => _runningException;
 
-        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] params string[] uriPrefixes)
+        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] HostUrlOptions urlOptions)
         {
             Check.NotNull(options, nameof(options));
-            Check.NotNullOrEmpty(uriPrefixes, nameof(uriPrefixes));
+            Check.NotNull(urlOptions, nameof(urlOptions));
 
             _logger = options.Logger ?? new WireMockConsoleLogger();
 
-            foreach (string uriPrefix in uriPrefixes)
-            {
-                Urls.Add(uriPrefix);
-
-                PortUtils.TryExtract(uriPrefix, out string protocol, out string host, out int port);
-                Ports.Add(port);
-            }
-
             _options = options;
-            _urls = uriPrefixes;
+            _urlOptions = urlOptions;
         }
 
         public Task StartAsync()
@@ -86,31 +78,35 @@ namespace WireMock.Owin
                 })
                 .UseKestrel(options =>
                 {
+                    var urlDetails = _urlOptions.GetDetails();
+
 #if NETSTANDARD1_3
-                    if (_urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+
+                    var urls = urlDetails.Select(u => u.Url);
+                    if (urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                     {
                         options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
                     }
 #else
-                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?tabs=aspnetcore2x
-                    foreach (string url in _urls.Where(u => u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)))
+                    foreach (var detail in urlDetails)
                     {
-                        PortUtils.TryExtract(url, out string protocol, out string host, out int port);
-                        options.Listen(System.Net.IPAddress.Any, port);
-                    }
-
-                    foreach (string url in _urls.Where(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        PortUtils.TryExtract(url, out string protocol, out string host, out int port);
-                        options.Listen(System.Net.IPAddress.Any, port, listenOptions =>
+                        if (detail.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                         {
-                            listenOptions.UseHttps(); // PublicCertificateHelper.GetX509Certificate2()
-                        });
+                            options.Listen(System.Net.IPAddress.Any, detail.Port, listenOptions =>
+                            {
+                                listenOptions.UseHttps(); // PublicCertificateHelper.GetX509Certificate2()
+                            });
+                        }
+                        else
+                        {
+                            options.Listen(System.Net.IPAddress.Any, detail.Port);
+                        }
                     }
 #endif
                 })
+
 #if NETSTANDARD1_3
-                .UseUrls(_urls)
+                .UseUrls(_urlOptions.GetDetails().Select(u => u.Url).ToArray())
 #endif
                 .Build();
 
@@ -124,6 +120,18 @@ namespace WireMock.Owin
                 var appLifetime = (IApplicationLifetime)_host.Services.GetService(typeof(IApplicationLifetime));
                 appLifetime.ApplicationStarted.Register(() =>
                 {
+                    var addresses = _host.ServerFeatures
+                        .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()
+                        .Addresses;
+
+                    foreach (string address in addresses)
+                    {
+                        Urls.Add(address.Replace("0.0.0.0", "localhost"));
+
+                        PortUtils.TryExtract(address, out string protocol, out string host, out int port);
+                        Ports.Add(port);
+                    }
+
                     IsStarted = true;
                 });
 
