@@ -113,7 +113,7 @@ namespace WireMock.Util
         {
             Check.NotNull(settings, nameof(settings));
 
-            var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGzipAndDeflate);
+            var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate);
             var data = new BodyData
             {
                 BodyAsBytes = bodyWithContentEncoding.Value,
@@ -164,37 +164,21 @@ namespace WireMock.Util
 
             return data;
         }
+
         private static async Task<KeyValuePair<string, byte[]>> ReadBytesAsync(Stream stream, string contentEncoding = null, bool decompressGZipAndDeflate = true)
         {
             using (var memoryStream = new MemoryStream())
             {
                 await stream.CopyToAsync(memoryStream);
+                byte[] data = memoryStream.ToArray();
 
-                if ("gzip".Equals(contentEncoding, StringComparison.OrdinalIgnoreCase) && decompressGZipAndDeflate)
+                string type = contentEncoding?.ToLowerInvariant();
+                if (decompressGZipAndDeflate && (type == "gzip" || type == "deflate"))
                 {
-                    using (var decompressedMemoryStream = new MemoryStream())
-                    {
-                        using (var decompressionStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-                        {
-                            decompressionStream.CopyTo(decompressedMemoryStream);
-                            return new KeyValuePair<string, byte[]>("gzip", decompressedMemoryStream.ToArray());
-                        }
-                    }
+                    return new KeyValuePair<string, byte[]>(type, CompressionUtils.Decompress(type, data));
                 }
 
-                if ("deflate".Equals(contentEncoding, StringComparison.OrdinalIgnoreCase) && decompressGZipAndDeflate)
-                {
-                    using (var decompressedMemoryStream = new MemoryStream())
-                    {
-                        using (var decompressionStream = new DeflateStream(memoryStream, CompressionMode.Decompress))
-                        {
-                            decompressionStream.CopyTo(decompressedMemoryStream);
-                            return new KeyValuePair<string, byte[]>("deflate", decompressedMemoryStream.ToArray());
-                        }
-                    }
-                }
-
-                return new KeyValuePair<string, byte[]>(null, memoryStream.ToArray());
+                return new KeyValuePair<string, byte[]>(null, data);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using NFluent;
+﻿using System;
+using NFluent;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -195,27 +196,21 @@ Content-Type: text/html
             Check.That(body.DetectedBodyTypeFromContentType).IsEqualTo(detectedBodyTypeFromContentType);
         }
 
-        [Fact]
-        public async Task BodyParser_Parse_ContentEncoding_GZip_And_DecompressGzipAndDeflate_Is_True_Should_Decompress()
+        [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task BodyParser_Parse_ContentEncoding_GZip_And_DecompressGzipAndDeflate_Is_True_Should_Decompress(string compression)
         {
             // Arrange
-            var memoryStream = new MemoryStream();
-            using (var gz = new GZipStream(memoryStream, CompressionMode.Compress))
-            {
-                var bytes = Encoding.ASCII.GetBytes("0");
-                gz.Write(bytes, 0, bytes.Length);
-            }
-
-            var newStream = new MemoryStream();
-            memoryStream.CopyTo(newStream);
-            newStream.Position = 0;
+            var bytes = Encoding.ASCII.GetBytes("0");
+            var compressed = CompressionUtils.Compress(compression, bytes);
             var bodyParserSettings = new BodyParserSettings
             {
-                Stream = newStream,
+                Stream = new MemoryStream(compressed),
                 ContentType = "text/plain",
                 DeserializeJson = false,
-                ContentEncoding = "gzip",
-                DecompressGzipAndDeflate = true
+                ContentEncoding = compression.ToUpperInvariant(),
+                DecompressGZipAndDeflate = true
             };
 
             // Act
@@ -224,10 +219,35 @@ Content-Type: text/html
             // Assert
             result.DetectedBodyType.Should().Be(BodyType.String);
             result.DetectedBodyTypeFromContentType.Should().Be(BodyType.String);
-            // result.BodyAsBytes.Should().BeEquivalentTo(new byte[] { 48 });
+            result.BodyAsBytes.Should().BeEquivalentTo(new byte[] { 48 });
             result.BodyAsJson.Should().BeNull();
             result.BodyAsString.Should().Be("0");
-            result.DetectedCompression.Should().Be("gzip");
+            result.DetectedCompression.Should().Be(compression);
+        }
+
+        [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task BodyParser_Parse_ContentEncoding_GZip_And_DecompressGzipAndDeflate_Is_False_Should_Not_Decompress(string compression)
+        {
+            // Arrange
+            var bytes = Encoding.ASCII.GetBytes(Guid.NewGuid().ToString());
+            var compressed = CompressionUtils.Compress(compression, bytes);
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(compressed),
+                ContentType = "text/plain",
+                DeserializeJson = false,
+                ContentEncoding = compression.ToUpperInvariant(),
+                DecompressGZipAndDeflate = false
+            };
+
+            // Act
+            var result = await BodyParser.Parse(bodyParserSettings);
+
+            // Assert
+            result.BodyAsBytes.Should().BeEquivalentTo(compressed);
+            result.DetectedCompression.Should().BeNull();
         }
 
         [Theory]

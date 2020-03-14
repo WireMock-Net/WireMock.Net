@@ -6,11 +6,11 @@ namespace WireMock.Util
     {
         public Stream Stream { get; set; }
 
-        public string ContentType { get; set; } = null;
+        public string ContentType { get; set; }
 
-        public string ContentEncoding { get; set; } = null;
+        public string ContentEncoding { get; set; }
 
-        public bool DecompressGzipAndDeflate { get; set; } = true;
+        public bool DecompressGZipAndDeflate { get; set; } = true;
 
         public bool DeserializeJson { get; set; } = true;
     }

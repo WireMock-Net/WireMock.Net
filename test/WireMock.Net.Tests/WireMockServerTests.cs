@@ -11,6 +11,7 @@ using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -256,38 +257,34 @@ namespace WireMock.Net.Tests
             Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
         }
 
-        [Fact]
-        public async Task WireMockServer_Should_SupportRequestGZip()
+        [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task WireMockServer_Should_SupportRequestGZipAndDeflate(string contentEncoding)
         {
             // Arrange
-            // while(!Debugger.IsAttached) Task.Delay(500).Wait();
+            const string body = "hello wiremock";
+            byte[] compressed = CompressionUtils.Compress(contentEncoding, Encoding.UTF8.GetBytes(body));
 
-            const string body = "x";
             var server = WireMockServer.Start();
             server.Given(
                 Request.Create()
                     .WithPath("/foo")
-                    .WithBody("x")
+                    .WithBody("hello wiremock")
             )
             .RespondWith(
-                Response.Create().WithBody("Hello world!")
+                Response.Create().WithBody("OK")
             );
 
-            // Act
-            byte[] textBytes = Encoding.UTF8.GetBytes(body);
-            var ms = new MemoryStream();
-            using (var gzip = new GZipStream(ms, CompressionMode.Compress, true))
-            {
-                gzip.Write(textBytes, 0, textBytes.Length);
-            }
-            ms.Position = 0;
-            var content = new StreamContent(ms);
+            var content = new StreamContent(new MemoryStream(compressed));
             content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
-            content.Headers.ContentEncoding.Add("gzip");
+            content.Headers.ContentEncoding.Add(contentEncoding);
+
+            // Act
             var response = await new HttpClient().PostAsync($"{server.Urls[0]}/foo", content);
 
             // Assert
-            Check.That(await response.Content.ReadAsStringAsync()).Contains("Hello world!");
+            Check.That(await response.Content.ReadAsStringAsync()).Contains("OK");
         }
     }
 }

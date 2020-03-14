@@ -36,7 +36,7 @@ namespace WireMock.Http
                     ContentType = contentTypeHeader?.FirstOrDefault(),
                     DeserializeJson = deserializeJson,
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
-                    DecompressGzipAndDeflate = decompressGzipAndDeflate
+                    DecompressGZipAndDeflate = decompressGzipAndDeflate
                 };
                 responseMessage.BodyData = await BodyParser.Parse(bodyParserSettings);
             }
