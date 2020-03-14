@@ -61,8 +61,6 @@ namespace WireMock.Net.ConsoleApplication
                     handlebarsContext.RegisterHelper(transformer.Name, transformer.Render);
                 },
 
-                AllowAnyHttpStatusCodeInResponse = true
-
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
                 // FileSystemHandler = new CustomFileSystemFileHandler()
             });

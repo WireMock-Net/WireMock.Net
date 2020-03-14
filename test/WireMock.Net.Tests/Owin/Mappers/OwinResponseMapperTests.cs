@@ -70,11 +70,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Theory]
-        [InlineData(0, 200)]
-        [InlineData(-1, 200)]
-        [InlineData(10000, 200)]
         [InlineData(300, 300)]
-        public async Task OwinResponseMapper_MapAsync_StatusCode(object code, int expected)
+        [InlineData(500, 500)]
+        public async Task OwinResponseMapper_MapAsync_Valid_StatusCode(object code, int expected)
         {
             // Arrange
             var responseMessage = new ResponseMessage
@@ -89,8 +87,46 @@ namespace WireMock.Net.Tests.Owin.Mappers
             _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
         }
 
+        [Theory]
+        [InlineData(0, 200)]
+        [InlineData(-1, 200)]
+        [InlineData(10000, 200)]
+        [InlineData(300, 300)]
+        public async Task OwinResponseMapper_MapAsync_Invalid_StatusCode_When_AllowOnlyDefinedHttpStatusCodeInResponseSet_Is_True(object code, int expected)
+        {
+            // Arrange
+            _optionsMock.SetupGet(o => o.AllowOnlyDefinedHttpStatusCodeInResponse).Returns(true);
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = code
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
+        }
+
         [Fact]
-        public async Task OwinResponseMapper_MapAsync_StatusCodeNull()
+        public async Task OwinResponseMapper_MapAsync_Null_StatusCode_When_AllowOnlyDefinedHttpStatusCodeInResponseSet_Is_True()
+        {
+            // Arrange
+            _optionsMock.SetupGet(o => o.AllowOnlyDefinedHttpStatusCodeInResponse).Returns(true);
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = null
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task OwinResponseMapper_MapAsync_StatusCode_Is_Null()
         {
             // Arrange
             var responseMessage = new ResponseMessage
@@ -110,10 +146,9 @@ namespace WireMock.Net.Tests.Owin.Mappers
         [InlineData(-1, -1)]
         [InlineData(10000, 10000)]
         [InlineData(300, 300)]
-        public async Task OwinResponseMapper_MapAsync_StatusCode_WithAllowAll(object code, int expected)
+        public async Task OwinResponseMapper_MapAsync_StatusCode_Is_NotInEnumRange(object code, int expected)
         {
             // Arrange
-            _optionsMock.SetupGet(o => o.AllowAnyHttpStatusCodeInResponse).Returns(true);
             var responseMessage = new ResponseMessage
             {
                 StatusCode = code
@@ -124,23 +159,6 @@ namespace WireMock.Net.Tests.Owin.Mappers
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
-        }
-
-        [Fact]
-        public async Task OwinResponseMapper_MapAsync_StatusCode_WithAllowAll_Null()
-        {
-            // Arrange
-            _optionsMock.SetupGet(o => o.AllowAnyHttpStatusCodeInResponse).Returns(true);
-            var responseMessage = new ResponseMessage
-            {
-                StatusCode = null
-            };
-
-            // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
-
-            // Assert
-            _responseMock.VerifyNoOtherCalls();
         }
 
         [Fact]

@@ -104,12 +104,12 @@ namespace WireMock.Owin.Mappers
 
         private int MapStatusCode(int code)
         {
-            if (_options.AllowAnyHttpStatusCodeInResponse == true || Enum.IsDefined(typeof(HttpStatusCode), code))
+            if (_options.AllowOnlyDefinedHttpStatusCodeInResponse == true && !Enum.IsDefined(typeof(HttpStatusCode), code))
             {
-                return code;
+                return (int)HttpStatusCode.OK;
             }
 
-            return (int)HttpStatusCode.OK;
+            return code;
         }
 
         private bool IsFault(ResponseMessage responseMessage)
