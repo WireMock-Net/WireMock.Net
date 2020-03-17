@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
@@ -24,6 +25,23 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+        
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithNullBody_ShouldNotThrowException()
+        {
+            // Assign
+            var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
+            var request = new RequestMessage(urlDetails, "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            responseMessage.BodyData.Should().BeNull();
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
@@ -47,12 +65,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
         }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_UrlPath()
+        [Theory]
+        [InlineData("Get")]
+        [InlineData("Post")]
+        public async Task Response_ProvideResponse_Handlebars_UrlPath(string httpMethod)
         {
             // Assign
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
-            var request = new RequestMessage(urlDetails, "POST", ClientIp);
+            var request = new RequestMessage(urlDetails, httpMethod, ClientIp);
 
             var response = Response.Create()
                 .WithBody("{{request.url}} {{request.absoluteurl}} {{request.path}} {{request.absolutepath}}")

@@ -30,7 +30,7 @@ namespace WireMock.Transformers
 
             var template = new { request = requestMessage };
 
-            switch (original.BodyData.DetectedBodyType)
+            switch (original.BodyData?.DetectedBodyType)
             {
                 case BodyType.Json:
                     TransformBodyAsJson(handlebarsContext.Handlebars, template, original, responseMessage);
