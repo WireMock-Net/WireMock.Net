@@ -1,3 +1,6 @@
+# 1.2.1.0 (17 March 2020)
+- [#442](https://github.com/WireMock-Net/WireMock.Net/pull/442) - Fix Null body in handlebars transformation [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.2.0.0 (14 March 2020)
 - [#417](https://github.com/WireMock-Net/WireMock.Net/pull/417) - Let the .NET core/standard WebHostBuilder use a random port [bug] contributed by [StefH](https://github.com/StefH)
 - [#422](https://github.com/WireMock-Net/WireMock.Net/pull/422) - AllowOnlyDefinedHttpStatusCodeInResponse [bug] contributed by [StefH](https://github.com/StefH)
