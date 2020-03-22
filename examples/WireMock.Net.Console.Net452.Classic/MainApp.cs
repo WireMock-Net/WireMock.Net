@@ -493,6 +493,16 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("<xml>ok</xml>")
                 );
 
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/post_with_query")
+                    .WithParam("name", "stef")
+                )
+                .RespondWith(Response.Create()
+                    .WithBody("OK : post_with_query")
+                );
+
             server.Given(Request.Create()
                     .WithPath("/services/query/")
                     .WithParam("q", "SELECT Id from User where username='user@gmail.com'")
