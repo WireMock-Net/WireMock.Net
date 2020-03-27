@@ -5,7 +5,7 @@
     <Authors>Stef Heyenrath</Authors>
     <!--<TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netcoreapp2.1</TargetFrameworks>-->
     <!--<TargetFrameworks>net451;net452;net46;netstandard1.3;netstandard2.0</TargetFrameworks>-->
-    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;;netstandard2.1</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net</AssemblyName>
     <PackageId>WireMock.Net</PackageId>
@@ -48,7 +48,7 @@
     <CodeAnalysisRuleSet>WireMock.Net.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
     <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
   </PropertyGroup>
 
@@ -136,6 +136,11 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
+    <PackageReference Include="CS-Script.Core" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="CS-Script.Core" Version="1.1.1" />
   </ItemGroup>
