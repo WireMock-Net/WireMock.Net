@@ -127,7 +127,7 @@ namespace WireMock.Matchers
                     throw new WireMockException("CSharpCodeMatcher: Unable to call method 'IsMatch' in WireMock.CodeHelper");
                 }
             }
-#elif NET46 || NET461
+#elif (NET46 || NET461)
             dynamic script;
             try
             {
@@ -146,7 +146,7 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
             }
-#elif NETSTANDARD2_0
+#elif (NETSTANDARD2_0 || NETSTANDARD2_1)
             dynamic script;
             try
             {
