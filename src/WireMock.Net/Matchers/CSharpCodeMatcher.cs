@@ -122,9 +122,9 @@ namespace WireMock.Matchers
                 {
                     result = methodInfo.Invoke(helper, new[] { inputValue });
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw new WireMockException("CSharpCodeMatcher: Unable to call method 'IsMatch' in WireMock.CodeHelper");
+                    throw new WireMockException("CSharpCodeMatcher: Unable to call method 'IsMatch' in WireMock.CodeHelper", ex);
                 }
             }
 #elif (NET46 || NET461)
@@ -133,18 +133,18 @@ namespace WireMock.Matchers
             {
                 script = CSScriptLibrary.CSScript.Evaluator.CompileCode(source).CreateObject("*");
             }
-            catch
+            catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Unable to create compiler for WireMock.CodeHelper");
+                throw new WireMockException("CSharpCodeMatcher: Unable to create compiler for WireMock.CodeHelper", ex);
             }
             
             try
             {
                 result = script.IsMatch(inputValue);
             }
-            catch
+            catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
+                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1)
@@ -170,7 +170,7 @@ namespace WireMock.Matchers
             }
             catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
+                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 #else
                 throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
