@@ -82,7 +82,7 @@ namespace WireMock.Matchers
 
             object result = null;
 
-#if NET451 || NET452
+#if (NET451 || NET452)
             var compilerParams = new System.CodeDom.Compiler.CompilerParameters
             {
                 GenerateInMemory = true,
@@ -146,12 +146,18 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
             }
+
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1)
             dynamic script;
             try
             {
                 var assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
+
+#if NETSTANDARD2_0
                 script = csscript.GenericExtensions.CreateObject(assembly, "*");
+#else
+                script = CSScriptLib.ReflectionExtensions.CreateObject(assembly,"*");
+#endif
             }
             catch (Exception ex)
             {
@@ -167,7 +173,7 @@ namespace WireMock.Matchers
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper");
             }
 #else
-            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
+                throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
             try
             {
