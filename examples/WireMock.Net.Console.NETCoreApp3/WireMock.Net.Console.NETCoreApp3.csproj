@@ -31,6 +31,7 @@
     <PackageReference Include="Handlebars.Net" Version="1.9.5" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <!--<PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="3.4.0" />-->
   </ItemGroup>
 
   <ItemGroup>
