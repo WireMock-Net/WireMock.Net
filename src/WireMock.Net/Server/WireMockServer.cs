@@ -1,11 +1,13 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Exceptions;
 using WireMock.Handlers;
@@ -17,7 +19,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Server
