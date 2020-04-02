@@ -7,6 +7,8 @@ namespace WireMock.Owin
     {
         public ICollection<string> Urls { get; set; }
 
+        public int? Port { get; set; }
+
         public bool UseSSL { get; set; }
 
         public ICollection<(string Url, int Port)> GetDetails()
@@ -14,7 +16,7 @@ namespace WireMock.Owin
             var list = new List<(string Url, int Port)>();
             if (Urls == null)
             {
-                int port = FindFreeTcpPort();
+                int port = Port ?? FindFreeTcpPort();
                 list.Add(($"{(UseSSL ? "https" : "http")}://localhost:{port}", port));
             }
             else
@@ -31,7 +33,7 @@ namespace WireMock.Owin
 
         private int FindFreeTcpPort()
         {
-#if USE_ASPNETCORE || NETSTANDARD2_0
+#if USE_ASPNETCORE || NETSTANDARD2_0 || NETSTANDARD2_1
             return 0;
 #else
             return PortUtils.FindFreeTcpPort();

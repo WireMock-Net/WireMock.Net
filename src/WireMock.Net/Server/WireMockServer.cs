@@ -214,7 +214,8 @@ namespace WireMock.Server
             {
                 urlOptions = new HostUrlOptions
                 {
-                    UseSSL = settings.UseSSL == true
+                    UseSSL = settings.UseSSL == true,
+                    Port = settings.Port
                 };
             }
 

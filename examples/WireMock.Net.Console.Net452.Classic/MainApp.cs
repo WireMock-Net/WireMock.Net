@@ -11,6 +11,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -515,6 +516,12 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
+            server
+                .Given(Request.Create().WithPath("/random200or505").UsingGet())
+                .RespondWith(Response.Create().WithCallback(request => new ResponseMessage
+                {
+                    StatusCode = new Random().Next(1, 100) == 1 ? 504 : 200
+                }));
 
             System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));
 
