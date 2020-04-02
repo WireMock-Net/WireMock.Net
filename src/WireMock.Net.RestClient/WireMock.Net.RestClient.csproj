@@ -9,13 +9,6 @@
     <AssemblyName>WireMock.Net.RestClient</AssemblyName>
     <PackageId>WireMock.Net.RestClient</PackageId>
     <PackageTags>wiremock;rest;client;restclient;restease;rest;json</PackageTags>
-    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Client</RootNamespace>
     <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
