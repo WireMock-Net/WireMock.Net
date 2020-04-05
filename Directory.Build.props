@@ -5,6 +5,13 @@
 
   <PropertyGroup>
     <VersionPrefix>1.2.3</VersionPrefix>
+    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
+    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
+    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <Choose>
