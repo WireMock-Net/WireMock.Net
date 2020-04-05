@@ -1,4 +1,22 @@
-# 1.1.10.0 (05 March 2020)
+# 1.2.3.0 (01 April 2020)
+- [#449](https://github.com/WireMock-Net/WireMock.Net/pull/449) - Netstandard21 [feature] contributed by [StefH](https://github.com/StefH)
+- [#447](https://github.com/WireMock-Net/WireMock.Net/issues/447) - Add support for .NET Standard 2.1 / .NET Core 3.1 [feature]
+- [#448](https://github.com/WireMock-Net/WireMock.Net/issues/448) - WireMock.Net is not compatible with Microsoft.VisualStudio.Web.CodeGeneration.Design 3.1.1 [bug]
+
+# 1.2.2.0 (25 March 2020)
+- [#446](https://github.com/WireMock-Net/WireMock.Net/pull/446) - When port is provided: WireMockServer still takes a random port [bug] contributed by [StefH](https://github.com/StefH)
+- [#445](https://github.com/WireMock-Net/WireMock.Net/issues/445) - Port where WireMockServer listens to - v1.2x [bug]
+
+# 1.2.1.0 (17 March 2020)
+- [#442](https://github.com/WireMock-Net/WireMock.Net/pull/442) - Fix Null body in handlebars transformation [bug] contributed by [StefH](https://github.com/StefH)
+
+# 1.2.0.0 (14 March 2020)
+- [#417](https://github.com/WireMock-Net/WireMock.Net/pull/417) - Let the .NET core/standard WebHostBuilder use a random port [bug] contributed by [StefH](https://github.com/StefH)
+- [#422](https://github.com/WireMock-Net/WireMock.Net/pull/422) - AllowOnlyDefinedHttpStatusCodeInResponse [bug] contributed by [StefH](https://github.com/StefH)
+- [#379](https://github.com/WireMock-Net/WireMock.Net/issues/379) - Trusting the self signed certificate to enable SSL on dotnet core [bug]
+- [#420](https://github.com/WireMock-Net/WireMock.Net/issues/420) - Updating to 1.1.6+ breaks tests because new AllowAnyHttpStatusCodeInResponse option defaults to false [bug]
+
+# 1.1.10 (05 March 2020)
 - [#427](https://github.com/WireMock-Net/WireMock.Net/pull/427) - Add UsingOptions, UsingConnect and UsingTrace [feature] contributed by [StefH](https://github.com/StefH)
 - [#434](https://github.com/WireMock-Net/WireMock.Net/pull/434) - Option to disable JSON deserialization [feature] contributed by [sebastianmattar](https://github.com/sebastianmattar)
 - [#435](https://github.com/WireMock-Net/WireMock.Net/pull/435) - Also call HandlebarsRegistrationCallback when using WithCallback(..) [feature] contributed by [StefH](https://github.com/StefH)

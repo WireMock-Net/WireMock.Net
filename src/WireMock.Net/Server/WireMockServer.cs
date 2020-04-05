@@ -1,11 +1,13 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Exceptions;
 using WireMock.Handlers;
@@ -17,7 +19,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -202,14 +203,21 @@ namespace WireMock.Server
             _settings.Logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
             _settings.Logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
+            HostUrlOptions urlOptions;
             if (settings.Urls != null)
             {
-                Urls = settings.Urls.ToArray();
+                urlOptions = new HostUrlOptions
+                {
+                    Urls = settings.Urls
+                };
             }
             else
             {
-                int port = settings.Port > 0 ? settings.Port.Value : PortUtils.FindFreeTcpPort();
-                Urls = new[] { $"{(settings.UseSSL == true ? "https" : "http")}://localhost:{port}" };
+                urlOptions = new HostUrlOptions
+                {
+                    UseSSL = settings.UseSSL == true,
+                    Port = settings.Port
+                };
             }
 
             _options.FileSystemHandler = _settings.FileSystemHandler;
@@ -222,12 +230,10 @@ namespace WireMock.Server
             _mappingConverter = new MappingConverter(_matcherMapper);
 
 #if USE_ASPNETCORE
-            _httpServer = new AspNetCoreSelfHost(_options, Urls);
+            _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
-            _httpServer = new OwinSelfHost(_options, Urls);
+            _httpServer = new OwinSelfHost(_options, urlOptions);
 #endif
-            Ports = _httpServer.Ports;
-
             var startTask = _httpServer.StartAsync();
 
             using (var ctsStartTimeout = new CancellationTokenSource(settings.StartTimeout))
@@ -254,6 +260,9 @@ namespace WireMock.Server
 
                     ctsStartTimeout.Token.WaitHandle.WaitOne(ServerStartDelayInMs);
                 }
+
+                Urls = _httpServer.Urls.ToArray();
+                Ports = _httpServer.Ports;
             }
 
             if (settings.AllowBodyForAllHttpMethods == true)
@@ -262,10 +271,10 @@ namespace WireMock.Server
                 _settings.Logger.Info("AllowBodyForAllHttpMethods is set to True");
             }
 
-            if (settings.AllowAnyHttpStatusCodeInResponse == true)
+            if (settings.AllowOnlyDefinedHttpStatusCodeInResponse == true)
             {
-                _options.AllowAnyHttpStatusCodeInResponse = _settings.AllowAnyHttpStatusCodeInResponse;
-                _settings.Logger.Info("AllowAnyHttpStatusCodeInResponse is set to True");
+                _options.AllowOnlyDefinedHttpStatusCodeInResponse = _settings.AllowOnlyDefinedHttpStatusCodeInResponse;
+                _settings.Logger.Info("AllowOnlyDefinedHttpStatusCodeInResponse is set to True");
             }
 
             if (settings.AllowPartialMapping == true)

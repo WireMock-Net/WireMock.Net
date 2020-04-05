@@ -3,18 +3,11 @@
     <Description>Lightweight StandAlone Http Mocking Server for .Net.</Description>
     <AssemblyTitle>WireMock.Net.StandAlone</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.StandAlone</AssemblyName>
     <PackageId>WireMock.Net.StandAlone</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Net.StandAlone</RootNamespace>
     <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
@@ -36,7 +29,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
     <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
   </PropertyGroup>
 

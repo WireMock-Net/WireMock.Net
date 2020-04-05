@@ -11,6 +11,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -60,8 +61,6 @@ namespace WireMock.Net.ConsoleApplication
                     var transformer = new CustomNameTransformer();
                     handlebarsContext.RegisterHelper(transformer.Name, transformer.Render);
                 },
-
-                AllowAnyHttpStatusCodeInResponse = true
 
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
                 // FileSystemHandler = new CustomFileSystemFileHandler()
@@ -495,6 +494,20 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("<xml>ok</xml>")
                 );
 
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/post_with_query")
+                    .WithHeader("PRIVATE-TOKEN", "t")
+                    .WithParam("name", "stef")
+                    .WithParam("path", "p")
+                    .WithParam("visibility", "Private")
+                    .WithParam("parent_id", "1")
+                )
+                .RespondWith(Response.Create()
+                    .WithBody("OK : post_with_query")
+                );
+
             server.Given(Request.Create()
                     .WithPath("/services/query/")
                     .WithParam("q", "SELECT Id from User where username='user@gmail.com'")
@@ -503,6 +516,12 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
+            server
+                .Given(Request.Create().WithPath("/random200or505").UsingGet())
+                .RespondWith(Response.Create().WithCallback(request => new ResponseMessage
+                {
+                    StatusCode = new Random().Next(1, 100) == 1 ? 504 : 200
+                }));
 
             System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));
 

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net452;netcoreapp2.1</TargetFrameworks>
-    <!--<TargetFramework>netcoreapp2.1</TargetFramework>-->
+    <!--<TargetFrameworks>net452;netcoreapp2.1</TargetFrameworks>-->
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>full</DebugType>
     <AssemblyName>WireMock.Net.Tests</AssemblyName>
     <PackageId>WireMock.Net.Tests</PackageId>
@@ -19,6 +19,10 @@
     <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
     <!--<DelaySign>true</DelaySign>-->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+
+    <!--https://developercommunity.visualstudio.com/content/problem/26347/unit-tests-fail-with-fileloadexception-newtonsoftj-1.html-->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -58,6 +62,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
     <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="3.1.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">

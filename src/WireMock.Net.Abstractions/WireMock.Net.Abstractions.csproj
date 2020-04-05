@@ -4,18 +4,11 @@
     <Description>Commonly used interfaces, models, enumerations and types.</Description>
     <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>netstandard1.0;netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;netstandard2.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
     <PackageId>WireMock.Net.Abstractions</PackageId>
     <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
-    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock</RootNamespace>
     <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>
@@ -34,7 +27,7 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PathMap>$(MSBuildProjectDirectory)=/</PathMap>
-    <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
