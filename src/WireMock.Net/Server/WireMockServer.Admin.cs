@@ -280,7 +280,7 @@ namespace WireMock.Server
                 requestMessage,
                 proxyUriWithRequestPathAndQuery.AbsoluteUri,
                 !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
-                !settings.DisableDecompressingGZipAndDeflate.GetValueOrDefault(false)
+                !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
             );
 
             if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&

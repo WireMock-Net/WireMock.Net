@@ -156,6 +156,6 @@ namespace WireMock.Settings
         /// Disable support for GZip and Deflate request body decompression. (default set to false).
         /// </summary>
         [PublicAPI]
-        bool? DisableDecompressingGZipAndDeflate { get; set; }
+        bool? DisableRequestBodyDecompressing { get; set; }
     }
 }

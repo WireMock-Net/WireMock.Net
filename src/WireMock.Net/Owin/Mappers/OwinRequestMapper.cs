@@ -62,7 +62,7 @@ namespace WireMock.Owin.Mappers
                     ContentType = request.ContentType,
                     DeserializeJson = !options.DisableJsonBodyParsing.GetValueOrDefault(false),
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
-                    DecompressGZipAndDeflate = !options.DisableDecompressingGZipAndDeflate.GetValueOrDefault(false)
+                    DecompressGZipAndDeflate = !options.DisableRequestBodyDecompressing.GetValueOrDefault(false)
                 };
                 body = await BodyParser.Parse(bodyParserSettings);
             }

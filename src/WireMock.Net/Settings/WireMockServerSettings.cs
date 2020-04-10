@@ -110,8 +110,8 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool? DisableJsonBodyParsing { get; set; }
 
-        /// <inheritdoc cref="IWireMockServerSettings.DisableDecompressingGZipAndDeflate"/>
+        /// <inheritdoc cref="IWireMockServerSettings.DisableRequestBodyDecompressing"/>
         [PublicAPI]
-        public bool? DisableDecompressingGZipAndDeflate { get; set; } = true;
+        public bool? DisableRequestBodyDecompressing { get; set; }
     }
 }
