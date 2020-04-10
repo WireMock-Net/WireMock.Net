@@ -347,7 +347,13 @@ namespace WireMock.ResponseBuilders
                 var proxyUri = new Uri(ProxyUrl);
                 var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-                return await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri, !settings.DisableJsonBodyParsing.GetValueOrDefault(false));
+                return await HttpClientHelper.SendAsync(
+                    _httpClientForProxy, 
+                    requestMessage,
+                    proxyUriWithRequestPathAndQuery.AbsoluteUri,
+                    !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
+                    !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+                );
             }
 
             ResponseMessage responseMessage;

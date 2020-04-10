@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -251,6 +255,36 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
             Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
+        }
+
+        [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task WireMockServer_Should_SupportRequestGZipAndDeflate(string contentEncoding)
+        {
+            // Arrange
+            const string body = "hello wiremock";
+            byte[] compressed = CompressionUtils.Compress(contentEncoding, Encoding.UTF8.GetBytes(body));
+
+            var server = WireMockServer.Start();
+            server.Given(
+                Request.Create()
+                    .WithPath("/foo")
+                    .WithBody("hello wiremock")
+            )
+            .RespondWith(
+                Response.Create().WithBody("OK")
+            );
+
+            var content = new StreamContent(new MemoryStream(compressed));
+            content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            content.Headers.ContentEncoding.Add(contentEncoding);
+
+            // Act
+            var response = await new HttpClient().PostAsync($"{server.Urls[0]}/foo", content);
+
+            // Assert
+            Check.That(await response.Content.ReadAsStringAsync()).Contains("OK");
         }
     }
 }

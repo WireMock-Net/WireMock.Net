@@ -52,5 +52,10 @@ namespace WireMock.Util
         /// The detected body type (detection based on Content-Type).
         /// </summary>
         public BodyType DetectedBodyTypeFromContentType { get; set; }
+
+        /// <summary>
+        /// The detected compression.
+        /// </summary>
+        public string DetectedCompression { get; set; }
     }
 }

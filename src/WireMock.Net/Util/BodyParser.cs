@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Types;
@@ -108,15 +109,17 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] Stream stream, [CanBeNull] string contentType = null, bool deserializeJson = true)
+        public static async Task<BodyData> Parse([NotNull] BodyParserSettings settings)
         {
-            Check.NotNull(stream, nameof(stream));
+            Check.NotNull(settings, nameof(settings));
 
+            var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate);
             var data = new BodyData
             {
-                BodyAsBytes = await ReadBytesAsync(stream),
+                BodyAsBytes = bodyWithContentEncoding.Value,
+                DetectedCompression = bodyWithContentEncoding.Key,
                 DetectedBodyType = BodyType.Bytes,
-                DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(contentType)
+                DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(settings.ContentType)
             };
 
             // In case of MultiPart: check if the BodyAsBytes is a valid UTF8 or ASCII string, in that case read as String else keep as-is
@@ -141,7 +144,7 @@ namespace WireMock.Util
                 data.DetectedBodyType = BodyType.String;
 
                 // If string is not null or empty, try to deserialize the string to a JObject
-                if (deserializeJson && !string.IsNullOrEmpty(data.BodyAsString))
+                if (settings.DeserializeJson && !string.IsNullOrEmpty(data.BodyAsString))
                 {
                     try
                     {
@@ -161,12 +164,21 @@ namespace WireMock.Util
 
             return data;
         }
-        private static async Task<byte[]> ReadBytesAsync(Stream stream)
+
+        private static async Task<KeyValuePair<string, byte[]>> ReadBytesAsync(Stream stream, string contentEncoding = null, bool decompressGZipAndDeflate = true)
         {
             using (var memoryStream = new MemoryStream())
             {
                 await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
+                byte[] data = memoryStream.ToArray();
+
+                string type = contentEncoding?.ToLowerInvariant();
+                if (decompressGZipAndDeflate && (type == "gzip" || type == "deflate"))
+                {
+                    return new KeyValuePair<string, byte[]>(type, CompressionUtils.Decompress(type, data));
+                }
+
+                return new KeyValuePair<string, byte[]>(null, data);
             }
         }
     }

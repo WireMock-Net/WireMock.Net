@@ -43,5 +43,7 @@ namespace WireMock.Owin
         bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
 
         bool? DisableJsonBodyParsing { get; set; }
+
+        bool? DisableRequestBodyDecompressing { get; set; }
     }
 }

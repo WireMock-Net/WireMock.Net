@@ -9,7 +9,7 @@ namespace WireMock.Http
 {
     internal static class HttpResponseMessageHelper
     {
-        public static async Task<ResponseMessage> CreateAsync(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri, bool deserializeJson)
+        public static async Task<ResponseMessage> CreateAsync(HttpResponseMessage httpResponseMessage, Uri requiredUri, Uri originalUri, bool deserializeJson, bool decompressGzipAndDeflate)
         {
             var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 
@@ -24,7 +24,21 @@ namespace WireMock.Http
                     contentTypeHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
                 }
 
-                responseMessage.BodyData = await BodyParser.Parse(stream, contentTypeHeader?.FirstOrDefault(), deserializeJson);
+                IEnumerable<string> contentEncodingHeader = null;
+                if (headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase)))
+                {
+                    contentEncodingHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase)).Value;
+                }
+
+                var bodyParserSettings = new BodyParserSettings
+                {
+                    Stream = stream,
+                    ContentType = contentTypeHeader?.FirstOrDefault(),
+                    DeserializeJson = deserializeJson,
+                    ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
+                    DecompressGZipAndDeflate = decompressGzipAndDeflate
+                };
+                responseMessage.BodyData = await BodyParser.Parse(bodyParserSettings);
             }
 
             foreach (var header in headers)
