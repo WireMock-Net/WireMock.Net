@@ -1,3 +1,10 @@
+# 1.2.4.0 (10 April 2020)
+- [#439](https://github.com/WireMock-Net/WireMock.Net/pull/439) - Add support for GZip and Deflate [feature] contributed by [StefH](https://github.com/StefH)
+- [#444](https://github.com/WireMock-Net/WireMock.Net/pull/444) - Add readme.md + license from mock4net [feature] contributed by [StefH](https://github.com/StefH)
+- [#451](https://github.com/WireMock-Net/WireMock.Net/pull/451) - Update NuGet dependencies (e.g. coverage related) to fix CI-build [feature] contributed by [StefH](https://github.com/StefH)
+- [#452](https://github.com/WireMock-Net/WireMock.Net/pull/452) - Add ValidatedNotNullAttribute (for SonarQube) [refactor] contributed by [StefH](https://github.com/StefH)
+- [#426](https://github.com/WireMock-Net/WireMock.Net/issues/426) - Add support for compressed requests, such as GZIP or DEFLATE [feature]
+
 # 1.2.3.0 (01 April 2020)
 - [#449](https://github.com/WireMock-Net/WireMock.Net/pull/449) - Netstandard21 [feature] contributed by [StefH](https://github.com/StefH)
 - [#447](https://github.com/WireMock-Net/WireMock.Net/issues/447) - Add support for .NET Standard 2.1 / .NET Core 3.1 [feature]
