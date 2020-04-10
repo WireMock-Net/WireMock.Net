@@ -16,7 +16,7 @@ namespace WireMock.Validation
     internal static class Check
     {
         [ContractAnnotation("value:null => halt")]
-        public static T Condition<T>([NoEnumeration] T value, [NotNull] Predicate<T> condition, [InvokerParameterName] [NotNull] string parameterName)
+        public static T Condition<T>([NoEnumeration] T value, [ValidatedNotNull, NotNull] Predicate<T> condition, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
         {
             NotNull(condition, nameof(condition));
             NotNull(value, nameof(value));
@@ -32,7 +32,7 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName] [NotNull] string parameterName)
+        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
         {
             if (ReferenceEquals(value, null))
             {
@@ -45,7 +45,7 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName] [NotNull] string parameterName, [NotNull] string propertyName)
+        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName, [ValidatedNotNull, NotNull] string propertyName)
         {
             if (ReferenceEquals(value, null))
             {
@@ -59,7 +59,7 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static IList<T> NotNullOrEmpty<T>(IList<T> value, [InvokerParameterName] [NotNull] string parameterName)
+        public static IList<T> NotNullOrEmpty<T>(IList<T> value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
         {
             NotNull(value, parameterName);
 
@@ -74,7 +74,7 @@ namespace WireMock.Validation
         }
 
         [ContractAnnotation("value:null => halt")]
-        public static string NotNullOrEmpty(string value, [InvokerParameterName] [NotNull] string parameterName)
+        public static string NotNullOrEmpty(string value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
         {
             Exception e = null;
             if (ReferenceEquals(value, null))
@@ -96,20 +96,20 @@ namespace WireMock.Validation
             return value;
         }
 
-        public static string NullButNotEmpty(string value, [InvokerParameterName] [NotNull] string parameterName)
-        {
-            if (!ReferenceEquals(value, null)
-                && (value.Length == 0))
-            {
-                NotNullOrEmpty(parameterName, nameof(parameterName));
+        //public static string NullButNotEmpty(string value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
+        //{
+        //    if (!ReferenceEquals(value, null)
+        //        && (value.Length == 0))
+        //    {
+        //        NotNullOrEmpty(parameterName, nameof(parameterName));
 
-                throw new ArgumentException(CoreStrings.ArgumentIsEmpty(parameterName));
-            }
+        //        throw new ArgumentException(CoreStrings.ArgumentIsEmpty(parameterName));
+        //    }
 
-            return value;
-        }
+        //    return value;
+        //}
 
-        public static IList<T> HasNoNulls<T>(IList<T> value, [InvokerParameterName] [NotNull] string parameterName)
+        public static IList<T> HasNoNulls<T>(IList<T> value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
             where T : class
         {
             NotNull(value, parameterName);
@@ -124,16 +124,16 @@ namespace WireMock.Validation
             return value;
         }
 
-        public static Type ValidEntityType(Type value, [InvokerParameterName] [NotNull] string parameterName)
-        {
-            if (!value.GetTypeInfo().IsClass)
-            {
-                NotNullOrEmpty(parameterName, nameof(parameterName));
+        //public static Type ValidEntityType(Type value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
+        //{
+        //    if (!value.GetTypeInfo().IsClass)
+        //    {
+        //        NotNullOrEmpty(parameterName, nameof(parameterName));
 
-                throw new ArgumentException(CoreStrings.InvalidEntityType(value, parameterName));
-            }
+        //        throw new ArgumentException(CoreStrings.InvalidEntityType(value, parameterName));
+        //    }
 
-            return value;
-        }
+        //    return value;
+        //}
     }
 }
