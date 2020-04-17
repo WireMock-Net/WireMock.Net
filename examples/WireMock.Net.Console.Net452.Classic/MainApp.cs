@@ -36,6 +36,9 @@ namespace WireMock.Net.ConsoleApplication
     {
         public static void Run()
         {
+            var s = WireMockServer.Start();
+            s.Stop();
+
             string url1 = "http://localhost:9091/";
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
