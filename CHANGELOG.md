@@ -1,3 +1,7 @@
+# 1.2.5.0 (17 April 2020)
+- [#454](https://github.com/WireMock-Net/WireMock.Net/pull/454) - Fix port = 0 for net452 [bug] contributed by [StefH](https://github.com/StefH)
+- [#453](https://github.com/WireMock-Net/WireMock.Net/issues/453) - MockServer not starting  [bug]
+
 # 1.2.4.0 (10 April 2020)
 - [#439](https://github.com/WireMock-Net/WireMock.Net/pull/439) - Add support for GZip and Deflate [feature] contributed by [StefH](https://github.com/StefH)
 - [#444](https://github.com/WireMock-Net/WireMock.Net/pull/444) - Add readme.md + license from mock4net [feature] contributed by [StefH](https://github.com/StefH)
