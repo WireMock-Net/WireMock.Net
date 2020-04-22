@@ -1,4 +1,5 @@
 ﻿using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
 using WireMock.Handlers;
 
 namespace WireMock.Transformers
@@ -7,19 +8,23 @@ namespace WireMock.Transformers
     {
         public static void Register(IHandlebars handlebarsContext, IFileSystemHandler fileSystemHandler)
         {
-            HandleBarsRegex.Register(handlebarsContext);
+            // Register https://github.com/StefH/Handlebars.Net.Helpers
+            HandlebarsHelpers.Register(handlebarsContext);
 
-            HandleBarsJsonPath.Register(handlebarsContext);
+            // Register WireMock.Net specific helpers
+            HandlebarsRegex.Register(handlebarsContext);
 
-            HandleBarsLinq.Register(handlebarsContext);
+            HandlebarsJsonPath.Register(handlebarsContext);
 
-            HandleBarsRandom.Register(handlebarsContext);
+            HandlebarsLinq.Register(handlebarsContext);
 
-            HandleBarsXeger.Register(handlebarsContext);
+            HandlebarsRandom.Register(handlebarsContext);
 
-            HandleBarsXPath.Register(handlebarsContext);
+            HandlebarsXeger.Register(handlebarsContext);
 
-            HandleBarsFile.Register(handlebarsContext, fileSystemHandler);
+            HandlebarsXPath.Register(handlebarsContext);
+
+            HandlebarsFile.Register(handlebarsContext, fileSystemHandler);
         }
     }
 }

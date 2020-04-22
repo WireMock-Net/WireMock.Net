@@ -5,7 +5,7 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsFile
+    internal static class HandlebarsFile
     {
         public static void Register(IHandlebars handlebarsContext, IFileSystemHandler fileSystemHandler)
         {

@@ -10,7 +10,7 @@ using Wmhelp.XPath2;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsXPath
+    internal static class HandlebarsXPath
     {
         public static void Register(IHandlebars handlebarsContext)
         {
