@@ -71,14 +71,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <!--<ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="[1.9.0]" />
-  </ItemGroup>-->
-
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="[1.9.5]" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
     <PackageReference Include="XPath2.Extensions" Version="1.0.6.1" />
   </ItemGroup>
