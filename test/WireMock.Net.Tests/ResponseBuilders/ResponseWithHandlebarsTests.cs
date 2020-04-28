@@ -402,5 +402,31 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assert
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
         }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithBodyAsString_KeepsEncoding()
+        {
+            // Assign
+            const string text = "my-text";
+            Encoding enc = Encoding.Unicode;
+            var bodyData = new BodyData
+            {
+                BodyAsString = text,
+                DetectedBodyType = BodyType.String,
+                Encoding = enc
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+            var response = Response.Create()
+                .WithBody("{{request.body}}", BodyDestinationFormat.SameAsSource, enc)
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            responseMessage.BodyData.BodyAsString.Should().Be(text);
+            responseMessage.BodyData.Encoding.Should().Be(enc);
+        }
     }
 }
