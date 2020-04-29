@@ -41,6 +41,11 @@ namespace WireMock.Admin.Requests
         public string AbsoluteUrl { get; set; }
 
         /// <summary>
+        /// The ProxyUrl (if a proxy is used).
+        /// </summary>
+        public string ProxyUrl { get; set; }
+
+        /// <summary>
         /// The query.
         /// </summary>
         public IDictionary<string, WireMockList<string>> Query { get; set; }

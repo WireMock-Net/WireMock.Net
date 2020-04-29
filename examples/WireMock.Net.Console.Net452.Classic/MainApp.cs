@@ -97,7 +97,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("postmanecho", "post")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com/post" })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com" })
                 );
 
             server
