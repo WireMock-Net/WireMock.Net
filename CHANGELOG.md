@@ -1,3 +1,7 @@
+# 1.2.6.0 (29 April 2020)
+- [#460](https://github.com/WireMock-Net/WireMock.Net/pull/460) - When using ResponseMessageTransformer : keep BodyEncoding [bug] contributed by [StefH](https://github.com/StefH)
+- [#458](https://github.com/WireMock-Net/WireMock.Net/issues/458) - Response BodyAsString loses BodyData.Encoding when UseTransformer = true [bug]
+
 # 1.2.5.0 (17 April 2020)
 - [#454](https://github.com/WireMock-Net/WireMock.Net/pull/454) - Fix port = 0 for net452 [bug] contributed by [StefH](https://github.com/StefH)
 - [#453](https://github.com/WireMock-Net/WireMock.Net/issues/453) - MockServer not starting  [bug]
