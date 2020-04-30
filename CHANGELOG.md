@@ -1,3 +1,7 @@
+# 1.2.7.0 (30 April 2020)
+- [#461](https://github.com/WireMock-Net/WireMock.Net/pull/461) - Support Path in ProxyUrl contributed by [StefH](https://github.com/StefH)
+- [#459](https://github.com/WireMock-Net/WireMock.Net/issues/459) - When respond with proxy requestMessage.Url is used, not AbsoluteUrl [bug]
+
 # 1.2.6.0 (29 April 2020)
 - [#460](https://github.com/WireMock-Net/WireMock.Net/pull/460) - When using ResponseMessageTransformer : keep BodyEncoding [bug] contributed by [StefH](https://github.com/StefH)
 - [#458](https://github.com/WireMock-Net/WireMock.Net/issues/458) - Response BodyAsString loses BodyData.Encoding when UseTransformer = true [bug]
