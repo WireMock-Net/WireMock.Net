@@ -1,3 +1,6 @@
+# 1.2.8.0 (04 May 2020)
+- [#463](https://github.com/WireMock-Net/WireMock.Net/pull/463) - GH161: Fix SourceLink support [bug] contributed by [gitfool](https://github.com/gitfool)
+
 # 1.2.7.0 (30 April 2020)
 - [#461](https://github.com/WireMock-Net/WireMock.Net/pull/461) - Support Path in ProxyUrl contributed by [StefH](https://github.com/StefH)
 - [#459](https://github.com/WireMock-Net/WireMock.Net/issues/459) - When respond with proxy requestMessage.Url is used, not AbsoluteUrl [bug]
