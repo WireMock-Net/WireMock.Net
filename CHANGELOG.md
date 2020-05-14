@@ -1,3 +1,7 @@
+# 1.2.9.0 (14 May 2020)
+- [#465](https://github.com/WireMock-Net/WireMock.Net/pull/465) - Fix method ResetMappingsAsync in the RestEase-AdminApi [bug] contributed by [StefH](https://github.com/StefH)
+- [#464](https://github.com/WireMock-Net/WireMock.Net/issues/464) - RestClient Admin API Metadata Base Path Duplication [bug]
+
 # 1.2.8.0 (04 May 2020)
 - [#463](https://github.com/WireMock-Net/WireMock.Net/pull/463) - GH161: Fix SourceLink support [bug] contributed by [gitfool](https://github.com/gitfool)
 
