@@ -28,11 +28,11 @@ steps:
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
-# Build source, tests and run tests for net452 and netcoreapp2.1 (with coverage)
+# Build source, tests and run tests for net452 and netcoreapp3.1 (with coverage)
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net452
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp2.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  displayName: 'Build source, tests and run tests for net452 and netcoreapp2.1 (with coverage)'
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  displayName: 'Build source, tests and run tests for net452 and netcoreapp3.1 (with coverage)'
 
 # End SonarScanner
 - script: |

@@ -50,7 +50,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_proxy_responses()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
@@ -76,7 +76,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -123,7 +123,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -165,7 +165,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -214,7 +214,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -246,7 +246,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -277,7 +277,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var settings = new WireMockServerSettings { AllowPartialMapping = false };
 
             var serverForProxyForwarding = WireMockServer.Start(settings);
@@ -310,7 +310,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_cookie_header_in_proxied_request()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -379,7 +379,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_set_BodyAsJson_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -410,7 +410,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_set_Body_in_multipart_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -440,7 +440,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_Not_overrule_AdminMappings()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -481,6 +481,32 @@ namespace WireMock.Net.Tests
             // Assert 2
             string content2 = await response2.Content.ReadAsStringAsync();
             Check.That(content2).IsEqualTo("[]");
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_WhenTargetIsNotAvailable_Should_Return_CorrectResponse()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = $"http://localhost:12345"
+                }
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            Check.That(server.LogEntries).HasSize(1);
         }
     }
 }
