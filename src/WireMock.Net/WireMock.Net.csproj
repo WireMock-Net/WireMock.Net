@@ -58,6 +58,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
+    <PackageReference Include="Handlebars.Net.Helpers" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
@@ -65,14 +66,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="[1.9.0]" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="1.9.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">

@@ -11,7 +11,7 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsRandom
+    internal static class HandlebarsRandom
     {
         public static void Register(IHandlebars handlebarsContext)
         {
