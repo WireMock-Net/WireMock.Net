@@ -1,4 +1,8 @@
-# 1.2.10.0 (17 May 2020)
+# 1.2.11.0 (18 May 2020)
+- [#469](https://github.com/WireMock-Net/WireMock.Net/pull/469) - Fix unhandled exception when target is unavailable [bug] contributed by [StefH](https://github.com/StefH)
+- [#467](https://github.com/WireMock-Net/WireMock.Net/issues/467) - Proxy mode: Unhandled exception when target is not working [bug]
+
+# 1.2.10 (17 May 2020)
 - [#456](https://github.com/WireMock-Net/WireMock.Net/pull/456) - Include Handlebars.Net.Helpers project [feature] contributed by [StefH](https://github.com/StefH)
 - [#457](https://github.com/WireMock-Net/WireMock.Net/pull/457) - Kestrel Options Limits [bug] contributed by [StefH](https://github.com/StefH)
 - [#455](https://github.com/WireMock-Net/WireMock.Net/issues/455) - There is no option to increase body size while proxying [bug]
