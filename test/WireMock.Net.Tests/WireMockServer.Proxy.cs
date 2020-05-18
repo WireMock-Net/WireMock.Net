@@ -512,10 +512,10 @@ namespace WireMock.Net.Tests
             result.StatusCode.Should().Be(500);
 
             var content = await result.Content.ReadAsStringAsync();
-            content.Should().Contain("No such host is known.");
+            content.Should().Contain("known"); // On Linux it's "Name or service not known". On Windows it's "No such host is known.".
 
             server.LogEntries.Should().HaveCount(1);
-            ((StatusModel) server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Be("No such host is known.");
+            ((StatusModel) server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Contain("known");
         }
     }
 }
