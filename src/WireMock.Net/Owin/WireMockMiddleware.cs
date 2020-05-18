@@ -129,7 +129,7 @@ namespace WireMock.Owin
             catch (Exception ex)
             {
                 _options.Logger.Error($"Providing a Response for Mapping '{result?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
-                response = ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500);
+                response = ResponseMessageBuilder.Create(ex.Message, 500);
             }
             finally
             {
