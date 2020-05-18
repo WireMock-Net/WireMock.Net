@@ -5,7 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NFluent;
+using WireMock.Admin.Mappings;
+using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -491,7 +494,7 @@ namespace WireMock.Net.Tests
             {
                 ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = $"http://localhost:12345"
+                    Url = $"http://error{Guid.NewGuid()}:12345"
                 }
             };
             var server = WireMockServer.Start(settings);
@@ -503,10 +506,16 @@ namespace WireMock.Net.Tests
                 RequestUri = new Uri(server.Urls[0])
             };
             var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
-            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+            var result = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
             // Assert
-            Check.That(server.LogEntries).HasSize(1);
+            result.StatusCode.Should().Be(500);
+
+            var content = await result.Content.ReadAsStringAsync();
+            content.Should().Contain("No such host is known.");
+
+            server.LogEntries.Should().HaveCount(1);
+            ((StatusModel) server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Be("No such host is known.");
         }
     }
 }
