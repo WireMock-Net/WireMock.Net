@@ -29,7 +29,17 @@ namespace WireMock.Http
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Bytes:
-                    httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
+                    var fileContent = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
+                    fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                    {
+                        //FileName = requestMessage.BodyData.BodyAsForm
+                    };
+
+
+                    var mm = new MultipartFormDataContent();
+                    mm.Add(fileContent);
+
+                    httpRequestMessage.Content = mm; //new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
                     break;
 
                 case BodyType.Json:

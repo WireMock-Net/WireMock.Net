@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -129,6 +130,10 @@ namespace WireMock.Util
                     data.BodyAsString = encoding.GetString(data.BodyAsBytes);
                     data.Encoding = encoding;
                     data.DetectedBodyType = BodyType.String;
+                }
+                else if (settings.Form != null)
+                {
+                    data.BodyAsForm = settings.Form;
                 }
 
                 return data;
