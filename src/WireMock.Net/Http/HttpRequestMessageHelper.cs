@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Types;
 using WireMock.Validation;
 
@@ -29,17 +29,7 @@ namespace WireMock.Http
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Bytes:
-                    var fileContent = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
-                    fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-                    {
-                        //FileName = requestMessage.BodyData.BodyAsForm
-                    };
-
-
-                    var mm = new MultipartFormDataContent();
-                    mm.Add(fileContent);
-
-                    httpRequestMessage.Content = mm; //new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
+                    httpRequestMessage.Content = ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes, contentType);
                     break;
 
                 case BodyType.Json:

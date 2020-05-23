@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WireMock.Http;
@@ -65,16 +64,6 @@ namespace WireMock.Owin.Mappers
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
                     DecompressGZipAndDeflate = !options.DisableRequestBodyDecompressing.GetValueOrDefault(false)
                 };
-
-                try
-                {
-                    bodyParserSettings.Form = await request.ReadFormAsync();
-                    request.Body.Seek(0, SeekOrigin.Begin);
-                }
-                catch
-                {
-                    // Ignore
-                }
 
                 body = await BodyParser.Parse(bodyParserSettings);
             }

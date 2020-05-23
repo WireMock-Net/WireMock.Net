@@ -1,12 +1,6 @@
 ﻿using System.Text;
 using WireMock.Types;
 
-#if !USE_ASPNETCORE
-using Microsoft.Owin;
-#else
-using Microsoft.AspNetCore.Http;
-#endif
-
 namespace WireMock.Util
 {
     /// <summary>
@@ -63,7 +57,5 @@ namespace WireMock.Util
         /// The detected compression.
         /// </summary>
         public string DetectedCompression { get; set; }
-
-        public IFormCollection BodyAsForm { get; set; }
     }
 }
