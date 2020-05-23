@@ -130,7 +130,7 @@ namespace WireMock.Util
                     data.Encoding = encoding;
                     data.DetectedBodyType = BodyType.String;
                 }
-
+   
                 return data;
             }
 

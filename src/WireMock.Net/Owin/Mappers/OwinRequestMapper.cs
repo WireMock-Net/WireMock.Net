@@ -64,6 +64,7 @@ namespace WireMock.Owin.Mappers
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
                     DecompressGZipAndDeflate = !options.DisableRequestBodyDecompressing.GetValueOrDefault(false)
                 };
+
                 body = await BodyParser.Parse(bodyParserSettings);
             }
 
