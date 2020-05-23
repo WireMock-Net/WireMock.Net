@@ -1,3 +1,8 @@
+# 1.2.12.0 (23 May 2020)
+- [#472](https://github.com/WireMock-Net/WireMock.Net/pull/472) - Create new .sln contributed by [StefH](https://github.com/StefH)
+- [#473](https://github.com/WireMock-Net/WireMock.Net/pull/473) - Fixed Proxy when using MultipartForm with byte[] [bug] contributed by [StefH](https://github.com/StefH)
+- [#468](https://github.com/WireMock-Net/WireMock.Net/issues/468) - Proxy mode: Incorrect handling of multipart requests [bug]
+
 # 1.2.11.0 (18 May 2020)
 - [#469](https://github.com/WireMock-Net/WireMock.Net/pull/469) - Fix unhandled exception when target is unavailable [bug] contributed by [StefH](https://github.com/StefH)
 - [#467](https://github.com/WireMock-Net/WireMock.Net/issues/467) - Proxy mode: Unhandled exception when target is not working [bug]
