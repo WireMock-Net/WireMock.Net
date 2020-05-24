@@ -10,12 +10,10 @@ namespace WireMock.Owin
     {
         private static void SetKestrelOptionsLimits(KestrelServerOptions options)
         {
-            options.Limits.KeepAliveTimeout = TimeSpan.MaxValue;
             options.Limits.MaxRequestBodySize = null; // https://stackoverflow.com/questions/46738364/increase-upload-request-length-limit-in-kestrel
             options.Limits.MaxRequestBufferSize = null;
             options.Limits.MaxRequestHeaderCount = 100;
             options.Limits.MaxResponseBufferSize = null;
-            options.Limits.RequestHeadersTimeout = TimeSpan.MaxValue;
         }
 
         private static void SetHttpsAndUrls(KestrelServerOptions options, ICollection<(string Url, int Port)> urlDetails)
