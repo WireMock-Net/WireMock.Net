@@ -1,4 +1,8 @@
-# 1.2.12.0 (23 May 2020)
+# 1.2.13.0 (24 May 2020)
+- [#475](https://github.com/WireMock-Net/WireMock.Net/pull/475) - Fix Limits.KeepAliveTimeout &amp; Limits.RequestHeadersTimeout [bug] contributed by [StefH](https://github.com/StefH)
+- [#474](https://github.com/WireMock-Net/WireMock.Net/issues/474) - Performance issue with multiple httpclients (since version 1.2.10) [bug]
+
+# 1.2.12 (23 May 2020)
 - [#472](https://github.com/WireMock-Net/WireMock.Net/pull/472) - Create new .sln contributed by [StefH](https://github.com/StefH)
 - [#473](https://github.com/WireMock-Net/WireMock.Net/pull/473) - Fixed Proxy when using MultipartForm with byte[] [bug] contributed by [StefH](https://github.com/StefH)
 - [#468](https://github.com/WireMock-Net/WireMock.Net/issues/468) - Proxy mode: Incorrect handling of multipart requests [bug]
