@@ -337,7 +337,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithHeader("xyz_{{request.headers.Postman-Token}}", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, add={{Math.Add 1 2}} bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
+                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, add={{Math.Add request.query.start.[0] 42}} bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
                     .WithTransformer()
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
