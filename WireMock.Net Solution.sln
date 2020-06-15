@@ -69,6 +69,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Client.Net472"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NETCoreApp3", "examples\WireMock.Net.Console.NETCoreApp3\WireMock.Net.Console.NETCoreApp3.csproj", "{C54A5D32-EFE0-407B-BA8D-7172A1000DCB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.OpenApiParser", "src\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj", "{D5D93084-D43B-4287-8735-7C10FD8F69F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.OpenApiParser.ConsoleApp", "examples\WireMock.Net.OpenApiParser.ConsoleApp\WireMock.Net.OpenApiParser.ConsoleApp.csproj", "{5C09FB93-1535-4F92-AF26-21E8A061EE4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Sonar|Any CPU = Debug - Sonar|Any CPU
@@ -331,6 +335,30 @@ Global
 		{C54A5D32-EFE0-407B-BA8D-7172A1000DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C54A5D32-EFE0-407B-BA8D-7172A1000DCB}.Release|x64.ActiveCfg = Release|Any CPU
 		{C54A5D32-EFE0-407B-BA8D-7172A1000DCB}.Release|x64.Build.0 = Release|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug - Sonar|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug - Sonar|Any CPU.Build.0 = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug - Sonar|x64.ActiveCfg = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug - Sonar|x64.Build.0 = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3}.Release|x64.Build.0 = Release|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug - Sonar|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug - Sonar|Any CPU.Build.0 = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug - Sonar|x64.ActiveCfg = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug - Sonar|x64.Build.0 = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -357,6 +385,8 @@ Global
 		{A9D039B9-7509-4CF1-9EFD-87EB82998575} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{02082E34-DEF2-47D0-AF0B-3326FAA908CE} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 		{C54A5D32-EFE0-407B-BA8D-7172A1000DCB} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
+		{D5D93084-D43B-4287-8735-7C10FD8F69F3} = {EF242EDF-7133-4277-9A0C-18744DE08707}
+		{5C09FB93-1535-4F92-AF26-21E8A061EE4A} = {F0C22C47-DF71-463C-9B04-B4E0F3B8708A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF428BCC-C837-433B-87D2-15C7014B73E9}

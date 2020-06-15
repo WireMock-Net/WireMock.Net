@@ -1,6 +1,6 @@
 ﻿namespace WireMock.Net.OpenApiParser.Types
 {
-    public enum SchemaType
+    internal enum SchemaType
     {
         Object,
 

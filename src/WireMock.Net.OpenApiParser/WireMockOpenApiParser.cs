@@ -1,13 +1,13 @@
-﻿using Microsoft.OpenApi;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 using Microsoft.OpenApi.Writers;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Types;
@@ -91,7 +91,14 @@ namespace WireMock.Net.OpenApiParser
                             foreach (var property in schema.Items.Properties)
                             {
                                 var objectValue = MapSchemaToObject(property.Value, property.Key);
-                                arrayItem.Add(new JProperty(property.Key, objectValue));
+                                if (objectValue is JProperty jp)
+                                {
+                                    arrayItem.Add(jp);
+                                }
+                                else
+                                {
+                                    arrayItem.Add(new JProperty(property.Key, objectValue));
+                                }
                             }
 
                             jArray.Add(arrayItem);
@@ -107,20 +114,28 @@ namespace WireMock.Net.OpenApiParser
                 case SchemaType.Boolean:
                 case SchemaType.Integer:
                 case SchemaType.Number:
-                    return GetDefaultValueForSchemaType(schema);
-
                 case SchemaType.String:
-                    return GetDefaultValueForSchemaType(schema);
+                    return ExampleValueGenerator.GetExampleValue(schema);
 
                 case SchemaType.Object:
                     var propertyAsJObject = new JObject();
                     foreach (var schemaProperty in schema.Properties)
                     {
-                        var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
-                        if (mapped != null)
+                        string propertyName = schemaProperty.Key;
+                        var openApiSchema = schemaProperty.Value;
+                        if (openApiSchema.GetSchemaType() == SchemaType.Object)
                         {
-                            var add = name != null ? new JProperty(name, mapped) : new JProperty(schemaProperty.Key, mapped);
-                            propertyAsJObject.Add(add);
+                            var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
+                            if (mapped is JProperty jp)
+                            {
+                                propertyAsJObject.Add(jp);
+                            }
+                        }
+                        else
+                        {
+                            bool propertyIsNullable = openApiSchema.Nullable || openApiSchema.TryGetXNullable(out bool x) && x;
+
+                            propertyAsJObject.Add(new JProperty(propertyName, ExampleValueGenerator.GetExampleValue(openApiSchema)));
                         }
                     }
 
@@ -141,7 +156,7 @@ namespace WireMock.Net.OpenApiParser
             string newPath = path;
             foreach (var parameter in parameters)
             {
-                newPath = newPath.Replace($"{{{parameter.Name}}}", GetDefaultValueForSchemaType(parameter.Schema).ToString());
+                newPath = newPath.Replace($"{{{parameter.Name}}}", ExampleValueGenerator.GetExampleValue(parameter.Schema).ToString());
             }
 
             return newPath;
@@ -165,7 +180,7 @@ namespace WireMock.Net.OpenApiParser
 
         private static IDictionary<string, object> MapHeaders(IDictionary<string, OpenApiHeader> headers)
         {
-            var mappedHeaders = headers.ToDictionary(item => item.Key, item => (object)GetDefaultValueForSchemaType(null));
+            var mappedHeaders = headers.ToDictionary(item => item.Key, item => (object)ExampleValueGenerator.GetExampleValue(null));
 
             return mappedHeaders.Keys.Any() ? mappedHeaders : null;
         }
@@ -192,7 +207,7 @@ namespace WireMock.Net.OpenApiParser
 
         private static string GetDefaultValueAsStringForSchemaType(OpenApiSchema schema)
         {
-            var value = GetDefaultValueForSchemaType(schema);
+            var value = ExampleValueGenerator.GetExampleValue(schema);
 
             switch (value)
             {
@@ -201,47 +216,6 @@ namespace WireMock.Net.OpenApiParser
 
                 default:
                     return value.ToString();
-            }
-        }
-
-        private static object GetDefaultValueForSchemaType(OpenApiSchema schema)
-        {
-            switch (schema?.GetSchemaType())
-            {
-                case SchemaType.Integer:
-                    return 42;
-
-                case SchemaType.Number:
-                    switch (schema?.GetSchemaFormat())
-                    {
-                        case SchemaFormat.Float:
-                            return 4.2f;
-
-                        default:
-                            return 4.2d;
-                    }
-
-                case SchemaType.Boolean:
-                    return true;
-
-                default:
-                    switch (schema?.GetSchemaFormat())
-                    {
-                        case SchemaFormat.Date:
-                            return DateTimeUtils.ToRfc3339Date(DateTime.UtcNow);
-
-                        case SchemaFormat.DateTime:
-                            return DateTimeUtils.ToRfc3339DateTime(DateTime.UtcNow);
-
-                        case SchemaFormat.Byte:
-                            return new byte[] { 48 };
-
-                        case SchemaFormat.Binary:
-                            return "example-object";
-
-                        default:
-                            return "example-string";
-                    }
             }
         }
     }
