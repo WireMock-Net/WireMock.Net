@@ -5,8 +5,6 @@
     <VersionPrefix>1.2.4-preview-01</VersionPrefix>
     <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>WireMock.Net</AssemblyName>
-    <PackageId>WireMock.Net</PackageId>
     <PackageTags>wiremock;openapi;OAS;converter;parser;openapiparser</PackageTags>
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5AADAD}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
