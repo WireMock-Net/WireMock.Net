@@ -5,6 +5,7 @@
 
   <PropertyGroup>
     <VersionPrefix>1.2.4</VersionPrefix>
+    <Authors>Stef Heyenrath</Authors>
     <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
