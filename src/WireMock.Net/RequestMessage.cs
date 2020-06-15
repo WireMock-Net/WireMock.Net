@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +113,11 @@ namespace WireMock
         public string DetectedBodyTypeFromContentType { get; }
 
         /// <summary>
+        /// The detected compression from the Content-Encoding header. Convenience getter for Handlebars.
+        /// </summary>
+        public string DetectedCompression { get; }
+
+        /// <summary>
         /// Gets the Host
         /// </summary>
         public string Host { get; }
@@ -168,6 +175,7 @@ namespace WireMock
             BodyAsBytes = BodyData?.BodyAsBytes;
             DetectedBodyType = BodyData?.DetectedBodyType.ToString();
             DetectedBodyTypeFromContentType = BodyData?.DetectedBodyTypeFromContentType.ToString();
+            DetectedCompression = BodyData?.DetectedCompression;
 
             Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             Cookies = cookies;

@@ -12,6 +12,8 @@ using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
@@ -88,8 +90,13 @@ namespace WireMock.Net.Tests
             server.Stop();
         }
 
-        [Fact]
-        public async Task IWireMockAdminApi_PostMappingAsync()
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData(-1, -1)]
+        [InlineData(0, 0)]
+        [InlineData(200, 200)]
+        [InlineData("200", "200")]
+        public async Task IWireMockAdminApi_PostMappingAsync(object statusCode, object expectedStatusCode)
         {
             // Arrange
             var server = WireMockServer.StartWithAdminInterface();
@@ -99,7 +106,7 @@ namespace WireMock.Net.Tests
             var model = new MappingModel
             {
                 Request = new RequestModel { Path = "/1" },
-                Response = new ResponseModel { Body = "txt", StatusCode = 200 },
+                Response = new ResponseModel { Body = "txt", StatusCode = statusCode },
                 Priority = 500,
                 Title = "test"
             };
@@ -113,6 +120,9 @@ namespace WireMock.Net.Tests
             var mapping = server.Mappings.Single(m => m.Priority == 500);
             Check.That(mapping).IsNotNull();
             Check.That(mapping.Title).Equals("test");
+
+            var response = await mapping.ProvideResponseAsync(new RequestMessage(new UrlDetails("http://localhost/1"), "GET", ""));
+            Check.That(response.StatusCode).Equals(expectedStatusCode);
 
             server.Stop();
         }

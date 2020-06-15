@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -274,7 +275,13 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
+            var responseMessage = await HttpClientHelper.SendAsync(
+                _httpClientForProxy,
+                requestMessage,
+                proxyUriWithRequestPathAndQuery.AbsoluteUri,
+                !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
+                !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+            );
 
             if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
                 (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))
@@ -554,11 +561,63 @@ namespace WireMock.Server
 
         private ResponseMessage MappingsDelete(RequestMessage requestMessage)
         {
-            ResetMappings();
+            if (!string.IsNullOrEmpty(requestMessage.Body))
+            {
+                var deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
+                if (deletedGuids != null)
+                {
+                    return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
+                }
+                else
+                {
+                    // return bad request
+                    return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
+                }
+            }
+            else
+            {
+                ResetMappings();
 
-            ResetScenarios();
+                ResetScenarios();
 
-            return ResponseMessageBuilder.Create("Mappings deleted");
+                return ResponseMessageBuilder.Create("Mappings deleted");
+            }
+        }
+
+        private IEnumerable<Guid> MappingsDeleteMappingFromBody(RequestMessage requestMessage)
+        {
+            var deletedGuids = new List<Guid>();
+
+            try
+            {
+                var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
+                foreach (var mappingModel in mappingModels)
+                {
+                    if (mappingModel.Guid.HasValue)
+                    {
+                        if (DeleteMapping(mappingModel.Guid.Value))
+                        {
+                            deletedGuids.Add(mappingModel.Guid.Value);
+                        }
+                        else
+                        {
+                            _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
+                        }
+                    }
+                }
+            }
+            catch (ArgumentException a)
+            {
+                _settings.Logger.Error("ArgumentException: {0}", a);
+                return null;
+            }
+            catch (Exception e)
+            {
+                _settings.Logger.Error("Exception: {0}", e);
+                return null;
+            }
+
+            return deletedGuids;
         }
 
         private ResponseMessage MappingsReset(RequestMessage requestMessage)
@@ -744,7 +803,12 @@ namespace WireMock.Server
             {
                 foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithHeader(headerModel.Name, headerModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithHeader(
+                        headerModel.Name,
+                        headerModel.IgnoreCase == true,
+                        headerModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                        headerModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray()
+                    );
                 }
             }
 
@@ -752,7 +816,11 @@ namespace WireMock.Server
             {
                 foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
                 {
-                    requestBuilder = requestBuilder.WithCookie(cookieModel.Name, cookieModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                    requestBuilder = requestBuilder.WithCookie(
+                        cookieModel.Name,
+                        cookieModel.IgnoreCase == true,
+                        cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                        cookieModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
             }
 
@@ -808,15 +876,14 @@ namespace WireMock.Server
                 return responseBuilder.WithProxy(proxyAndRecordSettings);
             }
 
-            switch (responseModel.StatusCode)
+            if (responseModel.StatusCode is string statusCodeAsString)
             {
-                case int statusCodeAsInteger:
-                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsInteger);
-                    break;
-
-                case string statusCodeAsString:
-                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
-                    break;
+                responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
+            }
+            else if (responseModel.StatusCode != null)
+            {
+                // Convert to Int32 because Newtonsoft deserializes an 'object' with a number value to a long.
+                responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
             }
 
             if (responseModel.Headers != null)
@@ -873,7 +940,7 @@ namespace WireMock.Server
                     DetectedBodyType = BodyType.String,
                     BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
                 },
-                StatusCode = 200,
+                StatusCode = (int)HttpStatusCode.OK,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
             };
         }

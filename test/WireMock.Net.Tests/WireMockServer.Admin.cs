@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -42,7 +45,6 @@ namespace WireMock.Net.Tests
         public void WireMockServer_Admin_ResetMappings()
         {
             var server = WireMockServer.Start();
-
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
             server.ReadStaticMappings(folder);
 
@@ -403,6 +405,65 @@ namespace WireMock.Net.Tests
             staticMappingHandlerMock.Verify(m => m.GetMappingFolder(), Times.Once);
             staticMappingHandlerMock.Verify(m => m.FolderExists("folder"), Times.Once);
             staticMappingHandlerMock.Verify(m => m.WriteMappingFile(Path.Combine("folder", guid + ".json"), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async void WireMockServer_Admin_DeleteMappings()
+        {
+            // Arrange
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                StartAdminInterface = true,
+                ReadStaticMappings = false,
+                WatchStaticMappings = false,
+                WatchStaticMappingsInSubdirectories = false
+            });
+
+            server
+                .Given(Request.Create().WithPath("/path1"))
+                .AtPriority(0)
+                .RespondWith(Response.Create().WithStatusCode(200));
+            server
+                .Given(Request.Create().WithPath("/path2"))
+                .AtPriority(1)
+                .RespondWith(Response.Create().WithStatusCode(200));
+            server
+                .Given(Request.Create().WithPath("/path3"))
+                .AtPriority(2)
+                .RespondWith(Response.Create().WithStatusCode(200));
+
+            Check.That(server.MappingModels.Count()).Equals(3);
+
+            Guid? guid1 = server.MappingModels.ElementAt(0).Guid;
+            Guid? guid2 = server.MappingModels.ElementAt(1).Guid;
+            Guid? guid3 = server.MappingModels.ElementAt(2).Guid;
+
+            Check.That(guid1).IsNotNull();
+            Check.That(guid2).IsNotNull();
+            Check.That(guid3).IsNotNull();
+
+            string guidsJsonBody = $"[" +
+                                     $"{{\"Guid\": \"{guid1}\"}}," +
+                                     $"{{\"Guid\": \"{guid2}\"}}" +
+                                   $"]";
+
+            // Act
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri($"http://localhost:{server.Ports[0]}/__admin/mappings"),
+                Content = new StringContent(guidsJsonBody, Encoding.UTF8, "application/json")
+            };
+
+            var response = await new HttpClient().SendAsync(request);
+
+            // Assert
+            IEnumerable<Guid> guids = server.MappingModels.Select(mapping => mapping.Guid.Value);
+            Check.That(guids.Contains(guid1.Value)).IsFalse();
+            Check.That(guids.Contains(guid2.Value)).IsFalse();
+            Check.That(guids.Contains(guid3.Value)).IsTrue();
+            Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+            Check.That(await response.Content.ReadAsStringAsync()).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
         }
     }
 }

@@ -39,5 +39,11 @@ namespace WireMock.Owin
         IFileSystemHandler FileSystemHandler { get; set; }
 
         bool? AllowBodyForAllHttpMethods { get; set; }
+
+        bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+        bool? DisableJsonBodyParsing { get; set; }
+
+        bool? DisableRequestBodyDecompressing { get; set; }
     }
 }

@@ -4,18 +4,11 @@
     <Description>A RestClient using RestEase to access the admin interface.</Description>
     <AssemblyTitle>WireMock.Net.RestClient</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>netstandard1.1;netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;netstandard2.0;netstandard2.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.RestClient</AssemblyName>
     <PackageId>WireMock.Net.RestClient</PackageId>
     <PackageTags>wiremock;rest;client;restclient;restease;rest;json</PackageTags>
-    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <RootNamespace>WireMock.Client</RootNamespace>
     <!--<DebugType>full</DebugType>
     <IncludeSource>True</IncludeSource>

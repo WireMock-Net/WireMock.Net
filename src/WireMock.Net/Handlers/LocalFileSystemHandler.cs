@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Handlers
@@ -80,20 +81,20 @@ namespace WireMock.Handlers
         public byte[] ReadResponseBodyAsFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
-
-            // In case the path is a filename, the path will be adjusted to the MappingFolder.
+            path = PathUtils.CleanPath(path);
+            // If the file exists at the given path relative to the MappingsFolder, then return that.
             // Else the path will just be as-is.
-            return File.ReadAllBytes(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
+            return File.ReadAllBytes(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
         public string ReadResponseBodyAsString(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
-
+            path = PathUtils.CleanPath(path);
             // In case the path is a filename, the path will be adjusted to the MappingFolder.
             // Else the path will just be as-is.
-            return File.ReadAllText(Path.GetFileName(path) == path ? Path.Combine(GetMappingFolder(), path) : path);
+            return File.ReadAllText(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>

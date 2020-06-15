@@ -61,7 +61,8 @@ namespace WireMock.Matchers
             IgnoreCase = ignoreCase;
             MatchBehaviour = matchBehaviour;
 
-            RegexOptions options = RegexOptions.Compiled;
+            RegexOptions options = RegexOptions.Compiled | RegexOptions.Multiline;
+
             if (ignoreCase)
             {
                 options |= RegexOptions.IgnoreCase;

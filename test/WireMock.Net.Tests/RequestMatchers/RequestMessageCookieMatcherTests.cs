@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "c", "x");
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "c", false, "x");
 
             // Act
             var result = new RequestMatchResult();
@@ -29,38 +29,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1");
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "c", "x");
-
-            // Act
-            var result = new RequestMatchResult();
-            double score = matcher.GetMatchingScore(requestMessage, result);
-
-            // Assert
-            Check.That(score).IsEqualTo(1.0d);
-        }
-
-        [Fact]
-        public void RequestMessageCookieMatcher_GetMatchingScore_AcceptOnMatch_CookieDoesNotMatchPattern()
-        {
-            // Assign
-            var cookies = new Dictionary<string, string> { { "c", "x" } };
-            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "no-match", "123");
-
-            // Act
-            var result = new RequestMatchResult();
-            double score = matcher.GetMatchingScore(requestMessage, result);
-
-            // Assert
-            Check.That(score).IsEqualTo(0.0d);
-        }
-        [Fact]
-        public void RequestMessageCookieMatcher_GetMatchingScore_RejectOnMatch_CookieDoesNotMatchPattern()
-        {
-            // Assign
-            var cookies = new Dictionary<string, string> { { "h", "x" } };
-            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "no-match", "123");
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "c", false, "x");
 
             // Act
             var result = new RequestMatchResult();
@@ -76,7 +45,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var cookies = new Dictionary<string, string> { { "h", "x" } };
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "h", "x");
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "h", false, "x");
 
             // Act
             var result = new RequestMatchResult();
@@ -92,7 +61,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var cookies = new Dictionary<string, string> { { "h", "x" } };
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
-            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "h", "x");
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "h", false, "x");
 
             // Act
             var result = new RequestMatchResult();
@@ -108,7 +77,23 @@ namespace WireMock.Net.Tests.RequestMatchers
             // Assign
             var cookies = new Dictionary<string, string> { { "cook", "x" } };
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
-            var matcher = new RequestMessageCookieMatcher("cook", new ExactMatcher("x"));
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, "cook", false, new ExactMatcher("x"));
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(1.0d);
+        }
+
+        [Fact]
+        public void RequestMessageCookieMatcher_WithMissingCookie_When_RejectOnMatch_Is_True_Should_Match()
+        {
+            // Assign
+            var cookies = new Dictionary<string, string> { { "cook", "x" } };
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, null, cookies);
+            var matcher = new RequestMessageCookieMatcher(MatchBehaviour.RejectOnMatch, "uhuh", false, new ExactMatcher("x"));
 
             // Act
             var result = new RequestMatchResult();

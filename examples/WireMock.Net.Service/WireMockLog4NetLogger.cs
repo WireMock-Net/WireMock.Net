@@ -1,8 +1,9 @@
-﻿using log4net;
+﻿using System;
+using log4net;
 using Newtonsoft.Json;
 using Wiremock.Net.Service;
+using WireMock.Admin.Requests;
 using WireMock.Logging;
-using WireMock.Models.Requests;
 
 namespace WireMock.Net.Service
 {
@@ -28,6 +29,11 @@ namespace WireMock.Net.Service
         public void Error(string formatString, params object[] args)
         {
             Log.ErrorFormat(formatString, args);
+        }
+
+        public void Error(string message, Exception exception)
+        {
+            Log.Error(message, exception);
         }
 
         public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)

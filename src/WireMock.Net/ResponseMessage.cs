@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
+using System.Collections.Generic;
 using System.Linq;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
@@ -20,7 +22,7 @@ namespace WireMock
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        public object StatusCode { get; set; } = 200;
+        public object StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the body.

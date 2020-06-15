@@ -9,6 +9,7 @@ using WireMock.Owin.Mappers;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 using WireMock.Util;
+using WireMock.Owin;
 #if NET452
 using Microsoft.Owin;
 using IResponse = Microsoft.Owin.IOwinResponse;
@@ -30,12 +31,20 @@ namespace WireMock.Net.Tests.Owin.Mappers
         private readonly Mock<Stream> _stream;
         private readonly Mock<IHeaderDictionary> _headers;
         private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock;
+        private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
 
         public OwinResponseMapperTests()
         {
             _stream = new Mock<Stream>();
             _stream.SetupAllProperties();
             _stream.Setup(s => s.WriteAsync(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(CompletedTask);
+
+            _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            _fileSystemHandlerMock.SetupAllProperties();
+
+            _optionsMock = new Mock<IWireMockMiddlewareOptions>();
+            _optionsMock.SetupAllProperties();
+            _optionsMock.SetupGet(o => o.FileSystemHandler).Returns(_fileSystemHandlerMock.Object);
 
             _headers = new Mock<IHeaderDictionary>();
             _headers.SetupAllProperties();
@@ -50,10 +59,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             _responseMock.SetupGet(r => r.Body).Returns(_stream.Object);
             _responseMock.SetupGet(r => r.Headers).Returns(_headers.Object);
 
-            _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
-            _fileSystemHandlerMock.SetupAllProperties();
-
-            _sut = new OwinResponseMapper(_fileSystemHandlerMock.Object);
+            _sut = new OwinResponseMapper(_optionsMock.Object);
         }
 
         [Fact]
@@ -63,20 +69,96 @@ namespace WireMock.Net.Tests.Owin.Mappers
             await _sut.MapAsync(null, _responseMock.Object);
         }
 
-        [Fact]
-        public async Task OwinResponseMapper_MapAsync_StatusCode()
+        [Theory]
+        [InlineData(300, 300)]
+        [InlineData(500, 500)]
+        public async Task OwinResponseMapper_MapAsync_Valid_StatusCode(object code, int expected)
         {
             // Arrange
             var responseMessage = new ResponseMessage
             {
-                StatusCode = 302
+                StatusCode = code
             };
 
             // Act
             await _sut.MapAsync(responseMessage, _responseMock.Object);
 
             // Assert
-            _responseMock.VerifySet(r => r.StatusCode = 302, Times.Once);
+            _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
+        }
+
+        [Theory]
+        [InlineData(0, 200)]
+        [InlineData(-1, 200)]
+        [InlineData(10000, 200)]
+        [InlineData(300, 300)]
+        public async Task OwinResponseMapper_MapAsync_Invalid_StatusCode_When_AllowOnlyDefinedHttpStatusCodeInResponseSet_Is_True(object code, int expected)
+        {
+            // Arrange
+            _optionsMock.SetupGet(o => o.AllowOnlyDefinedHttpStatusCodeInResponse).Returns(true);
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = code
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
+        }
+
+        [Fact]
+        public async Task OwinResponseMapper_MapAsync_Null_StatusCode_When_AllowOnlyDefinedHttpStatusCodeInResponseSet_Is_True()
+        {
+            // Arrange
+            _optionsMock.SetupGet(o => o.AllowOnlyDefinedHttpStatusCodeInResponse).Returns(true);
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = null
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task OwinResponseMapper_MapAsync_StatusCode_Is_Null()
+        {
+            // Arrange
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = null
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(-1, -1)]
+        [InlineData(10000, 10000)]
+        [InlineData(300, 300)]
+        public async Task OwinResponseMapper_MapAsync_StatusCode_Is_NotInEnumRange(object code, int expected)
+        {
+            // Arrange
+            var responseMessage = new ResponseMessage
+            {
+                StatusCode = code
+            };
+
+            // Act
+            await _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
         }
 
         [Fact]

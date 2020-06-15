@@ -137,7 +137,25 @@ namespace WireMock.Net.Tests
             Check.That(options.AllowBodyForAllHttpMethods).Equals(true);
 
             // Verify
-            _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));
+            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowBodyForAllHttpMethods") && s.Contains("True"))));
+        }
+
+        [Fact]
+        public void WireMockServer_WireMockServerSettings_AllowOnlyDefinedHttpStatusCodeInResponse()
+        {
+            // Assign and Act
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                Logger = _loggerMock.Object,
+                AllowOnlyDefinedHttpStatusCodeInResponse = true
+            });
+
+            // Assert
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+            Check.That(options.AllowOnlyDefinedHttpStatusCodeInResponse).Equals(true);
+
+            // Verify
+            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowOnlyDefinedHttpStatusCodeInResponse") && s.Contains("True"))));
         }
 
         [Fact]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WireMock.Http;
 using WireMock.Models;
 using WireMock.Util;
 #if !USE_ASPNETCORE
@@ -27,12 +28,18 @@ namespace WireMock.Owin.Mappers
             string method = request.Method;
 
             Dictionary<string, string[]> headers = null;
+            IEnumerable<string> contentEncodingHeader = null;
             if (request.Headers.Any())
             {
                 headers = new Dictionary<string, string[]>();
                 foreach (var header in request.Headers)
                 {
                     headers.Add(header.Key, header.Value);
+
+                    if (string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase))
+                    {
+                        contentEncodingHeader = header.Value;
+                    }
                 }
             }
 
@@ -49,7 +56,15 @@ namespace WireMock.Owin.Mappers
             BodyData body = null;
             if (request.Body != null && BodyParser.ShouldParseBody(method, options.AllowBodyForAllHttpMethods == true))
             {
-                body = await BodyParser.Parse(request.Body, request.ContentType);
+                var bodyParserSettings = new BodyParserSettings
+                {
+                    Stream = request.Body,
+                    ContentType = request.ContentType,
+                    DeserializeJson = !options.DisableJsonBodyParsing.GetValueOrDefault(false),
+                    ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
+                    DecompressGZipAndDeflate = !options.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+                };
+                body = await BodyParser.Parse(bodyParserSettings);
             }
 
             return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };

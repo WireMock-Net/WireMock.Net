@@ -1,12 +1,12 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
@@ -60,7 +60,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public static IResponseBuilder Create([CanBeNull] ResponseMessage responseMessage = null)
         {
-            var message = responseMessage ?? new ResponseMessage { StatusCode = (int)HttpStatusCode.OK };
+            var message = responseMessage ?? new ResponseMessage(); // { StatusCode = (int)HttpStatusCode.OK };
             return new Response(message);
         }
 
@@ -341,47 +341,56 @@ namespace WireMock.ResponseBuilders
                 await Task.Delay(Delay.Value);
             }
 
-            if (Callback != null)
-            {
-                var callbackResponseMessage = Callback(requestMessage);
-
-                if (!WithCallbackUsed)
-                {
-                    // Copy StatusCode from ResponseMessage
-                    callbackResponseMessage.StatusCode = ResponseMessage.StatusCode;
-
-                    // Copy Headers from ResponseMessage (if defined)
-                    if (ResponseMessage.Headers != null)
-                    {
-                        callbackResponseMessage.Headers = ResponseMessage.Headers;
-                    }
-                }
-
-                return callbackResponseMessage;
-            }
-
             if (ProxyUrl != null && _httpClientForProxy != null)
             {
                 var requestUri = new Uri(requestMessage.Url);
                 var proxyUri = new Uri(ProxyUrl);
                 var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-                return await HttpClientHelper.SendAsync(_httpClientForProxy, requestMessage, proxyUriWithRequestPathAndQuery.AbsoluteUri);
+                return await HttpClientHelper.SendAsync(
+                    _httpClientForProxy, 
+                    requestMessage,
+                    proxyUriWithRequestPathAndQuery.AbsoluteUri,
+                    !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
+                    !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+                );
+            }
+
+            ResponseMessage responseMessage;
+            if (Callback == null)
+            {
+                responseMessage = ResponseMessage;
+            }
+            else
+            {
+                responseMessage = Callback(requestMessage);
+
+                if (!WithCallbackUsed)
+                {
+                    // Copy StatusCode from ResponseMessage
+                    responseMessage.StatusCode = ResponseMessage.StatusCode;
+
+                    // Copy Headers from ResponseMessage (if defined)
+                    if (ResponseMessage.Headers != null)
+                    {
+                        responseMessage.Headers = ResponseMessage.Headers;
+                    }
+                }
             }
 
             if (UseTransformer)
             {
                 var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
                 var responseMessageTransformer = new ResponseMessageTransformer(factory);
-                return responseMessageTransformer.Transform(requestMessage, ResponseMessage, UseTransformerForBodyAsFile);
+                return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
             {
-                ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(ResponseMessage.BodyData.BodyAsFile);
+                ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
-            return ResponseMessage;
+            return responseMessage;
         }
     }
 }

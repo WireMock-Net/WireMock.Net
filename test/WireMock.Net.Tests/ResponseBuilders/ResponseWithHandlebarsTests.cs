@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
@@ -24,6 +25,23 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+        
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_WithNullBody_ShouldNotThrowException()
+        {
+            // Assign
+            var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
+            var request = new RequestMessage(urlDetails, "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            responseMessage.BodyData.Should().BeNull();
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_UrlPathVerb()
@@ -47,12 +65,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
         }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_UrlPath()
+        [Theory]
+        [InlineData("Get")]
+        [InlineData("Post")]
+        public async Task Response_ProvideResponse_Handlebars_UrlPath(string httpMethod)
         {
             // Assign
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
-            var request = new RequestMessage(urlDetails, "POST", ClientIp);
+            var request = new RequestMessage(urlDetails, httpMethod, ClientIp);
 
             var response = Response.Create()
                 .WithBody("{{request.url}} {{request.absoluteurl}} {{request.path}} {{request.absolutepath}}")
@@ -103,6 +123,53 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_StatusCode()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithStatusCode("{{request.query.a}}")
+                .WithBody("test")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.StatusCode).Equals("400");
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_StatusCodeIsNull()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithBody("test")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.StatusCode).Equals(null);
         }
 
         [Fact]

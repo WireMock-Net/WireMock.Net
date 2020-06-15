@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
-using Newtonsoft.Json;
 using NFluent;
-using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -245,18 +243,36 @@ namespace WireMock.Net.Tests.RequestMatchers
             // assign
             BodyData bodyData;
             if (body is byte[] b)
-                bodyData = await BodyParser.Parse(new MemoryStream(b), null);
+            {
+                var bodyParserSettings = new BodyParserSettings
+                {
+                    Stream = new MemoryStream(b),
+                    ContentType = null,
+                    DeserializeJson = true
+                };
+                bodyData = await BodyParser.Parse(bodyParserSettings);
+            }
             else if (body is string s)
-                bodyData = await BodyParser.Parse(new MemoryStream(Encoding.UTF8.GetBytes(s)), null);
+            {
+                var bodyParserSettings = new BodyParserSettings
+                {
+                    Stream = new MemoryStream(Encoding.UTF8.GetBytes(s)),
+                    ContentType = null,
+                    DeserializeJson = true
+                };
+                bodyData = await BodyParser.Parse(bodyParserSettings);
+            }
             else
+            {
                 throw new Exception();
+            }
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", bodyData);
 
             // act
             var result = new RequestMatchResult();
             var score = matcher.GetMatchingScore(requestMessage, result);
-            
+
             // assert
             Check.That(score).IsEqualTo(shouldMatch ? 1d : 0d);
         }
@@ -267,7 +283,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             {
                 var json = "{'a':'b'}";
                 var str = "HelloWorld";
-                var bytes = new byte[] {0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00}; 
+                var bytes = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00 };
 
                 return new TheoryData<object, RequestMessageBodyMatcher, bool>
                 {

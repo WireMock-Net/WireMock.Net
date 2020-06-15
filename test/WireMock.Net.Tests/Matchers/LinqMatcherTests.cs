@@ -70,12 +70,13 @@ namespace WireMock.Net.Tests.Matchers
             // Assign
             var input = new JObject
             {
-                { "Id", new JValue(9) },
+                { "IntegerId", new JValue(9) },
+                { "LongId", new JValue(long.MaxValue) },
                 { "Name", new JValue("Test") }
             };
 
             // Act
-            var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+            var matcher = new LinqMatcher("IntegerId > 1 AND LongId > 1 && Name == \"Test\"");
             double match = matcher.IsMatch(input);
 
             // Assert

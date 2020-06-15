@@ -101,5 +101,17 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.AllowBodyForAllHttpMethods"/>
         [PublicAPI]
         public bool? AllowBodyForAllHttpMethods { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>
+        [PublicAPI]
+        public bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.DisableJsonBodyParsing"/>
+        [PublicAPI]
+        public bool? DisableJsonBodyParsing { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.DisableRequestBodyDecompressing"/>
+        [PublicAPI]
+        public bool? DisableRequestBodyDecompressing { get; set; }
     }
 }

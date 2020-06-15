@@ -68,7 +68,7 @@ namespace WireMock.Http
             return client;
         }
 
-        public static async Task<ResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] RequestMessage requestMessage, string url)
+        public static async Task<ResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] RequestMessage requestMessage, string url, bool deserializeJson, bool decompressGzipAndDeflate)
         {
             Check.NotNull(client, nameof(client));
             Check.NotNull(requestMessage, nameof(requestMessage));
@@ -83,7 +83,7 @@ namespace WireMock.Http
             var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
 
             // Create ResponseMessage
-            return await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri);
+            return await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate);
         }
     }
 }

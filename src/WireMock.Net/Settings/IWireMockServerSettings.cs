@@ -137,5 +137,25 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         bool? AllowBodyForAllHttpMethods { get; set; }
+
+        /// <summary>
+        /// Allow only a HttpStatus Code in the response which is defined. (default set to false).
+        /// - false : also null, 0, empty or invalid HttpStatus codes are allowed.
+        /// - true  : only codes defined in <see cref="System.Net.HttpStatusCode"/> are allowed.
+        /// </summary>
+        /// [PublicAPI]
+        bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+        /// <summary>
+        /// Set to true to disable Json deserialization when processing requests. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? DisableJsonBodyParsing { get; set; }
+
+        /// <summary>
+        /// Disable support for GZip and Deflate request body decompression. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? DisableRequestBodyDecompressing { get; set; }
     }
 }

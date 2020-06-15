@@ -34,7 +34,9 @@ namespace WireMock.Settings
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
                 AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
-                AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods")
+                AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods"),
+                AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
+                DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing")
             };
 
             if (logger != null)

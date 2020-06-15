@@ -1,7 +1,10 @@
-﻿using NFluent;
+﻿using System;
+using NFluent;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
@@ -19,10 +22,15 @@ namespace WireMock.Net.Tests.Util
         public async Task BodyParser_Parse_ContentTypeJson(string contentType, string bodyAsJson, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
             // Arrange
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsJson));
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsJson)),
+                ContentType = contentType,
+                DeserializeJson = true
+            };
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -38,10 +46,15 @@ namespace WireMock.Net.Tests.Util
         public async Task BodyParser_Parse_ContentTypeString(string contentType, string bodyAsString, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
             // Arrange
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString)),
+                ContentType = contentType,
+                DeserializeJson = true
+            };
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -52,16 +65,42 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Theory]
-        [InlineData(new byte[] {34, 97, 34}, BodyType.Json)]
-        [InlineData(new byte[] {97}, BodyType.String)]
-        [InlineData(new byte[] {0xFF, 0xD8, 0xFF, 0xE0}, BodyType.Bytes)]
+        [InlineData(new byte[] { 34, 97, 34 }, BodyType.Json)]
+        [InlineData(new byte[] { 97 }, BodyType.String)]
+        [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, BodyType.Bytes)]
         public async Task BodyParser_Parse_DetectedBodyType(byte[] content, BodyType detectedBodyType)
         {
             // arrange
-            var memoryStream = new MemoryStream(content);
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(content),
+                ContentType = null,
+                DeserializeJson = true
+            };
 
             // act
-            var body = await BodyParser.Parse(memoryStream, null);
+            var body = await BodyParser.Parse(bodyParserSettings);
+
+            // assert
+            Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 34, 97, 34 }, BodyType.String)]
+        [InlineData(new byte[] { 97 }, BodyType.String)]
+        [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, BodyType.Bytes)]
+        public async Task BodyParser_Parse_DetectedBodyTypeNoJsonParsing(byte[] content, BodyType detectedBodyType)
+        {
+            // arrange
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(content),
+                ContentType = null,
+                DeserializeJson = false
+            };
+
+            // act
+            var body = await BodyParser.Parse(bodyParserSettings);
 
             // assert
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
@@ -92,10 +131,15 @@ Content-Type: text/html
 
 -----------------------------9051914041544843365972754266--";
 
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(body)),
+                ContentType = contentType,
+                DeserializeJson = true
+            };
 
             // Act
-            var result = await BodyParser.Parse(memoryStream, contentType);
+            var result = await BodyParser.Parse(bodyParserSettings);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.String);
@@ -111,11 +155,15 @@ Content-Type: text/html
             // Arrange
             string contentType = "multipart/form-data";
             string body = char.ConvertFromUtf32(0x1D161); //U+1D161 = MUSICAL SYMBOL SIXTEENTH NOTE
-
-            var memoryStream = new MemoryStream(Encoding.UTF32.GetBytes(body));
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(body)),
+                ContentType = contentType,
+                DeserializeJson = true
+            };
 
             // Act
-            var result = await BodyParser.Parse(memoryStream, contentType);
+            var result = await BodyParser.Parse(bodyParserSettings);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.Bytes);
@@ -126,14 +174,19 @@ Content-Type: text/html
         }
 
         [Theory]
-        [InlineData(null, "hello", BodyType.String, BodyType.Bytes)]
-        public async Task BodyParser_Parse_ContentTypeIsNull(string contentType, string bodyAsString, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
+        [InlineData("hello", BodyType.String, BodyType.Bytes)]
+        public async Task BodyParser_Parse_ContentTypeIsNull(string bodyAsString, BodyType detectedBodyType, BodyType detectedBodyTypeFromContentType)
         {
             // Arrange
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString));
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(Encoding.UTF8.GetBytes(bodyAsString)),
+                ContentType = null,
+                DeserializeJson = true
+            };
 
             // Act
-            var body = await BodyParser.Parse(memoryStream, contentType);
+            var body = await BodyParser.Parse(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -144,11 +197,65 @@ Content-Type: text/html
         }
 
         [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task BodyParser_Parse_ContentEncoding_GZip_And_DecompressGzipAndDeflate_Is_True_Should_Decompress(string compression)
+        {
+            // Arrange
+            var bytes = Encoding.ASCII.GetBytes("0");
+            var compressed = CompressionUtils.Compress(compression, bytes);
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(compressed),
+                ContentType = "text/plain",
+                DeserializeJson = false,
+                ContentEncoding = compression.ToUpperInvariant(),
+                DecompressGZipAndDeflate = true
+            };
+
+            // Act
+            var result = await BodyParser.Parse(bodyParserSettings);
+
+            // Assert
+            result.DetectedBodyType.Should().Be(BodyType.String);
+            result.DetectedBodyTypeFromContentType.Should().Be(BodyType.String);
+            result.BodyAsBytes.Should().BeEquivalentTo(new byte[] { 48 });
+            result.BodyAsJson.Should().BeNull();
+            result.BodyAsString.Should().Be("0");
+            result.DetectedCompression.Should().Be(compression);
+        }
+
+        [Theory]
+        [InlineData("gzip")]
+        [InlineData("deflate")]
+        public async Task BodyParser_Parse_ContentEncoding_GZip_And_DecompressGzipAndDeflate_Is_False_Should_Not_Decompress(string compression)
+        {
+            // Arrange
+            var bytes = Encoding.ASCII.GetBytes(Guid.NewGuid().ToString());
+            var compressed = CompressionUtils.Compress(compression, bytes);
+            var bodyParserSettings = new BodyParserSettings
+            {
+                Stream = new MemoryStream(compressed),
+                ContentType = "text/plain",
+                DeserializeJson = false,
+                ContentEncoding = compression.ToUpperInvariant(),
+                DecompressGZipAndDeflate = false
+            };
+
+            // Act
+            var result = await BodyParser.Parse(bodyParserSettings);
+
+            // Assert
+            result.BodyAsBytes.Should().BeEquivalentTo(compressed);
+            result.DetectedCompression.Should().BeNull();
+        }
+
+        [Theory]
         [InlineData("HEAD", false)]
         [InlineData("GET", false)]
         [InlineData("PUT", true)]
         [InlineData("POST", true)]
-        [InlineData("DELETE", false)]
+        [InlineData("DELETE", true)]
         [InlineData("TRACE", false)]
         [InlineData("OPTIONS", true)]
         [InlineData("CONNECT", false)]

@@ -1,3 +1,72 @@
+# 1.2.4.0 (10 April 2020)
+- [#439](https://github.com/WireMock-Net/WireMock.Net/pull/439) - Add support for GZip and Deflate [feature] contributed by [StefH](https://github.com/StefH)
+- [#444](https://github.com/WireMock-Net/WireMock.Net/pull/444) - Add readme.md + license from mock4net [feature] contributed by [StefH](https://github.com/StefH)
+- [#451](https://github.com/WireMock-Net/WireMock.Net/pull/451) - Update NuGet dependencies (e.g. coverage related) to fix CI-build [feature] contributed by [StefH](https://github.com/StefH)
+- [#452](https://github.com/WireMock-Net/WireMock.Net/pull/452) - Add ValidatedNotNullAttribute (for SonarQube) [refactor] contributed by [StefH](https://github.com/StefH)
+- [#426](https://github.com/WireMock-Net/WireMock.Net/issues/426) - Add support for compressed requests, such as GZIP or DEFLATE [feature]
+
+# 1.2.3.0 (01 April 2020)
+- [#449](https://github.com/WireMock-Net/WireMock.Net/pull/449) - Netstandard21 [feature] contributed by [StefH](https://github.com/StefH)
+- [#447](https://github.com/WireMock-Net/WireMock.Net/issues/447) - Add support for .NET Standard 2.1 / .NET Core 3.1 [feature]
+- [#448](https://github.com/WireMock-Net/WireMock.Net/issues/448) - WireMock.Net is not compatible with Microsoft.VisualStudio.Web.CodeGeneration.Design 3.1.1 [bug]
+
+# 1.2.2.0 (25 March 2020)
+- [#446](https://github.com/WireMock-Net/WireMock.Net/pull/446) - When port is provided: WireMockServer still takes a random port [bug] contributed by [StefH](https://github.com/StefH)
+- [#445](https://github.com/WireMock-Net/WireMock.Net/issues/445) - Port where WireMockServer listens to - v1.2x [bug]
+
+# 1.2.1.0 (17 March 2020)
+- [#442](https://github.com/WireMock-Net/WireMock.Net/pull/442) - Fix Null body in handlebars transformation [bug] contributed by [StefH](https://github.com/StefH)
+
+# 1.2.0.0 (14 March 2020)
+- [#417](https://github.com/WireMock-Net/WireMock.Net/pull/417) - Let the .NET core/standard WebHostBuilder use a random port [bug] contributed by [StefH](https://github.com/StefH)
+- [#422](https://github.com/WireMock-Net/WireMock.Net/pull/422) - AllowOnlyDefinedHttpStatusCodeInResponse [bug] contributed by [StefH](https://github.com/StefH)
+- [#379](https://github.com/WireMock-Net/WireMock.Net/issues/379) - Trusting the self signed certificate to enable SSL on dotnet core [bug]
+- [#420](https://github.com/WireMock-Net/WireMock.Net/issues/420) - Updating to 1.1.6+ breaks tests because new AllowAnyHttpStatusCodeInResponse option defaults to false [bug]
+
+# 1.1.10 (05 March 2020)
+- [#427](https://github.com/WireMock-Net/WireMock.Net/pull/427) - Add UsingOptions, UsingConnect and UsingTrace [feature] contributed by [StefH](https://github.com/StefH)
+- [#434](https://github.com/WireMock-Net/WireMock.Net/pull/434) - Option to disable JSON deserialization [feature] contributed by [sebastianmattar](https://github.com/sebastianmattar)
+- [#435](https://github.com/WireMock-Net/WireMock.Net/pull/435) - Also call HandlebarsRegistrationCallback when using WithCallback(..) [feature] contributed by [StefH](https://github.com/StefH)
+- [#408](https://github.com/WireMock-Net/WireMock.Net/issues/408) - Intermittent threading errors with FindLogEntries [bug]
+- [#433](https://github.com/WireMock-Net/WireMock.Net/issues/433) - HandlebarsRegistrationCallback not fired [feature]
+
+# 1.1.9.0 (25 February 2020)
+- [#431](https://github.com/WireMock-Net/WireMock.Net/pull/431) - Fix LinqMatcher for JSON int64 [bug] contributed by [StefH](https://github.com/StefH)
+- [#425](https://github.com/WireMock-Net/WireMock.Net/issues/425) - Allow 64 bit numbers in JSON [bug]
+
+# 1.1.8.0 (22 February 2020)
+- [#419](https://github.com/WireMock-Net/WireMock.Net/pull/419) - Support multi line wild card matching [bug] contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#421](https://github.com/WireMock-Net/WireMock.Net/pull/421) - Fix: do not return empty matchers array when Func has been used [bug] contributed by [StefH](https://github.com/StefH)
+- [#423](https://github.com/WireMock-Net/WireMock.Net/pull/423) - Fixes for Cookie and Header Reject on Match [bug] contributed by [StefH](https://github.com/StefH)
+- [#424](https://github.com/WireMock-Net/WireMock.Net/pull/424) - Don't return empty dictionary object for response headers in JSON mapping [feature] contributed by [StefH](https://github.com/StefH)
+- [#418](https://github.com/WireMock-Net/WireMock.Net/issues/418) - Body matching fails if body has newline [bug]
+
+# 1.1.7.0 (06 February 2020)
+- [#409](https://github.com/WireMock-Net/WireMock.Net/pull/409) - Admin Delete with mappings in body [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#411](https://github.com/WireMock-Net/WireMock.Net/pull/411) - Improved relative path checking based on file existence [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#413](https://github.com/WireMock-Net/WireMock.Net/pull/413) - Fix new Delete with body missing from IWireMockAdminApi interface contributed by [NoahLerner](https://github.com/NoahLerner)
+- [#414](https://github.com/WireMock-Net/WireMock.Net/pull/414) - Fix logger in StandAlone [bug] contributed by [StefH](https://github.com/StefH)
+- [#412](https://github.com/WireMock-Net/WireMock.Net/issues/412) - WireMock Standalone - null reference exception since settings.Logger [bug]
+
+# 1.1.6.0 (27 January 2020)
+- [#407](https://github.com/WireMock-Net/WireMock.Net/pull/407) - AllowAnyHttpStatusCodeInResponse [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.1.5.0 (25 January 2020)
+- [#405](https://github.com/WireMock-Net/WireMock.Net/pull/405) - Fix logging an Exception Message (linux docker on azure) [bug] contributed by [StefH](https://github.com/StefH)
+- [#406](https://github.com/WireMock-Net/WireMock.Net/pull/406) - Fixed StatusCode = null or &lt; 0 [bug] contributed by [StefH](https://github.com/StefH)
+
+# 1.1.3.0 (22 January 2020)
+- [#403](https://github.com/WireMock-Net/WireMock.Net/pull/403) - Fix for invalid cast exception contributed by [kashifsoofi](https://github.com/kashifsoofi)
+- [#402](https://github.com/WireMock-Net/WireMock.Net/issues/402) - Invalid Cast Exception  [bug]
+
+# 1.1.2.0 (09 January 2020)
+- [#399](https://github.com/WireMock-Net/WireMock.Net/pull/399) - ResponseModel.StatusCode is deserialized as either string or long. [bug] contributed by [vitaliydavydiak](https://github.com/vitaliydavydiak)
+- [#400](https://github.com/WireMock-Net/WireMock.Net/issues/400) - StatusCode not built correctly when loaded from mapping file. [bug]
+
+# 1.1.1.0 (09 January 2020)
+- [#398](https://github.com/WireMock-Net/WireMock.Net/pull/398) - Feature/xpath transformer [feature] contributed by [kashifsoofi](https://github.com/kashifsoofi)
+- [#397](https://github.com/WireMock-Net/WireMock.Net/issues/397) - Question/Feature: Add support for selecting XPath in response template [feature]
+
 # 1.1.0.0 (27 December 2019)
 - [#363](https://github.com/WireMock-Net/WireMock.Net/pull/363) - WireMock.Net version 1.1.x contributed by [StefH](https://github.com/StefH)
 
@@ -26,7 +95,7 @@
 - [#386](https://github.com/WireMock-Net/WireMock.Net/issues/386) - Is transforming contents of XML file supported.? [bug]
 
 # 1.0.38.0 (30 November 2019)
-- [#376](https://github.com/WireMock-Net/WireMock.Net/pull/376) - Support int values for states and scenario naming [feature] contributed by [thewholuver94](https://github.com/thewholuver94)
+- [#376](https://github.com/WireMock-Net/WireMock.Net/pull/376) - Support int values for states and scenario naming [feature] contributed by [NoahLerner](https://github.com/NoahLerner)
 - [#378](https://github.com/WireMock-Net/WireMock.Net/pull/378) - Set handlebars dependency for .net 4.5.1 to fixed value [bug] contributed by [StefH](https://github.com/StefH)
 - [#381](https://github.com/WireMock-Net/WireMock.Net/pull/381) - Use dotnet default development certificate for .NET Core 2.x [feature] contributed by [StefH](https://github.com/StefH)
 - [#377](https://github.com/WireMock-Net/WireMock.Net/issues/377) - Unable to build against .NET 4.5.1 because of Handlebars [bug]

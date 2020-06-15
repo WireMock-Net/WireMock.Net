@@ -1,13 +1,23 @@
+trigger:
+- none
+
 pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
+  buildProjects: '**/src/**/*.csproj'
   buildConfiguration: 'Release'
 
 steps:
-- script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework netcoreapp2.1 --logger trx
-- task: PublishTestResults@2
+- task: DotNetCoreCLI@2
+  displayName: Build Release
   inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+    command: 'build'
+    arguments: /p:Configuration=$(buildConfiguration)
+    projects: $(buildProjects)
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
+  condition: succeeded()
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'

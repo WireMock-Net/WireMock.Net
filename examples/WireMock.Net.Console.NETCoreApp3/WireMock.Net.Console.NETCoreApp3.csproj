@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
+    <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
+    <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="__admin\mappings\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="__admin\mappings\1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="__admin\mappings\array.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
+    <PackageReference Include="Handlebars.Net" Version="1.9.5" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <!--<PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="3.4.0" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings\MyXmlResponse.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
