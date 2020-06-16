@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 using Microsoft.OpenApi.Writers;
 using Newtonsoft.Json.Linq;
+using RamlToOpenApiConverter;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Types;
@@ -15,16 +16,39 @@ using WireMock.Net.OpenApiParser.Utils;
 
 namespace WireMock.Net.OpenApiParser
 {
+    /// <summary>
+    /// Parse a OpenApi/Swagger/V2/V3 or Raml to WireMock MappingModels.
+    /// </summary>
     public class WireMockOpenApiParser : IWireMockOpenApiParser
     {
         private const int ArrayItems = 3;
 
         private readonly OpenApiStreamReader _reader = new OpenApiStreamReader();
 
+        public IEnumerable<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
+        {
+            OpenApiDocument document;
+            if (Path.GetExtension(path).EndsWith("raml", StringComparison.OrdinalIgnoreCase))
+            {
+                diagnostic = new OpenApiDiagnostic();
+                document = new RamlConverter().ConvertToOpenApiDocument(path);
+            }
+            else
+            {
+                var reader = new OpenApiStreamReader();
+                document = reader.Read(File.OpenRead(path), out diagnostic);
+            }
+
+            return FromDocument(document);
+        }
+
         public IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
         {
-            var openApiDocument = _reader.Read(stream, out diagnostic);
+            return FromDocument(_reader.Read(stream, out diagnostic));
+        }
 
+        public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument)
+        {
             return MapPaths(openApiDocument.Paths);
         }
 
@@ -43,11 +67,11 @@ namespace WireMock.Net.OpenApiParser
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
             var response = operation.Responses.FirstOrDefault();
-            var content = response.Value?.Content?.FirstOrDefault().Value;
-            var schema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
-            var example = content?.Example;
+            TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
+            var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
+            var responseExample = responseContent?.Example;
 
-            var body = example != null ? MapOpenApiAnyToJToken(example) : MapSchemaToObject(schema);
+            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) : MapSchemaToObject(responseSchema);
 
             if (int.TryParse(response.Key, out var httpStatusCode))
             {
@@ -66,10 +90,35 @@ namespace WireMock.Net.OpenApiParser
                 Response = new ResponseModel
                 {
                     StatusCode = httpStatusCode,
-                    Headers = MapHeaders(response.Value?.Headers),
+                    Headers = MapHeaders(responseContentType, response.Value?.Headers),
                     BodyAsJson = body
                 }
             };
+        }
+
+        private static bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
+        {
+            openApiMediaType = null;
+            contentType = null;
+
+            if (contents == null || contents.Values.Count == 0)
+            {
+                return false;
+            }
+
+            if (contents.TryGetValue("application/json", out var content))
+            {
+                openApiMediaType = content;
+                contentType = "application/json";
+            }
+            else
+            {
+                var first = contents.FirstOrDefault();
+                openApiMediaType = first.Value;
+                contentType = first.Key;
+            }
+
+            return true;
         }
 
         private static object MapSchemaToObject(OpenApiSchema schema, string name = null)
@@ -178,9 +227,20 @@ namespace WireMock.Net.OpenApiParser
             }
         }
 
-        private static IDictionary<string, object> MapHeaders(IDictionary<string, OpenApiHeader> headers)
+        private static IDictionary<string, object> MapHeaders(string responseContentType, IDictionary<string, OpenApiHeader> headers)
         {
-            var mappedHeaders = headers.ToDictionary(item => item.Key, item => (object)ExampleValueGenerator.GetExampleValue(null));
+            var mappedHeaders = headers.ToDictionary(item => item.Key, item => ExampleValueGenerator.GetExampleValue(null));
+            if (!string.IsNullOrEmpty(responseContentType))
+            {
+                if (!mappedHeaders.ContainsKey("Content-Type"))
+                {
+                    mappedHeaders.Add("Content-Type", responseContentType);
+                }
+                else
+                {
+                    mappedHeaders["Content-Type"] = responseContentType;
+                }
+            }
 
             return mappedHeaders.Keys.Any() ? mappedHeaders : null;
         }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -72,7 +73,7 @@ namespace WireMock.Net.ConsoleApplication
             // server.AllowPartialMapping();
 
             server
-                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
+                .Given(Request.Create().WithPath(p => p.Contains("x") && !p.Contains("example-string")).UsingGet())
                 .AtPriority(4)
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
@@ -268,7 +269,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("hi"));
 
             server
-                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
+                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b != null && b.Contains("e")))
                 .AtPriority(999)
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
