@@ -19,6 +19,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Server
@@ -461,7 +462,7 @@ namespace WireMock.Server
         }
 
         /// <summary>
-        /// Register the MappingModels
+        /// Register the mappings (via <see cref="MappingModel"/>).
         /// </summary>
         /// <param name="mappings">The MappingModels</param>
         [PublicAPI]
@@ -470,6 +471,21 @@ namespace WireMock.Server
             foreach (var mapping in mappings)
             {
                 ConvertMappingAndRegisterAsRespondProvider(mapping, mapping.Guid ?? Guid.NewGuid());
+            }
+        }
+
+
+        /// <summary>
+        /// Register the mappings (via json string).
+        /// </summary>
+        /// <param name="mappings">The mapping(s) as json string.</param>
+        [PublicAPI]
+        public void WithMapping(string mappings)
+        {
+            var mappingModels = DeserializeJsonToArray<MappingModel>(mappings);
+            foreach (var mappingModel in mappingModels)
+            {
+                ConvertMappingAndRegisterAsRespondProvider(mappingModel, mappingModel.Guid ?? Guid.NewGuid());
             }
         }
 

@@ -233,7 +233,7 @@ namespace WireMock.Server
 
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
-                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonUtils.DeserializeObject(value));
+                var mappingModels = DeserializeJsonToArray<MappingModel>(value);
                 foreach (var mappingModel in mappingModels)
                 {
                     if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
@@ -986,6 +986,11 @@ namespace WireMock.Server
 
             var singleResult = ((JObject)value).ToObject<T>();
             return new[] { singleResult };
+        }
+
+        private T[] DeserializeJsonToArray<T>(string value)
+        {
+            return DeserializeObjectToArray<T>(JsonUtils.DeserializeObject(value));
         }
     }
 }
