@@ -8,7 +8,6 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using WireMock.HttpsCertificate;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
@@ -16,7 +15,7 @@ using WireMock.Validation;
 
 namespace WireMock.Owin
 {
-    internal class AspNetCoreSelfHost : IOwinSelfHost
+    internal partial class AspNetCoreSelfHost : IOwinSelfHost
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly IWireMockMiddlewareOptions _options;
@@ -78,31 +77,9 @@ namespace WireMock.Owin
                 })
                 .UseKestrel(options =>
                 {
-                    var urlDetails = _urlOptions.GetDetails();
+                    SetKestrelOptionsLimits(options);
 
-#if NETSTANDARD1_3
-
-                    var urls = urlDetails.Select(u => u.Url);
-                    if (urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
-                    }
-#else
-                    foreach (var detail in urlDetails)
-                    {
-                        if (detail.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                        {
-                            options.Listen(System.Net.IPAddress.Any, detail.Port, listenOptions =>
-                            {
-                                listenOptions.UseHttps(); // PublicCertificateHelper.GetX509Certificate2()
-                            });
-                        }
-                        else
-                        {
-                            options.Listen(System.Net.IPAddress.Any, detail.Port);
-                        }
-                    }
-#endif
+                    SetHttpsAndUrls(options, _urlOptions.GetDetails());
                 })
 
 #if NETSTANDARD1_3
@@ -144,6 +121,7 @@ namespace WireMock.Owin
 #elif NET46
                 _logger.Info("WireMock.Net server using .net 4.6.1 or higher");
 #endif
+
 #if NETSTANDARD1_3
                 return Task.Run(() =>
                 {

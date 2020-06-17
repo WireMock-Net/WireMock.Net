@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -37,6 +36,9 @@ namespace WireMock.Net.ConsoleApplication
     {
         public static void Run()
         {
+            var s = WireMockServer.Start();
+            s.Stop();
+
             string url1 = "http://localhost:9091/";
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
@@ -73,7 +75,7 @@ namespace WireMock.Net.ConsoleApplication
             // server.AllowPartialMapping();
 
             server
-                .Given(Request.Create().WithPath(p => p.Contains("x") && !p.Contains("example-string")).UsingGet())
+                .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
@@ -95,7 +97,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("postmanecho", "post")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com/post" })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://postman-echo.com" })
                 );
 
             server
@@ -269,7 +271,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("hi"));
 
             server
-                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b != null && b.Contains("e")))
+                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
                 .AtPriority(999)
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
@@ -326,7 +328,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/partial").UsingPost().WithBody(new SimMetricsMatcher(new[] { "cat", "dog" })))
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("partial = 200"));
 
-            // http://localhost:8080/trans?start=1000&stop=1&stop=2
+            // http://localhost:9091/trans?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithPath("/trans").UsingGet())
                 .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
@@ -335,7 +337,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Content-Type", "application/json")
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithHeader("xyz_{{request.headers.Postman-Token}}", "token is {{request.headers.Postman-Token}}")
-                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
+                    .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, add={{Math.Add request.query.start.[0] 42}} bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
                     .WithTransformer()
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );

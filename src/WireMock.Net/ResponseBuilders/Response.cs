@@ -343,14 +343,22 @@ namespace WireMock.ResponseBuilders
 
             if (ProxyUrl != null && _httpClientForProxy != null)
             {
+                string RemoveFirstOccurrence(string source, string find)
+                {
+                    int place = source.IndexOf(find, StringComparison.OrdinalIgnoreCase);
+                    return place >= 0 ? source.Remove(place, find.Length) : source;
+                }
+
                 var requestUri = new Uri(requestMessage.Url);
-                var proxyUri = new Uri(ProxyUrl);
-                var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
+
+                // Build the proxy url and skip duplicates
+                string extra = RemoveFirstOccurrence(requestUri.LocalPath.TrimEnd('/'), new Uri(ProxyUrl).LocalPath.TrimEnd('/'));
+                requestMessage.ProxyUrl = ProxyUrl + extra + requestUri.Query;
 
                 return await HttpClientHelper.SendAsync(
-                    _httpClientForProxy, 
+                    _httpClientForProxy,
                     requestMessage,
-                    proxyUriWithRequestPathAndQuery.AbsoluteUri,
+                    requestMessage.ProxyUrl,
                     !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
                     !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
                 );

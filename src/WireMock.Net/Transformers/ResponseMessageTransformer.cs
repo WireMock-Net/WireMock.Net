@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
@@ -106,6 +107,7 @@ namespace WireMock.Transformers
 
             responseMessage.BodyData = new BodyData
             {
+                Encoding = original.BodyData.Encoding,
                 DetectedBodyType = original.BodyData.DetectedBodyType,
                 DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
                 BodyAsJson = jToken
@@ -195,6 +197,7 @@ namespace WireMock.Transformers
 
             responseMessage.BodyData = new BodyData
             {
+                Encoding = original.BodyData.Encoding,
                 DetectedBodyType = original.BodyData.DetectedBodyType,
                 DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
                 BodyAsString = templateBodyAsString(template)

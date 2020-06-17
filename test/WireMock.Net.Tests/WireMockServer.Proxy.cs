@@ -5,7 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NFluent;
+using WireMock.Admin.Mappings;
+using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -50,7 +53,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_proxy_responses()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var server = WireMockServer.Start();
             server
                 .Given(Request.Create().WithPath(path))
@@ -76,7 +79,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -123,7 +126,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -165,7 +168,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -214,7 +217,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -246,7 +249,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -277,7 +280,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_change_absolute_location_header_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var settings = new WireMockServerSettings { AllowPartialMapping = false };
 
             var serverForProxyForwarding = WireMockServer.Start(settings);
@@ -310,7 +313,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_preserve_cookie_header_in_proxied_request()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -379,7 +382,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_set_BodyAsJson_in_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -410,7 +413,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_set_Body_in_multipart_proxied_response()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -440,7 +443,7 @@ namespace WireMock.Net.Tests
         public async Task WireMockServer_Proxy_Should_Not_overrule_AdminMappings()
         {
             // Assign
-            string path = $"/prx_{Guid.NewGuid().ToString()}";
+            string path = $"/prx_{Guid.NewGuid()}";
             var serverForProxyForwarding = WireMockServer.Start();
             serverForProxyForwarding
                 .Given(Request.Create().WithPath(path))
@@ -481,6 +484,38 @@ namespace WireMock.Net.Tests
             // Assert 2
             string content2 = await response2.Content.ReadAsStringAsync();
             Check.That(content2).IsEqualTo("[]");
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_WhenTargetIsNotAvailable_Should_Return_CorrectResponse()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = $"http://error{Guid.NewGuid()}:12345"
+                }
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            var result = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            result.StatusCode.Should().Be(500);
+
+            var content = await result.Content.ReadAsStringAsync();
+            content.Should().Contain("known"); // On Linux it's "Name or service not known". On Windows it's "No such host is known.".
+
+            server.LogEntries.Should().HaveCount(1);
+            ((StatusModel) server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Contain("known");
         }
     }
 }

@@ -9,13 +9,11 @@
     <PackageId>WireMock.Net</PackageId>
     <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
     <RootNamespace>WireMock</RootNamespace>
-    <!--<DebugType>full</DebugType>
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>-->
     <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!--<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!--<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>-->
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>WireMock.Net.snk</AssemblyOriginatorKeyFile>
@@ -53,14 +51,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
+    <PackageReference Include="Handlebars.Net.Helpers" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
@@ -68,14 +66,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="[1.9.0]" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net451' ">
-    <PackageReference Include="Handlebars.Net" Version="1.9.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">

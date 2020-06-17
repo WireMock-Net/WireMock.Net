@@ -24,7 +24,7 @@ namespace WireMock.Transformers
         {
             var handlebars = Handlebars.Create(HandlebarsConfiguration);
 
-            HandlebarsHelpers.Register(handlebars, _fileSystemHandler);
+            WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
 
             _action?.Invoke(handlebars, _fileSystemHandler);
 

@@ -16,7 +16,7 @@ namespace WireMock.Owin
             var list = new List<(string Url, int Port)>();
             if (Urls == null)
             {
-                int port = Port ?? FindFreeTcpPort();
+                int port = Port > 0 ? Port.Value : FindFreeTcpPort();
                 list.Add(($"{(UseSSL ? "https" : "http")}://localhost:{port}", port));
             }
             else

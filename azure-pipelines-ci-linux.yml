@@ -6,7 +6,7 @@ variables:
 
 steps:
 - script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework netcoreapp2.1 --logger trx
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework netcoreapp3.1 --logger trx
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest

@@ -1,3 +1,40 @@
+# 1.2.13.0 (24 May 2020)
+- [#475](https://github.com/WireMock-Net/WireMock.Net/pull/475) - Fix Limits.KeepAliveTimeout &amp; Limits.RequestHeadersTimeout [bug] contributed by [StefH](https://github.com/StefH)
+- [#474](https://github.com/WireMock-Net/WireMock.Net/issues/474) - Performance issue with multiple httpclients (since version 1.2.10) [bug]
+
+# 1.2.12 (23 May 2020)
+- [#472](https://github.com/WireMock-Net/WireMock.Net/pull/472) - Create new .sln contributed by [StefH](https://github.com/StefH)
+- [#473](https://github.com/WireMock-Net/WireMock.Net/pull/473) - Fixed Proxy when using MultipartForm with byte[] [bug] contributed by [StefH](https://github.com/StefH)
+- [#468](https://github.com/WireMock-Net/WireMock.Net/issues/468) - Proxy mode: Incorrect handling of multipart requests [bug]
+
+# 1.2.11.0 (18 May 2020)
+- [#469](https://github.com/WireMock-Net/WireMock.Net/pull/469) - Fix unhandled exception when target is unavailable [bug] contributed by [StefH](https://github.com/StefH)
+- [#467](https://github.com/WireMock-Net/WireMock.Net/issues/467) - Proxy mode: Unhandled exception when target is not working [bug]
+
+# 1.2.10 (17 May 2020)
+- [#456](https://github.com/WireMock-Net/WireMock.Net/pull/456) - Include Handlebars.Net.Helpers project [feature] contributed by [StefH](https://github.com/StefH)
+- [#457](https://github.com/WireMock-Net/WireMock.Net/pull/457) - Kestrel Options Limits [bug] contributed by [StefH](https://github.com/StefH)
+- [#455](https://github.com/WireMock-Net/WireMock.Net/issues/455) - There is no option to increase body size while proxying [bug]
+
+# 1.2.9.0 (14 May 2020)
+- [#465](https://github.com/WireMock-Net/WireMock.Net/pull/465) - Fix method ResetMappingsAsync in the RestEase-AdminApi [bug] contributed by [StefH](https://github.com/StefH)
+- [#464](https://github.com/WireMock-Net/WireMock.Net/issues/464) - RestClient Admin API Metadata Base Path Duplication [bug]
+
+# 1.2.8.0 (04 May 2020)
+- [#463](https://github.com/WireMock-Net/WireMock.Net/pull/463) - GH161: Fix SourceLink support [bug] contributed by [gitfool](https://github.com/gitfool)
+
+# 1.2.7.0 (30 April 2020)
+- [#461](https://github.com/WireMock-Net/WireMock.Net/pull/461) - Support Path in ProxyUrl contributed by [StefH](https://github.com/StefH)
+- [#459](https://github.com/WireMock-Net/WireMock.Net/issues/459) - When respond with proxy requestMessage.Url is used, not AbsoluteUrl [bug]
+
+# 1.2.6.0 (29 April 2020)
+- [#460](https://github.com/WireMock-Net/WireMock.Net/pull/460) - When using ResponseMessageTransformer : keep BodyEncoding [bug] contributed by [StefH](https://github.com/StefH)
+- [#458](https://github.com/WireMock-Net/WireMock.Net/issues/458) - Response BodyAsString loses BodyData.Encoding when UseTransformer = true [bug]
+
+# 1.2.5.0 (17 April 2020)
+- [#454](https://github.com/WireMock-Net/WireMock.Net/pull/454) - Fix port = 0 for net452 [bug] contributed by [StefH](https://github.com/StefH)
+- [#453](https://github.com/WireMock-Net/WireMock.Net/issues/453) - MockServer not starting  [bug]
+
 # 1.2.4.0 (10 April 2020)
 - [#439](https://github.com/WireMock-Net/WireMock.Net/pull/439) - Add support for GZip and Deflate [feature] contributed by [StefH](https://github.com/StefH)
 - [#444](https://github.com/WireMock-Net/WireMock.Net/pull/444) - Add readme.md + license from mock4net [feature] contributed by [StefH](https://github.com/StefH)

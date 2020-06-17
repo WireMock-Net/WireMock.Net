@@ -9,7 +9,7 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsJsonPath
+    internal static class HandlebarsJsonPath
     {
         public static void Register(IHandlebars handlebarsContext)
         {

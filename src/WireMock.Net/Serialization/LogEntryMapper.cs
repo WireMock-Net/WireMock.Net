@@ -2,9 +2,8 @@
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
-using WireMock.Types;
 using WireMock.ResponseBuilders;
-using WireMock.Util;
+using WireMock.Types;
 
 namespace WireMock.Serialization
 {
@@ -20,6 +19,7 @@ namespace WireMock.Serialization
                 AbsolutePath = logEntry.RequestMessage.AbsolutePath,
                 Url = logEntry.RequestMessage.Url,
                 AbsoluteUrl = logEntry.RequestMessage.AbsoluteUrl,
+                ProxyUrl = logEntry.RequestMessage.ProxyUrl,
                 Query = logEntry.RequestMessage.Query,
                 Method = logEntry.RequestMessage.Method,
                 Headers = logEntry.RequestMessage.Headers,

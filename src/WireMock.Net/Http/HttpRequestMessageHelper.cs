@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Types;
 using WireMock.Validation;
 
@@ -29,7 +29,7 @@ namespace WireMock.Http
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Bytes:
-                    httpRequestMessage.Content = new ByteArrayContent(requestMessage.BodyData.BodyAsBytes);
+                    httpRequestMessage.Content = ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes, contentType);
                     break;
 
                 case BodyType.Json:

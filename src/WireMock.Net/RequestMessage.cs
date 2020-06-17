@@ -33,6 +33,11 @@ namespace WireMock
         public string AbsoluteUrl { get; }
 
         /// <summary>
+        /// The ProxyUrl (if a proxy is used).
+        /// </summary>
+        public string ProxyUrl { get; set; }
+
+        /// <summary>
         /// Gets the DateTime.
         /// </summary>
         public DateTime DateTime { get; set; }

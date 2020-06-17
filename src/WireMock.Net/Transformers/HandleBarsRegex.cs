@@ -7,7 +7,7 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsRegex
+    internal static class HandlebarsRegex
     {
         public static void Register(IHandlebars handlebarsContext)
         {

@@ -5,7 +5,7 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal static class HandleBarsXeger
+    internal static class HandlebarsXeger
     {
         public static void Register(IHandlebars handlebarsContext)
         {
