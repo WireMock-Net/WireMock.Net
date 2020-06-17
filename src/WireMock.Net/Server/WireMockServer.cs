@@ -19,7 +19,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
-using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Server
