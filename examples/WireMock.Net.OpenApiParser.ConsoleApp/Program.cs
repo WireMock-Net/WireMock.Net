@@ -18,8 +18,8 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
             IWireMockOpenApiParser parser = new WireMockOpenApiParser();
 
             var petStoreModels = parser.FromStream(File.OpenRead("petstore-openapi3.json"), out OpenApiDiagnostic diagnostic1);
-            string petStoreJson = JsonConvert.SerializeObject(petStoreModels, Settings);
-            File.WriteAllText("../../../wiremock-petstore-openapi3.json", petStoreJson);
+            //string petStoreJson = JsonConvert.SerializeObject(petStoreModels, Settings);
+            // File.WriteAllText("../../../wiremock-petstore-openapi3.json", petStoreJson);
 
             Run.RunServer(petStoreModels);
 
