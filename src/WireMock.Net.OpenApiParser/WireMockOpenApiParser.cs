@@ -182,7 +182,7 @@ namespace WireMock.Net.OpenApiParser
                         }
                         else
                         {
-                            bool propertyIsNullable = openApiSchema.Nullable || openApiSchema.TryGetXNullable(out bool x) && x;
+                            bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
 
                             propertyAsJObject.Add(new JProperty(propertyName, ExampleValueGenerator.GetExampleValue(openApiSchema)));
                         }

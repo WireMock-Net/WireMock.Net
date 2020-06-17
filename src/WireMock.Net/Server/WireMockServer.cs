@@ -474,7 +474,6 @@ namespace WireMock.Server
             }
         }
 
-
         /// <summary>
         /// Register the mappings (via json string).
         /// </summary>
