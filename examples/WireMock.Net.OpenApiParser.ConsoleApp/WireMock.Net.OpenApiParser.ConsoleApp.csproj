@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
   </ItemGroup>
 
   <ItemGroup>

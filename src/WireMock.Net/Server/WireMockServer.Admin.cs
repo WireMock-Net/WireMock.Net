@@ -238,11 +238,11 @@ namespace WireMock.Server
                 {
                     if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
                     {
-                        DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+                        ConvertMappingAndRegisterAsRespondProvider(mappingModel, guidFromFilename, path);
                     }
                     else
                     {
-                        DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+                        ConvertMappingAndRegisterAsRespondProvider(mappingModel, null, path);
                     }
                 }
 
@@ -409,7 +409,7 @@ namespace WireMock.Server
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
-            Guid? guidFromPut = DeserializeAndAddOrUpdateMapping(mappingModel, guid);
+            Guid? guidFromPut = ConvertMappingAndRegisterAsRespondProvider(mappingModel, guid);
 
             return ResponseMessageBuilder.Create("Mapping added or updated", 200, guidFromPut);
         }
@@ -484,13 +484,13 @@ namespace WireMock.Server
                 var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
                 if (mappingModels.Length == 1)
                 {
-                    Guid? guid = DeserializeAndAddOrUpdateMapping(mappingModels[0]);
+                    Guid? guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
                     return ResponseMessageBuilder.Create("Mapping added", 201, guid);
                 }
 
                 foreach (var mappingModel in mappingModels)
                 {
-                    DeserializeAndAddOrUpdateMapping(mappingModel);
+                    ConvertMappingAndRegisterAsRespondProvider(mappingModel);
                 }
 
                 return ResponseMessageBuilder.Create("Mappings added", 201);
@@ -507,7 +507,7 @@ namespace WireMock.Server
             }
         }
 
-        private Guid? DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
+        private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
             Check.NotNull(mappingModel, nameof(mappingModel));
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));

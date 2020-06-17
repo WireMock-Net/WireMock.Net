@@ -461,6 +461,19 @@ namespace WireMock.Server
         }
 
         /// <summary>
+        /// Register the MappingModels
+        /// </summary>
+        /// <param name="mappings">The MappingModels</param>
+        [PublicAPI]
+        public void WithMappingModel(params MappingModel[] mappings)
+        {
+            foreach (var mapping in mappings)
+            {
+                ConvertMappingAndRegisterAsRespondProvider(mapping, mapping.Guid ?? Guid.NewGuid());
+            }
+        }
+
+        /// <summary>
         /// The given.
         /// </summary>
         /// <param name="requestMatcher">The request matcher.</param>

@@ -21,6 +21,8 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
             string petStoreJson = JsonConvert.SerializeObject(petStoreModels, Settings);
             File.WriteAllText("../../../wiremock-petstore-openapi3.json", petStoreJson);
 
+            Run.RunServer(petStoreModels);
+
             //var mappingModels2 = parser.FromStream(File.OpenRead("infura.yaml"), out OpenApiDiagnostic diagnostic2);
             //Console.WriteLine(JsonConvert.SerializeObject(diagnostic2, Settings));
 
