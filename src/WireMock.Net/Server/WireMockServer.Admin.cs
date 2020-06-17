@@ -113,10 +113,7 @@ namespace WireMock.Server
         #endregion
 
         #region StaticMappings
-        /// <summary>
-        /// Saves the static mappings.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.SaveStaticMappings" />
         [PublicAPI]
         public void SaveStaticMappings([CanBeNull] string folder = null)
         {
@@ -126,10 +123,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Reads the static mappings from a folder.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
         [PublicAPI]
         public void ReadStaticMappings([CanBeNull] string folder = null)
         {
@@ -159,10 +153,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Watches the static mappings for changes.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public void WatchStaticMappings([CanBeNull] string folder = null)
         {
@@ -220,10 +211,7 @@ namespace WireMock.Server
             watcher.EnableRaisingEvents = true;
         }
 
-        /// <summary>
-        /// Reads a static mapping file and adds or updates the mapping.
-        /// </summary>
-        /// <param name="path">The path.</param>
+        /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
         {

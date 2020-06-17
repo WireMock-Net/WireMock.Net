@@ -15,13 +15,15 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
         static void Main(string[] args)
         {
-            IWireMockOpenApiParser parser = new WireMockOpenApiParser();
+            Run.RunServer("petstore-openapi3.json");
 
-            var petStoreModels = parser.FromStream(File.OpenRead("petstore-openapi3.json"), out OpenApiDiagnostic diagnostic1);
+            //IWireMockOpenApiParser parser = new WireMockOpenApiParser();
+
+            //var petStoreModels = parser.FromStream(File.OpenRead("petstore-openapi3.json"), out OpenApiDiagnostic diagnostic1);
             //string petStoreJson = JsonConvert.SerializeObject(petStoreModels, Settings);
             // File.WriteAllText("../../../wiremock-petstore-openapi3.json", petStoreJson);
 
-            Run.RunServer(petStoreModels);
+            //Run.RunServer(petStoreModels);
 
             //var mappingModels2 = parser.FromStream(File.OpenRead("infura.yaml"), out OpenApiDiagnostic diagnostic2);
             //Console.WriteLine(JsonConvert.SerializeObject(diagnostic2, Settings));
