@@ -28,7 +28,7 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
             server.SetBasicAuthentication("a", "b");
 
-            server.WithMappingModel(mappings.ToArray());
+            server.WithMapping(mappings.ToArray());
 
             Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();

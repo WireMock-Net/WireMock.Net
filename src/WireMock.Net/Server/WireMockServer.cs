@@ -465,7 +465,7 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="mappings">The MappingModels</param>
         [PublicAPI]
-        public void WithMappingModel(params MappingModel[] mappings)
+        public void WithMapping(params MappingModel[] mappings)
         {
             foreach (var mapping in mappings)
             {
