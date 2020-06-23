@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -25,6 +26,8 @@ namespace WireMock.Net.OpenApiParser
 
         private readonly OpenApiStreamReader _reader = new OpenApiStreamReader();
 
+        /// <inheritdoc cref="IWireMockOpenApiParser.FromFile" />
+        [PublicAPI]
         public IEnumerable<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
         {
             OpenApiDocument document;
@@ -42,11 +45,15 @@ namespace WireMock.Net.OpenApiParser
             return FromDocument(document);
         }
 
+        /// <inheritdoc cref="IWireMockOpenApiParser.FromStream" />
+        [PublicAPI]
         public IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
         {
             return FromDocument(_reader.Read(stream, out diagnostic));
         }
 
+        /// <inheritdoc cref="IWireMockOpenApiParser.FromDocument" />
+        [PublicAPI]
         public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument)
         {
             return MapPaths(openApiDocument.Paths);
