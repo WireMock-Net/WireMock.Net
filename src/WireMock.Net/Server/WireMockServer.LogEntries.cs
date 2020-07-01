@@ -13,9 +13,7 @@ namespace WireMock.Server
 {
     public partial class WireMockServer
     {
-        /// <summary>
-        /// Occurs when [log entries changed].
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.LogEntriesChanged" />
         [PublicAPI]
         public event NotifyCollectionChangedEventHandler LogEntriesChanged
         {
@@ -70,19 +68,14 @@ namespace WireMock.Server
             return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());
         }
 
-        /// <summary>
-        /// Resets the LogEntries.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.ResetLogEntries" />
         [PublicAPI]
         public void ResetLogEntries()
         {
             _options.LogEntries.Clear();
         }
 
-        /// <summary>
-        /// Deletes a LogEntry.
-        /// </summary>
-        /// <param name="guid">The unique identifier.</param>
+        /// <inheritdoc cref="IWireMockServer.DeleteLogEntry" />
         [PublicAPI]
         public bool DeleteLogEntry(Guid guid)
         {

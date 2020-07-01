@@ -113,10 +113,7 @@ namespace WireMock.Server
         #endregion
 
         #region StaticMappings
-        /// <summary>
-        /// Saves the static mappings.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.SaveStaticMappings" />
         [PublicAPI]
         public void SaveStaticMappings([CanBeNull] string folder = null)
         {
@@ -126,10 +123,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Reads the static mappings from a folder.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
         [PublicAPI]
         public void ReadStaticMappings([CanBeNull] string folder = null)
         {
@@ -159,10 +153,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Watches the static mappings for changes.
-        /// </summary>
-        /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
+        /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public void WatchStaticMappings([CanBeNull] string folder = null)
         {
@@ -220,10 +211,7 @@ namespace WireMock.Server
             watcher.EnableRaisingEvents = true;
         }
 
-        /// <summary>
-        /// Reads a static mapping file and adds or updates the mapping.
-        /// </summary>
-        /// <param name="path">The path.</param>
+        /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
         {
@@ -233,16 +221,16 @@ namespace WireMock.Server
 
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
-                var mappingModels = DeserializeObjectToArray<MappingModel>(JsonUtils.DeserializeObject(value));
+                var mappingModels = DeserializeJsonToArray<MappingModel>(value);
                 foreach (var mappingModel in mappingModels)
                 {
                     if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
                     {
-                        DeserializeAndAddOrUpdateMapping(mappingModel, guidFromFilename, path);
+                        ConvertMappingAndRegisterAsRespondProvider(mappingModel, guidFromFilename, path);
                     }
                     else
                     {
-                        DeserializeAndAddOrUpdateMapping(mappingModel, null, path);
+                        ConvertMappingAndRegisterAsRespondProvider(mappingModel, null, path);
                     }
                 }
 
@@ -409,7 +397,7 @@ namespace WireMock.Server
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
-            Guid? guidFromPut = DeserializeAndAddOrUpdateMapping(mappingModel, guid);
+            Guid? guidFromPut = ConvertMappingAndRegisterAsRespondProvider(mappingModel, guid);
 
             return ResponseMessageBuilder.Create("Mapping added or updated", 200, guidFromPut);
         }
@@ -484,13 +472,13 @@ namespace WireMock.Server
                 var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
                 if (mappingModels.Length == 1)
                 {
-                    Guid? guid = DeserializeAndAddOrUpdateMapping(mappingModels[0]);
+                    Guid? guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
                     return ResponseMessageBuilder.Create("Mapping added", 201, guid);
                 }
 
                 foreach (var mappingModel in mappingModels)
                 {
-                    DeserializeAndAddOrUpdateMapping(mappingModel);
+                    ConvertMappingAndRegisterAsRespondProvider(mappingModel);
                 }
 
                 return ResponseMessageBuilder.Create("Mappings added", 201);
@@ -507,7 +495,7 @@ namespace WireMock.Server
             }
         }
 
-        private Guid? DeserializeAndAddOrUpdateMapping(MappingModel mappingModel, Guid? guid = null, string path = null)
+        private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
             Check.NotNull(mappingModel, nameof(mappingModel));
             Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
@@ -986,6 +974,11 @@ namespace WireMock.Server
 
             var singleResult = ((JObject)value).ToObject<T>();
             return new[] { singleResult };
+        }
+
+        private T[] DeserializeJsonToArray<T>(string value)
+        {
+            return DeserializeObjectToArray<T>(JsonUtils.DeserializeObject(value));
         }
     }
 }

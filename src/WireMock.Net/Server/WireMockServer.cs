@@ -26,7 +26,7 @@ namespace WireMock.Server
     /// <summary>
     /// The fluent mock server.
     /// </summary>
-    public partial class WireMockServer : IDisposable
+    public partial class WireMockServer : IWireMockServer
     {
         private const int ServerStartDelayInMs = 100;
 
@@ -36,21 +36,15 @@ namespace WireMock.Server
         private readonly MappingConverter _mappingConverter;
         private readonly MatcherMapper _matcherMapper;
 
-        /// <summary>
-        /// Gets a value indicating whether this server is started.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.IsStarted" />
         [PublicAPI]
         public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
 
-        /// <summary>
-        /// Gets the ports.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.Ports" />
         [PublicAPI]
         public List<int> Ports { get; }
 
-        /// <summary>
-        /// Gets the urls.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.Urls" />
         [PublicAPI]
         public string[] Urls { get; }
 
@@ -60,9 +54,7 @@ namespace WireMock.Server
         [PublicAPI]
         public IEnumerable<IMapping> Mappings => _options.Mappings.Values.ToArray();
 
-        /// <summary>
-        /// Gets the mappings as MappingModels.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.MappingModels" />
         [PublicAPI]
         public IEnumerable<MappingModel> MappingModels => ToMappingModels();
 
@@ -97,7 +89,7 @@ namespace WireMock.Server
 
         #region Start/Stop
         /// <summary>
-        /// Starts the specified settings.
+        /// Starts this WireMockServer with the specified settings.
         /// </summary>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <returns>The <see cref="WireMockServer"/>.</returns>
@@ -318,9 +310,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Stop this server.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.Stop" />
         [PublicAPI]
         public void Stop()
         {
@@ -329,9 +319,7 @@ namespace WireMock.Server
         }
         #endregion
 
-        /// <summary>
-        /// Adds the catch all mapping.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.AddCatchAllMapping" />
         [PublicAPI]
         public void AddCatchAllMapping()
         {
@@ -341,9 +329,7 @@ namespace WireMock.Server
                 .RespondWith(new DynamicResponseProvider(request => ResponseMessageBuilder.Create("No matching mapping found", 404)));
         }
 
-        /// <summary>
-        /// Resets LogEntries and Mappings.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.Reset" />
         [PublicAPI]
         public void Reset()
         {
@@ -352,9 +338,7 @@ namespace WireMock.Server
             ResetMappings();
         }
 
-        /// <summary>
-        /// Resets the Mappings.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.ResetMappings" />
         [PublicAPI]
         public void ResetMappings()
         {
@@ -364,10 +348,7 @@ namespace WireMock.Server
             }
         }
 
-        /// <summary>
-        /// Deletes the mapping.
-        /// </summary>
-        /// <param name="guid">The unique identifier.</param>
+        /// <inheritdoc cref="IWireMockServer.DeleteMapping" />
         [PublicAPI]
         public bool DeleteMapping(Guid guid)
         {
@@ -387,19 +368,14 @@ namespace WireMock.Server
             return DeleteMapping(mapping.Key);
         }
 
-        /// <summary>
-        /// The add request processing delay.
-        /// </summary>
-        /// <param name="delay">The delay.</param>
+        /// <inheritdoc cref="IWireMockServer.AddGlobalProcessingDelay" />
         [PublicAPI]
         public void AddGlobalProcessingDelay(TimeSpan delay)
         {
             _options.RequestProcessingDelay = delay;
         }
 
-        /// <summary>
-        /// Allows the partial mapping.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.AllowPartialMapping" />
         [PublicAPI]
         public void AllowPartialMapping(bool allow = true)
         {
@@ -407,11 +383,7 @@ namespace WireMock.Server
             _options.AllowPartialMapping = allow;
         }
 
-        /// <summary>
-        /// Sets the basic authentication.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
+        /// <inheritdoc cref="IWireMockServer.SetBasicAuthentication" />
         [PublicAPI]
         public void SetBasicAuthentication([NotNull] string username, [NotNull] string password)
         {
@@ -422,42 +394,57 @@ namespace WireMock.Server
             _options.AuthorizationMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, "^(?i)BASIC " + authorization + "$");
         }
 
-        /// <summary>
-        /// Removes the basic authentication.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.RemoveBasicAuthentication" />
         [PublicAPI]
         public void RemoveBasicAuthentication()
         {
             _options.AuthorizationMatcher = null;
         }
 
-        /// <summary>
-        /// Sets the maximum RequestLog count.
-        /// </summary>
-        /// <param name="maxRequestLogCount">The maximum RequestLog count.</param>
+        /// <inheritdoc cref="IWireMockServer.SetMaxRequestLogCount" />
         [PublicAPI]
         public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
         {
             _options.MaxRequestLogCount = maxRequestLogCount;
         }
 
-        /// <summary>
-        /// Sets RequestLog expiration in hours.
-        /// </summary>
-        /// <param name="requestLogExpirationDuration">The RequestLog expiration in hours.</param>
+        /// <inheritdoc cref="IWireMockServer.SetRequestLogExpirationDuration" />
         [PublicAPI]
         public void SetRequestLogExpirationDuration([CanBeNull] int? requestLogExpirationDuration)
         {
             _options.RequestLogExpirationDuration = requestLogExpirationDuration;
         }
 
-        /// <summary>
-        /// Resets the Scenarios.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.ResetScenarios" />
         [PublicAPI]
         public void ResetScenarios()
         {
             _options.Scenarios.Clear();
+        }
+        
+        /// <inheritdoc cref="IWireMockServer.WithMapping(MappingModel[])" />
+        [PublicAPI]
+        public IWireMockServer WithMapping(params MappingModel[] mappings)
+        {
+            foreach (var mapping in mappings)
+            {
+                ConvertMappingAndRegisterAsRespondProvider(mapping, mapping.Guid ?? Guid.NewGuid());
+            }
+
+            return this;
+        }
+
+        /// <inheritdoc cref="IWireMockServer.WithMapping(string)" />
+        [PublicAPI]
+        public IWireMockServer WithMapping(string mappings)
+        {
+            var mappingModels = DeserializeJsonToArray<MappingModel>(mappings);
+            foreach (var mappingModel in mappingModels)
+            {
+                ConvertMappingAndRegisterAsRespondProvider(mappingModel, mappingModel.Guid ?? Guid.NewGuid());
+            }
+
+            return this;
         }
 
         /// <summary>

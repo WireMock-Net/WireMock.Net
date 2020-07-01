@@ -1,0 +1,602 @@
+[
+  {
+    "Guid": "532889c2-f84d-4dc8-b847-9ea2c6aca7d5",
+    "Request": {
+      "Path": "/pet",
+      "Methods": [
+        "PUT"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "name": "example-string",
+        "category": {
+          "id": 42,
+          "name": "example-string"
+        },
+        "photoUrls": "example-string",
+        "tags": "example-string",
+        "status": "example-string"
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "6e8cd307-28aa-411f-a7df-3a197a7a53b1",
+    "Request": {
+      "Path": "/pet",
+      "Methods": [
+        "POST"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "name": "example-string",
+        "category": {
+          "id": 42,
+          "name": "example-string"
+        },
+        "photoUrls": "example-string",
+        "tags": "example-string",
+        "status": "example-string"
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "edf4cf89-2bfb-4207-bb97-d739834319bb",
+    "Request": {
+      "Path": "/pet/findByStatus",
+      "Methods": [
+        "GET"
+      ],
+      "Params": [
+        {
+          "Name": "status",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        }
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": [
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        },
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        },
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        }
+      ],
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "8c7a6324-1108-4df6-8fd6-53e062222724",
+    "Request": {
+      "Path": "/pet/findByTags",
+      "Methods": [
+        "GET"
+      ],
+      "Params": [
+        {
+          "Name": "tags",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        }
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": [
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        },
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        },
+        {
+          "id": 42,
+          "name": "example-string",
+          "category": {
+            "id": 42,
+            "name": "example-string"
+          },
+          "photoUrls": [
+            "example-string",
+            "example-string",
+            "example-string"
+          ],
+          "tags": [
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            },
+            {
+              "id": 42,
+              "name": "example-string"
+            }
+          ],
+          "status": "example-string"
+        }
+      ],
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "2335189b-89f0-4559-a980-7930a9543df8",
+    "Request": {
+      "Path": "/pet/42",
+      "Methods": [
+        "GET"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "name": "example-string",
+        "category": {
+          "id": 42,
+          "name": "example-string"
+        },
+        "photoUrls": "example-string",
+        "tags": "example-string",
+        "status": "example-string"
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "7d3ca67b-a4eb-4108-8f3c-9ba63b42e6d4",
+    "Request": {
+      "Path": "/pet/42",
+      "Methods": [
+        "POST"
+      ],
+      "Params": [
+        {
+          "Name": "name",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        },
+        {
+          "Name": "status",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        }
+      ]
+    },
+    "Response": {
+      "StatusCode": 200
+    }
+  },
+  {
+    "Guid": "96e43f42-deb0-4dd7-a137-3f69eb3eb884",
+    "Request": {
+      "Path": "/pet/42",
+      "Methods": [
+        "DELETE"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200
+    }
+  },
+  {
+    "Guid": "ba7719dc-25a0-4481-b013-ed3bdf095472",
+    "Request": {
+      "Path": "/pet/42/uploadImage",
+      "Methods": [
+        "POST"
+      ],
+      "Params": [
+        {
+          "Name": "additionalMetadata",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        }
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "code": 42,
+        "type": "example-string",
+        "message": "example-string"
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "79f902a1-797e-4edd-ad30-91fcbe6ae065",
+    "Request": {
+      "Path": "/store/inventory",
+      "Methods": [
+        "GET"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {},
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "65abf25e-30cf-483e-b1ef-333095e13e9b",
+    "Request": {
+      "Path": "/store/order",
+      "Methods": [
+        "POST"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "petId": 42,
+        "quantity": 42,
+        "shipDate": "2020-06-17T09:56:32.715+00:00",
+        "status": "example-string",
+        "complete": true
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "5f0eba3c-1bda-48f9-a554-042a4b9f0cb6",
+    "Request": {
+      "Path": "/store/order/42",
+      "Methods": [
+        "GET"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "petId": 42,
+        "quantity": 42,
+        "shipDate": "2020-06-17T09:56:32.716+00:00",
+        "status": "example-string",
+        "complete": true
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "55307736-9c16-42be-a1a4-723c01f3502a",
+    "Request": {
+      "Path": "/store/order/42",
+      "Methods": [
+        "DELETE"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200
+    }
+  },
+  {
+    "Guid": "6c3be046-6880-414e-bbe5-0f57e901b96c",
+    "Request": {
+      "Path": "/user",
+      "Methods": [
+        "POST"
+      ]
+    },
+    "Response": {
+      "StatusCode": 0,
+      "BodyAsJson": {
+        "id": 42,
+        "username": "example-string",
+        "firstName": "example-string",
+        "lastName": "example-string",
+        "email": "example-string",
+        "password": "example-string",
+        "phone": "example-string",
+        "userStatus": 42
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "e973fb9b-b596-4605-abd1-bd99fb718b58",
+    "Request": {
+      "Path": "/user/createWithList",
+      "Methods": [
+        "POST"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "username": "example-string",
+        "firstName": "example-string",
+        "lastName": "example-string",
+        "email": "example-string",
+        "password": "example-string",
+        "phone": "example-string",
+        "userStatus": 42
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "2d1fd4ed-e186-42d4-b2ea-5cc5cd46e931",
+    "Request": {
+      "Path": "/user/login",
+      "Methods": [
+        "GET"
+      ],
+      "Params": [
+        {
+          "Name": "username",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        },
+        {
+          "Name": "password",
+          "Matchers": [
+            {
+              "Name": "ExactMatcher",
+              "Pattern": "example-string"
+            }
+          ]
+        }
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": "example-string",
+      "Headers": {
+        "X-Rate-Limit": "example-string",
+        "X-Expires-After": "example-string",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "916e527a-36cc-44fb-983f-16e3a5eb2e4c",
+    "Request": {
+      "Path": "/user/logout",
+      "Methods": [
+        "GET"
+      ]
+    },
+    "Response": {
+      "StatusCode": 0
+    }
+  },
+  {
+    "Guid": "b4a95c37-df9e-4844-8b46-3a84fce23ce2",
+    "Request": {
+      "Path": "/user/example-string",
+      "Methods": [
+        "GET"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200,
+      "BodyAsJson": {
+        "id": 42,
+        "username": "example-string",
+        "firstName": "example-string",
+        "lastName": "example-string",
+        "email": "example-string",
+        "password": "example-string",
+        "phone": "example-string",
+        "userStatus": 42
+      },
+      "Headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "Guid": "e6e77a13-f470-4543-bbff-483a4d7454b3",
+    "Request": {
+      "Path": "/user/example-string",
+      "Methods": [
+        "PUT"
+      ]
+    },
+    "Response": {
+      "StatusCode": 0
+    }
+  },
+  {
+    "Guid": "c371d65b-896a-4782-bde5-00af37e401f2",
+    "Request": {
+      "Path": "/user/example-string",
+      "Methods": [
+        "DELETE"
+      ]
+    },
+    "Response": {
+      "StatusCode": 200
+    }
+  }
+]

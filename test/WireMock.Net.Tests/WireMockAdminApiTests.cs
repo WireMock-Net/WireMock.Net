@@ -12,7 +12,6 @@ using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
-using WireMock.Matchers;
 using WireMock.Models;
 using WireMock.Server;
 using WireMock.Settings;

@@ -1,0 +1,337 @@
+﻿swagger: "2.0"
+info:
+  version: 1.0.0
+  title: "Infura API"
+  description: APIs for the Ethereum community by the Infura team, a project of ConsenSys
+  contact:
+    name: Infura Team
+    email: infura@infura.io
+    url: https://infura.io
+host: api.infura.io
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/jsonrpc/{network}/methods:
+    get:
+      description: |
+        The JSON-RPC methods supported by the `/v1/jsonrpc/{network}/{method}` (GET) and `/v1/jsonrpc/{network}` (POST) endpoints.
+      parameters:
+        - name: network
+          in: path
+          description: Ethereum network in lowercase
+          required: true
+          type: string
+          enum:
+            - mainnet
+            - ropsten
+            - kovan
+            - rinkeby
+      responses:
+        200:
+          description: Methods response
+          schema:
+            $ref: '#/definitions/MethodsResponse'
+        500:
+          description: Server error
+  /v1/jsonrpc/{network}/{method}:
+    get:
+      description: |
+        A request using an "HTTP GET-compatible" (non-state-changing) JSON-RPC method. Most Ethereum JSON-RPC methods can be described in this way, since they query the blockchain for various pieces of information. Use the `/v1/jsonrpc/{network}/methods` endpoint to get the list of permitted methods.
+      parameters:
+        - name: network
+          in: path
+          description: Ethereum network in lowercase
+          required: true
+          type: string
+          enum:
+            - mainnet
+            - ropsten
+            - kovan
+            - rinkeby
+        - name: method
+          in: path
+          description: JSON-RPC method. Use the `/v1/jsonrpc/{network}/methods` endpoint to get the list of permitted methods.
+          required: true
+          type: string
+        - name: params
+          in: query
+          description: This is the `params` field that would normally be part of the JSON-RPC POST body. Use the exact same format. If it's omitted, it will default to an empty array.
+          required: false
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          description: JSON-RPC response
+          schema:
+            $ref: '#/definitions/JSONRPCResponse'
+        400:
+          description: Bad JSON in `params` query parameter
+        404:
+          description: JSON-RPC method is not a valid GET method
+        500:
+          description: Server error
+        502:
+          description: Ethereum client error
+  /v1/jsonrpc/{network}:
+    post:
+      description: |
+        A request using an "HTTP POST-compatible" (state-changing) JSON-RPC method. Use the `/v1/jsonrpc/{network}/methods` endpoint to get the list of permitted methods. Use the regular Ethereum JSON-RPC format for the POST body.
+      parameters:
+        - name: network
+          in: path
+          description: Ethereum network in lowercase
+          required: true
+          type: string
+          enum:
+            - mainnet
+            - ropsten
+            - kovan
+            - rinkeby
+        - name: payload
+          in: body
+          description: Regular JSON-RPC payload (POST body)
+          required: true
+          schema:
+            $ref: '#/definitions/JSONRPCRequest'
+      responses:
+        200:
+          description: JSON-RPC response
+          schema:
+            $ref: '#/definitions/JSONRPCResponse'
+        400:
+          description: Bad JSON in POST body or missing Content-Type header
+        404:
+          description: JSON-RPC method is not a valid POST method
+        500:
+          description: Server error
+        502:
+          description: Ethereum client error
+  /v1/ticker/symbols:
+    get:
+      description: |
+        Get a list of supported symbols (currency pairs), including fiat, crypto, and tokens
+      responses:
+        200:
+          description: Symbols response
+          schema:
+            $ref: '#/definitions/SymbolsResponse'
+  /v1/ticker/{symbol}:
+    get:
+      description: |
+        Get pricing (ticker) data for various currency pairs (fiat, crypto, and tokens) using data from several exchanges. This endpoint shows the price at the exchange with the most volume for the symbol. Use the `/v1/ticker/symbols` endpoint for the full list of supported symbols.
+      parameters:
+        - name: symbol
+          in: path
+          description: Ticker symbol (currency pair)
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ticker response
+          schema:
+            $ref: '#/definitions/TickerResponse'
+  /v1/ticker/{symbol}/full:
+    get:
+      description: |
+        Get pricing (ticker) data for various currency pairs (fiat, crypto, and tokens) using data from several exchanges. This endpoint shows the price at various exchanges where the symbol is traded. Use the `/v1/ticker/symbols` endpoint for the full list of supported symbols.
+      parameters:
+        - name: symbol
+          in: path
+          description: Ticker symbol (currency pair)
+          required: true
+          type: string
+      responses:
+        200:
+          description: Full ticker response
+          schema:
+            $ref: '#/definitions/TickerFullResponse'
+  /v1/blacklist:
+    get:
+      description: |
+        Return a blacklist of phishing sites. This list is maintained by GitHub user 409H at https://github.com/409H/EtherAddressLookup/blob/master/blacklists/domains.json .
+      responses:
+        200:
+          description: List of blacklisted phishing domains
+          schema:
+            type: array
+            items:
+              type: string
+        502:
+          description: GitHub is having issues
+  /v2/blacklist:
+    get:
+      description: |
+        Return a blacklist of phishing sites, as well as a whitelist and a fuzzylist. This list is maintained by the MetaMask project at https://github.com/MetaMask/eth-phishing-detect/blob/master/src/config.json .
+      responses:
+        200:
+          description: Phishing blacklist, whitelist, and fuzzylist
+          schema:
+            $ref: '#/definitions/BlacklistResponse'
+        502:
+          description: GitHub is having issues
+
+definitions:
+  MethodsResponse:
+    type: object
+    properties:
+      get:
+        type: array
+        description: List of methods supported by the /v1/jsonrpc/{network}/{method} endpoint (GET)
+        items:
+          type: string
+      post:
+        type: array
+        description: List of methods supported by the /v1/jsonrpc/{network} endpoint (POST)
+        items:
+          type: string
+    required:
+      - get
+      - post
+  JSONRPCRequest:
+    type: object
+    properties:
+      jsonrpc:
+        type: string
+        description: JSON-RPC version
+        enum:
+          - "2.0"
+      id:
+        type: integer
+        description: JSON-RPC request ID
+      method:
+        type: string
+        description: Ethereum JSON-RPC method
+        enum:
+          - eth_sendRawTransaction
+          - eth_estimateGas
+          - eth_submitWork
+          - eth_submitHashrate
+      params:
+        type: array
+        description: JSON-RPC parameters (can be empty)
+    required:
+      - jsonrpc
+      - id
+      - method
+      - params
+  JSONRPCResponse:
+    type: object
+    properties:
+      jsonrpc:
+        type: string
+        description: JSON-RPC version
+        enum:
+          - "2.0"
+      id:
+        type: integer
+        description: JSON-RPC request ID
+      result:
+        type: string
+        description: JSON-RPC result (can also be an object)
+    required:
+      - jsonrpc
+      - id
+  SymbolsResponse:
+    type: object
+    properties:
+      symbols:
+        type: array
+        description: List of supported symbols (currency pairs)
+        items:
+          type: string
+  TickerResponse:
+    type: object
+    properties:
+      base:
+        type: string
+        description: Currency pair base
+      quote:
+        type: string
+        description: Currency pair quote
+      bid:
+        type: number
+        description: Bid at the exchange with the most volume
+      ask:
+        type: number
+        description: Ask at the exchange with the most volume
+      exchange:
+        type: string
+        description: The exchange with the most volume
+      volume:
+        type: number
+        description: Volume at the exchange with the most volume
+      num_exchanges:
+        type: integer
+        description: Number of exchanges queried
+      total_volume:
+        type: number
+        description: Total volume across all exchanges queried
+      timestamp:
+        type: integer
+        description: Unix timestamp
+  TickerFullResponse:
+    type: object
+    properties:
+      base:
+        type: string
+        description: Currency pair base
+      quote:
+        type: string
+        description: Currency pair quote
+      tickers:
+        type: array
+        description: List of tickers at various exchanges
+        items:
+          type: object
+          properties:
+            bid:
+              type: number
+              description: Bid
+            ask:
+              type: number
+              description: Ask
+            exchange:
+              type: string
+              description: Exchange
+            volume:
+              type: number
+              description: Volume
+            timestamp:
+              type: integer
+              description: Unix timestamp
+  BlacklistResponse:
+    type: object
+    properties:
+      version:
+        type: integer
+        description: Version
+      tolerance:
+        type: integer
+        description: Tolerance
+      fuzzylist:
+        description: Fuzzylist
+        type: array
+        items:
+          type: string
+      whitelist:
+        description: Whitelist
+        type: array
+        items:
+          type: string
+      blacklist:
+        description: Blacklist
+        type: array
+        items:
+          type: string
+    required:
+      - version
+      - tolerance
+      - fuzzylist
+      - whitelist
+      - blacklist
