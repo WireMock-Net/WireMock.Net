@@ -60,7 +60,7 @@ namespace WireMock.Net.Tests.Owin
 
             _matcherMock = new Mock<IMappingMatcher>();
             _matcherMock.SetupAllProperties();
-            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult());
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((new MappingMatcherResult(), new MappingMatcherResult()));
 
             _contextMock = new Mock<IContext>();
 
@@ -78,7 +78,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => (int) r.StatusCode == 404 && ((StatusModel)r.BodyData.BodyAsJson).Status == "No matching mapping found";
+            Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 404 && ((StatusModel)r.BodyData.BodyAsJson).Status == "No matching mapping found";
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
@@ -91,7 +91,9 @@ namespace WireMock.Net.Tests.Owin
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
-            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult { Mapping = _mappingMock.Object });
+
+            var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
             await _sut.Invoke(_contextMock.Object);
@@ -99,7 +101,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => (int) r.StatusCode == 401;
+            Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 401;
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 
@@ -112,7 +114,9 @@ namespace WireMock.Net.Tests.Owin
 
             _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
-            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns(new MappingMatcherResult { Mapping = _mappingMock.Object });
+
+            var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+            _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
             await _sut.Invoke(_contextMock.Object);
@@ -120,7 +124,7 @@ namespace WireMock.Net.Tests.Owin
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-            Expression<Func<ResponseMessage, bool>> match = r => (int) r.StatusCode == 401;
+            Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 401;
             _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
         }
 

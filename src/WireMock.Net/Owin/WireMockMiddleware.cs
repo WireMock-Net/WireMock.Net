@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using System.Linq;
+using System.Text.RegularExpressions;
 using WireMock.Matchers;
 using Newtonsoft.Json;
 using WireMock.Http;
@@ -73,7 +74,7 @@ namespace WireMock.Owin
 
             bool logRequest = false;
             ResponseMessage response = null;
-            MappingMatcherResult result = null;
+            (MappingMatcherResult Match, MappingMatcherResult Partial) result = (null, null);
             try
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
@@ -90,7 +91,7 @@ namespace WireMock.Owin
 
                 result = _mappingMatcher.FindBestMatch(request);
 
-                var targetMapping = result?.Mapping;
+                var targetMapping = result.Match?.Mapping;
                 if (targetMapping == null)
                 {
                     logRequest = true;
@@ -128,7 +129,7 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                _options.Logger.Error($"Providing a Response for Mapping '{result?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
+                _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
                 response = ResponseMessageBuilder.Create(ex.Message, 500);
             }
             finally
@@ -138,9 +139,14 @@ namespace WireMock.Owin
                     Guid = Guid.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
-                    MappingGuid = result?.Mapping?.Guid,
-                    MappingTitle = result?.Mapping?.Title,
-                    RequestMatchResult = result?.RequestMatchResult
+
+                    MappingGuid = result.Match?.Mapping?.Guid,
+                    MappingTitle = result.Match?.Mapping?.Title,
+                    RequestMatchResult = result.Match?.RequestMatchResult,
+
+                    PartialMappingGuid = result.Partial?.Mapping?.Guid,
+                    PartialMappingTitle = result.Partial?.Mapping?.Title,
+                    PartialMatchResult = result.Partial?.RequestMatchResult
                 };
 
                 LogRequest(log, logRequest);

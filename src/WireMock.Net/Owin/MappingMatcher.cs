@@ -16,7 +16,7 @@ namespace WireMock.Owin
             _options = options;
         }
 
-        public MappingMatcherResult FindBestMatch(RequestMessage request)
+        public (MappingMatcherResult Match, MappingMatcherResult Partial) FindBestMatch(RequestMessage request)
         {
             var mappings = new List<MappingMatcherResult>();
             foreach (var mapping in _options.Mappings.Values)
@@ -37,21 +37,24 @@ namespace WireMock.Owin
                 }
             }
 
+            var partialMappings = mappings
+                .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
+                .OrderBy(m => m.RequestMatchResult)
+                .ThenBy(m => m.Mapping.Priority)
+                .ToList();
+            var partialMatch = partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
+
             if (_options.AllowPartialMapping == true)
             {
-                var partialMappings = mappings
-                    .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
-                    .OrderBy(m => m.RequestMatchResult)
-                    .ThenBy(m => m.Mapping.Priority)
-                    .ToList();
-
-                return partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
+                return (partialMatch, partialMatch);
             }
 
-            return mappings
+            var match = mappings
                 .Where(m => m.RequestMatchResult.IsPerfectMatch)
                 .OrderBy(m => m.Mapping.Priority).ThenBy(m => m.RequestMatchResult)
                 .FirstOrDefault();
+
+            return (match, partialMatch);
         }
     }
 }
