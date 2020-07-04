@@ -1,8 +1,8 @@
 using WireMock.Server;
 
+// ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions
 {
-    // ReSharper disable once CheckNamespace
     public class WireMockANumberOfCallsAssertions
     {
         private readonly WireMockServer _server;
