@@ -55,5 +55,29 @@ namespace WireMock.Logging
         /// The mapping unique title.
         /// </value>
         public string MappingTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the partial mapping unique identifier.
+        /// </summary>
+        /// <value>
+        /// The mapping unique identifier.
+        /// </value>
+        public Guid? PartialMappingGuid { get; set; }
+
+        /// <summary>
+        /// Gets or sets the partial mapping unique title.
+        /// </summary>
+        /// <value>
+        /// The mapping unique title.
+        /// </value>
+        public string PartialMappingTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the partial match result.
+        /// </summary>
+        /// <value>
+        /// The request match result.
+        /// </value>
+        public RequestMatchResult PartialMatchResult { get; set; }
     }
 }

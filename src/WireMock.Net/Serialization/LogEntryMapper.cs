@@ -2,6 +2,7 @@
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
+using WireMock.Matchers.Request;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 
@@ -110,22 +111,37 @@ namespace WireMock.Serialization
             return new LogEntryModel
             {
                 Guid = logEntry.Guid,
-                MappingGuid = logEntry.MappingGuid,
-                MappingTitle = logEntry.MappingTitle,
                 Request = logRequestModel,
                 Response = logResponseModel,
-                RequestMatchResult = logEntry.RequestMatchResult != null ? new LogRequestMatchModel
+
+                MappingGuid = logEntry.MappingGuid,
+                MappingTitle = logEntry.MappingTitle,
+                RequestMatchResult = Map(logEntry.RequestMatchResult),
+
+                PartialMappingGuid = logEntry.PartialMappingGuid,
+                PartialMappingTitle = logEntry.PartialMappingTitle,
+                PartialRequestMatchResult = Map(logEntry.PartialMatchResult)
+            };
+        }
+
+        private static LogRequestMatchModel Map(RequestMatchResult matchResult)
+        {
+            if (matchResult == null)
+            {
+                return null;
+            }
+
+            return new LogRequestMatchModel
+            {
+                IsPerfectMatch = matchResult.IsPerfectMatch,
+                TotalScore = matchResult.TotalScore,
+                TotalNumber = matchResult.TotalNumber,
+                AverageTotalScore = matchResult.AverageTotalScore,
+                MatchDetails = matchResult.MatchDetails.Select(md => new
                 {
-                    IsPerfectMatch = logEntry.RequestMatchResult.IsPerfectMatch,
-                    TotalScore = logEntry.RequestMatchResult.TotalScore,
-                    TotalNumber = logEntry.RequestMatchResult.TotalNumber,
-                    AverageTotalScore = logEntry.RequestMatchResult.AverageTotalScore,
-                    MatchDetails = logEntry.RequestMatchResult.MatchDetails.Select(md => new
-                    {
-                        Name = md.MatcherType.Name.Replace("RequestMessage", string.Empty),
-                        Score = md.Score
-                    } as object).ToList()
-                } : null
+                    Name = md.MatcherType.Name.Replace("RequestMessage", string.Empty),
+                    Score = md.Score
+                } as object).ToList()
             };
         }
     }

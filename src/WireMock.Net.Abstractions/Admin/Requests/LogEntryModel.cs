@@ -36,5 +36,20 @@ namespace WireMock.Admin.Requests
         /// The request match result.
         /// </summary>
         public LogRequestMatchModel RequestMatchResult { get; set; }
+
+        /// <summary>
+        /// The partial mapping unique identifier.
+        /// </summary>
+        public Guid? PartialMappingGuid { get; set; }
+
+        /// <summary>
+        /// The partial mapping unique title.
+        /// </summary>
+        public string PartialMappingTitle { get; set; }
+
+        /// <summary>
+        /// The partial request match result.
+        /// </summary>
+        public LogRequestMatchModel PartialRequestMatchResult { get; set; }
     }
 }

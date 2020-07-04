@@ -2,6 +2,6 @@
 {
     internal interface IMappingMatcher
     {
-        MappingMatcherResult FindBestMatch(RequestMessage request);
+        (MappingMatcherResult Match, MappingMatcherResult Partial) FindBestMatch(RequestMessage request);
     }
 }

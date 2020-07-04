@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using FluentAssertions;
 using Moq;
-using NFluent;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -41,8 +41,9 @@ namespace WireMock.Net.Tests.Owin
             // Act
             var result = _sut.FindBestMatch(request);
 
-            // Assert and Verify
-            Check.That(result).IsNull();
+            // Assert
+            result.Match.Should().BeNull();
+            result.Partial.Should().BeNull();
         }
 
         [Fact]
@@ -62,17 +63,20 @@ namespace WireMock.Net.Tests.Owin
             // Act
             var result = _sut.FindBestMatch(request);
 
-            // Assert and Verify
-            Check.That(result).IsNull();
+            // Assert
+            result.Match.Should().BeNull();
+            result.Partial.Should().BeNull();
         }
 
         [Fact]
         public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_ShouldReturnExactMatch()
         {
             // Assign
+            var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
             var mappings = InitMappings(
-                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 0.1 }),
-                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 1.0 })
+                (guid1, new[] { 0.1 }),
+                (guid2, new[] { 1.0 })
             );
             _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -81,19 +85,47 @@ namespace WireMock.Net.Tests.Owin
             // Act
             var result = _sut.FindBestMatch(request);
 
-            // Assert and Verify
-            Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
-            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(1.0);
+            // Assert
+            result.Match.Mapping.Guid.Should().Be(guid2);
+            result.Match.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
+            result.Partial.Mapping.Guid.Should().Be(guid2);
+            result.Partial.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
+        }
+
+        [Fact]
+        public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_AndNoExactmatch_ShouldReturnNullExactMatch_And_PartialMatch()
+        {
+            // Assign
+            var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
+            var mappings = InitMappings(
+                (guid1, new[] { 0.1 }),
+                (guid2, new[] { 0.9 })
+            );
+            _optionsMock.Setup(o => o.Mappings).Returns(mappings);
+
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+
+            // Act
+            var result = _sut.FindBestMatch(request);
+
+            // Assert
+            result.Match.Should().BeNull();
+            result.Partial.Mapping.Guid.Should().Be(guid2);
+            result.Partial.RequestMatchResult.AverageTotalScore.Should().Be(0.9);
         }
 
         [Fact]
         public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsTrue_ShouldReturnAnyMatch()
         {
             // Assign
+            var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
+
             _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
             var mappings = InitMappings(
-                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 0.1 }),
-                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 0.9 })
+                (guid1, new[] { 0.1 }),
+                (guid2, new[] { 0.9 })
             );
             _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -102,18 +134,22 @@ namespace WireMock.Net.Tests.Owin
             // Act
             var result = _sut.FindBestMatch(request);
 
-            // Assert and Verify
-            Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
-            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(0.9);
+            // Assert
+            result.Match.Mapping.Guid.Should().Be(guid2);
+            result.Match.RequestMatchResult.AverageTotalScore.Should().Be(0.9);
+            result.Partial.Mapping.Guid.Should().Be(guid2);
+            result.Partial.RequestMatchResult.AverageTotalScore.Should().Be(0.9);
         }
 
         [Fact]
         public void MappingMatcher_FindBestMatch_WhenAllowPartialMappingIsFalse_And_WithSameAverageScoreButMoreMatchers_ReturnsMatchWithMoreMatchers()
         {
             // Assign
+            var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
             var mappings = InitMappings(
-                (Guid.Parse("00000000-0000-0000-0000-000000000001"), new[] { 1.0 }),
-                (Guid.Parse("00000000-0000-0000-0000-000000000002"), new[] { 1.0, 1.0 })
+                (guid1, new[] { 1.0 }),
+                (guid2, new[] { 1.0, 1.0 })
             );
             _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -123,8 +159,10 @@ namespace WireMock.Net.Tests.Owin
             var result = _sut.FindBestMatch(request);
 
             // Assert and Verify
-            Check.That(result.Mapping.Guid).IsEqualTo(Guid.Parse("00000000-0000-0000-0000-000000000002"));
-            Check.That(result.RequestMatchResult.AverageTotalScore).IsEqualTo(1.0);
+            result.Match.Mapping.Guid.Should().Be(guid2);
+            result.Match.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
+            result.Partial.Mapping.Guid.Should().Be(guid2);
+            result.Partial.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
         }
 
         private ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double[] scores)[] matches)
