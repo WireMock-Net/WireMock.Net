@@ -10,7 +10,7 @@
 		<AssemblyName>WireMock.Net.FluentAssertions</AssemblyName>
 		<PackageId>WireMock.Net.FluentAssertions</PackageId>
 		<PackageTags>wiremock;FluentAssertions;UnitTest;Assert;Assertions</PackageTags>
-		<RootNamespace>WireMock</RootNamespace>
+		<RootNamespace>WireMock.FluentAssertions</RootNamespace>
 		<ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A95}</ProjectGuid>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -35,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+	  <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
 	</ItemGroup>
 
 </Project>
