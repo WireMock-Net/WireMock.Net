@@ -6,78 +6,33 @@ namespace WireMock.Logging
     /// <summary>
     /// LogEntry
     /// </summary>
-    public class LogEntry
+    public class LogEntry : ILogEntry
     {
-        /// <summary>
-        /// Gets or sets the unique identifier.
-        /// </summary>
-        /// <value>
-        /// The unique identifier.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.Guid" />
         public Guid Guid { get; set; }
 
-        /// <summary>
-        /// Gets or sets the request message.
-        /// </summary>
-        /// <value>
-        /// The request message.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.RequestMessage" />
         public IRequestMessage RequestMessage { get; set; }
 
-        /// <summary>
-        /// Gets or sets the response message.
-        /// </summary>
-        /// <value>
-        /// The response message.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.ResponseMessage" />
         public IResponseMessage ResponseMessage { get; set; }
 
-        /// <summary>
-        /// Gets or sets the request match result.
-        /// </summary>
-        /// <value>
-        /// The request match result.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.RequestMatchResult" />
         public IRequestMatchResult RequestMatchResult { get; set; }
 
-        /// <summary>
-        /// Gets or sets the mapping unique identifier.
-        /// </summary>
-        /// <value>
-        /// The mapping unique identifier.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.MappingGuid" />
         public Guid? MappingGuid { get; set; }
 
-        /// <summary>
-        /// Gets or sets the mapping unique title.
-        /// </summary>
-        /// <value>
-        /// The mapping unique title.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.MappingTitle" />
         public string MappingTitle { get; set; }
 
-        /// <summary>
-        /// Gets or sets the partial mapping unique identifier.
-        /// </summary>
-        /// <value>
-        /// The mapping unique identifier.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.PartialMappingGuid" />
         public Guid? PartialMappingGuid { get; set; }
 
-        /// <summary>
-        /// Gets or sets the partial mapping unique title.
-        /// </summary>
-        /// <value>
-        /// The mapping unique title.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.PartialMappingTitle" />
         public string PartialMappingTitle { get; set; }
 
-        /// <summary>
-        /// Gets or sets the partial match result.
-        /// </summary>
-        /// <value>
-        /// The request match result.
-        /// </value>
+        /// <inheritdoc cref="ILogEntry.PartialMatchResult" />
         public IRequestMatchResult PartialMatchResult { get; set; }
     }
 }

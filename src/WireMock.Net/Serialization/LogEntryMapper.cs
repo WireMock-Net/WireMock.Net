@@ -10,7 +10,7 @@ namespace WireMock.Serialization
 {
     internal static class LogEntryMapper
     {
-        public static LogEntryModel Map(LogEntry logEntry)
+        public static LogEntryModel Map(ILogEntry logEntry)
         {
             var logRequestModel = new LogRequestModel
             {

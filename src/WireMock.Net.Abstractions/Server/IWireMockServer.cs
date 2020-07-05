@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using JetBrains.Annotations;
 using WireMock.Admin.Mappings;
+using WireMock.Logging;
 
 namespace WireMock.Server
 {
@@ -16,7 +17,10 @@ namespace WireMock.Server
         /// </summary>
         bool IsStarted { get; }
 
-        //IEnumerable<LogEntry> LogEntries { get; }
+        /// <summary>
+        /// Gets the request logs.
+        /// </summary>
+        IEnumerable<ILogEntry> LogEntries { get; }
 
         /// <summary>
         /// Gets the mappings as MappingModels.
