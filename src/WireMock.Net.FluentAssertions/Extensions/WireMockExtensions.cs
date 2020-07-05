@@ -5,7 +5,7 @@ namespace WireMock.FluentAssertions
 {
     public static class WireMockExtensions
     {
-        public static WireMockReceivedAssertions Should(this WireMockServer instance)
+        public static WireMockReceivedAssertions Should(this IWireMockServer instance)
         {
             return new WireMockReceivedAssertions(instance);
         }

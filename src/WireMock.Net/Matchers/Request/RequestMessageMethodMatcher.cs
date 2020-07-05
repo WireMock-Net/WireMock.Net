@@ -31,13 +31,13 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
             return requestMatchResult.AddScore(GetType(), score);
         }
 
-        private double IsMatch(RequestMessage requestMessage)
+        private double IsMatch(IRequestMessage requestMessage)
         {
             return MatchScores.ToScore(Methods.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase));
         }

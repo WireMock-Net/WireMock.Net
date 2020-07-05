@@ -35,11 +35,9 @@ namespace WireMock.Server
             remove => _options.LogEntries.CollectionChanged -= value;
         }
 
-        /// <summary>
-        /// Gets the request logs.
-        /// </summary>
+        /// <inheritdoc cref="IWireMockServer.LogEntries" />
         [PublicAPI]
-        public IEnumerable<LogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToList());
+        public IEnumerable<ILogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToList());
 
         /// <summary>
         /// The search log-entries based on matchers.

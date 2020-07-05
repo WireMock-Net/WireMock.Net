@@ -99,13 +99,13 @@ namespace WireMock.Matchers.Request
         }
 
         /// <see cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = CalculateMatchScore(requestMessage);
             return requestMatchResult.AddScore(GetType(), score);
         }
 
-        private double CalculateMatchScore(RequestMessage requestMessage, IMatcher matcher)
+        private double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
         {
             // Check if the matcher is a IObjectMatcher
             if (matcher is IObjectMatcher objectMatcher)
@@ -136,7 +136,7 @@ namespace WireMock.Matchers.Request
             return MatchScores.Mismatch;
         }
 
-        private double CalculateMatchScore(RequestMessage requestMessage)
+        private double CalculateMatchScore(IRequestMessage requestMessage)
         {
             if (Matchers != null && Matchers.Any())
             {

@@ -682,7 +682,7 @@ namespace WireMock.Server
 
             var request = (Request)InitRequestBuilder(requestModel, false);
 
-            var dict = new Dictionary<LogEntry, RequestMatchResult>();
+            var dict = new Dictionary<ILogEntry, RequestMatchResult>();
             foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
             {
                 var requestMatchResult = new RequestMatchResult();

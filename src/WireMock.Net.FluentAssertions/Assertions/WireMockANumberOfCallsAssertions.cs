@@ -5,10 +5,10 @@ namespace WireMock.FluentAssertions
 {
     public class WireMockANumberOfCallsAssertions
     {
-        private readonly WireMockServer _server;
+        private readonly IWireMockServer _server;
         private readonly int _callsCount;
 
-        public WireMockANumberOfCallsAssertions(WireMockServer server, int callsCount)
+        public WireMockANumberOfCallsAssertions(IWireMockServer server, int callsCount)
         {
             _server = server;
             _callsCount = callsCount;

@@ -8,9 +8,9 @@ namespace WireMock.FluentAssertions
 {
     public class WireMockAssertions
     {
-        private readonly WireMockServer _instance;
+        private readonly IWireMockServer _instance;
 
-        public WireMockAssertions(WireMockServer instance, int? callsCount)
+        public WireMockAssertions(IWireMockServer instance, int? callsCount)
         {
             _instance = instance;
         }

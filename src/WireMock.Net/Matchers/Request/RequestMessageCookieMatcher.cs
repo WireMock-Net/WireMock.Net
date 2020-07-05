@@ -91,13 +91,13 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
             return requestMatchResult.AddScore(GetType(), score);
         }
 
-        private double IsMatch(RequestMessage requestMessage)
+        private double IsMatch(IRequestMessage requestMessage)
         {
             if (requestMessage.Cookies == null)
             {

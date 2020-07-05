@@ -4,9 +4,9 @@ using WireMock.Server;
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions
 {
-    public class WireMockReceivedAssertions : ReferenceTypeAssertions<WireMockServer, WireMockReceivedAssertions>
+    public class WireMockReceivedAssertions : ReferenceTypeAssertions<IWireMockServer, WireMockReceivedAssertions>
     {
-        public WireMockReceivedAssertions(WireMockServer server)
+        public WireMockReceivedAssertions(IWireMockServer server)
         {
             Subject = server;
         }

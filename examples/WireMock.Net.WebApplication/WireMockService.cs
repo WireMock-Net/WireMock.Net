@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using WireMock.Admin.Requests;
 using WireMock.Logging;
-using WireMock.Models.Requests;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -48,6 +49,11 @@ namespace WireMock.Net.WebApplication
             {
                 string message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
                 _logger.LogDebug("Admin[{0}] {1}", isAdminrequest, message);
+            }
+
+            public void Error(string formatString, Exception exception)
+            {
+                _logger.LogError(formatString, exception.Message);
             }
         }
 
