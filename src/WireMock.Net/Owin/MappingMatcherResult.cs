@@ -6,6 +6,6 @@ namespace WireMock.Owin
     {
         public IMapping Mapping { get; set; }
 
-        public RequestMatchResult RequestMatchResult { get; set; }
+        public IRequestMatchResult RequestMatchResult { get; set; }
     }
 }

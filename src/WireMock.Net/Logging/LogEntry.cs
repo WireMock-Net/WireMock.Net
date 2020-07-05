@@ -38,7 +38,7 @@ namespace WireMock.Logging
         /// <value>
         /// The request match result.
         /// </value>
-        public RequestMatchResult RequestMatchResult { get; set; }
+        public IRequestMatchResult RequestMatchResult { get; set; }
 
         /// <summary>
         /// Gets or sets the mapping unique identifier.
@@ -78,6 +78,6 @@ namespace WireMock.Logging
         /// <value>
         /// The request match result.
         /// </value>
-        public RequestMatchResult PartialMatchResult { get; set; }
+        public IRequestMatchResult PartialMatchResult { get; set; }
     }
 }

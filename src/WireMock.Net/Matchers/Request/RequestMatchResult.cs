@@ -7,43 +7,21 @@ namespace WireMock.Matchers.Request
     /// <summary>
     /// RequestMatchResult
     /// </summary>
-    public class RequestMatchResult : IComparable
+    public class RequestMatchResult : IRequestMatchResult
     {
-        /// <summary>
-        /// Gets or sets the match-score.
-        /// </summary>
-        /// <value>
-        /// The match-score.
-        /// </value>
+        /// <inheritdoc cref="IRequestMatchResult.TotalScore" />
         public double TotalScore => MatchDetails.Sum(md => md.Score);
 
-        /// <summary>
-        /// Gets or sets the total number of matches.
-        /// </summary>
-        /// <value>
-        /// The total number of matches.
-        /// </value>
+        /// <inheritdoc cref="IRequestMatchResult.TotalNumber" />
         public int TotalNumber => MatchDetails.Count;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is perfect match.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is perfect match; otherwise, <c>false</c>.
-        /// </value>
+        /// <inheritdoc cref="IRequestMatchResult.IsPerfectMatch" />
         public bool IsPerfectMatch => Math.Abs(TotalScore - TotalNumber) < MatchScores.Tolerance;
 
-        /// <summary>
-        /// Gets the match percentage.
-        /// </summary>
-        /// <value>
-        /// The match percentage.
-        /// </value>
+        /// <inheritdoc cref="IRequestMatchResult.AverageTotalScore" />
         public double AverageTotalScore => TotalNumber == 0 ? 0.0 : TotalScore / TotalNumber;
 
-        /// <summary>
-        /// Gets the match details.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMatchResult.MatchDetails" />
         public IList<MatchDetail> MatchDetails { get; } = new List<MatchDetail>();
 
         /// <summary>

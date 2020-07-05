@@ -124,7 +124,7 @@ namespace WireMock.Serialization
             };
         }
 
-        private static LogRequestMatchModel Map(RequestMatchResult matchResult)
+        private static LogRequestMatchModel Map(IRequestMatchResult matchResult)
         {
             if (matchResult == null)
             {

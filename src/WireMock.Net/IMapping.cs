@@ -99,7 +99,7 @@ namespace WireMock
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <param name="nextState">The Next State.</param>
-        /// <returns>The <see cref="RequestMatchResult"/>.</returns>
-        RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
+        /// <returns>The <see cref="IRequestMatchResult"/>.</returns>
+        IRequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
     }
 }
