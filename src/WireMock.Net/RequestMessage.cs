@@ -15,131 +15,81 @@ namespace WireMock
     /// <summary>
     /// The RequestMessage.
     /// </summary>
-    public class RequestMessage
+    public class RequestMessage : IRequestMessage
     {
-        /// <summary>
-        /// Gets the Client IP Address.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.ClientIP" />
         public string ClientIP { get; }
 
-        /// <summary>
-        /// Gets the url (relative).
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Url" />
         public string Url { get; }
 
-        /// <summary>
-        /// Gets the AbsoluteUrl.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.AbsoluteUrl" />
         public string AbsoluteUrl { get; }
 
-        /// <summary>
-        /// The ProxyUrl (if a proxy is used).
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.ProxyUrl" />
         public string ProxyUrl { get; set; }
 
-        /// <summary>
-        /// Gets the DateTime.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.DateTime" />
         public DateTime DateTime { get; set; }
 
-        /// <summary>
-        /// Gets the path (relative).
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Path" />
         public string Path { get; }
 
-        /// <summary>
-        /// Gets the AbsolutePath.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.AbsolutePath" />
         public string AbsolutePath { get; }
 
-        /// <summary>
-        /// Gets the path segments.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.PathSegments" />
         public string[] PathSegments { get; }
 
-        /// <summary>
-        /// Gets the absolute path segments.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.AbsolutePathSegments" />
         public string[] AbsolutePathSegments { get; }
 
-        /// <summary>
-        /// Gets the method.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Method" />
         public string Method { get; }
 
-        /// <summary>
-        /// Gets the headers.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Headers" />
         public IDictionary<string, WireMockList<string>> Headers { get; }
 
-        /// <summary>
-        /// Gets the cookies.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Cookies" />
         public IDictionary<string, string> Cookies { get; }
 
-        /// <summary>
-        /// Gets the query.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Query" />
         public IDictionary<string, WireMockList<string>> Query { get; }
 
-        /// <summary>
-        /// Gets the raw query.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.RawQuery" />
         public string RawQuery { get; }
 
-        /// <summary>
-        /// The body.
-        /// </summary>
-        public BodyData BodyData { get; }
+        /// <inheritdoc cref="IRequestMessage.BodyData" />
+        public IBodyData BodyData { get; }
 
-        /// <summary>
-        /// The original body as string. Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Body" />
         public string Body { get; }
 
-        /// <summary>
-        /// The body (as JSON object). Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.BodyAsJson" />
         public object BodyAsJson { get; }
 
-        /// <summary>
-        /// The body (as bytearray). Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.BodyAsBytes" />
         public byte[] BodyAsBytes { get; }
 
-        /// <summary>
-        /// The detected body type. Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.DetectedBodyType" />
         public string DetectedBodyType { get; }
 
-        /// <summary>
-        /// The detected body type from the Content-Type header. Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.DetectedBodyTypeFromContentType" />
         public string DetectedBodyTypeFromContentType { get; }
 
-        /// <summary>
-        /// The detected compression from the Content-Encoding header. Convenience getter for Handlebars.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.DetectedCompression" />
         public string DetectedCompression { get; }
 
-        /// <summary>
-        /// Gets the Host
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Host" />
         public string Host { get; }
 
-        /// <summary>
-        /// Gets the protocol
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Protocol" />
         public string Protocol { get; }
 
-        /// <summary>
-        /// Gets the port
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Port" />
         public int Port { get; }
 
-        /// <summary>
-        /// Gets the origin
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.Origin" />
         public string Origin { get; }
 
         /// <summary>

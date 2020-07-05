@@ -26,7 +26,7 @@ namespace WireMock.Matchers.Request
 
         /// <summary>
         /// Gets the match details.
-        /// </summary
+        /// </summary>
         IList<MatchDetail> MatchDetails { get; }
 
         /// <summary>

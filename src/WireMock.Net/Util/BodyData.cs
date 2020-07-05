@@ -6,56 +6,36 @@ namespace WireMock.Util
     /// <summary>
     /// BodyData
     /// </summary>
-    public class BodyData
+    public class BodyData : IBodyData
     {
-        /// <summary>
-        /// The body encoding.
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.Encoding" />
         public Encoding Encoding { get; set; }
 
-        /// <summary>
-        /// The body as string, this is defined when BodyAsString or BodyAsJson are not null.
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsBytes" />
         public string BodyAsString { get; set; }
 
-        /// <summary>
-        /// The body (as JSON object).
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsJson" />
         public object BodyAsJson { get; set; }
 
-        /// <summary>
-        /// The body (as bytearray).
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsBytes" />
         public byte[] BodyAsBytes { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsJsonIndented" />
         public bool? BodyAsJsonIndented { get; set; }
 
-        /// <summary>
-        /// Gets or sets the body as a file.
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsFile" />
         public string BodyAsFile { get; set; }
 
-        /// <summary>
-        /// Is the body as file cached?
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.BodyAsFileIsCached" />
         public bool? BodyAsFileIsCached { get; set; }
 
-        /// <summary>
-        /// The detected body type (detection based on body content).
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.DetectedBodyType" />
         public BodyType DetectedBodyType { get; set; }
 
-        /// <summary>
-        /// The detected body type (detection based on Content-Type).
-        /// </summary>
+        /// <inheritdoc cref="IBodyData.DetectedBodyTypeFromContentType" />
         public BodyType DetectedBodyTypeFromContentType { get; set; }
 
-        /// <summary>
-        /// The detected compression.
-        /// </summary>
+        /// <inheritdoc cref="IRequestMessage.DetectedCompression" />
         public string DetectedCompression { get; set; }
     }
 }

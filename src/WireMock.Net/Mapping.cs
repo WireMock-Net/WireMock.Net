@@ -87,7 +87,7 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-        public IRequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, string nextState)
+        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, string nextState)
         {
             var result = new RequestMatchResult();
 

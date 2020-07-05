@@ -100,6 +100,6 @@ namespace WireMock
         /// <param name="requestMessage">The request message.</param>
         /// <param name="nextState">The Next State.</param>
         /// <returns>The <see cref="IRequestMatchResult"/>.</returns>
-        IRequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
+        RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
     }
 }
