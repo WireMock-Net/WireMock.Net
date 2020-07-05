@@ -34,7 +34,7 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             if (!RequestMatchers.Any())
             {

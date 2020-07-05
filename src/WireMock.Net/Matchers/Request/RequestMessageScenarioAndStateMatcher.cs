@@ -32,7 +32,7 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc />
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = IsMatch();
             return requestMatchResult.AddScore(GetType(), score);

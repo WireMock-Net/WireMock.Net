@@ -84,20 +84,20 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(RequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
         {
             double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
             return requestMatchResult.AddScore(GetType(), score);
         }
 
-        private double IsMatch(RequestMessage requestMessage)
+        private double IsMatch(IRequestMessage requestMessage)
         {
             if (Funcs != null)
             {
                 return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
             }
 
-            WireMockList<string> valuesPresentInRequestMessage = requestMessage.GetParameter(Key, IgnoreCase ?? false);
+            WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage) requestMessage).GetParameter(Key, IgnoreCase ?? false);
             if (valuesPresentInRequestMessage == null)
             {
                 // Key is not present at all, just return Mismatch

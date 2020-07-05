@@ -22,7 +22,7 @@ namespace WireMock.Logging
         /// <value>
         /// The request message.
         /// </value>
-        public RequestMessage RequestMessage { get; set; }
+        public IRequestMessage RequestMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the response message.
