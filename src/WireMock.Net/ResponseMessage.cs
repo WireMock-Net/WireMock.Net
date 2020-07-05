@@ -12,41 +12,27 @@ namespace WireMock
     /// <summary>
     /// The ResponseMessage.
     /// </summary>
-    public class ResponseMessage
+    public class ResponseMessage : IResponseMessage
     {
-        /// <summary>
-        /// Gets the headers.
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.Headers" />
         public IDictionary<string, WireMockList<string>> Headers { get; set; } = new Dictionary<string, WireMockList<string>>();
 
-        /// <summary>
-        /// Gets or sets the status code.
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.StatusCode" />
         public object StatusCode { get; set; }
 
-        /// <summary>
-        /// Gets or sets the body.
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.BodyOriginal" />
         public string BodyOriginal { get; set; }
 
-        /// <summary>
-        /// Gets or sets the body destination (SameAsSource, String or Bytes).
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.BodyDestination" />
         public string BodyDestination { get; set; }
 
-        /// <summary>
-        /// The Body.
-        /// </summary>
-        public BodyData BodyData { get; set; }
+        /// <inheritdoc cref="IResponseMessage.BodyData" />
+        public IBodyData BodyData { get; set; }
 
-        /// <summary>
-        /// The FaultType.
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.FaultType" />
         public FaultType FaultType { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Fault percentage.
-        /// </summary>
+        /// <inheritdoc cref="IResponseMessage.FaultPercentage" />
         public double? FaultPercentage { get; set; }
 
         /// <summary>

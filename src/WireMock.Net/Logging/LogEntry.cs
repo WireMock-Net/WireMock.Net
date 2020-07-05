@@ -30,7 +30,7 @@ namespace WireMock.Logging
         /// <value>
         /// The response message.
         /// </value>
-        public ResponseMessage ResponseMessage { get; set; }
+        public IResponseMessage ResponseMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the request match result.
