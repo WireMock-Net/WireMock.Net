@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using NFluent;
 using RestEase;
@@ -95,7 +96,7 @@ namespace WireMock.Net.Tests
         [InlineData(0, 0)]
         [InlineData(200, 200)]
         [InlineData("200", "200")]
-        public async Task IWireMockAdminApi_PostMappingAsync(object statusCode, object expectedStatusCode)
+        public async Task IWireMockAdminApi_PostMappingAsync_WithStatusCode(object statusCode, object expectedStatusCode)
         {
             // Arrange
             var server = WireMockServer.StartWithAdminInterface();
@@ -239,6 +240,49 @@ namespace WireMock.Net.Tests
             Check.That(requestLogged.Request.Method).IsEqualTo("POST");
             Check.That(requestLogged.Request.Body).IsNotNull();
             Check.That(requestLogged.Request.Body).Contains("T000001");
+        }
+
+        [Fact]
+        public async Task IWireMockAdminApi_GetMappingAsync_WithBodyModelMatcherModel_WithoutMethods_ShouldReturnCorrectMappingModel()
+        {
+            // Arrange
+            var guid = Guid.NewGuid();
+            var server = WireMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+            // Act
+            var model = new MappingModel
+            {
+                Guid = guid,
+                Request = new RequestModel
+                {
+                    Path = "/1",
+                    Body = new BodyModel
+                    {
+                        Matcher = new MatcherModel
+                        {
+                            Name = "RegexMatcher",
+                            Pattern = "hello",
+                            IgnoreCase = true
+                        }
+                    }
+                },
+                Response = new ResponseModel { Body = "world" }
+            };
+            var postMappingResult = await api.PostMappingAsync(model);
+
+            // Assert
+            postMappingResult.Should().NotBeNull();
+
+            var mapping = server.Mappings.FirstOrDefault(m => m.Guid == guid);
+            mapping.Should().NotBeNull();
+
+            var getMappingResult = await api.GetMappingAsync(guid);
+            getMappingResult.Should().NotBeNull();
+
+            getMappingResult.Request.Body.Should().BeEquivalentTo(model.Request.Body);
+
+            server.Stop();
         }
 
         [Fact]

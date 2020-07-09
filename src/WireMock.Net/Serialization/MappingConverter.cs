@@ -87,7 +87,7 @@ namespace WireMock.Serialization
                 }
             };
 
-            if (methodMatcher?.Methods != null && methodMatcher.Methods.All(m => m != "get") && bodyMatcher?.Matchers != null)
+            if (bodyMatcher?.Matchers != null)
             {
                 mappingModel.Request.Body = new BodyModel();
 
