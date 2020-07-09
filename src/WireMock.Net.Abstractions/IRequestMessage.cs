@@ -134,7 +134,5 @@ namespace WireMock
         /// Gets the origin
         /// </summary>
         string Origin { get; }
-
-        // WireMockList<string> GetParameter(string key, bool ignoreCase = false);
     }
 }
