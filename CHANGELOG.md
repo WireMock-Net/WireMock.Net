@@ -1,4 +1,12 @@
-# 1.2.13.0 (24 May 2020)
+# 1.2.14 (09 July 2020)
+- [#479](https://github.com/WireMock-Net/WireMock.Net/pull/479) - An OpenApi (swagger) parser to generate MappingModel or mapping.json file [feature] contributed by [StefH](https://github.com/StefH)
+- [#482](https://github.com/WireMock-Net/WireMock.Net/pull/482) - Add PartialMatch to logging / logentries [feature] contributed by [StefH](https://github.com/StefH)
+- [#483](https://github.com/WireMock-Net/WireMock.Net/pull/483) - Bring in the WireMock.Net.FluentAssertions tests contributed by [akamud](https://github.com/akamud)
+- [#484](https://github.com/WireMock-Net/WireMock.Net/pull/484) - Refactor: extract interfaces [feature] contributed by [StefH](https://github.com/StefH)
+- [#487](https://github.com/WireMock-Net/WireMock.Net/pull/487) - Fixed MappingConverter when methods are null [bug] contributed by [StefH](https://github.com/StefH)
+- [#486](https://github.com/WireMock-Net/WireMock.Net/issues/486) - Admin API fails to create a mapping with Request Body matching [bug]
+
+# 1.2.13 (24 May 2020)
 - [#475](https://github.com/WireMock-Net/WireMock.Net/pull/475) - Fix Limits.KeepAliveTimeout &amp; Limits.RequestHeadersTimeout [bug] contributed by [StefH](https://github.com/StefH)
 - [#474](https://github.com/WireMock-Net/WireMock.Net/issues/474) - Performance issue with multiple httpclients (since version 1.2.10) [bug]
 
