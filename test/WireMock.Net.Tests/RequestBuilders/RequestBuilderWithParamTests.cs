@@ -34,10 +34,10 @@ namespace WireMock.Net.Tests.RequestBuilders
         }
 
         [Fact]
-        public void RequestBuilder_WithParam_String_IExactMatcher()
+        public void RequestBuilder_WithParam_String_IStringMatcher()
         {
             // Act
-            var requestBuilder = (Request)Request.Create().WithParam("p", new ExactMatcher("v"));
+            var requestBuilder = (Request)Request.Create().WithParam("p", new RegexMatcher("[012]"));
 
             // Assert
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
