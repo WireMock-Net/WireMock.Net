@@ -17,27 +17,26 @@ namespace WireMock.Net.Tests.FluentAssertions
     {
         private WireMockServer _server;
         private HttpClient _httpClient;
-        private const int Port = 42000;
+        private int _portUsed;
 
         public WireMockAssertionsTests()
         {
-            _server = WireMockServer.Start(Port);
+            _server = WireMockServer.Start();
             _server.Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create().WithStatusCode(200));
+            _portUsed = _server.Ports.First();
 
-            _httpClient = new HttpClient {BaseAddress = new Uri($"http://localhost:{Port}")};
+            _httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{_portUsed}") };
         }
 
         [Fact]
-        public async Task AtAbsoluteUrl_Should_NotThrowWhenAnyCallWasMadeAtAbsoluteUrl()
+        public async Task AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
         {
             await _httpClient.GetAsync("anyurl");
 
-            Action act = () => _server.Should()
+            _server.Should()
                 .HaveReceivedACall()
-                .AtAbsoluteUrl("http://localhost:42000/anyurl");
-
-            act.Should().NotThrow();
+                .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
         }
 
         [Fact]
@@ -65,34 +64,30 @@ namespace WireMock.Net.Tests.FluentAssertions
             act.Should().Throw<Exception>()
                 .And.Message.Should()
                 .Be(
-                    $"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{Port}/\"}}.");
+                    $"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
         }
 
         [Fact]
-        public async Task WithHeader_Should_NotThrowWhenAnyCallWasMadeWithExpectedHeader()
+        public async Task WithHeader_WhenACallWasMadeWithExpectedHeader_Should_BeOK()
         {
             _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer a");
             await _httpClient.GetAsync("");
 
-            Action act = () => _server.Should()
+            _server.Should()
                 .HaveReceivedACall()
                 .WithHeader("Authorization", "Bearer a");
-
-            act.Should().NotThrow<Exception>();
         }
 
         [Fact]
-        public async Task WithHeader_Should_NotThrowWhenAnyCallWasMadeWithExpectedHeaderWithMultipleValues()
+        public async Task WithHeader_WhenACallWasMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
         {
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             await _httpClient.GetAsync("");
 
-            Action act = () => _server.Should()
+            _server.Should()
                 .HaveReceivedACall()
-                .WithHeader("Accept", new[] {"application/xml", "application/json"});
-
-            act.Should().NotThrow<Exception>();
+                .WithHeader("Accept", new[] { "application/xml", "application/json" });
         }
 
         [Fact]
@@ -149,7 +144,7 @@ namespace WireMock.Net.Tests.FluentAssertions
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
-                .WithHeader("Accept", new[] {"missing-value1", "missing-value2"});
+                .WithHeader("Accept", new[] { "missing-value1", "missing-value2" });
 
             const string missingValue1Message =
                 "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value1\".";
