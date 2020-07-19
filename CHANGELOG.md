@@ -1,3 +1,6 @@
+# 1.2.15 (19 July 2020)
+- [#485](https://github.com/WireMock-Net/WireMock.Net/pull/485) - Add fluent assertions for headers [test] contributed by [akamud](https://github.com/akamud)
+
 # 1.2.14 (09 July 2020)
 - [#479](https://github.com/WireMock-Net/WireMock.Net/pull/479) - An OpenApi (swagger) parser to generate MappingModel or mapping.json file [feature] contributed by [StefH](https://github.com/StefH)
 - [#482](https://github.com/WireMock-Net/WireMock.Net/pull/482) - Add PartialMatch to logging / logentries [feature] contributed by [StefH](https://github.com/StefH)
