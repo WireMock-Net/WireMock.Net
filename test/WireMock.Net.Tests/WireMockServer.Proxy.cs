@@ -152,7 +152,7 @@ namespace WireMock.Net.Tests
                 RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("stringContent")
             };
-            requestMessage.Headers.Add("blacklisted", "exact_match");
+            requestMessage.Headers.Add("foobar", "exact_match");
             requestMessage.Headers.Add("ok", "ok-value");
             await new HttpClient().SendAsync(requestMessage);
 
