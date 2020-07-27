@@ -1,3 +1,7 @@
+# 1.2.16 (27 July 2020)
+- [#492](https://github.com/WireMock-Net/WireMock.Net/pull/492) - Mark FluentMockServer, FluentMockServerSettings, BlacklistedHeaders and BlacklistedCookies as obsolete [feature] contributed by [StefH](https://github.com/StefH)
+- [#489](https://github.com/WireMock-Net/WireMock.Net/issues/489) - Change &quot;blacklist&quot; and &quot;whitelist&quot; terms [feature]
+
 # 1.2.15 (19 July 2020)
 - [#485](https://github.com/WireMock-Net/WireMock.Net/pull/485) - Add fluent assertions for headers [test] contributed by [akamud](https://github.com/akamud)
 

@@ -37,13 +37,13 @@ namespace WireMock.Settings
         string ClientX509Certificate2ThumbprintOrSubjectName { get; set; }
 
         /// <summary>
-        /// Defines a list from headers which will excluded from the saved mappings.
+        /// Defines a list from headers which will be excluded from the saved mappings.
         /// </summary>
         [Obsolete("Will be renamed to ExcludedHeaders in next version (1.3.x)")]
         string[] BlackListedHeaders { get; set; }
 
         /// <summary>
-        /// Defines a list of cookies which will excluded from the saved mappings.
+        /// Defines a list of cookies which will be excluded from the saved mappings.
         /// </summary>
         [Obsolete("Will be renamed to ExcludedCookies in next version (1.3.x)")]
         string[] BlackListedCookies { get; set; }
