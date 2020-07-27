@@ -34,7 +34,7 @@ namespace WireMock.Net.Tests
                 }
             };
             var server = WireMockServer.Start(settings);
-            
+
             // Act
             var requestMessage = new HttpRequestMessage
             {
@@ -48,7 +48,7 @@ namespace WireMock.Net.Tests
             Check.That(server.Mappings).HasSize(2);
             Check.That(server.LogEntries).HasSize(1);
         }
-        
+
         [Fact]
         public async Task WireMockServer_Proxy_Should_proxy_responses()
         {
@@ -123,7 +123,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async Task WireMockServer_Proxy_Should_exclude_blacklisted_content_header_in_mapping()
+        public async Task WireMockServer_Proxy_Should_exclude_ExcludedHeaders_in_mapping()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid()}";
@@ -139,7 +139,7 @@ namespace WireMock.Net.Tests
                     Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedHeaders = new[] { "blacklisted" }
+                    BlackListedHeaders = new[] { "excluded-header-X" }
                 }
             };
             var server = WireMockServer.Start(settings);
@@ -152,7 +152,7 @@ namespace WireMock.Net.Tests
                 RequestUri = new Uri($"{server.Urls[0]}{path}"),
                 Content = new StringContent("stringContent")
             };
-            requestMessage.Headers.Add("blacklisted", "exact_match");
+            requestMessage.Headers.Add("foobar", "exact_match");
             requestMessage.Headers.Add("ok", "ok-value");
             await new HttpClient().SendAsync(requestMessage);
 
@@ -160,12 +160,12 @@ namespace WireMock.Net.Tests
             var mapping = server.Mappings.FirstOrDefault(m => m.Guid != defaultMapping.Guid);
             Check.That(mapping).IsNotNull();
             var matchers = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().Select(m => m.Name).ToList();
-            Check.That(matchers).Not.Contains("blacklisted");
+            Check.That(matchers).Not.Contains("excluded-header-X");
             Check.That(matchers).Contains("ok");
         }
 
         [Fact]
-        public async Task WireMockServer_Proxy_Should_exclude_blacklisted_cookies_in_mapping()
+        public async Task WireMockServer_Proxy_Should_exclude_ExcludedCookies_in_mapping()
         {
             // Assign
             string path = $"/prx_{Guid.NewGuid()}";
@@ -515,7 +515,7 @@ namespace WireMock.Net.Tests
             content.Should().Contain("known"); // On Linux it's "Name or service not known". On Windows it's "No such host is known.".
 
             server.LogEntries.Should().HaveCount(1);
-            ((StatusModel) server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Contain("known");
+            ((StatusModel)server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status.Should().Contain("known");
         }
     }
 }

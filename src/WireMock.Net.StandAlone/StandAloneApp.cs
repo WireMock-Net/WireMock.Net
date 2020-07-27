@@ -13,9 +13,9 @@ namespace WireMock.Net.StandAlone
     public static class StandAloneApp
     {
         /// <summary>
-        /// Start WireMock.Net standalone Server based on the FluentMockServerSettings.
+        /// Start WireMock.Net standalone Server based on the IWireMockServerSettings.
         /// </summary>
-        /// <param name="settings">The FluentMockServerSettings</param>
+        /// <param name="settings">The IWireMockServerSettings</param>
         [PublicAPI]
         public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
         {

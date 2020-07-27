@@ -290,7 +290,7 @@ namespace WireMock.Server
             return responseMessage;
         }
 
-        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] blacklistedHeaders, string[] blacklistedCookies)
+        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] excludedHeaders, string[] excludedCookies)
         {
             var request = Request.Create();
             request.WithPath(requestMessage.Path);
@@ -299,16 +299,16 @@ namespace WireMock.Server
             requestMessage.Query.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
             requestMessage.Cookies.Loop((key, value) =>
             {
-                if (!blacklistedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
+                if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
                 {
                     request.WithCookie(key, value);
                 }
             });
 
-            var allBlackListedHeaders = new List<string>(blacklistedHeaders) { "Cookie" };
+            var allExcludedHeaders = new List<string>(excludedHeaders) { "Cookie" };
             requestMessage.Headers.Loop((key, value) =>
             {
-                if (!allBlackListedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
+                if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
                 {
                     request.WithHeader(key, value.ToArray());
                 }
