@@ -27,9 +27,9 @@ namespace WireMock.Server
         /// </summary>
         IEnumerable<MappingModel> MappingModels { get; }
 
-        /// <summary>
-        /// Gets the mappings.
-        /// </summary>
+        // <summary>
+        // Gets the mappings.
+        // </summary>
         //[PublicAPI]
         //IEnumerable<IMapping> Mappings { get; }
 
