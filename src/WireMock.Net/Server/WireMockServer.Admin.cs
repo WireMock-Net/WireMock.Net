@@ -331,7 +331,7 @@ namespace WireMock.Server
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null);
         }
         #endregion
 
@@ -706,7 +706,8 @@ namespace WireMock.Server
                 Name = s.Name,
                 NextState = s.NextState,
                 Started = s.Started,
-                Finished = s.Finished
+                Finished = s.Finished,
+                Counter = s.Counter
             });
 
             return ToJson(scenariosStates, true);

@@ -79,7 +79,7 @@ namespace WireMock.Owin
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
                 {
-                    // Set start
+                    // Set scenario start
                     if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
                     {
                         _options.Scenarios.TryAdd(mapping.Scenario, new ScenarioState
@@ -122,9 +122,7 @@ namespace WireMock.Owin
 
                 if (targetMapping.Scenario != null)
                 {
-                    _options.Scenarios[targetMapping.Scenario].NextState = targetMapping.NextState;
-                    _options.Scenarios[targetMapping.Scenario].Started = true;
-                    _options.Scenarios[targetMapping.Scenario].Finished = targetMapping.NextState == null;
+                    UpdateScenarioState(targetMapping);
                 }
             }
             catch (Exception ex)
@@ -155,6 +153,25 @@ namespace WireMock.Owin
             }
 
             await CompletedTask;
+        }
+
+        private void UpdateScenarioState(IMapping mapping)
+        {
+            var scenario = _options.Scenarios[mapping.Scenario];
+
+            // Increase the number of times this state has been executed
+            scenario.Counter++;
+
+            // Only if the number of times this state is executed equals the required StateTimes, proceed to next state and reset the counter to 0
+            if (scenario.Counter == (mapping.StateTimes ?? 1))
+            {
+                scenario.NextState = mapping.NextState;
+                scenario.Counter = 0;
+            }
+
+            // Else just update Started and Finished
+            scenario.Started = true;
+            scenario.Finished = mapping.NextState == null;
         }
 
         private void LogRequest(LogEntry entry, bool addRequest)

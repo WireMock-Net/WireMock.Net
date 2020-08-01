@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -59,6 +60,89 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseNoState).Equals("No state msg");
             Check.That(responseWithState).Equals("Test state msg");
+        }
+
+        [Fact]
+        public async Task Scenarios_With_Same_Path_Should_Use_Times_When_Moving_To_Next_State()
+        {
+            // given
+            const int times = 2;
+            string path = $"/foo_{Guid.NewGuid()}";
+            string body1 = "Scenario S1, No State, Setting State T2";
+            string body2 = "Scenario S1, State T2, End";
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario(1)
+                .WillSetStateTo(2, times)
+                .RespondWith(Response.Create().WithBody(body1));
+
+            server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .InScenario(1)
+                .WhenStateIs(2)
+                .RespondWith(Response.Create().WithBody(body2));
+
+            // when
+            var client = new HttpClient();
+            var responseScenario1 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseScenario2 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseWithState = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
+
+            // then
+            responseScenario1.Should().Be(body1);
+            responseScenario2.Should().Be(body1);
+            responseWithState.Should().Be(body2);
+        }
+
+        [Fact]
+        public async Task Scenarios_With_Different_Paths_Should_Use_Times_When_Moving_To_Next_State()
+        {
+            // given
+            const int times = 2;
+            string path1 = $"/a_{Guid.NewGuid()}";
+            string path2 = $"/b_{Guid.NewGuid()}";
+            string path3 = $"/c_{Guid.NewGuid()}";
+            string body1 = "Scenario S1, No State, Setting State T2";
+            string body2 = "Scenario S1, State T2, Setting State T3";
+            string body3 = "Scenario S1, State T3, End";
+
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create().WithPath(path1).UsingGet())
+                .InScenario("S1")
+                .WillSetStateTo("T2", times)
+                .RespondWith(Response.Create().WithBody(body1));
+
+            server
+                .Given(Request.Create().WithPath(path2).UsingGet())
+                .InScenario("S1")
+                .WhenStateIs("T2")
+                .WillSetStateTo("T3", times)
+                .RespondWith(Response.Create().WithBody(body2));
+
+            server
+                .Given(Request.Create().WithPath(path3).UsingGet())
+                .InScenario("S1")
+                .WhenStateIs("T3")
+                .RespondWith(Response.Create().WithBody(body3));
+
+            // when
+            var client = new HttpClient();
+            var t1a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1);
+            var t1b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1);
+            var t2a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2);
+            var t2b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2);
+            var t3 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path3);
+
+            // then
+            t1a.Should().Be(body1);
+            t1b.Should().Be(body1);
+            t2a.Should().Be(body2);
+            t2b.Should().Be(body2);
+            t3.Should().Be(body3);
         }
 
         [Fact]
