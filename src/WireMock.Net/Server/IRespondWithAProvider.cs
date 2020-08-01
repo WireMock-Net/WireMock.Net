@@ -86,14 +86,16 @@ namespace WireMock.Server
         /// Once this mapping is executed the state will be changed to specified one.
         /// </summary>
         /// <param name="state">Any object which identifies the new state</param>
+        /// <param name="times">The number of times this match should be matched before the state will be changed to the specified one. Default value is 1.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-        IRespondWithAProvider WillSetStateTo(string state);
+        IRespondWithAProvider WillSetStateTo(string state, int? times = 1);
 
         /// <summary>
         /// Once this mapping is executed the state will be changed to specified one.
         /// </summary>
         /// <param name="state">Any object which identifies the new state</param>
+        /// <param name="times">The number of times this match should be matched before the state will be changed to the specified one. Default value is 1.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-        IRespondWithAProvider WillSetStateTo(int state);
+        IRespondWithAProvider WillSetStateTo(int state, int? times = 1);
     }
 }

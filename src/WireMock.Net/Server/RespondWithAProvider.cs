@@ -18,6 +18,7 @@ namespace WireMock.Server
         private string _executionConditionState;
         private string _nextState;
         private string _scenario;
+        private int _timesInSameState = 1;
         private readonly RegistrationCallback _registrationCallback;
         private readonly IRequestMatcher _requestMatcher;
         private readonly IWireMockServerSettings _settings;
@@ -46,7 +47,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -120,8 +121,8 @@ namespace WireMock.Server
             return WhenStateIs(state.ToString());
         }
 
-        /// <see cref="IRespondWithAProvider.WillSetStateTo(string)"/>
-        public IRespondWithAProvider WillSetStateTo(string state)
+        /// <see cref="IRespondWithAProvider.WillSetStateTo(string, int?)"/>
+        public IRespondWithAProvider WillSetStateTo(string state, int? times = 1)
         {
             if (string.IsNullOrEmpty(_scenario))
             {
@@ -129,14 +130,15 @@ namespace WireMock.Server
             }
 
             _nextState = state;
+            _timesInSameState = times ?? 1;
 
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WillSetStateTo(int)"/>
-        public IRespondWithAProvider WillSetStateTo(int state)
+        /// <see cref="IRespondWithAProvider.WillSetStateTo(int, int?)"/>
+        public IRespondWithAProvider WillSetStateTo(int state, int? times = 1)
         {
-            return WillSetStateTo(state.ToString());
+            return WillSetStateTo(state.ToString(), times);
         }
     }
 }

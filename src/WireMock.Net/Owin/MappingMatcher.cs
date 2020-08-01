@@ -23,12 +23,12 @@ namespace WireMock.Owin
             {
                 try
                 {
-                    string scenario = mapping.Scenario != null && _options.Scenarios.ContainsKey(mapping.Scenario) ? _options.Scenarios[mapping.Scenario].NextState : null;
+                    string nextState = GetNextState(mapping);
 
                     mappings.Add(new MappingMatcherResult
                     {
                         Mapping = mapping,
-                        RequestMatchResult = mapping.GetRequestMatchResult(request, scenario)
+                        RequestMatchResult = mapping.GetRequestMatchResult(request, nextState)
                     });
                 }
                 catch (Exception ex)
@@ -55,6 +55,19 @@ namespace WireMock.Owin
                 .FirstOrDefault();
 
             return (match, partialMatch);
+        }
+
+        private string GetNextState(IMapping mapping)
+        {
+            // If the mapping does not have a scenario or _options.Scenarios does not contain this scenario from the mapping,
+            // just return null to indicate that there is no next state.
+            if (mapping.Scenario == null || !_options.Scenarios.ContainsKey(mapping.Scenario))
+            {
+                return null;
+            }
+
+            // Else just return the next state
+            return _options.Scenarios[mapping.Scenario].NextState;
         }
     }
 }

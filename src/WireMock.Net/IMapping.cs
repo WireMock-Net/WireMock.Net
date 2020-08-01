@@ -52,6 +52,12 @@ namespace WireMock
         string NextState { get; }
 
         /// <summary>
+        /// The number of times this match should be matched before the state will be changed to the next state.
+        /// </summary>
+        [CanBeNull]
+        int? StateTimes { get; }
+
+        /// <summary>
         /// The Request matcher.
         /// </summary>
         IRequestMatcher RequestMatcher { get; }

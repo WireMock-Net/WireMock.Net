@@ -24,5 +24,10 @@
         /// Gets or sets a value indicating whether this <see cref="ScenarioState"/> is finished.
         /// </summary>
         public bool Finished { get; set; }
+
+        /// <summary>
+        /// Gets or sets the state counter.
+        /// </summary>
+        public int Counter { get; set; }
     }
 }
