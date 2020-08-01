@@ -1,3 +1,7 @@
+# 1.2.17 (01 August 2020)
+- [#495](https://github.com/WireMock-Net/WireMock.Net/pull/495) - Scenario : stay on current state for a number of times contributed by [StefH](https://github.com/StefH)
+- [#494](https://github.com/WireMock-Net/WireMock.Net/issues/494) - Stay in Current State for specified number of requests [feature]
+
 # 1.2.16 (27 July 2020)
 - [#492](https://github.com/WireMock-Net/WireMock.Net/pull/492) - Mark FluentMockServer, FluentMockServerSettings, BlacklistedHeaders and BlacklistedCookies as obsolete [feature] contributed by [StefH](https://github.com/StefH)
 - [#489](https://github.com/WireMock-Net/WireMock.Net/issues/489) - Change &quot;blacklist&quot; and &quot;whitelist&quot; terms [feature]
