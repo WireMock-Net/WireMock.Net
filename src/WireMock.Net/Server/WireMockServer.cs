@@ -217,6 +217,7 @@ namespace WireMock.Server
             _options.PostWireMockMiddlewareInit = _settings.PostWireMockMiddlewareInit;
             _options.Logger = _settings.Logger;
             _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
+            _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
 
             _matcherMapper = new MatcherMapper(_settings);
             _mappingConverter = new MappingConverter(_matcherMapper);

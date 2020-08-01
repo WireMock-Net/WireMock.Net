@@ -344,7 +344,8 @@ namespace WireMock.Server
                 MaxRequestLogCount = _options.MaxRequestLogCount,
                 RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
                 GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
-                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods
+                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods,
+                HandleRequestsSynchronously = _options.HandleRequestsSynchronously
             };
 
             return ToJson(model);
@@ -369,6 +370,11 @@ namespace WireMock.Server
             if (settings.AllowBodyForAllHttpMethods != null)
             {
                 _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods.Value;
+            }
+
+            if (settings.HandleRequestsSynchronously != null)
+            {
+                _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously.Value;
             }
 
             return ResponseMessageBuilder.Create("Settings updated");

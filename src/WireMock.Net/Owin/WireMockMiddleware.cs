@@ -25,6 +25,7 @@ namespace WireMock.Owin
 {
     internal class WireMockMiddleware : OwinMiddleware
     {
+        private readonly object _lock = new object();
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly IWireMockMiddlewareOptions _options;
         private readonly IOwinRequestMapper _requestMapper;
@@ -65,7 +66,17 @@ namespace WireMock.Owin
         public Task Invoke(IContext ctx)
 #endif
         {
-            return InvokeInternal(ctx);
+            if (_options.HandleRequestsSynchronously.GetValueOrDefault(true))
+            {
+                lock (_lock)
+                {
+                    return InvokeInternal(ctx);
+                }
+            }
+            else
+            {
+                return InvokeInternal(ctx);
+            }
         }
 
         private async Task InvokeInternal(IContext ctx)

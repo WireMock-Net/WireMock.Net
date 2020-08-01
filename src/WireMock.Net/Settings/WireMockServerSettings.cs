@@ -113,5 +113,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.DisableRequestBodyDecompressing"/>
         [PublicAPI]
         public bool? DisableRequestBodyDecompressing { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.HandleRequestsSynchronously"/>
+        [PublicAPI]
+        public bool? HandleRequestsSynchronously { get; set; }
     }
 }
