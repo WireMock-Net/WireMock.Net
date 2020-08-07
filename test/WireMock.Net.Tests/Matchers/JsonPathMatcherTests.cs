@@ -150,7 +150,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPathMatcher_IsMatch_RejectOnMatch()
         {
             // Assign
-            var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, "$..[?(@.Id == 1)]");
+            var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, false, "$..[?(@.Id == 1)]");
 
             // Act
             double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}"));

@@ -22,7 +22,10 @@ namespace WireMock.Matchers
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
-
+        
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
@@ -56,13 +59,15 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
         /// <param name="value">The value.</param>
-        public ExactObjectMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] value)
+        public ExactObjectMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] value, bool throwException = false)
         {
             Check.NotNull(value, nameof(value));
 
-            ValueAsBytes = value;
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
+            ValueAsBytes = value;
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>

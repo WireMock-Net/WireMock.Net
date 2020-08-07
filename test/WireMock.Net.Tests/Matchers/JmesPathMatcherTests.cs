@@ -154,7 +154,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JmesPathMatcher_IsMatch_RejectOnMatch()
         {
             // Assign
-            var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, "things.x == 'RequiredThing'");
+            var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, false, "things.x == 'RequiredThing'");
 
             // Act
             double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }"));

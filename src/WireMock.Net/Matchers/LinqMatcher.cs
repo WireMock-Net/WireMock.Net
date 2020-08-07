@@ -17,6 +17,8 @@ namespace WireMock.Matchers
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
@@ -30,7 +32,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public LinqMatcher([NotNull] string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
+        public LinqMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
         {
         }
 
@@ -39,7 +41,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="pattern">The pattern.</param>
-        public LinqMatcher(MatchBehaviour matchBehaviour, [NotNull] string pattern) : this(matchBehaviour, new[] { pattern })
+        public LinqMatcher(MatchBehaviour matchBehaviour, [NotNull] string pattern) : this(matchBehaviour, false, pattern)
         {
         }
 
@@ -48,9 +50,11 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
-        public LinqMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns)
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        public LinqMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
         {
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
             _patterns = patterns;
         }
 
@@ -71,8 +75,10 @@ namespace WireMock.Matchers
             }
             catch
             {
-                // just ignore exception
-                // TODO add logging?
+                if (ThrowException)
+                {
+                    throw;
+                }
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);

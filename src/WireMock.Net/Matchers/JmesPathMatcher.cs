@@ -16,11 +16,23 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
+        public JmesPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
+        /// </summary>
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="patterns">The patterns.</param>
+        public JmesPathMatcher(bool throwException = false, [NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, throwException, patterns)
         {
         }
 
@@ -28,12 +40,14 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] patterns)
+        public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
             _patterns = patterns;
         }
 
@@ -49,7 +63,10 @@ namespace WireMock.Matchers
                 }
                 catch (JsonException)
                 {
-                    // just ignore JsonException
+                    if (ThrowException)
+                    {
+                        throw;
+                    }
                 }
             }
 

@@ -19,6 +19,9 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
         /// </summary>
@@ -53,11 +56,14 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein)
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein, bool throwException = false)
         {
             Check.NotNullOrEmpty(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
+
             _patterns = patterns;
             _simMetricType = simMetricType;
         }

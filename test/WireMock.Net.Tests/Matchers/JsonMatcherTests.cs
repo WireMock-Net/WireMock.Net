@@ -58,6 +58,32 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
+        public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsFalse_Should_ReturnMismatch()
+        {
+            // Assign
+            var matcher = new JsonMatcher("");
+
+            // Act
+            double match = matcher.IsMatch(new MemoryStream());
+
+            // Assert 
+            Check.That(match).IsEqualTo(0);
+        }
+
+        [Fact]
+        public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsTrue_Should_ReturnMismatch()
+        {
+            // Assign
+            var matcher = new JsonMatcher("", false, true);
+
+            // Act
+            Action action = () => matcher.IsMatch(new MemoryStream());
+
+            // Assert 
+            action.Should().Throw<JsonException>();
+        }
+
+        [Fact]
         public void JsonMatcher_IsMatch_ByteArray()
         {
             // Assign

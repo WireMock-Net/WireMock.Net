@@ -314,18 +314,20 @@ namespace WireMock.Server
                 }
             });
 
+            bool matcherThrowsException = false;
+
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson));
+                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, false, matcherThrowsException));
                     break;
 
                 case BodyType.String:
-                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsString));
+                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, matcherThrowsException, requestMessage.BodyData.BodyAsString));
                     break;
 
                 case BodyType.Bytes:
-                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes));
+                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, matcherThrowsException));
                     break;
             }
 

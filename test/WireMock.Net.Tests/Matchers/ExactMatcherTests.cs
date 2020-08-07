@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactMatcher_IsMatch_SinglePattern_AcceptOnMatch()
         {
             // Assign
-            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, "cat");
+            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, "cat");
 
             // Act
             double result = matcher.IsMatch("cat");
@@ -101,7 +101,7 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactMatcher_IsMatch_SinglePattern_RejectOnMatch()
         {
             // Assign
-            var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, "cat");
+            var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, false, "cat");
 
             // Act
             double result = matcher.IsMatch("cat");

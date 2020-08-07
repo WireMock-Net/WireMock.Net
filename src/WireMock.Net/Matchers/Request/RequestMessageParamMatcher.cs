@@ -51,7 +51,7 @@ namespace WireMock.Matchers.Request
         /// <param name="key">The key.</param>
         /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <param name="values">The values.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] string[] values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, value)).Cast<IStringMatcher>().ToArray())
+        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] string[] values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, value)).Cast<IStringMatcher>().ToArray())
         {
         }
 

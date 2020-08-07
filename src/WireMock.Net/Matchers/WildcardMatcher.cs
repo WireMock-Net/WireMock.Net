@@ -46,7 +46,9 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase</param>
-        public WildcardMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false) : base(matchBehaviour, patterns.Select(pattern => "^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$").ToArray(), ignoreCase)
+        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        public WildcardMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false, bool throwException = false) : 
+            base(matchBehaviour, patterns.Select(pattern => "^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$").ToArray(), ignoreCase, throwException)
         {
             _patterns = patterns;
         }
