@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.IO;
+using FluentAssertions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
@@ -31,6 +35,26 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             Check.That(value).Equals("{}");
+        }
+
+        [Fact]
+        public void JsonMatcher_WithInvalidStringValue_Should_ThrowException()
+        {
+            // Act
+            Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, "{ \"Id\"");
+
+            // Assert
+            action.Should().Throw<JsonException>();
+        }
+
+        [Fact]
+        public void JsonMatcher_WithInvalidObjectValue_Should_ThrowException()
+        {
+            // Act
+            Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, new MemoryStream());
+
+            // Assert
+            action.Should().Throw<JsonException>();
         }
 
         [Fact]
