@@ -1,8 +1,8 @@
-﻿using JetBrains.Annotations;
+﻿using System.Collections;
+using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Linq;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -24,6 +24,8 @@ namespace WireMock.Matchers
 
         /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
         public bool IgnoreCase { get; }
+
+        private readonly JToken _valueAsJToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
@@ -54,8 +56,10 @@ namespace WireMock.Matchers
             Check.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
-            Value = value;
             IgnoreCase = ignoreCase;
+
+            Value = value;
+            _valueAsJToken = ConvertValueToJToken(value);
         }
 
         /// <summary>
@@ -69,8 +73,10 @@ namespace WireMock.Matchers
             Check.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
-            Value = value;
             IgnoreCase = ignoreCase;
+
+            Value = value;
+            _valueAsJToken = ConvertValueToJToken(value);
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
@@ -83,31 +89,9 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    // Check if JToken or object
-                    JToken jtokenInput = input is JToken tokenInput ? tokenInput : JObject.FromObject(input);
+                    var inputAsJToken = ConvertValueToJToken(input);
 
-                    // Check if JToken, string, IEnumerable or object
-                    JToken jtokenValue;
-                    switch (Value)
-                    {
-                        case JToken tokenValue:
-                            jtokenValue = tokenValue;
-                            break;
-
-                        case string stringValue:
-                            jtokenValue = JsonUtils.Parse(stringValue);
-                            break;
-
-                        case IEnumerable enumerableValue:
-                            jtokenValue = JArray.FromObject(enumerableValue);
-                            break;
-
-                        default:
-                            jtokenValue = JObject.FromObject(Value);
-                            break;
-                    }
-
-                    match = DeepEquals(jtokenValue, jtokenInput);
+                    match = DeepEquals(_valueAsJToken, inputAsJToken);
                 }
                 catch (JsonException)
                 {
@@ -116,6 +100,25 @@ namespace WireMock.Matchers
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        }
+
+        private static JToken ConvertValueToJToken(object value)
+        {
+            // Check if JToken, string, IEnumerable or object
+            switch (value)
+            {
+                case JToken tokenValue:
+                    return tokenValue;
+
+                case string stringValue:
+                    return JsonUtils.Parse(stringValue);
+
+                case IEnumerable enumerableValue:
+                    return JArray.FromObject(enumerableValue);
+
+                default:
+                    return JObject.FromObject(value);
+            }
         }
 
         private bool DeepEquals(JToken value, JToken input)
