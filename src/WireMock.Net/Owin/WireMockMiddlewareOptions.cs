@@ -51,5 +51,8 @@ namespace WireMock.Owin
 
         /// <inheritdoc cref="IWireMockMiddlewareOptions.DisableRequestBodyDecompressing"/>
         public bool? DisableRequestBodyDecompressing { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.HandleRequestsSynchronously"/>
+        public bool? HandleRequestsSynchronously { get; set; }
     }
 }

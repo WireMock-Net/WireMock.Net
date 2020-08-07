@@ -36,7 +36,8 @@ namespace WireMock.Settings
                 AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
                 AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods"),
                 AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
-                DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing")
+                DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
+                HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously")
             };
 
             if (logger != null)

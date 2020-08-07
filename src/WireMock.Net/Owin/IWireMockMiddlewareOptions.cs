@@ -45,5 +45,7 @@ namespace WireMock.Owin
         bool? DisableJsonBodyParsing { get; set; }
 
         bool? DisableRequestBodyDecompressing { get; set; }
+
+        bool? HandleRequestsSynchronously { get; set; }
     }
 }

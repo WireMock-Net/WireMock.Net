@@ -143,7 +143,7 @@ namespace WireMock.Settings
         /// - false : also null, 0, empty or invalid HttpStatus codes are allowed.
         /// - true  : only codes defined in <see cref="System.Net.HttpStatusCode"/> are allowed.
         /// </summary>
-        /// [PublicAPI]
+        [PublicAPI]
         bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
 
         /// <summary>
@@ -157,5 +157,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         bool? DisableRequestBodyDecompressing { get; set; }
+
+        /// <summary>
+        /// Handle all requests synchronously. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? HandleRequestsSynchronously { get; set; }
     }
 }
