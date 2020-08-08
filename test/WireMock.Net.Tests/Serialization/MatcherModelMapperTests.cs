@@ -65,8 +65,19 @@ namespace WireMock.Net.Tests.Serialization
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
         }
 
-        [Fact]
-        public void MatcherModelMapper_Map_ExactMatcher_Throw()
+        [Theory]
+        [InlineData(nameof(LinqMatcher))]
+        [InlineData(nameof(ExactMatcher))]
+        [InlineData(nameof(ExactObjectMatcher))]
+        [InlineData(nameof(RegexMatcher))]
+        [InlineData(nameof(JsonMatcher))]
+        [InlineData(nameof(JsonPathMatcher))]
+        [InlineData(nameof(JmesPathMatcher))]
+        [InlineData(nameof(XPathMatcher))]
+        [InlineData(nameof(WildcardMatcher))]
+        [InlineData(nameof(ContentTypeMatcher))]
+        [InlineData(nameof(SimMetricsMatcher))]
+        public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
         {
             // Assign
             var settings = new WireMockServerSettings
@@ -76,12 +87,12 @@ namespace WireMock.Net.Tests.Serialization
             var sut = new MatcherMapper(settings);
             var model = new MatcherModel
             {
-                Name = "ExactMatcher",
+                Name = name,
                 Patterns = new[] { "" }
             };
 
             // Act
-            var matcher = (ExactMatcher)sut.Map(model);
+            var matcher = sut.Map(model);
 
             // Assert
             matcher.ThrowException.Should().BeTrue();
