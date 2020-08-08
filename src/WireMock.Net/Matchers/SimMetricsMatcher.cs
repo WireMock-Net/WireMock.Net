@@ -56,7 +56,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein, bool throwException = false)
         {
             Check.NotNullOrEmpty(patterns, nameof(patterns));

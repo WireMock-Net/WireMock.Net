@@ -56,7 +56,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string[] patterns, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(patterns, nameof(patterns));

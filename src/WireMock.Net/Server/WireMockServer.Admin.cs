@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
@@ -274,7 +274,12 @@ namespace WireMock.Server
             if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
                 (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))
             {
-                var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { }, settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { });
+                var mapping = ToMapping(
+                    requestMessage,
+                    responseMessage,
+                    settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { },
+                    settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { }
+                );
 
                 if (settings.ProxyAndRecordSettings.SaveMapping)
                 {
@@ -314,20 +319,19 @@ namespace WireMock.Server
                 }
             });
 
-            bool matcherThrowsException = false;
-
+            bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, false, matcherThrowsException));
+                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, true, throwExceptionWhenMatcherFails));
                     break;
 
                 case BodyType.String:
-                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, matcherThrowsException, requestMessage.BodyData.BodyAsString));
+                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, requestMessage.BodyData.BodyAsString));
                     break;
 
                 case BodyType.Bytes:
-                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, matcherThrowsException));
+                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
                     break;
             }
 

@@ -45,7 +45,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false, bool throwException = false) :
             base(matchBehaviour, patterns, ignoreCase, throwException)
         {

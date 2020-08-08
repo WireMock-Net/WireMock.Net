@@ -39,47 +39,47 @@ namespace WireMock.Serialization
             string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.OfType<string>().ToArray() : new[] { matcher.Pattern as string };
             MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
-            bool matcherThrowsException = false;
+            bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
 
             switch (matcherName)
             {
                 case "CSharpCodeMatcher":
                     if (_settings.AllowCSharpCodeMatcher == true)
                     {
-                        return new CSharpCodeMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                        return new CSharpCodeMatcher(matchBehaviour, stringPatterns);
                     }
 
                     throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because IWireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
                 case "LinqMatcher":
-                    return new LinqMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                    return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "ExactMatcher":
-                    return new ExactMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                    return new ExactMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "ExactObjectMatcher":
-                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], matcherThrowsException);
+                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
 
                 case "RegexMatcher":
-                    return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, matcherThrowsException);
+                    return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonMatcher":
-                    return new JsonMatcher(matchBehaviour, matcher.Pattern, ignoreCase, matcherThrowsException);
+                    return new JsonMatcher(matchBehaviour, matcher.Pattern, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPathMatcher":
-                    return new JsonPathMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                    return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "JmesPathMatcher":
-                    return new JmesPathMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                    return new JmesPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "XPathMatcher":
-                    return new XPathMatcher(matchBehaviour, matcherThrowsException, stringPatterns);
+                    return new XPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "WildcardMatcher":
-                    return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, matcherThrowsException);
+                    return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "ContentTypeMatcher":
-                    return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, matcherThrowsException);
+                    return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "SimMetricsMatcher":
                     SimMetricType type = SimMetricType.Levenstein;
@@ -88,7 +88,7 @@ namespace WireMock.Serialization
                         throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
                     }
 
-                    return new SimMetricsMatcher(matchBehaviour, stringPatterns, type, matcherThrowsException);
+                    return new SimMetricsMatcher(matchBehaviour, stringPatterns, type, throwExceptionWhenMatcherFails);
 
                 default:
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");

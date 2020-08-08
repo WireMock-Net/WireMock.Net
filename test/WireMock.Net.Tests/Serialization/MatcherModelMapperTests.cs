@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
@@ -43,7 +44,8 @@ namespace WireMock.Net.Tests.Serialization
             var matcher = (ExactMatcher)_sut.Map(model);
 
             // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x");
+            matcher.GetPatterns().Should().ContainSingle("x");
+            matcher.ThrowException.Should().BeFalse();
         }
 
         [Fact]
@@ -61,6 +63,28 @@ namespace WireMock.Net.Tests.Serialization
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_ExactMatcher_Throw()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ThrowExceptionWhenMatcherFails = true
+            };
+            var sut = new MatcherMapper(settings);
+            var model = new MatcherModel
+            {
+                Name = "ExactMatcher",
+                Patterns = new[] { "" }
+            };
+
+            // Act
+            var matcher = (ExactMatcher)sut.Map(model);
+
+            // Assert
+            matcher.ThrowException.Should().BeTrue();
         }
 
         [Fact]

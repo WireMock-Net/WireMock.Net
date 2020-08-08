@@ -30,7 +30,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="values">The values.</param>
         public ExactMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] values)
         {

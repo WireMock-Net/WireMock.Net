@@ -30,7 +30,7 @@ namespace WireMock.Matchers
         /// <summary>
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
         public JmesPathMatcher(bool throwException = false, [NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, throwException, patterns)
         {
@@ -40,7 +40,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
         public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
         {

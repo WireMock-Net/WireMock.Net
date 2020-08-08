@@ -38,7 +38,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="CSharpCodeMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public CSharpCodeMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        public CSharpCodeMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
         {
         }
 
@@ -46,14 +46,13 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="CSharpCodeMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
         /// <param name="patterns">The patterns.</param>
-        public CSharpCodeMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
+        public CSharpCodeMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
-            ThrowException = throwException;
+            ThrowException = false;
             _patterns = patterns;
         }
 

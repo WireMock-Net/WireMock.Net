@@ -35,7 +35,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="value">The string value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public JsonMatcher([NotNull] string value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
         {
         }
@@ -45,7 +45,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="value">The object value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public JsonMatcher([NotNull] object value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
         {
         }
@@ -56,7 +56,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The string value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] string value, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(value, nameof(value));
@@ -75,7 +75,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="value">The object value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        /// <param name="throwException">Throw an exception in case the internal matching fails.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(value, nameof(value));

@@ -199,7 +199,7 @@ namespace WireMock.Net.Tests.RequestMatchers
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
-            var matcher = new RequestMessageBodyMatcher(new CSharpCodeMatcher(MatchBehaviour.AcceptOnMatch, false, "return it.value == 42;"));
+            var matcher = new RequestMessageBodyMatcher(new CSharpCodeMatcher(MatchBehaviour.AcceptOnMatch, "return it.value == 42;"));
 
             // Act
             var result = new RequestMatchResult();
