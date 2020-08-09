@@ -119,8 +119,10 @@ namespace WireMock.Matchers
             }
             catch
             {
-                // just ignore exception
-                // TODO add logging?
+                if (ThrowException)
+                {
+                    throw;
+                }
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
