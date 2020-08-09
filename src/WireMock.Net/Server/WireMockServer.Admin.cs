@@ -346,12 +346,13 @@ namespace WireMock.Server
         {
             var model = new SettingsModel
             {
-                AllowPartialMapping = _options.AllowPartialMapping,
-                MaxRequestLogCount = _options.MaxRequestLogCount,
-                RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
+                AllowPartialMapping = _settings.AllowPartialMapping,
+                MaxRequestLogCount = _settings.MaxRequestLogCount,
+                RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
                 GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
-                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods,
-                HandleRequestsSynchronously = _options.HandleRequestsSynchronously
+                AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods,
+                HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
+                ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails
             };
 
             return ToJson(model);
@@ -381,6 +382,11 @@ namespace WireMock.Server
             if (settings.HandleRequestsSynchronously != null)
             {
                 _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously.Value;
+            }
+
+            if (settings.ThrowExceptionWhenMatcherFails != null)
+            {
+                _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails.Value;
             }
 
             return ResponseMessageBuilder.Create("Settings updated");
