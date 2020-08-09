@@ -1,11 +1,10 @@
-﻿using HandlebarsDotNet;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HandlebarsDotNet;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
