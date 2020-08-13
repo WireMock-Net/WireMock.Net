@@ -1,3 +1,8 @@
+# 1.2.18 (13 August 2020)
+- [#496](https://github.com/WireMock-Net/WireMock.Net/pull/496) - Add setting to handle requests synchronously [feature] contributed by [StefH](https://github.com/StefH)
+- [#500](https://github.com/WireMock-Net/WireMock.Net/pull/500) - Add ThrowExceptionWhenMatcherFails option to all Matchers [feature] contributed by [StefH](https://github.com/StefH)
+- [#478](https://github.com/WireMock-Net/WireMock.Net/issues/478) - Sometimes returns status code 0 in unit tests with xunit test fixture (flaky test) [bug]
+
 # 1.2.17 (01 August 2020)
 - [#495](https://github.com/WireMock-Net/WireMock.Net/pull/495) - Scenario : stay on current state for a number of times contributed by [StefH](https://github.com/StefH)
 - [#494](https://github.com/WireMock-Net/WireMock.Net/issues/494) - Stay in Current State for specified number of requests [feature]
