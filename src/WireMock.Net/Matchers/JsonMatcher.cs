@@ -1,8 +1,8 @@
-﻿using JetBrains.Annotations;
+﻿using System.Collections;
+using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Linq;
 using WireMock.Util;
 using WireMock.Validation;
 
@@ -25,12 +25,18 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
         public bool IgnoreCase { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
+        private readonly JToken _valueAsJToken;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
         /// <param name="value">The string value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        public JsonMatcher([NotNull] string value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        public JsonMatcher([NotNull] string value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
         {
         }
 
@@ -39,7 +45,8 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="value">The object value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        public JsonMatcher([NotNull] object value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        public JsonMatcher([NotNull] object value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
         {
         }
 
@@ -47,30 +54,19 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="value">The string value to check for equality.</param>
+        /// <param name="value">The value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] string value, bool ignoreCase = false)
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
-            Value = value;
             IgnoreCase = ignoreCase;
-        }
+            ThrowException = throwException;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="value">The object value to check for equality.</param>
-        /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-        public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false)
-        {
-            Check.NotNull(value, nameof(value));
-
-            MatchBehaviour = matchBehaviour;
             Value = value;
-            IgnoreCase = ignoreCase;
+            _valueAsJToken = ConvertValueToJToken(value);
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
@@ -83,39 +79,39 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    // Check if JToken or object
-                    JToken jtokenInput = input is JToken tokenInput ? tokenInput : JObject.FromObject(input);
+                    var inputAsJToken = ConvertValueToJToken(input);
 
-                    // Check if JToken, string, IEnumerable or object
-                    JToken jtokenValue;
-                    switch (Value)
-                    {
-                        case JToken tokenValue:
-                            jtokenValue = tokenValue;
-                            break;
-
-                        case string stringValue:
-                            jtokenValue = JsonUtils.Parse(stringValue);
-                            break;
-
-                        case IEnumerable enumerableValue:
-                            jtokenValue = JArray.FromObject(enumerableValue);
-                            break;
-
-                        default:
-                            jtokenValue = JObject.FromObject(Value);
-                            break;
-                    }
-
-                    match = DeepEquals(jtokenValue, jtokenInput);
+                    match = DeepEquals(_valueAsJToken, inputAsJToken);
                 }
                 catch (JsonException)
                 {
-                    // just ignore JsonException
+                    if (ThrowException)
+                    {
+                        throw;
+                    }
                 }
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        }
+
+        private static JToken ConvertValueToJToken(object value)
+        {
+            // Check if JToken, string, IEnumerable or object
+            switch (value)
+            {
+                case JToken tokenValue:
+                    return tokenValue;
+
+                case string stringValue:
+                    return JsonUtils.Parse(stringValue);
+
+                case IEnumerable enumerableValue:
+                    return JArray.FromObject(enumerableValue);
+
+                default:
+                    return JObject.FromObject(value);
+            }
         }
 
         private bool DeepEquals(JToken value, JToken input)

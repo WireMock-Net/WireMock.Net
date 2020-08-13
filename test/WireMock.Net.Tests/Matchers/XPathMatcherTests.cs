@@ -57,7 +57,7 @@ namespace WireMock.Net.Tests.Matchers
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                     </todo-list>";
-            var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, "/todo-list[count(todo-item) = 1]");
+            var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, false, "/todo-list[count(todo-item) = 1]");
 
             // Act
             double result = matcher.IsMatch(xml);

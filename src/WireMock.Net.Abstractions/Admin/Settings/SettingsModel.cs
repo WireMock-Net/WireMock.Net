@@ -26,13 +26,18 @@
         public int? MaxRequestLogCount { get; set; }
 
         /// <summary>
-        /// Gets or sets wether to allow a body for all HTTP methods.
+        /// Allow a Body for all HTTP Methods. (default set to false).
         /// </summary>
         public bool? AllowBodyForAllHttpMethods { get; set; }
 
         /// <summary>
-        /// Gets or sets wether to handle all requests synchronously.
+        /// Handle all requests synchronously. (default set to false).
         /// </summary>
         public bool? HandleRequestsSynchronously { get; set; }
+
+        /// <summary>
+        /// Throw an exception when the Matcher fails because of invalid input. (default set to false).
+        /// </summary>
+        public bool? ThrowExceptionWhenMatcherFails { get; set; }
     }
 }

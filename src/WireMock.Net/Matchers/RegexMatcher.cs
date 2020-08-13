@@ -19,6 +19,9 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexMatcher"/> class.
         /// </summary>
@@ -53,13 +56,15 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string[] patterns, bool ignoreCase = false)
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string[] patterns, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(patterns, nameof(patterns));
 
             _patterns = patterns;
             IgnoreCase = ignoreCase;
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
 
             RegexOptions options = RegexOptions.Compiled | RegexOptions.Multiline;
 
@@ -83,10 +88,13 @@ namespace WireMock.Matchers
                 }
                 catch (Exception)
                 {
-                    // just ignore exception
+                    if (ThrowException)
+                    {
+                        throw;
+                    }
                 }
             }
-            
+
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 

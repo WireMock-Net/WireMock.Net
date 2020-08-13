@@ -1,5 +1,5 @@
-﻿using HandlebarsDotNet;
-using System;
+﻿using System;
+using HandlebarsDotNet;
 using WireMock.Handlers;
 
 namespace WireMock.Transformers

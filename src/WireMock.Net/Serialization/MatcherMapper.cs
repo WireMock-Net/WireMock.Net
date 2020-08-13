@@ -38,6 +38,8 @@ namespace WireMock.Serialization
 
             string[] stringPatterns = matcher.Patterns != null ? matcher.Patterns.OfType<string>().ToArray() : new[] { matcher.Pattern as string };
             MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+            bool ignoreCase = matcher.IgnoreCase == true;
+            bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
 
             switch (matcherName)
             {
@@ -50,34 +52,34 @@ namespace WireMock.Serialization
                     throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because IWireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
                 case "LinqMatcher":
-                    return new LinqMatcher(matchBehaviour, stringPatterns);
+                    return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "ExactMatcher":
-                    return new ExactMatcher(matchBehaviour, stringPatterns);
+                    return new ExactMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "ExactObjectMatcher":
-                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
+                    return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
 
                 case "RegexMatcher":
-                    return new RegexMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
+                    return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonMatcher":
-                    return new JsonMatcher(matchBehaviour, matcher.Pattern, matcher.IgnoreCase == true);
+                    return new JsonMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPathMatcher":
-                    return new JsonPathMatcher(matchBehaviour, stringPatterns);
+                    return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "JmesPathMatcher":
-                    return new JmesPathMatcher(matchBehaviour, stringPatterns);
+                    return new JmesPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "XPathMatcher":
-                    return new XPathMatcher(matchBehaviour, stringPatterns);
+                    return new XPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
                 case "WildcardMatcher":
-                    return new WildcardMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
+                    return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "ContentTypeMatcher":
-                    return new ContentTypeMatcher(matchBehaviour, stringPatterns, matcher.IgnoreCase == true);
+                    return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "SimMetricsMatcher":
                     SimMetricType type = SimMetricType.Levenstein;
@@ -86,14 +88,14 @@ namespace WireMock.Serialization
                         throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
                     }
 
-                    return new SimMetricsMatcher(matchBehaviour, stringPatterns, type);
+                    return new SimMetricsMatcher(matchBehaviour, stringPatterns, type, throwExceptionWhenMatcherFails);
 
                 default:
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
         }
 
-        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern)
+        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern, bool throwException)
         {
             byte[] bytePattern;
             try
@@ -105,7 +107,7 @@ namespace WireMock.Serialization
                 throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
             }
 
-            return new ExactObjectMatcher(matchBehaviour, bytePattern);
+            return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
         }
 
         public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)

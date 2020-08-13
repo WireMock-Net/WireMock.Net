@@ -18,11 +18,14 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
+        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
         {
         }
 
@@ -30,12 +33,14 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] patterns)
+        public JsonPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
+            ThrowException = throwException;
             _patterns = patterns;
         }
 
@@ -52,7 +57,10 @@ namespace WireMock.Matchers
                 }
                 catch (JsonException)
                 {
-                    // just ignore JsonException
+                    if (ThrowException)
+                    {
+                        throw;
+                    }
                 }
             }
 
@@ -75,7 +83,10 @@ namespace WireMock.Matchers
                 }
                 catch (JsonException)
                 {
-                    // just ignore JsonException
+                    if (ThrowException)
+                    {
+                        throw;
+                    }
                 }
             }
 

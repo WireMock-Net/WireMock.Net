@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
@@ -274,7 +274,12 @@ namespace WireMock.Server
             if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
                 (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))
             {
-                var mapping = ToMapping(requestMessage, responseMessage, settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { }, settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { });
+                var mapping = ToMapping(
+                    requestMessage,
+                    responseMessage,
+                    settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { },
+                    settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { }
+                );
 
                 if (settings.ProxyAndRecordSettings.SaveMapping)
                 {
@@ -314,18 +319,19 @@ namespace WireMock.Server
                 }
             });
 
+            bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
             switch (requestMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson));
+                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, true, throwExceptionWhenMatcherFails));
                     break;
 
                 case BodyType.String:
-                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsString));
+                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, requestMessage.BodyData.BodyAsString));
                     break;
 
                 case BodyType.Bytes:
-                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes));
+                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
                     break;
             }
 
@@ -340,12 +346,13 @@ namespace WireMock.Server
         {
             var model = new SettingsModel
             {
-                AllowPartialMapping = _options.AllowPartialMapping,
-                MaxRequestLogCount = _options.MaxRequestLogCount,
-                RequestLogExpirationDuration = _options.RequestLogExpirationDuration,
+                AllowPartialMapping = _settings.AllowPartialMapping,
+                MaxRequestLogCount = _settings.MaxRequestLogCount,
+                RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
                 GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
-                AllowBodyForAllHttpMethods = _options.AllowBodyForAllHttpMethods,
-                HandleRequestsSynchronously = _options.HandleRequestsSynchronously
+                AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods,
+                HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
+                ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails
             };
 
             return ToJson(model);
@@ -375,6 +382,11 @@ namespace WireMock.Server
             if (settings.HandleRequestsSynchronously != null)
             {
                 _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously.Value;
+            }
+
+            if (settings.ThrowExceptionWhenMatcherFails != null)
+            {
+                _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails.Value;
             }
 
             return ResponseMessageBuilder.Create("Settings updated");

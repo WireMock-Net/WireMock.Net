@@ -117,5 +117,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.HandleRequestsSynchronously"/>
         [PublicAPI]
         public bool? HandleRequestsSynchronously { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.ThrowExceptionWhenMatcherFails"/>
+        [PublicAPI]
+        public bool? ThrowExceptionWhenMatcherFails { get; set; }
     }
 }

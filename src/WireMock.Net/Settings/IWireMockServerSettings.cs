@@ -3,6 +3,7 @@ using HandlebarsDotNet;
 using JetBrains.Annotations;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
 
 namespace WireMock.Settings
 {
@@ -163,5 +164,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         bool? HandleRequestsSynchronously { get; set; }
+
+        /// <summary>
+        /// Throw an exception when the <see cref="IMatcher"/> fails because of invalid input. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        bool? ThrowExceptionWhenMatcherFails { get; set; }
     }
 }

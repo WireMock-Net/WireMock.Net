@@ -29,6 +29,9 @@ namespace WireMock.Matchers
 
         public MatchBehaviour MatchBehaviour { get; }
 
+        /// <inheritdoc cref="IMatcher.ThrowException"/>
+        public bool ThrowException { get; }
+
         private readonly string[] _patterns;
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace WireMock.Matchers
             Check.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
+            ThrowException = false;
             _patterns = patterns;
         }
 
@@ -156,7 +160,7 @@ namespace WireMock.Matchers
 #if NETSTANDARD2_0
                 script = csscript.GenericExtensions.CreateObject(assembly, "*");
 #else
-                script = CSScriptLib.ReflectionExtensions.CreateObject(assembly,"*");
+                script = CSScriptLib.ReflectionExtensions.CreateObject(assembly, "*");
 #endif
             }
             catch (Exception ex)
