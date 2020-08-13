@@ -833,9 +833,9 @@ namespace WireMock.Server
 
             if (requestModel.Params != null)
             {
-                foreach (var paramModel in requestModel.Params.Where(c => c.Matchers != null))
+                foreach (var paramModel in requestModel.Params.Where(p => p != null && p.Matchers != null))
                 {
-                    bool ignoreCase = paramModel?.IgnoreCase ?? false;
+                    bool ignoreCase = paramModel.IgnoreCase == true;
                     requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
             }

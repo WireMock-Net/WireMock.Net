@@ -60,7 +60,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public static IResponseBuilder Create([CanBeNull] ResponseMessage responseMessage = null)
         {
-            var message = responseMessage ?? new ResponseMessage(); // { StatusCode = (int)HttpStatusCode.OK };
+            var message = responseMessage ?? new ResponseMessage();
             return new Response(message);
         }
 

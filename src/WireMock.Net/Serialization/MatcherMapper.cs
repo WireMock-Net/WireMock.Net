@@ -95,21 +95,6 @@ namespace WireMock.Serialization
             }
         }
 
-        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern, bool throwException)
-        {
-            byte[] bytePattern;
-            try
-            {
-                bytePattern = Convert.FromBase64String(stringPattern);
-            }
-            catch
-            {
-                throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
-            }
-
-            return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
-        }
-
         public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
         {
             return matchers?.Select(Map).Where(m => m != null).ToArray();
@@ -153,6 +138,21 @@ namespace WireMock.Serialization
                 Pattern = patterns.Length == 1 ? patterns.First() : null,
                 Patterns = patterns.Length > 1 ? patterns : null
             };
+        }
+
+        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern, bool throwException)
+        {
+            byte[] bytePattern;
+            try
+            {
+                bytePattern = Convert.FromBase64String(stringPattern);
+            }
+            catch
+            {
+                throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
+            }
+
+            return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
         }
     }
 }

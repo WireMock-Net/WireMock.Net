@@ -1,6 +1,4 @@
-﻿using HandlebarsDotNet;
-
-namespace WireMock.Transformers
+﻿namespace WireMock.Transformers
 {
     interface IHandlebarsContextFactory
     {

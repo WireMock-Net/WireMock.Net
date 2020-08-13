@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;

@@ -35,21 +35,13 @@ namespace WireMock
         /// <inheritdoc cref="IResponseMessage.FaultPercentage" />
         public double? FaultPercentage { get; set; }
 
-        /// <summary>
-        /// Adds the header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
+        /// <inheritdoc cref="IResponseMessage.AddHeader(string, string)" />
         public void AddHeader(string name, string value)
         {
             Headers.Add(name, new WireMockList<string>(value));
         }
 
-        /// <summary>
-        /// Adds the header.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="values">The values.</param>
+        /// <inheritdoc cref="IResponseMessage.AddHeader(string, string[])" />
         public void AddHeader(string name, params string[] values)
         {
             Check.NotNullOrEmpty(values, nameof(values));

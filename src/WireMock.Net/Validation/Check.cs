@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using JetBrains.Annotations;
 
 // Copied from https://github.com/aspnet/EntityFramework/blob/dev/src/Shared/Check.cs
@@ -96,19 +95,6 @@ namespace WireMock.Validation
             return value;
         }
 
-        //public static string NullButNotEmpty(string value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
-        //{
-        //    if (!ReferenceEquals(value, null)
-        //        && (value.Length == 0))
-        //    {
-        //        NotNullOrEmpty(parameterName, nameof(parameterName));
-
-        //        throw new ArgumentException(CoreStrings.ArgumentIsEmpty(parameterName));
-        //    }
-
-        //    return value;
-        //}
-
         public static IList<T> HasNoNulls<T>(IList<T> value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
             where T : class
         {
@@ -123,17 +109,5 @@ namespace WireMock.Validation
 
             return value;
         }
-
-        //public static Type ValidEntityType(Type value, [InvokerParameterName, ValidatedNotNull, NotNull] string parameterName)
-        //{
-        //    if (!value.GetTypeInfo().IsClass)
-        //    {
-        //        NotNullOrEmpty(parameterName, nameof(parameterName));
-
-        //        throw new ArgumentException(CoreStrings.InvalidEntityType(value, parameterName));
-        //    }
-
-        //    return value;
-        //}
     }
 }

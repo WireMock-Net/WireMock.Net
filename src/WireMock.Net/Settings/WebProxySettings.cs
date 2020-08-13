@@ -2,6 +2,7 @@
 
 namespace WireMock.Settings
 {
+    /// <seealso cref="IWebProxySettings" />
     public class WebProxySettings : IWebProxySettings
     {
         /// <inheritdoc cref="IWebProxySettings.Address"/>

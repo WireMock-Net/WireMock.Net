@@ -1,5 +1,8 @@
 ﻿namespace WireMock.Settings
 {
+    /// <summary>
+    /// IWebProxySettings
+    /// </summary>
     public interface IWebProxySettings
     {
         /// <summary>

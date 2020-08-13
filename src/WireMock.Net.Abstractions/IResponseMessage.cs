@@ -45,7 +45,18 @@ namespace WireMock
         /// </summary>
         object StatusCode { get; }
 
-        //void AddHeader(string name, params string[] values);
-        //void AddHeader(string name, string value);
+        /// <summary>
+        /// Adds the header.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        void AddHeader(string name, string value);
+
+        /// <summary>
+        /// Adds the header.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="values">The values.</param>
+        void AddHeader(string name, params string[] values);
     }
 }

@@ -184,6 +184,17 @@ namespace WireMock.Server
                 ReadStaticMappings = true
             });
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WireMockServer"/> class.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <exception cref="WireMockException">
+        /// Service start failed with error: {_httpServer.RunningException.Message}
+        /// or
+        /// Service start failed with error: {startTask.Exception.Message}
+        /// </exception>
+        /// <exception cref="TimeoutException">Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}</exception>
         protected WireMockServer(IWireMockServerSettings settings)
         {
             _settings = settings;
@@ -422,7 +433,7 @@ namespace WireMock.Server
         {
             _options.Scenarios.Clear();
         }
-        
+
         /// <inheritdoc cref="IWireMockServer.WithMapping(MappingModel[])" />
         [PublicAPI]
         public IWireMockServer WithMapping(params MappingModel[] mappings)

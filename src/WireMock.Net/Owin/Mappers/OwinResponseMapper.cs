@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
-using WireMock.Exceptions;
-using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
