@@ -162,6 +162,27 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_As_String()
+        {
+            // Assign
+            var pattern1 = "{ \"AccountIds\": [ 1, 2, 3 ] }";
+            var pattern2 = "{ \"X\": \"x\" }";
+            var patterns = new[] { pattern1, pattern2 };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Pattern = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
         public void MatcherMapper_Map_MatcherModel_JsonMatcher_Pattern_As_Object()
         {
             // Assign
