@@ -36,10 +36,7 @@ namespace WireMock.Serialization
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
-            object[] objectPatterns = matcher.Patterns != null ? matcher.Patterns.ToArray() : new[] { matcher.Pattern };
-            string[] stringPatterns = objectPatterns.OfType<string>().ToArray();
-            bool stringPatternsValid = stringPatterns.Length > 0;
-
+            string[] stringPatterns = (matcher.Patterns != null ? matcher.Patterns : new[] { matcher.Pattern }).OfType<string>().ToArray();
             MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
             bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
@@ -67,7 +64,7 @@ namespace WireMock.Serialization
                     return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonMatcher":
-                    object value = stringPatternsValid ? stringPatterns : objectPatterns;
+                    object value = matcher.Pattern ?? matcher.Patterns;
                     return new JsonMatcher(matchBehaviour, value, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPathMatcher":
