@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
@@ -39,14 +38,12 @@ namespace WireMock.Settings
         /// <summary>
         /// Defines a list from headers which will be excluded from the saved mappings.
         /// </summary>
-        [Obsolete("Will be renamed to ExcludedHeaders in next version (1.3.x)")]
-        string[] BlackListedHeaders { get; set; }
+        string[] ExcludedHeaders { get; set; }
 
         /// <summary>
         /// Defines a list of cookies which will be excluded from the saved mappings.
         /// </summary>
-        [Obsolete("Will be renamed to ExcludedCookies in next version (1.3.x)")]
-        string[] BlackListedCookies { get; set; }
+        string[] ExcludedCookies { get; set; }
 
         /// <summary>
         /// Defines the WebProxySettings.

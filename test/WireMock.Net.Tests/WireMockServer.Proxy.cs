@@ -139,7 +139,7 @@ namespace WireMock.Net.Tests
                     Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedHeaders = new[] { "excluded-header-X" }
+                    ExcludedHeaders = new[] { "excluded-header-X" }
                 }
             };
             var server = WireMockServer.Start(settings);
@@ -181,7 +181,7 @@ namespace WireMock.Net.Tests
                     Url = serverForProxyForwarding.Urls[0],
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedCookies = new[] { "ASP.NET_SessionId" }
+                    ExcludedCookies = new[] { "ASP.NET_SessionId" }
                 }
             };
             var server = WireMockServer.Start(settings);

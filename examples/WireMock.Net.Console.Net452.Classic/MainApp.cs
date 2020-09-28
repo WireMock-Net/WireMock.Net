@@ -133,7 +133,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithPath("/proxy-execute-keep-alive")
                 )
                 .RespondWith(Response.Create()
-                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", BlackListedHeaders = new[] { "Keep-Alive" } })
+                    .WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999", ExcludedHeaders = new[] { "Keep-Alive" } })
                     .WithHeader("Keep-Alive-Test", "stef")
                 );
 

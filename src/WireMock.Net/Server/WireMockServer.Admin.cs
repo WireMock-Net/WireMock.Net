@@ -277,8 +277,8 @@ namespace WireMock.Server
                 var mapping = ToMapping(
                     requestMessage,
                     responseMessage,
-                    settings.ProxyAndRecordSettings.BlackListedHeaders ?? new string[] { },
-                    settings.ProxyAndRecordSettings.BlackListedCookies ?? new string[] { }
+                    settings.ProxyAndRecordSettings.ExcludedHeaders ?? new string[] { },
+                    settings.ProxyAndRecordSettings.ExcludedCookies ?? new string[] { }
                 );
 
                 if (settings.ProxyAndRecordSettings.SaveMapping)

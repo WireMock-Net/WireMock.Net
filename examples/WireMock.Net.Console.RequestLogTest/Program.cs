@@ -14,7 +14,7 @@ namespace WireMock.Net.Console.RequestLogTest
     {
         static async Task Main(string[] args)
         {
-            var server = StandAloneApp.Start(new FluentMockServerSettings
+            var server = StandAloneApp.Start(new WireMockServerSettings
             {
                 Port = 19019,
                 StartAdminInterface = true,
