@@ -70,8 +70,8 @@ namespace WireMock.Settings
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                     SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
-                    BlackListedHeaders = parser.GetValues("BlackListedHeaders"),
-                    BlackListedCookies = parser.GetValues("BlackListedCookies"),
+                    ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
+                    ExcludedCookies = parser.GetValues("ExcludedCookies"),
                     AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect")
                 };
 

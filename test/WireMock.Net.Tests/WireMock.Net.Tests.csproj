@@ -44,17 +44,17 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
     <PackageReference Include="RestEase" Version="1.4.10" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.10" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="Moq" Version="4.14.5" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NFluent" Version="2.7.0" />
     <PackageReference Include="OpenCover" Version="4.7.922" />
-    <PackageReference Include="ReportGenerator" Version="4.5.4" />
+    <PackageReference Include="ReportGenerator" Version="4.6.7" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

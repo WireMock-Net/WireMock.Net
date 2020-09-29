@@ -280,8 +280,8 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XPath2, Version=1.0.7.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\XPath2.1.0.6.1\lib\net40\XPath2.dll</HintPath>
+    <Reference Include="XPath2, Version=1.1.0.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\XPath2.1.1.0\lib\net40\XPath2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

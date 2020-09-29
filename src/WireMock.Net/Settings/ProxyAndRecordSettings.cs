@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
@@ -40,15 +39,13 @@ namespace WireMock.Settings
         [PublicAPI]
         public string ClientX509Certificate2ThumbprintOrSubjectName { get; set; }
 
-        /// <inheritdoc cref="IProxyAndRecordSettings.BlackListedHeaders"/>
+        /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedHeaders"/>
         [PublicAPI]
-        [Obsolete("Will be renamed to ExcludedHeaders in next version (1.3.x)")]
-        public string[] BlackListedHeaders { get; set; }
+        public string[] ExcludedHeaders { get; set; }
 
-        /// <inheritdoc cref="IProxyAndRecordSettings.BlackListedCookies"/>
+        /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedCookies"/>
         [PublicAPI]
-        [Obsolete("Will be renamed to ExcludedCookies in next version (1.3.x)")]
-        public string[] BlackListedCookies { get; set; }
+        public string[] ExcludedCookies { get; set; }
 
         /// <inheritdoc cref="IProxyAndRecordSettings.WebProxySettings"/>
         [PublicAPI]

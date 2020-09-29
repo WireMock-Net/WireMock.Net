@@ -19,7 +19,7 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp
                     //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
                     SaveMapping = true,
                     SaveMappingToFile = false,
-                    BlackListedHeaders = new [] { "dnt", "Content-Length" }
+                    ExcludedHeaders = new [] { "dnt", "Content-Length" }
                 }
             });
 
