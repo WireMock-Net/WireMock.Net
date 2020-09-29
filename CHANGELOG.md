@@ -1,3 +1,8 @@
+# 1.3.0 (29 September 2020)
+- [#508](https://github.com/WireMock-Net/WireMock.Net/pull/508) - Fix vulnerability in NuGet dependencies contributed by [StefH](https://github.com/StefH)
+- [#327](https://github.com/WireMock-Net/WireMock.Net/issues/327) - Index must be within the bounds of the List - Bug [bug]
+- [#507](https://github.com/WireMock-Net/WireMock.Net/issues/507) - Fix vulnerability found in Microsoft.AspNetCore dependency [feature]
+
 # 1.2.18 (13 August 2020)
 - [#496](https://github.com/WireMock-Net/WireMock.Net/pull/496) - Add setting to handle requests synchronously [feature] contributed by [StefH](https://github.com/StefH)
 - [#500](https://github.com/WireMock-Net/WireMock.Net/pull/500) - Add ThrowExceptionWhenMatcherFails option to all Matchers [feature] contributed by [StefH](https://github.com/StefH)
