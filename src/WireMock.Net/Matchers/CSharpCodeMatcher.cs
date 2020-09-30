@@ -151,7 +151,7 @@ namespace WireMock.Matchers
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 
-#elif (NETSTANDARD2_0 || NETSTANDARD2_1 || USE_ASPNETCORE)
+#elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1)
             dynamic script;
             try
             {
