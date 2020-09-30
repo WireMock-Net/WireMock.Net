@@ -1,3 +1,6 @@
+# 1.3.1 (30 September 2020)
+- [#509](https://github.com/WireMock-Net/WireMock.Net/pull/509) - Adding netcoreapp3.1 as a target framework [feature] contributed by [APIWT](https://github.com/APIWT)
+
 # 1.3.0 (29 September 2020)
 - [#508](https://github.com/WireMock-Net/WireMock.Net/pull/508) - Fix vulnerability in NuGet dependencies contributed by [StefH](https://github.com/StefH)
 - [#327](https://github.com/WireMock-Net/WireMock.Net/issues/327) - Index must be within the bounds of the List - Bug [bug]

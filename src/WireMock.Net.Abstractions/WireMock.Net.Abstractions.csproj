@@ -4,7 +4,7 @@
     <Description>Commonly used interfaces, models, enumerations and types.</Description>
     <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>netstandard1.0;netstandard2.0;netstandard2.1;net45</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
     <PackageId>WireMock.Net.Abstractions</PackageId>
