@@ -1,22 +1,28 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WireMock.Net.WebApplication
 {
-    public class App
+    public class App : IHostedService
     {
         private readonly IWireMockService _service;
-        private readonly ILogger _logger;
         
-        public App(IWireMockService service, ILogger logger)
+        public App(IWireMockService service)
         {
             _service = service;
-            _logger = logger;
         }
 
-        public void Run()
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("WireMock.Net App running");
-            _service.Run();
+            _service.Start();
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _service.Stop();
+            return Task.CompletedTask;
         }
     }
 }
