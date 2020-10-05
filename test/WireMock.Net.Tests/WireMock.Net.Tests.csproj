@@ -80,6 +80,9 @@
     <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d87.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="__admin\mappings\351f0240-bba0-4bcb-93c6-1feba0fe8799.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="__admin\mappings\array.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

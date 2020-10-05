@@ -48,8 +48,8 @@ namespace WireMock.Net.Tests
             string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
             server.ReadStaticMappings(folder);
 
-            Check.That(server.Mappings).HasSize(5);
-            Check.That(server.MappingModels).HasSize(5);
+            Check.That(server.Mappings).HasSize(6);
+            Check.That(server.MappingModels).HasSize(6);
 
             // Act
             server.ResetMappings();
@@ -218,7 +218,7 @@ namespace WireMock.Net.Tests
             server.ReadStaticMappings(folder);
 
             var mappings = server.Mappings.ToArray();
-            Check.That(mappings).HasSize(5);
+            Check.That(mappings).HasSize(6);
         }
 
         [Fact]
