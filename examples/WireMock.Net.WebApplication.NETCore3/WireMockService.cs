@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
@@ -11,8 +11,7 @@ namespace WireMock.Net.WebApplication
 {
     public class WireMockService : IWireMockService
     {
-        private static int sleepTime = 30000;
-
+        private WireMockServer _server;
         private readonly ILogger _logger;
         private readonly WireMockServerSettings _settings;
 
@@ -57,27 +56,27 @@ namespace WireMock.Net.WebApplication
             }
         }
 
-        public WireMockService(ILogger logger, WireMockServerSettings settings)
+        public WireMockService(ILogger<WireMockService> logger, IOptions<WireMockServerSettings> settings)
         {
             _logger = logger;
-            _settings = settings;
+            _settings = settings.Value;
 
             _settings.Logger = new Logger(logger);
         }
 
-        public void Run()
+        public void Start()
         {
             _logger.LogInformation("WireMock.Net server starting");
 
-            WireMockServer.Start(_settings);
+            _server = WireMockServer.Start(_settings);
 
             _logger.LogInformation($"WireMock.Net server settings {JsonConvert.SerializeObject(_settings)}");
+        }
 
-            while (true)
-            {
-                _logger.LogInformation("WireMock.Net server running");
-                Thread.Sleep(sleepTime);
-            }
+        public void Stop()
+        {
+            _logger.LogInformation("WireMock.Net server stopping");
+            _server?.Stop();
         }
     }
 }

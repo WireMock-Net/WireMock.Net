@@ -2,6 +2,8 @@
 {
     public interface IWireMockService
     {
-        void Run();
+        void Start();
+
+        void Stop();
     }
 }
