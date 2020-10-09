@@ -14,6 +14,10 @@
     <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
   <Choose>
     <!-- The environment variable `Prerelease` is set in the azure-pipelines.yml file. -->
     <When Condition=" '$(Prerelease)' != '' ">
