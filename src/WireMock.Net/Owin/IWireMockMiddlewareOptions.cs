@@ -4,6 +4,7 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
+using WireMock.Settings;
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -21,6 +22,8 @@ namespace WireMock.Owin
         IStringMatcher AuthorizationMatcher { get; set; }
 
         bool? AllowPartialMapping { get; set; }
+
+        IPartialMappingSettings PartialMappingSettings { get; set; }
 
         ConcurrentDictionary<Guid, IMapping> Mappings { get; }
 

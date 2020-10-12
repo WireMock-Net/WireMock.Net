@@ -62,9 +62,9 @@ namespace WireMock.Server
         void AddGlobalProcessingDelay(TimeSpan delay);
 
         /// <summary>
-        /// Allows the partial mapping.
+        /// Set the partial mapping to allowed (if true, you can also provide 'enforceHttpMethod').
         /// </summary>
-        void AllowPartialMapping(bool allow = true);
+        void AllowPartialMapping(bool allow = true, bool enforceHttpMethod = false);
 
         /// <summary>
         /// Deletes a LogEntry.

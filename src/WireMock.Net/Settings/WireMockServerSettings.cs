@@ -53,6 +53,10 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool? AllowPartialMapping { get; set; }
 
+        /// <inheritdoc cref="IWireMockServerSettings.PartialMappingSettings"/>
+        [PublicAPI]
+        public IPartialMappingSettings PartialMappingSettings { get; set; }
+
         /// <inheritdoc cref="IWireMockServerSettings.AdminUsername"/>
         [PublicAPI]
         public string AdminUsername { get; set; }

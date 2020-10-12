@@ -283,7 +283,7 @@ namespace WireMock.Server
 
             if (settings.AllowPartialMapping == true)
             {
-                AllowPartialMapping();
+                AllowPartialMapping(true, settings.PartialMappingSettings);
             }
 
             if (settings.StartAdminInterface == true)
@@ -389,10 +389,21 @@ namespace WireMock.Server
 
         /// <inheritdoc cref="IWireMockServer.AllowPartialMapping" />
         [PublicAPI]
-        public void AllowPartialMapping(bool allow = true)
+        public void AllowPartialMapping(bool allow = true, bool enforceHttpMethod = false)
+        {
+            AllowPartialMapping(allow, new PartialMappingSettings
+            {
+                EnforceHttpMethod = enforceHttpMethod
+            });
+        }
+
+        /// <inheritdoc cref="IWireMockServer.AllowPartialMapping" />
+        [PublicAPI]
+        public void AllowPartialMapping(bool allow = true, IPartialMappingSettings partialMappingSettings = null)
         {
             _settings.Logger.Info("AllowPartialMapping is set to {0}", allow);
             _options.AllowPartialMapping = allow;
+            _options.PartialMappingSettings = partialMappingSettings;
         }
 
         /// <inheritdoc cref="IWireMockServer.SetBasicAuthentication" />

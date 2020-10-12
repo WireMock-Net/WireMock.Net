@@ -367,6 +367,7 @@ namespace WireMock.Server
             if (settings.AllowPartialMapping != null)
             {
                 _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
+                // TODO stef _options.PartialMappingSettings = settings.
             }
 
             if (settings.GlobalProcessingDelay != null)

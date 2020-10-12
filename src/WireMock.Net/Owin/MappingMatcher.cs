@@ -42,6 +42,16 @@ namespace WireMock.Owin
                 .OrderBy(m => m.RequestMatchResult)
                 .ThenBy(m => m.Mapping.Priority)
                 .ToList();
+
+            if (_options.PartialMappingSettings?.EnforceHttpMethod == true)
+            {
+                // Check if any partialMappings contain a HttpMethodMatcher, and check if this returns a 0
+                foreach (var partialMapping in partialMappings)
+                {
+                    
+                }
+            }
+
             var partialMatch = partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
 
             if (_options.AllowPartialMapping == true)

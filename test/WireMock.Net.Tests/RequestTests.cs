@@ -1,5 +1,6 @@
-﻿using NFluent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using NFluent;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
@@ -12,6 +13,34 @@ namespace WireMock.Net.Tests
     public class RequestTests
     {
         private const string ClientIp = "::1";
+
+        [Fact]
+        public void Should_Match_When_Verb_Does_Match()
+        {
+            // Arrange
+            var requestPut = Request.Create().WithPath("/bar").UsingPut();
+
+            // Act
+            var request = new RequestMessage(new UrlDetails("http://localhost/bar"), "PUT", ClientIp);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            requestPut.GetMatchingScore(request, requestMatchResult).Should().Be(1.0);
+        }
+
+        [Fact]
+        public void Should_NotMatch_When_Verb_Does_Not_Match()
+        {
+            // Arrange
+            var requestGet = Request.Create().WithPath("/bar").UsingGet();
+
+            // Act
+            var request = new RequestMessage(new UrlDetails("http://localhost/bar"), "PUT", ClientIp);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            requestGet.GetMatchingScore(request, requestMatchResult).Should().Be(0.0);
+        }
 
         [Fact]
         public void Should_exclude_requests_matching_given_http_method_but_not_url()

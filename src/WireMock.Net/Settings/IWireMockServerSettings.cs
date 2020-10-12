@@ -74,6 +74,12 @@ namespace WireMock.Settings
         bool? AllowPartialMapping { get; set; }
 
         /// <summary>
+        /// Gets or sets the partial mapping settings (optional).
+        /// </summary>
+        [PublicAPI]
+        IPartialMappingSettings PartialMappingSettings { get; set; }
+
+        /// <summary>
         /// The username needed for __admin access.
         /// </summary>
         [PublicAPI]
