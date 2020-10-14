@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
@@ -59,16 +58,7 @@ namespace WireMock.Owin
             }
 
             _host = builder
-#if !NETSTANDARD1_3
-                .ConfigureAppConfiguration((builderContext, config) =>
-                {
-                    var env = builderContext.HostingEnvironment;
-
-                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                        .AddEnvironmentVariables();
-                })
-#endif
+                .ConfigureAppConfigurationUsingEnvironmentVariables()
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton(_options);
@@ -92,13 +82,7 @@ namespace WireMock.Owin
 
                     SetHttpsAndUrls(options, _urlOptions.GetDetails());
                 })
-#if !NETSTANDARD1_3
-                .ConfigureServices((context, services) =>
-                {
-                    services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions>(
-                        context.Configuration.GetSection("Kestrel"));
-                })
-#endif
+                .ConfigureKestrelServerOptions()
 
 #if NETSTANDARD1_3
                 .UseUrls(_urlOptions.GetDetails().Select(u => u.Url).ToArray())
