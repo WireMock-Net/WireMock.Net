@@ -64,7 +64,7 @@ namespace WireMock.Owin
                 {
                     var env = builderContext.HostingEnvironment;
 
-                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                         .AddEnvironmentVariables();
                 })
