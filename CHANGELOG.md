@@ -1,3 +1,9 @@
+# 1.3.2 (14 October 2020)
+- [#505](https://github.com/WireMock-Net/WireMock.Net/pull/505) - Fix reading JsonMatcher-mapping with object as pattern [bug] contributed by [StefH](https://github.com/StefH)
+- [#514](https://github.com/WireMock-Net/WireMock.Net/pull/514) - Update .NET Core 3.1 example contributed by [Crossbow78](https://github.com/Crossbow78)
+- [#504](https://github.com/WireMock-Net/WireMock.Net/issues/504) - Loading mapping models with `JsonMatcher`  is not working correctly [bug]
+- [#513](https://github.com/WireMock-Net/WireMock.Net/issues/513) - Static mapping break from 1.2.17 to 1.2.18 and higher [bug]
+
 # 1.3.1 (30 September 2020)
 - [#509](https://github.com/WireMock-Net/WireMock.Net/pull/509) - Adding netcoreapp3.1 as a target framework [feature] contributed by [APIWT](https://github.com/APIWT)
 
