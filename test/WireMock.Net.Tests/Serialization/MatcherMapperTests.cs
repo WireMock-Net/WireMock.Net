@@ -1,6 +1,7 @@
-﻿using Moq;
+﻿using System;
+using FluentAssertions;
+using Moq;
 using NFluent;
-using System;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Serialization;
@@ -26,7 +27,7 @@ namespace WireMock.Net.Tests.Serialization
             var model = _sut.Map((IMatcher)null);
 
             // Assert
-            Check.That(model).IsNull();
+            model.Should().BeNull();
         }
 
         [Fact]
@@ -36,7 +37,7 @@ namespace WireMock.Net.Tests.Serialization
             var model = _sut.Map((IMatcher[])null);
 
             // Assert
-            Check.That(model).IsNull();
+            model.Should().BeNull();
         }
 
         [Fact]
@@ -50,7 +51,7 @@ namespace WireMock.Net.Tests.Serialization
             var models = _sut.Map(new[] { matcherMock1.Object, matcherMock2.Object });
 
             // Assert
-            Check.That(models).HasSize(2);
+            models.Should().HaveCount(2);
         }
 
         [Fact]
@@ -65,10 +66,10 @@ namespace WireMock.Net.Tests.Serialization
             var model = _sut.Map(matcherMock.Object);
 
             // Assert
-            Check.That(model.IgnoreCase).IsNull();
-            Check.That(model.Name).Equals("test");
-            Check.That(model.Pattern).IsNull();
-            Check.That(model.Patterns).ContainsExactly("p1", "p2");
+            model.IgnoreCase.Should().BeNull();
+            model.Name.Should().Be("test");
+            model.Pattern.Should().BeNull();
+            model.Patterns.Should().Contain("p1", "p2");
         }
 
         [Fact]
@@ -82,7 +83,7 @@ namespace WireMock.Net.Tests.Serialization
             var model = _sut.Map(matcherMock.Object);
 
             // Assert
-            Check.That(model.IgnoreCase).Equals(true);
+            model.IgnoreCase.Should().BeTrue();
         }
 
         [Fact]
@@ -92,7 +93,7 @@ namespace WireMock.Net.Tests.Serialization
             var result = _sut.Map((MatcherModel)null);
 
             // Assert
-            Check.That(result).IsNull();
+            result.Should().BeNull();
         }
 
         [Fact]
@@ -119,8 +120,8 @@ namespace WireMock.Net.Tests.Serialization
             var matcher = (LinqMatcher)_sut.Map(model);
 
             // Assert
-            Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
-            Check.That(matcher.GetPatterns()).ContainsExactly("p");
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.GetPatterns().Should().Contain("p");
         }
 
         [Fact]
@@ -137,8 +138,88 @@ namespace WireMock.Net.Tests.Serialization
             var matcher = (LinqMatcher)_sut.Map(model);
 
             // Assert
-            Check.That(matcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
-            Check.That(matcher.GetPatterns()).ContainsExactly("p1", "p2");
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.GetPatterns().Should().Contain("p1", "p2");
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Pattern_As_String()
+        {
+            // Assign
+            var pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }";
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_As_String()
+        {
+            // Assign
+            var pattern1 = "{ \"AccountIds\": [ 1, 2, 3 ] }";
+            var pattern2 = "{ \"X\": \"x\" }";
+            var patterns = new[] { pattern1, pattern2 };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Pattern = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Pattern_As_Object()
+        {
+            // Assign
+            var pattern = new { AccountIds = new[] { 1, 2, 3 } };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_As_Object()
+        {
+            // Assign
+            object pattern1 = new { AccountIds = new[] { 1, 2, 3 } };
+            object pattern2 = new { X = "x" };
+            var patterns = new[] { pattern1, pattern2 };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Patterns = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
         }
     }
 }
