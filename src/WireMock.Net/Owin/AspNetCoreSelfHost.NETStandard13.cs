@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using WireMock.HttpsCertificate;
 
 namespace WireMock.Owin
@@ -24,6 +26,23 @@ namespace WireMock.Owin
             {
                 options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
             }
+        }
+    }
+
+    internal static class IWebHostBuilderExtensions
+    {
+        internal static IWebHostBuilder ConfigureAppConfigurationUsingEnvironmentVariables(this IWebHostBuilder builder) => builder;
+
+        internal static IWebHostBuilder ConfigureKestrelServerOptions(this IWebHostBuilder builder)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            return builder.ConfigureServices(services =>
+            {
+                services.Configure<KestrelServerOptions>(configuration.GetSection("Kestrel"));
+            });
         }
     }
 }

@@ -58,6 +58,7 @@ namespace WireMock.Owin
             }
 
             _host = builder
+                .ConfigureAppConfigurationUsingEnvironmentVariables()
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton(_options);
@@ -81,6 +82,7 @@ namespace WireMock.Owin
 
                     SetHttpsAndUrls(options, _urlOptions.GetDetails());
                 })
+                .ConfigureKestrelServerOptions()
 
 #if NETSTANDARD1_3
                 .UseUrls(_urlOptions.GetDetails().Select(u => u.Url).ToArray())
