@@ -1,3 +1,7 @@
+# 1.3.3 (15 October 2020)
+- [#520](https://github.com/WireMock-Net/WireMock.Net/pull/520) - Make kestrel limits configurable contributed by [eduherminio](https://github.com/eduherminio)
+- [#521](https://github.com/WireMock-Net/WireMock.Net/issues/521) - Make Kestrel limits configurable [feature]
+
 # 1.3.2 (14 October 2020)
 - [#505](https://github.com/WireMock-Net/WireMock.Net/pull/505) - Fix reading JsonMatcher-mapping with object as pattern [bug] contributed by [StefH](https://github.com/StefH)
 - [#514](https://github.com/WireMock-Net/WireMock.Net/pull/514) - Update .NET Core 3.1 example contributed by [Crossbow78](https://github.com/Crossbow78)
