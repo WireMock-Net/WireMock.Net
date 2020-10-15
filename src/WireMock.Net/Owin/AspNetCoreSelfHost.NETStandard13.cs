@@ -33,7 +33,17 @@ namespace WireMock.Owin
     {
         internal static IWebHostBuilder ConfigureAppConfigurationUsingEnvironmentVariables(this IWebHostBuilder builder) => builder;
 
-        internal static IWebHostBuilder ConfigureKestrelServerOptions(this IWebHostBuilder builder) => builder;
+        internal static IWebHostBuilder ConfigureKestrelServerOptions(this IWebHostBuilder builder)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            return builder.ConfigureServices(services =>
+            {
+                services.Configure<KestrelServerOptions>(configuration.GetSection("Kestrel"));
+            });
+        }
     }
 }
 #endif
