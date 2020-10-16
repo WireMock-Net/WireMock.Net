@@ -58,7 +58,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-    <PackageReference Include="Handlebars.Net.Helpers" Version="1.0.0" />
+    <PackageReference Include="Handlebars.Net.Helpers" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
