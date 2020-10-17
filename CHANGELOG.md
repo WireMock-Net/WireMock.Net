@@ -1,3 +1,7 @@
+# 1.3.4 (17 October 2020)
+- [#522](https://github.com/WireMock-Net/WireMock.Net/pull/522) - Add ContinuousIntegrationBuild property [feature] contributed by [StefH](https://github.com/StefH)
+- [#525](https://github.com/WireMock-Net/WireMock.Net/pull/525) - Handlebars.Net.Helpers Version=&quot;1.1.0&quot; [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.3.3 (15 October 2020)
 - [#520](https://github.com/WireMock-Net/WireMock.Net/pull/520) - Make kestrel limits configurable contributed by [eduherminio](https://github.com/eduherminio)
 - [#521](https://github.com/WireMock-Net/WireMock.Net/issues/521) - Make Kestrel limits configurable [feature]
