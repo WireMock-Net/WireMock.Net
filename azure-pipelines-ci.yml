@@ -14,7 +14,7 @@ steps:
 
 # Install Tools (SonarScanner)
 - script: |
-    dotnet tool install --global dotnet-sonarscanner
+    dotnet tool install --global dotnet-sonarscanner --version 4.10.0
   displayName: Install Tools (SonarScanner)
 
 # Begin SonarScanner
