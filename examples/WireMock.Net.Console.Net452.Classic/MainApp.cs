@@ -12,6 +12,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Util;
+using System.Threading.Tasks;
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -521,9 +522,29 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
             server
                 .Given(Request.Create().WithPath("/random200or505").UsingGet())
-                .RespondWith(Response.Create().WithCallback(request => new ResponseMessage
+                .RespondWith(Response.Create().WithCallback(request =>
                 {
-                    StatusCode = new Random().Next(1, 100) == 1 ? 504 : 200
+                    int code = new Random().Next(1, 2) == 1 ? 505 : 200;
+                    return new ResponseMessage
+                    {
+                        BodyData = new BodyData { BodyAsString = "random200or505:" + code, DetectedBodyType = Types.BodyType.String },
+                        StatusCode = code
+                    };
+                }));
+
+            server
+                .Given(Request.Create().WithPath("/random200or505async").UsingGet())
+                .RespondWith(Response.Create().WithCallback(async request =>
+                {
+                    await Task.Delay(1);
+
+                    int code = new Random().Next(1, 2) == 1 ? 505 : 200;
+
+                    return new ResponseMessage
+                    {
+                        BodyData = new BodyData { BodyAsString = "random200or505async:" + code, DetectedBodyType = Types.BodyType.String },
+                        StatusCode = code
+                    };
                 }));
 
             System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));

@@ -43,16 +43,6 @@ namespace WireMock.ResponseBuilders
         public ResponseMessage ResponseMessage { get; }
 
         /// <summary>
-        /// A delegate to execute to generate the response.
-        /// </summary>
-        public Func<RequestMessage, ResponseMessage> Callback { get; private set; }
-
-        /// <summary>
-        /// Defines if the method WithCallback(...) is used.
-        /// </summary>
-        public bool WithCallbackUsed { get; private set; }
-
-        /// <summary>
         /// Creates this instance.
         /// </summary>
         /// <param name="responseMessage">ResponseMessage</param>
@@ -311,25 +301,6 @@ namespace WireMock.ResponseBuilders
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
-        public IResponseBuilder WithCallback(Func<RequestMessage, ResponseMessage> callbackHandler)
-        {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
-
-            return WithCallbackInternal(true, callbackHandler);
-        }
-
-        /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback"/>
-        private IResponseBuilder WithCallbackInternal(bool withCallbackUsed, Func<RequestMessage, ResponseMessage> callbackHandler)
-        {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
-
-            WithCallbackUsed = withCallbackUsed;
-            Callback = callbackHandler;
-
-            return this;
-        }
-
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
         public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
@@ -365,13 +336,20 @@ namespace WireMock.ResponseBuilders
             }
 
             ResponseMessage responseMessage;
-            if (Callback == null)
+            if (Callback == null && CallbackAsync == null)
             {
                 responseMessage = ResponseMessage;
             }
             else
             {
-                responseMessage = Callback(requestMessage);
+                if (Callback != null)
+                {
+                    responseMessage = Callback(requestMessage);
+                }
+                else
+                {
+                    responseMessage = await CallbackAsync(requestMessage);
+                }
 
                 if (!WithCallbackUsed)
                 {
