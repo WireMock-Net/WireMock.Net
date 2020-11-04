@@ -1,3 +1,7 @@
+# 1.3.5 (04 November 2020)
+- [#530](https://github.com/WireMock-Net/WireMock.Net/pull/530) - Fix dotnet-sonarscanner [bug] contributed by [StefH](https://github.com/StefH)
+- [#531](https://github.com/WireMock-Net/WireMock.Net/pull/531) - Add WithCallback-Async [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.3.4 (17 October 2020)
 - [#522](https://github.com/WireMock-Net/WireMock.Net/pull/522) - Add ContinuousIntegrationBuild property [feature] contributed by [StefH](https://github.com/StefH)
 - [#525](https://github.com/WireMock-Net/WireMock.Net/pull/525) - Handlebars.Net.Helpers Version=&quot;1.1.0&quot; [feature] contributed by [StefH](https://github.com/StefH)
