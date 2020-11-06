@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -79,16 +80,25 @@ namespace WireMock.Owin.Mappers
                     break;
             }
 
-            switch (responseMessage.StatusCode)
+            var statusCodeType = responseMessage.StatusCode?.GetType();
+
+            switch (statusCodeType)
             {
-                case int statusCodeAsInteger:
-                    response.StatusCode = MapStatusCode(statusCodeAsInteger);
+                case Type typeAsEnum when typeAsEnum.GetTypeInfo().IsEnum:
+                    response.StatusCode = MapStatusCode((int)responseMessage.StatusCode);
                     break;
 
-                case string statusCodeAsString:
+                case Type typeAsInt when typeAsInt == typeof(int) || typeAsInt == typeof(int?):
+                    response.StatusCode = MapStatusCode((int)responseMessage.StatusCode);
+                    break;
+
+                case Type typeAsString when typeAsString == typeof(string):
                     // Note: this case will also match on null 
-                    int.TryParse(statusCodeAsString, out int result);
+                    int.TryParse(responseMessage.StatusCode as string, out int result);
                     response.StatusCode = MapStatusCode(result);
+                    break;
+
+                default:
                     break;
             }
 
