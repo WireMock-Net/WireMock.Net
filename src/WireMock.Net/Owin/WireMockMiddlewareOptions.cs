@@ -60,6 +60,9 @@ namespace WireMock.Owin
         /// <inheritdoc cref="IWireMockMiddlewareOptions.X509StoreLocation"/>
         public string X509StoreLocation { get; set; }
 
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509ThumbprintOrSubjectName"/>
+        public string X509ThumbprintOrSubjectName { get; set; }
+
         /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificateFilePath"/>
         public string X509CertificateFilePath { get; set; }
 

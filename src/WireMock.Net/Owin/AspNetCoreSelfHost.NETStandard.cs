@@ -28,10 +28,10 @@ namespace WireMock.Owin
                     {
                         if (wireMockMiddlewareOptions.CustomCertificateDefined)
                         {
-                            
                             listenOptions.UseHttps(CertificateLoader.LoadCertificate(
                                 wireMockMiddlewareOptions.X509StoreName,
                                 wireMockMiddlewareOptions.X509StoreLocation,
+                                wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
                                 wireMockMiddlewareOptions.X509CertificateFilePath,
                                 wireMockMiddlewareOptions.X509CertificatePassword,
                                 urlDetail.Host)

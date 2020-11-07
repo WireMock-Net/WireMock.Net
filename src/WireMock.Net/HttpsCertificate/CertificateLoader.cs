@@ -9,29 +9,45 @@ namespace WireMock.HttpsCertificate
         /// <summary>
         /// Used by the WireMock.Net server
         /// </summary>
-        public static X509Certificate2 LoadCertificate(string storeName, string storeLocation, string filePath, string password, string host)
+        public static X509Certificate2 LoadCertificate(
+            string storeName,
+            string storeLocation,
+            string thumbprintOrSubjectName,
+            string filePath,
+            string password,
+            string host)
         {
             if (!string.IsNullOrEmpty(storeName) && !string.IsNullOrEmpty(storeLocation))
             {
+                var thumbprintOrSubjectNameOrHost = thumbprintOrSubjectName ?? host;
+
                 var certStore = new X509Store((StoreName)Enum.Parse(typeof(StoreName), storeName), (StoreLocation)Enum.Parse(typeof(StoreLocation), storeLocation));
                 try
                 {
                     certStore.Open(OpenFlags.ReadOnly);
 
-                    var certificate = certStore.Certificates.Find(X509FindType.FindBySubjectName, host, validOnly: true);
-                    if (certificate.Count == 0)
+                    // Attempt to find by Thumbprint first
+                    var matchingCertificates = certStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprintOrSubjectNameOrHost, false);
+                    if (matchingCertificates.Count == 0)
                     {
-                        throw new InvalidOperationException($"No Certificate found with name '{storeName}', location '{storeLocation}' for '{host}'.");
+                        // Fallback to SubjectName
+                        matchingCertificates = certStore.Certificates.Find(X509FindType.FindBySubjectName, thumbprintOrSubjectNameOrHost, false);
+                        if (matchingCertificates.Count == 0)
+                        {
+                            // No certificates matched the search criteria.
+                            throw new FileNotFoundException($"No Certificate found with in store '{storeName}', location '{storeLocation}' for Thumbprint or SubjectName '{thumbprintOrSubjectNameOrHost}'.");
+                        }
                     }
 
-                    return certificate[0];
+                    // Use the first matching certificate.
+                    return matchingCertificates[0];
                 }
                 finally
                 {
 #if NETSTANDARD || NET46
                     certStore.Dispose();
 #else
-                certStore.Close();
+                    certStore.Close();
 #endif
                 }
             }
@@ -55,11 +71,11 @@ namespace WireMock.HttpsCertificate
                 // Certificate must be in the local machine store
                 certStore.Open(OpenFlags.ReadOnly);
 
-                // Attempt to find by thumbprint first
+                // Attempt to find by Thumbprint first
                 var matchingCertificates = certStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprintOrSubjectName, false);
                 if (matchingCertificates.Count == 0)
                 {
-                    // Fallback to subject name
+                    // Fallback to SubjectName
                     matchingCertificates = certStore.Certificates.Find(X509FindType.FindBySubjectName, thumbprintOrSubjectName, false);
                     if (matchingCertificates.Count == 0)
                     {

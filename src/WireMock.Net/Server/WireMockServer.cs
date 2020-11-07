@@ -234,6 +234,7 @@ namespace WireMock.Server
             {
                 _options.X509StoreName = settings.CertificateSettings.X509StoreName;
                 _options.X509StoreLocation = settings.CertificateSettings.X509StoreLocation;
+                _options.X509ThumbprintOrSubjectName = settings.CertificateSettings.X509StoreThumbprintOrSubjectName;
                 _options.X509CertificateFilePath = settings.CertificateSettings.X509CertificateFilePath;
                 _options.X509CertificatePassword = settings.CertificateSettings.X509CertificatePassword;
             }

@@ -20,6 +20,11 @@
         string X509StoreLocation { get; set; }
 
         /// <summary>
+        /// X509 Thumbprint or SubjectName (if not defined, the 'host' is used)
+        /// </summary>
+        string X509StoreThumbprintOrSubjectName { get; set; }
+
+        /// <summary>
         /// X509Certificate FilePath
         /// </summary>
         string X509CertificateFilePath { get; set; }

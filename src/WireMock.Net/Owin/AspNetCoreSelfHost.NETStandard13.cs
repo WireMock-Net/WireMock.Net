@@ -1,7 +1,5 @@
 ﻿#if USE_ASPNETCORE && NETSTANDARD1_3
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.Extensions.Configuration;
@@ -21,15 +19,25 @@ namespace WireMock.Owin
 
         private static void SetHttpsAndUrls(KestrelServerOptions options, IWireMockMiddlewareOptions wireMockMiddlewareOptions, IEnumerable<HostUrlDetails> urlDetails)
         {
-            if (urlDetails.Any(u => u.IsHttps))
+            foreach (var urlDetail in urlDetails)
             {
-                if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                if (urlDetail.IsHttps)
                 {
-
-                }
-                else
-                {
-                    options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                    if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                    {
+                        options.UseHttps(CertificateLoader.LoadCertificate(
+                            wireMockMiddlewareOptions.X509StoreName,
+                            wireMockMiddlewareOptions.X509StoreLocation,
+                            wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
+                            wireMockMiddlewareOptions.X509CertificateFilePath,
+                            wireMockMiddlewareOptions.X509CertificatePassword,
+                            urlDetail.Host)
+                        );
+                    }
+                    else
+                    {
+                        options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                    }
                 }
             }
         }

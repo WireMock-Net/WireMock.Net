@@ -15,6 +15,10 @@ namespace WireMock.Settings
         [PublicAPI]
         public string X509StoreLocation { get; set; }
 
+        /// <inheritdoc cref="IWireMockCertificateSettings.X509StoreThumbprintOrSubjectName"/>
+        [PublicAPI]
+        public string X509StoreThumbprintOrSubjectName { get; set; }
+
         /// <inheritdoc cref="IWireMockCertificateSettings.X509CertificateFilePath"/>
         [PublicAPI]
         public string X509CertificateFilePath { get; set; }

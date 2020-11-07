@@ -52,6 +52,8 @@ namespace WireMock.Owin
 
         string X509StoreLocation { get; set; }
 
+        string X509ThumbprintOrSubjectName { get; set; }
+
         string X509CertificateFilePath { get; set; }
 
         string X509CertificatePassword { get; set; }
