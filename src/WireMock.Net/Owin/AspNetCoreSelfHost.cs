@@ -107,7 +107,7 @@ namespace WireMock.Owin
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost"));
 
-                        PortUtils.TryExtract(address, out string protocol, out string host, out int port);
+                        PortUtils.TryExtract(address, out bool isHttps, out string protocol, out string host, out int port);
                         Ports.Add(port);
                     }
 
