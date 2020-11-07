@@ -41,7 +41,7 @@ namespace WireMock.Http
             {
                 handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
-                var x509Certificate2 = ClientCertificateHelper.GetCertificate(settings.ClientX509Certificate2ThumbprintOrSubjectName);
+                var x509Certificate2 = CertificateLoader.LoadCertificate(settings.ClientX509Certificate2ThumbprintOrSubjectName);
                 handler.ClientCertificates.Add(x509Certificate2);
             }
 

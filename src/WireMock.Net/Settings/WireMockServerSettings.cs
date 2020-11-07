@@ -121,5 +121,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.ThrowExceptionWhenMatcherFails"/>
         [PublicAPI]
         public bool? ThrowExceptionWhenMatcherFails { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CertificateSettings"/>
+        [PublicAPI]
+        public IWireMockCertificateSettings CertificateSettings { get; set; }
     }
 }

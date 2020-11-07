@@ -19,12 +19,18 @@ namespace WireMock.Owin
             options.Limits.MaxResponseBufferSize = null;
         }
 
-        private static void SetHttpsAndUrls(KestrelServerOptions options, ICollection<(string Url, int Port)> urlDetails)
+        private static void SetHttpsAndUrls(KestrelServerOptions options, IWireMockMiddlewareOptions wireMockMiddlewareOptions, IEnumerable<HostUrlDetails> urlDetails)
         {
-            var urls = urlDetails.Select(u => u.Url);
-            if (urls.Any(u => u.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+            if (urlDetails.Any(u => u.IsHttps))
             {
-                options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                {
+
+                }
+                else
+                {
+                    options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
+                }
             }
         }
     }

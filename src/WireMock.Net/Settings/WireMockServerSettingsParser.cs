@@ -87,6 +87,23 @@ namespace WireMock.Settings
                 }
             }
 
+            string x509StoreName = parser.GetStringValue("X509StoreName");
+            string x509StoreLocation = parser.GetStringValue("X509StoreLocation");
+            string x509CertificateFilePath = parser.GetStringValue("X509CertificateFilePath");
+            string x509CertificatePassword = parser.GetStringValue("X509CertificatePassword");
+
+            if (!string.IsNullOrEmpty(x509StoreName) && !string.IsNullOrEmpty(x509StoreLocation) ||
+                !string.IsNullOrEmpty(x509CertificateFilePath) && !string.IsNullOrEmpty(x509CertificatePassword))
+            {
+                settings.CertificateSettings = new WireMockCertificateSettings
+                {
+                    X509StoreName = x509StoreName,
+                    X509StoreLocation = x509StoreLocation,
+                    X509CertificateFilePath = x509CertificateFilePath,
+                    X509CertificatePassword = x509CertificatePassword
+                };
+            }
+
             return settings;
         }
     }
