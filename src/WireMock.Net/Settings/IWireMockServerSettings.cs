@@ -180,5 +180,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         IWireMockCertificateSettings CertificateSettings { get; set; }
+
+        /// <summary>
+        /// Defines if custom CertificateSettings are defined
+        /// </summary>
+        [PublicAPI]
+        bool CustomCertificateDefined { get; }
     }
 }

@@ -125,5 +125,11 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.CertificateSettings"/>
         [PublicAPI]
         public IWireMockCertificateSettings CertificateSettings { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CustomCertificateDefined"/>
+        [PublicAPI]
+        public bool CustomCertificateDefined =>
+            !string.IsNullOrEmpty(CertificateSettings?.X509StoreName) && !string.IsNullOrEmpty(CertificateSettings?.X509StoreLocation) ||
+            !string.IsNullOrEmpty(CertificateSettings?.X509CertificateFilePath) && !string.IsNullOrEmpty(CertificateSettings?.X509CertificatePassword);
     }
 }
