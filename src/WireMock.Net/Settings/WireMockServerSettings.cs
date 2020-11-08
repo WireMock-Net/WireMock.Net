@@ -1,6 +1,6 @@
-﻿using HandlebarsDotNet;
+﻿using System;
+using HandlebarsDotNet;
 using JetBrains.Annotations;
-using System;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -128,8 +128,6 @@ namespace WireMock.Settings
 
         /// <inheritdoc cref="IWireMockServerSettings.CustomCertificateDefined"/>
         [PublicAPI]
-        public bool CustomCertificateDefined =>
-            !string.IsNullOrEmpty(CertificateSettings?.X509StoreName) && !string.IsNullOrEmpty(CertificateSettings?.X509StoreLocation) ||
-            !string.IsNullOrEmpty(CertificateSettings?.X509CertificateFilePath) && !string.IsNullOrEmpty(CertificateSettings?.X509CertificatePassword);
+        public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
     }
 }

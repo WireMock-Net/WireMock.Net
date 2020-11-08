@@ -87,23 +87,17 @@ namespace WireMock.Settings
                 }
             }
 
-            string x509StoreName = parser.GetStringValue("X509StoreName");
-            string x509StoreLocation = parser.GetStringValue("X509StoreLocation");
-            string x509StoreThumbprintOrSubjectName = parser.GetStringValue("X509StoreThumbprintOrSubjectName");
-            string x509CertificateFilePath = parser.GetStringValue("X509CertificateFilePath");
-            string x509CertificatePassword = parser.GetStringValue("X509CertificatePassword");
-
-            if (!string.IsNullOrEmpty(x509StoreName) && !string.IsNullOrEmpty(x509StoreLocation) ||
-                !string.IsNullOrEmpty(x509CertificateFilePath) && !string.IsNullOrEmpty(x509CertificatePassword))
+            var certificateSettings = new WireMockCertificateSettings
             {
-                settings.CertificateSettings = new WireMockCertificateSettings
-                {
-                    X509StoreName = x509StoreName,
-                    X509StoreLocation = x509StoreLocation,
-                    X509StoreThumbprintOrSubjectName = x509StoreThumbprintOrSubjectName,
-                    X509CertificateFilePath = x509CertificateFilePath,
-                    X509CertificatePassword = x509CertificatePassword
-                };
+                X509StoreName = parser.GetStringValue("X509StoreName"),
+                X509StoreLocation = parser.GetStringValue("X509StoreLocation"),
+                X509StoreThumbprintOrSubjectName = parser.GetStringValue("X509StoreThumbprintOrSubjectName"),
+                X509CertificateFilePath = parser.GetStringValue("X509CertificateFilePath"),
+                X509CertificatePassword = parser.GetStringValue("X509CertificatePassword")
+            };
+            if (certificateSettings.IsDefined)
+            {
+                settings.CertificateSettings = certificateSettings;
             }
 
             return settings;

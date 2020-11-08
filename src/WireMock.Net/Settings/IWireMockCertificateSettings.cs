@@ -33,5 +33,12 @@
         /// X509Certificate Password
         /// </summary>
         string X509CertificatePassword { get; set; }
+
+        /// <summary>
+        /// X509StoreName and X509StoreLocation should be defined
+        /// OR
+        /// X509CertificateFilePath and X509CertificatePassword should be defined
+        /// </summary>
+        bool IsDefined { get; }
     }
 }
