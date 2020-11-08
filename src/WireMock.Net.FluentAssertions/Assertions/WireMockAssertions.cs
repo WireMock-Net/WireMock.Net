@@ -16,8 +16,7 @@ namespace WireMock.FluentAssertions
         }
 
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> AtAbsoluteUrl(string absoluteUrl, string because = "",
-            params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> AtAbsoluteUrl(string absoluteUrl, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .BecauseOf(because, becauseArgs)
@@ -36,13 +35,11 @@ namespace WireMock.FluentAssertions
         }
 
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string value,
-            string because = "", params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string value, string because = "", params object[] becauseArgs)
             => WithHeader(expectedKey, new[] {value}, because, becauseArgs);
 
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues,
-            string because = "", params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
         {
             var headersDictionary = _subject.LogEntries.SelectMany(x => x.RequestMessage.Headers)
                 .ToDictionary(x => x.Key, x => x.Value);
@@ -74,8 +71,7 @@ namespace WireMock.FluentAssertions
         }
         
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> AtUrl(string url, string because = "",
-            params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> AtUrl(string url, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .BecauseOf(because, becauseArgs)
@@ -94,8 +90,7 @@ namespace WireMock.FluentAssertions
         }
         
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> WithProxyUrl(string proxyUrl, string because = "",
-            params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> WithProxyUrl(string proxyUrl, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .BecauseOf(because, becauseArgs)
@@ -114,8 +109,7 @@ namespace WireMock.FluentAssertions
         }
         
         [CustomAssertion]
-        public AndConstraint<WireMockAssertions> FromClientIP(string clientIP, string because = "",
-            params object[] becauseArgs)
+        public AndConstraint<WireMockAssertions> FromClientIP(string clientIP, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .BecauseOf(because, becauseArgs)
