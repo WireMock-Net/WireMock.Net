@@ -10,12 +10,12 @@
     public interface IWireMockCertificateSettings
     {
         /// <summary>
-        /// X509 StoreName
+        /// X509 StoreName (AddressBook, AuthRoot, CertificateAuthority, My, Root, TrustedPeople or TrustedPublisher)
         /// </summary>
         string X509StoreName { get; set; }
 
         /// <summary>
-        /// X509 StoreLocation
+        /// X509 StoreLocation (CurrentUser or LocalMachine)
         /// </summary>
         string X509StoreLocation { get; set; }
 
