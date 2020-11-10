@@ -15,7 +15,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests
 {
-    public class WireMockServerTests
+    public partial class WireMockServerTests
     {
         [Fact]
         public async Task WireMockServer_Should_reset_requestlogs()
