@@ -1,6 +1,6 @@
-﻿using HandlebarsDotNet;
+﻿using System;
+using HandlebarsDotNet;
 using JetBrains.Annotations;
-using System;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -121,5 +121,13 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.ThrowExceptionWhenMatcherFails"/>
         [PublicAPI]
         public bool? ThrowExceptionWhenMatcherFails { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CertificateSettings"/>
+        [PublicAPI]
+        public IWireMockCertificateSettings CertificateSettings { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CustomCertificateDefined"/>
+        [PublicAPI]
+        public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
     }
 }

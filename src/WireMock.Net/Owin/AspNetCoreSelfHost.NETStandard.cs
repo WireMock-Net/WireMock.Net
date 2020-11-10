@@ -1,10 +1,10 @@
 ﻿#if USE_ASPNETCORE && !NETSTANDARD1_3
-using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.HttpsCertificate;
 
 namespace WireMock.Owin
 {
@@ -18,20 +18,34 @@ namespace WireMock.Owin
             options.Limits.MaxResponseBufferSize = null;
         }
 
-        private static void SetHttpsAndUrls(KestrelServerOptions options, ICollection<(string Url, int Port)> urlDetails)
+        private static void SetHttpsAndUrls(KestrelServerOptions kestrelOptions, IWireMockMiddlewareOptions wireMockMiddlewareOptions, IEnumerable<HostUrlDetails> urlDetails)
         {
-            foreach (var detail in urlDetails)
+            foreach (var urlDetail in urlDetails)
             {
-                if (detail.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                if (urlDetail.IsHttps)
                 {
-                    options.Listen(System.Net.IPAddress.Any, detail.Port, listenOptions =>
+                    kestrelOptions.Listen(System.Net.IPAddress.Any, urlDetail.Port, listenOptions =>
                     {
-                        listenOptions.UseHttps();
+                        if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                        {
+                            listenOptions.UseHttps(CertificateLoader.LoadCertificate(
+                                wireMockMiddlewareOptions.X509StoreName,
+                                wireMockMiddlewareOptions.X509StoreLocation,
+                                wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
+                                wireMockMiddlewareOptions.X509CertificateFilePath,
+                                wireMockMiddlewareOptions.X509CertificatePassword,
+                                urlDetail.Host)
+                            );
+                        }
+                        else
+                        {
+                            listenOptions.UseHttps();
+                        }
                     });
                 }
                 else
                 {
-                    options.Listen(System.Net.IPAddress.Any, detail.Port);
+                    kestrelOptions.Listen(System.Net.IPAddress.Any, urlDetail.Port);
                 }
             }
         }

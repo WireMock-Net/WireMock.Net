@@ -170,5 +170,21 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         bool? ThrowExceptionWhenMatcherFails { get; set; }
+
+        /// <summary>
+        /// If https is used, these settings can be used to configure the CertificateSettings in case a custom certificate instead the default .NET certificate should be used.
+        ///
+        /// X509StoreName and X509StoreLocation should be defined
+        /// OR
+        /// X509CertificateFilePath and X509CertificatePassword should be defined
+        /// </summary>
+        [PublicAPI]
+        IWireMockCertificateSettings CertificateSettings { get; set; }
+
+        /// <summary>
+        /// Defines if custom CertificateSettings are defined
+        /// </summary>
+        [PublicAPI]
+        bool CustomCertificateDefined { get; }
     }
 }

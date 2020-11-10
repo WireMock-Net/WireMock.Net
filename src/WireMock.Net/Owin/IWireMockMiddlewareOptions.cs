@@ -47,5 +47,17 @@ namespace WireMock.Owin
         bool? DisableRequestBodyDecompressing { get; set; }
 
         bool? HandleRequestsSynchronously { get; set; }
+
+        string X509StoreName { get; set; }
+
+        string X509StoreLocation { get; set; }
+
+        string X509ThumbprintOrSubjectName { get; set; }
+
+        string X509CertificateFilePath { get; set; }
+
+        string X509CertificatePassword { get; set; }
+
+        bool CustomCertificateDefined { get; }
     }
 }

@@ -60,12 +60,12 @@ namespace WireMock.Settings
                 settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
             }
 
-            string proxyURL = parser.GetStringValue("ProxyURL");
-            if (!string.IsNullOrEmpty(proxyURL))
+            string proxyUrl = parser.GetStringValue("ProxyURL") ?? parser.GetStringValue("ProxyUrl");
+            if (!string.IsNullOrEmpty(proxyUrl))
             {
                 settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = proxyURL,
+                    Url = proxyUrl,
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                     SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
@@ -85,6 +85,19 @@ namespace WireMock.Settings
                         Password = parser.GetStringValue("WebProxyPassword")
                     };
                 }
+            }
+
+            var certificateSettings = new WireMockCertificateSettings
+            {
+                X509StoreName = parser.GetStringValue("X509StoreName"),
+                X509StoreLocation = parser.GetStringValue("X509StoreLocation"),
+                X509StoreThumbprintOrSubjectName = parser.GetStringValue("X509StoreThumbprintOrSubjectName"),
+                X509CertificateFilePath = parser.GetStringValue("X509CertificateFilePath"),
+                X509CertificatePassword = parser.GetStringValue("X509CertificatePassword")
+            };
+            if (certificateSettings.IsDefined)
+            {
+                settings.CertificateSettings = certificateSettings;
             }
 
             return settings;

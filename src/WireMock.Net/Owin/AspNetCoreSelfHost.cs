@@ -18,7 +18,7 @@ namespace WireMock.Owin
     internal partial class AspNetCoreSelfHost : IOwinSelfHost
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly IWireMockMiddlewareOptions _options;
+        private readonly IWireMockMiddlewareOptions _wireMockMiddlewareOptions;
         private readonly IWireMockLogger _logger;
         private readonly HostUrlOptions _urlOptions;
 
@@ -33,14 +33,14 @@ namespace WireMock.Owin
 
         public Exception RunningException => _runningException;
 
-        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] HostUrlOptions urlOptions)
+        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions wireMockMiddlewareOptions, [NotNull] HostUrlOptions urlOptions)
         {
-            Check.NotNull(options, nameof(options));
+            Check.NotNull(wireMockMiddlewareOptions, nameof(wireMockMiddlewareOptions));
             Check.NotNull(urlOptions, nameof(urlOptions));
 
-            _logger = options.Logger ?? new WireMockConsoleLogger();
+            _logger = wireMockMiddlewareOptions.Logger ?? new WireMockConsoleLogger();
 
-            _options = options;
+            _wireMockMiddlewareOptions = wireMockMiddlewareOptions;
             _urlOptions = urlOptions;
         }
 
@@ -61,7 +61,7 @@ namespace WireMock.Owin
                 .ConfigureAppConfigurationUsingEnvironmentVariables()
                 .ConfigureServices(services =>
                 {
-                    services.AddSingleton(_options);
+                    services.AddSingleton(_wireMockMiddlewareOptions);
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
@@ -70,17 +70,17 @@ namespace WireMock.Owin
                 {
                     appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
 
-                    _options.PreWireMockMiddlewareInit?.Invoke(appBuilder);
+                    _wireMockMiddlewareOptions.PreWireMockMiddlewareInit?.Invoke(appBuilder);
 
                     appBuilder.UseMiddleware<WireMockMiddleware>();
 
-                    _options.PostWireMockMiddlewareInit?.Invoke(appBuilder);
+                    _wireMockMiddlewareOptions.PostWireMockMiddlewareInit?.Invoke(appBuilder);
                 })
                 .UseKestrel(options =>
                 {
                     SetKestrelOptionsLimits(options);
 
-                    SetHttpsAndUrls(options, _urlOptions.GetDetails());
+                    SetHttpsAndUrls(options, _wireMockMiddlewareOptions, _urlOptions.GetDetails());
                 })
                 .ConfigureKestrelServerOptions()
 
@@ -107,7 +107,7 @@ namespace WireMock.Owin
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost"));
 
-                        PortUtils.TryExtract(address, out string protocol, out string host, out int port);
+                        PortUtils.TryExtract(address, out bool isHttps, out string protocol, out string host, out int port);
                         Ports.Add(port);
                     }
 

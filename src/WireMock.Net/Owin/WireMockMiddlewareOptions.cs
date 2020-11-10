@@ -53,5 +53,25 @@ namespace WireMock.Owin
 
         /// <inheritdoc cref="IWireMockMiddlewareOptions.HandleRequestsSynchronously"/>
         public bool? HandleRequestsSynchronously { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509StoreName"/>
+        public string X509StoreName { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509StoreLocation"/>
+        public string X509StoreLocation { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509ThumbprintOrSubjectName"/>
+        public string X509ThumbprintOrSubjectName { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificateFilePath"/>
+        public string X509CertificateFilePath { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificatePassword"/>
+        public string X509CertificatePassword { get; set; }
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.CustomCertificateDefined"/>
+        public bool CustomCertificateDefined =>
+            !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
+            !string.IsNullOrEmpty(X509CertificateFilePath) && !string.IsNullOrEmpty(X509CertificatePassword);
     }
 }
