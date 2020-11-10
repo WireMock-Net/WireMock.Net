@@ -9,6 +9,7 @@ using WireMock.Server;
 using Xunit;
 using WireMock.FluentAssertions;
 using System.Threading.Tasks;
+using WireMock.Settings;
 using static System.Environment;
 
 namespace WireMock.Net.Tests.FluentAssertions
@@ -23,10 +24,10 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _server = WireMockServer.Start();
             _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithStatusCode(200));
+                .RespondWith(Response.Create().WithSuccess());
             _portUsed = _server.Ports.First();
 
-            _httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{_portUsed}") };
+            _httpClient = new HttpClient { BaseAddress = new Uri(_server.Urls[0]) };
         }
 
         [Fact]
@@ -154,6 +155,134 @@ namespace WireMock.Net.Tests.FluentAssertions
             act.Should().Throw<Exception>()
                 .And.Message.Should()
                 .Be($"{string.Join(NewLine, missingValue1Message, missingValue2Message)}{NewLine}");
+        }
+        
+        [Fact]
+        public async Task AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
+        {
+            await _httpClient.GetAsync("anyurl");
+
+            _server.Should()
+                .HaveReceivedACall()
+                .AtUrl($"http://localhost:{_portUsed}/anyurl");
+        }
+
+        [Fact]
+        public void AtUrl_Should_ThrowWhenNoCallsWereMade()
+        {
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .AtUrl("anyurl");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    "Expected _server to have been called at address matching the url \"anyurl\", but no calls were made.");
+        }
+
+        [Fact]
+        public async Task AtUrl_Should_ThrowWhenNoCallsMatchingTheUrlWereMade()
+        {
+            await _httpClient.GetAsync("");
+
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .AtUrl("anyurl");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    $"Expected _server to have been called at address matching the url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
+        }
+
+        [Fact]
+        public async Task WithProxyUrl_WhenACallWasMadeWithProxyUrl_Should_BeOK()
+        {
+            _server.ResetMappings();
+            _server.Given(Request.Create().UsingAnyMethod())
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
+
+            await _httpClient.GetAsync("");
+
+            _server.Should()
+                .HaveReceivedACall()
+                .WithProxyUrl($"http://localhost:9999");
+        }
+
+        [Fact]
+        public void WithProxyUrl_Should_ThrowWhenNoCallsWereMade()
+        {
+            _server.ResetMappings();
+            _server.Given(Request.Create().UsingAnyMethod())
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
+        
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .WithProxyUrl("anyurl");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    "Expected _server to have been called with proxy url \"anyurl\", but no calls were made.");
+        }
+
+        [Fact]
+        public async Task WithProxyUrl_Should_ThrowWhenNoCallsWithTheProxyUrlWereMade()
+        {
+            _server.ResetMappings();
+            _server.Given(Request.Create().UsingAnyMethod())
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
+        
+            await _httpClient.GetAsync("");
+
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .WithProxyUrl("anyurl");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    $"Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {{\"http://localhost:9999\"}}.");
+        }
+        
+        [Fact]
+        public async Task FromClientIP_whenACallWasMadeFromClientIP_Should_BeOK()
+        {
+            await _httpClient.GetAsync("");
+            var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+
+            _server.Should()
+                .HaveReceivedACall()
+                .FromClientIP(clientIP);
+        }
+
+        [Fact]
+        public void FromClientIP_Should_ThrowWhenNoCallsWereMade()
+        {
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .FromClientIP("different-ip");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    "Expected _server to have been called from client IP \"different-ip\", but no calls were made.");
+        }
+
+        [Fact]
+        public async Task FromClientIP_Should_ThrowWhenNoCallsFromClientIPWereMade()
+        {
+            await _httpClient.GetAsync("");
+            var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+
+            Action act = () => _server.Should()
+                .HaveReceivedACall()
+                .FromClientIP("different-ip");
+
+            act.Should().Throw<Exception>()
+                .And.Message.Should()
+                .Be(
+                    $"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
         }
 
         public void Dispose()
