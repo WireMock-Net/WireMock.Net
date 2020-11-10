@@ -1,3 +1,10 @@
+# 1.3.6 (10 November 2020)
+- [#529](https://github.com/WireMock-Net/WireMock.Net/pull/529) - Add assertions for ClientIP, Url and ProxyUrl [feature] contributed by [akamud](https://github.com/akamud)
+- [#535](https://github.com/WireMock-Net/WireMock.Net/pull/535) - WithCallback should use also use enum HttpStatusCode [bug] contributed by [StefH](https://github.com/StefH)
+- [#537](https://github.com/WireMock-Net/WireMock.Net/pull/537) - Add Custom Certificate settings [feature] contributed by [StefH](https://github.com/StefH)
+- [#533](https://github.com/WireMock-Net/WireMock.Net/issues/533) - Stubbed response with only callback returns unexpected status code. [bug]
+- [#536](https://github.com/WireMock-Net/WireMock.Net/issues/536) - Overriding the default ssl certificate via file. [feature]
+
 # 1.3.5 (04 November 2020)
 - [#530](https://github.com/WireMock-Net/WireMock.Net/pull/530) - Fix dotnet-sonarscanner [bug] contributed by [StefH](https://github.com/StefH)
 - [#531](https://github.com/WireMock-Net/WireMock.Net/pull/531) - Add WithCallback-Async [feature] contributed by [StefH](https://github.com/StefH)
