@@ -251,6 +251,13 @@ namespace WireMock.Net.ConsoleApplication
             );
 
             server
+                .Given(Request.Create().WithHeader("ProxyThisHttps", "true")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithProxy("https://www.google.com")
+            );
+
+            server
                 .Given(Request.Create().WithPath("/bodyasbytes.png")
                 .UsingGet())
                 .RespondWith(Response.Create()
