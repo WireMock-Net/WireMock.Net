@@ -67,6 +67,10 @@ namespace WireMock.Serialization
                     object value = matcher.Pattern ?? matcher.Patterns;
                     return new JsonMatcher(matchBehaviour, value, ignoreCase, throwExceptionWhenMatcherFails);
 
+                case "JsonPartialMatcher":
+                    object matcherValue = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialMatcher(matchBehaviour, matcherValue, ignoreCase, throwExceptionWhenMatcherFails);
+
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 

@@ -221,5 +221,85 @@ namespace WireMock.Net.Tests.Serialization
             matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
             matcher.Value.Should().BeEquivalentTo(patterns);
         }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_Pattern_As_String()
+        {
+            // Assign
+            var pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }";
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonPartialMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_Patterns_As_String()
+        {
+            // Assign
+            var pattern1 = "{ \"AccountIds\": [ 1, 2, 3 ] }";
+            var pattern2 = "{ \"X\": \"x\" }";
+            var patterns = new[] { pattern1, pattern2 };
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Pattern = patterns
+            };
+
+            // Act
+            var matcher = (JsonPartialMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_Pattern_As_Object()
+        {
+            // Assign
+            var pattern = new { AccountIds = new[] { 1, 2, 3 } };
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonPartialMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_Patterns_As_Object()
+        {
+            // Assign
+            object pattern1 = new { AccountIds = new[] { 1, 2, 3 } };
+            object pattern2 = new { X = "x" };
+            var patterns = new[] { pattern1, pattern2 };
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Patterns = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
     }
 }
