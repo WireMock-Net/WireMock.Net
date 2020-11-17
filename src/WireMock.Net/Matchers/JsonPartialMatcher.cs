@@ -56,10 +56,14 @@ namespace WireMock.Matchers
         private static bool IsMatch(JToken value, JToken token)
         {
             if (value == null || value == token)
+            {
                 return true;
+            }
 
             if (token == null)
+            {
                 return false;
+            }
 
             switch (value.Type)
             {
@@ -69,14 +73,16 @@ namespace WireMock.Matchers
                            nestedValues.All(pair => IsMatch(pair.Value, token.SelectToken(pair.Key)));
 
                 case JTokenType.Array:
-                    var filtersArray = value.ToObject<JToken[]>();
+                    var valuesArray = value.ToObject<JToken[]>();
                     var tokenArray = token.ToObject<JToken[]>();
 
-                    if (filtersArray?.Any() != true)
+                    if (valuesArray?.Any() != true)
+                    {
                         return true;
+                    }
 
                     return tokenArray?.Any() == true &&
-                           filtersArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
+                           valuesArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
 
                 default:
                     return value.ToString() == token.ToString();
