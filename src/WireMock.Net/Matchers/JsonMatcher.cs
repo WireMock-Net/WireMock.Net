@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace WireMock.Matchers
         public object Value { get; }
 
         /// <inheritdoc cref="IMatcher.Name"/>
-        public string Name => "JsonMatcher";
+        public virtual string Name => "JsonMatcher";
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -29,6 +30,7 @@ namespace WireMock.Matchers
         public bool ThrowException { get; }
 
         private readonly JToken _valueAsJToken;
+        private readonly Func<JToken, JToken> _jTokenConverter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
@@ -67,6 +69,9 @@ namespace WireMock.Matchers
 
             Value = value;
             _valueAsJToken = ConvertValueToJToken(value);
+            _jTokenConverter = ignoreCase
+                ? (Func<JToken, JToken>)Rename
+                : jToken => jToken;
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
@@ -81,7 +86,9 @@ namespace WireMock.Matchers
                 {
                     var inputAsJToken = ConvertValueToJToken(input);
 
-                    match = DeepEquals(_valueAsJToken, inputAsJToken);
+                    match = IsMatch(
+                        _jTokenConverter(_valueAsJToken),
+                        _jTokenConverter(inputAsJToken));
                 }
                 catch (JsonException)
                 {
@@ -93,6 +100,17 @@ namespace WireMock.Matchers
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        }
+
+        /// <summary>
+        /// Compares the input against the matcher value
+        /// </summary>
+        /// <param name="value">Matcher value</param>
+        /// <param name="input">Input value</param>
+        /// <returns></returns>
+        protected virtual bool IsMatch(JToken value, JToken input)
+        {
+            return JToken.DeepEquals(value, input);
         }
 
         private static JToken ConvertValueToJToken(object value)
@@ -112,19 +130,6 @@ namespace WireMock.Matchers
                 default:
                     return JObject.FromObject(value);
             }
-        }
-
-        private bool DeepEquals(JToken value, JToken input)
-        {
-            if (!IgnoreCase)
-            {
-                return JToken.DeepEquals(value, input);
-            }
-
-            JToken renamedValue = Rename(value);
-            JToken renamedInput = Rename(input);
-
-            return JToken.DeepEquals(renamedValue, renamedInput);
         }
 
         private static string ToUpper(string input)
