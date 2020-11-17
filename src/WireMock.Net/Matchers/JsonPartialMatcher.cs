@@ -60,7 +60,7 @@ namespace WireMock.Matchers
                 return true;
             }
 
-            if (token == null)
+            if (token == null || value.Type != token.Type)
             {
                 return false;
             }
