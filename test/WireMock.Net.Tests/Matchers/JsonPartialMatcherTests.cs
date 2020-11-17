@@ -333,6 +333,7 @@ namespace WireMock.Net.Tests.Matchers
             yield return new object[] { "[\"test\"]", "[\"test\"]" };
             yield return new object[] { "[\"test\"]", "[\"test\", \"other\"]" };
             yield return new object[] { "[123]", "[123]" };
+            yield return new object[] { "[123]", "[123, 456]" };
             yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\",\"other\":123}" };
             yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\"}" };
             yield return new object[] { "{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value\"}}" };

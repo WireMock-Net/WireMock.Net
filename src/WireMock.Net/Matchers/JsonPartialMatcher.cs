@@ -48,19 +48,14 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc />
-        protected override bool AreEqual(JToken value, JToken input)
+        protected override bool IsMatch(JToken value, JToken input)
         {
-            return IsMatch(value, input);
-        }
-
-        private static bool IsMatch(JToken value, JToken token)
-        {
-            if (value == null || value == token)
+            if (value == null || value == input)
             {
                 return true;
             }
 
-            if (token == null || value.Type != token.Type)
+            if (input == null || value.Type != input.Type)
             {
                 return false;
             }
@@ -70,11 +65,11 @@ namespace WireMock.Matchers
                 case JTokenType.Object:
                     var nestedValues = value.ToObject<Dictionary<string, JToken>>();
                     return nestedValues?.Any() != true ||
-                           nestedValues.All(pair => IsMatch(pair.Value, token.SelectToken(pair.Key)));
+                           nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
 
                 case JTokenType.Array:
                     var valuesArray = value.ToObject<JToken[]>();
-                    var tokenArray = token.ToObject<JToken[]>();
+                    var tokenArray = input.ToObject<JToken[]>();
 
                     if (valuesArray?.Any() != true)
                     {
@@ -85,7 +80,7 @@ namespace WireMock.Matchers
                            valuesArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
 
                 default:
-                    return value.ToString() == token.ToString();
+                    return value.ToString() == input.ToString();
             }
         }
     }

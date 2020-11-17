@@ -86,7 +86,7 @@ namespace WireMock.Matchers
                 {
                     var inputAsJToken = ConvertValueToJToken(input);
 
-                    match = AreEqual(
+                    match = IsMatch(
                         _jTokenConverter(_valueAsJToken),
                         _jTokenConverter(inputAsJToken));
                 }
@@ -108,7 +108,7 @@ namespace WireMock.Matchers
         /// <param name="value">Matcher value</param>
         /// <param name="input">Input value</param>
         /// <returns></returns>
-        protected virtual bool AreEqual(JToken value, JToken input)
+        protected virtual bool IsMatch(JToken value, JToken input)
         {
             return JToken.DeepEquals(value, input);
         }
