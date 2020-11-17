@@ -298,7 +298,16 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Theory]
-        [MemberData(nameof(ValidMatches))]
+        [InlineData("{\"test\":\"abc\"}", "{\"test\":\"abc\",\"other\":\"xyz\"}")]
+        [InlineData("\"test\"", "\"test\"")]
+        [InlineData("123", "123")]
+        [InlineData("[\"test\"]", "[\"test\"]")]
+        [InlineData("[\"test\"]", "[\"test\", \"other\"]")]
+        [InlineData("[123]", "[123]")]
+        [InlineData("[123]", "[123, 456]")]
+        [InlineData("{ \"test\":\"value\" }", "{\"test\":\"value\",\"other\":123}")]
+        [InlineData("{ \"test\":\"value\" }", "{\"test\":\"value\"}")]
+        [InlineData("{\"test\":{\"nested\":\"value\"}}", "{\"test\":{\"nested\":\"value\"}}")]
         public void JsonPartialMatcher_IsMatch_StringInputValidMatch(string value, string input)
         {
             // Assign
@@ -312,7 +321,17 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Theory]
-        [MemberData(nameof(InvalidMatches))]
+        [InlineData("\"test\"", null)]
+        [InlineData("\"test1\"", "\"test2\"")]
+        [InlineData("123", "1234")]
+        [InlineData("[\"test\"]", "[\"test1\"]")]
+        [InlineData("[\"test\"]", "[\"test1\", \"test2\"]")]
+        [InlineData("[123]", "[1234]")]
+        [InlineData("{}", "\"test\"")]
+        [InlineData("{ \"test\":\"value\" }", "{\"test\":\"value2\"}")]
+        [InlineData("{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value1\"}}")]
+        [InlineData("{\"test\":{\"test1\":\"value\"}}", "{\"test\":{\"test1\":\"value1\"}}")]
+        [InlineData("[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value1\"}}]")]
         public void JsonPartialMatcher_IsMatch_StringInputWithInvalidMatch(string value, string input)
         {
             // Assign
@@ -325,37 +344,42 @@ namespace WireMock.Net.Tests.Matchers
             Assert.Equal(0.0, match);
         }
 
-        public static IEnumerable<object[]> ValidMatches()
+        [Theory]
+        [InlineData("{ \"test.nested\":123 }", "{\"test\":{\"nested\":123}}")]
+        [InlineData("{ \"test.nested\":[123, 456] }", "{\"test\":{\"nested\":[123, 456]}}")]
+        [InlineData("{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value\"}}")]
+        [InlineData("{ \"['name.with.dot']\":\"value\" }", "{\"name.with.dot\":\"value\"}")]
+        [InlineData("[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value\"}}]")]
+        [InlineData("[{ \"['name.with.dot']\":\"value\" }]", "[{\"name.with.dot\":\"value\"}]")]
+        public void JsonPartialMatcher_IsMatch_ValueAsJPathValidMatch(string value, string input)
         {
-            yield return new object[] { "{\"test\":\"abc\"}", "{\"test\":\"abc\",\"other\":\"xyz\"}" };
-            yield return new object[] { "\"test\"", "\"test\"" };
-            yield return new object[] { "123", "123" };
-            yield return new object[] { "[\"test\"]", "[\"test\"]" };
-            yield return new object[] { "[\"test\"]", "[\"test\", \"other\"]" };
-            yield return new object[] { "[123]", "[123]" };
-            yield return new object[] { "[123]", "[123, 456]" };
-            yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\",\"other\":123}" };
-            yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\"}" };
-            yield return new object[] { "{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value\"}}" };
-            yield return new object[] { "{ \"['name.with.dot']\":\"value\" }", "{\"name.with.dot\":\"value\"}" };
-            yield return new object[] { "{\"test\":{\"nested\":\"value\"}}", "{\"test\":{\"nested\":\"value\"}}" };
-            yield return new object[] { "[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value\"}}]" };
-            yield return new object[] { "[{ \"['name.with.dot']\":\"value\" }]", "[{\"name.with.dot\":\"value\"}]" };
+            // Assign
+            var matcher = new JsonPartialMatcher(value);
+
+            // Act
+            double match = matcher.IsMatch(input);
+
+            // Assert
+            Assert.Equal(1.0, match);
         }
 
-        public static IEnumerable<object[]> InvalidMatches()
+        [Theory]
+        [InlineData("{ \"test.nested\":123 }", "{\"test\":{\"nested\":456}}")]
+        [InlineData("{ \"test.nested\":[123, 456] }", "{\"test\":{\"nested\":[1, 2]}}")]
+        [InlineData("{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value1\"}}")]
+        [InlineData("{ \"['name.with.dot']\":\"value\" }", "{\"name.with.dot\":\"value1\"}")]
+        [InlineData("[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value1\"}}]")]
+        [InlineData("[{ \"['name.with.dot']\":\"value\" }]", "[{\"name.with.dot\":\"value1\"}]")]
+        public void JsonPartialMatcher_IsMatch_ValueAsJPathInvalidMatch(string value, string input)
         {
-            yield return new object[] { "\"test\"", null };
-            yield return new object[] { "\"test1\"", "\"test2\"" };
-            yield return new object[] { "123", "1234" };
-            yield return new object[] { "[\"test\"]", "[\"test1\"]" };
-            yield return new object[] { "[\"test\"]", "[\"test1\", \"test2\"]" };
-            yield return new object[] { "[123]", "[1234]" };
-            yield return new object[] { "{}", "\"test\"" };
-            yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value2\"}" };
-            yield return new object[] { "{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value1\"}}" };
-            yield return new object[] { "{\"test\":{\"test1\":\"value\"}}", "{\"test\":{\"test1\":\"value1\"}}" };
-            yield return new object[] { "[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value1\"}}]" };
+            // Assign
+            var matcher = new JsonPartialMatcher(value);
+
+            // Act
+            double match = matcher.IsMatch(input);
+
+            // Assert
+            Assert.Equal(0.0, match);
         }
     }
 }
