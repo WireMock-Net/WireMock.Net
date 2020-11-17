@@ -327,16 +327,19 @@ namespace WireMock.Net.Tests.Matchers
 
         public static IEnumerable<object[]> ValidMatches()
         {
+            yield return new object[] { "{\"test\":\"abc\"}", "{\"test\":\"abc\",\"other\":\"xyz\"}" };
             yield return new object[] { "\"test\"", "\"test\"" };
             yield return new object[] { "123", "123" };
             yield return new object[] { "[\"test\"]", "[\"test\"]" };
-            yield return new object[] { "[\"test\"]", "[\"test\", \"test1\"]" };
+            yield return new object[] { "[\"test\"]", "[\"test\", \"other\"]" };
             yield return new object[] { "[123]", "[123]" };
-            yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\",\"test1\":123}" };
+            yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\",\"other\":123}" };
             yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value\"}" };
-            yield return new object[] { "{ \"test.test1\":\"value\" }", "{\"test\":{\"test1\":\"value\"}}" };
-            yield return new object[] { "{\"test\":{\"test1\":\"value\"}}", "{\"test\":{\"test1\":\"value\"}}" };
-            yield return new object[] { "[{ \"test.test1\":\"value\" }]", "[{\"test\":{\"test1\":\"value\"}}]" };
+            yield return new object[] { "{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value\"}}" };
+            yield return new object[] { "{ \"['name.with.dot']\":\"value\" }", "{\"name.with.dot\":\"value\"}" };
+            yield return new object[] { "{\"test\":{\"nested\":\"value\"}}", "{\"test\":{\"nested\":\"value\"}}" };
+            yield return new object[] { "[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value\"}}]" };
+            yield return new object[] { "[{ \"['name.with.dot']\":\"value\" }]", "[{\"name.with.dot\":\"value\"}]" };
         }
 
         public static IEnumerable<object[]> InvalidMatches()
@@ -349,9 +352,9 @@ namespace WireMock.Net.Tests.Matchers
             yield return new object[] { "[123]", "[1234]" };
             yield return new object[] { "{}", "\"test\"" };
             yield return new object[] { "{ \"test\":\"value\" }", "{\"test\":\"value2\"}" };
-            yield return new object[] { "{ \"test.test1\":\"value\" }", "{\"test\":{\"test1\":\"value1\"}}" };
+            yield return new object[] { "{ \"test.nested\":\"value\" }", "{\"test\":{\"nested\":\"value1\"}}" };
             yield return new object[] { "{\"test\":{\"test1\":\"value\"}}", "{\"test\":{\"test1\":\"value1\"}}" };
-            yield return new object[] { "[{ \"test.test1\":\"value\" }]", "[{\"test\":{\"test1\":\"value1\"}}]" };
+            yield return new object[] { "[{ \"test.nested\":\"value\" }]", "[{\"test\":{\"nested\":\"value1\"}}]" };
         }
     }
 }
