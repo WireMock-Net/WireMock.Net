@@ -1,3 +1,6 @@
+# 1.3.7 (17 November 2020)
+- [#539](https://github.com/WireMock-Net/WireMock.Net/pull/539) - Support for partial JSON matching contributed by [gleb-osokin](https://github.com/gleb-osokin)
+
 # 1.3.6 (10 November 2020)
 - [#529](https://github.com/WireMock-Net/WireMock.Net/pull/529) - Add assertions for ClientIP, Url and ProxyUrl [feature] contributed by [akamud](https://github.com/akamud)
 - [#535](https://github.com/WireMock-Net/WireMock.Net/pull/535) - WithCallback should use also use enum HttpStatusCode [bug] contributed by [StefH](https://github.com/StefH)
