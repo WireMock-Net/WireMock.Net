@@ -51,7 +51,11 @@ namespace WireMock.Server
         event NotifyCollectionChangedEventHandler LogEntriesChanged;
 
         /// <summary>
-        /// Adds the catch all mapping.
+        /// Adds a 'catch all mapping'
+        /// 
+        /// - matches all Paths and any Methods
+        /// - priority is set to 1000
+        /// - responds with a 404 "No matching mapping found"
         /// </summary>
         void AddCatchAllMapping();
 
@@ -83,13 +87,18 @@ namespace WireMock.Server
         //IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false);
 
         /// <summary>
-        /// Reads a static mapping file and adds or updates the mapping.
+        /// Reads a static mapping file and adds or updates a single mapping.
+        /// 
+        /// Calling this method manually forces WireMock.Net to read and apply the specified static mapping file.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="path">The path to the static mapping file.</param>
         bool ReadStaticMappingAndAddOrUpdate([NotNull] string path);
 
         /// <summary>
         /// Reads the static mappings from a folder.
+        /// (This method is also used when WireMockServerSettings.ReadStaticMappings is set to true.
+        /// 
+        /// Calling this method manually forces WireMock.Net to read and apply all static mapping files in the specified folder.
         /// </summary>
         /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
         void ReadStaticMappings([CanBeNull] string folder = null);
@@ -157,12 +166,16 @@ namespace WireMock.Server
 
         /// <summary>
         /// Register the mappings (via <see cref="MappingModel"/>).
+        /// 
+        /// This can be used if you have 1 or more <see cref="MappingModel"/> defined and want to register these in WireMock.Net directly instead of using the fluent syntax.
         /// </summary>
         /// <param name="mappings">The MappingModels</param>
         IWireMockServer WithMapping(params MappingModel[] mappings);
 
         /// <summary>
         /// Register the mappings (via json string).
+        /// 
+        /// This can be used if you the mappings as json string defined and want to register these in WireMock.Net directly instead of using the fluent syntax.
         /// </summary>
         /// <param name="mappings">The mapping(s) as json string.</param>
         IWireMockServer WithMapping(string mappings);
