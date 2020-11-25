@@ -15,8 +15,7 @@ namespace WireMock
             o.AddSimpleConsole(options =>
             {
                 options.IncludeScopes = true;
-                options.SingleLine = true;
-                options.UseUtcTimestamp = true;
+                options.SingleLine = false;
                 options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss ";
             });
         }).CreateLogger(string.Empty);

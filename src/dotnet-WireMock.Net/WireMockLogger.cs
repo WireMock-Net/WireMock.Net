@@ -8,6 +8,11 @@ namespace WireMock
 {
     public class WireMockLogger : IWireMockLogger
     {
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
         private readonly ILogger _logger;
 
         public WireMockLogger(ILogger logger)
@@ -48,7 +53,7 @@ namespace WireMock
         /// <see cref="IWireMockLogger.DebugRequestResponse"/>
         public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
         {
-            string message = JsonSerializer.Serialize(logEntryModel);
+            string message = JsonSerializer.Serialize(logEntryModel, options);
 
             _logger.LogDebug("Admin[{IsAdmin}] {Message}", isAdminRequest, message);
         }

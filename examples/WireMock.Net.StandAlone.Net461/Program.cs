@@ -9,13 +9,15 @@ namespace WireMock.Net.StandAlone.Net461
     {
         static void Main(string[] args)
         {
-            var settings = WireMockServerSettingsParser.ParseArguments(args);
-            settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
+            if (WireMockServerSettingsParser.TryParseArguments(args, out var settings))
+            {
+                settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
-            WireMockServer.Start(settings);
+                WireMockServer.Start(settings);
 
-            Console.WriteLine("Press any key to stop the server");
-            Console.ReadKey();
+                Console.WriteLine("Press any key to stop the server");
+                Console.ReadKey();
+            }
         }
     }
 }
