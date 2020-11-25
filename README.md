@@ -59,8 +59,12 @@ WireMock.Net can be used in several ways:
 You can use your favorite test framework and use WireMock within your tests, see
 [Wiki : UnitTesting](https://github.com/StefH/WireMock.Net/wiki/Using-WireMock-in-UnitTests).
 
+### As a dotnet tool
+It's simple to install WireMock.Net as (global) dotnet tool, see [Wiki : Standalone Process](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-dotnet-tool).
+
 ### As standalone process / console application
 This is quite straight forward to launch a mock server within a console application, see [Wiki : Standalone Process](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-a-standalone-process).
+
 
 ### As a Windows Service
 You can also run WireMock.Net as a Windows Service, follow this [WireMock-as-a-Windows-Service](https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-as-a-Windows-Service).

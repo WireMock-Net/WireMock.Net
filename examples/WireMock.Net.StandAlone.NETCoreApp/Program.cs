@@ -23,7 +23,11 @@ namespace WireMock.Net.StandAlone.NETCoreApp
         {
             XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 
-            var settings = WireMockServerSettingsParser.ParseArguments(args, new WireMockLog4NetLogger());
+            if (WireMockServerSettingsParser.TryParseArguments(args, out var settings, new WireMockLog4NetLogger()))
+            {
+                return;
+            }
+            
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             _server = WireMockServer.Start(settings);

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dotnet-WireMock.Net": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
