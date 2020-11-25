@@ -7,8 +7,9 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-wiremock</ToolCommandName>
     <Description>A dotnet commandline tool for WireMock.Net (A Lightweight Http Mocking Server for .NET)</Description>
-    <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
+    <PackageTags>tdd;mock;http;wiremock;test;server;unittest;dotnet;tool;dotnet-tool</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>Stef Heyenrath</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
