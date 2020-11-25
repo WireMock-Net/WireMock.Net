@@ -14,15 +14,23 @@ namespace WireMock.Settings
         /// </summary>
         /// <param name="args">The commandline arguments</param>
         /// <param name="logger">The logger (optional, can be null)</param>
+        /// <param name="settings">The parsed settings</param>
         [PublicAPI]
-        public static IWireMockServerSettings ParseArguments([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
+        public static bool TryParseArguments([NotNull] string[] args, out IWireMockServerSettings settings, [CanBeNull] IWireMockLogger logger = null)
         {
             Check.HasNoNulls(args, nameof(args));
 
             var parser = new SimpleCommandLineParser();
             parser.Parse(args);
 
-            var settings = new WireMockServerSettings
+            if (parser.GetBoolSwitchValue("help"))
+            {
+                logger.Info("See https://github.com/WireMock-Net/WireMock.Net/wiki/Settings for details on all commandline options.");
+                settings = null;
+                return false;
+            }
+
+            settings = new WireMockServerSettings
             {
                 StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
                 ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
@@ -100,7 +108,7 @@ namespace WireMock.Settings
                 settings.CertificateSettings = certificateSettings;
             }
 
-            return settings;
+            return true;
         }
     }
 }

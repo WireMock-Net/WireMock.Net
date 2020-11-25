@@ -25,7 +25,10 @@ namespace WireMock
 
         static async Task Main(string[] args)
         {
-            Server = StandAloneApp.Start(args, new WireMockLogger(Logger));
+            if (!StandAloneApp.TryStart(args, out Server, new WireMockLogger(Logger)))
+            {
+                return;
+            }
 
             Logger.LogInformation("Press Ctrl+C to shut down");
 

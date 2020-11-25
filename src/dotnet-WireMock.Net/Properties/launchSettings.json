@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "CoverageConvertor": {
+    "dotnet-WireMock.Net": {
       "commandName": "Project",
-      "commandLineArgs": "--Port 9091"
+      "commandLineArgs": "--help"
     }
   }
 }

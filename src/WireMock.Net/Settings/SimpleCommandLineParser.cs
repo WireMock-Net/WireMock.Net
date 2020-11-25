@@ -9,7 +9,7 @@ namespace WireMock.Settings
     {
         private const string Sigil = "--";
 
-        private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>();
+        private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
 
         public void Parse(string[] arguments)
         {
@@ -68,6 +68,11 @@ namespace WireMock.Settings
                 string value = values.FirstOrDefault();
                 return !string.IsNullOrEmpty(value) ? bool.Parse(value) : defaultValue;
             }, defaultValue);
+        }
+
+        public bool GetBoolSwitchValue(string name)
+        {
+            return Contains(name);
         }
 
         public int? GetIntValue(string name, int? defaultValue = null)
