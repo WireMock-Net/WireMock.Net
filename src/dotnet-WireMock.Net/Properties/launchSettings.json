@@ -2,7 +2,7 @@
   "profiles": {
     "CoverageConvertor": {
       "commandName": "Project",
-      "commandLineArgs": "--Port 19091"
+      "commandLineArgs": "--Port 9091"
     }
   }
 }
