@@ -54,7 +54,7 @@ steps:
 
 # Upload coverage to codecov.io
 - script: |
-    %USERPROFILE%\.nuget\packages\codecov\1.10.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
+    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
