@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Codecov" Version="1.10.0" />
-    <PackageReference Include="coverlet.msbuild" Version="2.8.1">
+    <PackageReference Include="Codecov" Version="1.12.3" />
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -45,12 +45,12 @@
     <PackageReference Include="System.Threading" Version="4.3.0" />
     <PackageReference Include="RestEase" Version="1.4.10" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Include="Moq" Version="4.14.5" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="Moq" Version="4.15.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NFluent" Version="2.7.0" />
     <PackageReference Include="OpenCover" Version="4.7.922" />
-    <PackageReference Include="ReportGenerator" Version="4.6.7" />
+    <PackageReference Include="ReportGenerator" Version="4.8.1" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="xunit" Version="2.4.1" />

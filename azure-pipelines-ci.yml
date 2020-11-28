@@ -17,6 +17,14 @@ steps:
     dotnet tool install --global dotnet-sonarscanner
   displayName: Install Tools (SonarScanner)
 
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: "11"
+    jdkArchitectureOption: x64
+    jdkSourceOption: 'PreInstalled'
+  displayName: Install Java 11
+
+
 # Begin SonarScanner
 # See also
 # - https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools, else you get this error: `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
@@ -46,7 +54,7 @@ steps:
 
 # Upload coverage to codecov.io
 - script: |
-    %USERPROFILE%\.nuget\packages\codecov\1.10.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
+    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
