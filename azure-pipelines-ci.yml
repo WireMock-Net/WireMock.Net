@@ -55,6 +55,11 @@ steps:
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR_CMD'], 'yes'))
 
+- script: |
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)"
+  displayName: Begin SonarScanner
+  condition: and(succeeded(), eq(variables['RUN_COVERAGE'], 'yes'))
+
 # Build tests and run tests for netcoreapp3.1 (with coverage)
 - task: DotNetCoreCLI@2
   displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
