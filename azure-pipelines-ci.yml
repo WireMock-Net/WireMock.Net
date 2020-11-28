@@ -12,10 +12,17 @@ steps:
     echo "BuildId = $(buildId)"
   displayName: 'Print buildId'
 
-# Install Tools (SonarScanner)
+# Install Tools
 - script: |
     dotnet tool install --global dotnet-sonarscanner
   displayName: Install Tools (SonarScanner)
+
+- task: DotNetCoreCLI@2
+  displayName: "Install tool: dotnet-coverageconverter"
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'update --global dotnet-coverageconverter'
 
 - task: PowerShell@2
   displayName: "Use JDK11 by default"
@@ -56,6 +63,22 @@ steps:
     projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
     arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
+
+- task: VSTest@2
+  displayName: 'VsTest'
+  inputs:
+    testSelector: 'testAssemblies'
+    vsTestVersion: 16.0
+    diagnosticsEnabled: true
+    codeCoverageEnabled: true
+    testAssemblyVer2: |
+     **\*tests.dll
+     !**\obj\**
+
+- task: CmdLine@2
+  displayName: 'Convert .coverage to .coveragexml'
+  inputs:
+    script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults"'
 
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
