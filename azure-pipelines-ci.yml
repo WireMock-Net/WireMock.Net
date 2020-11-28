@@ -64,6 +64,12 @@ steps:
     arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: 'build'
+    projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+
 - task: VSTest@2
   displayName: 'VsTest'
   inputs:
