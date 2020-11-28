@@ -42,6 +42,7 @@ steps:
     command: 'build'
     arguments: /p:Configuration=Debug
     projects: $(buildProjects)
+  condition: and(succeeded(), eq(variables['BUILD_SOLUTION_AS_DEBUG'], 'yes'))
 
 # Build tests and run tests for net452 and netcoreapp3.1 (with coverage)
 - script: |
