@@ -32,7 +32,7 @@ steps:
 # - https://github.com/Microsoft/vsts-tasks/issues/8291
 #
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /o:"stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="./test/WireMock.Net.Tests/coverage.opencover.xml"
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"wiremock" /o:"stefh-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml"
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
@@ -62,7 +62,7 @@ steps:
 
 # Upload coverage to codecov.io
 - script: |
-    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.opencover.xml" -t $(CODECOV_TOKEN)
+    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
