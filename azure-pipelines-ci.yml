@@ -28,25 +28,49 @@ steps:
 # Build tests and run tests for net452
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net452
-  condition: and(succeeded(), eq(variables['RUN_TEST_NET452'], 'yes'))
+  condition: and(succeeded(), eq(variables['RUN_TESTS_NET452'], 'yes'))
   displayName: 'Build tests and run tests for net452'
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare analysis configuration'
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'wiremock-net'
+    scannerMode: 'MSBuild'
+    projectKey: 'WireMock-Net_WireMock.Net'
+    extraProperties: |
+      sonar.cs.opencover.reportsPaths=**\coverage.netcoreapp3.1.opencover.xml
 
 # Begin SonarScanner
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml"
   displayName: Begin SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
+  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD'], 'yes'))
 
 # Build tests and run tests for netcoreapp3.1 (with coverage)
+- task: DotNetCoreCLI@2
+  displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
+  inputs:
+    command: 'test'
+    projects: '**/*.csproj'
+    arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
   displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
+  condition: and(succeeded(), eq(variables['RUN_TESTS_NETCOREAPP31'], 'yes'))
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish results on build summary'
 
 # End SonarScanner
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
   displayName: End SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
+  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD'], 'yes'))
 
 - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
   displayName: 'WhiteSource Bolt'
