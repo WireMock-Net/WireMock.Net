@@ -40,6 +40,7 @@ steps:
     projectKey: 'WireMock-Net_WireMock.Net'
     extraProperties: |
       sonar.cs.opencover.reportsPaths=**\coverage.netcoreapp3.1.opencover.xml
+  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
 # Begin SonarScanner
 - script: |
@@ -54,6 +55,7 @@ steps:
     command: 'test'
     projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
     arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
@@ -62,9 +64,11 @@ steps:
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
+  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
 - task: SonarCloudPublish@1
   displayName: 'Publish results on build summary'
+  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
 # End SonarScanner
 - script: |
