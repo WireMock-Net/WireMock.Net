@@ -69,7 +69,7 @@ steps:
   displayName: 'Convert .coverage to .coveragexml'
   inputs:
     script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults"'
-  condition: and(succeeded(), ne(variables['CC'], 'yes'))
+  condition: and(succeeded(), eq(variables['CC'], 'yes'))
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
