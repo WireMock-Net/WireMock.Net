@@ -40,7 +40,7 @@ steps:
       sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build solution'
+  displayName: 'Build test project'
   inputs:
     command: 'build'
     projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
