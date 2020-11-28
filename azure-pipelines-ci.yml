@@ -52,7 +52,7 @@ steps:
   displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
   inputs:
     command: 'test'
-    projects: '**/*.csproj'
+    projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
     arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
 
 - script: |
