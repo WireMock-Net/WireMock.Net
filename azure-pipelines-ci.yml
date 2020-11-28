@@ -28,6 +28,7 @@ steps:
 # Build tests and run tests for net452
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net452
+  condition: and(succeeded(), eq(variables['RUN_TEST_NET452'], 'yes'))
   displayName: 'Build tests and run tests for net452'
 
 # Begin SonarScanner
