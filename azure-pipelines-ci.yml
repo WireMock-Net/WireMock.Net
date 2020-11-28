@@ -17,13 +17,13 @@ steps:
     dotnet tool install --global dotnet-sonarscanner
   displayName: Install Tools (SonarScanner)
 
-- task: JavaToolInstaller@0
+- task: PowerShell@2
+  displayName: "Use JDK11 by default"
   inputs:
-    versionSpec: "11"
-    jdkArchitectureOption: x64
-    jdkSourceOption: 'PreInstalled'
-  displayName: Install Java 11
-
+    targetType: 'inline'
+    script: |
+      $jdkPath = $env:JAVA_HOME_11_X64
+      Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
 # Begin SonarScanner
 # See also
