@@ -53,7 +53,7 @@ steps:
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml"
   displayName: Begin SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD'], 'yes'))
+  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD_OPENCOVER'], 'yes'))
 
 - script: |
     %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)"
