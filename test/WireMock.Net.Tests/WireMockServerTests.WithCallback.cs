@@ -27,7 +27,7 @@ namespace WireMock.Net.Tests
 					}));
 
 			// Act
-			using var httpClient = new HttpClient();
+			var httpClient = new HttpClient();
 			var response = await httpClient.PostAsync("http://localhost:" + server.Ports[0] + "/foo", new StringContent("dummy"));
 
 			// Assert
