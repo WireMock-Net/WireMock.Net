@@ -12,18 +12,6 @@ steps:
     echo "BuildId = $(buildId)"
   displayName: 'Print buildId'
 
-# Install Tools
-- script: |
-    dotnet tool install --global dotnet-sonarscanner
-  displayName: Install Tools (SonarScanner)
-
-- task: DotNetCoreCLI@2
-  displayName: "Install tool: dotnet-coverageconverter"
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'update --global dotnet-coverageconverter'
-
 - task: PowerShell@2
   displayName: "Use JDK11 by default"
   inputs:
@@ -32,11 +20,13 @@ steps:
       $jdkPath = $env:JAVA_HOME_11_X64
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
-# Build tests and run tests for net452
-- script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net452
-  condition: and(succeeded(), eq(variables['RUN_TESTS_NET452'], 'yes'))
-  displayName: 'Build tests and run tests for net452'
+# Install Tools
+- task: DotNetCoreCLI@2
+  displayName: "Install tool: dotnet-coverageconverter"
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'update --global dotnet-coverageconverter'
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis configuration'
@@ -46,28 +36,8 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'WireMock-Net_WireMock.Net'
     extraProperties: |
-      sonar.cs.opencover.reportsPaths=**\coverage.netcoreapp3.1.opencover.xml
-  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
-
-# Begin SonarScanner
-- script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml"
-  displayName: Begin SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD_OPENCOVER'], 'yes'))
-
-- script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)"
-  displayName: Begin SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_COVERAGE'], 'yes'))
-
-# Build tests and run tests for netcoreapp3.1 (with coverage)
-- task: DotNetCoreCLI@2
-  displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
-  inputs:
-    command: 'test'
-    projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-    arguments: '--configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
+      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
+      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
 
 - task: DotNetCoreCLI@2
   displayName: 'Build solution'
@@ -92,37 +62,17 @@ steps:
   inputs:
     script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults"'
 
-- script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  displayName: 'Build tests and run tests for netcoreapp3.1 (with coverage)'
-  condition: and(succeeded(), eq(variables['RUN_TESTS_NETCOREAPP31'], 'yes'))
-
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
-  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
 
 - task: SonarCloudPublish@1
   displayName: 'Publish results on build summary'
-  condition: and(succeeded(), eq(variables['RUN_SONARCLOUD'], 'yes'))
-
-# End SonarScanner
-- script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
-  displayName: End SonarScanner
-  condition: and(succeeded(), eq(variables['RUN_SONAR_CMD'], 'yes'))
 
 - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
   displayName: 'WhiteSource Bolt'
   condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
 
-# Upload coverage to codecov.io
-- script: |
-    %USERPROFILE%\.nuget\packages\codecov\1.10.0\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
-  displayName: Upload coverage to codecov.io
-
-# https://github.com/microsoft/azure-pipelines-tasks/issues/12212
 - task: PublishTestResults@2
-  condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
