@@ -252,3 +252,4 @@ paket-files/
 *.sln.iml
 
 ./report/coverlet/
+/test/WireMock.Net.Tests/coverage.opencover.xml
