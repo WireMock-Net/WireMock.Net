@@ -36,8 +36,16 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'WireMock-Net_WireMock.Net'
     extraProperties: |
-      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
-      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
+      stef_sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
+      stef_sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare analysis configuration'
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'wiremock-net'
+    scannerMode: 'MSBuild'
+    projectKey: 'WireMock-Net_WireMock.Net'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build test project'
@@ -61,6 +69,7 @@ steps:
   displayName: 'Convert .coverage to .coveragexml'
   inputs:
     script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults"'
+  condition: and(succeeded(), ne(variables['CC'], 'yes'))
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
