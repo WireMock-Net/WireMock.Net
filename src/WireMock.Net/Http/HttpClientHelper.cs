@@ -13,7 +13,7 @@ namespace WireMock.Http
     {
         public static HttpClient CreateHttpClient(IProxyAndRecordSettings settings)
         {
-#if NETSTANDARD || NETCOREAPP3_1
+#if NETSTANDARD || NETCOREAPP3_1 || NET5_0
             var handler = new HttpClientHandler
             {
                 CheckCertificateRevocationList = false,

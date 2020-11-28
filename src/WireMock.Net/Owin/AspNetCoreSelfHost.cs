@@ -122,6 +122,8 @@ namespace WireMock.Owin
                 _logger.Info("WireMock.Net server using netstandard2.1");
 #elif NETCOREAPP3_1
                 _logger.Info("WireMock.Net server using .NET Core 3.1");
+#elif NET5_0
+                _logger.Info("WireMock.Net server using .NET 5.0");
 #elif NET46
                 _logger.Info("WireMock.Net server using .NET Framework 4.6.1 or higher");
 #endif
