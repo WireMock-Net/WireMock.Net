@@ -7,9 +7,15 @@ variables:
   buildProjects: '**/src/**/*.csproj'
 
 steps:
+# Print buildId
 - script: |
-    echo "BuildId = $(buildId) , Agent.TempDirectory = $(Agent.TempDirectory)"
-  displayName: 'Print environment settings'
+    echo "BuildId = $(buildId)"
+  displayName: 'Print buildId'
+
+# Install Tools (SonarScanner)
+- script: |
+    dotnet tool install --global dotnet-sonarscanner
+  displayName: Install Tools (SonarScanner)
 
 - task: PowerShell@2
   displayName: "Use JDK11 by default"
@@ -19,68 +25,40 @@ steps:
       $jdkPath = $env:JAVA_HOME_11_X64
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
-# Install Tools
-- task: DotNetCoreCLI@2
-  displayName: "Install tool: dotnet-coverageconverter"
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'update --global dotnet-coverageconverter'
+# Begin SonarScanner
+# See also
+# - https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools, else you get this error: `Since you just installed the .NET Core SDK, you will need to reopen the Command Prompt window before running the tool you installed.`
+# - https://github.com/dotnet/cli/issues/8368
+# - https://github.com/Microsoft/vsts-tasks/issues/8291
+#
+- script: |
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml"
+  displayName: Begin SonarScanner
+  condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
-- task: SonarCloudPrepare@1
-  displayName: 'Prepare analysis configuration'
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'wiremock-net'
-    scannerMode: 'MSBuild'
-    projectKey: 'WireMock-Net_WireMock.Net'
-    extraProperties: |
-      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\TestResults\**\*.trx
-      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\TestResults\**\*.coveragexml
+# Build source, tests and run tests for netcoreapp2.1 (with coverage)
+- script: |
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  displayName: 'Build source, tests and run tests for netcoreapp3.1 (with coverage)'
 
-- task: SonarCloudPrepare@1
-  displayName: 'Prepare analysis configuration'
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'wiremock-net'
-    scannerMode: 'MSBuild'
-    projectKey: 'WireMock-Net_WireMock.Net'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Build test project'
-  inputs:
-    command: 'build'
-    projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-    arguments: '--configuration Debug --framework netcoreapp3.1'
-
-- task: VSTest@2
-  displayName: 'VsTest'
-  inputs:
-    testSelector: 'testAssemblies'
-    vsTestVersion: 16.0
-    diagnosticsEnabled: true
-    codeCoverageEnabled: true
-    testAssemblyVer2: |
-     **\*tests.dll
-     !**\obj\**
-
-- task: CmdLine@2
-  displayName: 'Convert .coverage to .coveragexml'
-  inputs:
-    script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults" --ProcessAllFiles --RemoveOriginalCoverageFiles'
-  condition: and(succeeded(), eq(variables['CC'], 'yes'))
-
-- task: SonarCloudAnalyze@1
-  displayName: 'Run SonarCloud analysis'
-
-- task: SonarCloudPublish@1
-  displayName: 'Publish results on build summary'
+# End SonarScanner
+- script: |
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
+  displayName: End SonarScanner
+  condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
 - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
   displayName: 'WhiteSource Bolt'
   condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
 
+# Upload coverage to codecov.io
+- script: |
+    %USERPROFILE%\.nuget\packages\codecov\1.10.0\tools\codecov.exe -f "./test/Handlebars.Net.Helpers.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
+  displayName: Upload coverage to codecov.io
+
+# https://github.com/microsoft/azure-pipelines-tasks/issues/12212
 - task: PublishTestResults@2
+  condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
