@@ -32,14 +32,14 @@ steps:
 # - https://github.com/Microsoft/vsts-tasks/issues/8291
 #
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.net5.0.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
 # Build source, tests and run tests for netcoreapp2.1 (with coverage)
 - script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  displayName: 'Build source, tests and run tests for netcoreapp3.1 (with coverage)'
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net5.0 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+  displayName: 'Build source, tests and run tests for net5.0 (with coverage)'
 
 # End SonarScanner
 - script: |
@@ -53,7 +53,7 @@ steps:
 
 # Upload coverage to codecov.io
 - script: |
-    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
+    %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.net5.0.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
@@ -66,7 +66,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish coverage file
   inputs:
-    PathtoPublish: 'D:\a\1\.\s\test\WireMock.Net.Tests\coverage.netcoreapp3.1.opencover.xml'
+    PathtoPublish: 'D:\a\1\.\s\test\WireMock.Net.Tests\coverage.net5.0.opencover.xml'
 
 # Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/
 - task: DotNetCoreCLI@2

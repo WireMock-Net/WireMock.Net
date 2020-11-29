@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Authors>Stef Heyenrath</Authors>
-		<TargetFrameworks>net452;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net452;netcoreapp3.1;net5.0</TargetFrameworks>
 		<DebugType>full</DebugType>
 		<AssemblyName>WireMock.Net.Tests</AssemblyName>
 		<PackageId>WireMock.Net.Tests</PackageId>
