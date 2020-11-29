@@ -58,6 +58,7 @@ namespace WireMock.Owin
             }
 
             _host = builder
+                .UseSetting("suppressStatusMessages", "True") // https://andrewlock.net/suppressing-the-startup-and-shutdown-messages-in-asp-net-core/
                 .ConfigureAppConfigurationUsingEnvironmentVariables()
                 .ConfigureServices(services =>
                 {
