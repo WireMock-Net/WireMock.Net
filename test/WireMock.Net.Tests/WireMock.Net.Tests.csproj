@@ -66,10 +66,6 @@
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-		<PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<None Update="responsebody.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
