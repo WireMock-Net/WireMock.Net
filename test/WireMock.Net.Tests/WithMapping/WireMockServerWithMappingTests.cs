@@ -51,6 +51,8 @@ namespace WireMock.Net.Tests.WithMapping
                 m.Response.Body == response &&
                 (int)m.Response.StatusCode == 201
             );
+
+            server.Stop();
         }
 
         [Fact]
@@ -86,6 +88,8 @@ namespace WireMock.Net.Tests.WithMapping
                 m.Guid == Guid.Parse("532889c2-f84d-4dc8-b847-9ea2c6aca7d5") &&
                 (int)m.Response.StatusCode == 201
             );
+
+            server.Stop();
         }
 
         [Fact]
@@ -120,6 +124,8 @@ namespace WireMock.Net.Tests.WithMapping
 
             // Assert
             server.MappingModels.Should().HaveCount(2);
+
+            server.Stop();
         }
     }
 }

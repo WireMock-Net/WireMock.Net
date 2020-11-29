@@ -57,6 +57,8 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(server.Mappings).HasSize(0);
             Check.That(server.MappingModels).HasSize(0);
+
+            server.Stop();
         }
 
         [Fact]
@@ -106,6 +108,8 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Provider).IsNotNull();
             Check.That(mappings.First().Guid).Equals(guid);
             Check.That(mappings.First().Title).Equals(title);
+
+            server.Stop();
         }
 
         [Fact]
@@ -124,6 +128,8 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Provider).IsNotNull();
             Check.That(mappings.First().Guid).Equals(Guid.Parse(guid));
             Check.That(mappings.First().Title).IsNullOrEmpty();
+
+            server.Stop();
         }
 
         [Fact]
@@ -136,6 +142,8 @@ namespace WireMock.Net.Tests
 
             var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
+
+            server.Stop();
         }
 
         [Fact]
@@ -164,6 +172,8 @@ namespace WireMock.Net.Tests
             Check.That(mappings.First().Provider).IsNotNull();
             Check.That(mappings.First().Guid).Equals(Guid.Parse(guid));
             Check.That(mappings.First().Title).IsNullOrEmpty();
+
+            server.Stop();
         }
 
         [Fact]
@@ -219,6 +229,8 @@ namespace WireMock.Net.Tests
 
             var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(6);
+
+            server.Stop();
         }
 
         [Fact]
@@ -257,6 +269,8 @@ namespace WireMock.Net.Tests
 
             var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(2);
+
+            server.Stop();
         }
 
         [Fact]
@@ -270,6 +284,8 @@ namespace WireMock.Net.Tests
 
             var mappings = server.Mappings.ToArray();
             Check.That(mappings).HasSize(1);
+
+            server.Stop();
         }
 
         [Fact]
@@ -296,6 +312,8 @@ namespace WireMock.Net.Tests
             Check.That(mappings2).HasSize(1);
             Check.That(mappings2.First().Guid).Equals(guid);
             Check.That(mappings2.First().Provider).Equals(response2);
+
+            server.Stop();
         }
 
         [Fact]
@@ -320,6 +338,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That((int)response.StatusCode).IsEqualTo(400);
+
+            server.Stop();
         }
 
         [Fact]
@@ -336,6 +356,8 @@ namespace WireMock.Net.Tests
             var requestLogged = server.LogEntries.First();
             Check.That(requestLogged.RequestMessage.Method).IsEqualTo("GET");
             Check.That(requestLogged.RequestMessage.BodyData).IsNull();
+
+            server.Stop();
         }
 
         [Fact]
@@ -359,6 +381,8 @@ namespace WireMock.Net.Tests
 
             var requestLoggedB = server.LogEntries.Last();
             Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
+
+            server.Stop();
         }
 
         [Fact]

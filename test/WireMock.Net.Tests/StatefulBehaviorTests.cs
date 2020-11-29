@@ -32,6 +32,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+
+            server.Stop();
         }
 
         [Fact]
@@ -60,6 +62,8 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseNoState).Equals("No state msg");
             Check.That(responseWithState).Equals("Test state msg");
+
+            server.Stop();
         }
 
         [Fact]
@@ -94,6 +98,8 @@ namespace WireMock.Net.Tests
             responseScenario1.Should().Be(body1);
             responseScenario2.Should().Be(body1);
             responseWithState.Should().Be(body2);
+
+            server.Stop();
         }
 
         [Fact]
@@ -143,6 +149,8 @@ namespace WireMock.Net.Tests
             t2a.Should().Be(body2);
             t2b.Should().Be(body2);
             t3.Should().Be(body3);
+
+            server.Stop();
         }
 
         [Fact]
@@ -171,6 +179,8 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseIntScenario).Equals("Scenario 1, Setting State 2");
             Check.That(responseWithIntState).Equals("Scenario 1, State 2");
+
+            server.Stop();
         }
 
         [Fact]
@@ -199,6 +209,8 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseIntScenario).Equals("string state, Setting State 2");
             Check.That(responseWithIntState).Equals("string state, State 2");
+
+            server.Stop();
         }
 
         [Fact]
@@ -227,6 +239,8 @@ namespace WireMock.Net.Tests
             // then
             Check.That(responseIntScenario).Equals("int state, Setting State 2");
             Check.That(responseWithIntState).Equals("string state, State 2");
+
+            server.Stop();
         }
 
         [Fact]
@@ -281,6 +295,8 @@ namespace WireMock.Net.Tests
             Check.That(server.Scenarios["To do list"].NextState).IsNull();
             Check.That(server.Scenarios["To do list"].Started).IsTrue();
             Check.That(server.Scenarios["To do list"].Finished).IsTrue();
+
+            server.Stop();
         }
 
         [Fact]
@@ -326,6 +342,8 @@ namespace WireMock.Net.Tests
 
             var responseWithState2 = await new HttpClient().GetStringAsync(url + "/foo2X");
             Check.That(responseWithState2).Equals("Test state msg 2");
+
+            server.Stop();
         }
     }
 }

@@ -16,9 +16,9 @@ namespace WireMock.Net.Tests.FluentAssertions
 {
     public class WireMockAssertionsTests : IDisposable
     {
-        private WireMockServer _server;
-        private HttpClient _httpClient;
-        private int _portUsed;
+        private readonly WireMockServer _server;
+        private readonly HttpClient _httpClient;
+        private readonly int _portUsed;
 
         public WireMockAssertionsTests()
         {
@@ -289,6 +289,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _server?.Stop();
             _server?.Dispose();
+            _httpClient?.Dispose();
         }
     }
 }

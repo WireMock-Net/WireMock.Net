@@ -41,6 +41,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             response.Should().Contain("<hello>world</hello>");
+
+            server.Stop();
         }
 
         [Fact]
@@ -70,6 +72,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             response.Should().Contain("<hello>world</hello>");
+
+            server.Stop();
         }
 
         [Fact]
@@ -99,6 +103,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             response.Should().Contain("<hello>world</hello>");
+
+            server.Stop();
         }
     }
 }

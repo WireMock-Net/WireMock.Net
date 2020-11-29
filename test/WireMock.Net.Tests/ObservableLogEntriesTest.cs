@@ -69,6 +69,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(count).Equals(1);
+
+            server.Dispose();
         }
 
         [Fact]
@@ -105,6 +107,8 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(countResponsesWithStatusNotOk).Equals(0);
             Check.That(count).Equals(expectedCount);
+
+            server.Dispose();
         }
     }
 }

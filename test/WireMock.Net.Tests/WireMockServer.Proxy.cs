@@ -73,6 +73,8 @@ namespace WireMock.Net.Tests
             Check.That(server.Mappings).HasSize(1);
             Check.That(server.LogEntries).HasSize(1);
             Check.That(content).Contains("google");
+
+            server.Stop();
         }
 
         [Fact]

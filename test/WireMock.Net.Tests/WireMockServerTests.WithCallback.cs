@@ -32,6 +32,8 @@ namespace WireMock.Net.Tests
 
 			// Assert
 			response.StatusCode.Should().Be(409);
+
+            server.Stop();
 		}
 	}
 }
