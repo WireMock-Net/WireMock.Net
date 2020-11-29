@@ -36,10 +36,17 @@ steps:
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
-# Build source, tests and run tests for netcoreapp2.1 (with coverage)
+- task: DotNetCoreCLI@2
+  displayName: 'Execute Unit tests'
+  inputs:
+    command: 'test'
+    projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+    arguments: '--collect "Code Coverage" --configuration Debug --framework net5.0 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+
 - script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net5.0 --logger:"console;trx" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net5.0 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
   displayName: 'Build source, tests and run tests for net5.0 (with coverage)'
+  condition: and(succeeded(), eq(variables['XXX'], 'yes'))
 
 # End SonarScanner
 - script: |
