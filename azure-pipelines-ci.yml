@@ -7,10 +7,9 @@ variables:
   buildProjects: '**/src/**/*.csproj'
 
 steps:
-# Print buildId
 - script: |
-    echo "BuildId = $(buildId)"
-  displayName: 'Print buildId'
+    echo "BuildId = $(buildId) , Agent.TempDirectory = $(Agent.TempDirectory)"
+  displayName: 'Print environment settings'
 
 - task: PowerShell@2
   displayName: "Use JDK11 by default"
@@ -36,8 +35,8 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'WireMock-Net_WireMock.Net'
     extraProperties: |
-      sonar.cs.vstest.reportsPaths=**\*.trx
-      sonar.cs.vscoveragexml.reportsPaths=**\*.coveragexml
+      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
+      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis configuration'
