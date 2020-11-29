@@ -38,7 +38,7 @@ steps:
 
 # Build source, tests and run tests for netcoreapp2.1 (with coverage)
 - script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net5.0 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework net5.0 --logger:"console;trx" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
   displayName: 'Build source, tests and run tests for net5.0 (with coverage)'
 
 # End SonarScanner
