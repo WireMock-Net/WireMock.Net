@@ -36,8 +36,8 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'WireMock-Net_WireMock.Net'
     extraProperties: |
-      stef_sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
-      stef_sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
+      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\**\*.trx
+      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)\**\*.coveragexml
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis configuration'
