@@ -68,7 +68,7 @@ steps:
 - task: CmdLine@2
   displayName: 'Convert .coverage to .coveragexml'
   inputs:
-    script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults" --RemoveOriginalCoverageFiles'
+    script: 'dotnet-coverageconverter --CoverageFilesFolder "$(Agent.TempDirectory)\TestResults" --Guid false --RemoveOriginalCoverageFiles'
   condition: and(succeeded(), eq(variables['CC'], 'yes'))
 
 - task: SonarCloudAnalyze@1
