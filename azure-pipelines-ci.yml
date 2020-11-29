@@ -32,7 +32,7 @@ steps:
 # - https://github.com/Microsoft/vsts-tasks/issues/8291
 #
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true
+    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
@@ -62,6 +62,11 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish coverage file
+  inputs:
+    PathtoPublish: 'D:\a\1\.\s\test\WireMock.Net.Tests\coverage.netcoreapp3.1.opencover.xml'
 
 # Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/
 - task: DotNetCoreCLI@2
