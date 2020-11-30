@@ -31,14 +31,8 @@ jobs:
       projectName: 'WireMock.Net'
       extraProperties: |
         sonar.branch.name=$(Build.SourceBranchName)
-        sonar.verbose=true
-        sonar.cs.opencover.reportsPaths=**\coverage.netcoreapp3.1.opencover.xml
+        sonar.cs.opencover.reportsPaths=**/coverage.netcoreapp3.1.opencover.xml
   
-  - script: |
-      dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
-    displayName: Begin SonarScanner
-    condition: and(succeeded(), eq(variables['RUN_SONARCMD'], 'yes'))
-
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
@@ -53,11 +47,6 @@ jobs:
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
       arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
-  - script: |
-      dotnet sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
-    displayName: End SonarScanner
-    condition: and(succeeded(), eq(variables['RUN_SONARXCMD'], 'yes'))
-  
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
   
@@ -67,12 +56,7 @@ jobs:
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
     displayName: 'WhiteSource Bolt'
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
-  
-  - script: |
-      %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
-    displayName: Upload coverage to codecov.io
-    condition: and(succeeded(), eq(variables['UPLOAD_CODECOV'], 'yes'))
-  
+ 
   - script: |
       bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml
     displayName: 'codecov'
