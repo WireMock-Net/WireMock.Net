@@ -4,7 +4,7 @@ variables:
   buildProjects: '**/src/**/*.csproj'
 
 jobs:
-- job: 'Build and Test'
+- job: Build_and_Test
 
   pool:
     vmImage: 'Ubuntu-latest'
@@ -94,7 +94,9 @@ jobs:
     inputs:
       PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml'
 
-- job: 'Release to MyGet'
+- job: Release_to_MyGet
+  dependsOn: Build_and_Test
+
   pool:
     vmImage: 'windows-2019'
 
