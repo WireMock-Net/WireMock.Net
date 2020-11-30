@@ -78,7 +78,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish coverage file
   inputs:
-    PathtoPublish: 'D:\a\1\.\s\test\WireMock.Net.Tests\coverage.netcoreapp3.1.opencover.xml'
+    PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml'
 
 # Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/
 - task: DotNetCoreCLI@2
