@@ -19,13 +19,6 @@ steps:
       $jdkPath = $env:JAVA_HOME_11_X64
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
-- task: DotNetCoreCLI@2
-  displayName: Install Codecov.Tool
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'update --global Codecov.Tool'
-
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis on SonarCloud'
   inputs:
@@ -75,8 +68,9 @@ steps:
   displayName: Upload coverage to codecov.io
   condition: and(succeeded(), eq(variables['UPLOAD_CODECOV'], 'yes'))
 
-- script: codecov -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
-  displayName: Upload coverage to codecov.io
+- script: |
+    bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml
+  displayName: 'codecov'
 
 - task: PublishTestResults@2
   condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
