@@ -32,7 +32,7 @@ steps:
 # - https://github.com/Microsoft/vsts-tasks/issues/8291
 #
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
+    dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
   displayName: Begin SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
@@ -50,7 +50,7 @@ steps:
 
 # End SonarScanner
 - script: |
-    %USERPROFILE%\.dotnet\tools\dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
+    dotnet sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
   displayName: End SonarScanner
   condition: and(succeeded(), eq(variables['RUN_SONAR'], 'yes'))
 
