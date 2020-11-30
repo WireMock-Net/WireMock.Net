@@ -32,16 +32,6 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void WireMockServer_Admin_StartStop()
-        {
-            var server1 = WireMockServer.Start("http://localhost:19091");
-
-            Check.That(server1.Urls[0]).Equals("http://localhost:19091");
-
-            server1.Stop();
-        }
-
-        [Fact]
         public void WireMockServer_Admin_ResetMappings()
         {
             var server = WireMockServer.Start();
