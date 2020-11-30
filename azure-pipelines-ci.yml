@@ -67,6 +67,7 @@ steps:
 - script: |
     %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
+  condition: and(succeeded(), eq(variables['UOLOAD_CODECOV'], 'yes'))
 
 # https://github.com/microsoft/azure-pipelines-tasks/issues/12212
 - task: PublishTestResults@2
