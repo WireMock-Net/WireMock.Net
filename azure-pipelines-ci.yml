@@ -19,9 +19,12 @@ steps:
       $jdkPath = $env:JAVA_HOME_11_X64
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
-- script: |
-    dotnet tool install --global Codecov.Tool
+- task: DotNetCoreCLI@2
   displayName: Install Codecov.Tool
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'update --global Codecov.Tool'
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis on SonarCloud'
