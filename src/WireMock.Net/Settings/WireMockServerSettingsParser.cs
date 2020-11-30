@@ -25,7 +25,7 @@ namespace WireMock.Settings
 
             if (parser.GetBoolSwitchValue("help"))
             {
-                logger.Info("See https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
+                (logger ?? new WireMockConsoleLogger()).Info("See https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
                 settings = null;
                 return false;
             }

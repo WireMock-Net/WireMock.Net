@@ -29,6 +29,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(server.LogEntries).IsEmpty();
+
+            server.Stop();
         }
 
         [Fact]
@@ -51,6 +53,8 @@ namespace WireMock.Net.Tests
             // then
             Check.That(server.Mappings).IsEmpty();
             Check.ThatAsyncCode(() => new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path)).ThrowsAny();
+
+            server.Stop();
         }
 
         [Fact]
@@ -82,6 +86,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response).IsEqualTo("REDIRECT SUCCESSFUL");
+
+            server.Stop();
         }
 
         [Fact]
@@ -105,6 +111,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
+
+            server.Stop();
         }
 
         [Fact]
@@ -125,6 +133,8 @@ namespace WireMock.Net.Tests
 
             // then
             Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
+
+            server.Stop();
         }
 
         //Leaving commented as this requires an actual certificate with password, along with a service that expects a client certificate
@@ -161,6 +171,8 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.Headers.Contains("test")).IsTrue();
             Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
+
+            server.Stop();
         }
 
 #if !NET452
@@ -189,6 +201,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+
+            server.Stop();
         }
 #endif
 
@@ -221,6 +235,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+
+            server.Stop();
         }
 
         [Theory]
@@ -254,6 +270,8 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
             Check.That(await response.Content.ReadAsStringAsync()).Contains("Mapping added");
+
+            server.Stop();
         }
 
         [Theory]
@@ -284,6 +302,8 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(await response.Content.ReadAsStringAsync()).Contains("OK");
+
+            server.Stop();
         }
     }
 }

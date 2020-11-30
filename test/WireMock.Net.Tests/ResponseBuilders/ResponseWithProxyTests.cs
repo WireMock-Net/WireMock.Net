@@ -82,6 +82,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
         public void Dispose()
         {
+            _server?.Stop();
             _server?.Dispose();
         }
     }
