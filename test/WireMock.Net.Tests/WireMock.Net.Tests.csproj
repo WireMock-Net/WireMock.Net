@@ -25,6 +25,52 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Handlers\**" />
+	  <Compile Remove="Http\**" />
+	  <Compile Remove="Matchers\**" />
+	  <Compile Remove="Owin\**" />
+	  <Compile Remove="RequestBuilders\**" />
+	  <Compile Remove="RequestMatchers\**" />
+	  <Compile Remove="ResponseBuilders\**" />
+	  <Compile Remove="Serialization\**" />
+	  <Compile Remove="Settings\**" />
+	  <Compile Remove="Transformers\**" />
+	  <Compile Remove="Util\**" />
+	  <Compile Remove="WithMapping\**" />
+	  <EmbeddedResource Remove="Handlers\**" />
+	  <EmbeddedResource Remove="Http\**" />
+	  <EmbeddedResource Remove="Matchers\**" />
+	  <EmbeddedResource Remove="Owin\**" />
+	  <EmbeddedResource Remove="RequestBuilders\**" />
+	  <EmbeddedResource Remove="RequestMatchers\**" />
+	  <EmbeddedResource Remove="ResponseBuilders\**" />
+	  <EmbeddedResource Remove="Serialization\**" />
+	  <EmbeddedResource Remove="Settings\**" />
+	  <EmbeddedResource Remove="Transformers\**" />
+	  <EmbeddedResource Remove="Util\**" />
+	  <EmbeddedResource Remove="WithMapping\**" />
+	  <None Remove="Handlers\**" />
+	  <None Remove="Http\**" />
+	  <None Remove="Matchers\**" />
+	  <None Remove="Owin\**" />
+	  <None Remove="RequestBuilders\**" />
+	  <None Remove="RequestMatchers\**" />
+	  <None Remove="ResponseBuilders\**" />
+	  <None Remove="Serialization\**" />
+	  <None Remove="Settings\**" />
+	  <None Remove="Transformers\**" />
+	  <None Remove="Util\**" />
+	  <None Remove="WithMapping\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="ObservableLogEntriesTest.cs" />
+	  <Compile Remove="RequestMessageTests.cs" />
+	  <Compile Remove="RequestTests.cs" />
+	  <Compile Remove="RequestWithBodyTests.cs" />
+	  <Compile Remove="RequestWithClientIPTests.cs" />
+	  <Compile Remove="RequestWithPathTests.cs" />
+	  <Compile Remove="StatefulBehaviorTests.cs" />
 	  <Compile Remove="WireMockAdminApiTests.cs" />
 	  <Compile Remove="WireMockServer.Admin.cs" />
 	  <Compile Remove="WireMockServer.AdminFiles.cs" />
