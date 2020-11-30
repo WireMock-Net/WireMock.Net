@@ -4,7 +4,7 @@ variables:
   buildProjects: '**/src/**/*.csproj'
 
 jobs:
-- job: Build_and_Test
+- job: Linux_Build_Test_SonarCloud
 
   pool:
     vmImage: 'Ubuntu-latest'
@@ -54,11 +54,6 @@ jobs:
       arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
   - script: |
-      dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    displayName: 'Build source, tests and run tests for netcoreapp3.1 (with coverage)'
-    condition: and(succeeded(), eq(variables['XXX'], 'yes'))
-  
-  - script: |
       dotnet sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
     displayName: End SonarScanner
     condition: and(succeeded(), eq(variables['RUN_SONARXCMD'], 'yes'))
@@ -93,8 +88,29 @@ jobs:
     inputs:
       PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml'
 
-- job: Release_to_MyGet
-  dependsOn: Build_and_Test
+- job: Windows_Build_Test
+  dependsOn: Linux_Build_Test_SonarCloud
+
+  pool:
+    vmImage: 'windows-2019'
+
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Unit tests'
+    inputs:
+      command: 'build'
+      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+      arguments: '--configuration Debug --framework netcoreapp3.1'
+  
+  - task: DotNetCoreCLI@2
+    displayName: 'Execute Unit tests'
+    inputs:
+      command: 'test'
+      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+      arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+  
+- job: Windows_Release_to_MyGet
+  dependsOn: Windows_Build_Test
 
   pool:
     vmImage: 'windows-2019'
