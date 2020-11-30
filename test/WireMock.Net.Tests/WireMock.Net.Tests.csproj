@@ -25,6 +25,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="WireMockAdminApiTests.cs" />
+	  <Compile Remove="WireMockServer.Admin.cs" />
+	  <Compile Remove="WireMockServer.AdminFiles.cs" />
+	  <Compile Remove="WireMockServer.Authentication.cs" />
+	  <Compile Remove="WireMockServer.Proxy.cs" />
+	  <Compile Remove="WireMockServer.Proxy2.cs" />
+	  <Compile Remove="WireMockServer.Settings.cs" />
+	  <Compile Remove="WireMockServerTests.cs" />
+	  <Compile Remove="WireMockServerTests.WithCallback.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
 		<ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
 		<ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
