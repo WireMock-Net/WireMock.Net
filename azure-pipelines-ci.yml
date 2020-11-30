@@ -38,18 +38,25 @@ jobs:
       dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$(SONAR_TOKEN)" /v:"$(buildId)" /d:sonar.cs.opencover.reportsPaths="**\coverage.netcoreapp3.1.opencover.xml" /d:sonar.verbose=true /d:sonar.branch.name=$(Build.SourceBranchName)
     displayName: Begin SonarScanner
     condition: and(succeeded(), eq(variables['RUN_SONARCMD'], 'yes'))
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Unit tests'
+    inputs:
+      command: 'build'
+      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+      arguments: '--configuration Debug --framework netcoreapp3.1'
   
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit tests'
-    condition: and(succeeded(), eq(variables['XXX'], 'yes'))
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--collect "Code Coverage" --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
   - script: |
       dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --framework netcoreapp3.1 --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     displayName: 'Build source, tests and run tests for netcoreapp3.1 (with coverage)'
+    condition: and(succeeded(), eq(variables['XXX'], 'yes'))
   
   - script: |
       dotnet sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
