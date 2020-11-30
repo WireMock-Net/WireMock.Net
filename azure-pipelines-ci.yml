@@ -19,6 +19,10 @@ steps:
       $jdkPath = $env:JAVA_HOME_11_X64
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
+- script: |
+    dotnet tool install --global Codecov.Tool
+  displayName: Install Codecov.Tool
+
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis on SonarCloud'
   inputs:
@@ -63,13 +67,14 @@ steps:
   displayName: 'WhiteSource Bolt'
   condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
 
-# Upload coverage to codecov.io
 - script: |
     %USERPROFILE%\.nuget\packages\codecov\1.12.3\tools\codecov.exe -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
   displayName: Upload coverage to codecov.io
-  condition: and(succeeded(), eq(variables['UOLOAD_CODECOV'], 'yes'))
+  condition: and(succeeded(), eq(variables['UPLOAD_CODECOV'], 'yes'))
 
-# https://github.com/microsoft/azure-pipelines-tasks/issues/12212
+- script: codecov -f "./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml" -t $(CODECOV_TOKEN)
+  displayName: Upload coverage to codecov.io
+
 - task: PublishTestResults@2
   condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
   inputs:
