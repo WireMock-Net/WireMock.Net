@@ -1,1 +1,0 @@
-dotnet run --framework netcoreapp1.1

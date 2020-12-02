@@ -2,7 +2,7 @@
   "profiles": {
     "WireMock.Net.StandAlone.NETCoreApp": {
       "commandName": "Project",
-      "commandLineArgs": "--Port 9091 --WireMockLogger WireMockConsoleLogger"
+      "commandLineArgs": "--Urls https://localhost:10080 --WireMockLogger WireMockConsoleLogger"
     }
   }
 }

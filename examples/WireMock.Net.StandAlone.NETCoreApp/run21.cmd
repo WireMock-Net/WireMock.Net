@@ -1,1 +1,0 @@
-dotnet run --framework netcoreapp2.1
