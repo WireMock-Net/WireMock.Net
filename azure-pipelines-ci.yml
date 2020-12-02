@@ -30,7 +30,6 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.branch.name=$(Build.SourceBranchName)
         sonar.cs.opencover.reportsPaths=**/coverage.netcoreapp3.1.opencover.xml
   
   - task: DotNetCoreCLI@2
