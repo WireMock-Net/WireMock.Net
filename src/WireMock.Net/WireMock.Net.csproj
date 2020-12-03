@@ -27,7 +27,7 @@
 
   <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
   <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
-  <Target Name="CheckIfShouldKillVBCSCompiler" />
+  <!--<Target Name="CheckIfShouldKillVBCSCompiler" />-->
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
@@ -72,22 +72,12 @@
     <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net452' ">
     <!-- Required for WebRequestHandler -->
     <Reference Include="System.Net.Http.WebRequest" />
 
     <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <!-- Required for WebRequestHandler -->
-    <Reference Include="System.Net.Http.WebRequest" />
-
-    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
@@ -97,7 +87,6 @@
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="CS-Script" Version="3.29.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
@@ -105,8 +94,6 @@
 
     <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
     <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
-
-    <PackageReference Include="CS-Script" Version="3.29.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
@@ -117,34 +104,15 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
     <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
     <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
-    <PackageReference Include="CS-Script.Core" Version="1.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
-    <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
-
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/448 -->
-    <PackageReference Include="CS-Script.Core" Version="1.3.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/448 -->
-    <PackageReference Include="CS-Script.Core" Version="1.4.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/448 -->
-    <PackageReference Include="CS-Script.Core" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

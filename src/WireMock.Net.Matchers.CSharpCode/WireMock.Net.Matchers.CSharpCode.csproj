@@ -26,6 +26,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
+  <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
+  <Target Name="CheckIfShouldKillVBCSCompiler" />
+
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
