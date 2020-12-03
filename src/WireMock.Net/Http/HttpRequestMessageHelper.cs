@@ -59,15 +59,29 @@ namespace WireMock.Http
 
             foreach (var header in requestMessage.Headers.Where(h => !excludeHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase)))
             {
-                // Try to add to request headers. If failed - try to add to content headers
-                if (httpRequestMessage.Headers.Contains(header.Key))
+                // Skip if already added. We need to ToList() else calling httpRequestMessage.Headers.Contains() with a header starting with a ":" throws an exception.
+                if (httpRequestMessage.Headers.ToList().Any(h => string.Equals(h.Key, header.Key, StringComparison.OrdinalIgnoreCase)))
                 {
                     continue;
                 }
 
-                if (!httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value))
+                // Skip if already added. We need to ToList() else calling httpRequestMessage.Content.Headers.Contains(...) with a header starting with a ":" throws an exception.
+                if (httpRequestMessage.Content != null && httpRequestMessage.Content.Headers.ToList().Any(h => string.Equals(h.Key, header.Key, StringComparison.OrdinalIgnoreCase)))
                 {
-                    httpRequestMessage.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    continue;
+                }
+
+                // Try to add to request headers. If failed - try to add to content headers. If still fails, just ignore this header.
+                try
+                {
+                    if (!httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value))
+                    {
+                        httpRequestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+                }
+                catch
+                {
+                    // Just continue
                 }
             }
 

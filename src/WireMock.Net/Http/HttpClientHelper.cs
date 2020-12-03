@@ -27,14 +27,12 @@ namespace WireMock.Http
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 #else
             var handler = new WebRequestHandler
             {
                 ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 #endif
 
             if (!string.IsNullOrEmpty(settings.ClientX509Certificate2ThumbprintOrSubjectName))
@@ -61,11 +59,12 @@ namespace WireMock.Http
                 }
             }
 
-            var client = new HttpClient(handler);
-#if NET452 || NET46
+#if !NETSTANDARD1_3
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, errors) => true;
 #endif
-            return client;
+
+            return new HttpClient(handler);
         }
 
         public static async Task<ResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] RequestMessage requestMessage, string url, bool deserializeJson, bool decompressGzipAndDeflate)

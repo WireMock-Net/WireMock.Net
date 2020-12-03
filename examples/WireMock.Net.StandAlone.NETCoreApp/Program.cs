@@ -6,6 +6,8 @@ using System.Threading;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -23,14 +25,20 @@ namespace WireMock.Net.StandAlone.NETCoreApp
         {
             XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 
-            if (WireMockServerSettingsParser.TryParseArguments(args, out var settings, new WireMockLog4NetLogger()))
+            if (!WireMockServerSettingsParser.TryParseArguments(args, out var settings, new WireMockLog4NetLogger()))
             {
                 return;
             }
-            
+
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             _server = WireMockServer.Start(settings);
+
+            //_server
+            //    .Given(Request.Create()
+            //        .UsingAnyMethod())
+            //    .RespondWith(Response.Create()
+            //        .WithProxy("https://www.google.com"));
 
             Console.WriteLine($"{DateTime.UtcNow} Press Ctrl+C to shut down");
 

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;
-using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -20,6 +19,37 @@ namespace WireMock.Net.Tests
 {
     public class WireMockServerProxyTests
     {
+        [Fact(Skip = "Fails in Linux CI")]
+        public async Task WireMockServer_ProxySSL_Should_log_proxied_requests()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                UseSSL = true,
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "https://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            Check.That(server.Mappings).HasSize(2);
+            Check.That(server.LogEntries).HasSize(1);
+        }
+
         [Fact]
         public async Task WireMockServer_Proxy_Should_log_proxied_requests()
         {

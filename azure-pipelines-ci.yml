@@ -21,6 +21,10 @@ jobs:
       script: |
         $jdkPath = $env:JAVA_HOME_11_X64
         Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
+
+  - script: |
+      dotnet dev-certs https --trust || true
+    displayName: 'dotnet dev-certs https'
   
   - task: SonarCloudPrepare@1
     displayName: 'Prepare analysis on SonarCloud'
