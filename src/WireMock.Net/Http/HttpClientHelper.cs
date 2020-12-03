@@ -28,6 +28,7 @@ namespace WireMock.Http
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+            ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, errors) => true;
 #else
             var handler = new WebRequestHandler
             {

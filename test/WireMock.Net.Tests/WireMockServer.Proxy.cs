@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;
-using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -33,6 +32,7 @@ namespace WireMock.Net.Tests
                     SaveMapping = true,
                     SaveMappingToFile = false
                 }
+
             };
             var server = WireMockServer.Start(settings);
 
