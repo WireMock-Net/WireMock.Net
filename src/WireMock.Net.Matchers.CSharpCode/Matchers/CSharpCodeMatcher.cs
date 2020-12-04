@@ -156,15 +156,7 @@ namespace WireMock.Matchers
             Assembly assembly;
             try
             {
-#if NETSTANDARD2_0
                 assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
-#else
-                assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source, new CSScriptLib.CompileInfo
-                {
-                    // Fix: Assembly with same name is already loaded
-                    RootClass = $"WireMock.CodeHelper.Class{Guid.NewGuid().ToString().Replace("-", "")}"
-                });
-#endif
             }
             catch (Exception ex)
             {
