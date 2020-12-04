@@ -31,12 +31,19 @@ namespace WireMock.Net.Tests.Serialization
             };
             var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
 
-            // Act
-            var matcher = (ICSharpCodeMatcher)sut.Map(model);
+            // Act 1
+            var matcher1 = (ICSharpCodeMatcher)sut.Map(model);
 
-            // Assert
-            matcher.Should().NotBeNull();
-            matcher.IsMatch("x").Should().Be(1.0d);
+            // Assert 1
+            matcher1.Should().NotBeNull();
+            matcher1.IsMatch("x").Should().Be(1.0d);
+            
+            // Act 1
+            var matcher2 = (ICSharpCodeMatcher)sut.Map(model);
+
+            // Assert 2
+            matcher2.Should().NotBeNull();
+            matcher2.IsMatch("x").Should().Be(1.0d);
         }
 
         [Fact]
