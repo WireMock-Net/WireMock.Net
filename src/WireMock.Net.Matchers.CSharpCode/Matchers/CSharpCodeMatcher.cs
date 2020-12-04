@@ -193,9 +193,15 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
-#else
-            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
-#endif
+            finally
+            {
+                script = null;
+
+                GC.Collect(); // collects all unused memory
+                GC.WaitForPendingFinalizers(); // wait until GC has finished its work
+                GC.Collect();
+            }
+
             try
             {
                 return (bool)result;
@@ -204,6 +210,9 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException($"Unable to cast result '{result}' to bool");
             }
+#else
+            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
+#endif
         }
 
         private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
