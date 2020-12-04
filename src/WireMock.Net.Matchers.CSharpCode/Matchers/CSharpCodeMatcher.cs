@@ -10,9 +10,8 @@ namespace WireMock.Matchers
     /// <summary>
     /// CSharpCode / CS-Script Matcher
     /// </summary>
-    /// <inheritdoc cref="IObjectMatcher"/>
-    /// <inheritdoc cref="IStringMatcher"/>
-    internal class CSharpCodeMatcher : IObjectMatcher, IStringMatcher
+    /// <inheritdoc cref="ICSharpCodeMatcher"/>
+    internal class CSharpCodeMatcher : ICSharpCodeMatcher
     {
         private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
 

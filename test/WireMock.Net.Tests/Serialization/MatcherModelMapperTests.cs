@@ -21,6 +21,43 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void MatcherModelMapper_Map_CSharpCodeMatcher()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "CSharpCodeMatcher",
+                Patterns = new[] { "return it == \"x\";" }
+            };
+            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
+
+            // Act
+            var matcher = (ICSharpCodeMatcher)sut.Map(model);
+
+            // Assert
+            matcher.Should().NotBeNull();
+            matcher.IsMatch("x").Should().Be(1.0d);
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_CSharpCodeMatcher_NotAllowed_ThrowsException()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "CSharpCodeMatcher",
+                Patterns = new[] { "x" }
+            };
+            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = false });
+
+            // Act
+            Action action = () => sut.Map(model);
+
+            // Assert
+            action.Should().Throw<NotSupportedException>();
+        }
+
+        [Fact]
         public void MatcherModelMapper_Map_Null()
         {
             // Act

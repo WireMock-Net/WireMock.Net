@@ -13,23 +13,30 @@ namespace WireMock.Plugin
         public static T Load<T>(params object[] args) where T : class
         {
 #if NETSTANDARD1_3
-            throw new NotSupportedException();
+            throw new NotSupportedException("Assembly.LoadFile is not supported on .NETStandard 1.3");
 #else
             return Assemblies.GetOrAdd(typeof(T), (type) =>
             {
-                var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
+                var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
                 Type pluginType = null;
                 foreach (var file in files)
                 {
-                    var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
-
-                    pluginType = assembly.GetTypes()
-                        .Where(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface)
-                        .FirstOrDefault();
-                    if (pluginType != null)
+                    try
                     {
-                        break;
+                        var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
+
+                        pluginType = assembly.GetTypes()
+                            .Where(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface)
+                            .FirstOrDefault();
+                        if (pluginType != null)
+                        {
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        // no-op: just try next .dll
                     }
                 }
 
