@@ -162,7 +162,7 @@ namespace WireMock.Matchers
                 assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source, new CSScriptLib.CompileInfo
                 {
                     // Fix: Assembly with same name is already loaded
-                    AssemblyFile = $"WireMock.CodeHelper.Class{Guid.NewGuid()}"
+                    AssemblyFile = $"WireMock.CodeHelper.Class{Guid.NewGuid().ToString().Replace("-", "")}"
                 });
 #endif
             }
