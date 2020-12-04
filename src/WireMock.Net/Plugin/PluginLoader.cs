@@ -46,7 +46,6 @@ namespace WireMock.Plugin
                 }
 
                 throw new DllNotFoundException($"No dll found which implements type '{type}'");
-
             }) as T;
 #endif
         }
