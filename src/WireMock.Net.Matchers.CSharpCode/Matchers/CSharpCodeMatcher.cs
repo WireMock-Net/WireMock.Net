@@ -196,7 +196,7 @@ namespace WireMock.Matchers
 #else
             throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
-                try
+            try
             {
                 return (bool)result;
             }
