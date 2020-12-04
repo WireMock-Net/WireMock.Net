@@ -175,7 +175,7 @@ namespace WireMock.Net.Tests
             server.Stop();
         }
 
-#if !NET452
+#if !NET452 && !NET461
         [Theory]
         [InlineData("TRACE")]
         [InlineData("GET")]
