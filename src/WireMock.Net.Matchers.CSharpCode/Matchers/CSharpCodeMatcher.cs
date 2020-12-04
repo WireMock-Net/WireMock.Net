@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using WireMock.Exceptions;
@@ -13,9 +14,9 @@ namespace WireMock.Matchers
     /// <inheritdoc cref="ICSharpCodeMatcher"/>
     internal class CSharpCodeMatcher : ICSharpCodeMatcher
     {
-        private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
+        private const string TemplateForIsMatchWithString = "public class CodeHelper {{ public bool IsMatch(string it) {{ {0} }} }}";
 
-        private const string TemplateForIsMatchWithDynamic = "{0} public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {1} }} }}";
+        private const string TemplateForIsMatchWithDynamic = "public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {0} }} }}";
 
         private readonly string[] _usings =
         {
@@ -176,7 +177,7 @@ namespace WireMock.Matchers
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 #else
-                throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
+            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
             try
             {
@@ -191,7 +192,16 @@ namespace WireMock.Matchers
         private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
         {
             string template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithDynamic;
-            return string.Format(template, string.Join(Environment.NewLine, _usings.Select(u => $"using {u};")), pattern);
+
+            var stringBuilder = new StringBuilder();
+            foreach (string @using in _usings)
+            {
+                stringBuilder.AppendLine($"using {@using};");
+            }
+            stringBuilder.AppendLine();
+            stringBuilder.AppendFormat(template, pattern);
+
+            return stringBuilder.ToString();
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
