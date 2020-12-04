@@ -162,13 +162,13 @@ namespace WireMock.Matchers
                 assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source, new CSScriptLib.CompileInfo
                 {
                     // Fix: Assembly with same name is already loaded
-                    AssemblyFile = $"WireMock.CodeHelper.Class{Guid.NewGuid().ToString().Replace("-", "")}"
+                    RootClass = $"WireMock.CodeHelper.Class{Guid.NewGuid().ToString().Replace("-", "")}"
                 });
 #endif
             }
             catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Unable to compile code for WireMock.CodeHelper", ex);
+                throw new WireMockException($"CSharpCodeMatcher: Unable to compile code {source} for WireMock.CodeHelper", ex);
             }
 
             dynamic script;
