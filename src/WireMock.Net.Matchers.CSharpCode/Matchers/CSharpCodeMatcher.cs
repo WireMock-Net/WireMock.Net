@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -152,11 +153,27 @@ namespace WireMock.Matchers
             }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0)
+            Assembly assembly;
+            try
+            {
+#if NETSTANDARD2_0
+                assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
+#else
+                assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source, new CSScriptLib.CompileInfo
+                {
+                    // Fix: Assembly with same name is already loaded
+                    AssemblyFile = $"WireMock.CodeHelper.Class{Guid.NewGuid()}"
+                });
+#endif
+            }
+            catch (Exception ex)
+            {
+                throw new WireMockException("CSharpCodeMatcher: Unable to compile code for WireMock.CodeHelper", ex);
+            }
+
             dynamic script;
             try
             {
-                var assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
-
 #if NETSTANDARD2_0
                 script = csscript.GenericExtensions.CreateObject(assembly, "*");
 #else
@@ -165,7 +182,7 @@ namespace WireMock.Matchers
             }
             catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Unable to compile code for WireMock.CodeHelper", ex);
+                throw new WireMockException("CSharpCodeMatcher: Unable to create object from assembly", ex);
             }
 
             try
@@ -179,7 +196,7 @@ namespace WireMock.Matchers
 #else
             throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
-            try
+                try
             {
                 return (bool)result;
             }
