@@ -6,7 +6,6 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Plugin
 {
-
     public class PluginLoaderTests
     {
         public interface IDummy
