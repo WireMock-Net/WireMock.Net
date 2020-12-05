@@ -12,7 +12,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 * Per-request conditional proxying
 * Stateful behaviour simulation
 * Response templating / transformation using Handlebars and extensions
-* Can be used locally or in CI/CD scenarios.
+* Can be used locally or in CI/CD scenarios
 
 ## Info
 | | |
@@ -35,6 +35,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |  [![MyGet Badge WireMock.Net.StandAlone](https://buildstats.info/myget/wiremock-net/WireMock.Net.StandAlone?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.StandAlone)
 | &nbsp;&nbsp;**WireMock.Net.FluentAssertions** | [![NuGet Badge WireMock.Net.FluentAssertions](https://buildstats.info/nuget/WireMock.Net.FluentAssertions)](https://www.nuget.org/packages/WireMock.Net.FluentAssertions) | [![MyGet Badge WireMock.Net.FluentAssertions](https://buildstats.info/myget/wiremock-net/WireMock.Net.FluentAssertions?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.FluentAssertions)
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://buildstats.info/nuget/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://buildstats.info/myget/wiremock-net/WireMock.Net.RestClient?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
+| &nbsp;&nbsp;**WireMock.Net.Matchers.CSharpCode** | [![NuGet Badge WireMock.Net.Matchers.CSharpCode](https://buildstats.info/nuget/WireMock.Net.Matchers.CSharpCode)](https://www.nuget.org/packages/WireMock.Net.Matchers.CSharpCode) | [![MyGet Badge WireMock.Net.Matchers.CSharpCode](https://buildstats.info/myget/wiremock-net/WireMock.Net.Matchers.CSharpCode?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Matchers.CSharpCode)
 
 ## Development
 For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
