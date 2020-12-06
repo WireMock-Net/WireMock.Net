@@ -267,6 +267,7 @@ namespace WireMock.Server
             var proxyHelper = new ProxyHelper(settings);
 
             var (responseMessage, mapping) = await proxyHelper.SendAsync(
+                _settings.ProxyAndRecordSettings,
                 _httpClientForProxy,
                 requestMessage,
                 proxyUriWithRequestPathAndQuery.AbsoluteUri

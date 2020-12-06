@@ -26,6 +26,7 @@ namespace WireMock.Proxy
         }
 
         public async Task<(ResponseMessage ResponseMessage, IMapping Mapping)> SendAsync(
+            [NotNull] IProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] HttpClient client,
             [NotNull] RequestMessage requestMessage,
             [NotNull] string url)
@@ -50,19 +51,19 @@ namespace WireMock.Proxy
             var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate);
 
             IMapping mapping = null;
-            if (HttpStatusRangeParser.IsMatch(_settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
-                (_settings.ProxyAndRecordSettings.SaveMapping || _settings.ProxyAndRecordSettings.SaveMappingToFile))
+            if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
+                (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
             {
-                mapping = ToMapping(requestMessage, responseMessage);
+                mapping = ToMapping(proxyAndRecordSettings, requestMessage, responseMessage);
             }
 
             return (responseMessage, mapping);
         }
 
-        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage)
+        private IMapping ToMapping(IProxyAndRecordSettings proxyAndRecordSettings, RequestMessage requestMessage, ResponseMessage responseMessage)
         {
-            string[] excludedHeaders = _settings.ProxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
-            string[] excludedCookies = _settings.ProxyAndRecordSettings.ExcludedCookies ?? new string[] { };
+            string[] excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
+            string[] excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
             var request = Request.Create();
             request.WithPath(requestMessage.Path);

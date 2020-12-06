@@ -312,7 +312,7 @@ namespace WireMock.ResponseBuilders
                 await Task.Delay(Delay.Value);
             }
 
-            if (ProxyUrl != null && _httpClientForProxy != null)
+            if (ProxyAndRecordSettings != null && _httpClientForProxy != null)
             {
                 string RemoveFirstOccurrence(string source, string find)
                 {
@@ -323,12 +323,13 @@ namespace WireMock.ResponseBuilders
                 var requestUri = new Uri(requestMessage.Url);
 
                 // Build the proxy url and skip duplicates
-                string extra = RemoveFirstOccurrence(requestUri.LocalPath.TrimEnd('/'), new Uri(ProxyUrl).LocalPath.TrimEnd('/'));
-                requestMessage.ProxyUrl = ProxyUrl + extra + requestUri.Query;
+                string extra = RemoveFirstOccurrence(requestUri.LocalPath.TrimEnd('/'), new Uri(ProxyAndRecordSettings.Url).LocalPath.TrimEnd('/'));
+                requestMessage.ProxyUrl = ProxyAndRecordSettings.Url + extra + requestUri.Query;
 
                 var proxyHelper = new ProxyHelper(settings);
 
                 var (proxyResponseMessage, mapping) = await proxyHelper.SendAsync(
+                    ProxyAndRecordSettings,
                     _httpClientForProxy,
                     requestMessage,
                     requestMessage.ProxyUrl
