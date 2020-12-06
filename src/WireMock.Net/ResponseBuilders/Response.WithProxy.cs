@@ -41,7 +41,7 @@ namespace WireMock.ResponseBuilders
             ProxyUrl = settings.Url;
             WebProxySettings = settings.WebProxySettings;
 
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings);
+            _httpClientForProxy = HttpClientBuilder.Build(settings);
             return this;
         }
     }

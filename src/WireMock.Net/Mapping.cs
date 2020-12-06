@@ -68,9 +68,18 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
-        public Mapping(Guid guid, [CanBeNull] string title, [CanBeNull] string path,
-            [NotNull] IWireMockServerSettings settings, [NotNull] IRequestMatcher requestMatcher, [NotNull] IResponseProvider provider,
-            int priority, [CanBeNull] string scenario, [CanBeNull] string executionConditionState, [CanBeNull] string nextState, [CanBeNull] int? stateTimes)
+        public Mapping(
+            Guid guid,
+            [CanBeNull] string title,
+            [CanBeNull] string path,
+            [NotNull] IWireMockServerSettings settings,
+            [NotNull] IRequestMatcher requestMatcher,
+            [NotNull] IResponseProvider provider,
+            int priority,
+            [CanBeNull] string scenario,
+            [CanBeNull] string executionConditionState,
+            [CanBeNull] string nextState,
+            [CanBeNull] int? stateTimes)
         {
             Guid = guid;
             Title = title;
@@ -82,7 +91,7 @@ namespace WireMock
             Scenario = scenario;
             ExecutionConditionState = executionConditionState;
             NextState = nextState;
-            StateTimes = stateTimes; 
+            StateTimes = stateTimes;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />

@@ -16,6 +16,7 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Proxy;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
@@ -119,7 +120,7 @@ namespace WireMock.Server
         {
             foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
             {
-                SaveMappingToFile(mapping, folder);
+                _mappingToFileSaver.SaveMappingToFile(mapping, folder);
             }
         }
 
@@ -246,7 +247,7 @@ namespace WireMock.Server
 
         private void InitProxyAndRecord(IWireMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientHelper.CreateHttpClient(settings.ProxyAndRecordSettings);
+            _httpClientForProxy = HttpClientBuilder.Build(settings.ProxyAndRecordSettings);
 
             var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
             if (settings.StartAdminInterface == true)
@@ -263,81 +264,25 @@ namespace WireMock.Server
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
             var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-            var responseMessage = await HttpClientHelper.SendAsync(
+            var proxyHelper = new ProxyHelper(settings);
+
+            var (responseMessage, mapping) = await proxyHelper.SendAsync(
                 _httpClientForProxy,
                 requestMessage,
-                proxyUriWithRequestPathAndQuery.AbsoluteUri,
-                !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
-                !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+                proxyUriWithRequestPathAndQuery.AbsoluteUri
             );
 
-            if (HttpStatusRangeParser.IsMatch(settings.ProxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
-                (settings.ProxyAndRecordSettings.SaveMapping || settings.ProxyAndRecordSettings.SaveMappingToFile))
+            if (settings.ProxyAndRecordSettings.SaveMapping)
             {
-                var mapping = ToMapping(
-                    requestMessage,
-                    responseMessage,
-                    settings.ProxyAndRecordSettings.ExcludedHeaders ?? new string[] { },
-                    settings.ProxyAndRecordSettings.ExcludedCookies ?? new string[] { }
-                );
+                _options.Mappings.TryAdd(mapping.Guid, mapping);
+            }
 
-                if (settings.ProxyAndRecordSettings.SaveMapping)
-                {
-                    _options.Mappings.TryAdd(mapping.Guid, mapping);
-                }
-
-                if (settings.ProxyAndRecordSettings.SaveMappingToFile)
-                {
-                    SaveMappingToFile(mapping);
-                }
+            if (settings.ProxyAndRecordSettings.SaveMappingToFile)
+            {
+                _mappingToFileSaver.SaveMappingToFile(mapping);
             }
 
             return responseMessage;
-        }
-
-        private IMapping ToMapping(RequestMessage requestMessage, ResponseMessage responseMessage, string[] excludedHeaders, string[] excludedCookies)
-        {
-            var request = Request.Create();
-            request.WithPath(requestMessage.Path);
-            request.UsingMethod(requestMessage.Method);
-
-            requestMessage.Query.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
-            requestMessage.Cookies.Loop((key, value) =>
-            {
-                if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
-                {
-                    request.WithCookie(key, value);
-                }
-            });
-
-            var allExcludedHeaders = new List<string>(excludedHeaders) { "Cookie" };
-            requestMessage.Headers.Loop((key, value) =>
-            {
-                if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
-                {
-                    request.WithHeader(key, value.ToArray());
-                }
-            });
-
-            bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
-            switch (requestMessage.BodyData?.DetectedBodyType)
-            {
-                case BodyType.Json:
-                    request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, true, throwExceptionWhenMatcherFails));
-                    break;
-
-                case BodyType.String:
-                    request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, requestMessage.BodyData.BodyAsString));
-                    break;
-
-                case BodyType.Bytes:
-                    request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
-                    break;
-            }
-
-            var response = Response.Create(responseMessage);
-
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null);
         }
         #endregion
 
@@ -446,32 +391,32 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("Mappings saved to disk");
         }
 
-        private void SaveMappingToFile(IMapping mapping, string folder = null)
-        {
-            if (folder == null)
-            {
-                folder = _settings.FileSystemHandler.GetMappingFolder();
-            }
+        //private void SaveMappingToFile(IMapping mapping, string folder = null)
+        //{
+        //    if (folder == null)
+        //    {
+        //        folder = _settings.FileSystemHandler.GetMappingFolder();
+        //    }
 
-            if (!_settings.FileSystemHandler.FolderExists(folder))
-            {
-                _settings.FileSystemHandler.CreateFolder(folder);
-            }
+        //    if (!_settings.FileSystemHandler.FolderExists(folder))
+        //    {
+        //        _settings.FileSystemHandler.CreateFolder(folder);
+        //    }
 
-            var model = _mappingConverter.ToMappingModel(mapping);
-            string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString()) + ".json";
+        //    var model = _mappingConverter.ToMappingModel(mapping);
+        //    string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString()) + ".json";
 
-            string path = Path.Combine(folder, filename);
+        //    string path = Path.Combine(folder, filename);
 
-            _settings.Logger.Info("Saving Mapping file {0}", filename);
+        //    _settings.Logger.Info("Saving Mapping file {0}", filename);
 
-            _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
-        }
+        //    _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
+        //}
 
-        private static string SanitizeFileName(string name, char replaceChar = '_')
-        {
-            return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
-        }
+        //private static string SanitizeFileName(string name, char replaceChar = '_')
+        //{
+        //    return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
+        //}
 
         private IEnumerable<MappingModel> ToMappingModels()
         {

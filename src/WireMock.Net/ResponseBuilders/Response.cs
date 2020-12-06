@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using WireMock.Http;
+using WireMock.Proxy;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
@@ -301,8 +301,8 @@ namespace WireMock.ResponseBuilders
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings, Action{IMapping})"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings, Action<IMapping> action)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));
@@ -326,13 +326,18 @@ namespace WireMock.ResponseBuilders
                 string extra = RemoveFirstOccurrence(requestUri.LocalPath.TrimEnd('/'), new Uri(ProxyUrl).LocalPath.TrimEnd('/'));
                 requestMessage.ProxyUrl = ProxyUrl + extra + requestUri.Query;
 
-                return await HttpClientHelper.SendAsync(
+                var proxyHelper = new ProxyHelper(settings);
+
+                var (proxyResponseMessage, mapping) = await proxyHelper.SendAsync(
                     _httpClientForProxy,
                     requestMessage,
-                    requestMessage.ProxyUrl,
-                    !settings.DisableJsonBodyParsing.GetValueOrDefault(false),
-                    !settings.DisableRequestBodyDecompressing.GetValueOrDefault(false)
+                    requestMessage.ProxyUrl
                 );
+
+                // Invoke action
+                action?.Invoke(mapping);
+
+                return proxyResponseMessage;
             }
 
             ResponseMessage responseMessage;
