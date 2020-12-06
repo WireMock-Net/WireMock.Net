@@ -8,8 +8,6 @@ using WireMock.Owin.Mappers;
 using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
-using WireMock.ResponseProviders;
-using WireMock.ResponseBuilders;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;

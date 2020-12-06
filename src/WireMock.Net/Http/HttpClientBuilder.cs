@@ -6,7 +6,6 @@ using WireMock.Settings;
 namespace WireMock.Http
 {
     internal static class HttpClientBuilder
-
     {
         public static HttpClient Build(IProxyAndRecordSettings settings)
         {

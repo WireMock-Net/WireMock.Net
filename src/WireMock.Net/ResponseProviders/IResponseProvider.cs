@@ -1,8 +1,7 @@
 ﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
-using JetBrains.Annotations;
-using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using WireMock.Settings;
 
 namespace WireMock.ResponseProviders
