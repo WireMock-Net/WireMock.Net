@@ -8,12 +8,6 @@ namespace WireMock.Serialization
 {
     internal class MappingToFileSaver
     {
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
-        };
-
         private readonly IWireMockServerSettings _settings;
         private readonly MappingConverter _mappingConverter;
 
@@ -44,7 +38,7 @@ namespace WireMock.Serialization
 
             _settings.Logger.Info("Saving Mapping file {0}", filename);
 
-            _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
+            _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, JsonSerializationConstants.JsonSerializerSettingsDefault));
         }
 
         private static string SanitizeFileName(string name, char replaceChar = '_')

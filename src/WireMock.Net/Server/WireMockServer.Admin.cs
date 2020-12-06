@@ -48,18 +48,6 @@ namespace WireMock.Server
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
-        };
-
-        private readonly JsonSerializerSettings _settingsIncludeNullValues = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Include
-        };
-
         #region InitAdmin
         private void InitAdmin()
         {
@@ -391,33 +379,6 @@ namespace WireMock.Server
 
             return ResponseMessageBuilder.Create("Mappings saved to disk");
         }
-
-        //private void SaveMappingToFile(IMapping mapping, string folder = null)
-        //{
-        //    if (folder == null)
-        //    {
-        //        folder = _settings.FileSystemHandler.GetMappingFolder();
-        //    }
-
-        //    if (!_settings.FileSystemHandler.FolderExists(folder))
-        //    {
-        //        _settings.FileSystemHandler.CreateFolder(folder);
-        //    }
-
-        //    var model = _mappingConverter.ToMappingModel(mapping);
-        //    string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString()) + ".json";
-
-        //    string path = Path.Combine(folder, filename);
-
-        //    _settings.Logger.Info("Saving Mapping file {0}", filename);
-
-        //    _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, _jsonSerializerSettings));
-        //}
-
-        //private static string SanitizeFileName(string name, char replaceChar = '_')
-        //{
-        //    return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
-        //}
 
         private IEnumerable<MappingModel> ToMappingModels()
         {
@@ -891,7 +852,7 @@ namespace WireMock.Server
                 BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
-                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? _settingsIncludeNullValues : _jsonSerializerSettings)
+                    BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues : JsonSerializationConstants.JsonSerializerSettingsDefault)
                 },
                 StatusCode = (int)HttpStatusCode.OK,
                 Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }

@@ -9,6 +9,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseProviders;
+using WireMock.ResponseBuilders;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -130,27 +131,21 @@ namespace WireMock.Owin
 
                 response = await targetMapping.ProvideResponseAsync(request);
 
-                switch (targetMapping.Provider)
+                if (targetMapping?.Settings?.ProxyAndRecordSettings != null)
                 {
-                    case ProxyAsyncResponseProvider proxyAsyncResponseProvider:
-                        if (targetMapping.Settings.ProxyAndRecordSettings.SaveMapping)
-                        {
-                            _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
-                        }
+                    if (targetMapping.Settings.ProxyAndRecordSettings.SaveMapping)
+                    {
+                        _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
+                    }
 
-                        if (targetMapping.Settings.ProxyAndRecordSettings.SaveMappingToFile)
-                        {
-                            var matcherMapper = new MatcherMapper(targetMapping.Settings);
-                            var mappingConverter = new MappingConverter(matcherMapper);
-                            var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
+                    if (targetMapping.Settings.ProxyAndRecordSettings.SaveMappingToFile)
+                    {
+                        var matcherMapper = new MatcherMapper(targetMapping.Settings);
+                        var mappingConverter = new MappingConverter(matcherMapper);
+                        var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
 
-                            mappingToFileSaver.SaveMappingToFile(targetMapping);
-                        }
-
-                        break;
-
-                    default:
-                        break;
+                        mappingToFileSaver.SaveMappingToFile(targetMapping);
+                    }
                 }
 
                 if (targetMapping.Scenario != null)
