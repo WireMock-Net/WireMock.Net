@@ -301,8 +301,8 @@ namespace WireMock.ResponseBuilders
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings, Action{IMapping})"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings, Action<IMapping> action)
+        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
+        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));
@@ -334,9 +334,6 @@ namespace WireMock.ResponseBuilders
                     requestMessage,
                     requestMessage.ProxyUrl
                 );
-
-                // Invoke action
-                action?.Invoke(mapping);
 
                 return proxyResponseMessage;
             }
