@@ -26,9 +26,7 @@ namespace WireMock.Plugin
                     {
                         var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
 
-                        pluginType = assembly.GetTypes()
-                            .Where(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface)
-                            .FirstOrDefault();
+                        pluginType = GetImplementationTypeByInterface<T>(assembly);
                         if (pluginType != null)
                         {
                             break;
@@ -48,6 +46,11 @@ namespace WireMock.Plugin
                 throw new DllNotFoundException($"No dll found which implements type '{type}'");
             }) as T;
 #endif
+        }
+
+        private static Type GetImplementationTypeByInterface<T>(Assembly assembly)
+        {
+            return assembly.GetTypes().FirstOrDefault(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface);
         }
     }
 }
