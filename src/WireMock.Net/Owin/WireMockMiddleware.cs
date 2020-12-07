@@ -129,22 +129,20 @@ namespace WireMock.Owin
 
                 response = await targetMapping.ProvideResponseAsync(request);
 
-                if (targetMapping?.Settings?.ProxyAndRecordSettings != null)
+                if (targetMapping?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
                 {
-                    if (targetMapping.Settings.ProxyAndRecordSettings.SaveMapping)
-                    {
-                        _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
-                    }
-
-                    if (targetMapping.Settings.ProxyAndRecordSettings.SaveMappingToFile)
-                    {
-                        var matcherMapper = new MatcherMapper(targetMapping.Settings);
-                        var mappingConverter = new MappingConverter(matcherMapper);
-                        var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
-
-                        mappingToFileSaver.SaveMappingToFile(targetMapping);
-                    }
+                    _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
                 }
+
+                if (targetMapping?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                {
+                    var matcherMapper = new MatcherMapper(targetMapping.Settings);
+                    var mappingConverter = new MappingConverter(matcherMapper);
+                    var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
+
+                    mappingToFileSaver.SaveMappingToFile(targetMapping);
+                }
+
 
                 if (targetMapping.Scenario != null)
                 {
