@@ -146,7 +146,6 @@ namespace WireMock.Owin
                     mappingToFileSaver.SaveMappingToFile(targetMapping);
                 }
 
-
                 if (targetMapping.Scenario != null)
                 {
                     UpdateScenarioState(targetMapping);
