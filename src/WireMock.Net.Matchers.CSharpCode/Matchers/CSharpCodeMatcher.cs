@@ -160,7 +160,7 @@ namespace WireMock.Matchers
             }
             catch (Exception ex)
             {
-                throw new WireMockException($"CSharpCodeMatcher: Unable to compile code {source} for WireMock.CodeHelper", ex);
+                throw new WireMockException($"CSharpCodeMatcher: Unable to compile code `{source}` for WireMock.CodeHelper", ex);
             }
 
             dynamic script;
