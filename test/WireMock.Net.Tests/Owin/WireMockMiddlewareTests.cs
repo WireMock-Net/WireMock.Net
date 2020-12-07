@@ -176,7 +176,6 @@ namespace WireMock.Net.Tests.Owin
 
             _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
             _mappingMock.SetupGet(m => m.Settings).Returns(settings);
-            _mappingMock.SetupGet(m => m.ProxyAndRecordSettings).Returns(proxyAndRecordSettings);
 
             _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync(new ResponseMessage());
 
@@ -230,7 +229,6 @@ namespace WireMock.Net.Tests.Owin
 
             _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
             _mappingMock.SetupGet(m => m.Settings).Returns(settings);
-            _mappingMock.SetupGet(m => m.ProxyAndRecordSettings).Returns(proxyAndRecordSettings);
 
             _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync(new ResponseMessage());
 

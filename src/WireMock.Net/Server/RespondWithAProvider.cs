@@ -47,7 +47,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _settings.ProxyAndRecordSettings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>

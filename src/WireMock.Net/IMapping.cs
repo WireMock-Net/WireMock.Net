@@ -71,12 +71,7 @@ namespace WireMock
         /// The WireMockServerSettings.
         /// </summary>
         IWireMockServerSettings Settings { get; }
-
-        /// <summary>
-        /// The ProxyAndRecordSettings.
-        /// </summary>
-        IProxyAndRecordSettings ProxyAndRecordSettings { get; }
-
+        
         /// <summary>
         /// Is State started ?
         /// </summary>

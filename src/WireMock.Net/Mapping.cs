@@ -45,9 +45,6 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.Settings" />
         public IWireMockServerSettings Settings { get; }
 
-        /// <inheritdoc cref="IMapping.ProxyAndRecordSettings" />
-        public IProxyAndRecordSettings ProxyAndRecordSettings { get; }
-
         /// <inheritdoc cref="IMapping.IsStartState" />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
 
@@ -64,7 +61,6 @@ namespace WireMock
         /// <param name="title">The unique title (can be null).</param>
         /// <param name="path">The full file path from this mapping title (can be null).</param>
         /// <param name="settings">The WireMockServerSettings.</param>
-        /// <param name="proxyAndRecordSettings">The ProxyAndRecordSettings.</param>
         /// <param name="requestMatcher">The request matcher.</param>
         /// <param name="provider">The provider.</param>
         /// <param name="priority">The priority for this mapping.</param>
@@ -77,7 +73,6 @@ namespace WireMock
             [CanBeNull] string title,
             [CanBeNull] string path,
             [NotNull] IWireMockServerSettings settings,
-            [NotNull] IProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] IRequestMatcher requestMatcher,
             [NotNull] IResponseProvider provider,
             int priority,
@@ -90,7 +85,6 @@ namespace WireMock
             Title = title;
             Path = path;
             Settings = settings;
-            ProxyAndRecordSettings = proxyAndRecordSettings;
             RequestMatcher = requestMatcher;
             Provider = provider;
             Priority = priority;

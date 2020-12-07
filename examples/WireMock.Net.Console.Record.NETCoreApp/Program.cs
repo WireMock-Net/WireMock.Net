@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -13,15 +15,25 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp
                 Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
                 StartAdminInterface = true,
                 ReadStaticMappings = false,
-                ProxyAndRecordSettings = new ProxyAndRecordSettings
-                {
-                    Url = "https://www.google.com",
-                    //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
-                    SaveMapping = true,
-                    SaveMappingToFile = false,
-                    ExcludedHeaders = new [] { "dnt", "Content-Length" }
-                }
+                //ProxyAndRecordSettings = new ProxyAndRecordSettings
+                //{
+                //    Url = "https://www.google.com",
+                //    //ClientX509Certificate2ThumbprintOrSubjectName = "www.yourclientcertname.com OR yourcertificatethumbprint (only if the service you're proxying to requires it)",
+                //    SaveMapping = true,
+                //    SaveMappingToFile = false,
+                //    ExcludedHeaders = new [] { "dnt", "Content-Length" }
+                //}
             });
+
+            server
+                .Given(Request.Create().UsingGet())
+                .RespondWith(Response.Create()
+                   .WithProxy(new ProxyAndRecordSettings
+                   {
+                       Url = "http://postman-echo.com/post",
+                       SaveMapping = true,
+                       SaveMappingToFile = true
+                   }));
 
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
