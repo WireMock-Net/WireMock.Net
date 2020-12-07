@@ -12,6 +12,7 @@ namespace WireMock.Matchers
     /// </summary>
     /// <inheritdoc cref="IObjectMatcher"/>
     /// <inheritdoc cref="IStringMatcher"/>
+    [Obsolete("This class will be moved to a separate NuGet package 'WireMock.Net.Matchers.CSharpCode'")]
     internal class CSharpCodeMatcher : IObjectMatcher, IStringMatcher
     {
         private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
