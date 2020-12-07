@@ -185,14 +185,6 @@ namespace WireMock.Matchers
             {
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
-            finally
-            {
-                script = null;
-
-                GC.Collect(); // collects all unused memory
-                GC.WaitForPendingFinalizers(); // wait until GC has finished its work
-                GC.Collect();
-            }
 #else
             throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
