@@ -17,13 +17,13 @@ namespace WireMock.Settings
         /// Save the mapping for each request/response to the internal Mappings.
         /// </summary>
         [PublicAPI]
-        public bool SaveMapping { get; set; } = true;
+        public bool SaveMapping { get; set; }
 
         /// <summary>
         /// Save the mapping for each request/response also to a file. (Note that SaveMapping must also be set to true.)
         /// </summary>
         [PublicAPI]
-        public bool SaveMappingToFile { get; set; } = true;
+        public bool SaveMappingToFile { get; set; }
 
         /// <summary>
         /// Only save request/response to the internal Mappings if the status code is included in this pattern. (Note that SaveMapping must also be set to true.)

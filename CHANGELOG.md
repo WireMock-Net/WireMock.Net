@@ -1,3 +1,8 @@
+# 1.3.9 (08 December 2020)
+- [#550](https://github.com/WireMock-Net/WireMock.Net/pull/550) - WithProxy(...) also use all proxy settings [bug] contributed by [StefH](https://github.com/StefH)
+- [#551](https://github.com/WireMock-Net/WireMock.Net/pull/551) - Add obsolete warning: CSharpCodeMatcher will be moved to a separate NuGet package 'WireMock.Net.Matchers.CSharpCode' [feature] contributed by [StefH](https://github.com/StefH)
+- [#549](https://github.com/WireMock-Net/WireMock.Net/issues/549) - WithProxy(...) does not save the mappings to file [bug]
+
 # 1.3.8 (03 December 2020)
 - [#542](https://github.com/WireMock-Net/WireMock.Net/pull/542) - Create dotnet-wiremock tool [feature] contributed by [StefH](https://github.com/StefH)
 - [#543](https://github.com/WireMock-Net/WireMock.Net/pull/543) - Add support for .NET 5 [feature] contributed by [StefH](https://github.com/StefH)

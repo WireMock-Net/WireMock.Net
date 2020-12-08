@@ -1,17 +1,13 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using WireMock.HttpsCertificate;
 using WireMock.Settings;
-using WireMock.Validation;
 
 namespace WireMock.Http
 {
-    internal static class HttpClientHelper
+    internal static class HttpClientBuilder
     {
-        public static HttpClient CreateHttpClient(IProxyAndRecordSettings settings)
+        public static HttpClient Build(IProxyAndRecordSettings settings)
         {
 #if NETSTANDARD || NETCOREAPP3_1 || NET5_0
             var handler = new HttpClientHandler
@@ -65,24 +61,6 @@ namespace WireMock.Http
 #endif
 
             return new HttpClient(handler);
-        }
-
-        public static async Task<ResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] RequestMessage requestMessage, string url, bool deserializeJson, bool decompressGzipAndDeflate)
-        {
-            Check.NotNull(client, nameof(client));
-            Check.NotNull(requestMessage, nameof(requestMessage));
-
-            var originalUri = new Uri(requestMessage.Url);
-            var requiredUri = new Uri(url);
-
-            // Create HttpRequestMessage
-            var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, url);
-
-            // Call the URL
-            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
-
-            // Create ResponseMessage
-            return await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate);
         }
     }
 }
