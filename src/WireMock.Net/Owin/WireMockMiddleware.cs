@@ -8,6 +8,7 @@ using WireMock.Owin.Mappers;
 using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
+using WireMock.ResponseBuilders;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -128,6 +129,22 @@ namespace WireMock.Owin
                 }
 
                 response = await targetMapping.ProvideResponseAsync(request);
+
+                var responseBuilder = targetMapping.Provider as Response;
+
+                if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                {
+                    _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
+                }
+
+                if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                {
+                    var matcherMapper = new MatcherMapper(targetMapping.Settings);
+                    var mappingConverter = new MappingConverter(matcherMapper);
+                    var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
+
+                    mappingToFileSaver.SaveMappingToFile(targetMapping);
+                }
 
                 if (targetMapping.Scenario != null)
                 {

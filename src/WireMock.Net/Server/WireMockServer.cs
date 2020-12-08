@@ -35,6 +35,7 @@ namespace WireMock.Server
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
         private readonly MappingConverter _mappingConverter;
         private readonly MatcherMapper _matcherMapper;
+        private readonly MappingToFileSaver _mappingToFileSaver;
 
         /// <inheritdoc cref="IWireMockServer.IsStarted" />
         [PublicAPI]
@@ -238,6 +239,7 @@ namespace WireMock.Server
 
             _matcherMapper = new MatcherMapper(_settings);
             _mappingConverter = new MappingConverter(_matcherMapper);
+            _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
 
 #if USE_ASPNETCORE
             _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
@@ -491,7 +493,7 @@ namespace WireMock.Server
 
             if (saveToFile)
             {
-                SaveMappingToFile(mapping);
+                _mappingToFileSaver.SaveMappingToFile(mapping);
             }
         }
     }
