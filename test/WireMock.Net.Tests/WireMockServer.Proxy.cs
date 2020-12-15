@@ -149,10 +149,6 @@ namespace WireMock.Net.Tests
 
             // check that new proxied mapping is added
             Check.That(server.Mappings).HasSize(2);
-
-            //var newMapping = _server.Mappings.First(m => m.Guid != guid);
-            //var matcher = ((Request)newMapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
-            //Check.That(matcher).IsNotNull();
         }
 
         [Fact]
