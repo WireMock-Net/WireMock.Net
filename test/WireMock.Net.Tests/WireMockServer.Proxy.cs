@@ -200,7 +200,7 @@ namespace WireMock.Net.Tests
             var authorizationHeader = receivedRequest.Headers["Authorization"].ToString().Should().Be("BASIC test-A");
 
             server.Mappings.Should().HaveCount(2);
-            var authorizationRequestMessageHeaderMatcher = ((Request)server.Mappings.Last().RequestMatcher)
+            var authorizationRequestMessageHeaderMatcher = ((Request)server.Mappings.Single(m => !m.IsAdminInterface).RequestMatcher)
                 .GetRequestMessageMatcher<RequestMessageHeaderMatcher>(x => x.Matchers.Any(m => m.GetPatterns().Contains("BASIC test-A")));
             authorizationRequestMessageHeaderMatcher.Should().NotBeNull();
         }
