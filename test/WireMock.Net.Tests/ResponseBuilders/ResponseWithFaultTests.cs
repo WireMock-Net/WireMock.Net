@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using Moq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
