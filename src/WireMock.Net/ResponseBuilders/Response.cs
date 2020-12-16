@@ -23,7 +23,6 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public partial class Response : IResponseBuilder
     {
-
         private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(DateTime.UtcNow.Millisecond));
 
         private int _minDelayMilliseconds;
