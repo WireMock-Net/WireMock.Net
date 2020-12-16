@@ -149,10 +149,6 @@ namespace WireMock.Net.Tests
 
             // check that new proxied mapping is added
             Check.That(server.Mappings).HasSize(2);
-
-            //var newMapping = _server.Mappings.First(m => m.Guid != guid);
-            //var matcher = ((Request)newMapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
-            //Check.That(matcher).IsNotNull();
         }
 
         [Fact]
@@ -200,7 +196,7 @@ namespace WireMock.Net.Tests
             var authorizationHeader = receivedRequest.Headers["Authorization"].ToString().Should().Be("BASIC test-A");
 
             server.Mappings.Should().HaveCount(2);
-            var authorizationRequestMessageHeaderMatcher = ((Request)server.Mappings.Last().RequestMatcher)
+            var authorizationRequestMessageHeaderMatcher = ((Request)server.Mappings.Single(m => !m.IsAdminInterface).RequestMatcher)
                 .GetRequestMessageMatcher<RequestMessageHeaderMatcher>(x => x.Matchers.Any(m => m.GetPatterns().Contains("BASIC test-A")));
             authorizationRequestMessageHeaderMatcher.Should().NotBeNull();
         }
