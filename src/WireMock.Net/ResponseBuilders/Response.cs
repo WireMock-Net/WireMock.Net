@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Proxy;
@@ -22,10 +23,32 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public partial class Response : IResponseBuilder
     {
+
+        private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(DateTime.UtcNow.Millisecond));
+
+        private int _minDelayMilliseconds;
+        private int _maxDelayMilliseconds;
+        private bool _hasRandomDelay;
+
+        private TimeSpan? _delay;
+
         /// <summary>
         /// The delay
         /// </summary>
-        public TimeSpan? Delay { get; private set; }
+        public TimeSpan? Delay
+        {
+            get
+            {
+                if (_hasRandomDelay)
+                    return TimeSpan.FromMilliseconds(Random.Value.Next(_minDelayMilliseconds, _maxDelayMilliseconds));
+
+                return _delay;
+            }
+            private set
+            {
+                _delay = value;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether [use transformer].
@@ -292,6 +315,19 @@ namespace WireMock.ResponseBuilders
             Check.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
 
             Delay = delay;
+            return this;
+        }
+
+        /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
+        public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
+        {
+            Check.Condition(minimumMilliseconds, d => d >= 0, nameof(minimumMilliseconds));
+            Check.Condition(maximumMilliseconds, d => d > 0, nameof(maximumMilliseconds));
+
+            _minDelayMilliseconds = minimumMilliseconds;
+            _maxDelayMilliseconds = maximumMilliseconds;
+            _hasRandomDelay = true;
+
             return this;
         }
 

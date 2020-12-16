@@ -20,5 +20,13 @@ namespace WireMock.ResponseBuilders
         /// <param name="milliseconds">The milliseconds to delay.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithDelay(int milliseconds);
+
+        /// <summary>
+        /// Introduce random delay
+        /// </summary>
+        /// <param name="minimumMilliseconds">Minimum milliseconds to delay</param>
+        /// <param name="maximumMilliseconds">Maximum milliseconds to delay</param>
+        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000);
     }
 }
