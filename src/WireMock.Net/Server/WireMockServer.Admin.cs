@@ -231,12 +231,11 @@ namespace WireMock.Server
         #endregion
 
         #region Proxy and Record
-        //private HttpClient _httpClientForProxy;
+        private HttpClient _httpClientForProxy;
 
         private void InitProxyAndRecord(IWireMockServerSettings settings)
         {
-            //_httpClientForProxy = HttpClientBuilder.Build(settings.ProxyAndRecordSettings);
-
+            _httpClientForProxy = HttpClientBuilder.Build(settings.ProxyAndRecordSettings);
 
             var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
             if (settings.StartAdminInterface == true)
@@ -244,36 +243,36 @@ namespace WireMock.Server
                 respondProvider.AtPriority(ProxyPriority);
             }            
 
-            respondProvider.RespondWith(Response.Create().WithProxy(settings.ProxyAndRecordSettings));
+            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        //private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
-        //{
-        //    var requestUri = new Uri(requestMessage.Url);
-        //    var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
-        //    var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
+        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        {
+            var requestUri = new Uri(requestMessage.Url);
+            var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
+            var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
-        //    var proxyHelper = new ProxyHelper(settings);
+            var proxyHelper = new ProxyHelper(settings);
 
-        //    var (responseMessage, mapping) = await proxyHelper.SendAsync(
-        //        _settings.ProxyAndRecordSettings,
-        //        _httpClientForProxy,
-        //        requestMessage,
-        //        proxyUriWithRequestPathAndQuery.AbsoluteUri
-        //    );
+            var (responseMessage, mapping) = await proxyHelper.SendAsync(
+                _settings.ProxyAndRecordSettings,
+                _httpClientForProxy,
+                requestMessage,
+                proxyUriWithRequestPathAndQuery.AbsoluteUri
+            );
 
-        //    if (settings.ProxyAndRecordSettings.SaveMapping)
-        //    {
-        //        _options.Mappings.TryAdd(mapping.Guid, mapping);
-        //    }
+            if (settings.ProxyAndRecordSettings.SaveMapping)
+            {
+                _options.Mappings.TryAdd(mapping.Guid, mapping);
+            }
 
-        //    if (settings.ProxyAndRecordSettings.SaveMappingToFile)
-        //    {
-        //        _mappingToFileSaver.SaveMappingToFile(mapping);
-        //    }
+            if (settings.ProxyAndRecordSettings.SaveMappingToFile)
+            {
+                _mappingToFileSaver.SaveMappingToFile(mapping);
+            }
 
-        //    return responseMessage;
-        //}
+            return responseMessage;
+        }
         #endregion
 
         #region Settings
