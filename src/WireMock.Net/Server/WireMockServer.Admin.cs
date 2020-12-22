@@ -241,7 +241,7 @@ namespace WireMock.Server
             if (settings.StartAdminInterface == true)
             {
                 respondProvider.AtPriority(ProxyPriority);
-            }            
+            }
 
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
