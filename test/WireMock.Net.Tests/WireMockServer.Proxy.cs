@@ -6,8 +6,10 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
+using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -49,6 +51,69 @@ namespace WireMock.Net.Tests
             // Assert
             Check.That(server.Mappings).HasSize(2);
             Check.That(server.LogEntries).HasSize(1);
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMapping_Is_True_And_SaveMappingToFile_Is_False_Should_AddInternalMappingOnly()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMapping_Is_False_And_SaveMappingToFile_Is_True_ShouldSaveMappingToFile()
+        {
+            // Assign
+            var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
+
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = false,
+                    SaveMappingToFile = true
+                },
+                FileSystemHandler = fileSystemHandlerMock.Object
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(1);
+
+            // Verify
+            fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

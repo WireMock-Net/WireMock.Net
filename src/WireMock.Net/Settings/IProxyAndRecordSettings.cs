@@ -25,7 +25,7 @@ namespace WireMock.Settings
         string SaveMappingForStatusCodePattern { get; set; }
 
         /// <summary>
-        /// Save the mapping for each request/response also to a file. (Note that SaveMapping must also be set to true.)
+        /// Save the mapping for each request/response to a .json mapping file.
         /// </summary>
         bool SaveMappingToFile { get; set; }
 
