@@ -1,3 +1,8 @@
+# 1.3.10 (23 December 2020)
+- [#555](https://github.com/WireMock-Net/WireMock.Net/pull/555) - Add more tests for Proxy with Authorization [feature] contributed by [StefH](https://github.com/StefH)
+- [#561](https://github.com/WireMock-Net/WireMock.Net/pull/561) - Do not save &quot;admin&quot; mappings when running in Proxy - mode contributed by [StefH](https://github.com/StefH)
+- [#559](https://github.com/WireMock-Net/WireMock.Net/issues/559) - WireMock Setting 'SaveMappingToFile' raising cast object to type error [bug]
+
 # 1.3.9 (08 December 2020)
 - [#550](https://github.com/WireMock-Net/WireMock.Net/pull/550) - WithProxy(...) also use all proxy settings [bug] contributed by [StefH](https://github.com/StefH)
 - [#551](https://github.com/WireMock-Net/WireMock.Net/pull/551) - Add obsolete warning: CSharpCodeMatcher will be moved to a separate NuGet package 'WireMock.Net.Matchers.CSharpCode' [feature] contributed by [StefH](https://github.com/StefH)
