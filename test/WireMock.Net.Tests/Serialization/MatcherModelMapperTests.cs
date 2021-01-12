@@ -37,8 +37,8 @@ namespace WireMock.Net.Tests.Serialization
             // Assert 1
             matcher1.Should().NotBeNull();
             matcher1.IsMatch("x").Should().Be(1.0d);
-            
-            // Act 1
+
+            // Act 2
             var matcher2 = (ICSharpCodeMatcher)sut.Map(model);
 
             // Assert 2

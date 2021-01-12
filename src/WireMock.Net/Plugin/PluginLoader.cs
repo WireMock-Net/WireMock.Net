@@ -8,11 +8,11 @@ namespace WireMock.Plugin
 {
     internal static class PluginLoader
     {
-        private static ConcurrentDictionary<Type, object> Assemblies = new ConcurrentDictionary<Type, object>();
+        private static readonly ConcurrentDictionary<Type, Type> Assemblies = new ConcurrentDictionary<Type, Type>();
 
         public static T Load<T>(params object[] args) where T : class
         {
-            return Assemblies.GetOrAdd(typeof(T), (type) =>
+            var foundType = Assemblies.GetOrAdd(typeof(T), (type) =>
             {
                 var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
 
@@ -40,11 +40,13 @@ namespace WireMock.Plugin
 
                 if (pluginType != null)
                 {
-                    return Activator.CreateInstance(pluginType, args);
+                    return pluginType;
                 }
 
                 throw new DllNotFoundException($"No dll found which implements type '{type}'");
-            }) as T;
+            });
+
+            return (T)Activator.CreateInstance(foundType, args);
         }
 
         private static Type GetImplementationTypeByInterface<T>(Assembly assembly)
