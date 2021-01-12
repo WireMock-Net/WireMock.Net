@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET452 && !NET461
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -553,3 +554,4 @@ namespace WireMock.Net.Tests
         }
     }
 }
+#endif

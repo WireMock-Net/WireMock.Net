@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using WireMock.Exceptions;
@@ -10,14 +12,12 @@ namespace WireMock.Matchers
     /// <summary>
     /// CSharpCode / CS-Script Matcher
     /// </summary>
-    /// <inheritdoc cref="IObjectMatcher"/>
-    /// <inheritdoc cref="IStringMatcher"/>
-    [Obsolete("This class will be moved to a separate NuGet package 'WireMock.Net.Matchers.CSharpCode'")]
-    internal class CSharpCodeMatcher : IObjectMatcher, IStringMatcher
+    /// <inheritdoc cref="ICSharpCodeMatcher"/>
+    internal class CSharpCodeMatcher : ICSharpCodeMatcher
     {
-        private const string TemplateForIsMatchWithString = "{0} public class CodeHelper {{ public bool IsMatch(string it) {{ {1} }} }}";
+        private const string TemplateForIsMatchWithString = "public class CodeHelper {{ public bool IsMatch(string it) {{ {0} }} }}";
 
-        private const string TemplateForIsMatchWithDynamic = "{0} public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {1} }} }}";
+        private const string TemplateForIsMatchWithDynamic = "public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {0} }} }}";
 
         private readonly string[] _usings =
         {
@@ -153,11 +153,19 @@ namespace WireMock.Matchers
             }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0)
+            Assembly assembly;
+            try
+            {
+                assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
+            }
+            catch (Exception ex)
+            {
+                throw new WireMockException($"CSharpCodeMatcher: Unable to compile code `{source}` for WireMock.CodeHelper", ex);
+            }
+
             dynamic script;
             try
             {
-                var assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
-
 #if NETSTANDARD2_0
                 script = csscript.GenericExtensions.CreateObject(assembly, "*");
 #else
@@ -166,7 +174,7 @@ namespace WireMock.Matchers
             }
             catch (Exception ex)
             {
-                throw new WireMockException("CSharpCodeMatcher: Unable to compile code for WireMock.CodeHelper", ex);
+                throw new WireMockException("CSharpCodeMatcher: Unable to create object from assembly", ex);
             }
 
             try
@@ -178,7 +186,7 @@ namespace WireMock.Matchers
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 #else
-                throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
+            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
             try
             {
@@ -193,7 +201,16 @@ namespace WireMock.Matchers
         private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
         {
             string template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithDynamic;
-            return string.Format(template, string.Join(Environment.NewLine, _usings.Select(u => $"using {u};")), pattern);
+
+            var stringBuilder = new StringBuilder();
+            foreach (string @using in _usings)
+            {
+                stringBuilder.AppendLine($"using {@using};");
+            }
+            stringBuilder.AppendLine();
+            stringBuilder.AppendFormat(template, pattern);
+
+            return stringBuilder.ToString();
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
