@@ -1,3 +1,6 @@
+# 1.4.0 (12 January 2021)
+- [#548](https://github.com/WireMock-Net/WireMock.Net/pull/548) - Move CSharpCodeMatcher to a new project [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.3.10 (23 December 2020)
 - [#555](https://github.com/WireMock-Net/WireMock.Net/pull/555) - Add more tests for Proxy with Authorization [feature] contributed by [StefH](https://github.com/StefH)
 - [#561](https://github.com/WireMock-Net/WireMock.Net/pull/561) - Do not save &quot;admin&quot; mappings when running in Proxy - mode contributed by [StefH](https://github.com/StefH)
