@@ -33,6 +33,11 @@ namespace WireMock.ResponseBuilders
         public bool UseTransformer { get; private set; }
 
         /// <summary>
+        /// Gets the type of the transformer.
+        /// </summary>
+        public TransformerType TransformerType { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether to use the Handlerbars transformer for the content from the referenced BodyAsFile.
         /// </summary>
         public bool UseTransformerForBodyAsFile { get; private set; }
@@ -282,6 +287,16 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
             UseTransformer = true;
+            TransformerType = TransformerType.Handlebars;
+            UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
+            return this;
+        }
+
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool)"/>
+        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false)
+        {
+            UseTransformer = true;
+            TransformerType = transformerType;
             UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
             return this;
         }
@@ -328,7 +343,7 @@ namespace WireMock.ResponseBuilders
 
                 var proxyHelper = new ProxyHelper(settings);
 
-                var (proxyResponseMessage, mapping) = await proxyHelper.SendAsync(
+                var (proxyResponseMessage, _) = await proxyHelper.SendAsync(
                     ProxyAndRecordSettings,
                     _httpClientForProxy,
                     requestMessage,
@@ -369,8 +384,18 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                var responseMessageTransformer = new ResponseMessageTransformer(factory);
+                IResponseMessageTransformer responseMessageTransformer;
+                switch (TransformerType)
+                {
+                    case TransformerType.Handlebars:
+                        var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
+                        responseMessageTransformer = new HandlebarsResponseMessageTransformer(factory);
+                        break;
+
+                    default:
+                        throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
+                }
+
                 return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
             }
 

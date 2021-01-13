@@ -113,6 +113,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyAsFile = null;
                 mappingModel.Response.BodyAsFileIsCached = null;
                 mappingModel.Response.UseTransformer = null;
+                mappingModel.Response.TransformerType = null;
                 mappingModel.Response.UseTransformerForBodyAsFile = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
@@ -133,6 +134,7 @@ namespace WireMock.Serialization
                 if (response.UseTransformer)
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
+                    mappingModel.Response.TransformerType = response.TransformerType.ToString();
                 }
 
                 if (response.UseTransformerForBodyAsFile)

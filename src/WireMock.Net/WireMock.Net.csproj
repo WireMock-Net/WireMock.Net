@@ -59,6 +59,7 @@
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
     <PackageReference Include="Handlebars.Net.Helpers" Version="1.1.0" />
+	<PackageReference Include="DotLiquid" Version="2.0.366" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
