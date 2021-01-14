@@ -33,8 +33,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "GET", ClientIp);
 
-            var response = Response.Create()
-                .WithTransformer();
+            var response = Response.Create().WithTransformer(TransformerType.Handlebars);
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settings);
