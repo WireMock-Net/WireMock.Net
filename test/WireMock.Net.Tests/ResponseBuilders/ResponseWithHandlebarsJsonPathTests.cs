@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Models;
@@ -332,6 +334,33 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Act
             Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public async Task Response_ProvideResponse_Transformer_WithBodyAsFile_JsonPath()
+        {
+            // Assign
+            string jsonString = "{ \"MyUniqueNumber\": \"1\" }";
+            var bodyData = new BodyData
+            {
+                BodyAsString = jsonString,
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
+                DetectedBodyTypeFromContentType = BodyType.Json,
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
+
+            string jsonPath = "\"$.MyUniqueNumber\"";
+            var response = Response.Create()
+                .WithTransformer()
+                .WithBodyFromFile(@"c:\\{{JsonPath.SelectToken request.body " + jsonPath + "}}\\test.json"); // why use a \\ here ?
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.json");
         }
     }
 }
