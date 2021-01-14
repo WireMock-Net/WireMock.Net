@@ -17,7 +17,7 @@ namespace WireMock.Transformers
 
         public DotLiquidTransformer([NotNull] ITransformerContext transformerContext)
         {
-            Check.NotNull(_transformerContext, nameof(_transformerContext));
+            Check.NotNull(transformerContext, nameof(transformerContext));
 
             _transformerContext = transformerContext;
         }
