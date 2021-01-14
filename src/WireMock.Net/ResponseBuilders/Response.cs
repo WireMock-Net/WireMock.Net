@@ -388,13 +388,14 @@ namespace WireMock.ResponseBuilders
                 switch (TransformerType)
                 {
                     case TransformerType.Handlebars:
-                        var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                        responseMessageTransformer = new HandlebarsTransformer(factory);
+                        var factoryHandlebars = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
+                        responseMessageTransformer = new HandlebarsTransformer(factoryHandlebars);
                         break;
 
-                    case TransformerType.DotLiquid:
-                        var dotLiquidContext = new DotLiquidTransformerContext(settings.FileSystemHandler);
-                        responseMessageTransformer = new DotLiquidTransformer(dotLiquidContext);
+                    case TransformerType.Scriban:
+                    case TransformerType.ScribanDotLiquid:
+                        var factoryDotLiquid = new ScribanContextFactory(settings.FileSystemHandler, TransformerType);
+                        responseMessageTransformer = new ScribanTransformer(factoryDotLiquid);
                         break;
 
                     default:

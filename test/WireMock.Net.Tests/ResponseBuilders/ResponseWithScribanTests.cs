@@ -18,13 +18,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace WireMock.Net.Tests.ResponseBuilders
 {
-    public class ResponseWithDotLiquidTests
+    public class ResponseWithScribanTests
     {
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
 
-        public ResponseWithDotLiquidTests()
+        public ResponseWithScribanTests()
         {
             _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
             _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "GET", ClientIp);
 
-            var response = Response.Create().WithTransformer(TransformerType.DotLiquid);
+            var response = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settings);
@@ -61,7 +61,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create()
                 .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
-                .WithTransformer(TransformerType.DotLiquid);
+                .WithTransformer(TransformerType.Scriban);
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settings);

@@ -11,8 +11,13 @@
         Handlebars,
 
         /// <summary>
-        /// https://github.com/dotliquid/dotliquid
+        /// https://github.com/scriban/scriban : default
         /// </summary>
-        DotLiquid
+        Scriban,
+
+        /// <summary>
+        /// https://github.com/scriban/scriban : DotLiquid
+        /// </summary>
+        ScribanDotLiquid
     }
 }

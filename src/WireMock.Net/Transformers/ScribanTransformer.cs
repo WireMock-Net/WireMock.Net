@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DotLiquid;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,36 +10,38 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal class DotLiquidTransformer : IResponseMessageTransformer
+    internal class ScribanTransformer : IResponseMessageTransformer
     {
-        private readonly ITransformerContext _transformerContext;
+        private readonly ITransformerContextFactory<ScribanContext> _factory;
 
-        public DotLiquidTransformer([NotNull] ITransformerContext transformerContext)
+        public ScribanTransformer([NotNull] ITransformerContextFactory<ScribanContext> factory)
         {
-            Check.NotNull(transformerContext, nameof(transformerContext));
+            Check.NotNull(factory, nameof(factory));
 
-            _transformerContext = transformerContext;
+            _factory = factory;
         }
 
         public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile)
         {
+            var context = _factory.Create();
+
             var responseMessage = new ResponseMessage();
 
-            var hash = Hash.FromAnonymousObject(new { request = requestMessage });
+            var model = new { request = requestMessage };
 
             switch (original.BodyData?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    TransformBodyAsJson(hash, original, responseMessage);
+                    TransformBodyAsJson(context, model, original, responseMessage);
                     break;
 
                 case BodyType.File:
-                    TransformBodyAsFile(hash, original, responseMessage, useTransformerForBodyAsFile);
+                    TransformBodyAsFile(context, model, original, responseMessage, useTransformerForBodyAsFile);
                     break;
 
                 case BodyType.String:
                     responseMessage.BodyOriginal = original.BodyData.BodyAsString;
-                    TransformBodyAsString(hash, original, responseMessage);
+                    TransformBodyAsString(context, model, original, responseMessage);
                     break;
             }
 
@@ -51,14 +52,14 @@ namespace WireMock.Transformers
             var newHeaders = new Dictionary<string, WireMockList<string>>();
             foreach (var header in original.Headers)
             {
-                var templateHeaderKey = Template.Parse(header.Key);
+                var templateHeaderKey = context.Parse(header.Key);
 
                 var templateHeaderValues = header.Value
-                    .Select(Template.Parse)
-                    .Select(x => x.Render(hash))
+                    .Select(x => context.Parse(x))
+                    .Select(t => t.Render(model))
                     .ToArray();
 
-                newHeaders.Add(templateHeaderKey.Render(hash), new WireMockList<string>(templateHeaderValues));
+                newHeaders.Add(templateHeaderKey.Render(model), new WireMockList<string>(templateHeaderValues));
             }
 
             responseMessage.Headers = newHeaders;
@@ -70,35 +71,35 @@ namespace WireMock.Transformers
                     break;
 
                 case string statusCodeAsString:
-                    responseMessage.StatusCode = Template.Parse(statusCodeAsString).Render(hash);
+                    responseMessage.StatusCode = context.Parse(statusCodeAsString).Render(model);
                     break;
             }
 
             return responseMessage;
         }
 
-        private static void TransformBodyAsJson(Hash hash, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsJson(ScribanContext context, object model, ResponseMessage original, ResponseMessage responseMessage)
         {
             JToken jToken;
             switch (original.BodyData.BodyAsJson)
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject.DeepClone();
-                    WalkNode(jToken, hash);
+                    WalkNode(context, jToken, model);
                     break;
 
                 case Array bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
-                    WalkNode(jToken, hash);
+                    WalkNode(context, jToken, model);
                     break;
 
                 case string bodyAsString:
-                    jToken = ReplaceSingleNode(bodyAsString, hash);
+                    jToken = ReplaceSingleNode(context, bodyAsString, model);
                     break;
 
                 default:
                     jToken = JObject.FromObject(original.BodyData.BodyAsJson);
-                    WalkNode(jToken, hash);
+                    WalkNode(context, jToken, model);
                     break;
             }
 
@@ -111,9 +112,9 @@ namespace WireMock.Transformers
             };
         }
 
-        private static JToken ReplaceSingleNode(string stringValue, Hash context)
+        private static JToken ReplaceSingleNode(ScribanContext context, string stringValue, object model)
         {
-            string transformedString = Template.Parse(stringValue).Render(context);
+            string transformedString = context.Parse(stringValue).Render(model);
             if (!string.Equals(stringValue, transformedString))
             {
                 const string property = "_";
@@ -128,14 +129,14 @@ namespace WireMock.Transformers
             return stringValue;
         }
 
-        private static void WalkNode(JToken node, Hash context)
+        private static void WalkNode(ScribanContext context, JToken node, object model)
         {
             if (node.Type == JTokenType.Object)
             {
                 // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JProperty child in node.Children<JProperty>().ToArray())
                 {
-                    WalkNode(child.Value, context);
+                    WalkNode(context, child.Value, model);
                 }
             }
             else if (node.Type == JTokenType.Array)
@@ -143,7 +144,7 @@ namespace WireMock.Transformers
                 // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (JToken child in node.Children().ToArray())
                 {
-                    WalkNode(child, context);
+                    WalkNode(context, child, model);
                 }
             }
             else if (node.Type == JTokenType.String)
@@ -155,7 +156,7 @@ namespace WireMock.Transformers
                     return;
                 }
 
-                string transformedString = Template.Parse(stringValue).Render(context);
+                string transformedString = context.Parse(stringValue).Render(model);
                 if (!string.Equals(stringValue, transformedString))
                 {
                     ReplaceNodeValue(node, transformedString);
@@ -186,20 +187,20 @@ namespace WireMock.Transformers
             node.Replace(value);
         }
 
-        private static void TransformBodyAsString(Hash template, ResponseMessage original, ResponseMessage responseMessage)
+        private static void TransformBodyAsString(ScribanContext context, object model, ResponseMessage original, ResponseMessage responseMessage)
         {
             responseMessage.BodyData = new BodyData
             {
                 Encoding = original.BodyData.Encoding,
                 DetectedBodyType = original.BodyData.DetectedBodyType,
                 DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
-                BodyAsString = Template.Parse(original.BodyData.BodyAsString).Render(template)
+                BodyAsString = context.Parse(original.BodyData.BodyAsString).Render(model)
             };
         }
 
-        private void TransformBodyAsFile(Hash hash, ResponseMessage original, ResponseMessage responseMessage, bool useTransformerForBodyAsFile)
+        private void TransformBodyAsFile(ScribanContext context, object model, ResponseMessage original, ResponseMessage responseMessage, bool useTransformerForBodyAsFile)
         {
-            string transformedBodyAsFilename = Template.Parse(original.BodyData.BodyAsFile).Render(hash);
+            string transformedBodyAsFilename = context.Parse(original.BodyData.BodyAsFile).Render(model);
 
             if (!useTransformerForBodyAsFile)
             {
@@ -212,14 +213,14 @@ namespace WireMock.Transformers
             }
             else
             {
-                string text = _transformerContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
-                var templateBodyAsString = Template.Parse(text);
+                string text = context.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+                var templateBodyAsString = context.Parse(text);
 
                 responseMessage.BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
                     DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
-                    BodyAsString = templateBodyAsString.Render(hash),
+                    BodyAsString = templateBodyAsString.Render(model),
                     BodyAsFile = transformedBodyAsFilename
                 };
             }
