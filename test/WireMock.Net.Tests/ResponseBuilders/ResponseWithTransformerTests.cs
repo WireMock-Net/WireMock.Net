@@ -240,7 +240,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
-            var response = Response.Create().WithHeader("x", "{{request.headers[\"Content-Type\"]}}", "{{request.url}}").WithBody("test").WithTransformer(transformerType);
+            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer(transformerType);
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settings);

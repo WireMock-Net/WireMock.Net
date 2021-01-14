@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Moq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -11,8 +13,18 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsHelpersTests
     {
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+
+        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+
+        public ResponseWithHandlebarsHelpersTests()
+        {
+            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        }
 
         [Fact]
         public async Task Response_ProvideResponseAsync_HandlebarsHelpers_String_Uppercase()

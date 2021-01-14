@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -14,8 +16,18 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithBodyTests
     {
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+
+        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+
+        public ResponseWithBodyTests()
+        {
+            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_WithBody_Bytes_Encoding_Destination_String()

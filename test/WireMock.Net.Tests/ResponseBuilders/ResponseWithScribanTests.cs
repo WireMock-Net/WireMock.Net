@@ -20,9 +20,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithScribanTests
     {
+        private const string ClientIp = "::1";
+
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
-        private const string ClientIp = "::1";
 
         public ResponseWithScribanTests()
         {
