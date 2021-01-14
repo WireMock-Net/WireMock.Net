@@ -391,13 +391,13 @@ namespace WireMock.ResponseBuilders
                 {
                     case TransformerType.Handlebars:
                         var factoryHandlebars = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                        responseMessageTransformer = new HandlebarsTransformer(factoryHandlebars);
+                        responseMessageTransformer = new Transformer(factoryHandlebars);
                         break;
 
                     case TransformerType.Scriban:
                     case TransformerType.ScribanDotLiquid:
                         var factoryDotLiquid = new ScribanContextFactory(settings.FileSystemHandler, TransformerType);
-                        responseMessageTransformer = new ScribanTransformer(factoryDotLiquid);
+                        responseMessageTransformer = new Transformer(factoryDotLiquid);
                         break;
 
                     default:

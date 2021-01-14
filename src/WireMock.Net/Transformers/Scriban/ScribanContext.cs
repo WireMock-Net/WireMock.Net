@@ -17,9 +17,11 @@ namespace WireMock.Transformers.Scriban
             _transformerType = transformerType;
         }
 
-        public Template Parse(string text)
+        public string ParseAndRender(string text, object model)
         {
-            return _transformerType == TransformerType.ScribanDotLiquid ? Template.ParseLiquid(text) : Template.Parse(text);
+            var template = _transformerType == TransformerType.ScribanDotLiquid ? Template.ParseLiquid(text) : Template.Parse(text);
+
+            return template.Render(model);
         }
     }
 }

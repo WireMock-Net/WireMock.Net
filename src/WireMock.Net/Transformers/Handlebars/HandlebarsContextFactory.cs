@@ -4,7 +4,7 @@ using WireMock.Handlers;
 
 namespace WireMock.Transformers.Handlebars
 {
-    internal class HandlebarsContextFactory : ITransformerContextFactory<HandlebarsContext>
+    internal class HandlebarsContextFactory : ITransformerContextFactory
     {
         private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
         {
@@ -20,7 +20,7 @@ namespace WireMock.Transformers.Handlebars
             _action = action;
         }
 
-        public HandlebarsContext Create()
+        public ITransformerContext Create()
         {
             var handlebars = HandlebarsDotNet.Handlebars.Create(HandlebarsConfiguration);
 

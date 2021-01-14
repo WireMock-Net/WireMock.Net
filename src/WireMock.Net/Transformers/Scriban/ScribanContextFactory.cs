@@ -3,7 +3,7 @@ using WireMock.Types;
 
 namespace WireMock.Transformers.Scriban
 {
-    internal class ScribanContextFactory : ITransformerContextFactory<ScribanContext>
+    internal class ScribanContextFactory : ITransformerContextFactory
     {
         private readonly IFileSystemHandler _fileSystemHandler;
         private readonly TransformerType _transformerType;
@@ -14,7 +14,7 @@ namespace WireMock.Transformers.Scriban
             _transformerType = transformerType;
         }
 
-        public ScribanContext Create()
+        public ITransformerContext Create()
         {
             return new ScribanContext(_fileSystemHandler, _transformerType);
         }

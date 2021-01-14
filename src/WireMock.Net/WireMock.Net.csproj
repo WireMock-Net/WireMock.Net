@@ -51,6 +51,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Transformers\Scriban\ScribanTransformer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
