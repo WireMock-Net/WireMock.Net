@@ -11,11 +11,11 @@ using WireMock.Validation;
 
 namespace WireMock.Transformers
 {
-    internal class HandlebarsResponseMessageTransformer : IResponseMessageTransformer
+    internal class HandlebarsTransformer : IResponseMessageTransformer
     {
         private readonly IHandlebarsContextFactory _factory;
 
-        public HandlebarsResponseMessageTransformer([NotNull] IHandlebarsContextFactory factory)
+        public HandlebarsTransformer([NotNull] IHandlebarsContextFactory factory)
         {
             Check.NotNull(factory, nameof(factory));
 

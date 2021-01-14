@@ -1,12 +1,9 @@
 ﻿using HandlebarsDotNet;
-using WireMock.Handlers;
 
 namespace WireMock.Transformers
 {
-    interface IHandlebarsContext
+    interface IHandlebarsContext : ITransformerContext
     {
         IHandlebars Handlebars { get; set; }
-
-        IFileSystemHandler FileSystemHandler { get; set; }
     }
 }
