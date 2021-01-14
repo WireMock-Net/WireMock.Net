@@ -25,7 +25,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
-        
+
         private const string ClientIp = "::1";
 
         public ResponseWithTransformerTests()
@@ -230,9 +230,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
         [Theory]
         [InlineData(TransformerType.Handlebars)]
-        //[InlineData(TransformerType.Scriban)] https://github.com/scriban/scriban/issues/304
-        //[InlineData(TransformerType.ScribanDotLiquid)]
-        public async Task Response_ProvideResponse_Transformer_Headers(TransformerType transformerType)
+        public async Task Response_ProvideResponse_Handlebars_Headers(TransformerType transformerType)
         {
             // Assign
             var body = new BodyData
@@ -242,7 +240,33 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
-            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer(transformerType);
+            var response = Response.Create().WithHeader("x", "{{request.headers[\"Content-Type\"]}}", "{{request.url}}").WithBody("test").WithTransformer(transformerType);
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.Headers).ContainsKey("x");
+            Check.That(responseMessage.Headers["x"]).Contains("text/plain");
+            Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
+        }
+
+        [Theory(Skip = "https://github.com/scriban/scriban/issues/304")]
+        //[InlineData(TransformerType.Handlebars)]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Scriban_Headers(TransformerType transformerType)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
+
+            var response = Response.Create().WithHeader("x", "{{request.headers[\"Content-Type\"]}}", "{{request.url}}").WithBody("test").WithTransformer(transformerType);
 
             // Act
             var responseMessage = await response.ProvideResponseAsync(request, _settings);
