@@ -1,6 +1,6 @@
 ﻿namespace WireMock.Transformers
 {
-    interface IResponseMessageTransformer
+    interface ITransformer
     {
         ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile);
     }

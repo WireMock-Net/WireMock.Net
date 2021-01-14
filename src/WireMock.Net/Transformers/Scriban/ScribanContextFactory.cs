@@ -1,7 +1,7 @@
 ﻿using WireMock.Handlers;
 using WireMock.Types;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Scriban
 {
     internal class ScribanContextFactory : ITransformerContextFactory<ScribanContext>
     {

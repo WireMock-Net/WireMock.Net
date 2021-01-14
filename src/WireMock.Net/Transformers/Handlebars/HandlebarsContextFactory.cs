@@ -2,7 +2,7 @@
 using HandlebarsDotNet;
 using WireMock.Handlers;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal class HandlebarsContextFactory : ITransformerContextFactory<HandlebarsContext>
     {
@@ -22,7 +22,7 @@ namespace WireMock.Transformers
 
         public HandlebarsContext Create()
         {
-            var handlebars = Handlebars.Create(HandlebarsConfiguration);
+            var handlebars = HandlebarsDotNet.Handlebars.Create(HandlebarsConfiguration);
 
             WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
 

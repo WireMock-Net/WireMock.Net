@@ -11,6 +11,8 @@ using WireMock.Proxy;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
+using WireMock.Transformers.Handlebars;
+using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
@@ -384,7 +386,7 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                IResponseMessageTransformer responseMessageTransformer;
+                ITransformer responseMessageTransformer;
                 switch (TransformerType)
                 {
                     case TransformerType.Handlebars:

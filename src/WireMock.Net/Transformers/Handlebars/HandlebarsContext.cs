@@ -1,7 +1,7 @@
 ﻿using HandlebarsDotNet;
 using WireMock.Handlers;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal class HandlebarsContext : IHandlebarsContext
     {

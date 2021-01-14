@@ -9,9 +9,9 @@ using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
-    internal class HandlebarsTransformer : IResponseMessageTransformer
+    internal class HandlebarsTransformer : ITransformer
     {
         private readonly ITransformerContextFactory<HandlebarsContext> _factory;
 

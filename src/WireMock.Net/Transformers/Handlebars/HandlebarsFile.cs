@@ -3,7 +3,7 @@ using System;
 using WireMock.Handlers;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class HandlebarsFile
     {

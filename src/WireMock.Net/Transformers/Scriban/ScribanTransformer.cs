@@ -8,9 +8,9 @@ using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Scriban
 {
-    internal class ScribanTransformer : IResponseMessageTransformer
+    internal class ScribanTransformer : ITransformer
     {
         private readonly ITransformerContextFactory<ScribanContext> _factory;
 

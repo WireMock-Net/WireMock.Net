@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using WireMock.Util;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class HandlebarsLinq
     {
