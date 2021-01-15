@@ -61,7 +61,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
+                .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
                 .WithTransformer(TransformerType.Scriban);
 
             // Act
