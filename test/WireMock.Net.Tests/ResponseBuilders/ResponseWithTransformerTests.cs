@@ -104,18 +104,35 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).Equals("url=http://localhost/a/b absoluteurl=http://localhost/wiremock/a/b path=/a/b absolutepath=/wiremock/a/b");
         }
 
-        [Theory]
-        [InlineData(TransformerType.Handlebars)]
-        //[InlineData(TransformerType.Scriban)] Invalid token `OpenBracket`
-        //[InlineData(TransformerType.ScribanDotLiquid)]
-        public async Task Response_ProvideResponse_Transformer_PathSegments(TransformerType transformerType)
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_PathSegments()
         {
             // Assign
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
             var response = Response.Create()
-                .WithBody("{{request.pathsegments.[0]}} {{request.absolutepathsegments.[0]}}")
+                .WithBody("{{request.PathSegments.[0]}} {{request.AbsolutePathSegments.[0]}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
+        }
+
+        [Theory(Skip = "Invalid token `OpenBracket`")]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Scriban_PathSegments(TransformerType transformerType)
+        {
+            // Assign
+            var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
+            var request = new RequestMessage(urlDetails, "POST", ClientIp);
+
+            var response = Response.Create()
+                .WithBody("{{request.PathSegments.[0]}} {{request.AbsolutePathSegments.[0]}}")
                 .WithTransformer(transformerType);
 
             // Act
@@ -125,11 +142,32 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
         }
 
-        [Theory]
-        [InlineData(TransformerType.Handlebars)]
-        //[InlineData(TransformerType.Scriban)] Invalid token `OpenBracket`
-        //[InlineData(TransformerType.ScribanDotLiquid)]
-        public async Task Response_ProvideResponse_Transformer_Query(TransformerType transformerType)
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_Query()
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
+        }
+
+        [Theory(Skip = "Invalid token `OpenBracket`")]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Scriban_Query(TransformerType transformerType)
         {
             // Assign
             var body = new BodyData
@@ -150,11 +188,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
         }
 
-        [Theory]
-        [InlineData(TransformerType.Handlebars)]
-        //[InlineData(TransformerType.Scriban)] --> WireMockList is not supported by Scriban
-        //[InlineData(TransformerType.ScribanDotLiquid)]
-        public async Task Response_ProvideResponse_Transformer_StatusCode(TransformerType transformerType)
+        [Fact]
+        public async Task Response_ProvideResponse_Handlebars_StatusCode()
         {
             // Assign
             var body = new BodyData
@@ -166,6 +201,32 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var response = Response.Create()
                 .WithStatusCode("{{request.query.a}}")
+                .WithBody("test")
+                .WithTransformer();
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
+            Check.That(responseMessage.StatusCode).Equals("400");
+        }
+
+        [Theory(Skip = "WireMockList is not supported by Scriban")]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Scriban_StatusCode(TransformerType transformerType)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "abc",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
+
+            var response = Response.Create()
+                .WithStatusCode("{{request.Query.a}}")
                 .WithBody("test")
                 .WithTransformer(transformerType);
 
