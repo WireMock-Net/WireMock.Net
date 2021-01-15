@@ -1,14 +1,12 @@
-﻿using FluentAssertions;
-using HandlebarsDotNet;
+﻿using System;
+using FluentAssertions;
 using Moq;
-using System;
 using WireMock.Handlers;
-using WireMock.Transformers.Handlebars;
 using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using Xunit;
 
-namespace WireMock.Net.Tests.Transformers.Handlebars
+namespace WireMock.Net.Tests.Transformers.Scriban
 {
     public class ScribanContextFactoryTests
     {

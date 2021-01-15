@@ -33,17 +33,26 @@ namespace WireMock.Transformers.Scriban
         {
             var template = _transformerType == TransformerType.ScribanDotLiquid ? Template.ParseLiquid(text) : Template.Parse(text);
 
-            switch (model)
-            {
-                case JObject jobject:
-                    model = ConvertFromJson(jobject);
-                    break;
+            //switch (model)
+            //{
+            //    case JObject jobject:
+            //        model = ConvertFromJson(jobject);
+            //        break;
 
-                default:
-                    break;
-            }
+            //    default:
+            //        break;
+            //}
 
-            return template.Render(model);
+            var scriptObject = new ScriptObject();
+            scriptObject.Import(model);
+
+            // Setup a default renamer at the `TemplateContext` level
+            var context = new TemplateContext { MemberRenamer = member => member.Name };
+            context.PushGlobal(scriptObject);
+
+            return template.Render(context);
+
+            //return template.Render(model, member => member.Name);
         }
 
         // https://github.com/scriban/scriban/issues/246

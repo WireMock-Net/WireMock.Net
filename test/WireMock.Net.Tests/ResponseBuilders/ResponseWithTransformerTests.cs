@@ -70,7 +70,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("test {{request.url}} {{request.path}} {{request.method}}")
+                .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
                 .WithTransformer(transformerType);
 
             // Act
@@ -83,10 +83,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
         [Theory]
         [InlineData(TransformerType.Handlebars, "Get")]
         [InlineData(TransformerType.Handlebars, "Post")]
-        //[InlineData(TransformerType.Scriban, "Get")] // value starting with a / does not work ?
-        //[InlineData(TransformerType.Scriban, "Post")]
-        //[InlineData(TransformerType.ScribanDotLiquid, "Get")]
-        //[InlineData(TransformerType.ScribanDotLiquid, "Post")]
+        [InlineData(TransformerType.Scriban, "Get")]
+        [InlineData(TransformerType.Scriban, "Post")]
+        [InlineData(TransformerType.ScribanDotLiquid, "Get")]
+        [InlineData(TransformerType.ScribanDotLiquid, "Post")]
         public async Task Response_ProvideResponse_Transformer_UrlPath(TransformerType transformerType, string httpMethod)
         {
             // Assign
@@ -94,7 +94,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(urlDetails, httpMethod, ClientIp);
 
             var response = Response.Create()
-                .WithBody("url={{request.url}} absoluteurl={{request.absoluteurl}} path={{request.path}} absolutepath={{request.absolutepath}}")
+                .WithBody("url={{request.Url}} absoluteurl={{request.AbsoluteUrl}} path={{request.Path}} absolutepath={{request.AbsolutePath}}")
                 .WithTransformer(transformerType);
 
             // Act
@@ -293,7 +293,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("test {{request.origin}} {{request.port}} {{request.protocol}} {{request.host}}")
+                .WithBody("test {{request.Origin}} {{request.Port}} {{request.Protocol}} {{request.Host}}")
                 .WithTransformer(transformerType);
 
             // Act
@@ -320,7 +320,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBodyAsJson(new { x = "test {{request.path}}" })
+                .WithBodyAsJson(new { x = "test {{request.Path}}" })
                 .WithTransformer(transformerType);
 
             // Act
@@ -461,7 +461,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBodyAsJson("{{{request.bodyAsJson}}}")
+                .WithBodyAsJson("{{{request.BodyAsJson}}}")
                 .WithTransformer();
 
             // Act
@@ -471,7 +471,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
         }
 
-        [Theory(Skip = "Does not work in Scriban")]
+        [Theory(Skip = "{{{ }}} Does not work in Scriban")]
         [InlineData(TransformerType.Scriban)]
         [InlineData(TransformerType.ScribanDotLiquid)]
         public async Task Response_ProvideResponse_Scriban_WithBodyAsJson_ResultAsTemplatedString(TransformerType transformerType)
@@ -487,7 +487,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBodyAsJson("{{request.bodyAsJson}}")
+                .WithBodyAsJson("{{{request.BodyAsJson}}}")
                 .WithTransformer(transformerType);
 
             // Act
@@ -515,7 +515,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var response = Response.Create()
-                .WithBody("{{request.body}}", BodyDestinationFormat.SameAsSource, enc)
+                .WithBody("{{request.Body}}", BodyDestinationFormat.SameAsSource, enc)
                 .WithTransformer(transformerType);
 
             // Act
