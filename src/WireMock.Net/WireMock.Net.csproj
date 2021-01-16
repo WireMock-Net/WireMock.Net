@@ -52,6 +52,8 @@
 
   <ItemGroup>
     <Compile Remove="Transformers\Scriban\ScribanTransformer.cs" />
+    <Compile Remove="Transformers\Scriban\WireMockListAccessor.cs" />
+    <Compile Remove="Transformers\Scriban\WireMockTemplateContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
