@@ -1,10 +1,11 @@
 ﻿using System;
 using HandlebarsDotNet;
+using JetBrains.Annotations;
 using WireMock.Handlers;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
-    internal class HandlebarsContextFactory : IHandlebarsContextFactory
+    internal class HandlebarsContextFactory : ITransformerContextFactory
     {
         private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
         {
@@ -14,15 +15,15 @@ namespace WireMock.Transformers
         private readonly IFileSystemHandler _fileSystemHandler;
         private readonly Action<IHandlebars, IFileSystemHandler> _action;
 
-        public HandlebarsContextFactory(IFileSystemHandler fileSystemHandler, Action<IHandlebars, IFileSystemHandler> action)
+        public HandlebarsContextFactory([NotNull] IFileSystemHandler fileSystemHandler, [CanBeNull] Action<IHandlebars, IFileSystemHandler> action)
         {
-            _fileSystemHandler = fileSystemHandler;
+            _fileSystemHandler = fileSystemHandler ?? throw new ArgumentNullException(nameof(fileSystemHandler));
             _action = action;
         }
 
-        public IHandlebarsContext Create()
+        public ITransformerContext Create()
         {
-            var handlebars = Handlebars.Create(HandlebarsConfiguration);
+            var handlebars = HandlebarsDotNet.Handlebars.Create(HandlebarsConfiguration);
 
             WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
 

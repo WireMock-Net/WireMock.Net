@@ -7,6 +7,8 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
+using Moq;
+using WireMock.Handlers;
 #if !NETSTANDARD1_3
 using Wmhelp.XPath2;
 #endif
@@ -15,8 +17,18 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsXPathTests
     {
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+
+        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+
+        public ResponseWithHandlebarsXPathTests()
+        {
+            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_BodyAsString()

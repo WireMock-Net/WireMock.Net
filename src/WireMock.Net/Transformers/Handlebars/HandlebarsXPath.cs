@@ -8,7 +8,7 @@ using WireMock.Validation;
 using Wmhelp.XPath2;
 #endif
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class HandlebarsXPath
     {

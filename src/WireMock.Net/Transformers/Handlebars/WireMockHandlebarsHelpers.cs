@@ -2,7 +2,7 @@
 using HandlebarsDotNet.Helpers;
 using WireMock.Handlers;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class WireMockHandlebarsHelpers
     {

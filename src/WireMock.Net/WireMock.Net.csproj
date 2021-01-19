@@ -51,6 +51,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Transformers\Scriban\ScribanTransformer.cs" />
+    <Compile Remove="Transformers\Scriban\WireMockListAccessor.cs" />
+    <Compile Remove="Transformers\Scriban\WireMockTemplateContext.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
@@ -59,6 +65,7 @@
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
     <PackageReference Include="Handlebars.Net.Helpers" Version="1.1.0" />
+	  <!--<PackageReference Include="DotLiquid" Version="2.0.366" />-->
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
@@ -78,6 +85,7 @@
 
     <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
@@ -87,9 +95,11 @@
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
     <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
@@ -102,9 +112,11 @@
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+    <PackageReference Include="Scriban.Signed" Version="3.3.2" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
     <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
@@ -113,6 +125,7 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Scriban.Signed" Version="3.3.2" />
   </ItemGroup>
 
   <ItemGroup>

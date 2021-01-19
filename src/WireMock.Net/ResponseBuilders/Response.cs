@@ -11,6 +11,8 @@ using WireMock.Proxy;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
+using WireMock.Transformers.Handlebars;
+using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
@@ -31,6 +33,11 @@ namespace WireMock.ResponseBuilders
         /// Gets a value indicating whether [use transformer].
         /// </summary>
         public bool UseTransformer { get; private set; }
+
+        /// <summary>
+        /// Gets the type of the transformer.
+        /// </summary>
+        public TransformerType TransformerType { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether to use the Handlerbars transformer for the content from the referenced BodyAsFile.
@@ -282,6 +289,16 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
             UseTransformer = true;
+            TransformerType = TransformerType.Handlebars;
+            UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
+            return this;
+        }
+
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool)"/>
+        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false)
+        {
+            UseTransformer = true;
+            TransformerType = transformerType;
             UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
             return this;
         }
@@ -328,7 +345,7 @@ namespace WireMock.ResponseBuilders
 
                 var proxyHelper = new ProxyHelper(settings);
 
-                var (proxyResponseMessage, mapping) = await proxyHelper.SendAsync(
+                var (proxyResponseMessage, _) = await proxyHelper.SendAsync(
                     ProxyAndRecordSettings,
                     _httpClientForProxy,
                     requestMessage,
@@ -369,8 +386,24 @@ namespace WireMock.ResponseBuilders
 
             if (UseTransformer)
             {
-                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                var responseMessageTransformer = new ResponseMessageTransformer(factory);
+                ITransformer responseMessageTransformer;
+                switch (TransformerType)
+                {
+                    case TransformerType.Handlebars:
+                        var factoryHandlebars = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
+                        responseMessageTransformer = new Transformer(factoryHandlebars);
+                        break;
+
+                    case TransformerType.Scriban:
+                    case TransformerType.ScribanDotLiquid:
+                        var factoryDotLiquid = new ScribanContextFactory(settings.FileSystemHandler, TransformerType);
+                        responseMessageTransformer = new Transformer(factoryDotLiquid);
+                        break;
+
+                    default:
+                        throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
+                }
+
                 return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
             }
 

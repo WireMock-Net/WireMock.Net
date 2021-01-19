@@ -9,7 +9,7 @@ using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class HandlebarsRandom
     {

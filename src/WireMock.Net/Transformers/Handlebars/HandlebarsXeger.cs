@@ -3,7 +3,7 @@ using Fare;
 using HandlebarsDotNet;
 using WireMock.Validation;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers.Handlebars
 {
     internal static class HandlebarsXeger
     {

@@ -770,7 +770,11 @@ namespace WireMock.Server
 
             if (responseModel.UseTransformer == true)
             {
-                responseBuilder = responseBuilder.WithTransformer(responseModel.UseTransformerForBodyAsFile == true);
+                if (!Enum.TryParse<TransformerType>(responseModel.TransformerType, out var transformerType))
+                {
+                    transformerType = TransformerType.Handlebars;
+                }
+                responseBuilder = responseBuilder.WithTransformer(transformerType, responseModel.UseTransformerForBodyAsFile == true);
             }
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))

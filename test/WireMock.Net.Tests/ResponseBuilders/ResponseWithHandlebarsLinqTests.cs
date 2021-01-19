@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -13,7 +15,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsLinqTests
     {
+        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+
+        public ResponseWithHandlebarsLinqTests()
+        {
+            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        }
 
         [Fact]
         public async Task Response_ProvideResponse_Handlebars_Linq1_String0()
