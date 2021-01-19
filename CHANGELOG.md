@@ -1,3 +1,7 @@
+# 1.4.1 (19 January 2021)
+- [#562](https://github.com/WireMock-Net/WireMock.Net/pull/562) - Refactor Transformer (add Scriban) [feature] contributed by [StefH](https://github.com/StefH)
+- [#214](https://github.com/WireMock-Net/WireMock.Net/issues/214) - Feature: Add support for template language DotLiquid [feature]
+
 # 1.4.0 (12 January 2021)
 - [#548](https://github.com/WireMock-Net/WireMock.Net/pull/548) - Move CSharpCodeMatcher to a new project [feature] contributed by [StefH](https://github.com/StefH)
 
@@ -12,15 +16,13 @@
 - [#549](https://github.com/WireMock-Net/WireMock.Net/issues/549) - WithProxy(...) does not save the mappings to file [bug]
 
 # 1.3.8 (03 December 2020)
+- [#539](https://github.com/WireMock-Net/WireMock.Net/pull/539) - Support for partial JSON matching contributed by [gleb-osokin](https://github.com/gleb-osokin)
 - [#542](https://github.com/WireMock-Net/WireMock.Net/pull/542) - Create dotnet-wiremock tool [feature] contributed by [StefH](https://github.com/StefH)
 - [#543](https://github.com/WireMock-Net/WireMock.Net/pull/543) - Add support for .NET 5 [feature] contributed by [StefH](https://github.com/StefH)
 - [#544](https://github.com/WireMock-Net/WireMock.Net/pull/544) - Use Java 11 in Azure Pipelines (needed for SonarCloud) [feature] contributed by [StefH](https://github.com/StefH)
 - [#545](https://github.com/WireMock-Net/WireMock.Net/pull/545) - Fix SonarCloud OpenCover (coverlet-coverage) [bug] contributed by [StefH](https://github.com/StefH)
 - [#547](https://github.com/WireMock-Net/WireMock.Net/pull/547) - Fix Proxying with SSL and NetCoreApp3.1 [bug] contributed by [StefH](https://github.com/StefH)
 - [#524](https://github.com/WireMock-Net/WireMock.Net/issues/524) - Proxying with SSL Not Working in .NET Core 3.1 [bug]
-
-# 1.3.7 (17 November 2020)
-- [#539](https://github.com/WireMock-Net/WireMock.Net/pull/539) - Support for partial JSON matching contributed by [gleb-osokin](https://github.com/gleb-osokin)
 
 # 1.3.6 (10 November 2020)
 - [#529](https://github.com/WireMock-Net/WireMock.Net/pull/529) - Add assertions for ClientIP, Url and ProxyUrl [feature] contributed by [akamud](https://github.com/akamud)
