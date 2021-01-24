@@ -1,3 +1,7 @@
+# 1.4.2 (24 January 2021)
+- [#566](https://github.com/WireMock-Net/WireMock.Net/pull/566) - Do not save Mappings when SaveMappingForStatusCodePattern does not match [bug] contributed by [StefH](https://github.com/StefH)
+- [#565](https://github.com/WireMock-Net/WireMock.Net/issues/565) - NullReferenceException [bug]
+
 # 1.4.1 (19 January 2021)
 - [#562](https://github.com/WireMock-Net/WireMock.Net/pull/562) - Refactor Transformer (add Scriban) [feature] contributed by [StefH](https://github.com/StefH)
 - [#214](https://github.com/WireMock-Net/WireMock.Net/issues/214) - Feature: Add support for template language DotLiquid [feature]
