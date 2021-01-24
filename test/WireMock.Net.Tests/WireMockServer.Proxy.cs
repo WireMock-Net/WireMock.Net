@@ -117,6 +117,42 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMappingForStatusCodePattern_Is_False_Should_Not_SaveMapping()
+        {
+            // Assign
+            var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
+
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = true,
+                    SaveMappingForStatusCodePattern = "999" // Just make sure that we don't want this mapping
+                },
+                FileSystemHandler = fileSystemHandlerMock.Object
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(1);
+
+            // Verify
+            fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
         public async Task WireMockServer_Proxy_Should_log_proxied_requests()
         {
             // Assign
