@@ -261,14 +261,17 @@ namespace WireMock.Server
                 proxyUriWithRequestPathAndQuery.AbsoluteUri
             );
 
-            if (settings.ProxyAndRecordSettings.SaveMapping)
+            if (mapping != null)
             {
-                _options.Mappings.TryAdd(mapping.Guid, mapping);
-            }
+                if (settings.ProxyAndRecordSettings.SaveMapping)
+                {
+                    _options.Mappings.TryAdd(mapping.Guid, mapping);
+                }
 
-            if (settings.ProxyAndRecordSettings.SaveMappingToFile)
-            {
-                _mappingToFileSaver.SaveMappingToFile(mapping);
+                if (settings.ProxyAndRecordSettings.SaveMappingToFile)
+                {
+                    _mappingToFileSaver.SaveMappingToFile(mapping);
+                }
             }
 
             return responseMessage;
