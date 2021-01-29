@@ -112,7 +112,7 @@ namespace WireMock.Transformers.Handlebars
 
         private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, string stringValue, object model)
         {
-            string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
+            string transformedString = handlebarsContext.ParseAndRender(stringValue, model) as string;
 
             if (!string.Equals(stringValue, transformedString))
             {

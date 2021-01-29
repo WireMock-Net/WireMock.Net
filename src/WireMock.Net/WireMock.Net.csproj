@@ -51,6 +51,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Transformers\Handlebars\HandlebarsJsonPath.cs" />
+    <Compile Remove="Transformers\Handlebars\HandlebarsLinq.cs" />
+    <Compile Remove="Transformers\Handlebars\HandlebarsRandom.cs" />
+    <Compile Remove="Transformers\Handlebars\HandlebarsRegex.cs" />
+    <Compile Remove="Transformers\Handlebars\HandlebarsXeger.cs" />
+    <Compile Remove="Transformers\Handlebars\HandlebarsXPath.cs" />
     <Compile Remove="Transformers\Scriban\ScribanTransformer.cs" />
     <Compile Remove="Transformers\Scriban\WireMockListAccessor.cs" />
     <Compile Remove="Transformers\Scriban\WireMockTemplateContext.cs" />
@@ -64,7 +70,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-    <PackageReference Include="Handlebars.Net.Helpers" Version="1.1.0" />
+    <!--<PackageReference Include="Handlebars.Net.Helpers" Version="1.1.0" />-->
 	  <!--<PackageReference Include="DotLiquid" Version="2.0.366" />-->
   </ItemGroup>
 
@@ -129,6 +135,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Handlebars.Net.Helpers" Version="2.0.3" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.Core\Handlebars.Net.Helpers.Core.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.DynamicLinq\Handlebars.Net.Helpers.DynamicLinq.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.Json\Handlebars.Net.Helpers.Json.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.Random\Handlebars.Net.Helpers.Random.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.Xeger\Handlebars.Net.Helpers.Xeger.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers.XPath\Handlebars.Net.Helpers.XPath.csproj" />
+    <ProjectReference Include="..\..\..\Handlebars-Net\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers\Handlebars.Net.Helpers.csproj" />
     <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
   </ItemGroup>
 </Project>
