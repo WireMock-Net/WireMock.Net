@@ -18,21 +18,6 @@ namespace WireMock.Transformers.Handlebars
                     { "File", new FileHelpers(handlebarsContext, fileSystemHandler) }
                 };
             });
-
-            // Register WireMock.Net specific helpers
-            //HandlebarsRegex.Register(handlebarsContext);
-
-            //HandlebarsJsonPath.Register(handlebarsContext);
-
-            //HandlebarsLinq.Register(handlebarsContext);
-
-            //HandlebarsRandom.Register(handlebarsContext);
-
-            //HandlebarsXeger.Register(handlebarsContext);
-
-            //HandlebarsXPath.Register(handlebarsContext);
-
-            //HandlebarsFile.Register(handlebarsContext, fileSystemHandler);
         }
     }
 }
