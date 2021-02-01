@@ -27,8 +27,6 @@ namespace WireMock.Owin.Mappers
     /// </summary>
     internal class OwinResponseMapper : IOwinResponseMapper
     {
-        private const string DateHeaderFormat = "{0:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'}";
-
         private readonly IRandomizerNumber<double> _randomizerDouble = RandomizerFactory.GetRandomizer(new FieldOptionsDouble { Min = 0, Max = 1 });
         private readonly IRandomizerBytes _randomizerBytes = RandomizerFactory.GetRandomizer(new FieldOptionsBytes { Min = 100, Max = 200 });
         private readonly IWireMockMiddlewareOptions _options;
@@ -155,10 +153,10 @@ namespace WireMock.Owin.Mappers
 
         private static void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
         {
-            // Set Date header (#577)
-            AppendResponseHeader(response, HttpKnownHeaderNames.Date, new[] { string.Format(CultureInfo.InvariantCulture, DateHeaderFormat, DateTime.Now) });
+            // Force setting the Date header (#577)
+            AppendResponseHeader(response, HttpKnownHeaderNames.Date, new[] { string.Format(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, DateTime.Now) });
 
-            // Set headers
+            // Set other headers
             foreach (var item in responseMessage.Headers)
             {
                 var headerName = item.Key;
