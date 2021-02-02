@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -150,28 +151,38 @@ namespace WireMock.Owin.Mappers
             return bytes;
         }
 
-        private void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
+        private static void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
         {
-            // Set headers
-            foreach (var pair in responseMessage.Headers)
+            // Force setting the Date header (#577)
+            AppendResponseHeader(response, HttpKnownHeaderNames.Date, new[] { string.Format(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, DateTime.Now) });
+
+            // Set other headers
+            foreach (var item in responseMessage.Headers)
             {
-                if (ResponseHeadersToFix.ContainsKey(pair.Key))
+                var headerName = item.Key;
+                var value = item.Value;
+                if (ResponseHeadersToFix.ContainsKey(headerName))
                 {
-                    ResponseHeadersToFix[pair.Key]?.Invoke(response, pair.Value);
+                    ResponseHeadersToFix[headerName]?.Invoke(response, value);
                 }
                 else
                 {
                     // Check if this response header can be added (#148 and #227)
-                    if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(pair.Key))
+                    if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(headerName))
                     {
-#if !USE_ASPNETCORE
-                        response.Headers.AppendValues(pair.Key, pair.Value.ToArray());
-#else
-                        response.Headers.Append(pair.Key, pair.Value.ToArray());
-#endif
+                        AppendResponseHeader(response, headerName, value.ToArray());
                     }
                 }
             }
+        }
+
+        private static void AppendResponseHeader(IResponse response, string headerName, string[] values)
+        {
+#if !USE_ASPNETCORE
+            response.Headers.AppendValues(headerName, values);
+#else
+            response.Headers.Append(headerName, values);
+#endif
         }
     }
 }
