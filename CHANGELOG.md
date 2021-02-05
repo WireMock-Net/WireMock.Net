@@ -1,3 +1,14 @@
+# 1.4.3 (05 February 2021)
+- [#570](https://github.com/WireMock-Net/WireMock.Net/pull/570) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.StandAlone.NETCoreApp [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#571](https://github.com/WireMock-Net/WireMock.Net/pull/571) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Console.NETCoreApp2 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#572](https://github.com/WireMock-Net/WireMock.Net/pull/572) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Console.NETCoreApp [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#573](https://github.com/WireMock-Net/WireMock.Net/pull/573) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Console.Net461.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#574](https://github.com/WireMock-Net/WireMock.Net/pull/574) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Console.Net452.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#575](https://github.com/WireMock-Net/WireMock.Net/pull/575) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.StandAlone.Net452 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#576](https://github.com/WireMock-Net/WireMock.Net/pull/576) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#579](https://github.com/WireMock-Net/WireMock.Net/pull/579) - Net5 issue [bug] contributed by [StefH](https://github.com/StefH)
+- [#577](https://github.com/WireMock-Net/WireMock.Net/issues/577) - WireMock.Net will not run with certain .net5 dependencies installed in the project [bug]
+
 # 1.4.2 (24 January 2021)
 - [#566](https://github.com/WireMock-Net/WireMock.Net/pull/566) - Do not save Mappings when SaveMappingForStatusCodePattern does not match [bug] contributed by [StefH](https://github.com/StefH)
 - [#565](https://github.com/WireMock-Net/WireMock.Net/issues/565) - NullReferenceException [bug]
