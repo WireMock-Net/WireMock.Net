@@ -80,6 +80,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NET5",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Matchers.CSharpCode", "src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj", "{B6269AAC-170A-4346-8B9A-444DED3D9A44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Net472.Classic", "examples\WireMock.Net.Console.Net472.Classic\WireMock.Net.Console.Net472.Classic.csproj", "{6580580B-1EFD-4922-B0EC-FF290DB279EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -198,6 +200,14 @@ Global
 		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6580580B-1EFD-4922-B0EC-FF290DB279EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6580580B-1EFD-4922-B0EC-FF290DB279EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6580580B-1EFD-4922-B0EC-FF290DB279EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6580580B-1EFD-4922-B0EC-FF290DB279EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6269AAC-170A-4346-8B9A-444DED3D9A44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,6 +241,8 @@ Global
 		{40BF24B5-12E6-4610-9489-138798632E28} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{3F8CF0AE-5F24-4A54-89E7-A3EE829DB5F8} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
 		{B6269AAC-170A-4346-8B9A-444DED3D9A44} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
+		{B6269AAC-170A-4346-8B9A-444DED3D9A44} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
+		{6580580B-1EFD-4922-B0EC-FF290DB279EE} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}

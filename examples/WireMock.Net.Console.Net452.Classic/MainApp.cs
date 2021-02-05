@@ -280,7 +280,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("hi"));
 
             server
-                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
+                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b != null && b.Contains("e")))
                 .AtPriority(999)
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)

@@ -19,7 +19,7 @@ namespace WireMock.Http
             Connection,
             ContentLength,
             ContentType,
-            Date,
+            Date, // RFC1123Pattern
             Expect,
             Host,
             IfModifiedSince,
