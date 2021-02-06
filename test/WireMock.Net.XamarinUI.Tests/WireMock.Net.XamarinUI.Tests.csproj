@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
-
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
@@ -18,8 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="WireMock.Net" Version="1.4.3" />
-		<!--<ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />-->
+		<!--<PackageReference Include="WireMock.Net" Version="1.4.3" />-->
+		<ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
