@@ -34,11 +34,12 @@ namespace WireMock.Net.StandAlone.NETCoreApp
 
             _server = WireMockServer.Start(settings);
 
-            //_server
-            //    .Given(Request.Create()
-            //        .UsingAnyMethod())
-            //    .RespondWith(Response.Create()
-            //        .WithProxy("https://www.google.com"));
+            _server
+                .Given(Request.Create()
+                    .UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithTransformer()
+                    .WithBody("{{Random Type=\"Integer\" Min=100 Max=999999}} {{Now}} {{Now \"yyyy-MMM\"}} {{Format (Now) \"MMM-dd\"}}"));
 
             Console.WriteLine($"{DateTime.UtcNow} Press Ctrl+C to shut down");
 
