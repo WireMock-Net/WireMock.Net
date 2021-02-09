@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
+using HandlebarsDotNet;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -139,7 +141,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponse_Handlebars_Linq_Throws_NotSupportedException()
+        public void Response_ProvideResponse_Handlebars_Linq_Throws_ArgumentException()
         {
             // Assign
             var body = new BodyData
@@ -155,7 +157,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentException>();
         }
 
         [Fact]
@@ -175,7 +177,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponse_Handlebars_Linq1_Throws_ArgumentException()
+        public void Response_ProvideResponse_Handlebars_Linq1_Throws_HandlebarsException()
         {
             // Assign
             var body = new BodyData();
@@ -187,11 +189,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<HandlebarsException>();
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_Linq1_ParseError_Returns_Empty()
+        public void Response_ProvideResponse_Handlebars_Linq1_ParseError_Throws_ExceptionMessage()
         {
             // Assign
             var body = new BodyData
@@ -211,15 +213,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            Func<Task> a = async () => await response.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
-            Check.That(j["x"].ToString()).IsEmpty();
+            a.Should().Throw<HandlebarsException>();
         }
 
         [Fact]
-        public async void Response_ProvideResponse_Handlebars_Linq2_ParseError_Returns_Empty()
+        public void Response_ProvideResponse_Handlebars_Linq2_ParseError_Throws_ExceptionMessage()
         {
             // Assign
             var body = new BodyData
@@ -239,11 +240,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            Func<Task> a = async () => await response.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
-            Check.That(j["x"].ToString()).IsEmpty();
+            a.Should().Throw<HandlebarsException>();
         }
     }
 }

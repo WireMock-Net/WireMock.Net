@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HandlebarsDotNet;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -76,7 +77,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponseAsync_Handlebars_File_WithMissingArgument_ThrowsArgumentOutOfRangeException()
+        public void Response_ProvideResponseAsync_Handlebars_File_WithMissingArgument_Throws_HandlebarsException()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -89,7 +90,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentOutOfRangeException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<HandlebarsException>();
 
             // Verify
             _filesystemHandlerMock.Verify(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()), Times.Never);

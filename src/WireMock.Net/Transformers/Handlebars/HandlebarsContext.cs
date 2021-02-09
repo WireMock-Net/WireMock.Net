@@ -12,7 +12,6 @@ namespace WireMock.Transformers.Handlebars
         public string ParseAndRender(string text, object model)
         {
             var template = Handlebars.Compile(text);
-
             return template(model);
         }
     }

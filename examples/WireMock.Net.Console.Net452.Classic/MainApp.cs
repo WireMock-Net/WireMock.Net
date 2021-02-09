@@ -64,7 +64,7 @@ namespace WireMock.Net.ConsoleApplication
                 HandlebarsRegistrationCallback = (handlebarsContext, fileSystemHandler) =>
                 {
                     var transformer = new CustomNameTransformer();
-                    // handlebarsContext.RegisterHelper(transformer.Name, transformer.Render);
+                    // handlebarsContext.RegisterHelper(transformer.Name, transformer.Render); TODO
                 },
 
                 // Uncomment below if you want to use the CustomFileSystemFileHandler

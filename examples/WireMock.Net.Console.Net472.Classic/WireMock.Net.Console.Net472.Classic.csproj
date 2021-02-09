@@ -42,11 +42,14 @@
     <Reference Include="Fare, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Fare.2.1.1\lib\net35\Fare.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars, Version=1.9.5.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.1.9.5\lib\net452\Handlebars.dll</HintPath>
+    <Reference Include="Handlebars, Version=2.0.4.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.2.0.4\lib\net46\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars.Net.Helpers, Version=1.1.0.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.1.1.0\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.1.1.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.1.1-preview-01\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.1.1.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.1.1-preview-01\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
     </Reference>
     <Reference Include="JmesPath.Net, Version=1.0.125.0, Culture=neutral, PublicKeyToken=b29d616b7f4faff0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\JmesPath.Net.1.0.125\lib\net45\JmesPath.Net.dll</HintPath>

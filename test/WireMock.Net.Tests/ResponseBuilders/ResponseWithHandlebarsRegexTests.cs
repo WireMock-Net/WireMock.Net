@@ -36,7 +36,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
             var response = Response.Create()
-                .WithBody("{{Regex.Match request.body \"^(?<x>\\w+)$\"}}")
+                .WithBody("{{Regex.Match request.body \"^(\\w+)$\"}}")
                 .WithTransformer();
 
             // Act
@@ -154,7 +154,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act and Assert
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<NotSupportedException>();
+            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
         }
     }
 }

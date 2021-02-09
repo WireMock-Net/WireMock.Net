@@ -7,11 +7,6 @@ namespace WireMock.Transformers.Handlebars
 {
     internal class HandlebarsContextFactory : ITransformerContextFactory
     {
-        private static readonly HandlebarsConfiguration HandlebarsConfiguration = new HandlebarsConfiguration
-        {
-            UnresolvedBindingFormatter = "{0}"
-        };
-
         private readonly IFileSystemHandler _fileSystemHandler;
         private readonly Action<IHandlebars, IFileSystemHandler> _action;
 
@@ -23,7 +18,7 @@ namespace WireMock.Transformers.Handlebars
 
         public ITransformerContext Create()
         {
-            var handlebars = HandlebarsDotNet.Handlebars.Create(HandlebarsConfiguration);
+            var handlebars = HandlebarsDotNet.Handlebars.Create();
 
             WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
 

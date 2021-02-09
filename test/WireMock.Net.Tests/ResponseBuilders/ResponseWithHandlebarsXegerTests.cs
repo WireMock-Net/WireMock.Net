@@ -34,8 +34,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    Number = "{{Xeger \"[1-9]{1}\\d{3}\"}}",
-                    Postcode = "{{Xeger \"[1-9][0-9]{3}[A-Z]{2}\"}}"
+                    Number = "{{Xeger.Generate \"[1-9]{1}\\d{3}\"}}",
+                    Postcode = "{{Xeger.Generate \"[1-9][0-9]{3}[A-Z]{2}\"}}"
                 })
                 .WithTransformer();
 
@@ -57,8 +57,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    Number = "{{#Xeger \"[1-9]{1}\\d{3}\"}}{{this}}{{/Xeger}}",
-                    Postcode = "{{#Xeger \"[1-9][0-9]{3}[A-Z]{2}\"}}{{this}}{{/Xeger}}"
+                    Number = "{{#Xeger.Generate \"[1-9]{1}\\d{3}\"}}{{this}}{{/Xeger.Generate}}",
+                    Postcode = "{{#Xeger.Generate \"[1-9][0-9]{3}[A-Z]{2}\"}}{{this}}{{/Xeger.Generate}}"
                 })
                 .WithTransformer();
 
