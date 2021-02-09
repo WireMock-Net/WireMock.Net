@@ -16,8 +16,6 @@ namespace WireMock.Transformers.Handlebars
             // Register https://github.com/StefH/Handlebars.Net.Helpers
             HandlebarsHelpers.Register(handlebarsContext, o =>
             {
-                // o.UseCategoryPrefix = false;
-
                 o.CustomHelperPaths = new string[]
                 {
                     Directory.GetCurrentDirectory()
