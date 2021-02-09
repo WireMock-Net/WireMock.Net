@@ -1,3 +1,8 @@
+# 1.4.4 (09 February 2021)
+- [#581](https://github.com/WireMock-Net/WireMock.Net/pull/581) - Use new Handlebars.Net.Helpers [feature] contributed by [StefH](https://github.com/StefH)
+- [#582](https://github.com/WireMock-Net/WireMock.Net/pull/582) - Add Xamarin UI tests [feature] contributed by [StefH](https://github.com/StefH)
+- [#568](https://github.com/WireMock-Net/WireMock.Net/issues/568) - [Question] Dates in response templates [feature]
+
 # 1.4.3 (05 February 2021)
 - [#570](https://github.com/WireMock-Net/WireMock.Net/pull/570) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.StandAlone.NETCoreApp [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#571](https://github.com/WireMock-Net/WireMock.Net/pull/571) - Bump log4net from 2.0.8 to 2.0.10 in /examples/WireMock.Net.Console.NETCoreApp2 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
