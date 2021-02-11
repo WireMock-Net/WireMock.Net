@@ -154,7 +154,13 @@ namespace WireMock.Owin.Mappers
         private static void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
         {
             // Force setting the Date header (#577)
-            AppendResponseHeader(response, HttpKnownHeaderNames.Date, new[] { string.Format(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, DateTime.Now) });
+            AppendResponseHeader(
+                response,
+                HttpKnownHeaderNames.Date,
+                new[]
+                {
+                    DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture)
+                });
 
             // Set other headers
             foreach (var item in responseMessage.Headers)
