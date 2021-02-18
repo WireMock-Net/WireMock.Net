@@ -167,12 +167,28 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(bodyFactory, nameof(bodyFactory));
 
-            return WithCallbackInternal(false, req => new ResponseMessage
+            return WithCallbackInternal(true, req => new ResponseMessage
             {
                 BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
                     BodyAsString = bodyFactory(req),
+                    Encoding = encoding ?? Encoding.UTF8
+                }
+            });
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, Task{string}}, string, Encoding)"/>
+        public IResponseBuilder WithBody(Func<RequestMessage, Task<string>> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        {
+            Check.NotNull(bodyFactory, nameof(bodyFactory));
+
+            return WithCallbackInternal(true, async req => new ResponseMessage
+            {
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = await bodyFactory(req),
                     Encoding = encoding ?? Encoding.UTF8
                 }
             });
@@ -356,7 +372,7 @@ namespace WireMock.ResponseBuilders
             }
 
             ResponseMessage responseMessage;
-            if (Callback == null && CallbackAsync == null)
+            if (!WithCallbackUsed)
             {
                 responseMessage = ResponseMessage;
             }
@@ -371,16 +387,16 @@ namespace WireMock.ResponseBuilders
                     responseMessage = await CallbackAsync(requestMessage);
                 }
 
-                if (!WithCallbackUsed)
+                // Copy StatusCode from ResponseMessage (if defined)
+                if (ResponseMessage.StatusCode != null)
                 {
-                    // Copy StatusCode from ResponseMessage
                     responseMessage.StatusCode = ResponseMessage.StatusCode;
+                }
 
-                    // Copy Headers from ResponseMessage (if defined)
-                    if (ResponseMessage.Headers != null)
-                    {
-                        responseMessage.Headers = ResponseMessage.Headers;
-                    }
+                // Copy Headers from ResponseMessage (if defined)
+                if (ResponseMessage.Headers != null)
+                {
+                    responseMessage.Headers = ResponseMessage.Headers;
                 }
             }
 
