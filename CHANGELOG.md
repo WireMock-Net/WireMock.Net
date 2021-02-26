@@ -1,3 +1,7 @@
+# 1.4.6 (26 February 2021)
+- [#587](https://github.com/WireMock-Net/WireMock.Net/pull/587) - Fix WithCallback logic when using other fluent builder statements [bug] contributed by [StefH](https://github.com/StefH)
+- [#569](https://github.com/WireMock-Net/WireMock.Net/issues/569) - WithCallback circumvent the rest of the builder [bug]
+
 # 1.4.5 (11 February 2021)
 - [#585](https://github.com/WireMock-Net/WireMock.Net/pull/585) - Fix response date header [bug] contributed by [wolf8196](https://github.com/wolf8196)
 
