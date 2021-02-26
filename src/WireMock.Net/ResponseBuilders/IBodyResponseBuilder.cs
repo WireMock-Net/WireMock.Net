@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WireMock.ResponseBuilders
 {
@@ -26,6 +27,15 @@ namespace WireMock.ResponseBuilders
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithBody([NotNull] Func<RequestMessage, string> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
+
+        /// <summary>
+        /// WithBody : Create a ... response based on a callback function.
+        /// </summary>
+        /// <param name="bodyFactory">The async delegate to build the body.</param>
+        /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
+        /// <param name="encoding">The body encoding.</param>
+        /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+        IResponseBuilder WithBody([NotNull] Func<RequestMessage, Task<string>> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
 
         /// <summary>
         /// WithBody : Create a ... response based on a bytearray.

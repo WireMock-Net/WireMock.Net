@@ -218,6 +218,35 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
+        public async Task Response_ProvideResponse_WithBody_FuncAsync()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost/test"), "GET", ClientIp);
+
+            var response = Response.Create()
+                .WithStatusCode(500)
+                .WithHeader("H1", "X1")
+                .WithHeader("H2", "X2")
+                .WithBody(async req =>
+                {
+                    await Task.Delay(1);
+                    return $"path: {req.Path}";
+                });
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+
+            // Assert
+            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("path: /test");
+            Check.That(responseMessage.BodyData.BodyAsBytes).IsNull();
+            Check.That(responseMessage.BodyData.BodyAsJson).IsNull();
+            Check.That(responseMessage.BodyData.Encoding.CodePage).Equals(Encoding.UTF8.CodePage);
+            Check.That(responseMessage.StatusCode).IsEqualTo(500);
+            Check.That(responseMessage.Headers["H1"].ToString()).IsEqualTo("X1");
+            Check.That(responseMessage.Headers["H2"].ToString()).IsEqualTo("X2");
+        }
+
+        [Fact]
         public async Task Response_ProvideResponse_WithJsonBodyAndTransform_Func()
         {
             // Assign

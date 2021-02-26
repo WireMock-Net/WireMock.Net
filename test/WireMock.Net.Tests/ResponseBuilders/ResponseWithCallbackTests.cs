@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using WireMock.Handlers;
@@ -77,6 +79,38 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assert
             responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
             responseMessage.StatusCode.Should().Be(302);
+        }
+
+        [Fact]
+        public async Task Response_WithCallback_And_WithStatusCode_And_WithHeader()
+        {
+            // Assign
+            var header = "X-UserId";
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+            var response = Response.Create()
+                .WithCallback(request => new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        DetectedBodyType = BodyType.String,
+                        BodyAsString = request.Path + "Bar"
+                    },
+                    StatusCode = HttpStatusCode.NotFound,
+                    Headers = new Dictionary<string, WireMockList<string>>
+                    {
+                        { header, new WireMockList<string>("NA") }
+                    }
+                })
+                .WithStatusCode(HttpStatusCode.Accepted)
+                .WithHeader(header, "Stef");
+
+            // Act
+            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+
+            // Assert
+            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.Accepted);
+            responseMessage.Headers[header].Should().ContainSingle("Stef");
         }
 
         [Fact]
