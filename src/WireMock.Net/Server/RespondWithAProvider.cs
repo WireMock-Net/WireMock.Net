@@ -1,7 +1,9 @@
 ﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -26,6 +28,8 @@ namespace WireMock.Server
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
 
+        public IWebhook Webhook { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
         /// </summary>
@@ -47,7 +51,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhook), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -141,9 +145,10 @@ namespace WireMock.Server
             return WillSetStateTo(state.ToString(), times);
         }
 
-        public IRespondWithAProvider WithWebhook()
+        public IRespondWithAProvider WithWebhook(IWebhook webhook)
         {
-            throw new NotImplementedException();
+            Webhook = webhook;
+            return this;
         }
     }
 }

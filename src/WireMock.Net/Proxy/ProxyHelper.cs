@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HandlebarsDotNet.Helpers.Validation;
 using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Matchers;
@@ -106,7 +105,7 @@ namespace WireMock.Proxy
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null);
         }
     }
 }

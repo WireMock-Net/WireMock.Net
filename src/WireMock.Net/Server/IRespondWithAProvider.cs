@@ -1,4 +1,6 @@
 ﻿using System;
+using WireMock.Admin.Mappings;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 
 namespace WireMock.Server
@@ -98,6 +100,6 @@ namespace WireMock.Server
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WillSetStateTo(int state, int? times = 1);
 
-        IRespondWithAProvider WithWebhook();
+        IRespondWithAProvider WithWebhook(IWebhook webhook);
     }
 }

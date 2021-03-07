@@ -16,6 +16,7 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -470,6 +471,11 @@ namespace WireMock.Server
                 respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
             }
 
+            if (mappingModel.Webhook?.Request != null)
+            {
+                respondProvider = respondProvider.WithWebhook(Map(mappingModel.Webhook));
+            }
+
             respondProvider.RespondWith(responseBuilder);
 
             return respondProvider.Guid;
@@ -760,6 +766,31 @@ namespace WireMock.Server
             }
 
             return requestBuilder;
+        }
+
+        private IWebhook Map(WebhookModel model)
+        {
+            var webhook =  new Webhook
+            {
+                Request = new WebhookRequest
+                {
+                    Url = model.Request.Url,
+                    Method = model.Request.Method,
+                    Headers = model.Request.Headers != null ? model.Request.Headers.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) : null,
+                    UseTransformer = model.Request.UseTransformer                    
+                }
+            };
+
+            if (model.Request.UseTransformer == true)
+            {
+                if (!Enum.TryParse<TransformerType>(model.Request.TransformerType, out var transformerType))
+                {
+                    transformerType = TransformerType.Handlebars;
+                }
+                webhook.Request.TransformerType = transformerType;
+            }
+
+            return webhook;
         }
 
         private IResponseBuilder InitResponseBuilder(ResponseModel responseModel)

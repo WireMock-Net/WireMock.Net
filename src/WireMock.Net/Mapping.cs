@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.ResponseProviders;
@@ -83,7 +84,8 @@ namespace WireMock
             [CanBeNull] string scenario,
             [CanBeNull] string executionConditionState,
             [CanBeNull] string nextState,
-            [CanBeNull] int? stateTimes)
+            [CanBeNull] int? stateTimes,
+            [CanBeNull] IWebhook webhook)
         {
             Guid = guid;
             Title = title;
@@ -96,6 +98,7 @@ namespace WireMock
             ExecutionConditionState = executionConditionState;
             NextState = nextState;
             StateTimes = stateTimes;
+            Webhook = webhook;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
