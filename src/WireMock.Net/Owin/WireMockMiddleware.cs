@@ -9,6 +9,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
+using WireMock.Proxy;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -152,6 +153,11 @@ namespace WireMock.Owin
                 if (targetMapping.Scenario != null)
                 {
                     UpdateScenarioState(targetMapping);
+                }
+
+                if (targetMapping.Webhook != null)
+                {
+                    // new ProxyHelper(null).SendAsync()
                 }
             }
             catch (Exception ex)

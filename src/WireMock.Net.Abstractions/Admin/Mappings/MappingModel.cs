@@ -52,5 +52,10 @@ namespace WireMock.Admin.Mappings
         /// Saves this mapping as a static mapping file.
         /// </summary>
         public bool? SaveToFile { get; set; }
+
+        /// <summary>
+        /// The Webhook.
+        /// </summary>
+        public WebhookModel Webhook { get; set; }
     }
 }

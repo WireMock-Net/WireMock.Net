@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -53,6 +54,9 @@ namespace WireMock
 
         /// <inheritdoc cref="IMapping.LogMapping" />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
+
+        /// <inheritdoc cref="IMapping.Webhook" />
+        public IWebhook Webhook { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.

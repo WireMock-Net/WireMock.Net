@@ -2,6 +2,7 @@
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -84,7 +85,8 @@ namespace WireMock.Serialization
                 Response = new ResponseModel
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
-                }
+                },
+                Webhook = MapWebhook(mapping.Webhook)
             };
 
             if (bodyMatcher?.Matchers != null)
@@ -131,11 +133,8 @@ namespace WireMock.Serialization
                     mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
                 }
 
-                if (response.UseTransformer)
-                {
-                    mappingModel.Response.UseTransformer = response.UseTransformer;
-                    mappingModel.Response.TransformerType = response.TransformerType.ToString();
-                }
+                mappingModel.Response.UseTransformer = response.UseTransformer;
+                mappingModel.Response.TransformerType = mappingModel.Response.UseTransformer == true ? MapTransformerType(response.TransformerType) : null;
 
                 if (response.UseTransformerForBodyAsFile)
                 {
@@ -190,6 +189,26 @@ namespace WireMock.Serialization
             }
 
             return mappingModel;
+        }
+
+        private static WebhookModel MapWebhook(IWebhook webhook)
+        {
+            return webhook?.Request == null ? null : new WebhookModel
+            {
+                Request = new WebhookRequestModel
+                {
+                    Url = webhook.Request.Url,
+                    Method = webhook.Request.Method,
+                    Headers = webhook.Request.Headers != null ? webhook.Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()) : null,
+                    UseTransformer = webhook.Request.UseTransformer,
+                    TransformerType = webhook.Request.UseTransformer == true ? MapTransformerType(webhook.Request.TransformerType) : null
+                }
+            };
+        }
+
+        private static string MapTransformerType(TransformerType? transformerType)
+        {
+            return transformerType?.ToString();
         }
 
         private static WebProxyModel MapWebProxy(IWebProxySettings settings)

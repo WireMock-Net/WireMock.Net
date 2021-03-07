@@ -140,5 +140,10 @@ namespace WireMock.Server
         {
             return WillSetStateTo(state.ToString(), times);
         }
+
+        public IRespondWithAProvider WithWebhook()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
