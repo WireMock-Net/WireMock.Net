@@ -9,7 +9,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
-using WireMock.Proxy;
+using System.Net.Http;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -31,6 +31,7 @@ namespace WireMock.Owin
         private readonly IOwinRequestMapper _requestMapper;
         private readonly IOwinResponseMapper _responseMapper;
         private readonly IMappingMatcher _mappingMatcher;
+        private readonly HttpClient _httpClientForWebhook;
 
 #if !USE_ASPNETCORE
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
@@ -155,9 +156,9 @@ namespace WireMock.Owin
                     UpdateScenarioState(targetMapping);
                 }
 
-                if (targetMapping.Webhook != null)
+                if (!targetMapping.IsAdminInterface && targetMapping.Webhook != null)
                 {
-                    // new ProxyHelper(null).SendAsync()
+                    await SendToWebhookAsync(targetMapping).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -188,6 +189,21 @@ namespace WireMock.Owin
             }
 
             await CompletedTask;
+        }
+
+        private async Task SendToWebhookAsync(IMapping mapping)
+        {
+            var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.ProxyAndRecordSettings);
+            var webhookSender = new WebhookSender();
+
+            try
+            {
+                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _options.Logger.Error("Sending message to Webhook Mapping '{mapping.Guid}' failed. Exception: {ex}", mapping.Guid, ex);
+            }
         }
 
         private void UpdateScenarioState(IMapping mapping)

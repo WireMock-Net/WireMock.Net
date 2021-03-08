@@ -5,7 +5,7 @@ namespace WireMock.Settings
     /// <summary>
     /// ProxyAndRecordSettings
     /// </summary>
-    public class ProxyAndRecordSettings : IProxyAndRecordSettings
+    public class ProxyAndRecordSettings : HttpClientSettings, IProxyAndRecordSettings
     {
         /// <summary>
         /// The URL to proxy.

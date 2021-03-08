@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using WireMock.Admin.Mappings;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -8,9 +7,9 @@ namespace WireMock.Models
     public interface IWebhookRequest
     {
         /// <summary>
-        /// Gets or sets the Url. (Can be a string or a UrlModel)
+        /// Gets or sets the Url.
         /// </summary>
-        object Url { get; set; }
+        string Url { get; set; }
 
         /// <summary>
         /// The method

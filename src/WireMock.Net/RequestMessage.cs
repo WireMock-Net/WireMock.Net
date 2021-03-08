@@ -101,7 +101,7 @@ namespace WireMock
         /// <param name="bodyData">The BodyData.</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] UrlDetails urlDetails, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] BodyData bodyData = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage([NotNull] UrlDetails urlDetails, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] IBodyData bodyData = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
             Check.NotNull(urlDetails, nameof(urlDetails));
             Check.NotNull(method, nameof(method));

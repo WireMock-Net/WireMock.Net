@@ -473,7 +473,7 @@ namespace WireMock.Server
 
             if (mappingModel.Webhook?.Request != null)
             {
-                respondProvider = respondProvider.WithWebhook(Map(mappingModel.Webhook));
+                respondProvider = respondProvider.WithWebhook(MapAndInitWebhook(mappingModel.Webhook));
             }
 
             respondProvider.RespondWith(responseBuilder);
@@ -768,15 +768,15 @@ namespace WireMock.Server
             return requestBuilder;
         }
 
-        private IWebhook Map(WebhookModel model)
+        private IWebhook MapAndInitWebhook(WebhookModel model)
         {
             var webhook =  new Webhook
             {
                 Request = new WebhookRequest
                 {
-                    Url = model.Request.Url,
+                    Url = model.Request.Url as string,
                     Method = model.Request.Method,
-                    Headers = model.Request.Headers != null ? model.Request.Headers.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) : null,
+                    Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)),
                     UseTransformer = model.Request.UseTransformer                    
                 }
             };
