@@ -10,6 +10,7 @@ using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
 using System.Net.Http;
+using WireMock.Settings;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -193,7 +194,10 @@ namespace WireMock.Owin
 
         private async Task SendToWebhookAsync(IMapping mapping)
         {
-            var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.ProxyAndRecordSettings);
+            var httpClientSettings = new HttpClientSettings
+            {
+            };
+            var httpClientForWebhook = HttpClientBuilder.Build(httpClientSettings);
             var webhookSender = new WebhookSender();
 
             try
