@@ -473,7 +473,7 @@ namespace WireMock.Server
 
             if (mappingModel.Webhook?.Request != null)
             {
-                respondProvider = respondProvider.WithWebhook(MapAndInitWebhook(mappingModel.Webhook));
+                respondProvider = respondProvider.WithWebhook(MapWebhook(mappingModel.Webhook));
             }
 
             respondProvider.RespondWith(responseBuilder);
@@ -768,26 +768,41 @@ namespace WireMock.Server
             return requestBuilder;
         }
 
-        private IWebhook MapAndInitWebhook(WebhookModel model)
+        private IWebhook MapWebhook(WebhookModel model)
         {
-            var webhook =  new Webhook
+            var webhook = new Webhook
             {
                 Request = new WebhookRequest
                 {
-                    Url = model.Request.Url as string,
+                    Url = model.Request.Url,
                     Method = model.Request.Method,
-                    Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)),
-                    UseTransformer = model.Request.UseTransformer                    
+                    Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) ?? new Dictionary<string, WireMockList<string>>()
                 }
             };
 
-            if (model.Request.UseTransformer == true)
+            IEnumerable<string> contentTypeHeader = null;
+            if (webhook.Request.Headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)))
             {
-                if (!Enum.TryParse<TransformerType>(model.Request.TransformerType, out var transformerType))
+                contentTypeHeader = webhook.Request.Headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
+            }
+
+            if (model.Request.Body != null)
+            {
+                webhook.Request.BodyData = new BodyData
                 {
-                    transformerType = TransformerType.Handlebars;
-                }
-                webhook.Request.TransformerType = transformerType;
+                    BodyAsString = model.Request.Body,
+                    DetectedBodyType = BodyType.String,
+                    DetectedBodyTypeFromContentType = BodyParser.DetectBodyTypeFromContentType(contentTypeHeader?.FirstOrDefault())
+                };
+            }
+            else if (model.Request.BodyAsJson != null)
+            {
+                webhook.Request.BodyData = new BodyData
+                {
+                    BodyAsJson = model.Request.BodyAsJson,
+                    DetectedBodyType = BodyType.Json,
+                    DetectedBodyTypeFromContentType = BodyParser.DetectBodyTypeFromContentType(contentTypeHeader?.FirstOrDefault())
+                };
             }
 
             return webhook;

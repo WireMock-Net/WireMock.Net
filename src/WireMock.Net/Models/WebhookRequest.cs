@@ -20,11 +20,5 @@ namespace WireMock.Models
 
         /// <inheritdoc cref="IWebhookRequest.BodyData"/>
         public IBodyData BodyData { get; set; }
-
-        /// <inheritdoc cref="IWebhookRequest.UseTransformer"/>
-        public bool? UseTransformer { get; set; }
-
-        /// <inheritdoc cref="IWebhookRequest.TransformerType"/>
-        public TransformerType? TransformerType { get; set; }
     }
 }

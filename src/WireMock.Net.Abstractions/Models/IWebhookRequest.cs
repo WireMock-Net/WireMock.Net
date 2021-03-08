@@ -4,6 +4,9 @@ using WireMock.Util;
 
 namespace WireMock.Models
 {
+    /// <summary>
+    /// IWebhookRequest
+    /// </summary>
     public interface IWebhookRequest
     {
         /// <summary>
@@ -25,15 +28,5 @@ namespace WireMock.Models
         /// Gets or sets the body.
         /// </summary>
         IBodyData BodyData { get; set; }
-
-        /// <summary>
-        /// Use BodyMessage Transformer.
-        /// </summary>
-        bool? UseTransformer { get; set; }
-
-        /// <summary>
-        /// The type of the transformer.
-        /// </summary>
-        TransformerType? TransformerType { get; set; }
     }
 }

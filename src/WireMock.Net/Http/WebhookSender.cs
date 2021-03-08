@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using WireMock.Models;
 using WireMock.Settings;
 using WireMock.Types;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Http

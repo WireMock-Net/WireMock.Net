@@ -196,22 +196,39 @@ namespace WireMock.Serialization
 
         private static WebhookModel MapWebhook(IWebhook webhook)
         {
-            return webhook?.Request == null ? null : new WebhookModel
+            if (webhook?.Request == null)
+            {
+                return null;
+            }
+
+            var model = new WebhookModel
             {
                 Request = new WebhookRequestModel
                 {
                     Url = webhook.Request.Url,
                     Method = webhook.Request.Method,
-                    Headers = webhook.Request.Headers != null ? webhook.Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()) : null,
-                    UseTransformer = webhook.Request.UseTransformer,
-                    TransformerType = webhook.Request.UseTransformer == true ? MapTransformerType(webhook.Request.TransformerType) : null
+                    Headers = webhook.Request.Headers != null ? webhook.Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()) : null
                 }
             };
-        }
 
-        private static string MapTransformerType(TransformerType? transformerType)
-        {
-            return transformerType?.ToString();
+            if (webhook.Request.BodyData != null)
+            {
+                switch (webhook.Request.BodyData.DetectedBodyType)
+                {
+                    case BodyType.String:
+                        model.Request.Body = webhook.Request.BodyData.BodyAsString;
+                        break;
+
+                    case BodyType.Json:
+                        model.Request.BodyAsJson = webhook.Request.BodyData.BodyAsJson;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return model;
         }
 
         private static WebProxyModel MapWebProxy(IWebProxySettings settings)
