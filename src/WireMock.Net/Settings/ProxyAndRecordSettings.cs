@@ -32,13 +32,6 @@ namespace WireMock.Settings
         [PublicAPI]
         public string SaveMappingForStatusCodePattern { get; set; } = "*";
 
-        /// <summary>
-        /// The clientCertificate thumbprint or subject name fragment to use.
-        /// Example thumbprint : "D2DBF135A8D06ACCD0E1FAD9BFB28678DF7A9818". Example subject name: "www.google.com""
-        /// </summary>
-        [PublicAPI]
-        public string ClientX509Certificate2ThumbprintOrSubjectName { get; set; }
-
         /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedHeaders"/>
         [PublicAPI]
         public string[] ExcludedHeaders { get; set; }
@@ -46,13 +39,5 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedCookies"/>
         [PublicAPI]
         public string[] ExcludedCookies { get; set; }
-
-        /// <inheritdoc cref="IProxyAndRecordSettings.WebProxySettings"/>
-        [PublicAPI]
-        public IWebProxySettings WebProxySettings { get; set; }
-
-        /// <inheritdoc cref="IProxyAndRecordSettings.AllowAutoRedirect"/>
-        [PublicAPI]
-        public bool? AllowAutoRedirect { get; set; }
     }
 }

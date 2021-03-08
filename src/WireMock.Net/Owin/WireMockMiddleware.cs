@@ -194,10 +194,7 @@ namespace WireMock.Owin
 
         private async Task SendToWebhookAsync(IMapping mapping)
         {
-            var httpClientSettings = new HttpClientSettings
-            {
-            };
-            var httpClientForWebhook = HttpClientBuilder.Build(httpClientSettings);
+            var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
             var webhookSender = new WebhookSender();
 
             try
