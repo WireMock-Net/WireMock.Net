@@ -133,8 +133,11 @@ namespace WireMock.Serialization
                     mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
                 }
 
-                mappingModel.Response.UseTransformer = response.UseTransformer;
-                mappingModel.Response.TransformerType = mappingModel.Response.UseTransformer == true ? MapTransformerType(response.TransformerType) : null;
+                if (response.UseTransformer)
+                {
+                    mappingModel.Response.UseTransformer = response.UseTransformer;
+                    mappingModel.Response.TransformerType = response.TransformerType.ToString();
+                }
 
                 if (response.UseTransformerForBodyAsFile)
                 {
