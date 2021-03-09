@@ -767,8 +767,6 @@ namespace WireMock.Server
             return requestBuilder;
         }
 
-
-
         private IResponseBuilder InitResponseBuilder(ResponseModel responseModel)
         {
             IResponseBuilder responseBuilder = Response.Create();

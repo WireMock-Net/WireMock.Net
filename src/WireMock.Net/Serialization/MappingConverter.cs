@@ -2,7 +2,6 @@
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -193,8 +192,6 @@ namespace WireMock.Serialization
 
             return mappingModel;
         }
-
-        
 
         private static WebProxyModel MapWebProxy(IWebProxySettings settings)
         {
