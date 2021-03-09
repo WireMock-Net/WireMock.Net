@@ -75,7 +75,8 @@ namespace WireMock.Http
                 request.Method,
                 ClientIp,
                 bodyData,
-                headers.ToDictionary(x => x.Key, x => x.Value.ToArray()))
+                headers?.ToDictionary(x => x.Key, x => x.Value.ToArray())
+            )
             {
                 DateTime = DateTime.UtcNow
             };
