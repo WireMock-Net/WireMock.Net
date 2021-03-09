@@ -16,7 +16,6 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -473,7 +472,7 @@ namespace WireMock.Server
 
             if (mappingModel.Webhook?.Request != null)
             {
-                respondProvider = respondProvider.WithWebhook(MapWebhook(mappingModel.Webhook));
+                respondProvider = respondProvider.WithWebhook(WebhookMapper.Map(mappingModel.Webhook));
             }
 
             respondProvider.RespondWith(responseBuilder);
@@ -768,45 +767,7 @@ namespace WireMock.Server
             return requestBuilder;
         }
 
-        private IWebhook MapWebhook(WebhookModel model)
-        {
-            var webhook = new Webhook
-            {
-                Request = new WebhookRequest
-                {
-                    Url = model.Request.Url,
-                    Method = model.Request.Method,
-                    Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) ?? new Dictionary<string, WireMockList<string>>()
-                }
-            };
 
-            IEnumerable<string> contentTypeHeader = null;
-            if (webhook.Request.Headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)))
-            {
-                contentTypeHeader = webhook.Request.Headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)).Value;
-            }
-
-            if (model.Request.Body != null)
-            {
-                webhook.Request.BodyData = new BodyData
-                {
-                    BodyAsString = model.Request.Body,
-                    DetectedBodyType = BodyType.String,
-                    DetectedBodyTypeFromContentType = BodyParser.DetectBodyTypeFromContentType(contentTypeHeader?.FirstOrDefault())
-                };
-            }
-            else if (model.Request.BodyAsJson != null)
-            {
-                webhook.Request.BodyData = new BodyData
-                {
-                    BodyAsJson = model.Request.BodyAsJson,
-                    DetectedBodyType = BodyType.Json,
-                    DetectedBodyTypeFromContentType = BodyParser.DetectBodyTypeFromContentType(contentTypeHeader?.FirstOrDefault())
-                };
-            }
-
-            return webhook;
-        }
 
         private IResponseBuilder InitResponseBuilder(ResponseModel responseModel)
         {

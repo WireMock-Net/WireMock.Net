@@ -31,5 +31,15 @@ namespace WireMock.Admin.Mappings
         /// Gets or sets the body (as JSON object).
         /// </summary>
         public object BodyAsJson { get; set; }
+
+        /// <summary>
+        /// Use ResponseMessage Transformer.
+        /// </summary>
+        public bool? UseTransformer { get; set; }
+
+        /// <summary>
+        /// Gets the type of the transformer.
+        /// </summary>
+        public string TransformerType { get; set; }
     }
 }

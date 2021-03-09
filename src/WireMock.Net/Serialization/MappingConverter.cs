@@ -86,7 +86,7 @@ namespace WireMock.Serialization
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
                 },
-                Webhook = MapWebhook(mapping.Webhook)
+                Webhook = WebhookMapper.Map(mapping.Webhook)
             };
 
             if (bodyMatcher?.Matchers != null)
@@ -194,42 +194,7 @@ namespace WireMock.Serialization
             return mappingModel;
         }
 
-        private static WebhookModel MapWebhook(IWebhook webhook)
-        {
-            if (webhook?.Request == null)
-            {
-                return null;
-            }
-
-            var model = new WebhookModel
-            {
-                Request = new WebhookRequestModel
-                {
-                    Url = webhook.Request.Url,
-                    Method = webhook.Request.Method,
-                    Headers = webhook.Request.Headers != null ? webhook.Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()) : null
-                }
-            };
-
-            if (webhook.Request.BodyData != null)
-            {
-                switch (webhook.Request.BodyData.DetectedBodyType)
-                {
-                    case BodyType.String:
-                        model.Request.Body = webhook.Request.BodyData.BodyAsString;
-                        break;
-
-                    case BodyType.Json:
-                        model.Request.BodyAsJson = webhook.Request.BodyData.BodyAsJson;
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            return model;
-        }
+        
 
         private static WebProxyModel MapWebProxy(IWebProxySettings settings)
         {

@@ -28,5 +28,15 @@ namespace WireMock.Models
         /// Gets or sets the body.
         /// </summary>
         IBodyData BodyData { get; set; }
+
+        /// <summary>
+        /// Use ResponseMessage Transformer.
+        /// </summary>
+        bool? UseTransformer { get; set; }
+
+        /// <summary>
+        /// The transformer type.
+        /// </summary>
+        TransformerType TransformerType { get; set; }
     }
 }

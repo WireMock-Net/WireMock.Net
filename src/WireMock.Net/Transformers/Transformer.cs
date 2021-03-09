@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
 
 namespace WireMock.Transformers.Handlebars
 {
@@ -16,9 +15,7 @@ namespace WireMock.Transformers.Handlebars
 
         public Transformer([NotNull] ITransformerContextFactory factory)
         {
-            Check.NotNull(factory, nameof(factory));
-
-            _factory = factory;
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile)

@@ -159,7 +159,7 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && targetMapping.Webhook != null)
                 {
-                    await SendToWebhookAsync(targetMapping).ConfigureAwait(false);
+                    await SendToWebhookAsync(targetMapping, request).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -192,18 +192,18 @@ namespace WireMock.Owin
             await CompletedTask;
         }
 
-        private async Task SendToWebhookAsync(IMapping mapping)
+        private async Task SendToWebhookAsync(IMapping mapping, RequestMessage requestMessage)
         {
             var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
-            var webhookSender = new WebhookSender();
+            var webhookSender = new WebhookSender(mapping.Settings);
 
             try
             {
-                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request).ConfigureAwait(false);
+                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request, requestMessage).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _options.Logger.Error("Sending message to Webhook Mapping '{mapping.Guid}' failed. Exception: {ex}", mapping.Guid, ex);
+                _options.Logger.Error($"Sending message to Webhook Mapping '{mapping.Guid}' failed. Exception: {ex}");
             }
         }
 
