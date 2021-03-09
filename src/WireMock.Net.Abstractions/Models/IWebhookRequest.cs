@@ -10,27 +10,27 @@ namespace WireMock.Models
     public interface IWebhookRequest
     {
         /// <summary>
-        /// Gets or sets the Url.
+        /// The Webhook Url.
         /// </summary>
         string Url { get; set; }
 
         /// <summary>
-        /// The method
+        /// The method to use.
         /// </summary>
         string Method { get; set; }
 
         /// <summary>
-        /// Gets the headers.
+        /// The Headers to send.
         /// </summary>
         IDictionary<string, WireMockList<string>> Headers { get; }
 
         /// <summary>
-        /// Gets or sets the body.
+        /// The body to send.
         /// </summary>
         IBodyData BodyData { get; set; }
 
         /// <summary>
-        /// Use ResponseMessage Transformer.
+        /// Use Transformer.
         /// </summary>
         bool? UseTransformer { get; set; }
 

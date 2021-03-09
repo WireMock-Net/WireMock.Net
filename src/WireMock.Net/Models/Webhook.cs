@@ -1,4 +1,8 @@
-﻿namespace WireMock.Models
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+using WireMock.Types;
+
+namespace WireMock.Models
 {
     /// <summary>
     /// Webhook

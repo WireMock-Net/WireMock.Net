@@ -1,7 +1,9 @@
 ﻿using System;
-using WireMock.Admin.Mappings;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using WireMock.Models;
 using WireMock.ResponseProviders;
+using WireMock.Types;
 
 namespace WireMock.Server
 {
@@ -101,10 +103,48 @@ namespace WireMock.Server
         IRespondWithAProvider WillSetStateTo(int state, int? times = 1);
 
         /// <summary>
-        /// Add a Wehbook to exceute after the response has been generated.
+        /// Add a Webbook to call after the response has been generated.
         /// </summary>
         /// <param name="webhook">The Webhook</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WithWebhook(IWebhook webhook);
+
+        /// <summary>
+        /// Add a Webbook to call after the response has been generated.
+        /// </summary>
+        /// <param name="url">The Webhook Url</param>
+        /// <param name="method">The method to use. [optional]</param>
+        /// <param name="headers">The Headers to send. [optional]</param>
+        /// <param name="body">The body (as string) to send. [optional]</param>
+        /// <param name="useTransformer">Use Transformer. [optional]</param>
+        /// <param name="transformerType">The transformer type. [optional]</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithWebhook(
+            [NotNull] string url,
+            [CanBeNull] string method = "post",
+            [CanBeNull] IDictionary<string, WireMockList<string>> headers = null,
+            [CanBeNull] string body = null,
+            bool useTransformer = true,
+            TransformerType transformerType = TransformerType.Handlebars
+        );
+
+        /// <summary>
+        /// Add a Webbook to call after the response has been generated.
+        /// </summary>
+        /// <param name="url">The Webhook Url</param>
+        /// <param name="method">The method to use. [optional]</param>
+        /// <param name="headers">The Headers to send. [optional]</param>
+        /// <param name="body">The body (as json) to send. [optional]</param>
+        /// <param name="useTransformer">Use Transformer. [optional]</param>
+        /// <param name="transformerType">The transformer type. [optional]</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithWebhook(
+            [NotNull] string url,
+            [CanBeNull] string method = "post",
+            [CanBeNull] IDictionary<string, WireMockList<string>> headers = null,
+            [CanBeNull] object body = null,
+            bool useTransformer = true,
+            TransformerType transformerType = TransformerType.Handlebars
+        );
     }
 }
