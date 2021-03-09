@@ -9,7 +9,6 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
-using System.Net.Http;
 using WireMock.Settings;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
@@ -158,7 +157,7 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && targetMapping.Webhook != null)
                 {
-                    await SendToWebhookAsync(targetMapping, request).ConfigureAwait(false);
+                    await SendToWebhookAsync(targetMapping, request, response).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -191,14 +190,14 @@ namespace WireMock.Owin
             await CompletedTask;
         }
 
-        private async Task SendToWebhookAsync(IMapping mapping, RequestMessage requestMessage)
+        private async Task SendToWebhookAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
         {
             var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
             var webhookSender = new WebhookSender(mapping.Settings);
 
             try
             {
-                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request, requestMessage).ConfigureAwait(false);
+                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request, request, response).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

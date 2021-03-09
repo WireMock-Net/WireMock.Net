@@ -26,10 +26,12 @@ namespace WireMock.Http
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] RequestMessage originalRequestMessage)
+        public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] RequestMessage originalRequestMessage, [NotNull] ResponseMessage originalResponseMessage)
         {
             Check.NotNull(client, nameof(client));
             Check.NotNull(request, nameof(request));
+            Check.NotNull(originalRequestMessage, nameof(originalRequestMessage));
+            Check.NotNull(originalResponseMessage, nameof(originalResponseMessage));
 
             IBodyData bodyData;
             IDictionary<string, WireMockList<string>> headers;
@@ -53,15 +55,7 @@ namespace WireMock.Http
                         throw new NotImplementedException($"TransformerType '{request.TransformerType}' is not supported.");
                 }
 
-                var responseMessage = new ResponseMessage
-                {
-                    BodyData = request.BodyData,
-                    Headers = request.Headers
-                };
-
-                var transformedResponseMessage = responseMessageTransformer.Transform(originalRequestMessage, responseMessage, false);
-                bodyData = transformedResponseMessage.BodyData;
-                headers = transformedResponseMessage.Headers;
+                (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers);
             }
             else
             {

@@ -18,47 +18,50 @@ namespace WireMock.Transformers.Handlebars
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
+        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers)
+        {
+            var transformerContext = _factory.Create();
+
+            var model = new
+            {
+                request = originalRequestMessage,
+                response = originalResponseMessage
+            };
+
+            IBodyData newBodyData = null;
+            if (bodyData?.DetectedBodyType != null)
+            {
+                newBodyData = TransformBodyData(transformerContext, model, bodyData, false);
+            }
+
+            return (newBodyData, TransformHeaders(transformerContext, model, headers));
+        }
+
         public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile)
         {
-            var handlebarsContext = _factory.Create();
+            var transformerContext = _factory.Create();
 
             var responseMessage = new ResponseMessage();
 
-            var model = new { request = requestMessage };
-
-            switch (original.BodyData?.DetectedBodyType)
+            var model = new
             {
-                case BodyType.Json:
-                    TransformBodyAsJson(handlebarsContext, model, original, responseMessage);
-                    break;
+                request = requestMessage
+            };
 
-                case BodyType.File:
-                    TransformBodyAsFile(handlebarsContext, model, original, responseMessage, useTransformerForBodyAsFile);
-                    break;
+            if (original.BodyData?.DetectedBodyType != null)
+            {
+                responseMessage.BodyData = TransformBodyData(transformerContext, model, original.BodyData, useTransformerForBodyAsFile);
 
-                case BodyType.String:
+                if (original.BodyData.DetectedBodyType == BodyType.String)
+                {
                     responseMessage.BodyOriginal = original.BodyData.BodyAsString;
-                    TransformBodyAsString(handlebarsContext, model, original, responseMessage);
-                    break;
+                }
             }
 
             responseMessage.FaultType = original.FaultType;
             responseMessage.FaultPercentage = original.FaultPercentage;
 
-            // Headers
-            if (original.Headers != null)
-            {
-                var newHeaders = new Dictionary<string, WireMockList<string>>();
-                foreach (var header in original.Headers)
-                {
-                    var headerKey = handlebarsContext.ParseAndRender(header.Key, model);
-                    var templateHeaderValues = header.Value.Select(text => handlebarsContext.ParseAndRender(text, model)).ToArray();
-
-                    newHeaders.Add(headerKey, new WireMockList<string>(templateHeaderValues));
-                }
-
-                responseMessage.Headers = newHeaders;
-            }
+            responseMessage.Headers = TransformHeaders(transformerContext, model, original.Headers);
 
             switch (original.StatusCode)
             {
@@ -67,17 +70,54 @@ namespace WireMock.Transformers.Handlebars
                     break;
 
                 case string statusCodeAsString:
-                    responseMessage.StatusCode = handlebarsContext.ParseAndRender(statusCodeAsString, model);
+                    responseMessage.StatusCode = transformerContext.ParseAndRender(statusCodeAsString, model);
                     break;
             }
 
             return responseMessage;
         }
 
-        private static void TransformBodyAsJson(ITransformerContext handlebarsContext, object model, ResponseMessage original, ResponseMessage responseMessage)
+        private static IBodyData TransformBodyData(ITransformerContext transformerContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
+        {
+            switch (original?.DetectedBodyType)
+            {
+                case BodyType.Json:
+                    return TransformBodyAsJson(transformerContext, model, original);
+
+                case BodyType.File:
+                    return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
+
+                case BodyType.String:
+                    return TransformBodyAsString(transformerContext, model, original);
+
+                default:
+                    return null;
+            }
+        }
+
+        private static IDictionary<string, WireMockList<string>> TransformHeaders(ITransformerContext transformerContext, object model, IDictionary<string, WireMockList<string>> original)
+        {
+            if (original == null)
+            {
+                return null;
+            }
+
+            var newHeaders = new Dictionary<string, WireMockList<string>>();
+            foreach (var header in original)
+            {
+                var headerKey = transformerContext.ParseAndRender(header.Key, model);
+                var templateHeaderValues = header.Value.Select(text => transformerContext.ParseAndRender(text, model)).ToArray();
+
+                newHeaders.Add(headerKey, new WireMockList<string>(templateHeaderValues));
+            }
+
+            return newHeaders;
+        }
+
+        private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, object model, IBodyData original)
         {
             JToken jToken;
-            switch (original.BodyData.BodyAsJson)
+            switch (original.BodyAsJson)
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject.DeepClone();
@@ -94,23 +134,23 @@ namespace WireMock.Transformers.Handlebars
                     break;
 
                 default:
-                    jToken = JObject.FromObject(original.BodyData.BodyAsJson);
+                    jToken = JObject.FromObject(original.BodyAsJson);
                     WalkNode(handlebarsContext, jToken, model);
                     break;
             }
 
-            responseMessage.BodyData = new BodyData
+            return new BodyData
             {
-                Encoding = original.BodyData.Encoding,
-                DetectedBodyType = original.BodyData.DetectedBodyType,
-                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                Encoding = original.Encoding,
+                DetectedBodyType = original.DetectedBodyType,
+                DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
                 BodyAsJson = jToken
             };
         }
 
         private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, string stringValue, object model)
         {
-            string transformedString = handlebarsContext.ParseAndRender(stringValue, model) as string;
+            string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
 
             if (!string.Equals(stringValue, transformedString))
             {
@@ -184,27 +224,27 @@ namespace WireMock.Transformers.Handlebars
             node.Replace(value);
         }
 
-        private static void TransformBodyAsString(ITransformerContext handlebarsContext, object model, ResponseMessage original, ResponseMessage responseMessage)
+        private static IBodyData TransformBodyAsString(ITransformerContext handlebarsContext, object model, IBodyData original)
         {
-            responseMessage.BodyData = new BodyData
+            return new BodyData
             {
-                Encoding = original.BodyData.Encoding,
-                DetectedBodyType = original.BodyData.DetectedBodyType,
-                DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
-                BodyAsString = handlebarsContext.ParseAndRender(original.BodyData.BodyAsString, model)
+                Encoding = original.Encoding,
+                DetectedBodyType = original.DetectedBodyType,
+                DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
+                BodyAsString = handlebarsContext.ParseAndRender(original.BodyAsString, model)
             };
         }
 
-        private void TransformBodyAsFile(ITransformerContext handlebarsContext, object model, ResponseMessage original, ResponseMessage responseMessage, bool useTransformerForBodyAsFile)
+        private static IBodyData TransformBodyAsFile(ITransformerContext handlebarsContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
         {
-            string transformedBodyAsFilename = handlebarsContext.ParseAndRender(original.BodyData.BodyAsFile, model);
+            string transformedBodyAsFilename = handlebarsContext.ParseAndRender(original.BodyAsFile, model);
 
             if (!useTransformerForBodyAsFile)
             {
-                responseMessage.BodyData = new BodyData
+                return new BodyData
                 {
-                    DetectedBodyType = original.BodyData.DetectedBodyType,
-                    DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                    DetectedBodyType = original.DetectedBodyType,
+                    DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
                     BodyAsFile = transformedBodyAsFilename
                 };
             }
@@ -212,10 +252,10 @@ namespace WireMock.Transformers.Handlebars
             {
                 string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
 
-                responseMessage.BodyData = new BodyData
+                return new BodyData
                 {
                     DetectedBodyType = BodyType.String,
-                    DetectedBodyTypeFromContentType = original.BodyData.DetectedBodyTypeFromContentType,
+                    DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
                     BodyAsString = handlebarsContext.ParseAndRender(text, model),
                     BodyAsFile = transformedBodyAsFilename
                 };
