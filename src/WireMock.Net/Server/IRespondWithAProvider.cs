@@ -100,6 +100,11 @@ namespace WireMock.Server
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WillSetStateTo(int state, int? times = 1);
 
+        /// <summary>
+        /// Add a Wehbook to exceute after the response has been generated.
+        /// </summary>
+        /// <param name="webhook">The Webhook</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WithWebhook(IWebhook webhook);
     }
 }

@@ -32,7 +32,6 @@ namespace WireMock.Owin
         private readonly IOwinRequestMapper _requestMapper;
         private readonly IOwinResponseMapper _responseMapper;
         private readonly IMappingMatcher _mappingMatcher;
-        private readonly HttpClient _httpClientForWebhook;
 
 #if !USE_ASPNETCORE
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)

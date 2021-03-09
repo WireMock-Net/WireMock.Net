@@ -73,6 +73,7 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
+        /// <param name="webhook">The Webhook. [Optional]</param>
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
