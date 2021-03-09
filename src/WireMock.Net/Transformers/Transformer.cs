@@ -46,18 +46,19 @@ namespace WireMock.Transformers.Handlebars
             responseMessage.FaultPercentage = original.FaultPercentage;
 
             // Headers
-            var newHeaders = new Dictionary<string, WireMockList<string>>();
-            foreach (var header in original.Headers)
+            if (original.Headers != null)
             {
-                var headerKey = handlebarsContext.ParseAndRender(header.Key, model);
-                var templateHeaderValues = header.Value
-                    .Select(text => handlebarsContext.ParseAndRender(text, model))
-                    .ToArray();
+                var newHeaders = new Dictionary<string, WireMockList<string>>();
+                foreach (var header in original.Headers)
+                {
+                    var headerKey = handlebarsContext.ParseAndRender(header.Key, model);
+                    var templateHeaderValues = header.Value.Select(text => handlebarsContext.ParseAndRender(text, model)).ToArray();
 
-                newHeaders.Add(headerKey, new WireMockList<string>(templateHeaderValues));
+                    newHeaders.Add(headerKey, new WireMockList<string>(templateHeaderValues));
+                }
+
+                responseMessage.Headers = newHeaders;
             }
-
-            responseMessage.Headers = newHeaders;
 
             switch (original.StatusCode)
             {

@@ -60,5 +60,38 @@ namespace WireMock.Net.Tests
             server.Dispose();
             serverReceivingTheWebhook.Dispose();
         }
+
+        [Fact]
+        public async Task WireMockServer_WithWebhookArgs_Should_Send_Message_To_Webhook()
+        {
+            // Assign
+            var serverReceivingTheWebhook = WireMockServer.Start();
+            serverReceivingTheWebhook.Given(Request.Create().UsingPost()).RespondWith(Response.Create().WithStatusCode(200));
+
+            // Act
+            var server = WireMockServer.Start();
+            server.Given(Request.Create().UsingPost())
+                .WithWebhook(serverReceivingTheWebhook.Urls[0], "post", null, "OK !", true, TransformerType.Handlebars)
+                .RespondWith(Response.Create().WithBody("a-response"));
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{server.Urls[0]}/TST"),
+                Content = new StringContent("test")
+            };
+
+            // Assert
+            var response = await new HttpClient().SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            content.Should().Be("a-response");
+
+            serverReceivingTheWebhook.LogEntries.Should().HaveCount(1);
+
+            server.Dispose();
+            serverReceivingTheWebhook.Dispose();
+        }
     }
 }

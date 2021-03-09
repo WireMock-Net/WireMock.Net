@@ -1,17 +1,14 @@
 ﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
-using JetBrains.Annotations;
 using System.Collections.Generic;
-using WireMock.Admin.Mappings;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using System.Reflection;
-using WireMock.RequestBuilders;
 
 namespace WireMock.Server
 {
@@ -183,7 +180,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(string,string, IDictionary{string, WireMockList{string}}, object, bool, TransformerType)"/>
+        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, object, bool, TransformerType)"/>
         public IRespondWithAProvider WithWebhook(
             [NotNull] string url,
             [CanBeNull] string method = "post",
@@ -209,10 +206,10 @@ namespace WireMock.Server
 
         private IWebhook InitWebhook(
             string url,
-            string method = "post",
-            IDictionary<string, WireMockList<string>> headers = null,
-            bool useTransformer = true,
-            TransformerType transformerType = TransformerType.Handlebars)
+            string method,
+            IDictionary<string, WireMockList<string>> headers,
+            bool useTransformer,
+            TransformerType transformerType)
         {
             return new Webhook
             {
