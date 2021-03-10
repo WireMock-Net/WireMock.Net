@@ -99,7 +99,7 @@ namespace WireMock.Transformers.Handlebars
         {
             if (original == null)
             {
-                return null;
+                return new Dictionary<string, WireMockList<string>>();
             }
 
             var newHeaders = new Dictionary<string, WireMockList<string>>();
