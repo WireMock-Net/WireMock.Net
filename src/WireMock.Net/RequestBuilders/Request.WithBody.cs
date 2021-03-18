@@ -3,6 +3,7 @@
 using System;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.RequestBuilders
@@ -65,6 +66,15 @@ namespace WireMock.RequestBuilders
 
         /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{object, bool})"/>
         public IRequestBuilder WithBody(Func<object, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+
+            _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+            return this;
+        }
+
+        /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{IBodyData, bool})"/>
+        public IRequestBuilder WithBody(Func<IBodyData, bool> func)
         {
             Check.NotNull(func, nameof(func));
 
