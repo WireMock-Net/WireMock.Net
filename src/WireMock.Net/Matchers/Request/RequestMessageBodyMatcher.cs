@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Linq;
 using WireMock.Types;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -25,6 +26,11 @@ namespace WireMock.Matchers.Request
         /// The body data function for json
         /// </summary>
         public Func<object, bool> JsonFunc { get; }
+
+        /// <summary>
+        /// The body data function for BodyData
+        /// </summary>
+        public Func<IBodyData, bool> BodyDataFunc { get; }
 
         /// <summary>
         /// The matchers.
@@ -86,6 +92,16 @@ namespace WireMock.Matchers.Request
         {
             Check.NotNull(func, nameof(func));
             JsonFunc = func;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        public RequestMessageBodyMatcher([NotNull] Func<IBodyData, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            BodyDataFunc = func;
         }
 
         /// <summary>
@@ -156,6 +172,11 @@ namespace WireMock.Matchers.Request
             if (DataFunc != null)
             {
                 return MatchScores.ToScore(DataFunc(requestMessage?.BodyData?.BodyAsBytes));
+            }
+
+            if (BodyDataFunc != null)
+            {
+                return MatchScores.ToScore(BodyDataFunc(requestMessage?.BodyData));
             }
 
             return MatchScores.Mismatch;
