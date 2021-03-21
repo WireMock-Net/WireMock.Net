@@ -24,7 +24,7 @@ namespace WireMock.Owin
             {
                 if (urlDetail.IsHttps)
                 {
-                    kestrelOptions.Listen(System.Net.IPAddress.Any, urlDetail.Port, listenOptions =>
+                    kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
                     {
                         if (wireMockMiddlewareOptions.CustomCertificateDefined)
                         {
@@ -45,7 +45,7 @@ namespace WireMock.Owin
                 }
                 else
                 {
-                    kestrelOptions.Listen(System.Net.IPAddress.Any, urlDetail.Port);
+                    kestrelOptions.ListenAnyIP(urlDetail.Port);
                 }
             }
         }
