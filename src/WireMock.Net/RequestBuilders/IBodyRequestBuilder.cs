@@ -2,6 +2,7 @@
 using System;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Util;
 
 namespace WireMock.RequestBuilders
 {
@@ -63,10 +64,17 @@ namespace WireMock.RequestBuilders
         IRequestBuilder WithBody([NotNull] Func<byte[], bool> func);
 
         /// <summary>
-        /// WithBody: func (object)
+        /// WithBody: func (json object)
         /// </summary>
         /// <param name="func">The function.</param>
         /// <returns>The <see cref="IRequestBuilder"/>.</returns>
         IRequestBuilder WithBody([NotNull] Func<object, bool> func);
+
+        /// <summary>
+        /// WithBody: func (BodyData object)
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+        IRequestBuilder WithBody([NotNull] Func<IBodyData, bool> func);
     }
 }

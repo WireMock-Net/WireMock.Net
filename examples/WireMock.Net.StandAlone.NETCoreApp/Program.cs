@@ -10,6 +10,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 
 namespace WireMock.Net.StandAlone.NETCoreApp
 {
@@ -33,6 +34,14 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 
             _server = WireMockServer.Start(settings);
+
+            _server.Given(Request.Create().WithPath("/api/sap")
+                .UsingPost()
+                .WithBody((IBodyData xmlData) => {
+                    //xmlData is always null
+                    return true;
+                }))
+                .RespondWith(Response.Create().WithStatusCode(System.Net.HttpStatusCode.OK));
 
             _server
                 .Given(Request.Create()
