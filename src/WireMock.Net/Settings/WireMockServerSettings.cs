@@ -129,5 +129,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.CustomCertificateDefined"/>
         [PublicAPI]
         public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
+
+        /// <inheritdoc cref="IWireMockServerSettings.WebhookSettings"/>
+        [PublicAPI]
+        public IWebhookSettings WebhookSettings { get; set; }
     }
 }

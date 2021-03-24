@@ -84,7 +84,8 @@ namespace WireMock.Serialization
                 Response = new ResponseModel
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
-                }
+                },
+                Webhook = WebhookMapper.Map(mapping.Webhook)
             };
 
             if (bodyMatcher?.Matchers != null)

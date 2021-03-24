@@ -7,7 +7,7 @@ namespace WireMock.Http
 {
     internal static class HttpClientBuilder
     {
-        public static HttpClient Build(IProxyAndRecordSettings settings)
+        public static HttpClient Build(IHttpClientSettings settings)
         {
 #if NETSTANDARD || NETCOREAPP3_1 || NET5_0
             var handler = new HttpClientHandler

@@ -470,6 +470,11 @@ namespace WireMock.Server
                 respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
             }
 
+            if (mappingModel.Webhook?.Request != null)
+            {
+                respondProvider = respondProvider.WithWebhook(WebhookMapper.Map(mappingModel.Webhook));
+            }
+
             respondProvider.RespondWith(responseBuilder);
 
             return respondProvider.Guid;

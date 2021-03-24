@@ -186,5 +186,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         bool CustomCertificateDefined { get; }
+
+        /// <summary>
+        /// Defines the global IWebhookSettingsto use
+        /// </summary>
+        [PublicAPI]
+        IWebhookSettings WebhookSettings { get; set; }
     }
 }

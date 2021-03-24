@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -54,6 +56,9 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.LogMapping" />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
+        /// <inheritdoc cref="IMapping.Webhook" />
+        public IWebhook Webhook { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
@@ -68,6 +73,7 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
+        /// <param name="webhook">The Webhook. [Optional]</param>
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
@@ -79,7 +85,8 @@ namespace WireMock
             [CanBeNull] string scenario,
             [CanBeNull] string executionConditionState,
             [CanBeNull] string nextState,
-            [CanBeNull] int? stateTimes)
+            [CanBeNull] int? stateTimes,
+            [CanBeNull] IWebhook webhook)
         {
             Guid = guid;
             Title = title;
@@ -92,6 +99,7 @@ namespace WireMock
             ExecutionConditionState = executionConditionState;
             NextState = nextState;
             StateTimes = stateTimes;
+            Webhook = webhook;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />

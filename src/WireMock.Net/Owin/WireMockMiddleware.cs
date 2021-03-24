@@ -9,6 +9,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
+using WireMock.Settings;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -153,6 +154,11 @@ namespace WireMock.Owin
                 {
                     UpdateScenarioState(targetMapping);
                 }
+
+                if (!targetMapping.IsAdminInterface && targetMapping.Webhook != null)
+                {
+                    await SendToWebhookAsync(targetMapping, request, response).ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -182,6 +188,21 @@ namespace WireMock.Owin
             }
 
             await CompletedTask;
+        }
+
+        private async Task SendToWebhookAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
+        {
+            var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
+            var webhookSender = new WebhookSender(mapping.Settings);
+
+            try
+            {
+                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request, request, response).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _options.Logger.Error($"Sending message to Webhook Mapping '{mapping.Guid}' failed. Exception: {ex}");
+            }
         }
 
         private void UpdateScenarioState(IMapping mapping)

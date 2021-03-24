@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -92,6 +93,11 @@ namespace WireMock
         /// <c>true</c> if this mapping to be logged; otherwise, <c>false</c>.
         /// </value>
         bool LogMapping { get; }
+
+        /// <summary>
+        /// The Webhook.
+        /// </summary>
+        IWebhook Webhook { get; }
 
         /// <summary>
         /// ProvideResponseAsync
