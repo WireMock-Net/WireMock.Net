@@ -13,9 +13,9 @@ namespace WireMock.ResponseProviders
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
-            return _responseMessageFunc(requestMessage);
+            return (await _responseMessageFunc(requestMessage), null);
         }
     }
 }

@@ -103,8 +103,8 @@ namespace WireMock
         /// ProvideResponseAsync
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>The <see cref="ResponseMessage"/>.</returns>
-        Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage);
+        /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
+        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage);
 
         /// <summary>
         /// Gets the RequestMatchResult based on the RequestMessage.

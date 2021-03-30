@@ -46,13 +46,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "GET", ClientIp);
 
-            var response = Response.Create().WithTransformer(transformerType);
+            var responseBuilder = Response.Create().WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            responseMessage.BodyData.Should().BeNull();
+            response.Message.BodyData.Should().BeNull();
         }
 
         [Theory]
@@ -69,15 +69,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
         }
 
         [Theory]
@@ -93,15 +93,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, httpMethod, ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("url={{request.Url}} absoluteurl={{request.AbsoluteUrl}} path={{request.Path}} absolutepath={{request.AbsolutePath}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("url=http://localhost/a/b absoluteurl=http://localhost/wiremock/a/b path=/a/b absolutepath=/wiremock/a/b");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("url=http://localhost/a/b absoluteurl=http://localhost/wiremock/a/b path=/a/b absolutepath=/wiremock/a/b");
         }
 
         [Fact]
@@ -111,15 +111,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{request.PathSegments.[0]}} {{request.AbsolutePathSegments.[0]}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("a wiremock");
         }
 
         [Theory(Skip = "Invalid token `OpenBracket`")]
@@ -131,15 +131,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{request.PathSegments.[0]}} {{request.AbsolutePathSegments.[0]}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("a wiremock");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("a wiremock");
         }
 
         [Fact]
@@ -153,15 +153,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1,2 idx=1 idx=2 keyb=5");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test keya=1,2 idx=1 idx=2 keyb=5");
         }
 
         [Theory(Skip = "Invalid token `OpenBracket`")]
@@ -177,15 +177,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=1&a=2&b=5"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test keya={{request.query.a}} idx={{request.query.a.[0]}} idx={{request.query.a.[1]}} keyb={{request.query.b}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
         }
 
         [Fact]
@@ -199,17 +199,17 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithStatusCode("{{request.query.a}}")
                 .WithBody("test")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.StatusCode).Equals("400");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.StatusCode).Equals("400");
         }
 
         [Theory(Skip = "WireMockList is not supported by Scriban")]
@@ -225,17 +225,17 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithStatusCode("{{request.Query.a}}")
                 .WithBody("test")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.StatusCode).Equals("400");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.StatusCode).Equals("400");
         }
 
         [Theory]
@@ -252,16 +252,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?a=400"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.StatusCode).Equals(null);
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.StatusCode).Equals(null);
         }
 
         [Fact]
@@ -275,15 +275,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
-            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
+            var responseBuilder = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}").WithBody("test").WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.Headers).ContainsKey("x");
-            Check.That(responseMessage.Headers["x"]).ContainsExactly("text/plain");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.Headers).ContainsKey("x");
+            Check.That(response.Message.Headers["x"]).ContainsExactly("text/plain");
         }
 
         [Fact]
@@ -297,16 +297,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
-            var response = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
+            var responseBuilder = Response.Create().WithHeader("x", "{{request.headers.Content-Type}}", "{{request.url}}").WithBody("test").WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.Headers).ContainsKey("x");
-            Check.That(responseMessage.Headers["x"]).Contains("text/plain");
-            Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.Headers).ContainsKey("x");
+            Check.That(response.Message.Headers["x"]).Contains("text/plain");
+            Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
         }
 
         [Theory(Skip = "WireMockList is not supported by Scriban")]
@@ -322,16 +322,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, new Dictionary<string, string[]> { { "Content-Type", new[] { "text/plain" } } });
 
-            var response = Response.Create().WithHeader("x", "{{request.Headers[\"Content-Type\"]}}", "{{request.Url}}").WithBody("test").WithTransformer(transformerType);
+            var responseBuilder = Response.Create().WithHeader("x", "{{request.Headers[\"Content-Type\"]}}", "{{request.Url}}").WithBody("test").WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test");
-            Check.That(responseMessage.Headers).ContainsKey("x");
-            Check.That(responseMessage.Headers["x"]).Contains("text/plain");
-            Check.That(responseMessage.Headers["x"]).Contains("http://localhost/foo");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+            Check.That(response.Message.Headers).ContainsKey("x");
+            Check.That(response.Message.Headers["x"]).Contains("text/plain");
+            Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
         }
 
         [Theory]
@@ -348,15 +348,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test {{request.Origin}} {{request.Port}} {{request.Protocol}} {{request.Host}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
         }
 
         [Theory]
@@ -375,15 +375,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "test {{request.Path}}" })
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+            Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
         }
 
         [Theory]
@@ -402,15 +402,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_array"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new[] { "first", "{{request.path}}", "{{request.bodyAsJson.a}}", "{{request.bodyAsJson.b}}", "last" })
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
+            Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
         }
 
         [Fact]
@@ -419,15 +419,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithTransformer()
                 .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+            Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
         }
 
         [Theory(Skip = @"Does not work in Scriban --> c:\\[""1""]\\test.xml")]
@@ -438,15 +438,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithTransformer(transformerType)
                 .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+            Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
         }
 
         [Theory]
@@ -463,17 +463,17 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithTransformer(transformerType, true)
                 .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
-            Check.That(responseMessage.BodyData.DetectedBodyType).Equals(BodyType.String);
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
+            Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+            Check.That(response.Message.BodyData.DetectedBodyType).Equals(BodyType.String);
+            Check.That(response.Message.BodyData.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
         }
 
         [Theory]
@@ -492,15 +492,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson("test")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("\"test\"");
+            Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("\"test\"");
         }
 
         [Fact(Skip = "todo...")]
@@ -516,15 +516,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson("{{{request.BodyAsJson}}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+            Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
         }
 
         [Theory(Skip = "{{{ }}} Does not work in Scriban")]
@@ -542,15 +542,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson("{{{request.BodyAsJson}}}")
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+            Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
         }
 
         [Theory]
@@ -570,16 +570,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{request.Body}}", BodyDestinationFormat.SameAsSource, enc)
                 .WithTransformer(transformerType);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            responseMessage.BodyData.BodyAsString.Should().Be(text);
-            responseMessage.BodyData.Encoding.Should().Be(enc);
+            response.Message.BodyData.BodyAsString.Should().Be(text);
+            response.Message.BodyData.Encoding.Should().Be(enc);
         }
     }
 }

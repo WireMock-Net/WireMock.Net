@@ -46,16 +46,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml" } } };
             var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}{prepend}/{_guid}{append}"), "POST", ClientIp, new BodyData { DetectedBodyType = BodyType.Json, BodyAsJson = new { a = 1 } }, headers);
-            var response = Response.Create().WithProxy(_server.Urls[0]);
+            var responseBuilder = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
             Check.That(request.ProxyUrl).IsNotNull();
-            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo(expectedBody);
-            Check.That(responseMessage.StatusCode).IsEqualTo(201);
-            Check.That(responseMessage.Headers["Content-Type"].ToString()).IsEqualTo("application/json");
+            Check.That(response.Message.BodyData.BodyAsString).IsEqualTo(expectedBody);
+            Check.That(response.Message.StatusCode).IsEqualTo(201);
+            Check.That(response.Message.Headers["Content-Type"].ToString()).IsEqualTo("application/json");
         }
 
         [Fact]
@@ -72,12 +72,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
                     Password = "y"
                 }
             };
-            var response = Response.Create().WithProxy(settings);
+            var responseBuilder = Response.Create().WithProxy(settings);
 
             // Act
             var request = new RequestMessage(new UrlDetails($"{_server.Urls[0]}/{_guid}"), "GET", ClientIp);
 
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<HttpRequestException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<HttpRequestException>();
         }
 
         public void Dispose()

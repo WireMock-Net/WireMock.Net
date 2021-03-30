@@ -34,15 +34,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{String.Uppercase request.body}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("ABC");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("ABC");
         }
     }
 }

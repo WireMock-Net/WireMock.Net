@@ -71,16 +71,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"]["Name"].ToString()).Equals("Acme Co");
         }
@@ -97,16 +97,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{JsonPath.SelectToken request.body \"..Price\"}}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"].Value<long>()).Equals(99);
         }
 
@@ -151,16 +151,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBody("{{JsonPath.SelectToken request.body \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
+            Check.That(response.Message.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
@@ -204,16 +204,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBody("{{JsonPath.SelectToken request.bodyAsJson \"$.Manufacturers[?(@.Name == 'Acme Co')]\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
+            Check.That(response.Message.BodyData.BodyAsString).Equals($"{{{Environment.NewLine}  \"Name\": \"Acme Co\",{Environment.NewLine}  \"Products\": [{Environment.NewLine}    {{{Environment.NewLine}      \"Name\": \"Anvil\",{Environment.NewLine}      \"Price\": 50{Environment.NewLine}    }}{Environment.NewLine}  ]{Environment.NewLine}}}");
         }
 
         [Fact]
@@ -257,16 +257,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBody("{{#JsonPath.SelectTokens request.body \"$..Products[?(@.Price >= 50)].Name\"}}{{#each this}}%{{@index}}:{{this}}%{{/each}}{{/JsonPath.SelectTokens}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
         }
 
         [Fact]
@@ -310,16 +310,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBody("{{#JsonPath.SelectTokens request.bodyAsJson \"$..Products[?(@.Price >= 50)].Name\"}}{{#each this}}%{{@index}}:{{this}}%{{/each}}{{/JsonPath.SelectTokens}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("%0:Anvil%%1:Elbow Grease%");
         }
 
         [Fact]
@@ -339,13 +339,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBody("{{#JsonPath.SelectTokens request.body \"$..Products[?(@.Price >= 50)].Name\"}}{{id}} {{value}},{{/JsonPath.SelectTokens}}")
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -364,15 +364,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
 
             string jsonPath = "\"$.MyUniqueNumber\"";
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithTransformer()
                 .WithBodyFromFile(@"c:\\{{JsonPath.SelectToken request.body " + jsonPath + "}}\\test.json"); // why use a \\ here ?
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsFile).Equals(@"c:\1\test.json");
+            Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.json");
         }
     }
 }

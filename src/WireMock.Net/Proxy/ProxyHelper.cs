@@ -25,7 +25,7 @@ namespace WireMock.Proxy
             _settings = settings;
         }
 
-        public async Task<(ResponseMessage ResponseMessage, IMapping Mapping)> SendAsync(
+        public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
             [NotNull] IProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] HttpClient client,
             [NotNull] RequestMessage requestMessage,

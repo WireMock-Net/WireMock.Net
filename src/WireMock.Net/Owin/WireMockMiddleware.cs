@@ -129,15 +129,16 @@ namespace WireMock.Owin
                     await Task.Delay(_options.RequestProcessingDelay.Value);
                 }
 
-                response = await targetMapping.ProvideResponseAsync(request);
+                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request);
+                response = theResponse;
 
                 var responseBuilder = targetMapping.Provider as Response;
 
-                if (!targetMapping.IsAdminInterface)
+                if (!targetMapping.IsAdminInterface && theOptionalNewMapping != null)
                 {
                     if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
                     {
-                        _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
+                        _options.Mappings.TryAdd(theOptionalNewMapping.Guid, theOptionalNewMapping);
                     }
 
                     if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
@@ -146,7 +147,7 @@ namespace WireMock.Owin
                         var mappingConverter = new MappingConverter(matcherMapper);
                         var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
 
-                        mappingToFileSaver.SaveMappingToFile(targetMapping);
+                        mappingToFileSaver.SaveMappingToFile(theOptionalNewMapping);
                     }
                 }
 
