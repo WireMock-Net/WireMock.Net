@@ -40,13 +40,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
             var request = new RequestMessage(urlDetails, "GET", ClientIp);
 
-            var response = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
+            var responseBuilder = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            responseMessage.BodyData.Should().BeNull();
+            response.Message.BodyData.Should().BeNull();
         }
 
         [Fact]
@@ -60,15 +60,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
                 .WithTransformer(TransformerType.Scriban);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
         }
     }
 }

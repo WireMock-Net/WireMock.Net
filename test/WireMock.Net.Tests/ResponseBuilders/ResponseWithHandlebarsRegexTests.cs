@@ -35,15 +35,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{Regex.Match request.body \"^(\\w+)$\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("abc");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("abc");
         }
 
         [Fact]
@@ -54,15 +54,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{Regex.Match request.body \"^?0$\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("");
         }
 
         [Fact]
@@ -73,15 +73,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{Regex.Match request.body \"^?0$\" \"d\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("d");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("d");
         }
 
         [Fact]
@@ -92,15 +92,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this.port}}-{{this.proto}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("5000-https");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("5000-https");
         }
 
         [Fact]
@@ -111,15 +111,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{this}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("");
         }
 
         [Fact]
@@ -130,15 +130,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\" \"x\"}}{{this}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // assert
-            Check.That(responseMessage.BodyData.BodyAsString).Equals("x");
+            Check.That(response.Message.BodyData.BodyAsString).Equals("x");
         }
 
         [Fact]
@@ -149,12 +149,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBody("{{#Regex.Match request.bodyAsJson \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\"}}{{/Regex.Match}}")
                 .WithTransformer();
 
             // Act and Assert
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
         }
     }
 }

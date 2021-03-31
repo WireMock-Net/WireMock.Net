@@ -36,16 +36,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234/pathtest"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{Linq request.Path 'it'}}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("/pathtest");
         }
@@ -66,16 +66,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{Linq request.bodyAsJson 'it.Name + \"_123\"' }}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("Test_123");
         }
@@ -96,16 +96,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{Linq request.bodyAsJson 'new(it.Name + \"_123\" as N, it.Id as I)' }}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
         }
@@ -126,16 +126,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(new { x = "{{#Linq request.bodyAsJson 'new(it.Name + \"_123\" as N, it.Id as I)' }}{{this}}{{/Linq}}" })
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["x"]).IsNotNull();
             Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
         }
@@ -152,12 +152,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "{{Linq request.bodyAsJson 1}}" })
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<ArgumentException>();
         }
 
         [Fact]
@@ -168,12 +168,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "{{Linq request.body 'Name'}}" })
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -184,12 +184,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "{{Linq request.bodyAsJson}} ''" })
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<HandlebarsException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<HandlebarsException>();
         }
 
         [Fact]
@@ -208,12 +208,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "{{Linq request.bodyAsJson '---' }}" })
                 .WithTransformer();
 
             // Act
-            Func<Task> a = async () => await response.ProvideResponseAsync(request, _settings);
+            Func<Task> a = async () => await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
             a.Should().Throw<HandlebarsException>();
@@ -235,12 +235,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { x = "{{#Linq request.bodyAsJson '---' }}{{this}}{{/Linq}}" })
                 .WithTransformer();
 
             // Act
-            Func<Task> a = async () => await response.ProvideResponseAsync(request, _settings);
+            Func<Task> a = async () => await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
             a.Should().Throw<HandlebarsException>();

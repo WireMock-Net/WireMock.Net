@@ -6,7 +6,7 @@ namespace WireMock.Util
     /// <summary>
     /// BodyData
     /// </summary>
-    internal class BodyData : IBodyData
+    public class BodyData : IBodyData
     {
         /// <inheritdoc cref="IBodyData.Encoding" />
         public Encoding Encoding { get; set; }

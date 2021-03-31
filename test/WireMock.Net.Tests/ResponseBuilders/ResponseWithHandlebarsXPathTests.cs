@@ -46,16 +46,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("<response>{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]\"}}</response>")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            var nav = new XmlDocument { InnerXml = responseMessage.BodyData.BodyAsString }.CreateNavigator();
+            var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
             var node = nav.XPath2SelectSingleNode("/response/todo-item");
             Check.That(node.Value).Equals("abc");
             Check.That(node.GetAttribute("id", "")).Equals("a1");
@@ -77,16 +77,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]/text()\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("abc");
+            Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("abc");
         }
 
         [Fact]
@@ -105,16 +105,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("<response>{{XPath.SelectNodes request.body \"/todo-list/todo-item\"}}</response>")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            var nav = new XmlDocument { InnerXml = responseMessage.BodyData.BodyAsString }.CreateNavigator();
+            var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
             var nodes = nav.XPath2SelectNodes("/response/todo-item");
             Check.That(nodes.Count + 1).IsEqualTo(3);
         }
@@ -135,16 +135,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("{{XPath.Evaluate request.body \"boolean(/todo-list[count(todo-item) = 3])\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).IsEqualIgnoringCase("True");
+            Check.That(response.Message.BodyData.BodyAsString).IsEqualIgnoringCase("True");
         }
 
         [Fact]
@@ -163,16 +163,16 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("{{XPath.Evaluate request.body \"string(/todo-list/todo-item[1]/@id)\"}}")
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.BodyData.BodyAsString).IsEqualTo("a1");
+            Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("a1");
         }
     }
 }

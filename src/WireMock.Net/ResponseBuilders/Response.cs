@@ -335,7 +335,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));
@@ -361,14 +361,12 @@ namespace WireMock.ResponseBuilders
 
                 var proxyHelper = new ProxyHelper(settings);
 
-                var (proxyResponseMessage, _) = await proxyHelper.SendAsync(
+                return await proxyHelper.SendAsync(
                     ProxyAndRecordSettings,
                     _httpClientForProxy,
                     requestMessage,
                     requestMessage.ProxyUrl
                 );
-
-                return proxyResponseMessage;
             }
 
             ResponseMessage responseMessage;
@@ -420,7 +418,7 @@ namespace WireMock.ResponseBuilders
                         throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
                 }
 
-                return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
+                return (responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile), null);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
@@ -428,7 +426,7 @@ namespace WireMock.ResponseBuilders
                 ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
-            return responseMessage;
+            return (responseMessage, null);
         }
     }
 }

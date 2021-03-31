@@ -13,7 +13,6 @@ using WireMock.Matchers;
 using System.Collections.Generic;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
-using WireMock.ResponseProviders;
 using WireMock.Settings;
 using FluentAssertions;
 using WireMock.Handlers;
@@ -177,7 +176,8 @@ namespace WireMock.Net.Tests.Owin
             _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
             _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-            _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync(new ResponseMessage());
+            var newMappingFromProxy = new Mapping(Guid.NewGuid(), "", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null);
+            _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
             var requestBuilder = Request.Create().UsingAnyMethod();
             _mappingMock.SetupGet(m => m.RequestMatcher).Returns(requestBuilder);
@@ -230,7 +230,8 @@ namespace WireMock.Net.Tests.Owin
             _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
             _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-            _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync(new ResponseMessage());
+            var newMappingFromProxy = new Mapping(Guid.NewGuid(), "", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null);
+            _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
             var requestBuilder = Request.Create().UsingAnyMethod();
             _mappingMock.SetupGet(m => m.RequestMatcher).Returns(requestBuilder);

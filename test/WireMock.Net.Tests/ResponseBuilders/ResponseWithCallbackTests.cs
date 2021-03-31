@@ -33,7 +33,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithCallback(async request =>
                 {
                     await Task.Delay(1);
@@ -50,11 +50,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 });
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
 
             // Assert
-            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
-            responseMessage.StatusCode.Should().Be(302);
+            response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
+            response.Message.StatusCode.Should().Be(302);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithCallback(request => new ResponseMessage
                 {
                     BodyData = new BodyData
@@ -74,11 +74,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 });
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
 
             // Assert
-            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
-            responseMessage.StatusCode.Should().Be(302);
+            response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
+            response.Message.StatusCode.Should().Be(302);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var header = "X-UserId";
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithCallback(request => new ResponseMessage
                 {
                     BodyData = new BodyData
@@ -105,12 +105,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithHeader(header, "Stef");
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
 
             // Assert
-            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
-            responseMessage.StatusCode.Should().Be(HttpStatusCode.Accepted);
-            responseMessage.Headers[header].Should().ContainSingle("Stef");
+            response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
+            response.Message.StatusCode.Should().Be(HttpStatusCode.Accepted);
+            response.Message.Headers[header].Should().ContainSingle("Stef");
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithCallback(request => new ResponseMessage
                 {
                     BodyData = new BodyData
@@ -131,11 +131,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
 
             // Assert
-            responseMessage.BodyData.BodyAsString.Should().Be("/fooBar");
-            responseMessage.StatusCode.Should().Be(302);
+            response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
+            response.Message.StatusCode.Should().Be(302);
         }
     }
 }

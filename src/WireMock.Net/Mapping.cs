@@ -103,7 +103,7 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
+        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage)
         {
             return await Provider.ProvideResponseAsync(requestMessage, Settings);
         }

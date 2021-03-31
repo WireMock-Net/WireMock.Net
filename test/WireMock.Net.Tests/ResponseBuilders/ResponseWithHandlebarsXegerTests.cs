@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Number = "{{Xeger.Generate \"[1-9]{1}\\d{3}\"}}",
@@ -40,10 +40,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Number"].Value<int>()).IsStrictlyGreaterThan(1000).And.IsStrictlyLessThan(9999);
             Check.That(j["Postcode"].Value<string>()).IsNotEmpty();
         }
@@ -54,7 +54,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Number = "{{#Xeger.Generate \"[1-9]{1}\\d{3}\"}}{{this}}{{/Xeger.Generate}}",
@@ -63,10 +63,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Number"].Value<int>()).IsStrictlyGreaterThan(1000).And.IsStrictlyLessThan(9999);
             Check.That(j["Postcode"].Value<string>()).IsNotEmpty();
         }

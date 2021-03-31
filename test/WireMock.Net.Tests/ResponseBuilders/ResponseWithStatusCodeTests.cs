@@ -24,26 +24,26 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/fault"), "GET", ClientIp);
 
             // Act
-            var response = Response.Create();
+            var responseBuilder = Response.Create();
             switch (statusCode)
             {
                 case string statusCodeAsString:
-                    response = response.WithStatusCode(statusCodeAsString);
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
                     break;
 
                 case int statusCodeAInteger:
-                    response = response.WithStatusCode(statusCodeAInteger);
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAInteger);
                     break;
 
                 case HttpStatusCode statusCodeAsEnum:
-                    response = response.WithStatusCode(statusCodeAsEnum);
+                    responseBuilder = responseBuilder.WithStatusCode(statusCodeAsEnum);
                     break;
             }
 
-            var responseMessage = await response.ProvideResponseAsync(request, _settingsMock.Object);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settingsMock.Object);
 
             // Assert
-            responseMessage.StatusCode.Should().Be(expectedStatusCode);
+            response.Message.StatusCode.Should().Be(expectedStatusCode);
         }
     }
 }

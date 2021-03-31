@@ -123,7 +123,7 @@ namespace WireMock.Net.Tests
             Check.That(mapping.Title).Equals("test");
 
             var response = await mapping.ProvideResponseAsync(new RequestMessage(new UrlDetails("http://localhost/1"), "GET", ""));
-            Check.That(response.StatusCode).Equals(expectedStatusCode);
+            Check.That(response.Message.StatusCode).Equals(expectedStatusCode);
 
             server.Stop();
         }
