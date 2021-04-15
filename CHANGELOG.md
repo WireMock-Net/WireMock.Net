@@ -1,3 +1,7 @@
+# 1.4.10 (15 April 2021)
+- [#603](https://github.com/WireMock-Net/WireMock.Net/pull/603) - Fix callback with Headers [bug] contributed by [StefH](https://github.com/StefH)
+- [#602](https://github.com/WireMock-Net/WireMock.Net/issues/602) - Header not being returned when set in WithCallback [bug]
+
 # 1.4.9 (31 March 2021)
 - [#600](https://github.com/WireMock-Net/WireMock.Net/pull/600) - WithProxy() should save the new mapping [bug] contributed by [StefH](https://github.com/StefH)
 
