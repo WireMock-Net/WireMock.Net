@@ -82,7 +82,37 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async Task Response_WithCallback_And_WithStatusCode_And_WithHeader()
+        public async Task Response_WithCallback_ShouldUseStatusCodeAndHeaderInTheCallback()
+        {
+            // Assign
+            var header = "X-UserId";
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+            var responseBuilder = Response.Create()
+                .WithCallback(request => new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        DetectedBodyType = BodyType.String,
+                        BodyAsString = request.Path + "Bar"
+                    },
+                    StatusCode = HttpStatusCode.Accepted,
+                    Headers = new Dictionary<string, WireMockList<string>>
+                    {
+                        { header, new WireMockList<string>("Stef") }
+                    }
+                });
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+
+            // Assert
+            response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
+            response.Message.StatusCode.Should().Be(HttpStatusCode.Accepted);
+            response.Message.Headers[header].Should().ContainSingle("Stef");
+        }
+
+        [Fact]
+        public async Task Response_WithCallback_And_Additional_WithStatusCode_And_WithHeader_ShouldUseAdditional()
         {
             // Assign
             var header = "X-UserId";

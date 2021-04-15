@@ -392,7 +392,7 @@ namespace WireMock.ResponseBuilders
                 }
 
                 // Copy Headers from ResponseMessage (if defined)
-                if (ResponseMessage.Headers != null)
+                if (ResponseMessage.Headers?.Count > 0)
                 {
                     responseMessage.Headers = ResponseMessage.Headers;
                 }
