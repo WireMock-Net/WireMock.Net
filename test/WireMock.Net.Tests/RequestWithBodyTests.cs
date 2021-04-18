@@ -2,6 +2,7 @@
 using NFluent;
 using System;
 using System.Text;
+using FluentAssertions;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -307,17 +308,20 @@ namespace WireMock.Net.Tests
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
-        [Fact]
-        public void Request_WithBodyAsBytes_ExactObjectMatcher_true()
+        [Theory]
+        [InlineData(new byte[] { 1 }, BodyType.Bytes)]
+        [InlineData(new byte[] { 48, 49, 50 }, BodyType.Bytes)]
+        [InlineData(new byte[] { 48, 49, 50 }, BodyType.String)]
+        public void Request_WithBodyAsBytes_ExactObjectMatcher_true(byte[] bytes, BodyType detectedBodyType)
         {
             // Assign
-            byte[] body = { 123 };
+            byte[] body = bytes;
             var requestBuilder = Request.Create().UsingAnyMethod().WithBody(body);
 
             var bodyData = new BodyData
             {
-                BodyAsBytes = new byte[] { 123 },
-                DetectedBodyType = BodyType.Bytes
+                BodyAsBytes = bytes,
+                DetectedBodyType = detectedBodyType
             };
 
             // Act
@@ -325,7 +329,7 @@ namespace WireMock.Net.Tests
 
             // Assert
             var requestMatchResult = new RequestMatchResult();
-            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+            requestBuilder.GetMatchingScore(request, requestMatchResult).Should().Be(1.0);
         }
     }
 }
