@@ -123,6 +123,16 @@ namespace WireMock.Matchers.Request
 
         private double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
         {
+            if (matcher is ExactObjectMatcher exactObjectMatcher)
+            {
+                // If the body is a byte array, try to match.
+                var detectedBodyType = requestMessage?.BodyData?.DetectedBodyType;
+                if (detectedBodyType == BodyType.Bytes || detectedBodyType == BodyType.String)
+                {
+                    return exactObjectMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
+                }
+            }
+
             // Check if the matcher is a IObjectMatcher
             if (matcher is IObjectMatcher objectMatcher)
             {

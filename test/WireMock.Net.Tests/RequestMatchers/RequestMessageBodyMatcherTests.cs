@@ -209,13 +209,15 @@ namespace WireMock.Net.Tests.RequestMatchers
             Check.That(score).IsEqualTo(1.0d);
         }
 
-        [Fact]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher()
+        [Theory]
+        [InlineData(new byte[] { 1 })]
+        [InlineData(new byte[] { 48 })]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher(byte[] bytes)
         {
             // Assign
             var body = new BodyData
             {
-                BodyAsBytes = new byte[] { 1 },
+                BodyAsBytes = bytes,
                 DetectedBodyType = BodyType.Bytes
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();
