@@ -1,3 +1,7 @@
+# 1.4.11 (18 April 2021)
+- [#604](https://github.com/WireMock-Net/WireMock.Net/pull/604) - Fix match logic for exact bytearray contributed by [StefH](https://github.com/StefH)
+- [#601](https://github.com/WireMock-Net/WireMock.Net/issues/601) - Exact byte array request matching fails on specific byte arrays [bug]
+
 # 1.4.10 (15 April 2021)
 - [#603](https://github.com/WireMock-Net/WireMock.Net/pull/603) - Fix callback with Headers [bug] contributed by [StefH](https://github.com/StefH)
 - [#602](https://github.com/WireMock-Net/WireMock.Net/issues/602) - Header not being returned when set in WithCallback [bug]
