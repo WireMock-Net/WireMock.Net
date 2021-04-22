@@ -1,3 +1,7 @@
+# 1.4.12 (22 April 2021)
+- [#605](https://github.com/WireMock-Net/WireMock.Net/pull/605) - Bump System.Net.Http from 4.3.3 to 4.3.4 in /src/WireMock.Net [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#606](https://github.com/WireMock-Net/WireMock.Net/pull/606) - Bump System.Net.Http from 4.3.3 to 4.3.4 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+
 # 1.4.11 (18 April 2021)
 - [#604](https://github.com/WireMock-Net/WireMock.Net/pull/604) - Fix match logic for exact bytearray contributed by [StefH](https://github.com/StefH)
 - [#601](https://github.com/WireMock-Net/WireMock.Net/issues/601) - Exact byte array request matching fails on specific byte arrays [bug]
@@ -63,13 +67,15 @@
 - [#549](https://github.com/WireMock-Net/WireMock.Net/issues/549) - WithProxy(...) does not save the mappings to file [bug]
 
 # 1.3.8 (03 December 2020)
-- [#539](https://github.com/WireMock-Net/WireMock.Net/pull/539) - Support for partial JSON matching contributed by [gleb-osokin](https://github.com/gleb-osokin)
 - [#542](https://github.com/WireMock-Net/WireMock.Net/pull/542) - Create dotnet-wiremock tool [feature] contributed by [StefH](https://github.com/StefH)
 - [#543](https://github.com/WireMock-Net/WireMock.Net/pull/543) - Add support for .NET 5 [feature] contributed by [StefH](https://github.com/StefH)
 - [#544](https://github.com/WireMock-Net/WireMock.Net/pull/544) - Use Java 11 in Azure Pipelines (needed for SonarCloud) [feature] contributed by [StefH](https://github.com/StefH)
 - [#545](https://github.com/WireMock-Net/WireMock.Net/pull/545) - Fix SonarCloud OpenCover (coverlet-coverage) [bug] contributed by [StefH](https://github.com/StefH)
 - [#547](https://github.com/WireMock-Net/WireMock.Net/pull/547) - Fix Proxying with SSL and NetCoreApp3.1 [bug] contributed by [StefH](https://github.com/StefH)
 - [#524](https://github.com/WireMock-Net/WireMock.Net/issues/524) - Proxying with SSL Not Working in .NET Core 3.1 [bug]
+
+# 1.3.7 (17 November 2020)
+- [#539](https://github.com/WireMock-Net/WireMock.Net/pull/539) - Support for partial JSON matching contributed by [gleb-osokin](https://github.com/gleb-osokin)
 
 # 1.3.6 (10 November 2020)
 - [#529](https://github.com/WireMock-Net/WireMock.Net/pull/529) - Add assertions for ClientIP, Url and ProxyUrl [feature] contributed by [akamud](https://github.com/akamud)
