@@ -6,6 +6,8 @@ using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Net.OpenApiParser.Extensions;
+using WireMock.Net.OpenApiParser.Settings;
+using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
@@ -29,7 +31,11 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
             server.SetBasicAuthentication("a", "b");
 
-            server.WithMappingFromOpenApiFile(path, out var diag);
+            var settings = new WireMockOpenApiParserSettings();
+            settings.PathPatternToUse = ExampleValueType.Wildcard;
+            
+
+            server.WithMappingFromOpenApiFile(path, settings, out var diag);
 
             Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
