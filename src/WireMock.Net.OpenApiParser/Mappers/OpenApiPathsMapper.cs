@@ -17,13 +17,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
 {
     internal class OpenApiPathsMapper
     {
-        // private readonly OpenApiPaths _openApiPaths;
         private readonly WireMockOpenApiParserSettings _settings;
         private readonly ExampleValueGenerator _exampleValueGenerator;
 
         public OpenApiPathsMapper(WireMockOpenApiParserSettings settings)
         {
-            // _openApiPaths = openApiPaths ?? throw new ArgumentNullException(nameof(openApiPaths));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _exampleValueGenerator = new ExampleValueGenerator(settings);
         }
@@ -48,6 +46,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
             var response = operation.Responses.FirstOrDefault();
+
             TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
             var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
             var responseExample = responseContent?.Example;
