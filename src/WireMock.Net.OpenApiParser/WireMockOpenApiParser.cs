@@ -12,7 +12,7 @@ using WireMock.Net.OpenApiParser.Settings;
 namespace WireMock.Net.OpenApiParser
 {
     /// <summary>
-    /// Parse a OpenApi/Swagger/V2/V3 or Raml to WireMock MappingModels.
+    /// Parse a OpenApi/Swagger/V2/V3 or Raml to WireMock.Net MappingModels.
     /// </summary>
     public class WireMockOpenApiParser : IWireMockOpenApiParser
     {
@@ -55,7 +55,7 @@ namespace WireMock.Net.OpenApiParser
         [PublicAPI]
         public IEnumerable<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
         {
-            return FromDocument(_reader.Read(stream, out diagnostic));
+            return FromDocument(_reader.Read(stream, out diagnostic), settings);
         }
 
         /// <inheritdoc cref="IWireMockOpenApiParser.FromDocument(OpenApiDocument, WireMockOpenApiParserSettings)" />

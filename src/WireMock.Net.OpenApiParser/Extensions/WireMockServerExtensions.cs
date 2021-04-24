@@ -1,7 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
+using SharpYaml.Model;
 using Stef.Validation;
 using WireMock.Net.OpenApiParser.Settings;
 using WireMock.Server;
@@ -19,6 +22,7 @@ namespace WireMock.Net.OpenApiParser.Extensions
         /// <param name="server">The WireMockServer instance</param>
         /// <param name="path">Path containing OpenAPI file to parse and use the mappings.</param>
         /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
+        [PublicAPI]
         public static IWireMockServer WithMappingFromOpenApiFile(this IWireMockServer server, string path, out OpenApiDiagnostic diagnostic)
         {
             return WithMappingFromOpenApiFile(server, path, null, out diagnostic);
@@ -31,6 +35,7 @@ namespace WireMock.Net.OpenApiParser.Extensions
         /// <param name="path">Path containing OpenAPI file to parse and use the mappings.</param>
         /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
         /// <param name="settings">Additional settings</param>
+        [PublicAPI]
         public static IWireMockServer WithMappingFromOpenApiFile(this IWireMockServer server, string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
         {
             Guard.NotNull(server, nameof(server));
@@ -47,10 +52,9 @@ namespace WireMock.Net.OpenApiParser.Extensions
         /// <param name="server">The WireMockServer instance</param>
         /// <param name="stream">Stream containing OpenAPI description to parse and use the mappings.</param>
         /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
+        [PublicAPI]
         public static IWireMockServer WithMappingFromOpenApiStream(this IWireMockServer server, Stream stream, out OpenApiDiagnostic diagnostic)
         {
-            var mappings = new WireMockOpenApiParser().FromStream(stream, out diagnostic);
-
             return WithMappingFromOpenApiStream(server, stream, null, out diagnostic);
         }
 
@@ -61,8 +65,13 @@ namespace WireMock.Net.OpenApiParser.Extensions
         /// <param name="stream">Stream containing OpenAPI description to parse and use the mappings.</param>
         /// <param name="settings">Additional settings</param>
         /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
+        [PublicAPI]
         public static IWireMockServer WithMappingFromOpenApiStream(this IWireMockServer server, Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
         {
+            Guard.NotNull(server, nameof(server));
+            Guard.NotNull(stream, nameof(stream));
+            Guard.NotNull(settings, nameof(settings));
+
             var mappings = new WireMockOpenApiParser().FromStream(stream, settings, out diagnostic);
 
             return server.WithMapping(mappings.ToArray());
@@ -74,8 +83,12 @@ namespace WireMock.Net.OpenApiParser.Extensions
         /// <param name="server">The WireMockServer instance</param>
         /// <param name="document">The OpenAPI document to use as mappings.</param>
         /// <param name="settings">Additional settings [optional]</param>
+        [PublicAPI]
         public static IWireMockServer WithMappingFromOpenApiDocument(this IWireMockServer server, OpenApiDocument document, WireMockOpenApiParserSettings settings = null)
         {
+            Guard.NotNull(server, nameof(server));
+            Guard.NotNull(document, nameof(document));
+
             var mappings = new WireMockOpenApiParser().FromDocument(document, settings);
 
             return server.WithMapping(mappings.ToArray());

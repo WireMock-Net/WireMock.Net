@@ -31,9 +31,10 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
             server.SetBasicAuthentication("a", "b");
 
-            var settings = new WireMockOpenApiParserSettings();
-            settings.PathPatternToUse = ExampleValueType.Wildcard;
-            
+            var settings = new WireMockOpenApiParserSettings
+            {
+                PathPatternToUse = ExampleValueType.Wildcard
+            };
 
             server.WithMappingFromOpenApiFile(path, settings, out var diag);
 

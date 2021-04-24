@@ -25,6 +25,6 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// <summary>
         /// The example values to use
         /// </summary>
-        public WireMockOpenApiParserExampleValues ExampleValues { get; set; } = new WireMockOpenApiParserExampleValues();
+        public WireMockOpenApiParserExampleValues ExampleValues { get; } = new WireMockOpenApiParserExampleValues();
     }
 }
