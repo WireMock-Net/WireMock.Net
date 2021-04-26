@@ -1,3 +1,8 @@
+# 1.4.13 (26 April 2021)
+- [#607](https://github.com/WireMock-Net/WireMock.Net/pull/607) - Bump System.Text.Encodings.Web from 4.5.0 to 4.5.1 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#609](https://github.com/WireMock-Net/WireMock.Net/pull/609) - Add possibility to use settings to generate MappingModel models with wildcard path parameters. [feature] contributed by [StefH](https://github.com/StefH)
+- [#608](https://github.com/WireMock-Net/WireMock.Net/issues/608) - Import from OpenApi generates model with path parameter narrowed in range (example value=42 instead of '*') [feature]
+
 # 1.4.12 (22 April 2021)
 - [#605](https://github.com/WireMock-Net/WireMock.Net/pull/605) - Bump System.Net.Http from 4.3.3 to 4.3.4 in /src/WireMock.Net [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#606](https://github.com/WireMock-Net/WireMock.Net/pull/606) - Bump System.Net.Http from 4.3.3 to 4.3.4 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
