@@ -1,49 +1,57 @@
 ﻿using System;
 using Microsoft.OpenApi.Models;
 using WireMock.Net.OpenApiParser.Extensions;
+using WireMock.Net.OpenApiParser.Settings;
 using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.Utils
 {
-    internal static class ExampleValueGenerator
+    internal class ExampleValueGenerator
     {
-        public static object GetExampleValue(OpenApiSchema schema)
+        private readonly WireMockOpenApiParserSettings _settings;
+
+        public ExampleValueGenerator(WireMockOpenApiParserSettings settings)
+        {
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        }
+
+        public object GetExampleValue(OpenApiSchema schema)
         {
             switch (schema?.GetSchemaType())
             {
                 case SchemaType.Boolean:
-                    return true;
+                    return _settings.ExampleValues.Boolean;
 
                 case SchemaType.Integer:
-                    return 42;
+                    return _settings.ExampleValues.Integer;
 
                 case SchemaType.Number:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Float:
-                            return 4.2f;
+                            return _settings.ExampleValues.Float;
 
                         default:
-                            return 4.2d;
+                            return _settings.ExampleValues.Double;
                     }
 
                 default:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Date:
-                            return DateTimeUtils.ToRfc3339Date(DateTime.UtcNow);
+                            return DateTimeUtils.ToRfc3339Date(_settings.ExampleValues.Date());
 
                         case SchemaFormat.DateTime:
-                            return DateTimeUtils.ToRfc3339DateTime(DateTime.UtcNow);
+                            return DateTimeUtils.ToRfc3339DateTime(_settings.ExampleValues.DateTime());
 
                         case SchemaFormat.Byte:
-                            return new byte[] { 48, 49, 50 };
+                            return _settings.ExampleValues.Bytes;
 
                         case SchemaFormat.Binary:
-                            return "example-object";
+                            return _settings.ExampleValues.Object;
 
                         default:
-                            return "example-string";
+                            return _settings.ExampleValues.String;
                     }
             }
         }

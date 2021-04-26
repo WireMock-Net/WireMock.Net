@@ -12,6 +12,7 @@
 		<AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
 		<PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <LangVersion>8.0</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -24,14 +25,11 @@
 		<PackageReference Include="RamlToOpenApiConverter" Version="0.1.1" />
 		<PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Stef.Validation" Version="0.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Options\" />
 	</ItemGroup>
 
 </Project>
