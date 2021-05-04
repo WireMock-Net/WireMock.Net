@@ -422,7 +422,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async void WireMockServer_Admin_DeleteMappings()
+        public async Task WireMockServer_Admin_DeleteMappings()
         {
             // Arrange
             var server = WireMockServer.Start(new WireMockServerSettings

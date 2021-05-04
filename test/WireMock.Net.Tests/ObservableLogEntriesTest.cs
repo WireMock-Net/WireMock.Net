@@ -19,7 +19,7 @@ namespace WireMock.Net.Tests
     public class ObservableLogEntriesTest
     {
         [Fact]
-        public async void WireMockServer_LogEntriesChanged_WithException_Should_LogError()
+        public async Task WireMockServer_LogEntriesChanged_WithException_Should_LogError()
         {
             // Assign
             string path = $"/log_{Guid.NewGuid()}";
@@ -48,7 +48,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public async void WireMockServer_LogEntriesChanged()
+        public async Task WireMockServer_LogEntriesChanged()
         {
             // Assign
             string path = $"/log_{Guid.NewGuid()}";

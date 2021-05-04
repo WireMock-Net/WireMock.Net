@@ -77,7 +77,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_NoMatch()
+        public async Task WireMockMiddleware_Invoke_NoMatch()
         {
             // Act
             await _sut.Invoke(_contextMock.Object);
@@ -90,7 +90,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_IsAdminInterface_EmptyHeaders_401()
+        public async Task WireMockMiddleware_Invoke_IsAdminInterface_EmptyHeaders_401()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
@@ -113,7 +113,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_IsAdminInterface_MissingHeader_401()
+        public async Task WireMockMiddleware_Invoke_IsAdminInterface_MissingHeader_401()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]> { { "h", new[] { "x" } } });
@@ -136,7 +136,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_RequestLogExpirationDurationIsDefined()
+        public async Task WireMockMiddleware_Invoke_RequestLogExpirationDurationIsDefined()
         {
             // Assign
             _optionsMock.SetupGet(o => o.RequestLogExpirationDuration).Returns(1);
@@ -146,7 +146,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_Mapping_Has_ProxyAndRecordSettings_And_SaveMapping_Is_True()
+        public async Task WireMockMiddleware_Invoke_Mapping_Has_ProxyAndRecordSettings_And_SaveMapping_Is_True()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
@@ -195,7 +195,7 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public async void WireMockMiddleware_Invoke_Mapping_Has_ProxyAndRecordSettings_And_SaveMapping_Is_False_But_WireMockServerSettings_SaveMapping_Is_True()
+        public async Task WireMockMiddleware_Invoke_Mapping_Has_ProxyAndRecordSettings_And_SaveMapping_Is_False_But_WireMockServerSettings_SaveMapping_Is_True()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
