@@ -28,6 +28,7 @@ jobs:
   
   - task: SonarCloudPrepare@1
     displayName: 'Prepare analysis on SonarCloud'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
     inputs:
       SonarCloud: SonarCloud
       organization: wiremock-net
@@ -52,9 +53,11 @@ jobs:
   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: SonarCloudPublish@1
     displayName: 'SonarCloud: Publish Quality Gate Result'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
     displayName: 'WhiteSource Bolt'
