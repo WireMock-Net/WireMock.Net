@@ -59,6 +59,7 @@ namespace WireMock.Net.ConsoleApplication
                 //},
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); },
+                AdditionalServiceRegistration = services => { System.Console.WriteLine($"AdditionalServiceRegistration : {services.GetType()}"); },
                 Logger = new WireMockConsoleLogger(),
 
                 HandlebarsRegistrationCallback = (handlebarsContext, fileSystemHandler) =>

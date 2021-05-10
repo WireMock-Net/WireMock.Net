@@ -66,6 +66,8 @@ namespace WireMock.Owin
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
+
+                    _wireMockMiddlewareOptions.AdditionalServiceRegistration?.Invoke(services);
                 })
                 .Configure(appBuilder =>
                 {
