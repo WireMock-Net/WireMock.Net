@@ -1,3 +1,8 @@
+# 1.4.14 (11 May 2021)
+- [#610](https://github.com/WireMock-Net/WireMock.Net/pull/610) - Fix some SonarCloud issues in UnitTests contributed by [StefH](https://github.com/StefH)
+- [#611](https://github.com/WireMock-Net/WireMock.Net/pull/611) - Allow to add custom service registrations when using ASP.NET Core [feature] contributed by [starkpl](https://github.com/starkpl)
+- [#612](https://github.com/WireMock-Net/WireMock.Net/pull/612) - Don't run SonarCloud tasks for PullRequests [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.13 (26 April 2021)
 - [#607](https://github.com/WireMock-Net/WireMock.Net/pull/607) - Bump System.Text.Encodings.Web from 4.5.0 to 4.5.1 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#609](https://github.com/WireMock-Net/WireMock.Net/pull/609) - Add possibility to use settings to generate MappingModel models with wildcard path parameters. [feature] contributed by [StefH](https://github.com/StefH)
