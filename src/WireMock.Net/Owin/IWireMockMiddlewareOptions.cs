@@ -8,6 +8,7 @@ using WireMock.Util;
 using Owin;
 #else
 using IAppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
+using Microsoft.Extensions.DependencyInjection;
 #endif
 
 namespace WireMock.Owin
@@ -35,6 +36,10 @@ namespace WireMock.Owin
         Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
 
         Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
+
+#if USE_ASPNETCORE
+        Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+#endif
 
         IFileSystemHandler FileSystemHandler { get; set; }
 

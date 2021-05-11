@@ -4,6 +4,9 @@ using JetBrains.Annotations;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
+#if USE_ASPNETCORE
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace WireMock.Settings
 {
@@ -108,6 +111,14 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         Action<object> PostWireMockMiddlewareInit { get; set; }
+
+#if USE_ASPNETCORE
+        /// <summary>
+        /// Action which is called with IServiceCollection when ASP.NET Core DI is being configured. [Optional]
+        /// </summary>
+        [PublicAPI]
+        Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+#endif
 
         /// <summary>
         /// The IWireMockLogger which logs Debug, Info, Warning or Error

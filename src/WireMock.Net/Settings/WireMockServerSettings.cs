@@ -4,6 +4,9 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Logging;
+#if USE_ASPNETCORE
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace WireMock.Settings
 {
@@ -78,6 +81,13 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
+
+#if USE_ASPNETCORE
+        /// <inheritdoc cref="IWireMockServerSettings.AdditionalServiceRegistration"/>
+        [PublicAPI]
+        [JsonIgnore]
+        public Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+#endif
 
         /// <inheritdoc cref="IWireMockServerSettings.Logger"/>
         [PublicAPI]

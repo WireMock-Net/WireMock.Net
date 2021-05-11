@@ -242,6 +242,7 @@ namespace WireMock.Server
             _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
 
 #if USE_ASPNETCORE
+            _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;
             _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
             _httpServer = new OwinSelfHost(_options, urlOptions);
