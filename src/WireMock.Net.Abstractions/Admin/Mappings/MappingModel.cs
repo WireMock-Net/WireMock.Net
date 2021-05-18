@@ -57,5 +57,10 @@ namespace WireMock.Admin.Mappings
         /// The Webhook.
         /// </summary>
         public WebhookModel Webhook { get; set; }
+
+        /// <summary>
+        /// The Webhooks.
+        /// </summary>
+        public WebhookModel[] Webhooks { get; set; }
     }
 }

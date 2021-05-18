@@ -103,14 +103,14 @@ namespace WireMock.Server
         IRespondWithAProvider WillSetStateTo(int state, int? times = 1);
 
         /// <summary>
-        /// Add a Webbook to call after the response has been generated.
+        /// Add (multiple) Webhook(s) to call after the response has been generated.
         /// </summary>
-        /// <param name="webhook">The Webhook</param>
+        /// <param name="webhooks">The Webhooks</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-        IRespondWithAProvider WithWebhook(IWebhook webhook);
+        IRespondWithAProvider WithWebhook(params IWebhook[] webhooks);
 
         /// <summary>
-        /// Add a Webbook to call after the response has been generated.
+        /// Add a Webhook to call after the response has been generated.
         /// </summary>
         /// <param name="url">The Webhook Url</param>
         /// <param name="method">The method to use. [optional]</param>
@@ -129,7 +129,7 @@ namespace WireMock.Server
         );
 
         /// <summary>
-        /// Add a Webbook to call after the response has been generated.
+        /// Add a Webhook to call after the response has been generated.
         /// </summary>
         /// <param name="url">The Webhook Url</param>
         /// <param name="method">The method to use. [optional]</param>

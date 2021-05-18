@@ -84,9 +84,17 @@ namespace WireMock.Serialization
                 Response = new ResponseModel
                 {
                     Delay = (int?)response.Delay?.TotalMilliseconds
-                },
-                Webhook = WebhookMapper.Map(mapping.Webhook)
+                }
             };
+
+            if (mapping.Webhooks?.Length == 1)
+            {
+                mappingModel.Webhook = WebhookMapper.Map(mapping.Webhooks[0]);
+            }
+            else if (mapping.Webhooks?.Length > 1)
+            {
+                mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
+            }
 
             if (bodyMatcher?.Matchers != null)
             {

@@ -95,9 +95,9 @@ namespace WireMock
         bool LogMapping { get; }
 
         /// <summary>
-        /// The Webhook.
+        /// The Webhooks.
         /// </summary>
-        IWebhook Webhook { get; }
+        IWebhook[] Webhooks { get; }
 
         /// <summary>
         /// ProvideResponseAsync

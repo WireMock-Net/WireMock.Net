@@ -24,31 +24,34 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void ToMappingModel()
+        public void ToMappingModel_With_SingleWebHook()
         {
             // Assign
             var request = Request.Create();
             var response = Response.Create();
-            var webhook = new Webhook
+            var webhooks = new IWebhook[]
             {
-                Request = new WebhookRequest
+                new Webhook
                 {
-                    Url = "https://test.com",
-                    Headers = new Dictionary<string, WireMockList<string>>
+                    Request = new WebhookRequest
                     {
-                        { "Single", new WireMockList<string>("x") },
-                        { "Multi", new WireMockList<string>("a", "b") }
-                    },
-                    Method = "post",
-                    BodyData = new BodyData
-                    {
-                        BodyAsString = "b",
-                        DetectedBodyType = BodyType.String,
-                        DetectedBodyTypeFromContentType = BodyType.String
+                        Url = "https://test.com",
+                        Headers = new Dictionary<string, WireMockList<string>>
+                        {
+                            { "Single", new WireMockList<string>("x") },
+                            { "Multi", new WireMockList<string>("a", "b") }
+                        },
+                        Method = "post",
+                        BodyData = new BodyData
+                        {
+                            BodyAsString = "b",
+                            DetectedBodyType = BodyType.String,
+                            DetectedBodyTypeFromContentType = BodyType.String
+                        }
                     }
                 }
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhook);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -61,11 +64,87 @@ namespace WireMock.Net.Tests.Serialization
             model.Response.UseTransformer.Should().BeNull();
             model.Response.Headers.Should().BeNull();
 
+            model.Webhooks.Should().BeNull();
+
             model.Webhook.Request.Method.Should().Be("post");
             model.Webhook.Request.Url.Should().Be("https://test.com");
             model.Webhook.Request.Headers.Should().HaveCount(2);
             model.Webhook.Request.Body.Should().Be("b");
             model.Webhook.Request.BodyAsJson.Should().BeNull();
+        }
+
+        [Fact]
+        public void ToMappingModel_With_MultipleWebHooks()
+        {
+            // Assign
+            var request = Request.Create();
+            var response = Response.Create();
+            var webhooks = new IWebhook[]
+            {
+                new Webhook
+                {
+                    Request = new WebhookRequest
+                    {
+                        Url = "https://test1.com",
+                        Headers = new Dictionary<string, WireMockList<string>>
+                        {
+                            { "One", new WireMockList<string>("x") }
+                        },
+                        Method = "post",
+                        BodyData = new BodyData
+                        {
+                            BodyAsString = "1",
+                            DetectedBodyType = BodyType.String,
+                            DetectedBodyTypeFromContentType = BodyType.String
+                        }
+                    }
+                },
+
+                new Webhook
+                {
+                    Request = new WebhookRequest
+                    {
+                        Url = "https://test2.com",
+                        Headers = new Dictionary<string, WireMockList<string>>
+                        {
+                            { "First", new WireMockList<string>("x") },
+                            { "Second", new WireMockList<string>("a", "b") }
+                        },
+                        Method = "post",
+                        BodyData = new BodyData
+                        {
+                            BodyAsString = "2",
+                            DetectedBodyType = BodyType.String,
+                            DetectedBodyTypeFromContentType = BodyType.String
+                        }
+                    }
+                }
+            };
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks
+);
+
+            // Act
+            var model = _sut.ToMappingModel(mapping);
+
+            // Assert
+            model.Should().NotBeNull();
+            model.Priority.Should().BeNull();
+
+            model.Response.BodyAsJsonIndented.Should().BeNull();
+            model.Response.UseTransformer.Should().BeNull();
+            model.Response.Headers.Should().BeNull();
+
+            model.Webhook.Should().BeNull();
+
+            model.Webhooks[0].Request.Method.Should().Be("post");
+            model.Webhooks[0].Request.Url.Should().Be("https://test1.com");
+            model.Webhooks[0].Request.Headers.Should().HaveCount(1);
+            model.Webhooks[0].Request.Body.Should().Be("1");
+
+            model.Webhooks[1].Request.Method.Should().Be("post");
+            model.Webhooks[1].Request.Url.Should().Be("https://test2.com");
+            model.Webhooks[1].Request.Headers.Should().HaveCount(2);
+            model.Webhooks[1].Request.Body.Should().Be("2");
         }
 
         [Fact]
