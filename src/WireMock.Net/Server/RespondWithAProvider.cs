@@ -9,6 +9,7 @@ using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Server
 {
@@ -31,7 +32,7 @@ namespace WireMock.Server
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
 
-        public IWebhook Webhook { get; private set; }
+        public IWebhook[] Webhooks { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -54,7 +55,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhook), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -148,15 +149,17 @@ namespace WireMock.Server
             return WillSetStateTo(state.ToString(), times);
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook)"/>
-        public IRespondWithAProvider WithWebhook(IWebhook webhook)
+        /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook[])"/>
+        public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
         {
-            Webhook = webhook;
+            Check.HasNoNulls(webhooks, nameof(webhooks));
+
+            Webhooks = webhooks;
 
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(string,string, IDictionary{string, WireMockList{string}}, string, bool, TransformerType)"/>
+        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, string, bool, TransformerType)"/>
         public IRespondWithAProvider WithWebhook(
             [NotNull] string url,
             [CanBeNull] string method = "post",
@@ -165,11 +168,11 @@ namespace WireMock.Server
             bool useTransformer = true,
             TransformerType transformerType = TransformerType.Handlebars)
         {
-            Webhook = InitWebhook(url, method, headers, useTransformer, transformerType);
+            Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
 
             if (body != null)
             {
-                Webhook.Request.BodyData = new BodyData
+                Webhooks[0].Request.BodyData = new BodyData
                 {
                     BodyAsString = body,
                     DetectedBodyType = BodyType.String,
@@ -189,11 +192,11 @@ namespace WireMock.Server
             bool useTransformer = true,
             TransformerType transformerType = TransformerType.Handlebars)
         {
-            Webhook = InitWebhook(url, method, headers, useTransformer, transformerType);
+            Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
 
             if (body != null)
             {
-                Webhook.Request.BodyData = new BodyData
+                Webhooks[0].Request.BodyData = new BodyData
                 {
                     BodyAsJson = body,
                     DetectedBodyType = BodyType.Json,

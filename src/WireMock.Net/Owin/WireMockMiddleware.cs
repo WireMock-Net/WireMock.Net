@@ -156,9 +156,9 @@ namespace WireMock.Owin
                     UpdateScenarioState(targetMapping);
                 }
 
-                if (!targetMapping.IsAdminInterface && targetMapping.Webhook != null)
+                if (!targetMapping.IsAdminInterface && targetMapping.Webhooks?.Length > 0)
                 {
-                    await SendToWebhookAsync(targetMapping, request, response).ConfigureAwait(false);
+                    await SendToWebhooksAsync(targetMapping, request, response).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -191,18 +191,21 @@ namespace WireMock.Owin
             await CompletedTask;
         }
 
-        private async Task SendToWebhookAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
+        private async Task SendToWebhooksAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
         {
-            var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
-            var webhookSender = new WebhookSender(mapping.Settings);
+            for (int index = 0; index < mapping.Webhooks.Length; index++)
+            {
+                var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
+                var webhookSender = new WebhookSender(mapping.Settings);
 
-            try
-            {
-                await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhook.Request, request, response).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _options.Logger.Error($"Sending message to Webhook Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                try
+                {
+                    await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Error($"Sending message to Webhook [{index}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                }
             }
         }
 
