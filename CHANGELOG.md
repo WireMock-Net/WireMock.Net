@@ -1,3 +1,7 @@
+# 1.4.15 (19 May 2021)
+- [#615](https://github.com/WireMock-Net/WireMock.Net/pull/615) - Add support for multiple webhooks [feature] contributed by [StefH](https://github.com/StefH)
+- [#614](https://github.com/WireMock-Net/WireMock.Net/issues/614) - Is it possible to some how send multiple webhooks? [feature]
+
 # 1.4.14 (11 May 2021)
 - [#610](https://github.com/WireMock-Net/WireMock.Net/pull/610) - Fix some SonarCloud issues in UnitTests contributed by [StefH](https://github.com/StefH)
 - [#611](https://github.com/WireMock-Net/WireMock.Net/pull/611) - Allow to add custom service registrations when using ASP.NET Core [feature] contributed by [starkpl](https://github.com/starkpl)
