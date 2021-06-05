@@ -66,25 +66,6 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch_NoMatch_WithDefaultValue()
-        {
-            // Assign
-            var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
-
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
-
-            var responseBuilder = Response.Create()
-                .WithBody("{{Regex.Match request.body \"^?0$\" \"d\"}}")
-                .WithTransformer();
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
-
-            // assert
-            Check.That(response.Message.BodyData.BodyAsString).Equals("d");
-        }
-
-        [Fact]
         public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch2()
         {
             // Assign
@@ -120,25 +101,6 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // assert
             Check.That(response.Message.BodyData.BodyAsString).Equals("");
-        }
-
-        [Fact]
-        public async Task Response_ProvideResponseAsync_Handlebars_RegexMatch2_NoMatch_WithDefaultValue()
-        {
-            // Assign
-            var body = new BodyData { BodyAsString = "{{\\test", DetectedBodyType = BodyType.String };
-
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
-
-            var responseBuilder = Response.Create()
-                .WithBody("{{#Regex.Match request.body \"^(?<proto>\\w+)://[^/]+?(?<port>\\d+)/?\" \"x\"}}{{this}}{{/Regex.Match}}")
-                .WithTransformer();
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
-
-            // assert
-            Check.That(response.Message.BodyData.BodyAsString).Equals("x");
         }
 
         [Fact]
