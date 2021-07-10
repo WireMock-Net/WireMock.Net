@@ -9,6 +9,7 @@ using WireMock.Util;
 using Xunit;
 using Moq;
 using WireMock.Handlers;
+using FluentAssertions;
 #if !NETSTANDARD1_3
 using Wmhelp.XPath2;
 #endif
@@ -166,16 +167,15 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
-                .WithBody("<response>{{XPath.SelectNodes request.body \"//*[local-name()='TokenIdLijst']\"}}</response>")
+                .WithBody("<response>{{XPath.SelectSingleNode request.body \"//*[local-name()='TokenIdLijst']\"}}</response>")
+                // .WithBody("<response>{{XPath.SelectNodes request.body \"//*[local-name()='TokenIdLijst']//*[local-name()='TokenId']\"}}</response>")
                 .WithTransformer();
 
             // Act
             var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
-            var nodes = nav.XPath2SelectNodes("/response/todo-item");
-            Check.That(nodes.Count + 1).IsEqualTo(3);
+            response.Message.BodyData.BodyAsString.Should().Contain("TokenIdLijst").And.Contain("0000083256").And.Contain("0000083259");
         }
 
         [Fact]
