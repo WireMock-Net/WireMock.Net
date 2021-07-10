@@ -121,10 +121,9 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_SelectNodes_Request_SoapXML_BodyAsString()
+        public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_SoapXML_BodyAsString()
         {
             // Assign
-            //<?xml version='1.0' standalone='no'?>
             string soap = @"
 <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ns=""http://www.Test.nl/XMLHeader/10"" xmlns:req=""http://www.Test.nl/Betalen/COU/Services/RdplDbTknLystByOvkLyst/8/Req"">
    <soapenv:Header>
@@ -168,7 +167,6 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create()
                 .WithHeader("Content-Type", "application/xml")
                 .WithBody("<response>{{XPath.SelectSingleNode request.body \"//*[local-name()='TokenIdLijst']\"}}</response>")
-                // .WithBody("<response>{{XPath.SelectNodes request.body \"//*[local-name()='TokenIdLijst']//*[local-name()='TokenId']\"}}</response>")
                 .WithTransformer();
 
             // Act
