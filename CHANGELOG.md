@@ -1,3 +1,7 @@
+# 1.4.18 (10 July 2021)
+- [#619](https://github.com/WireMock-Net/WireMock.Net/pull/619) - Update Handlebars.Net.Helpers.XPath to fix issue with 'xml version' contributed by [StefH](https://github.com/StefH)
+- [#618](https://github.com/WireMock-Net/WireMock.Net/issues/618) - Trying to use attribute of the request object while creating response while mocking a soap service [bug]
+
 # 1.4.17 (07 July 2021)
 - [#617](https://github.com/WireMock-Net/WireMock.Net/pull/617) - Add support for Handlebars.Net.Helpers.Humanizer [feature] contributed by [StefH](https://github.com/StefH)
 
