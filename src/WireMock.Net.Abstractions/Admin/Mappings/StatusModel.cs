@@ -5,7 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// Status
     /// </summary>
-#if !NET45
+#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
 #endif
     public class StatusModel
