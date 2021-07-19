@@ -3,6 +3,9 @@
     /// <summary>
     /// EncodingModel
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class EncodingModel
     {
         /// <summary>

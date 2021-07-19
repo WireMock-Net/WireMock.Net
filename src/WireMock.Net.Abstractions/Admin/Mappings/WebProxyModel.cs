@@ -3,6 +3,9 @@
     /// <summary>
     /// WebProxy settings
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class WebProxyModel
     {
         /// <summary>

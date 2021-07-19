@@ -3,6 +3,9 @@
     /// <summary>
     /// ClientIPModel
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class ClientIPModel
     {
         /// <summary>

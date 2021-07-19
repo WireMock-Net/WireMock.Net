@@ -34,4 +34,8 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
+    <PackageReference Include="FluentBuilder" Version="0.0.1" />
+  </ItemGroup>
+
 </Project>

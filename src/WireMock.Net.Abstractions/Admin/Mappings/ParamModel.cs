@@ -3,6 +3,10 @@
     /// <summary>
     /// Param Model
     /// </summary>
+
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class ParamModel
     {
         /// <summary>

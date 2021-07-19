@@ -22,6 +22,11 @@ namespace WireMock.Net.Client
             var settings1 = await api.GetSettingsAsync();
             Console.WriteLine($"settings1 = {JsonConvert.SerializeObject(settings1)}");
 
+            var settingsViaBuilder = new FluentBuilder.SettingsModelBuilder()
+                .WithGlobalProcessingDelay(1077)
+                .WithoutGlobalProcessingDelay()
+                .Build();
+
             settings1.GlobalProcessingDelay = 1077;
             api.PostSettingsAsync(settings1).Wait();
 

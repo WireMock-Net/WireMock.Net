@@ -5,6 +5,9 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// RequestModel
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class WebhookRequestModel
     {
         /// <summary>

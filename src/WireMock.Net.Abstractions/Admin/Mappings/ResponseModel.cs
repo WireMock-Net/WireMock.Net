@@ -5,6 +5,9 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// ResponseModel
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class ResponseModel
     {
         /// <summary>

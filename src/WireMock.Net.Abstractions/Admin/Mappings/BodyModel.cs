@@ -3,6 +3,9 @@
     /// <summary>
     /// Body Model
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class BodyModel
     {
         /// <summary>

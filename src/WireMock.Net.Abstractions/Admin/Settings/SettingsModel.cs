@@ -3,6 +3,9 @@
     /// <summary>
     /// Settings
     /// </summary>
+#if !NET45
+    [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class SettingsModel
     {
         /// <summary>
