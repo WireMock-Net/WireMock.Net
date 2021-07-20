@@ -3,9 +3,7 @@
     /// <summary>
     /// WebProxy settings
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class WebProxyModel
     {
         /// <summary>

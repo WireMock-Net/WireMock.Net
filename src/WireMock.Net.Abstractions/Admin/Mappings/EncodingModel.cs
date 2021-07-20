@@ -3,9 +3,7 @@
     /// <summary>
     /// EncodingModel
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class EncodingModel
     {
         /// <summary>

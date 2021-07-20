@@ -3,9 +3,7 @@
     /// <summary>
     /// ScenarioStateModel
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class ScenarioStateModel
     {
         /// <summary>

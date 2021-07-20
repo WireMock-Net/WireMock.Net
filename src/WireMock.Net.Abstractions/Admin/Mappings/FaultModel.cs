@@ -3,9 +3,7 @@
     /// <summary>
     /// Fault Model
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class FaultModel
     {
         /// <summary>

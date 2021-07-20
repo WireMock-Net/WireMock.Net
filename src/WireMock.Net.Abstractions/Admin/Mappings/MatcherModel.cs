@@ -3,9 +3,7 @@
     /// <summary>
     /// MatcherModel
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class MatcherModel
     {
         /// <summary>

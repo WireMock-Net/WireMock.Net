@@ -7,9 +7,7 @@ namespace WireMock.Admin.Requests
     /// <summary>
     /// Response MessageModel
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class LogResponseModel
     {
         /// <summary>

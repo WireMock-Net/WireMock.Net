@@ -5,9 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// Cookie Model
     /// </summary>
-#if !STEF_NET45
     [FluentBuilder.AutoGenerateBuilder]
-#endif
     public class CookieModel
     {
         /// <summary>
