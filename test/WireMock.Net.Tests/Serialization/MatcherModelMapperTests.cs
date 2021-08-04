@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;
@@ -121,6 +121,7 @@ namespace WireMock.Net.Tests.Serialization
         [InlineData(nameof(WildcardMatcher))]
         [InlineData(nameof(ContentTypeMatcher))]
         [InlineData(nameof(SimMetricsMatcher))]
+        [InlineData(nameof(NotNullOrEmptyMatcher))]
         public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
         {
             // Assign
