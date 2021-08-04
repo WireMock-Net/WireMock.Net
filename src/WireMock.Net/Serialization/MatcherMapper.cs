@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -44,6 +44,9 @@ namespace WireMock.Serialization
 
             switch (matcherName)
             {
+                case "NotNullOrEmptyMatcher":
+                    return new NotNullOrEmptyMatcher(matchBehaviour);
+
                 case "CSharpCodeMatcher":
                     if (_settings.AllowCSharpCodeMatcher == true)
                     {
