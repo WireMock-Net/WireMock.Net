@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;

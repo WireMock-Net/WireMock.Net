@@ -123,6 +123,22 @@ namespace WireMock.Matchers.Request
 
         private double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
         {
+            if (matcher is NotNullOrEmptyMatcher notNullOrEmptyMatcher)
+            {
+                switch (requestMessage?.BodyData?.DetectedBodyType)
+                {
+                    case BodyType.Json:
+                    case BodyType.String:
+                        return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
+
+                    case BodyType.Bytes:
+                        return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
+
+                    default:
+                        return MatchScores.Mismatch;
+                }
+            }
+
             if (matcher is ExactObjectMatcher exactObjectMatcher)
             {
                 // If the body is a byte array, try to match.
