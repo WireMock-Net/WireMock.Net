@@ -121,7 +121,6 @@ namespace WireMock.Net.Tests.Serialization
         [InlineData(nameof(WildcardMatcher))]
         [InlineData(nameof(ContentTypeMatcher))]
         [InlineData(nameof(SimMetricsMatcher))]
-        [InlineData(nameof(NotNullOrEmptyMatcher))]
         public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
         {
             // Assign
