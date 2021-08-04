@@ -3,6 +3,7 @@
     /// <summary>
     /// Param Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class ParamModel
     {
         /// <summary>

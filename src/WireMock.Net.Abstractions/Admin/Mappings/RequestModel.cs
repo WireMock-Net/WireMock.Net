@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// RequestModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class RequestModel
     {
         /// <summary>

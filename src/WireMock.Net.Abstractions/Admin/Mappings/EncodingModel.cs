@@ -3,6 +3,7 @@
     /// <summary>
     /// EncodingModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class EncodingModel
     {
         /// <summary>

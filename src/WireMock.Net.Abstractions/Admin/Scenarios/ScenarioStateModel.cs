@@ -3,6 +3,7 @@
     /// <summary>
     /// ScenarioStateModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class ScenarioStateModel
     {
         /// <summary>

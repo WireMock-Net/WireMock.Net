@@ -3,6 +3,7 @@
     /// <summary>
     /// Settings
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class SettingsModel
     {
         /// <summary>
