@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// Status
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class StatusModel
     {
         /// <summary>

@@ -3,6 +3,7 @@
     /// <summary>
     /// Body Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class BodyModel
     {
         /// <summary>

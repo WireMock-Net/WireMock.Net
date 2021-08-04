@@ -3,6 +3,7 @@
     /// <summary>
     /// WebProxy settings
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class WebProxyModel
     {
         /// <summary>

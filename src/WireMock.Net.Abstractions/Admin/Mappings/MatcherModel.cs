@@ -3,6 +3,7 @@
     /// <summary>
     /// MatcherModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class MatcherModel
     {
         /// <summary>

@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// Cookie Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class CookieModel
     {
         /// <summary>

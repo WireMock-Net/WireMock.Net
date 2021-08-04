@@ -3,6 +3,7 @@
     /// <summary>
     /// ClientIPModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class ClientIPModel
     {
         /// <summary>

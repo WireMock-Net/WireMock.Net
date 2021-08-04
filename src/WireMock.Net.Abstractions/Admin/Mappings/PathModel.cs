@@ -3,6 +3,7 @@
     /// <summary>
     /// PathModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class PathModel
     {
         /// <summary>

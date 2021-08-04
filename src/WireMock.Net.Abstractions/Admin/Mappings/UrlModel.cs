@@ -3,6 +3,7 @@
     /// <summary>
     /// UrlModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class UrlModel
     {
         /// <summary>

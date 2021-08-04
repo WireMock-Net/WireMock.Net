@@ -3,6 +3,7 @@
     /// <summary>
     /// The Webhook
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class WebhookModel
     {
         /// <summary>
