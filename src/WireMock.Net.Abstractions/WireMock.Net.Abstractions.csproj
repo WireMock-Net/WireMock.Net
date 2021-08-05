@@ -32,7 +32,9 @@
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="FluentBuilder" Version="0.0.5">
+
+        <!-- https://www.meziantou.net/strongly-typed-ids-with-csharp-source-generators.htm -->
+        <PackageReference Include="FluentBuilder" Version="0.0.6">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
