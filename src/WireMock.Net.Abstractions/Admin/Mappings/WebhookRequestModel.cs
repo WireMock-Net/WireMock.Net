@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// RequestModel
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class WebhookRequestModel
     {
         /// <summary>

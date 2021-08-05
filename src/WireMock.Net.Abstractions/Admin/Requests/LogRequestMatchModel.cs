@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace WireMock.Admin.Requests
 {
     /// <summary>
     /// LogRequestMatchModel
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class LogRequestMatchModel
     {
         /// <summary>

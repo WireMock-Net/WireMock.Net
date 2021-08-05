@@ -1,9 +1,11 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// EncodingModel
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class EncodingModel
     {
         /// <summary>

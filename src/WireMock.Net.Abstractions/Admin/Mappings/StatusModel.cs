@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 
 namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// Status
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class StatusModel
     {
         /// <summary>

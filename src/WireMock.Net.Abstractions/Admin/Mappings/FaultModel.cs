@@ -1,9 +1,11 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// Fault Model
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class FaultModel
     {
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using WireMock.Admin.Mappings;
 using WireMock.Types;
@@ -8,7 +8,9 @@ namespace WireMock.Admin.Requests
     /// <summary>
     /// RequestMessage Model
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class LogRequestModel
     {
         /// <summary>

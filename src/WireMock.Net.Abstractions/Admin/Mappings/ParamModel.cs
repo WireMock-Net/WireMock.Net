@@ -1,9 +1,11 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// Param Model
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class ParamModel
     {
         /// <summary>

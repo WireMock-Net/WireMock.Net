@@ -1,9 +1,11 @@
-﻿namespace WireMock.Admin.Settings
+namespace WireMock.Admin.Settings
 {
     /// <summary>
     /// Settings
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class SettingsModel
     {
         /// <summary>

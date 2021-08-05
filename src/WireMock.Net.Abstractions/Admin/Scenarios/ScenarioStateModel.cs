@@ -1,9 +1,11 @@
-﻿namespace WireMock.Admin.Scenarios
+namespace WireMock.Admin.Scenarios
 {
     /// <summary>
     /// ScenarioStateModel
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class ScenarioStateModel
     {
         /// <summary>

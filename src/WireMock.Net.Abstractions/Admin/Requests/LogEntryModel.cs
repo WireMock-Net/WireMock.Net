@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 
 namespace WireMock.Admin.Requests
 {
     /// <summary>
     /// Request Log Model
     /// </summary>
+#if RESTCLIENT
     [FluentBuilder.AutoGenerateBuilder]
+#endif
     public class LogEntryModel
     {
         /// <summary>
