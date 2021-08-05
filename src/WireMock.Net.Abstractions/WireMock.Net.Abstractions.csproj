@@ -1,38 +1,41 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Commonly used interfaces, models, enumerations and types.</Description>
-    <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
-    <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
-    <PackageId>WireMock.Net.Abstractions</PackageId>
-    <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
-    <RootNamespace>WireMock</RootNamespace>
-    <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-    <!--<DelaySign>true</DelaySign>-->
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>Commonly used interfaces, models, enumerations and types.</Description>
+        <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
+        <PackageId>WireMock.Net.Abstractions</PackageId>
+        <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
+        <RootNamespace>WireMock</RootNamespace>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="FluentBuilder" Version="0.0.4" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="FluentBuilder" Version="0.0.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
 </Project>
