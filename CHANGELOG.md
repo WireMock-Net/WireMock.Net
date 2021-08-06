@@ -1,3 +1,7 @@
+# 1.4.20 (06 August 2021)
+- [#628](https://github.com/WireMock-Net/WireMock.Net/pull/628) - Fix issue with FluentBuilder [bug] contributed by [StefH](https://github.com/StefH)
+- [#626](https://github.com/WireMock-Net/WireMock.Net/issues/626) - version 1.4.19 throws a lot of analyzer errors related to the BaseBuilder.cs [bug]
+
 # 1.4.19 (04 August 2021)
 - [#622](https://github.com/WireMock-Net/WireMock.Net/pull/622) - Add FluentBuilder for client models [feature] contributed by [StefH](https://github.com/StefH)
 - [#625](https://github.com/WireMock-Net/WireMock.Net/pull/625) - Add NotNullOrEmptyMatcher [feature] contributed by [StefH](https://github.com/StefH)
