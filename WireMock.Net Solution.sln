@@ -23,10 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		azure-pipelines-ci-linux.yml = azure-pipelines-ci-linux.yml
-		azure-pipelines-ci.yml = azure-pipelines-ci.yml
-		azure-pipelines-linux.yml = azure-pipelines-linux.yml
-		azure-pipelines-nuget.yml = azure-pipelines-nuget.yml
 		build-info.md = build-info.md
 		CHANGELOG.md = CHANGELOG.md
 		Directory.Build.props = Directory.Build.props
@@ -82,6 +78,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Matchers.CSharpCode", "src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj", "{B6269AAC-170A-4346-8B9A-444DED3D9A44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Net472.Classic", "examples\WireMock.Net.Console.Net472.Classic\WireMock.Net.Console.Net472.Classic.csproj", "{6580580B-1EFD-4922-B0EC-FF290DB279EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{1DAEFF47-D117-4E95-8B3E-4F7C8B92011A}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\CreateRelease.yml = .github\workflows\CreateRelease.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Pipelines", "Azure Pipelines", "{5B64F6CA-BF6B-4F67-BB2A-9C47E441703E}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines-ci-linux.yml = azure-pipelines-ci-linux.yml
+		azure-pipelines-ci.yml = azure-pipelines-ci.yml
+		azure-pipelines-linux.yml = azure-pipelines-linux.yml
+		azure-pipelines-nuget.yml = azure-pipelines-nuget.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,6 +248,8 @@ Global
 		{3F8CF0AE-5F24-4A54-89E7-A3EE829DB5F8} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
 		{B6269AAC-170A-4346-8B9A-444DED3D9A44} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{6580580B-1EFD-4922-B0EC-FF290DB279EE} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
+		{1DAEFF47-D117-4E95-8B3E-4F7C8B92011A} = {7EFB2C5B-1BB2-4AAF-BC9F-216ED80C594D}
+		{5B64F6CA-BF6B-4F67-BB2A-9C47E441703E} = {7EFB2C5B-1BB2-4AAF-BC9F-216ED80C594D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}
