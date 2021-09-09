@@ -2,18 +2,18 @@
 
     <PropertyGroup>
         <Description>Commonly used interfaces, models, enumerations and types.</Description>
-        <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
+        <AssemblyTitle>WireMock.Org.Abstractions</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591;8603</NoWarn>
 
-        <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
-        <PackageId>WireMock.Net.Abstractions</PackageId>
-        <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
+        <AssemblyName>WireMock.Org.Abstractions</AssemblyName>
+        <PackageId>WireMock.Org.Abstractions</PackageId>
+        <PackageTags>wiremock;wiremock.org;interfaces;models;classes;enumerations;types</PackageTags>
         <RootNamespace>WireMock</RootNamespace>
-        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
+        <ProjectGuid>{3BA5109E-5F30-4CC2-B699-02EC82560AA6}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
