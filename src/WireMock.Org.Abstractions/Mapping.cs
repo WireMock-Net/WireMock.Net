@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Mappings
+    public class Mapping
     {
         /// <summary>
         /// This stub mapping's unique identifier

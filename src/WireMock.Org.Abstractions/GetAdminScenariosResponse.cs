@@ -5,6 +5,6 @@ namespace WireMock.Org.Abstractions
 {
     public class GetAdminScenariosResponse
     {
-        public Scenarios[] Scenarios { get; set; }
+        public Scenario[] Scenarios { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace WireMock.Org.Abstractions
 {
     public class GetAdminMappingsResponse
     {
-        public Mappings[] Mappings { get; set; }
+        public Mapping[] Mappings { get; set; }
 
         public Meta Meta { get; set; }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class NearMisses
+    public class NearMiss
     {
         /// <summary>
         /// The HTTP request method

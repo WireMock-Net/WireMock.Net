@@ -5,6 +5,6 @@ namespace WireMock.Org.Abstractions
 {
     public class PostAdminNearMissesRequestResponse
     {
-        public NearMisses[] NearMisses { get; set; }
+        public NearMiss[] NearMisses { get; set; }
     }
 }

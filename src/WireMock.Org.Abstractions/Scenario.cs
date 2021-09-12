@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Scenarios
+    public class Scenario
     {
         /// <summary>
         /// The scenario ID
