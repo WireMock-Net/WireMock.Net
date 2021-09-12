@@ -20,7 +20,7 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        public object Request { get; set; }
+        public Request Request { get; set; }
 
         /// <summary>
         /// Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.

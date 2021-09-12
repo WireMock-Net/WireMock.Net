@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class PostAdminRequestsRemoveRequest
+    public class Request
     {
         /// <summary>
         /// The HTTP request method e.g. GET

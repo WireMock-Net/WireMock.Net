@@ -31,27 +31,27 @@ namespace WireMock.Org.Abstractions
         public string UrlPattern { get; set; }
 
         /// <summary>
-        /// Query parameter patterns to match against in the <key>: { "<predicate>": "<value>" } form
+        /// Query parameter patterns to match against in the : { "": "" } form
         /// </summary>
         public object QueryParameters { get; set; }
 
         /// <summary>
-        /// Header patterns to match against in the <key>: { "<predicate>": "<value>" } form
+        /// Header patterns to match against in the : { "": "" } form
         /// </summary>
         public object Headers { get; set; }
 
         /// <summary>
         /// Pre-emptive basic auth credentials to match against
         /// </summary>
-        public object BasicAuthCredentials { get; set; }
+        public BasicAuthCredentials BasicAuthCredentials { get; set; }
 
         /// <summary>
-        /// Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form
+        /// Cookie patterns to match against in the : { "": "" } form
         /// </summary>
         public object Cookies { get; set; }
 
         /// <summary>
-        /// Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form
+        /// Request body patterns to match against in the : { "": "" } form
         /// </summary>
         public object[] BodyPatterns { get; set; }
     }

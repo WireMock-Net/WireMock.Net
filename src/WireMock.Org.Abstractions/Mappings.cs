@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class MappingsModel
+    public class Mappings
     {
         /// <summary>
         /// This stub mapping's unique identifier
@@ -20,7 +20,10 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        public object Request { get; set; }
+        /// <summary>
+        /// The 'request'
+        /// </summary>
+        public Request Request { get; set; }
 
         /// <summary>
         /// Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.
