@@ -28,7 +28,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/mappings")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminMappingsResponse> PostAdminMappingsAsync([Body] PostAdminMappingsRequest request);
+        Task<Mapping> PostAdminMappingsAsync([Body] Mapping request);
 
         /// <summary>
         /// Delete all stub mappings
@@ -52,7 +52,7 @@ namespace WireMock.Org.RestClient
         /// Get stub mapping by ID
         /// </summary>
         [Get("/__admin/mappings/{stubMappingId}")]
-        Task<GetAdminMappingsByStubMappingIdResponse> GetAdminMappingsByStubMappingIdAsync();
+        Task<Mapping> GetAdminMappingsByStubMappingIdAsync();
 
         /// <summary>
         /// Update a stub mapping
@@ -60,7 +60,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Put("/__admin/mappings/{stubMappingId}")]
         [Header("Content-Type", "application/json")]
-        Task<PutAdminMappingsByStubMappingIdResponse> PutAdminMappingsByStubMappingIdAsync([Body] PutAdminMappingsByStubMappingIdRequest request);
+        Task<Mapping> PutAdminMappingsByStubMappingIdAsync([Body] Mapping request);
 
         /// <summary>
         /// Delete a stub mapping
@@ -73,7 +73,7 @@ namespace WireMock.Org.RestClient
         /// </summary>
         [Post("/__admin/mappings/find-by-metadata")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminMappingsFindByMetadataResponse> PostAdminMappingsFindByMetadataAsync();
+        Task<GetAdminMappingsResponse> PostAdminMappingsFindByMetadataAsync();
 
         /// <summary>
         /// Delete stub mappings matching metadata
@@ -122,7 +122,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/requests/count")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminRequestsCountResponse> PostAdminRequestsCountAsync([Body] PostAdminRequestsCountRequest request);
+        Task<PostAdminRequestsCountResponse> PostAdminRequestsCountAsync([Body] Request request);
 
         /// <summary>
         /// Remove requests by criteria
@@ -130,7 +130,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/requests/remove")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRequestsRemoveAsync([Body] PostAdminRequestsRemoveRequest request);
+        Task PostAdminRequestsRemoveAsync([Body] Request request);
 
         /// <summary>
         /// Delete requests mappings matching metadata
@@ -145,7 +145,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/requests/find")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRequestsFindAsync([Body] PostAdminRequestsFindRequest request);
+        Task PostAdminRequestsFindAsync([Body] Request request);
 
         /// <summary>
         /// Find unmatched requests
@@ -165,7 +165,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/near-misses/request")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminNearMissesRequestResponse> PostAdminNearMissesRequestAsync([Body] PostAdminNearMissesRequestRequest request);
+        Task<GetAdminRequestsUnmatchedNearMissesResponse> PostAdminNearMissesRequestAsync([Body] NearMiss request);
 
         /// <summary>
         /// Find near misses matching request pattern
@@ -173,7 +173,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/near-misses/request-pattern")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminNearMissesRequestPatternResponse> PostAdminNearMissesRequestPatternAsync([Body] PostAdminNearMissesRequestPatternRequest request);
+        Task<GetAdminRequestsUnmatchedNearMissesResponse> PostAdminNearMissesRequestPatternAsync([Body] Request request);
 
         /// <summary>
         /// Start recording
@@ -186,7 +186,7 @@ namespace WireMock.Org.RestClient
         /// Stop recording
         /// </summary>
         [Post("/__admin/recordings/stop")]
-        Task<PostAdminRecordingsStopResponse> PostAdminRecordingsStopAsync();
+        Task<GetAdminMappingsResponse> PostAdminRecordingsStopAsync();
 
         /// <summary>
         /// Get recording status
@@ -200,7 +200,7 @@ namespace WireMock.Org.RestClient
         /// <param name="request"></param>
         [Post("/__admin/recordings/snapshot")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminRecordingsSnapshotResponse> PostAdminRecordingsSnapshotAsync([Body] object request);
+        Task<GetAdminMappingsResponse> PostAdminRecordingsSnapshotAsync([Body] object request);
 
         /// <summary>
         /// Get all scenarios

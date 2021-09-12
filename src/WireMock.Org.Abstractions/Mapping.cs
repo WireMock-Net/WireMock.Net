@@ -20,9 +20,6 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// The 'request'
-        /// </summary>
         public Request Request { get; set; }
 
         /// <summary>

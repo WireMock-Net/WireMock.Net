@@ -21,12 +21,12 @@ namespace WireMock.Org.Abstractions
         public string AbsoluteUrl { get; set; }
 
         /// <summary>
-        /// Header patterns to match against in the : { "": "" } form
+        /// Header patterns to match against in the &lt;key&gt;: { "&lt;predicate&gt;": "&lt;value&gt;" } form
         /// </summary>
         public object Headers { get; set; }
 
         /// <summary>
-        /// Cookie patterns to match against in the : { "": "" } form
+        /// Cookie patterns to match against in the &lt;key&gt;: { "&lt;predicate&gt;": "&lt;value&gt;" } form
         /// </summary>
         public object Cookies { get; set; }
 
