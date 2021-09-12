@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Commonly used interfaces, models, enumerations and types.</Description>
+        <Description>Commonly used models, enumerations and types.</Description>
         <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
@@ -11,7 +11,7 @@
 
         <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
         <PackageId>WireMock.Net.Abstractions</PackageId>
-        <PackageTags>wiremock;interfaces;models;classes;enumerations;types</PackageTags>
+        <PackageTags>wiremock;wiremock.org;interfaces;models;classes;enumerations;types</PackageTags>
         <RootNamespace>WireMock</RootNamespace>
         <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
