@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMockOrg.Models
 {
-    public class GetAdminScenariosResult
+    public class PostAdminRecordingsSnapshotRequest
     {
-        public object[] Scenarios { get; set; }
     }
 }

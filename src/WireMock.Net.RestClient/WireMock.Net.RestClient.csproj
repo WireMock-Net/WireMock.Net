@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>A RestClient using RestEase to access the admin interface.</Description>
@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="RestEase" Version="1.4.10" />
+    <PackageReference Include="RestEase" Version="1.5.5" />
   </ItemGroup>
 
   <ItemGroup>

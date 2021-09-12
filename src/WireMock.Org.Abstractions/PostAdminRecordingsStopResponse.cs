@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace WireMockOrg.Models
 {
-    public class PostAdminRecordingsStopResult
+    public class PostAdminRecordingsStopResponse
     {
-        public object[] Mappings { get; set; }
+        public MappingsModel[] Mappings { get; set; }
 
         public object Meta { get; set; }
     }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace WireMockOrg.Models
 {
-    public class PostAdminMappingsFindByMetadataResult
+    public class GetAdminMappingsResponse
     {
-        public object[] Mappings { get; set; }
+        public MappingsModel[] Mappings { get; set; }
 
         public object Meta { get; set; }
     }

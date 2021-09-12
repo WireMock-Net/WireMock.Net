@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace WireMockOrg.Models
 {
-    public class PostAdminRequestsCountResult
+    public class GetAdminRecordingsStatusResponse
     {
-        public int Count { get; set; }
+        public string Status { get; set; }
     }
 }
