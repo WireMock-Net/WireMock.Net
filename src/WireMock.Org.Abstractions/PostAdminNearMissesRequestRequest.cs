@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WireMockOrg.Models
+namespace WireMock.Org.Abstractions
 {
     public class PostAdminNearMissesRequestRequest
     {

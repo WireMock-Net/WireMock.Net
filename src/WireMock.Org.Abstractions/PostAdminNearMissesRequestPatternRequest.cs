@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WireMockOrg.Models
+namespace WireMock.Org.Abstractions
 {
     public class PostAdminNearMissesRequestPatternRequest
     {
@@ -53,6 +53,6 @@ namespace WireMockOrg.Models
         /// <summary>
         /// Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form
         /// </summary>
-        public BodyPatternsModel[] BodyPatterns { get; set; }
+        public object[] BodyPatterns { get; set; }
     }
 }

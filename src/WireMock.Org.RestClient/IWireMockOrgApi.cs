@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using RestEase;
-using WireMockOrg.Models;
+using WireMock.Org.Abstractions;
 
-namespace WireMockOrg.Api
+namespace WireMock.Org.RestClient
 {
     /// <summary>
     /// WireMockOrg
@@ -200,7 +200,7 @@ namespace WireMockOrg.Api
         /// <param name="request"></param>
         [Post("/__admin/recordings/snapshot")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminRecordingsSnapshotResponse> PostAdminRecordingsSnapshotAsync([Body] PostAdminRecordingsSnapshotRequest request);
+        Task<PostAdminRecordingsSnapshotResponse> PostAdminRecordingsSnapshotAsync([Body] object request);
 
         /// <summary>
         /// Get all scenarios
