@@ -227,22 +227,7 @@ namespace WireMock.Server
                     continue;
                 }
 
-                IStringMatcher matcher = null;
-                switch (match?.Name)
-                {
-                    case "contains":
-                        matcher = new WildcardMatcher(valueAsString);
-                        break;
-
-                    case "matches":
-                        matcher = new RegexMatcher(valueAsString);
-                        break;
-
-                    case "equalTo":
-                        matcher = new ExactMatcher(valueAsString);
-                        break;
-                }
-
+                var matcher = ProcessAsStringMatcher(match, valueAsString);
                 if (matcher != null)
                 {
                     action(key, matcher);
@@ -253,19 +238,45 @@ namespace WireMock.Server
         private void ProcessWireMockOrgJObjectAndUseIMatcher(JObject items, Action<IMatcher> action)
         {
             IMatcher matcher = null;
-            foreach (var item in items)
+
+            var firstItem = items.First as JProperty;
+
+            if (firstItem?.Name == "equalToJson")
             {
-                switch (item.Key)
+                matcher = new JsonMatcher(firstItem.Value);
+            }
+            else
+            {
+                var valueAsString = (firstItem.Value as JValue)?.Value as string;
+                if (valueAsString == null)
                 {
-                    case "equalToJson":
-                        matcher = new JsonMatcher(item.Value);
-                        break;
+                    return;
                 }
+
+                matcher = ProcessAsStringMatcher(firstItem, valueAsString);
             }
 
             if (matcher != null)
             {
                 action(matcher);
+            }
+        }
+
+        private static IStringMatcher ProcessAsStringMatcher(JProperty match, string valueAsString)
+        {
+            switch (match?.Name)
+            {
+                case "contains":
+                    return new WildcardMatcher(valueAsString);
+
+                case "matches":
+                    return new RegexMatcher(valueAsString);
+
+                case "equalTo":
+                    return new ExactMatcher(valueAsString);
+
+                default:
+                    return null;
             }
         }
     }
