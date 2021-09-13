@@ -231,8 +231,11 @@ namespace WireMock.Server
                 switch (match?.Name)
                 {
                     case "contains":
-                    case "matches":
                         matcher = new WildcardMatcher(valueAsString);
+                        break;
+
+                    case "matches":
+                        matcher = new RegexMatcher(valueAsString);
                         break;
 
                     case "equalTo":
