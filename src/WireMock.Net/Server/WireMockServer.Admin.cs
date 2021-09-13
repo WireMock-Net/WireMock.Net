@@ -39,6 +39,7 @@ namespace WireMock.Server
         private const string ContentTypeJson = "application/json";
         private const string AdminFiles = "/__admin/files";
         private const string AdminMappings = "/__admin/mappings";
+        private const string AdminMappingsWireMockOrg = "/__admin/mappings/wiremock.org";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
@@ -58,6 +59,7 @@ namespace WireMock.Server
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
             Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappingsWireMockOrg).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPostWireMockOrg));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset

@@ -20,8 +20,6 @@ namespace WireMock.Server
         {
             Check.NotNull(path, nameof(path));
 
-            // string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
-
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
                 var mappings = DeserializeJsonToArray<OrgMapping>(value);
@@ -32,7 +30,37 @@ namespace WireMock.Server
             }
         }
 
-        private void Map(OrgMapping mapping)
+        private ResponseMessage MappingsPostWireMockOrg(RequestMessage requestMessage)
+        {
+            try
+            {
+                var mappingModels = DeserializeRequestMessageToArray<OrgMapping>(requestMessage);
+                if (mappingModels.Length == 1)
+                {
+                    Guid? guid = Map(mappingModels[0]);
+                    return ResponseMessageBuilder.Create("Mapping added", 201, guid);
+                }
+
+                foreach (var mappingModel in mappingModels)
+                {
+                    Map(mappingModel);
+                }
+
+                return ResponseMessageBuilder.Create("Mappings added", 201);
+            }
+            catch (ArgumentException a)
+            {
+                _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
+                return ResponseMessageBuilder.Create(a.Message, 400);
+            }
+            catch (Exception e)
+            {
+                _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
+                return ResponseMessageBuilder.Create(e.ToString(), 500);
+            }
+        }
+
+        private Guid? Map(OrgMapping mapping)
         {
             var requestBuilder = Request.Create();
 
@@ -60,8 +88,6 @@ namespace WireMock.Server
                 {
                     requestBuilder = requestBuilder.UsingMethod(request.Method);
                 }
-
-
 
                 /*
                 "headers" : {
@@ -103,7 +129,7 @@ namespace WireMock.Server
 
                 /*
                  "bodyPatterns" : [ {
-                  "equalToJson" : "{ \"cityName\": \"São Paulo\", \"cityCode\": 5001 }",
+                  "equalToJson" : "{ "cityName": "São Paulo", "cityCode": 5001 },
                   "ignoreArrayOrder" : true,
                   "ignoreExtraElements" : true
                 } ]
@@ -112,7 +138,7 @@ namespace WireMock.Server
                 {
                     var jObjectArray = request.BodyPatterns.Cast<JObject>();
                     var bodyPattern = jObjectArray.First();
-                    ProcessWireMockOrgJObjectAndUseValueMatcher(bodyPattern, (match) =>
+                    ProcessWireMockOrgJObjectAndUseIMatcher(bodyPattern, (match) =>
                     {
                         requestBuilder = requestBuilder.WithBody(match);
                     });
@@ -126,9 +152,12 @@ namespace WireMock.Server
             {
                 responseBuilder = responseBuilder.WithStatusCode(response.Status);
 
-                if (response.Headers is IDictionary<string, string> responseHeaders)
+                if (response.Headers is JObject responseHeaders)
                 {
-                    responseBuilder = responseBuilder.WithHeaders(responseHeaders);
+                    ProcessWireMockOrgJObjectAndConvertToIDictionary(responseHeaders, (headers) =>
+                    {
+                        responseBuilder = responseBuilder.WithHeaders(headers);
+                    });
                 }
 
                 if (response.Transformers != null)
@@ -155,46 +184,35 @@ namespace WireMock.Server
                 {
                     responseBuilder = responseBuilder.WithBodyFromFile(response.BodyFileName);
                 }
-
-                var respondProvider = Given(requestBuilder);
-                if (mapping.Uuid != null)
-                {
-                    respondProvider = respondProvider.WithGuid(new Guid(mapping.Uuid));
-                }
-
-                if (mapping.Name != null)
-                {
-                    respondProvider = respondProvider.WithTitle(mapping.Name);
-                }
-
-                respondProvider.RespondWith(responseBuilder);
             }
 
-            /*
-             * {
-        *      "id" : "365dd908-dc67-4f27-9e41-15d908206d81",
-        *      "name" : "weatherforecast_register-city",
-        *      "request" : {
-        *        "url" : "/WeatherForecast/register-city",
-        *       "method" : "POST",
-                "bodyPatterns" : [ {
-                  "equalToJson" : "{ \"cityName\": \"São Paulo\", \"cityCode\": 5001 }",
-                  "ignoreArrayOrder" : true,
-                  "ignoreExtraElements" : true
-                } ]
-              },
-              "response" : {
-         *       "status" : 200,
-         *       "headers" : {
-         *         "Date" : "Wed, 08 Sep 2021 23:48:33 GMT",
-         *         "Server" : "Kestrel"
-                }
-              },
-              "uuid" : "365dd908-dc67-4f27-9e41-15d908206d81",
-              "persistent" : true,
-              "insertionIndex" : 4
+            var respondProvider = Given(requestBuilder);
+            if (mapping.Uuid != null)
+            {
+                respondProvider = respondProvider.WithGuid(new Guid(mapping.Uuid));
             }
-             */
+
+            if (mapping.Name != null)
+            {
+                respondProvider = respondProvider.WithTitle(mapping.Name);
+            }
+
+            respondProvider.RespondWith(responseBuilder);
+
+            return respondProvider.Guid;
+        }
+
+        private void ProcessWireMockOrgJObjectAndConvertToIDictionary(JObject items, Action<IDictionary<string, string>> action)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var item in items)
+            {
+                var key = item.Key;
+                var valueAsString = item.Value.Value<string>();
+                dict.Add(key, valueAsString);
+            }
+
+            action(dict);
         }
 
         private void ProcessWireMockOrgJObjectAndUseStringMatcher(JObject items, Action<string, IStringMatcher> action)
@@ -203,13 +221,22 @@ namespace WireMock.Server
             {
                 var key = item.Key;
                 var match = item.Value.First as JProperty;
+                var valueAsString = match?.Value.Value<string>();
+                if (string.IsNullOrEmpty(valueAsString))
+                {
+                    continue;
+                }
 
                 IStringMatcher matcher = null;
                 switch (match?.Name)
                 {
                     case "contains":
+                    case "matches":
+                        matcher = new WildcardMatcher(valueAsString);
+                        break;
+
                     case "equalTo":
-                        matcher = new WildcardMatcher(match.Value.Value<string>());
+                        matcher = new ExactMatcher(valueAsString);
                         break;
                 }
 
@@ -220,9 +247,9 @@ namespace WireMock.Server
             }
         }
 
-        private void ProcessWireMockOrgJObjectAndUseValueMatcher(JObject items, Action<IValueMatcher> action)
+        private void ProcessWireMockOrgJObjectAndUseIMatcher(JObject items, Action<IMatcher> action)
         {
-            IValueMatcher matcher = null;
+            IMatcher matcher = null;
             foreach (var item in items)
             {
                 switch (item.Key)

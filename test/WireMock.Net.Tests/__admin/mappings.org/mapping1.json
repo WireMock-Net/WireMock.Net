@@ -2,10 +2,10 @@
     "id": "ef53ea56-f118-4b3a-8c69-a9484851d99a",
     "name": "weatherforecast",
     "request": {
-        "url": "/WeatherForecast/register-city",
+        "path": "/WeatherForecast/register-city",
         "method": "POST",
         "headers": {
-            "Accept": {
+            "XXX": {
                 "contains": "xml"
             }
         },
@@ -14,14 +14,12 @@
                 "equalTo": "WireMock"
             }
         },
-        "cookies": {
-            "session": {
-                "matches": ".*12345.*"
-            }
-        },
         "bodyPatterns": [
             {
-                "equalToJson": "{ \"cityName\": \"São Paulo\", \"cityCode\": 5001 }",
+                "equalToJson": {
+                    "cityName": "São Paulo",
+                    "cityCode": 5001
+                },
                 "ignoreArrayOrder": true,
                 "ignoreExtraElements": true
             }
@@ -31,9 +29,7 @@
         "status": 200,
         "body": "[{\"date\":\"2021-09-09T20:44:48.0992639-03:00\",\"temperatureC\":51,\"temperatureF\":123,\"summary\":\"Hot\"},{\"date\":\"2021-09-10T20:44:48.0992692-03:00\",\"temperatureC\":34,\"temperatureF\":93,\"summary\":\"Mild\"},{\"date\":\"2021-09-11T20:44:48.0992696-03:00\",\"temperatureC\":43,\"temperatureF\":109,\"summary\":\"Sweltering\"},{\"date\":\"2021-09-12T20:44:48.0992698-03:00\",\"temperatureC\":46,\"temperatureF\":114,\"summary\":\"Cool\"},{\"date\":\"2021-09-13T20:44:48.0992701-03:00\",\"temperatureC\":3,\"temperatureF\":37,\"summary\":\"Freezing\"}]",
         "headers": {
-            "Date": "Wed, 08 Sep 2021 23:44:47 GMT",
-            "Content-Type": "application/json; charset=utf-8",
-            "Server": "Kestrel"
+            "Content-Type": "application/json; charset=utf-8"
         }
     },
     "uuid": "ef53ea56-f118-4b3a-8c69-a9484851d99a",
