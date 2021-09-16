@@ -1,4 +1,6 @@
 using System.IO;
+using System.Linq;
+using FluentAssertions;
 using WireMock.Server;
 using Xunit;
 
@@ -9,19 +11,19 @@ namespace WireMock.Net.Tests
         // For for AppVeyor + OpenCover
         private string GetCurrentFolder()
         {
-            string current = Directory.GetCurrentDirectory();
-            //if (!current.EndsWith("WireMock.Net.Tests"))
-            //    return Path.Combine(current, "test", "WireMock.Net.Tests");
-
-            return current;
+            return Directory.GetCurrentDirectory();
         }
 
         [Fact]
-        public void WireMockServer_ImportWireMockOrg()
+        public void WireMockServer_Admin_ReadStaticWireMockOrgMappingAndAddOrUpdate()
         {
             var server = WireMockServer.Start();
             string path = Path.Combine(GetCurrentFolder(), "__admin", "mappings.org", "mapping1.json");
-            server.ReadStaticWireMockOrgMapping(path);
+            server.ReadStaticWireMockOrgMappingAndAddOrUpdate(path);
+
+            var mappings = server.Mappings.ToArray();
+
+            mappings.Should().HaveCount(1);
 
             server.Stop();
         }

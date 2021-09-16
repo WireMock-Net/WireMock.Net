@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -16,16 +17,25 @@ namespace WireMock.Server
     public partial class WireMockServer
     {
         [PublicAPI]
-        public void ReadStaticWireMockOrgMapping([NotNull] string path)
+        public void ReadStaticWireMockOrgMappingAndAddOrUpdate([NotNull] string path)
         {
             Check.NotNull(path, nameof(path));
+
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
             if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
             {
                 var mappings = DeserializeJsonToArray<OrgMapping>(value);
                 foreach (var mapping in mappings)
                 {
-                    Map(mapping);
+                    if (mappings.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+                    {
+                        ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, guidFromFilename, path);
+                    }
+                    else
+                    {
+                        ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, null, path);
+                    }
                 }
             }
         }
@@ -37,13 +47,13 @@ namespace WireMock.Server
                 var mappingModels = DeserializeRequestMessageToArray<OrgMapping>(requestMessage);
                 if (mappingModels.Length == 1)
                 {
-                    Guid? guid = Map(mappingModels[0]);
+                    Guid? guid = ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModels[0]);
                     return ResponseMessageBuilder.Create("Mapping added", 201, guid);
                 }
 
                 foreach (var mappingModel in mappingModels)
                 {
-                    Map(mappingModel);
+                    ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModel);
                 }
 
                 return ResponseMessageBuilder.Create("Mappings added", 201);
@@ -60,7 +70,7 @@ namespace WireMock.Server
             }
         }
 
-        private Guid? Map(OrgMapping mapping)
+        private Guid? ConvertWireMockOrgMappingAndRegisterAsRespondProvider(OrgMapping mapping, Guid? guid = null, string path = null)
         {
             var requestBuilder = Request.Create();
 
@@ -187,7 +197,11 @@ namespace WireMock.Server
             }
 
             var respondProvider = Given(requestBuilder);
-            if (mapping.Uuid != null)
+            if (guid != null)
+            {
+                respondProvider = respondProvider.WithGuid(guid.Value);
+            }
+            else if (!string.IsNullOrEmpty(mapping.Uuid))
             {
                 respondProvider = respondProvider.WithGuid(new Guid(mapping.Uuid));
             }
@@ -195,6 +209,11 @@ namespace WireMock.Server
             if (mapping.Name != null)
             {
                 respondProvider = respondProvider.WithTitle(mapping.Name);
+            }
+
+            if (path != null)
+            {
+                respondProvider = respondProvider.WithPath(path);
             }
 
             respondProvider.RespondWith(responseBuilder);
