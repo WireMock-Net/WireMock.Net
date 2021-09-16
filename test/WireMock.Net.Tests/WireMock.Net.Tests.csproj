@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Authors>Stef Heyenrath</Authors>
@@ -51,7 +51,7 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Moq" Version="4.16.0" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="RestEase" Version="1.4.10" />
+    <PackageReference Include="RestEase" Version="1.5.5" />
     <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
@@ -70,6 +70,9 @@
 
   <ItemGroup>
     <None Update="responsebody.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="__admin\mappings.org\mapping1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">

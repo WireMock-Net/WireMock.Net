@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Commonly used models, enumerations and types.</Description>
-        <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
+        <Description>Commonly used interfaces, models, enumerations and types.</Description>
+        <AssemblyTitle>WireMock.Org.Abstractions</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591;8603</NoWarn>
 
-        <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
-        <PackageId>WireMock.Net.Abstractions</PackageId>
+        <AssemblyName>WireMock.Org.Abstractions</AssemblyName>
+        <PackageId>WireMock.Org.Abstractions</PackageId>
         <PackageTags>wiremock;wiremock.org;interfaces;models;classes;enumerations;types</PackageTags>
         <RootNamespace>WireMock</RootNamespace>
-        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A94}</ProjectGuid>
+        <ProjectGuid>{3BA5109E-5F30-4CC2-B699-02EC82560AA6}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -33,14 +33,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!--<PackageReference Include="AnyOf" Version="0.0.23" />-->
         <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-
-        <!-- See also https://mstack.nl/blog/20210801-source-generators -->
-        <PackageReference Include="FluentBuilder" Version="0.0.11">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
 </Project>
