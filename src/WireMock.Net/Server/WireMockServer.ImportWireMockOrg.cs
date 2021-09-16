@@ -16,6 +16,10 @@ namespace WireMock.Server
 {
     public partial class WireMockServer
     {
+        /// <summary>
+        /// Read WireMock.org mapping json file.
+        /// </summary>
+        /// <param name="path">The path to the WireMock.org mapping json file.</param>
         [PublicAPI]
         public void ReadStaticWireMockOrgMappingAndAddOrUpdate([NotNull] string path)
         {
