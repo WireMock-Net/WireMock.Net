@@ -26,8 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build-info.md = build-info.md
 		CHANGELOG.md = CHANGELOG.md
 		Directory.Build.props = Directory.Build.props
-		GitHubReleaseNotes.txt = GitHubReleaseNotes.txt
+		Generate-ReleaseNotes.cmd = Generate-ReleaseNotes.cmd
 		nuget.config = nuget.config
+		PackageReleaseNotes.template = PackageReleaseNotes.template
+		PackageReleaseNotes.txt = PackageReleaseNotes.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -92,9 +94,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Pipelines", "Azure Pi
 		azure-pipelines-nuget.yml = azure-pipelines-nuget.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Org.RestClient", "src\WireMock.Org.RestClient\WireMock.Org.RestClient.csproj", "{08B29DB1-FEFE-408A-AD0A-6BA6DDC8D70F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Org.RestClient", "src\WireMock.Org.RestClient\WireMock.Org.RestClient.csproj", "{08B29DB1-FEFE-408A-AD0A-6BA6DDC8D70F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Org.Abstractions", "src\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj", "{3BA5109E-5F30-4CC2-B699-02EC82560AA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Org.Abstractions", "src\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj", "{3BA5109E-5F30-4CC2-B699-02EC82560AA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

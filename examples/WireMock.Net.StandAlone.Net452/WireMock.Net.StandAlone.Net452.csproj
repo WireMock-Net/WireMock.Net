@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\..\WireMock.Net-Logo.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\resources\WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>WireMock.Net.StandAlone.Net452.Program</StartupObject>

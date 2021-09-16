@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
+    <ApplicationIcon>../../resources/WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

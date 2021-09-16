@@ -1,30 +1,36 @@
 <Project>
-  <PropertyGroup>
-    <MsBuildAllProjects>$(MsBuildAllProjects);$(MsBuildThisFileFullPath)</MsBuildAllProjects>
-  </PropertyGroup>
+    <PropertyGroup>
+        <MsBuildAllProjects>$(MsBuildAllProjects);$(MsBuildThisFileFullPath)</MsBuildAllProjects>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <VersionPrefix>1.4.21-preview-04</VersionPrefix>
-    <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
-  </PropertyGroup>
+    <PropertyGroup>
+        <VersionPrefix>1.4.21</VersionPrefix>
+        <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
+        <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../PackageReleaseNotes.txt"))</PackageReleaseNotes>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
+        <ApplicationIcon>../../resources/WireMock.Net-Logo.ico</ApplicationIcon>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
-  <Choose>
-    <!-- The environment variable `Prerelease` is set in the azure-pipelines.yml file. -->
-    <When Condition=" '$(Prerelease)' != '' ">
-      <PropertyGroup>
-        <!-- Set the version to x.x.x.x-{Prerelease}-1{Build_BuildId} (this is same buildId as defined in the azure-pipelines.yml file). -->
-        <VersionSuffix>$(Prerelease)-1$(BUILD_BUILDID)</VersionSuffix>
-      </PropertyGroup>
-    </When>
-  </Choose>
+    <ItemGroup>
+        <None Include="../../resources/WireMock.Net-Logo.png" Pack="true" PackagePath="" />
+        <!--<None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>-->
+    </ItemGroup>
+
+    <Choose>
+        <!-- The environment variable `Prerelease` is set in the azure-pipelines.yml file. -->
+        <When Condition=" '$(Prerelease)' != '' ">
+            <PropertyGroup>
+                <!-- Set the version to x.x.x.x-{Prerelease}-1{Build_BuildId} (this is same buildId as defined in the azure-pipelines.yml file). -->
+                <VersionSuffix>$(Prerelease)-1$(BUILD_BUILDID)</VersionSuffix>
+            </PropertyGroup>
+        </When>
+    </Choose>
 </Project>

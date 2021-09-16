@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-    <ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>
     <StartupObject>WireMock.Net.StandAlone.NETCoreApp.Program</StartupObject>
   </PropertyGroup>
 

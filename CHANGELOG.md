@@ -1,3 +1,6 @@
+# 1.4.21 (16 September 2021)
+- [#631](https://github.com/WireMock-Net/WireMock.Net/pull/631) - Add WireMock.org RestClient [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.20 (06 August 2021)
 - [#628](https://github.com/WireMock-Net/WireMock.Net/pull/628) - Fix issue with FluentBuilder [bug] contributed by [StefH](https://github.com/StefH)
 - [#626](https://github.com/WireMock-Net/WireMock.Net/issues/626) - version 1.4.19 throws a lot of analyzer errors related to the BaseBuilder.cs [bug]
