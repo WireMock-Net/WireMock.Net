@@ -1,3 +1,6 @@
+# 1.4.22 (22 September 2021)
+- [#633](https://github.com/WireMock-Net/WireMock.Net/pull/633) - Implement Random Delay [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.21 (16 September 2021)
 - [#631](https://github.com/WireMock-Net/WireMock.Net/pull/631) - Add WireMock.org RestClient [feature] contributed by [StefH](https://github.com/StefH)
 
