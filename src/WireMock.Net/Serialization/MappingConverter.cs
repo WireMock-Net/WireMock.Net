@@ -81,11 +81,18 @@ namespace WireMock.Serialization
                         Matchers = _mapper.Map(pm.Matchers)
                     }).ToList() : null
                 },
-                Response = new ResponseModel
-                {
-                    Delay = (int?)response.Delay?.TotalMilliseconds
-                }
+                Response = new ResponseModel()
             };
+
+            if (response.MinimumDelayMilliseconds >= 0 || response.MaximumDelayMilliseconds > 0)
+            {
+                mappingModel.Response.MinimumRandomDelay = response.MinimumDelayMilliseconds;
+                mappingModel.Response.MaximumRandomDelay = response.MaximumDelayMilliseconds;
+            }
+            else
+            {
+                mappingModel.Response.Delay = (int?)response.Delay?.TotalMilliseconds;
+            }
 
             if (bodyMatcher?.Matchers != null)
             {

@@ -25,9 +25,17 @@ namespace WireMock.ResponseBuilders
     {
         private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(DateTime.UtcNow.Millisecond));
 
-        private int? _minDelayMilliseconds;
-        private int? _maxDelayMilliseconds;
         private TimeSpan? _delay;
+
+        /// <summary>
+        /// The minimum random delay in milliseconds.
+        /// </summary>
+        public int? MinimumDelayMilliseconds { get; private set; }
+
+        /// <summary>
+        /// The maximum random delay in milliseconds.
+        /// </summary>
+        public int? MaximumDelayMilliseconds { get; private set; }
 
         /// <summary>
         /// The delay
@@ -36,9 +44,9 @@ namespace WireMock.ResponseBuilders
         {
             get
             {
-                if (_minDelayMilliseconds != null && _maxDelayMilliseconds != null)
+                if (MinimumDelayMilliseconds != null && MaximumDelayMilliseconds != null)
                 {
-                    return TimeSpan.FromMilliseconds(Random.Value.Next(_minDelayMilliseconds.Value, _maxDelayMilliseconds.Value));
+                    return TimeSpan.FromMilliseconds(Random.Value.Next(MinimumDelayMilliseconds.Value, MaximumDelayMilliseconds.Value));
                 }
 
                 return _delay;
@@ -330,8 +338,8 @@ namespace WireMock.ResponseBuilders
             Check.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
             Check.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
 
-            _minDelayMilliseconds = minimumMilliseconds;
-            _maxDelayMilliseconds = maximumMilliseconds;
+            MinimumDelayMilliseconds = minimumMilliseconds;
+            MaximumDelayMilliseconds = maximumMilliseconds;
 
             return this;
         }
