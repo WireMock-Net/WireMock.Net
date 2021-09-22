@@ -25,10 +25,8 @@ namespace WireMock.ResponseBuilders
     {
         private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(DateTime.UtcNow.Millisecond));
 
-        private int _minDelayMilliseconds;
-        private int _maxDelayMilliseconds;
-        private bool _hasRandomDelay;
-
+        private int? _minDelayMilliseconds;
+        private int? _maxDelayMilliseconds;
         private TimeSpan? _delay;
 
         /// <summary>
@@ -38,11 +36,14 @@ namespace WireMock.ResponseBuilders
         {
             get
             {
-                if (_hasRandomDelay)
-                    return TimeSpan.FromMilliseconds(Random.Value.Next(_minDelayMilliseconds, _maxDelayMilliseconds));
+                if (_minDelayMilliseconds != null && _maxDelayMilliseconds != null)
+                {
+                    return TimeSpan.FromMilliseconds(Random.Value.Next(_minDelayMilliseconds.Value, _maxDelayMilliseconds.Value));
+                }
 
                 return _delay;
             }
+
             private set
             {
                 _delay = value;
@@ -317,23 +318,22 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
-        public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
-        {
-            Check.Condition(minimumMilliseconds, d => d >= 0, nameof(minimumMilliseconds));
-            Check.Condition(maximumMilliseconds, d => d > 0, nameof(maximumMilliseconds));
-
-            _minDelayMilliseconds = minimumMilliseconds;
-            _maxDelayMilliseconds = maximumMilliseconds;
-            _hasRandomDelay = true;
-
-            return this;
-        }
-
         /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(int)"/>
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
+        }
+
+        /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
+        public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
+        {
+            Check.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
+            Check.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
+
+            _minDelayMilliseconds = minimumMilliseconds;
+            _maxDelayMilliseconds = maximumMilliseconds;
+
+            return this;
         }
 
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
