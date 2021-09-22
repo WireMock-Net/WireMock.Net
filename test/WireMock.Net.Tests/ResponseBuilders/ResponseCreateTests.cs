@@ -18,13 +18,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = new ResponseMessage { StatusCode = 500 };
             var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", "::1");
 
-            var response = Response.Create(() => responseMessage);
+            var responseBuilder = Response.Create(() => responseMessage);
 
             // Act
-            var providedResponse = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(providedResponse).Equals(responseMessage);
+            Check.That(response.Message).Equals(responseMessage);
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using HandlebarsDotNet;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Data = "{{File \"x.json\"}}"
@@ -39,10 +39,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Data"].Value<string>()).Equals("abc");
 
             // Verify
@@ -56,7 +56,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234?id=x"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Data = "{{File \"{{request.query.id}}.json\"}}"
@@ -64,10 +64,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Data"].Value<string>()).Equals("abc");
 
             // Verify
@@ -76,12 +76,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Fact]
-        public void Response_ProvideResponseAsync_Handlebars_File_WithMissingArgument_ThrowsArgumentOutOfRangeException()
+        public void Response_ProvideResponseAsync_Handlebars_File_WithMissingArgument_Throws_HandlebarsException()
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Data = "{{File}}"
@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            Check.ThatAsyncCode(() => response.ProvideResponseAsync(request, _settings)).Throws<ArgumentOutOfRangeException>();
+            Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(request, _settings)).Throws<HandlebarsException>();
 
             // Verify
             _filesystemHandlerMock.Verify(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()), Times.Never);

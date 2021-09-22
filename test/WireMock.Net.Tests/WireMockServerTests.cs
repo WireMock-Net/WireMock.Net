@@ -207,7 +207,7 @@ namespace WireMock.Net.Tests
             server.Stop();
         }
 
-#if !NET452
+#if !NET452 && !NET461
         [Theory]
         [InlineData("TRACE")]
         [InlineData("GET")]
@@ -337,5 +337,51 @@ namespace WireMock.Net.Tests
 
             server.Stop();
         }
+ 
+#if !NET452
+        [Fact]
+        public async Task WireMockServer_Should_respond_to_ipv4_loopback()
+        {
+            // Assign
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/*"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("from ipv4 loopback"));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync($"http://127.0.0.1:{server.Ports[0]}/foo");
+
+            // Assert
+            Check.That(response).IsEqualTo("from ipv4 loopback");
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task WireMockServer_Should_respond_to_ipv6_loopback()
+        {
+            // Assign
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/*"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("from ipv6 loopback"));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync($"http://[::1]:{server.Ports[0]}/foo");
+
+            // Assert
+            Check.That(response).IsEqualTo("from ipv6 loopback");
+
+            server.Stop();
+        }
+#endif
     }
 }

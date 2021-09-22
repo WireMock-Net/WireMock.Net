@@ -94,6 +94,15 @@ namespace WireMock.Serialization
                 mappingModel.Response.Delay = (int?)response.Delay?.TotalMilliseconds;
             }
 
+            if (mapping.Webhooks?.Length == 1)
+            {
+                mappingModel.Webhook = WebhookMapper.Map(mapping.Webhooks[0]);
+            }
+            else if (mapping.Webhooks?.Length > 1)
+            {
+                mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
+            }
+
             if (bodyMatcher?.Matchers != null)
             {
                 mappingModel.Request.Body = new BodyModel();
@@ -120,6 +129,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.BodyAsFile = null;
                 mappingModel.Response.BodyAsFileIsCached = null;
                 mappingModel.Response.UseTransformer = null;
+                mappingModel.Response.TransformerType = null;
                 mappingModel.Response.UseTransformerForBodyAsFile = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
@@ -140,6 +150,7 @@ namespace WireMock.Serialization
                 if (response.UseTransformer)
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
+                    mappingModel.Response.TransformerType = response.TransformerType.ToString();
                 }
 
                 if (response.UseTransformerForBodyAsFile)

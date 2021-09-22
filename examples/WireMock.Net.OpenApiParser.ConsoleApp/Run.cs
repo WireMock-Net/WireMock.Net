@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Logging;
+using WireMock.Net.OpenApiParser.Extensions;
+using WireMock.Net.OpenApiParser.Settings;
+using WireMock.Net.OpenApiParser.Types;
 using WireMock.Server;
 using WireMock.Settings;
-using WireMock.Net.OpenApiParser.Extensions;
 
 namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
@@ -23,13 +25,18 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
                 ReadStaticMappings = false,
                 WatchStaticMappings = false,
                 WatchStaticMappingsInSubdirectories = false,
-                Logger = new WireMockConsoleLogger(),
+                Logger = new WireMockConsoleLogger()
             });
             Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
             server.SetBasicAuthentication("a", "b");
 
-            server.WithMappingFromOpenApiFile(path, out var diag);
+            var settings = new WireMockOpenApiParserSettings
+            {
+                PathPatternToUse = ExampleValueType.Wildcard
+            };
+
+            server.WithMappingFromOpenApiFile(path, settings, out var diag);
 
             Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();

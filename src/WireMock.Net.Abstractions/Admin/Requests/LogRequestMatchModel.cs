@@ -5,6 +5,7 @@ namespace WireMock.Admin.Requests
     /// <summary>
     /// LogRequestMatchModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class LogRequestMatchModel
     {
         /// <summary>

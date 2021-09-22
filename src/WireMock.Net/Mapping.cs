@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -54,6 +55,9 @@ namespace WireMock
         /// <inheritdoc cref="IMapping.LogMapping" />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
+        /// <inheritdoc cref="IMapping.Webhooks" />
+        public IWebhook[] Webhooks { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
@@ -68,6 +72,7 @@ namespace WireMock
         /// <param name="executionConditionState">State in which the current mapping can occur. [Optional]</param>
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
+        /// <param name="webhooks">The Webhooks. [Optional]</param>
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
@@ -79,7 +84,8 @@ namespace WireMock
             [CanBeNull] string scenario,
             [CanBeNull] string executionConditionState,
             [CanBeNull] string nextState,
-            [CanBeNull] int? stateTimes)
+            [CanBeNull] int? stateTimes,
+            [CanBeNull] IWebhook[] webhooks)
         {
             Guid = guid;
             Title = title;
@@ -92,10 +98,11 @@ namespace WireMock
             ExecutionConditionState = executionConditionState;
             NextState = nextState;
             StateTimes = stateTimes;
+            Webhooks = webhooks;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage)
+        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage)
         {
             return await Provider.ProvideResponseAsync(requestMessage, Settings);
         }

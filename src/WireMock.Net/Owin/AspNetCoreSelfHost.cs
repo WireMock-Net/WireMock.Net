@@ -66,6 +66,8 @@ namespace WireMock.Owin
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
+
+                    _wireMockMiddlewareOptions.AdditionalServiceRegistration?.Invoke(services);
                 })
                 .Configure(appBuilder =>
                 {
@@ -106,7 +108,7 @@ namespace WireMock.Owin
 
                     foreach (string address in addresses)
                     {
-                        Urls.Add(address.Replace("0.0.0.0", "localhost"));
+                        Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
 
                         PortUtils.TryExtract(address, out bool isHttps, out string protocol, out string host, out int port);
                         Ports.Add(port);

@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// MappingModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class MappingModel
     {
         /// <summary>
@@ -52,5 +53,15 @@ namespace WireMock.Admin.Mappings
         /// Saves this mapping as a static mapping file.
         /// </summary>
         public bool? SaveToFile { get; set; }
+
+        /// <summary>
+        /// The Webhook.
+        /// </summary>
+        public WebhookModel Webhook { get; set; }
+
+        /// <summary>
+        /// The Webhooks.
+        /// </summary>
+        public WebhookModel[] Webhooks { get; set; }
     }
 }

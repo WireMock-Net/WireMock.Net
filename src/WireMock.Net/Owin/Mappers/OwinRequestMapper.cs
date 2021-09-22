@@ -53,7 +53,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-            BodyData body = null;
+            IBodyData body = null;
             if (request.Body != null && BodyParser.ShouldParseBody(method, options.AllowBodyForAllHttpMethods == true))
             {
                 var bodyParserSettings = new BodyParserSettings

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HandlebarsDotNet.Helpers.Validation;
 using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Matchers;
@@ -12,6 +11,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Proxy
 {
@@ -21,19 +21,19 @@ namespace WireMock.Proxy
 
         public ProxyHelper([NotNull] IWireMockServerSettings settings)
         {
-            Guard.NotNull(settings, nameof(settings));
+            Check.NotNull(settings, nameof(settings));
             _settings = settings;
         }
 
-        public async Task<(ResponseMessage ResponseMessage, IMapping Mapping)> SendAsync(
+        public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
             [NotNull] IProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] HttpClient client,
             [NotNull] RequestMessage requestMessage,
             [NotNull] string url)
         {
-            Guard.NotNull(client, nameof(client));
-            Guard.NotNull(requestMessage, nameof(requestMessage));
-            Guard.NotNull(url, nameof(url));
+            Check.NotNull(client, nameof(client));
+            Check.NotNull(requestMessage, nameof(requestMessage));
+            Check.NotNull(url, nameof(url));
 
             var originalUri = new Uri(requestMessage.Url);
             var requiredUri = new Uri(url);
@@ -105,7 +105,7 @@ namespace WireMock.Proxy
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null);
         }
     }
 }

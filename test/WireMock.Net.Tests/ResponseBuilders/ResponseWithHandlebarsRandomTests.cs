@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -11,8 +13,18 @@ namespace WireMock.Net.Tests.ResponseBuilders
 {
     public class ResponseWithHandlebarsRandomTests
     {
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
         private const string ClientIp = "::1";
+
+        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
+        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+
+        public ResponseWithHandlebarsRandomTests()
+        {
+            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+
+            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        }
 
         [Fact]
         public async Task Response_ProvideResponseAsync_Handlebars_Random1()
@@ -20,7 +32,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Text = "{{Random Type=\"Text\" Min=8 Max=20}}",
@@ -31,10 +43,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Text"].Value<string>()).IsNotEmpty();
             Check.That(j["Integer"].Value<int>()).IsEqualTo(1000);
             Check.That(j["Long"].Value<long>()).IsStrictlyGreaterThan(77777777).And.IsStrictlyLessThan(99999999);
@@ -46,7 +58,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Value = "{{Random Type=\"Boolean\"}}"
@@ -54,10 +66,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
         }
 
@@ -67,7 +79,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
@@ -76,10 +88,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             string guid1 = j["Guid1"].Value<string>();
             Check.That(guid1.ToUpper()).IsNotEqualTo(guid1);
             string guid2 = j["Guid2"].Value<string>();
@@ -92,7 +104,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     StringValue = "{{Random Type=\"StringList\" Values=[\"a\", \"b\", \"c\"]}}"
@@ -100,10 +112,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             string value = j["StringValue"].Value<string>();
             Check.That(new[] { "a", "b", "c" }.Contains(value)).IsTrue();
         }
@@ -114,7 +126,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
 
-            var response = Response.Create()
+            var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
                     Integer = "{{#Random Type=\"Integer\" Min=10000000 Max=99999999}}{{this}}{{/Random}}",
@@ -122,10 +134,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            JObject j = JObject.FromObject(responseMessage.BodyData.BodyAsJson);
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Integer"].Value<int>()).IsStrictlyGreaterThan(10000000).And.IsStrictlyLessThan(99999999);
         }
     }

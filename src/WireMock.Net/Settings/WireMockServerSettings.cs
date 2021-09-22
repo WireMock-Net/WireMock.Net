@@ -4,6 +4,9 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Handlers;
 using WireMock.Logging;
+#if USE_ASPNETCORE
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace WireMock.Settings
 {
@@ -79,6 +82,13 @@ namespace WireMock.Settings
         [JsonIgnore]
         public Action<object> PostWireMockMiddlewareInit { get; set; }
 
+#if USE_ASPNETCORE
+        /// <inheritdoc cref="IWireMockServerSettings.AdditionalServiceRegistration"/>
+        [PublicAPI]
+        [JsonIgnore]
+        public Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+#endif
+
         /// <inheritdoc cref="IWireMockServerSettings.Logger"/>
         [PublicAPI]
         [JsonIgnore]
@@ -129,5 +139,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.CustomCertificateDefined"/>
         [PublicAPI]
         public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
+
+        /// <inheritdoc cref="IWireMockServerSettings.WebhookSettings"/>
+        [PublicAPI]
+        public IWebhookSettings WebhookSettings { get; set; }
     }
 }

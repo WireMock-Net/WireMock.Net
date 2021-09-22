@@ -12,6 +12,8 @@ using WireMock.Proxy;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Transformers;
+using WireMock.Transformers.Handlebars;
+using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using WireMock.Util;
 using WireMock.Validation;
@@ -62,6 +64,11 @@ namespace WireMock.ResponseBuilders
         /// Gets a value indicating whether [use transformer].
         /// </summary>
         public bool UseTransformer { get; private set; }
+
+        /// <summary>
+        /// Gets the type of the transformer.
+        /// </summary>
+        public TransformerType TransformerType { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether to use the Handlerbars transformer for the content from the referenced BodyAsFile.
@@ -191,12 +198,28 @@ namespace WireMock.ResponseBuilders
         {
             Check.NotNull(bodyFactory, nameof(bodyFactory));
 
-            return WithCallbackInternal(false, req => new ResponseMessage
+            return WithCallbackInternal(true, req => new ResponseMessage
             {
                 BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
                     BodyAsString = bodyFactory(req),
+                    Encoding = encoding ?? Encoding.UTF8
+                }
+            });
+        }
+
+        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, Task{string}}, string, Encoding)"/>
+        public IResponseBuilder WithBody(Func<RequestMessage, Task<string>> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        {
+            Check.NotNull(bodyFactory, nameof(bodyFactory));
+
+            return WithCallbackInternal(true, async req => new ResponseMessage
+            {
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = await bodyFactory(req),
                     Encoding = encoding ?? Encoding.UTF8
                 }
             });
@@ -313,6 +336,16 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false)
         {
             UseTransformer = true;
+            TransformerType = TransformerType.Handlebars;
+            UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
+            return this;
+        }
+
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool)"/>
+        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false)
+        {
+            UseTransformer = true;
+            TransformerType = transformerType;
             UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
             return this;
         }
@@ -345,7 +378,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
-        public async Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
+        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
             Check.NotNull(requestMessage, nameof(requestMessage));
             Check.NotNull(settings, nameof(settings));
@@ -371,18 +404,16 @@ namespace WireMock.ResponseBuilders
 
                 var proxyHelper = new ProxyHelper(settings);
 
-                var (proxyResponseMessage, mapping) = await proxyHelper.SendAsync(
+                return await proxyHelper.SendAsync(
                     ProxyAndRecordSettings,
                     _httpClientForProxy,
                     requestMessage,
                     requestMessage.ProxyUrl
                 );
-
-                return proxyResponseMessage;
             }
 
             ResponseMessage responseMessage;
-            if (Callback == null && CallbackAsync == null)
+            if (!WithCallbackUsed)
             {
                 responseMessage = ResponseMessage;
             }
@@ -397,24 +428,40 @@ namespace WireMock.ResponseBuilders
                     responseMessage = await CallbackAsync(requestMessage);
                 }
 
-                if (!WithCallbackUsed)
+                // Copy StatusCode from ResponseMessage (if defined)
+                if (ResponseMessage.StatusCode != null)
                 {
-                    // Copy StatusCode from ResponseMessage
                     responseMessage.StatusCode = ResponseMessage.StatusCode;
+                }
 
-                    // Copy Headers from ResponseMessage (if defined)
-                    if (ResponseMessage.Headers != null)
-                    {
-                        responseMessage.Headers = ResponseMessage.Headers;
-                    }
+                // Copy Headers from ResponseMessage (if defined)
+                if (ResponseMessage.Headers?.Count > 0)
+                {
+                    responseMessage.Headers = ResponseMessage.Headers;
                 }
             }
 
             if (UseTransformer)
             {
-                var factory = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                var responseMessageTransformer = new ResponseMessageTransformer(factory);
-                return responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile);
+                ITransformer responseMessageTransformer;
+                switch (TransformerType)
+                {
+                    case TransformerType.Handlebars:
+                        var factoryHandlebars = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
+                        responseMessageTransformer = new Transformer(factoryHandlebars);
+                        break;
+
+                    case TransformerType.Scriban:
+                    case TransformerType.ScribanDotLiquid:
+                        var factoryDotLiquid = new ScribanContextFactory(settings.FileSystemHandler, TransformerType);
+                        responseMessageTransformer = new Transformer(factoryDotLiquid);
+                        break;
+
+                    default:
+                        throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
+                }
+
+                return (responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile), null);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
@@ -422,7 +469,7 @@ namespace WireMock.ResponseBuilders
                 ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
-            return responseMessage;
+            return (responseMessage, null);
         }
     }
 }

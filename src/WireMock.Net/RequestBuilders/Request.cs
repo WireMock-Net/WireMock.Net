@@ -55,6 +55,16 @@ namespace WireMock.RequestBuilders
             return _requestMatchers.OfType<T>().FirstOrDefault();
         }
 
+        /// <summary>
+        /// Gets the request message matcher.
+        /// </summary>
+        /// <typeparam name="T">Type of IRequestMatcher</typeparam>
+        /// <returns>A RequestMatcher</returns>
+        public T GetRequestMessageMatcher<T>(Func<T, bool> func) where T : IRequestMatcher
+        {
+            return _requestMatchers.OfType<T>().FirstOrDefault(func);
+        }
+
         /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(IStringMatcher[])"/>
         public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {

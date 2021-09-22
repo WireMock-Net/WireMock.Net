@@ -33,14 +33,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\..\WireMock.Net-Logo.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\resources\WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Handlebars, Version=1.9.5.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.1.9.5\lib\net452\Handlebars.dll</HintPath>
+    <Reference Include="Handlebars, Version=2.0.4.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.2.0.4\lib\net452\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.1.1.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.1.1-preview-01\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.1.1.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.1.1-preview-01\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -53,7 +59,12 @@
       <HintPath>..\..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>

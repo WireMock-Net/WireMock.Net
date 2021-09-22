@@ -8,6 +8,7 @@ namespace WireMock.Admin.Requests
     /// <summary>
     /// RequestMessage Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class LogRequestModel
     {
         /// <summary>

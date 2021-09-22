@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using Moq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -22,12 +21,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/fault"), "GET", ClientIp);
 
             // Act
-            var response = Response.Create().WithFault(faultType);
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var responseBuilder = Response.Create().WithFault(faultType);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            responseMessage.FaultType.Should().Be(faultType);
-            responseMessage.FaultPercentage.Should().BeNull();
+            response.Message.FaultType.Should().Be(faultType);
+            response.Message.FaultPercentage.Should().BeNull();
         }
 
         [Theory]
@@ -38,12 +37,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/fault"), "GET", ClientIp);
 
             // Act
-            var response = Response.Create().WithFault(faultType, percentage);
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var responseBuilder = Response.Create().WithFault(faultType, percentage);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            responseMessage.FaultType.Should().Be(faultType);
-            responseMessage.FaultPercentage.Should().Be(percentage);
+            response.Message.FaultType.Should().Be(faultType);
+            response.Message.FaultPercentage.Should().Be(percentage);
         }
     }
 }

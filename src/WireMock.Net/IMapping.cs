@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 
@@ -94,11 +95,16 @@ namespace WireMock
         bool LogMapping { get; }
 
         /// <summary>
+        /// The Webhooks.
+        /// </summary>
+        IWebhook[] Webhooks { get; }
+
+        /// <summary>
         /// ProvideResponseAsync
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        /// <returns>The <see cref="ResponseMessage"/>.</returns>
-        Task<ResponseMessage> ProvideResponseAsync(RequestMessage requestMessage);
+        /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
+        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage);
 
         /// <summary>
         /// Gets the RequestMatchResult based on the RequestMessage.

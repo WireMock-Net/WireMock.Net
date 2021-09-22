@@ -9,6 +9,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Validation;
 using WireMock.ResponseBuilders;
+using WireMock.Settings;
 #if !USE_ASPNETCORE
 using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
@@ -128,27 +129,36 @@ namespace WireMock.Owin
                     await Task.Delay(_options.RequestProcessingDelay.Value);
                 }
 
-                response = await targetMapping.ProvideResponseAsync(request);
+                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request);
+                response = theResponse;
 
                 var responseBuilder = targetMapping.Provider as Response;
 
-                if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                if (!targetMapping.IsAdminInterface && theOptionalNewMapping != null)
                 {
-                    _options.Mappings.TryAdd(targetMapping.Guid, targetMapping);
-                }
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                    {
+                        _options.Mappings.TryAdd(theOptionalNewMapping.Guid, theOptionalNewMapping);
+                    }
 
-                if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
-                {
-                    var matcherMapper = new MatcherMapper(targetMapping.Settings);
-                    var mappingConverter = new MappingConverter(matcherMapper);
-                    var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                    {
+                        var matcherMapper = new MatcherMapper(targetMapping.Settings);
+                        var mappingConverter = new MappingConverter(matcherMapper);
+                        var mappingToFileSaver = new MappingToFileSaver(targetMapping.Settings, mappingConverter);
 
-                    mappingToFileSaver.SaveMappingToFile(targetMapping);
+                        mappingToFileSaver.SaveMappingToFile(theOptionalNewMapping);
+                    }
                 }
 
                 if (targetMapping.Scenario != null)
                 {
                     UpdateScenarioState(targetMapping);
+                }
+
+                if (!targetMapping.IsAdminInterface && targetMapping.Webhooks?.Length > 0)
+                {
+                    await SendToWebhooksAsync(targetMapping, request, response).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -179,6 +189,24 @@ namespace WireMock.Owin
             }
 
             await CompletedTask;
+        }
+
+        private async Task SendToWebhooksAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
+        {
+            for (int index = 0; index < mapping.Webhooks.Length; index++)
+            {
+                var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
+                var webhookSender = new WebhookSender(mapping.Settings);
+
+                try
+                {
+                    await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Error($"Sending message to Webhook [{index}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                }
+            }
         }
 
         private void UpdateScenarioState(IMapping mapping)

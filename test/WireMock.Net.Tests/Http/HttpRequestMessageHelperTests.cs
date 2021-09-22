@@ -1,6 +1,7 @@
 ﻿using NFluent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using WireMock.Http;
 using WireMock.Models;
 using WireMock.Types;
@@ -28,7 +29,7 @@ namespace WireMock.Net.Tests.Http
         }
 
         [Fact]
-        public async void HttpRequestMessageHelper_Create_Bytes()
+        public async Task HttpRequestMessageHelper_Create_Bytes()
         {
             // Assign
             var body = new BodyData
@@ -46,7 +47,7 @@ namespace WireMock.Net.Tests.Http
         }
 
         [Fact]
-        public async void HttpRequestMessageHelper_Create_Json()
+        public async Task HttpRequestMessageHelper_Create_Json()
         {
             // Assign
             var body = new BodyData
@@ -64,7 +65,7 @@ namespace WireMock.Net.Tests.Http
         }
 
         [Fact]
-        public async void HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson()
+        public async Task HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson()
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
@@ -84,7 +85,7 @@ namespace WireMock.Net.Tests.Http
         }
 
         [Fact]
-        public async void HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson_UTF8()
+        public async Task HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson_UTF8()
         {
             // Assign
             var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json; charset=utf-8" } } };

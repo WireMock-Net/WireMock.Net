@@ -39,6 +39,7 @@ namespace WireMock.Server
         private const string ContentTypeJson = "application/json";
         private const string AdminFiles = "/__admin/files";
         private const string AdminMappings = "/__admin/mappings";
+        private const string AdminMappingsWireMockOrg = "/__admin/mappings/wiremock.org";
         private const string AdminRequests = "/__admin/requests";
         private const string AdminSettings = "/__admin/settings";
         private const string AdminScenarios = "/__admin/scenarios";
@@ -58,6 +59,7 @@ namespace WireMock.Server
             // __admin/mappings
             Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
             Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappingsWireMockOrg).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPostWireMockOrg));
             Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
@@ -261,14 +263,17 @@ namespace WireMock.Server
                 proxyUriWithRequestPathAndQuery.AbsoluteUri
             );
 
-            if (settings.ProxyAndRecordSettings.SaveMapping)
+            if (mapping != null)
             {
-                _options.Mappings.TryAdd(mapping.Guid, mapping);
-            }
+                if (settings.ProxyAndRecordSettings.SaveMapping)
+                {
+                    _options.Mappings.TryAdd(mapping.Guid, mapping);
+                }
 
-            if (settings.ProxyAndRecordSettings.SaveMappingToFile)
-            {
-                _mappingToFileSaver.SaveMappingToFile(mapping);
+                if (settings.ProxyAndRecordSettings.SaveMappingToFile)
+                {
+                    _mappingToFileSaver.SaveMappingToFile(mapping);
+                }
             }
 
             return responseMessage;
@@ -465,6 +470,16 @@ namespace WireMock.Server
                 respondProvider = respondProvider.InScenario(mappingModel.Scenario);
                 respondProvider = respondProvider.WhenStateIs(mappingModel.WhenStateIs);
                 respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
+            }
+
+            if (mappingModel.Webhook != null)
+            {
+                respondProvider = respondProvider.WithWebhook(WebhookMapper.Map(mappingModel.Webhook));
+            }
+            else if (mappingModel.Webhooks?.Length > 1)
+            {
+                var webhooks = mappingModel.Webhooks.Select(WebhookMapper.Map).ToArray();
+                respondProvider = respondProvider.WithWebhook(webhooks);
             }
 
             respondProvider.RespondWith(responseBuilder);
@@ -774,7 +789,11 @@ namespace WireMock.Server
 
             if (responseModel.UseTransformer == true)
             {
-                responseBuilder = responseBuilder.WithTransformer(responseModel.UseTransformerForBodyAsFile == true);
+                if (!Enum.TryParse<TransformerType>(responseModel.TransformerType, out var transformerType))
+                {
+                    transformerType = TransformerType.Handlebars;
+                }
+                responseBuilder = responseBuilder.WithTransformer(transformerType, responseModel.UseTransformerForBodyAsFile == true);
             }
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))

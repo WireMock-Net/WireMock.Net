@@ -1,9 +1,15 @@
 ﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
+using WireMock.Types;
+using WireMock.Util;
+using WireMock.Validation;
 
 namespace WireMock.Server
 {
@@ -26,6 +32,8 @@ namespace WireMock.Server
 
         public Guid Guid { get; private set; } = Guid.NewGuid();
 
+        public IWebhook[] Webhooks { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
         /// </summary>
@@ -47,7 +55,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -139,6 +147,84 @@ namespace WireMock.Server
         public IRespondWithAProvider WillSetStateTo(int state, int? times = 1)
         {
             return WillSetStateTo(state.ToString(), times);
+        }
+
+        /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook[])"/>
+        public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
+        {
+            Check.HasNoNulls(webhooks, nameof(webhooks));
+
+            Webhooks = webhooks;
+
+            return this;
+        }
+
+        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, string, bool, TransformerType)"/>
+        public IRespondWithAProvider WithWebhook(
+            [NotNull] string url,
+            [CanBeNull] string method = "post",
+            [CanBeNull] IDictionary<string, WireMockList<string>> headers = null,
+            [CanBeNull] string body = null,
+            bool useTransformer = true,
+            TransformerType transformerType = TransformerType.Handlebars)
+        {
+            Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
+
+            if (body != null)
+            {
+                Webhooks[0].Request.BodyData = new BodyData
+                {
+                    BodyAsString = body,
+                    DetectedBodyType = BodyType.String,
+                    DetectedBodyTypeFromContentType = BodyType.String
+                };
+            }
+
+            return this;
+        }
+
+        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, object, bool, TransformerType)"/>
+        public IRespondWithAProvider WithWebhook(
+            [NotNull] string url,
+            [CanBeNull] string method = "post",
+            [CanBeNull] IDictionary<string, WireMockList<string>> headers = null,
+            [CanBeNull] object body = null,
+            bool useTransformer = true,
+            TransformerType transformerType = TransformerType.Handlebars)
+        {
+            Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
+
+            if (body != null)
+            {
+                Webhooks[0].Request.BodyData = new BodyData
+                {
+                    BodyAsJson = body,
+                    DetectedBodyType = BodyType.Json,
+                    DetectedBodyTypeFromContentType = BodyType.Json
+                };
+            }
+
+            return this;
+        }
+
+        private IWebhook InitWebhook(
+            string url,
+            string method,
+            IDictionary<string, WireMockList<string>> headers,
+            bool useTransformer,
+            TransformerType transformerType)
+        {
+            return new Webhook
+            {
+                Request = new WebhookRequest
+                {
+                    Url = url,
+                    Method = method ?? "post",
+                    Headers = headers,
+                    UseTransformer = useTransformer,
+                    TransformerType = transformerType
+                }
+            };
         }
     }
 }

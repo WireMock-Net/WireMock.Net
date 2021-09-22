@@ -13,6 +13,7 @@ using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Util;
 using System.Threading.Tasks;
+using WireMock.Types;
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -58,12 +59,13 @@ namespace WireMock.Net.ConsoleApplication
                 //},
                 PreWireMockMiddlewareInit = app => { System.Console.WriteLine($"PreWireMockMiddlewareInit : {app.GetType()}"); },
                 PostWireMockMiddlewareInit = app => { System.Console.WriteLine($"PostWireMockMiddlewareInit : {app.GetType()}"); },
+                AdditionalServiceRegistration = services => { System.Console.WriteLine($"AdditionalServiceRegistration : {services.GetType()}"); },
                 Logger = new WireMockConsoleLogger(),
 
                 HandlebarsRegistrationCallback = (handlebarsContext, fileSystemHandler) =>
                 {
                     var transformer = new CustomNameTransformer();
-                    handlebarsContext.RegisterHelper(transformer.Name, transformer.Render);
+                    // handlebarsContext.RegisterHelper(transformer.Name, transformer.Render); TODO
                 },
 
                 // Uncomment below if you want to use the CustomFileSystemFileHandler
@@ -279,7 +281,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBody("hi"));
 
             server
-                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b.Contains("e")))
+                .Given(Request.Create().WithPath("/data").UsingPost().WithBody(b => b != null && b.Contains("e")))
                 .AtPriority(999)
                 .RespondWith(Response.Create()
                     .WithStatusCode(201)
@@ -346,7 +348,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithHeader("xyz_{{request.headers.Postman-Token}}", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, add={{Math.Add request.query.start.[0] 42}} bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
-                    .WithTransformer()
+                    .WithTransformer(TransformerType.Handlebars)
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
 

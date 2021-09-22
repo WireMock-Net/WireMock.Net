@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// Header Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class HeaderModel
     {
         /// <summary>

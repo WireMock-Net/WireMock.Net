@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using WireMock.Logging;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -14,9 +15,6 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
     {
         static void Main(string[] args)
         {
-            RunTestDifferentPort().Wait(20000); // prints "1"
-            RunTestDifferentPort().Wait(20000); // prints "1"
-
             var server = WireMockServer.Start(new WireMockServerSettings
             {
                 Urls = new[] { "http://localhost:9091", "https://localhost:9443" },
@@ -29,33 +27,17 @@ namespace WireMock.Net.Console.Proxy.NETCoreApp2
                     SaveMapping = true,
                     SaveMappingToFile = false,
                     ExcludedHeaders = new[] { "dnt", "Content-Length" }
-                }
+                },
+                Logger= new WireMockConsoleLogger()
             });
 
-            server.LogEntriesChanged += (sender, eventRecordArgs) =>
-            {
-                System.Console.WriteLine(JsonConvert.SerializeObject(eventRecordArgs.NewItems, Formatting.Indented));
-            };
+            //server.LogEntriesChanged += (sender, eventRecordArgs) =>
+            //{
+            //    System.Console.WriteLine(JsonConvert.SerializeObject(eventRecordArgs.NewItems, Formatting.Indented));
+            //};
 
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
-            server.Stop();
-        }
-
-        private static async Task RunTestDifferentPort()
-        {
-            var server = WireMockServer.Start();
-
-            server.Given(Request.Create().WithPath("/").UsingGet())
-                .RespondWith(Response.Create().WithStatusCode(200).WithBody("Hello"));
-
-            Thread.Sleep(1000);
-
-            var response = await new HttpClient().GetAsync(server.Urls[0]);
-            response.EnsureSuccessStatusCode();
-
-            System.Console.WriteLine("RunTestDifferentPort - server.LogEntries.Count() = " + server.LogEntries.Count());
-
             server.Stop();
         }
     }

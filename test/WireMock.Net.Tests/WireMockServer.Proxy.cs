@@ -6,13 +6,16 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
+using WireMock.Handlers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests
@@ -51,6 +54,105 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMapping_Is_True_And_SaveMappingToFile_Is_False_Should_AddInternalMappingOnly()
+        {
+            // Assign
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMapping_Is_False_And_SaveMappingToFile_Is_True_ShouldSaveMappingToFile()
+        {
+            // Assign
+            var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
+
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = false,
+                    SaveMappingToFile = true
+                },
+                FileSystemHandler = fileSystemHandlerMock.Object
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(1);
+
+            // Verify
+            fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task WireMockServer_Proxy_With_SaveMappingForStatusCodePattern_Is_False_Should_Not_SaveMapping()
+        {
+            // Assign
+            var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+            fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
+
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = "http://www.google.com",
+                    SaveMapping = true,
+                    SaveMappingToFile = true,
+                    SaveMappingForStatusCodePattern = "999" // Just make sure that we don't want this mapping
+                },
+                FileSystemHandler = fileSystemHandlerMock.Object
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(server.Urls[0])
+            };
+            var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+            await new HttpClient(httpClientHandler).SendAsync(requestMessage);
+
+            // Assert
+            server.Mappings.Should().HaveCount(1);
+
+            // Verify
+            fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
         public async Task WireMockServer_Proxy_Should_log_proxied_requests()
         {
             // Assign
@@ -75,8 +177,8 @@ namespace WireMock.Net.Tests
             await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
             // Assert
-            Check.That(server.Mappings).HasSize(2);
-            Check.That(server.LogEntries).HasSize(1);
+            server.Mappings.Should().HaveCount(2);
+            server.LogEntries.Should().HaveCount(1);
         }
 
         [Fact]
@@ -148,10 +250,56 @@ namespace WireMock.Net.Tests
 
             // check that new proxied mapping is added
             Check.That(server.Mappings).HasSize(2);
+        }
 
-            //var newMapping = _server.Mappings.First(m => m.Guid != guid);
-            //var matcher = ((Request)newMapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageHeaderMatcher>().FirstOrDefault(m => m.Name == "bbb");
-            //Check.That(matcher).IsNotNull();
+        [Fact]
+        public async Task WireMockServer_Proxy_Should_preserve_Authorization_header_in_proxied_request()
+        {
+            // Assign
+            string path = $"/prx_{Guid.NewGuid()}";
+            var serverForProxyForwarding = WireMockServer.Start();
+            serverForProxyForwarding
+                .Given(Request.Create().WithPath(path))
+                .RespondWith(Response.Create().WithCallback(x => new ResponseMessage
+                {
+                    BodyData = new BodyData
+                    {
+                        BodyAsString = x.Headers["Authorization"].ToString(),
+                        DetectedBodyType = Types.BodyType.String
+                    }
+                }));
+
+            var settings = new WireMockServerSettings
+            {
+                ProxyAndRecordSettings = new ProxyAndRecordSettings
+                {
+                    Url = serverForProxyForwarding.Urls[0],
+                    SaveMapping = true,
+                    SaveMappingToFile = false
+                }
+            };
+            var server = WireMockServer.Start(settings);
+
+            // Act
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{server.Urls[0]}{path}"),
+                Content = new StringContent("stringContent", Encoding.ASCII)
+            };
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("BASIC", "test-A");
+            var result = await new HttpClient().SendAsync(requestMessage);
+
+            // Assert
+            (await result.Content.ReadAsStringAsync()).Should().Be("BASIC test-A");
+
+            var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
+            var authorizationHeader = receivedRequest.Headers["Authorization"].ToString().Should().Be("BASIC test-A");
+
+            server.Mappings.Should().HaveCount(2);
+            var authorizationRequestMessageHeaderMatcher = ((Request)server.Mappings.Single(m => !m.IsAdminInterface).RequestMatcher)
+                .GetRequestMessageMatcher<RequestMessageHeaderMatcher>(x => x.Matchers.Any(m => m.GetPatterns().Contains("BASIC test-A")));
+            authorizationRequestMessageHeaderMatcher.Should().NotBeNull();
         }
 
         [Fact]

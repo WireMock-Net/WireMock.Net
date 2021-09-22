@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = await builder.ProvideResponseAsync(requestMock, _settings);
 
             // Assert
-            Check.That(response.Headers[headerName].ToString()).Equals(headerValue);
+            Check.That(response.Message.Headers[headerName].ToString()).Equals(headerValue);
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = await builder.ProvideResponseAsync(requestMock, _settings);
 
             // Assert
-            Check.That(response.Headers[headerName].ToArray()).Equals(headerValues);
+            Check.That(response.Message.Headers[headerName].ToArray()).Equals(headerValues);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseMessage = await response.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.Headers["h"]).ContainsExactly("x");
+            Check.That(responseMessage.Message.Headers["h"]).ContainsExactly("x");
         }
 
         [Fact]
@@ -68,13 +68,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
             var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
-            var response = Response.Create().WithHeaders(headers);
+            var responseBuilder = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.Headers["h"]).ContainsExactly("x");
+            Check.That(response.Message.Headers["h"]).ContainsExactly("x");
         }
 
         [Fact]
@@ -83,13 +83,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
             var headers = new Dictionary<string, WireMockList<string>> { { "h", new WireMockList<string>("x") } };
-            var response = Response.Create().WithHeaders(headers);
+            var builder = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var response = await builder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            Check.That(responseMessage.Headers["h"]).ContainsExactly("x");
+            Check.That(response.Message.Headers["h"]).ContainsExactly("x");
         }
     }
 }

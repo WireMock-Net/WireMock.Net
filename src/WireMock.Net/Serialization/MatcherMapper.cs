@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Plugin;
 using WireMock.Settings;
 using WireMock.Validation;
 
@@ -43,10 +44,13 @@ namespace WireMock.Serialization
 
             switch (matcherName)
             {
+                case "NotNullOrEmptyMatcher":
+                    return new NotNullOrEmptyMatcher(matchBehaviour);
+
                 case "CSharpCodeMatcher":
                     if (_settings.AllowCSharpCodeMatcher == true)
                     {
-                        return new CSharpCodeMatcher(matchBehaviour, stringPatterns);
+                        return PluginLoader.Load<ICSharpCodeMatcher>(matchBehaviour, stringPatterns);
                     }
 
                     throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because IWireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using NFluent;
 using WireMock.Matchers;
@@ -209,13 +210,63 @@ namespace WireMock.Net.Tests.RequestMatchers
             Check.That(score).IsEqualTo(1.0d);
         }
 
-        [Fact]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher()
+        [Theory]
+        [InlineData(null, 0.0)]
+        [InlineData(new byte[0], 0.0)]
+        [InlineData(new byte[] { 48 }, 1.0)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_NotNullOrEmptyObjectMatcher(byte[] bytes, double expected)
         {
             // Assign
             var body = new BodyData
             {
-                BodyAsBytes = new byte[] { 1 },
+                BodyAsBytes = bytes,
+                DetectedBodyType = BodyType.Bytes
+            };
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(new NotNullOrEmptyMatcher());
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            score.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData(null, 0.0)]
+        [InlineData("", 0.0)]
+        [InlineData("x", 1.0)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_NotNullOrEmptyObjectMatcher(string data, double expected)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = data,
+                DetectedBodyType = BodyType.String
+            };
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(new NotNullOrEmptyMatcher());
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            score.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 1 })]
+        [InlineData(new byte[] { 48 })]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsBytes_IObjectMatcher(byte[] bytes)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsBytes = bytes,
                 DetectedBodyType = BodyType.Bytes
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();

@@ -5,6 +5,7 @@ namespace WireMock.Admin.Requests
     /// <summary>
     /// Request Log Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class LogEntryModel
     {
         /// <summary>

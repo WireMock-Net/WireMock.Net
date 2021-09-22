@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Linq;
 using WireMock.Types;
+using WireMock.Util;
 using WireMock.Validation;
 
 namespace WireMock.Matchers.Request
@@ -25,6 +26,11 @@ namespace WireMock.Matchers.Request
         /// The body data function for json
         /// </summary>
         public Func<object, bool> JsonFunc { get; }
+
+        /// <summary>
+        /// The body data function for BodyData
+        /// </summary>
+        public Func<IBodyData, bool> BodyDataFunc { get; }
 
         /// <summary>
         /// The matchers.
@@ -91,6 +97,16 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
         /// </summary>
+        /// <param name="func">The function.</param>
+        public RequestMessageBodyMatcher([NotNull] Func<IBodyData, bool> func)
+        {
+            Check.NotNull(func, nameof(func));
+            BodyDataFunc = func;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
+        /// </summary>
         /// <param name="matchers">The matchers.</param>
         public RequestMessageBodyMatcher([NotNull] params IMatcher[] matchers)
         {
@@ -107,6 +123,32 @@ namespace WireMock.Matchers.Request
 
         private double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
         {
+            if (matcher is NotNullOrEmptyMatcher notNullOrEmptyMatcher)
+            {
+                switch (requestMessage?.BodyData?.DetectedBodyType)
+                {
+                    case BodyType.Json:
+                    case BodyType.String:
+                        return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
+
+                    case BodyType.Bytes:
+                        return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
+
+                    default:
+                        return MatchScores.Mismatch;
+                }
+            }
+
+            if (matcher is ExactObjectMatcher exactObjectMatcher)
+            {
+                // If the body is a byte array, try to match.
+                var detectedBodyType = requestMessage?.BodyData?.DetectedBodyType;
+                if (detectedBodyType == BodyType.Bytes || detectedBodyType == BodyType.String)
+                {
+                    return exactObjectMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
+                }
+            }
+
             // Check if the matcher is a IObjectMatcher
             if (matcher is IObjectMatcher objectMatcher)
             {
@@ -156,6 +198,11 @@ namespace WireMock.Matchers.Request
             if (DataFunc != null)
             {
                 return MatchScores.ToScore(DataFunc(requestMessage?.BodyData?.BodyAsBytes));
+            }
+
+            if (BodyDataFunc != null)
+            {
+                return MatchScores.ToScore(BodyDataFunc(requestMessage?.BodyData));
             }
 
             return MatchScores.Mismatch;

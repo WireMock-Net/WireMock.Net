@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using NFluent;
 using WireMock.Admin.Mappings;
@@ -18,6 +18,50 @@ namespace WireMock.Net.Tests.Serialization
         public MatcherModelMapperTests()
         {
             _sut = new MatcherMapper(_settings);
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_CSharpCodeMatcher()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "CSharpCodeMatcher",
+                Patterns = new[] { "return it == \"x\";" }
+            };
+            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
+
+            // Act 1
+            var matcher1 = (ICSharpCodeMatcher)sut.Map(model);
+
+            // Assert 1
+            matcher1.Should().NotBeNull();
+            matcher1.IsMatch("x").Should().Be(1.0d);
+
+            // Act 2
+            var matcher2 = (ICSharpCodeMatcher)sut.Map(model);
+
+            // Assert 2
+            matcher2.Should().NotBeNull();
+            matcher2.IsMatch("x").Should().Be(1.0d);
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_CSharpCodeMatcher_NotAllowed_ThrowsException()
+        {
+            // Assign
+            var model = new MatcherModel
+            {
+                Name = "CSharpCodeMatcher",
+                Patterns = new[] { "x" }
+            };
+            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = false });
+
+            // Act
+            Action action = () => sut.Map(model);
+
+            // Assert
+            action.Should().Throw<NotSupportedException>();
         }
 
         [Fact]

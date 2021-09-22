@@ -5,6 +5,7 @@ namespace WireMock.Admin.Mappings
     /// <summary>
     /// ResponseModel
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class ResponseModel
     {
         /// <summary>
@@ -53,9 +54,14 @@ namespace WireMock.Admin.Mappings
         public EncodingModel BodyEncoding { get; set; }
 
         /// <summary>
-        /// Use Handlebars transformer.
+        /// Use ResponseMessage Transformer.
         /// </summary>
         public bool? UseTransformer { get; set; }
+
+        /// <summary>
+        /// Gets the type of the transformer.
+        /// </summary>
+        public string TransformerType { get; set; }
 
         /// <summary>
         /// Use the Handlerbars transformer for the content from the referenced BodyAsFile.

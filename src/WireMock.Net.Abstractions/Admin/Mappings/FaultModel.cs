@@ -3,6 +3,7 @@
     /// <summary>
     /// Fault Model
     /// </summary>
+    [FluentBuilder.AutoGenerateBuilder]
     public class FaultModel
     {
         /// <summary>
