@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
@@ -6,7 +7,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
-using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
@@ -16,9 +16,7 @@ namespace WireMock.Serialization
 
         public MappingConverter(MatcherMapper mapper)
         {
-            Check.NotNull(mapper, nameof(mapper));
-
-            _mapper = mapper;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public MappingModel ToMappingModel(IMapping mapping)
