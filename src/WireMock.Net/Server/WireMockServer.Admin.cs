@@ -782,6 +782,10 @@ namespace WireMock.Server
             {
                 responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
             }
+            else if (responseModel.MinimumRandomDelay >= 0 || responseModel.MaximumRandomDelay > 0)
+            {
+                responseBuilder = responseBuilder.WithRandomDelay(responseModel.MinimumRandomDelay ?? 0, responseModel.MaximumRandomDelay ?? 60_000);
+            }
 
             if (responseModel.UseTransformer == true)
             {

@@ -84,6 +84,16 @@ namespace WireMock.Admin.Mappings
         public int? Delay { get; set; }
 
         /// <summary>
+        /// Gets or sets the minimum random delay in milliseconds.
+        /// </summary>
+        public int? MinimumRandomDelay { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum random delay in milliseconds.
+        /// </summary>
+        public int? MaximumRandomDelay { get; set; }
+
+        /// <summary>
         /// Gets or sets the Proxy URL.
         /// </summary>
         public string ProxyUrl { get; set; }

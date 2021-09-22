@@ -116,6 +116,38 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task WireMockServer_Should_randomly_delay_responses_for_a_given_route()
+        {
+            // Arrange
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/*"))
+                .RespondWith(Response.Create()
+                    .WithBody(@"{ msg: ""Hello world!""}")
+                    .WithRandomDelay(10, 1000));
+
+            var watch = new Stopwatch();
+            watch.Start();
+
+            var httClient = new HttpClient();
+            async Task<long> ExecuteTimedRequestAsync()
+            {
+                watch.Reset();
+                await httClient.GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
+                return watch.ElapsedMilliseconds;
+            }
+
+            // Act
+            await ExecuteTimedRequestAsync();
+            await ExecuteTimedRequestAsync();
+            await ExecuteTimedRequestAsync();
+
+            server.Stop();
+        }
+
+        [Fact]
         public async Task WireMockServer_Should_delay_responses()
         {
             // given

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Proxy;
@@ -24,10 +25,40 @@ namespace WireMock.ResponseBuilders
     /// </summary>
     public partial class Response : IResponseBuilder
     {
+        private static readonly ThreadLocal<Random> Random = new ThreadLocal<Random>(() => new Random(DateTime.UtcNow.Millisecond));
+
+        private TimeSpan? _delay;
+
+        /// <summary>
+        /// The minimum random delay in milliseconds.
+        /// </summary>
+        public int? MinimumDelayMilliseconds { get; private set; }
+
+        /// <summary>
+        /// The maximum random delay in milliseconds.
+        /// </summary>
+        public int? MaximumDelayMilliseconds { get; private set; }
+
         /// <summary>
         /// The delay
         /// </summary>
-        public TimeSpan? Delay { get; private set; }
+        public TimeSpan? Delay
+        {
+            get
+            {
+                if (MinimumDelayMilliseconds != null && MaximumDelayMilliseconds != null)
+                {
+                    return TimeSpan.FromMilliseconds(Random.Value.Next(MinimumDelayMilliseconds.Value, MaximumDelayMilliseconds.Value));
+                }
+
+                return _delay;
+            }
+
+            private set
+            {
+                _delay = value;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether [use transformer].
@@ -332,6 +363,18 @@ namespace WireMock.ResponseBuilders
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
+        }
+
+        /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
+        public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
+        {
+            Check.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
+            Check.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
+
+            MinimumDelayMilliseconds = minimumMilliseconds;
+            MaximumDelayMilliseconds = maximumMilliseconds;
+
+            return this;
         }
 
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>

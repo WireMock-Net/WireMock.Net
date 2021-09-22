@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
@@ -6,7 +7,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
-using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
@@ -16,9 +16,7 @@ namespace WireMock.Serialization
 
         public MappingConverter(MatcherMapper mapper)
         {
-            Check.NotNull(mapper, nameof(mapper));
-
-            _mapper = mapper;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public MappingModel ToMappingModel(IMapping mapping)
@@ -81,11 +79,18 @@ namespace WireMock.Serialization
                         Matchers = _mapper.Map(pm.Matchers)
                     }).ToList() : null
                 },
-                Response = new ResponseModel
-                {
-                    Delay = (int?)response.Delay?.TotalMilliseconds
-                }
+                Response = new ResponseModel()
             };
+
+            if (response.MinimumDelayMilliseconds >= 0 || response.MaximumDelayMilliseconds > 0)
+            {
+                mappingModel.Response.MinimumRandomDelay = response.MinimumDelayMilliseconds;
+                mappingModel.Response.MaximumRandomDelay = response.MaximumDelayMilliseconds;
+            }
+            else
+            {
+                mappingModel.Response.Delay = (int?)response.Delay?.TotalMilliseconds;
+            }
 
             if (mapping.Webhooks?.Length == 1)
             {
