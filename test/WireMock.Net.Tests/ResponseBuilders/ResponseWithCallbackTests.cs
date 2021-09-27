@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -139,7 +139,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
-            response.Message.StatusCode.Should().Be(HttpStatusCode.Accepted);
+            response.Message.StatusCode.Should().Be((int) HttpStatusCode.Accepted);
             response.Message.Headers[header].Should().ContainSingle("Stef");
         }
 

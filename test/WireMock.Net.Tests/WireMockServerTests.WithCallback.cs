@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests
 			var response = await httpClient.PostAsync("http://localhost:" + server.Ports[0] + "/foo", new StringContent("dummy"));
 
 			// Assert
-			response.StatusCode.Should().Be(409);
+			response.StatusCode.Should().Be(HttpStatusCode.Conflict);
 
             server.Stop();
 		}

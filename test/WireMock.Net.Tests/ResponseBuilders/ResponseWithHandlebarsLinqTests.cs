@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HandlebarsDotNet;
@@ -216,7 +216,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Func<Task> a = async () => await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            a.Should().Throw<HandlebarsException>();
+            a.Should().ThrowAsync<HandlebarsException>();
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Func<Task> a = async () => await responseBuilder.ProvideResponseAsync(request, _settings);
 
             // Assert
-            a.Should().Throw<HandlebarsException>();
+            a.Should().ThrowAsync<HandlebarsException>();
         }
     }
 }

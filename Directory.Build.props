@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.4.22</VersionPrefix>
+        <VersionPrefix>1.4.23</VersionPrefix>
         <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
         <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
         <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
