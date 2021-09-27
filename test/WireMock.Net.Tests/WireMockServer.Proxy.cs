@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -691,7 +691,7 @@ namespace WireMock.Net.Tests
             var result = await new HttpClient(httpClientHandler).SendAsync(requestMessage);
 
             // Assert
-            result.StatusCode.Should().Be(500);
+            result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
 
             var content = await result.Content.ReadAsStringAsync();
             content.Should().NotBeEmpty();
