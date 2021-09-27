@@ -1,15 +1,15 @@
-﻿using FluentAssertions;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using FluentAssertions;
+using WireMock.FluentAssertions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using Xunit;
-using WireMock.FluentAssertions;
-using System.Threading.Tasks;
 using WireMock.Settings;
+using Xunit;
 using static System.Environment;
 
 namespace WireMock.Net.Tests.FluentAssertions
@@ -100,16 +100,9 @@ namespace WireMock.Net.Tests.FluentAssertions
                 .HaveReceivedACall()
                 .WithHeader("Authorization", "value");
 
-            var sentHeaders = _server.LogEntries.SelectMany(x => x.RequestMessage.Headers)
-                .ToDictionary(x => x.Key, x => x.Value)
-                .ToList();
-
-            var sentHeaderString = "{" + string.Join(", ", sentHeaders) + "}";
-
             act.Should().Throw<Exception>()
                 .And.Message.Should()
-                .Be(
-                    $"Expected headers from requests sent {sentHeaderString} to contain key \"Authorization\".{NewLine}");
+                .Contain("to contain key \"Authorization\".");
         }
 
         [Fact]
@@ -156,7 +149,7 @@ namespace WireMock.Net.Tests.FluentAssertions
                 .And.Message.Should()
                 .Be($"{string.Join(NewLine, missingValue1Message, missingValue2Message)}{NewLine}");
         }
-        
+
         [Fact]
         public async Task AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
         {
@@ -200,7 +193,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _server.ResetMappings();
             _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
             await _httpClient.GetAsync("");
 
@@ -214,8 +207,8 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _server.ResetMappings();
             _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
-        
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
+
             Action act = () => _server.Should()
                 .HaveReceivedACall()
                 .WithProxyUrl("anyurl");
@@ -231,8 +224,8 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _server.ResetMappings();
             _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings {Url = "http://localhost:9999"}));
-        
+                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
+
             await _httpClient.GetAsync("");
 
             Action act = () => _server.Should()
@@ -244,7 +237,7 @@ namespace WireMock.Net.Tests.FluentAssertions
                 .Be(
                     $"Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {{\"http://localhost:9999\"}}.");
         }
-        
+
         [Fact]
         public async Task FromClientIP_whenACallWasMadeFromClientIP_Should_BeOK()
         {
