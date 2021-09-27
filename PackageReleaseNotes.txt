@@ -1,4 +1,4 @@
-# 1.4.21 (16 September 2021)
-- #631 Add WireMock.org RestClient [feature]
+# 1.4.22 (22 September 2021)
+- #633 Implement Random Delay [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

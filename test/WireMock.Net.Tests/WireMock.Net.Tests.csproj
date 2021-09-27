@@ -1,105 +1,109 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net452;net461;netcoreapp3.1;net5.0</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-    <DebugType>full</DebugType>
-    <AssemblyName>WireMock.Net.Tests</AssemblyName>
-    <PackageId>WireMock.Net.Tests</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <ProjectGuid>{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}</ProjectGuid>
+    <PropertyGroup>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFrameworks>net452;net461;netcoreapp3.1;net5.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+        <DebugType>full</DebugType>
+        <AssemblyName>WireMock.Net.Tests</AssemblyName>
+        <PackageId>WireMock.Net.Tests</PackageId>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <ProjectGuid>{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}</ProjectGuid>
 
-    <!--<SonarQubeTestProject>True</SonarQubeTestProject>
+        <!--<SonarQubeTestProject>True</SonarQubeTestProject>
 		<SonarQubeExclude>True</SonarQubeExclude>-->
 
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-    <!--<DelaySign>true</DelaySign>-->
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
 
-    <!--https://developercommunity.visualstudio.com/content/problem/26347/unit-tests-fail-with-fileloadexception-newtonsoftj-1.html-->
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-  </PropertyGroup>
+        <!--https://developercommunity.visualstudio.com/content/problem/26347/unit-tests-fail-with-fileloadexception-newtonsoftj-1.html-->
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Codecov" Version="1.10.0" />
-    <PackageReference Include="coverlet.msbuild" Version="3.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <ItemGroup>
+        <PackageReference Include="Codecov" Version="1.10.0" />
+        <PackageReference Include="coverlet.msbuild" Version="3.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
 
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Moq" Version="4.16.0" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="RestEase" Version="1.5.5" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NFluent" Version="2.7.1" />
-    <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
-    <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
-    <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-    <!--<PackageReference Include="StrongNamer" Version="0.0.8" />-->
-  </ItemGroup>
+        <PackageReference Include="Moq" Version="4.16.0" />
+        <PackageReference Include="System.Threading" Version="4.3.0" />
+        <PackageReference Include="RestEase" Version="1.5.5" />
+        <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="NFluent" Version="2.7.1" />
+        <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
+        <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
+        <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
+        <!--<PackageReference Include="StrongNamer" Version="0.0.8" />-->
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="3.1.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+        <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="3.1.0" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="responsebody.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings.org\mapping1.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d87.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\351f0240-bba0-4bcb-93c6-1feba0fe8799.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\array.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\documentdb_root.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\MyXmlResponse.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\subdirectory\MyXmlResponse.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
+        <PackageReference Include="FluentAssertions" Version="6.1.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="responsebody.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings.org\mapping1.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d87.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\351f0240-bba0-4bcb-93c6-1feba0fe8799.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\array.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\documentdb_root.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\MyXmlResponse.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\subdirectory\MyXmlResponse.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
 
 </Project>
