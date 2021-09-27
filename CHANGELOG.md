@@ -1,3 +1,7 @@
+# 1.4.23 (27 September 2021)
+- [#635](https://github.com/WireMock-Net/WireMock.Net/pull/635) - WireMock.Net.FluentAssertions : upgrade to latest FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
+- [#634](https://github.com/WireMock-Net/WireMock.Net/issues/634) - Upgrade to latest FluentAssertions [bug]
+
 # 1.4.22 (22 September 2021)
 - [#633](https://github.com/WireMock-Net/WireMock.Net/pull/633) - Implement Random Delay [feature] contributed by [StefH](https://github.com/StefH)
 
