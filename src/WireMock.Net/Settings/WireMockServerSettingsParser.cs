@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Validation;
 
@@ -39,6 +39,8 @@ namespace WireMock.Settings
                 WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
+                AdminAzureADTenant = parser.GetStringValue(nameof(IWireMockServerSettings.AdminAzureADTenant)),
+                AdminAzureADAudience = parser.GetStringValue(nameof(IWireMockServerSettings.AdminAzureADAudience)),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
                 AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),

@@ -1,6 +1,8 @@
+using System.Linq;
+using FluentAssertions;
 using Moq;
 using NFluent;
-using System.Linq;
+using WireMock.Authentication;
 using WireMock.Logging;
 using WireMock.Owin;
 using WireMock.Server;
@@ -32,7 +34,23 @@ namespace WireMock.Net.Tests
 
             // Assert
             var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AuthenticationMatcher).IsNotNull();
+            options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<BasicAuthenticationMatcher>();
+        }
+
+        [Fact]
+        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_AzureADAuthenticationIsSet()
+        {
+            // Assign and Act
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                StartAdminInterface = true,
+                AdminAzureADTenant = "t",
+                AdminAzureADAudience = "a"
+            });
+
+            // Assert
+            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+            options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<AzureADAuthenticationMatcher>();
         }
 
         [Fact]

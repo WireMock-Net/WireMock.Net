@@ -303,6 +303,11 @@ namespace WireMock.Server
                     SetBasicAuthentication(settings.AdminUsername, settings.AdminPassword);
                 }
 
+                if (!string.IsNullOrEmpty(settings.AdminAzureADTenant) && !string.IsNullOrEmpty(settings.AdminAzureADAudience))
+                {
+                    SetAzureADAuthentication(settings.AdminAzureADTenant, settings.AdminAzureADAudience);
+                }
+
                 InitAdmin();
             }
 
