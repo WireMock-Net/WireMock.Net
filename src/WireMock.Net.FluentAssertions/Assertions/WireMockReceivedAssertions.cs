@@ -30,13 +30,13 @@ namespace WireMock.FluentAssertions
         /// Asserts if <see cref="IWireMockServer"/> has received n-calls.
         /// </summary>
         /// <param name="callsCount"></param>
-        /// <returns><see cref="WireMockAssertions"/></returns>
+        /// <returns><see cref="WireMockANumberOfCallsAssertions"/></returns>
         public WireMockANumberOfCallsAssertions HaveReceived(int callsCount)
         {
             return new WireMockANumberOfCallsAssertions(Subject, callsCount);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ReferenceTypeAssertions{IWireMockServer, WireMockReceivedAssertions}.Identifier"/>
         protected override string Identifier => "wiremockserver";
     }
 }
