@@ -16,6 +16,8 @@ namespace WireMock.Authentication
     /// </summary>
     internal class AzureADAuthenticationMatcher : IStringMatcher
     {
+        private const string BearerPrefix = "Bearer ";
+
         private readonly string _audience;
         private readonly string _stsDiscoveryEndpoint;
 
@@ -25,7 +27,7 @@ namespace WireMock.Authentication
             _stsDiscoveryEndpoint = string.Format(CultureInfo.InvariantCulture, "https://login.microsoftonline.com/{0}/.well-known/openid-configuration", tenant);
         }
 
-        public string Name => nameof(BasicAuthenticationMatcher);
+        public string Name => nameof(AzureADAuthenticationMatcher);
 
         public MatchBehaviour MatchBehaviour => MatchBehaviour.AcceptOnMatch;
 
@@ -38,8 +40,7 @@ namespace WireMock.Authentication
 
         public double IsMatch(string input)
         {
-            var regex = new Regex(input, RegexOptions.IgnoreCase);
-            var token = regex.Replace("Bearer ", string.Empty);
+            var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase);
 
             try
             {
