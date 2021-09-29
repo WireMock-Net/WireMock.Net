@@ -19,9 +19,9 @@ namespace WireMock.Net.Tests
 
             // Assert
             var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AuthorizationMatcher.Name).IsEqualTo("RegexMatcher");
-            Check.That(options.AuthorizationMatcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
-            Check.That(options.AuthorizationMatcher.GetPatterns()).ContainsExactly("^(?i)BASIC eDp5$");
+            Check.That(options.AuthenticationMatcher.Name).IsEqualTo("RegexMatcher");
+            Check.That(options.AuthenticationMatcher.MatchBehaviour).IsEqualTo(MatchBehaviour.AcceptOnMatch);
+            Check.That(options.AuthenticationMatcher.GetPatterns()).ContainsExactly("^(?i)BASIC eDp5$");
 
             server.Stop();
         }
@@ -34,11 +34,11 @@ namespace WireMock.Net.Tests
             server.SetBasicAuthentication("x", "y");
 
             // Act
-            server.RemoveBasicAuthentication();
+            server.RemoveAuthentication();
 
             // Assert
             var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AuthorizationMatcher).IsNull();
+            Check.That(options.AuthenticationMatcher).IsNull();
 
             server.Stop();
         }

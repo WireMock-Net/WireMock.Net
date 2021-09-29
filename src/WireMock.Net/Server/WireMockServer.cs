@@ -9,6 +9,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
+using WireMock.Authentication;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -404,22 +405,35 @@ namespace WireMock.Server
             _options.AllowPartialMapping = allow;
         }
 
-        /// <inheritdoc cref="IWireMockServer.SetBasicAuthentication" />
+        /// <inheritdoc cref="IWireMockServer.SetAzureADAuthentication(string, string)" />
+        [PublicAPI]
+        public void SetAzureADAuthentication([NotNull] string tenant, [NotNull] string audience)
+        {
+            Check.NotNull(tenant, nameof(tenant));
+            Check.NotNull(audience, nameof(audience));
+
+#if NETSTANDARD1_3
+            throw new NotSupportedException("AzureADAuthentication is not supported for NETStandard 1.3");
+#else
+            _options.AuthenticationMatcher = new AzureADAuthenticationMatcher(tenant, audience);
+#endif
+        }
+
+        /// <inheritdoc cref="IWireMockServer.SetBasicAuthentication(string, string)" />
         [PublicAPI]
         public void SetBasicAuthentication([NotNull] string username, [NotNull] string password)
         {
             Check.NotNull(username, nameof(username));
             Check.NotNull(password, nameof(password));
 
-            string authorization = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
-            _options.AuthorizationMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, "^(?i)BASIC " + authorization + "$");
+            _options.AuthenticationMatcher = new BasicAuthenticationMatcher(username, password);
         }
 
-        /// <inheritdoc cref="IWireMockServer.RemoveBasicAuthentication" />
+        /// <inheritdoc cref="IWireMockServer.RemoveAuthentication" />
         [PublicAPI]
-        public void RemoveBasicAuthentication()
+        public void RemoveAuthentication()
         {
-            _options.AuthorizationMatcher = null;
+            _options.AuthenticationMatcher = null;
         }
 
         /// <inheritdoc cref="IWireMockServer.SetMaxRequestLogCount" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -19,7 +19,7 @@ namespace WireMock.Owin
 
         TimeSpan? RequestProcessingDelay { get; set; }
 
-        IStringMatcher AuthorizationMatcher { get; set; }
+        IStringMatcher AuthenticationMatcher { get; set; }
 
         bool? AllowPartialMapping { get; set; }
 
