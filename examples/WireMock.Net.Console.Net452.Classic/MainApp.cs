@@ -73,8 +73,8 @@ namespace WireMock.Net.ConsoleApplication
             });
             System.Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
-            //server.SetBasicAuthentication("a", "b");
-            server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
+            server.SetBasicAuthentication("a", "b");
+            //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
 
