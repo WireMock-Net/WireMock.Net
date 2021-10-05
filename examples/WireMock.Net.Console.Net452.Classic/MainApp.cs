@@ -78,6 +78,13 @@ namespace WireMock.Net.ConsoleApplication
 
             // server.AllowPartialMapping();
 
+            server.Given(Request.Create().WithPath("/mypath").UsingPost())
+                .RespondWith(Response.Create()
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBodyAsJson("{{JsonPath.SelectToken request.body \"..name\"}}")
+                        .WithTransformer()
+            );
+
             server
                 .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
