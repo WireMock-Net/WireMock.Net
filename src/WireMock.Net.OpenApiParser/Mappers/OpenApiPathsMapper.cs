@@ -152,12 +152,16 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         string propertyName = schemaProperty.Key;
                         var openApiSchema = schemaProperty.Value;
-                        if (openApiSchema.GetSchemaType() == SchemaType.Object)
+                        if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
                         {
                             var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
                             if (mapped is JProperty jp)
                             {
                                 propertyAsJObject.Add(jp);
+                            }
+                            else
+                            {
+                                propertyAsJObject.Add(new JProperty(schemaProperty.Key, mapped));
                             }
                         }
                         else
