@@ -45,6 +45,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
+            var headerParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
+
             var response = operation.Responses.FirstOrDefault();
 
             TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
@@ -65,7 +67,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 {
                     Methods = new[] { httpMethod },
                     Path = MapPathWithParameters(path, pathParameters),
-                    Params = MapQueryParameters(queryParameters)
+                    Params = MapQueryParameters(queryParameters),
+                    Headers = MapHeadersParameters(headerParameters)
                 },
                 Response = new ResponseModel
                 {
@@ -235,6 +238,26 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var list = queryParameters
                 .Select(qp => new ParamModel
+                {
+                    Name = qp.Name,
+                    Matchers = new[]
+                    {
+                        new MatcherModel
+                        {
+                            Name = "ExactMatcher",
+                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
+                        }
+                    }
+                })
+                .ToList();
+
+            return list.Any() ? list : null;
+        }
+
+        private IList<HeaderModel> MapHeadersParameters(IEnumerable<OpenApiParameter> queryParameters)
+        {
+            var list = queryParameters
+                .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
                     Matchers = new[]
