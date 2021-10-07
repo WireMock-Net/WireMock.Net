@@ -45,7 +45,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
-            var headerParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
+            var headers = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
 
             var response = operation.Responses.FirstOrDefault();
 
@@ -68,7 +68,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Methods = new[] { httpMethod },
                     Path = MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
-                    Headers = MapHeadersParameters(headerParameters)
+                    Headers = MapHeaders(headers)
                 },
                 Response = new ResponseModel
                 {
@@ -254,9 +254,9 @@ namespace WireMock.Net.OpenApiParser.Mappers
             return list.Any() ? list : null;
         }
 
-        private IList<HeaderModel> MapHeadersParameters(IEnumerable<OpenApiParameter> queryParameters)
+        private IList<HeaderModel> MapHeaders(IEnumerable<OpenApiParameter> headers)
         {
-            var list = queryParameters
+            var list = headers
                 .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
