@@ -55,7 +55,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
             var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) : MapSchemaToObject(responseSchema);
 
-            if (int.TryParse(response.Key, out var httpStatusCode))
+            if (!int.TryParse(response.Key, out var httpStatusCode))
             {
                 httpStatusCode = 200;
             }
@@ -68,7 +68,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Methods = new[] { httpMethod },
                     Path = MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
-                    Headers = MapHeaders(headers)
+                    Headers = MapRequestHeaders(headers)
                 },
                 Response = new ResponseModel
                 {
@@ -254,7 +254,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
             return list.Any() ? list : null;
         }
 
-        private IList<HeaderModel> MapHeaders(IEnumerable<OpenApiParameter> headers)
+        private IList<HeaderModel> MapRequestHeaders(IEnumerable<OpenApiParameter> headers)
         {
             var list = headers
                 .Select(qp => new HeaderModel
