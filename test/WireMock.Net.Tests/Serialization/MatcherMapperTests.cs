@@ -71,7 +71,9 @@ namespace WireMock.Net.Tests.Serialization
             model.IgnoreCase.Should().BeNull();
             model.Name.Should().Be("test");
             model.Pattern.Should().BeNull();
-            model.Patterns.Should().Contain("p1", "p2");
+            model.Patterns.Should().HaveCount(2)
+                .And.Contain("p1")
+                .And.Contain("p2");
         }
 
         [Fact]

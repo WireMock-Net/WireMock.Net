@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AnyOfTypes;
 using WireMock.Models;
@@ -11,7 +12,7 @@ namespace WireMock.Extensions
             return value.IsFirst ? value.First : value.Second.Pattern;
         }
 
-        public static AnyOf<string, StringPattern>[] ToAnyOfPatterns(this string[] patterns)
+        public static AnyOf<string, StringPattern>[] ToAnyOfPatterns(this IEnumerable<string> patterns)
         {
             return patterns.Select(p => p.ToAnyOfPattern()).ToArray();
         }
