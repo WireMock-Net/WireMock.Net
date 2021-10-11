@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Plugin;
 using WireMock.Settings;
 using WireMock.Validation;
@@ -37,8 +39,26 @@ namespace WireMock.Serialization
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
 
-            string[] stringPatterns = (matcher.Patterns != null ? matcher.Patterns : new[] { matcher.Pattern }).OfType<string>().ToArray();
-            MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+            AnyOf<string, StringPattern>[] stringPatterns;
+            if (matcher.Pattern is string patternAsString)
+            {
+                stringPatterns = new[] { new AnyOf<string, StringPattern>(patternAsString) };
+            }
+            else if (matcher.Patterns is string[] patternsAsStringArray)
+            {
+                stringPatterns = patternsAsStringArray.Select(p => new AnyOf<string, StringPattern>(p)).ToArray();
+            }
+            else if (!string.IsNullOrEmpty(matcher.PatternAsFile))
+            {
+                var pattern = _settings.FileSystemHandler.ReadFileAsString(matcher.PatternAsFile);
+                stringPatterns = new[] { new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = matcher.PatternAsFile }) };
+            }
+            else
+            {
+                stringPatterns = new AnyOf<string, StringPattern>[0];
+            }
+
+            var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
             bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
 
@@ -68,12 +88,12 @@ namespace WireMock.Serialization
                     return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonMatcher":
-                    object value = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonMatcher(matchBehaviour, value, ignoreCase, throwExceptionWhenMatcherFails);
+                    object valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonMatcher(matchBehaviour, valueForJsonMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPartialMatcher":
-                    object matcherValue = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonPartialMatcher(matchBehaviour, matcherValue, ignoreCase, throwExceptionWhenMatcherFails);
+                    object valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
@@ -136,7 +156,6 @@ namespace WireMock.Serialization
             }
 
             bool? ignoreCase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
-
             bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?)null;
 
             return new MatcherModel

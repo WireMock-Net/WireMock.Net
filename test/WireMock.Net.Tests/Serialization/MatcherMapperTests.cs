@@ -1,9 +1,11 @@
-﻿using System;
+using System;
+using AnyOfTypes;
 using FluentAssertions;
 using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Serialization;
 using WireMock.Settings;
 using Xunit;
@@ -60,7 +62,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var matcherMock = new Mock<IStringMatcher>();
             matcherMock.Setup(m => m.Name).Returns("test");
-            matcherMock.Setup(m => m.GetPatterns()).Returns(new[] { "p1", "p2" });
+            matcherMock.Setup(m => m.GetPatterns()).Returns(new AnyOf<string, StringPattern>[] { "p1", "p2" });
 
             // Act
             var model = _sut.Map(matcherMock.Object);
