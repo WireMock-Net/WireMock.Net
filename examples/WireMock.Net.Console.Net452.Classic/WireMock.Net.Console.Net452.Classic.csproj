@@ -36,6 +36,9 @@
     <ApplicationIcon>..\..\resources\WireMock.Net-Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AnyOf, Version=0.2.0.0, Culture=neutral, PublicKeyToken=b35e6abbb527c6b1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AnyOf.0.2.0\lib\net45\AnyOf.dll</HintPath>
+    </Reference>
     <Reference Include="Handlebars, Version=2.0.4.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Handlebars.Net.2.0.4\lib\net452\Handlebars.dll</HintPath>
     </Reference>
