@@ -25,6 +25,7 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.ThrowException"/>
         public bool ThrowException { get; }
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
         /// </summary>
@@ -41,6 +42,15 @@ namespace WireMock.Matchers
         /// <param name="pattern">The pattern.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
         public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern> pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(matchBehaviour, new[] { pattern }, simMetricType)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="simMetricType">The SimMetric Type</param>
+        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein) : this(MatchBehaviour.AcceptOnMatch, patterns.ToAnyOfPatterns(), simMetricType)
         {
         }
 

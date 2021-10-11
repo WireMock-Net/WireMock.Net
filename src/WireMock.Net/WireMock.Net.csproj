@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
@@ -58,7 +58,7 @@
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-        <PackageReference Include="AnyOf" Version="0.2.0" />
+        <PackageReference Include="AnyOf" Version="0.1.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
