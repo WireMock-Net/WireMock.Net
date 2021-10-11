@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Description>Commonly used interfaces, models, enumerations and types.</Description>
@@ -33,7 +33,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!--<PackageReference Include="AnyOf" Version="0.1.0" />-->
+        <!--<PackageReference Include="AnyOf" Version="0.2.0" />-->
         <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
