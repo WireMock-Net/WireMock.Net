@@ -229,15 +229,20 @@ namespace WireMock.Net.Tests.Serialization
             var fileSystemHandleMock = new Mock<IFileSystemHandler>();
             fileSystemHandleMock.Setup(f => f.ReadFileAsString(file)).Returns(fileContent);
 
-            _settings.FileSystemHandler = fileSystemHandleMock.Object;
             var model = new MatcherModel
             {
                 Name = "WildcardMatcher",
                 PatternAsFile = file
             };
 
+            var settings = new WireMockServerSettings
+            {
+                FileSystemHandler = fileSystemHandleMock.Object
+            };
+            var sut = new MatcherMapper(settings);
+
             // Act
-            var matcher = (WildcardMatcher)_sut.Map(model);
+            var matcher = (WildcardMatcher)sut.Map(model);
 
             // Assert
             matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
