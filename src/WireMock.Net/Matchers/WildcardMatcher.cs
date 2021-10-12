@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AnyOfTypes;
 using JetBrains.Annotations;
+using WireMock.Extensions;
 using WireMock.Models;
 
 namespace WireMock.Matchers
@@ -69,7 +70,7 @@ namespace WireMock.Matchers
             return patterns.Select(pattern => new AnyOf<string, StringPattern>(
                 new StringPattern
                 {
-                    Pattern = "^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$",
+                    Pattern = "^" + Regex.Escape(pattern.GetPattern()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$",
                     PatternAsFile = pattern.IsSecond ? pattern.Second.PatternAsFile : null
                 }))
                 .ToArray();

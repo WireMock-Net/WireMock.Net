@@ -77,6 +77,27 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void MatcherMapper_Map_IStringMatcher_With_PatternAsFile()
+        {
+            // Arrange
+            var pattern = new StringPattern { Pattern = "p", PatternAsFile = "pf" };
+
+            var matcherMock = new Mock<IStringMatcher>();
+            matcherMock.Setup(m => m.Name).Returns("test");
+            matcherMock.Setup(m => m.GetPatterns()).Returns(new AnyOf<string, StringPattern>[] { pattern });
+
+            // Act
+            var model = _sut.Map(matcherMock.Object);
+
+            // Assert
+            model.IgnoreCase.Should().BeNull();
+            model.Name.Should().Be("test");
+            model.Pattern.Should().Be("p");
+            model.Patterns.Should().BeNull();
+            model.PatternAsFile.Should().Be("pf");
+        }
+
+        [Fact]
         public void MatcherMapper_Map_IIgnoreCaseMatcher()
         {
             // Assign
@@ -304,6 +325,25 @@ namespace WireMock.Net.Tests.Serialization
             // Assert
             matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
             matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_StringPattern_With_PatternAsFile()
+        {
+            // Assign
+            var pattern = new StringPattern { Pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }", PatternAsFile = "pf" } ;
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonPartialMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
         }
     }
 }

@@ -10,7 +10,6 @@ using WireMock.Matchers;
 using WireMock.Models;
 using WireMock.Plugin;
 using WireMock.Settings;
-using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
@@ -20,8 +19,7 @@ namespace WireMock.Serialization
 
         public MatcherMapper(IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
