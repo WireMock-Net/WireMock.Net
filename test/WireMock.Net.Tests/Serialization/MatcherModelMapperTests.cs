@@ -220,7 +220,7 @@ namespace WireMock.Net.Tests.Serialization
         {
             // Arrange
             var file = "c:\\test.txt";
-            var fileContent = "x";
+            var fileContent = "c";
             var stringPattern = new StringPattern
             {
                 Pattern = fileContent,
