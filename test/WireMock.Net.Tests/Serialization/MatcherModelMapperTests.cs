@@ -241,7 +241,7 @@ namespace WireMock.Net.Tests.Serialization
 
             // Assert
             matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
-            matcher.IsMatch("x").Should().Be(1.0d);
+            matcher.IsMatch("c").Should().Be(1.0d);
         }
 
         [Fact]
