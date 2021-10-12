@@ -331,7 +331,7 @@ namespace WireMock.Net.Tests.Serialization
         public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_StringPattern_With_PatternAsFile()
         {
             // Assign
-            var pattern = new StringPattern { Pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }", PatternAsFile = "pf" } ;
+            var pattern = new StringPattern { Pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }", PatternAsFile = "pf" };
             var model = new MatcherModel
             {
                 Name = "JsonPartialMatcher",

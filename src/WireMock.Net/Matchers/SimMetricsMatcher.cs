@@ -25,7 +25,6 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.ThrowException"/>
         public bool ThrowException { get; }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
         /// </summary>
