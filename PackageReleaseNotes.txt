@@ -1,5 +1,7 @@
-# 1.4.23 (27 September 2021)
-- #635 WireMock.Net.FluentAssertions : upgrade to latest FluentAssertions [feature]
-- #634 Upgrade to latest FluentAssertions [bug]
+# 1.4.24 (15 October 2021)
+- #643 Support edge case: first object, next an array. [feature]
+- #644 Mapping headers in OpenAPI [feature]
+- #649 Refactor method name MapHeaders and httpStatusCode 
+- #651 Implement PatternAsFile for StringMatcher [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

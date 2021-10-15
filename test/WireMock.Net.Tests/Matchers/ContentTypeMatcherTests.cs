@@ -1,4 +1,5 @@
-﻿using NFluent;
+using AnyOfTypes;
+using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
@@ -49,7 +50,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new ContentTypeMatcher("x");
 
             // Act
-            string[] patterns = matcher.GetPatterns();
+            var patterns = matcher.GetPatterns();
 
             // Assert
             Check.That(patterns).ContainsExactly("x");

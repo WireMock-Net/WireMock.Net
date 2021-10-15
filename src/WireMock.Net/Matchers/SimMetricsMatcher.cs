@@ -1,8 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using SimMetrics.Net;
 using SimMetrics.Net.API;
 using SimMetrics.Net.Metric;
+using WireMock.Extensions;
+using WireMock.Models;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -13,7 +16,7 @@ namespace WireMock.Matchers
     /// <seealso cref="IStringMatcher" />
     public class SimMetricsMatcher : IStringMatcher
     {
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
         private readonly SimMetricType _simMetricType;
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
@@ -27,7 +30,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher([NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(new[] { pattern }, simMetricType)
+        public SimMetricsMatcher([NotNull] AnyOf<string, StringPattern> pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(new[] { pattern }, simMetricType)
         {
         }
 
@@ -37,7 +40,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(matchBehaviour, new[] { pattern }, simMetricType)
+        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern> pattern, SimMetricType simMetricType = SimMetricType.Levenstein) : this(matchBehaviour, new[] { pattern }, simMetricType)
         {
         }
 
@@ -46,7 +49,16 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="patterns">The patterns.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
-        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein) : this(MatchBehaviour.AcceptOnMatch, patterns, simMetricType)
+        public SimMetricsMatcher([NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein) : this(MatchBehaviour.AcceptOnMatch, patterns.ToAnyOfPatterns(), simMetricType)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        /// <param name="simMetricType">The SimMetric Type</param>
+        public SimMetricsMatcher([NotNull] AnyOf<string, StringPattern>[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein) : this(MatchBehaviour.AcceptOnMatch, patterns, simMetricType)
         {
         }
 
@@ -57,9 +69,9 @@ namespace WireMock.Matchers
         /// <param name="patterns">The patterns.</param>
         /// <param name="simMetricType">The SimMetric Type</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein, bool throwException = false)
+        public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern>[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein, bool throwException = false)
         {
-            Check.NotNullOrEmpty(patterns, nameof(patterns));
+            Check.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;
@@ -71,9 +83,9 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            IStringMetric m = GetStringMetricType();
+            IStringMetric stringmetricType = GetStringMetricType();
 
-            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_patterns.Select(p => m.GetSimilarity(p, input))));
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_patterns.Select(p => stringmetricType.GetSimilarity(p.GetPattern(), input))));
         }
 
         private IStringMetric GetStringMetricType()
@@ -120,7 +132,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public string[] GetPatterns()
+        public AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }

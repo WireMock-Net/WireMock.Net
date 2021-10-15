@@ -36,11 +36,25 @@ namespace WireMock.Net.Tests.Matchers
         [InlineData(null, 0.0)]
         [InlineData("", 0.0)]
         [InlineData("x", 1.0)]
-        public void NotNullOrEmptyMatcher_IsMatch_String(string data, double expected)
+        public void NotNullOrEmptyMatcher_IsMatch_String(string @string, double expected)
         {
             // Act
             var matcher = new NotNullOrEmptyMatcher();
-            double result = matcher.IsMatch(data);
+            double result = matcher.IsMatch(@string);
+
+            // Assert
+            result.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData(null, 0.0)]
+        [InlineData("", 0.0)]
+        [InlineData("x", 1.0)]
+        public void NotNullOrEmptyMatcher_IsMatch_StringAsObject(string @string, double expected)
+        {
+            // Act
+            var matcher = new NotNullOrEmptyMatcher();
+            double result = matcher.IsMatch((object)@string);
 
             // Assert
             result.Should().Be(expected);
@@ -55,6 +69,16 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             result.Should().Be(1.0);
+        }
+
+        [Fact]
+        public void NotNullOrEmptyMatcher_GetPatterns_Should_Return_EmptyArray()
+        {
+            // Act
+            var patterns = new NotNullOrEmptyMatcher().GetPatterns();
+
+            // Assert
+            patterns.Should().BeEmpty();
         }
     }
 }

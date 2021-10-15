@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// MatcherModel
@@ -12,14 +12,19 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the pattern. Can be a string (default) or an object;
+        /// Gets or sets the pattern. Can be a string (default) or an object.
         /// </summary>
         public object Pattern { get; set; }
 
         /// <summary>
-        /// Gets or sets the patterns. Can be array of strings (default) or an array of objects;
+        /// Gets or sets the patterns. Can be array of strings (default) or an array of objects.
         /// </summary>
         public object[] Patterns { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pattern as a file.
+        /// </summary>
+        public string PatternAsFile { get; set; }
 
         /// <summary>
         /// Gets or sets the ignore case.

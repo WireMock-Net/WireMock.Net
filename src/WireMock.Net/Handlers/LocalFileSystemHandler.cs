@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using WireMock.Util;
 using WireMock.Validation;
@@ -128,6 +128,12 @@ namespace WireMock.Handlers
             Check.NotNullOrEmpty(filename, nameof(filename));
 
             return File.ReadAllBytes(AdjustPath(filename));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
+        public string ReadFileAsString(string filename)
+        {
+            return File.ReadAllText(AdjustPath(Check.NotNullOrEmpty(filename, nameof(filename))));
         }
 
         /// <summary>
