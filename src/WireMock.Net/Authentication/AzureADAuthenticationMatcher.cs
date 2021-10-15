@@ -1,12 +1,13 @@
 #if !NETSTANDARD1_3
-using System;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
+using AnyOfTypes;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using WireMock.Matchers;
+using WireMock.Models;
 
 namespace WireMock.Authentication
 {
@@ -33,9 +34,9 @@ namespace WireMock.Authentication
 
         public bool ThrowException => false;
 
-        public string[] GetPatterns()
+        public AnyOf<string, StringPattern>[] GetPatterns()
         {
-            throw new NotImplementedException();
+            return new AnyOf<string, StringPattern>[0];
         }
 
         public double IsMatch(string input)
