@@ -70,5 +70,15 @@ namespace WireMock.Net.Tests.Matchers
             // Assert
             result.Should().Be(1.0);
         }
+
+        [Fact]
+        public void NotNullOrEmptyMatcher_GetPatterns_Should_Return_EmptyArray()
+        {
+            // Act
+            var patterns = new NotNullOrEmptyMatcher().GetPatterns();
+
+            // Assert
+            patterns.Should().BeEmpty();
+        }
     }
 }
