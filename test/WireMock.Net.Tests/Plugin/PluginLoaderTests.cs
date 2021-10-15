@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using AnyOfTypes;
 using FluentAssertions;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Plugin;
 using Xunit;
 
@@ -16,7 +18,8 @@ namespace WireMock.Net.Tests.Plugin
         public void Load_Valid()
         {
             // Act
-            var result = PluginLoader.Load<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, "x");
+            AnyOf<string, StringPattern> pattern = "x";
+            var result = PluginLoader.Load<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, pattern);
 
             // Assert
             result.Should().NotBeNull();

@@ -1,7 +1,10 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AnyOfTypes;
 using JetBrains.Annotations;
+using WireMock.Extensions;
+using WireMock.Models;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -13,7 +16,7 @@ namespace WireMock.Matchers
     /// <inheritdoc cref="IIgnoreCaseMatcher"/>
     public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     {
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
         private readonly Regex[] _expressions;
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
@@ -27,7 +30,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        public RegexMatcher([NotNull, RegexPattern] string pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
+        public RegexMatcher([NotNull, RegexPattern] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
         {
         }
 
@@ -37,7 +40,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
+        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
         {
         }
 
@@ -46,7 +49,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
-        public RegexMatcher([NotNull, RegexPattern] string[] patterns, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase)
+        public RegexMatcher([NotNull, RegexPattern] AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase)
         {
         }
 
@@ -57,7 +60,7 @@ namespace WireMock.Matchers
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] string[] patterns, bool ignoreCase = false, bool throwException = false)
+        public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false, bool throwException = false)
         {
             Check.NotNull(patterns, nameof(patterns));
 
@@ -73,7 +76,7 @@ namespace WireMock.Matchers
                 options |= RegexOptions.IgnoreCase;
             }
 
-            _expressions = patterns.Select(p => new Regex(p, options)).ToArray();
+            _expressions = patterns.Select(p => new Regex(p.GetPattern(), options)).ToArray();
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -99,7 +102,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public virtual string[] GetPatterns()
+        public virtual AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }

@@ -39,6 +39,9 @@
     <StartupObject>WireMock.Net.ConsoleApplication.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AnyOf, Version=0.2.0.0, Culture=neutral, PublicKeyToken=b35e6abbb527c6b1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AnyOf.0.2.0\lib\net45\AnyOf.dll</HintPath>
+    </Reference>
     <Reference Include="Fare, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Fare.2.1.1\lib\net35\Fare.dll</HintPath>
     </Reference>

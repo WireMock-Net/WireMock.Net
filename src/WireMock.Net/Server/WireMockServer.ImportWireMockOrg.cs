@@ -260,11 +260,13 @@ namespace WireMock.Server
 
         private void ProcessWireMockOrgJObjectAndUseIMatcher(JObject items, Action<IMatcher> action)
         {
-            IMatcher matcher = null;
+            if (!(items.First is JProperty firstItem))
+            {
+                return;
+            }
 
-            var firstItem = items.First as JProperty;
-
-            if (firstItem?.Name == "equalToJson")
+            IMatcher matcher;
+            if (firstItem.Name == "equalToJson")
             {
                 matcher = new JsonMatcher(firstItem.Value);
             }

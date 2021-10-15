@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
+using AnyOfTypes;
 using JetBrains.Annotations;
+using WireMock.Models;
 
 namespace WireMock.Matchers
 {
@@ -9,14 +11,14 @@ namespace WireMock.Matchers
     /// <seealso cref="RegexMatcher" />
     public class ContentTypeMatcher : WildcardMatcher
     {
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentTypeMatcher"/> class.
         /// </summary>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
-        public ContentTypeMatcher([NotNull] string pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
+        public ContentTypeMatcher([NotNull] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
         {
         }
 
@@ -26,7 +28,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
-        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] string pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
+        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
         {
         }
 
@@ -35,7 +37,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
-        public ContentTypeMatcher([NotNull] string[] patterns, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase)
+        public ContentTypeMatcher([NotNull] AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase)
         {
         }
 
@@ -46,7 +48,7 @@ namespace WireMock.Matchers
         /// <param name="patterns">The patterns.</param>
         /// <param name="ignoreCase">IgnoreCase (default false)</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] string[] patterns, bool ignoreCase = false, bool throwException = false) :
+        public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false, bool throwException = false) :
             base(matchBehaviour, patterns, ignoreCase, throwException)
         {
             _patterns = patterns;
@@ -64,7 +66,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public override string[] GetPatterns()
+        public override AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }

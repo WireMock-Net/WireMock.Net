@@ -45,6 +45,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
+            var headers = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
+
             var response = operation.Responses.FirstOrDefault();
 
             TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
@@ -53,7 +55,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
             var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) : MapSchemaToObject(responseSchema);
 
-            if (int.TryParse(response.Key, out var httpStatusCode))
+            if (!int.TryParse(response.Key, out var httpStatusCode))
             {
                 httpStatusCode = 200;
             }
@@ -65,7 +67,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 {
                     Methods = new[] { httpMethod },
                     Path = MapPathWithParameters(path, pathParameters),
-                    Params = MapQueryParameters(queryParameters)
+                    Params = MapQueryParameters(queryParameters),
+                    Headers = MapRequestHeaders(headers)
                 },
                 Response = new ResponseModel
                 {
@@ -152,12 +155,16 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         string propertyName = schemaProperty.Key;
                         var openApiSchema = schemaProperty.Value;
-                        if (openApiSchema.GetSchemaType() == SchemaType.Object)
+                        if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
                         {
                             var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
                             if (mapped is JProperty jp)
                             {
                                 propertyAsJObject.Add(jp);
+                            }
+                            else
+                            {
+                                propertyAsJObject.Add(new JProperty(schemaProperty.Key, mapped));
                             }
                         }
                         else
@@ -231,6 +238,26 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var list = queryParameters
                 .Select(qp => new ParamModel
+                {
+                    Name = qp.Name,
+                    Matchers = new[]
+                    {
+                        new MatcherModel
+                        {
+                            Name = "ExactMatcher",
+                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
+                        }
+                    }
+                })
+                .ToList();
+
+            return list.Any() ? list : null;
+        }
+
+        private IList<HeaderModel> MapRequestHeaders(IEnumerable<OpenApiParameter> headers)
+        {
+            var list = headers
+                .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
                     Matchers = new[]

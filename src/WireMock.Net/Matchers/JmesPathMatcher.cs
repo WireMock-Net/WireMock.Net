@@ -1,7 +1,10 @@
-﻿using DevLab.JmesPath;
+using AnyOfTypes;
+using DevLab.JmesPath;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using System.Linq;
+using WireMock.Extensions;
+using WireMock.Models;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -11,7 +14,7 @@ namespace WireMock.Matchers
     /// </summary>
     public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     {
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -23,7 +26,15 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        public JmesPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns.ToAnyOfPatterns())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        public JmesPathMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
         {
         }
 
@@ -32,7 +43,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher(bool throwException = false, [NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, throwException, patterns)
+        public JmesPathMatcher(bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, throwException, patterns)
         {
         }
 
@@ -42,7 +53,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
+        public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
@@ -59,7 +70,7 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    match = MatchScores.ToScore(_patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern))));
+                    match = MatchScores.ToScore(_patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))));
                 }
                 catch (JsonException)
                 {
@@ -89,7 +100,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public string[] GetPatterns()
+        public AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }

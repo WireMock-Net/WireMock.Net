@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using WireMock.Handlers;
 
@@ -78,6 +78,12 @@ namespace WireMock.Net.ConsoleApplication
         public byte[] ReadFile(string path)
         {
             return File.ReadAllBytes(AdjustPath(path));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
+        public string ReadFileAsString(string path)
+        {
+            return File.ReadAllText(path);
         }
 
         /// <summary>

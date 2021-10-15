@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using System.Collections.Generic;
 
 namespace WireMock.Handlers
@@ -89,5 +89,12 @@ namespace WireMock.Handlers
         /// <param name="filename">The filename.</param>
         /// <returns>The file content as bytes.</returns>
         byte[] ReadFile([NotNull] string filename);
+
+        /// <summary>
+        /// Read a file as string.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns>The file content as a string.</returns>
+        string ReadFileAsString([NotNull] string filename);
     }
 }
