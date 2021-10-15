@@ -1,4 +1,6 @@
 using System.Linq;
+using AnyOfTypes;
+using WireMock.Models;
 
 namespace WireMock.Matchers
 {
@@ -6,7 +8,7 @@ namespace WireMock.Matchers
     /// NotNullOrEmptyMatcher
     /// </summary>
     /// <seealso cref="IObjectMatcher" />
-    public class NotNullOrEmptyMatcher : IObjectMatcher
+    public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     {
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "NotNullOrEmptyMatcher";
@@ -47,6 +49,20 @@ namespace WireMock.Matchers
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        }
+
+        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
+        public double IsMatch(string input)
+        {
+            var match = !string.IsNullOrEmpty(input);
+
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        }
+
+        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+        public AnyOf<string, StringPattern>[] GetPatterns()
+        {
+            return new AnyOf<string, StringPattern>[0];
         }
     }
 }
