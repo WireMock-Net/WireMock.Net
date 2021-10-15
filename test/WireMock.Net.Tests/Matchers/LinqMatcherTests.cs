@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
@@ -103,7 +103,7 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new LinqMatcher("x");
 
             // Act
-            string[] patterns = matcher.GetPatterns();
+            var patterns = matcher.GetPatterns();
 
             // Assert
             Check.That(patterns).ContainsExactly("x");

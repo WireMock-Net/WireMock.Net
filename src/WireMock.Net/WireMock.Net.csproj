@@ -1,137 +1,138 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
-    <AssemblyTitle>WireMock.Net</AssemblyTitle>
-    <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>WireMock.Net</AssemblyName>
-    <PackageId>WireMock.Net</PackageId>
-    <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
-    <RootNamespace>WireMock</RootNamespace>
-    <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!--<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PropertyGroup>
+        <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
+        <AssemblyTitle>WireMock.Net</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net</AssemblyName>
+        <PackageId>WireMock.Net</PackageId>
+        <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
+        <RootNamespace>WireMock</RootNamespace>
+        <ProjectGuid>{D3804228-91F4-4502-9595-39584E5A01AD}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <!--<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>-->
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>WireMock.Net.snk</AssemblyOriginatorKeyFile>
-    <!--<DelaySign>true</DelaySign>-->
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-  </PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    </PropertyGroup>
 
-  <!--<ItemGroup>
+    <!--<ItemGroup>
     <None Include="WireMock.Net-Logo.png" Pack="true" PackagePath="../../"/>
   </ItemGroup>-->
 
-  <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
-  <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
-  <!--<Target Name="CheckIfShouldKillVBCSCompiler" />-->
+    <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
+    <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
+    <!--<Target Name="CheckIfShouldKillVBCSCompiler" />-->
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
-    <CodeAnalysisRuleSet>WireMock.Net.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
+        <CodeAnalysisRuleSet>WireMock.Net.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-    <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+        <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
-    <DefineConstants>USE_ASPNETCORE</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
+        <DefineConstants>USE_ASPNETCORE</DefineConstants>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
-    <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+        <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
+    </PropertyGroup>
 
-	<ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
-    <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
+        <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
+        <PackageReference Include="JmesPath.Net" Version="1.0.125" />
+        <PackageReference Include="AnyOf" Version="0.2.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
-    <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
+        <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net452' ">
-    <!-- Required for WebRequestHandler -->
-    <Reference Include="System.Net.Http.WebRequest" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net452' ">
+        <!-- Required for WebRequestHandler -->
+        <Reference Include="System.Net.Http.WebRequest" />
 
-    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
-  </ItemGroup>
+        <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="Scriban.Signed" Version="2.1.4" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
-    <PackageReference Include="Microsoft.Owin" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Owin.Hosting" Version="4.0.0" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+        <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.6" />
+        <PackageReference Include="Microsoft.Owin" Version="4.0.0" />
+        <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.0.0" />
+        <PackageReference Include="Microsoft.Owin.Hosting" Version="4.0.0" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="Scriban.Signed" Version="2.1.4" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+        <PackageReference Include="Scriban.Signed" Version="2.1.4" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
-    <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
-  </ItemGroup>
+        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
+        <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="1.1.3" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Scriban.Signed" Version="2.1.4" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+        <PackageReference Include="Microsoft.AspNetCore" Version="1.1.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="1.1.3" />
+        <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+        <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="Scriban.Signed" Version="2.1.4" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="Scriban.Signed" Version="3.3.2" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <PackageReference Include="Scriban.Signed" Version="3.3.2" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
-    <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
-    <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
-  </ItemGroup>
+        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
+        <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Scriban.Signed" Version="3.3.2" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Scriban.Signed" Version="3.3.2" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Handlebars.Net.Helpers" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.2.1" />
-    <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.2.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.2.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
-    <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+        <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
+    </ItemGroup>
 </Project>

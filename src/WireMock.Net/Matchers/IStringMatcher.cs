@@ -1,4 +1,7 @@
-﻿namespace WireMock.Matchers
+using AnyOfTypes;
+using WireMock.Models;
+
+namespace WireMock.Matchers
 {
     /// <summary>
     /// IStringMatcher
@@ -17,6 +20,6 @@
         /// Gets the patterns.
         /// </summary>
         /// <returns>Patterns</returns>
-        string[] GetPatterns();
+        AnyOf<string, StringPattern>[] GetPatterns();
     }
 }

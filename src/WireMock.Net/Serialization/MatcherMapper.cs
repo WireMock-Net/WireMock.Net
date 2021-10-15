@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
+using WireMock.Extensions;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Plugin;
 using WireMock.Settings;
-using WireMock.Validation;
 
 namespace WireMock.Serialization
 {
@@ -17,8 +19,7 @@ namespace WireMock.Serialization
 
         public MatcherMapper(IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
@@ -36,9 +37,8 @@ namespace WireMock.Serialization
             string[] parts = matcher.Name.Split('.');
             string matcherName = parts[0];
             string matcherType = parts.Length > 1 ? parts[1] : null;
-
-            string[] stringPatterns = (matcher.Patterns != null ? matcher.Patterns : new[] { matcher.Pattern }).OfType<string>().ToArray();
-            MatchBehaviour matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+            var stringPatterns = ParseStringPatterns(matcher);
+            var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
             bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
 
@@ -68,12 +68,12 @@ namespace WireMock.Serialization
                     return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonMatcher":
-                    object value = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonMatcher(matchBehaviour, value, ignoreCase, throwExceptionWhenMatcherFails);
+                    object valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonMatcher(matchBehaviour, valueForJsonMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPartialMatcher":
-                    object matcherValue = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonPartialMatcher(matchBehaviour, matcherValue, ignoreCase, throwExceptionWhenMatcherFails);
+                    object valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case "JsonPathMatcher":
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
@@ -116,45 +116,85 @@ namespace WireMock.Serialization
                 return null;
             }
 
-            object[] patterns = new object[0]; // Default empty array
+            bool? ignoreCase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
+            bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?)null;
+
+            var model = new MatcherModel
+            {
+                RejectOnMatch = rejectOnMatch,
+                IgnoreCase = ignoreCase,
+                Name = matcher.Name
+            };
+
             switch (matcher)
             {
                 // If the matcher is a IStringMatcher, get the patterns.
                 case IStringMatcher stringMatcher:
-                    patterns = stringMatcher.GetPatterns().Cast<object>().ToArray();
+                    var stringPatterns = stringMatcher.GetPatterns();
+                    if (stringPatterns.Length == 1)
+                    {
+                        if (stringPatterns[0].IsFirst)
+                        {
+                            model.Pattern = stringPatterns[0].First;
+                        }
+                        else
+                        {
+                            model.Pattern = stringPatterns[0].Second.Pattern;
+                            model.PatternAsFile = stringPatterns[0].Second.PatternAsFile;
+                        }
+                    }
+                    else
+                    {
+                        model.Patterns = stringPatterns.Select(p => p.GetPattern()).Cast<object>().ToArray();
+                    }
                     break;
 
                 // If the matcher is a IValueMatcher, get the value (can be string or object).
                 case IValueMatcher valueMatcher:
-                    patterns = new[] { valueMatcher.Value };
+                    model.Patterns = new[] { valueMatcher.Value };
                     break;
 
                 // If the matcher is a ExactObjectMatcher, get the ValueAsObject or ValueAsBytes.
                 case ExactObjectMatcher exactObjectMatcher:
-                    patterns = new[] { exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes };
+                    model.Patterns = new[] { exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes };
                     break;
             }
 
-            bool? ignoreCase = matcher is IIgnoreCaseMatcher ignoreCaseMatcher ? ignoreCaseMatcher.IgnoreCase : (bool?)null;
-
-            bool? rejectOnMatch = matcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : (bool?)null;
-
-            return new MatcherModel
-            {
-                RejectOnMatch = rejectOnMatch,
-                IgnoreCase = ignoreCase,
-                Name = matcher.Name,
-                Pattern = patterns.Length == 1 ? patterns.First() : null,
-                Patterns = patterns.Length > 1 ? patterns : null
-            };
+            return model;
         }
 
-        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, string stringPattern, bool throwException)
+        private AnyOf<string, StringPattern>[] ParseStringPatterns(MatcherModel matcher)
+        {
+            if (matcher.Pattern is string patternAsString)
+            {
+                return new[] { new AnyOf<string, StringPattern>(patternAsString) };
+            }
+
+            if (matcher.Pattern is IEnumerable<string> patternAsStringArray)
+            {
+                return patternAsStringArray.ToAnyOfPatterns();
+            }
+
+            if (matcher.Patterns?.OfType<string>() is IEnumerable<string> patternsAsStringArray)
+            {
+                return patternsAsStringArray.ToAnyOfPatterns();
+            }
+
+            if (!string.IsNullOrEmpty(matcher.PatternAsFile))
+            {
+                var pattern = _settings.FileSystemHandler.ReadFileAsString(matcher.PatternAsFile);
+                return new[] { new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = matcher.PatternAsFile }) };
+            }
+
+            return new AnyOf<string, StringPattern>[0];
+        }
+
+        private ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern, bool throwException)
         {
             byte[] bytePattern;
             try
             {
-                bytePattern = Convert.FromBase64String(stringPattern);
+                bytePattern = Convert.FromBase64String(stringPattern.GetPattern());
             }
             catch
             {

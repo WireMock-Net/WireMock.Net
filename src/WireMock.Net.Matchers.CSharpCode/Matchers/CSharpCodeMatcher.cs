@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using WireMock.Exceptions;
+using WireMock.Extensions;
+using WireMock.Models;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -33,13 +36,13 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.ThrowException"/>
         public bool ThrowException { get; }
 
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CSharpCodeMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public CSharpCodeMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
+        public CSharpCodeMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, patterns)
         {
         }
 
@@ -48,7 +51,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="patterns">The patterns.</param>
-        public CSharpCodeMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] patterns)
+        public CSharpCodeMatcher(MatchBehaviour matchBehaviour, [NotNull] params AnyOf<string, StringPattern>[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
@@ -73,7 +76,7 @@ namespace WireMock.Matchers
 
             if (input != null)
             {
-                match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern)));
+                match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())));
             }
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
@@ -214,7 +217,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public string[] GetPatterns()
+        public AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }

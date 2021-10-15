@@ -1,8 +1,12 @@
 using System;
+using AnyOfTypes;
 using FluentAssertions;
+using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
+using WireMock.Handlers;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Serialization;
 using WireMock.Settings;
 using Xunit;
@@ -193,7 +197,7 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void MatcherModelMapper_Map_WildcardMatcher()
+        public void MatcherModelMapper_Map_WildcardMatcher_IgnoreCase()
         {
             // Assign
             var model = new MatcherModel
@@ -209,6 +213,40 @@ namespace WireMock.Net.Tests.Serialization
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
             Check.That(matcher.IsMatch("X")).IsEqualTo(0.5d);
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_WildcardMatcher_With_PatternAsFile()
+        {
+            // Arrange
+            var file = "c:\\test.txt";
+            var fileContent = "c";
+            var stringPattern = new StringPattern
+            {
+                Pattern = fileContent,
+                PatternAsFile = file
+            };
+            var fileSystemHandleMock = new Mock<IFileSystemHandler>();
+            fileSystemHandleMock.Setup(f => f.ReadFileAsString(file)).Returns(fileContent);
+
+            var model = new MatcherModel
+            {
+                Name = "WildcardMatcher",
+                PatternAsFile = file
+            };
+
+            var settings = new WireMockServerSettings
+            {
+                FileSystemHandler = fileSystemHandleMock.Object
+            };
+            var sut = new MatcherMapper(settings);
+
+            // Act
+            var matcher = (WildcardMatcher)sut.Map(model);
+
+            // Assert
+            matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
+            matcher.IsMatch("c").Should().Be(1.0d);
         }
 
         [Fact]

@@ -1,9 +1,11 @@
-﻿using System;
+using System;
+using AnyOfTypes;
 using FluentAssertions;
 using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.Serialization;
 using WireMock.Settings;
 using Xunit;
@@ -60,7 +62,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var matcherMock = new Mock<IStringMatcher>();
             matcherMock.Setup(m => m.Name).Returns("test");
-            matcherMock.Setup(m => m.GetPatterns()).Returns(new[] { "p1", "p2" });
+            matcherMock.Setup(m => m.GetPatterns()).Returns(new AnyOf<string, StringPattern>[] { "p1", "p2" });
 
             // Act
             var model = _sut.Map(matcherMock.Object);
@@ -69,7 +71,30 @@ namespace WireMock.Net.Tests.Serialization
             model.IgnoreCase.Should().BeNull();
             model.Name.Should().Be("test");
             model.Pattern.Should().BeNull();
-            model.Patterns.Should().Contain("p1", "p2");
+            model.Patterns.Should().HaveCount(2)
+                .And.Contain("p1")
+                .And.Contain("p2");
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_IStringMatcher_With_PatternAsFile()
+        {
+            // Arrange
+            var pattern = new StringPattern { Pattern = "p", PatternAsFile = "pf" };
+
+            var matcherMock = new Mock<IStringMatcher>();
+            matcherMock.Setup(m => m.Name).Returns("test");
+            matcherMock.Setup(m => m.GetPatterns()).Returns(new AnyOf<string, StringPattern>[] { pattern });
+
+            // Act
+            var model = _sut.Map(matcherMock.Object);
+
+            // Assert
+            model.IgnoreCase.Should().BeNull();
+            model.Name.Should().Be("test");
+            model.Pattern.Should().Be("p");
+            model.Patterns.Should().BeNull();
+            model.PatternAsFile.Should().Be("pf");
         }
 
         [Fact]
@@ -300,6 +325,25 @@ namespace WireMock.Net.Tests.Serialization
             // Assert
             matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
             matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialMatcher_StringPattern_With_PatternAsFile()
+        {
+            // Assign
+            var pattern = new StringPattern { Pattern = "{ \"AccountIds\": [ 1, 2, 3 ] }", PatternAsFile = "pf" };
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonPartialMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
         }
     }
 }

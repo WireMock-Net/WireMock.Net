@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_WithPathRegexMatcher()
+        public void Request_WithPathRegexMatcher_HasMatch()
         {
             // given
             var spec = Request.Create().WithPath(new RegexMatcher("^/foo"));
@@ -102,7 +102,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_WithPathRegex_false()
+        public void Request_WithPathRegexMatcher_HasNoMatch()
         {
             // given
             var spec = Request.Create().WithPath("/foo");
@@ -113,6 +113,25 @@ namespace WireMock.Net.Tests
             // then
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithPathRegexMatcher_WithPatternAsFile_HasMatch()
+        {
+            // Arrange
+            var pattern = new StringPattern
+            {
+                Pattern = "^/foo",
+                PatternAsFile = "c:\\x.txt"
+            };
+            var spec = Request.Create().WithPath(new RegexMatcher(pattern));
+
+            // when
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo/bar"), "blabla", ClientIp);
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Fact]

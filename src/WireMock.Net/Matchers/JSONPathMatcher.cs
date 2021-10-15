@@ -1,7 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WireMock.Extensions;
+using WireMock.Models;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -13,7 +16,7 @@ namespace WireMock.Matchers
     /// <seealso cref="IObjectMatcher" />
     public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     {
-        private readonly string[] _patterns;
+        private readonly AnyOf<string, StringPattern>[] _patterns;
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -25,7 +28,15 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns.ToAnyOfPatterns())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
+        /// </summary>
+        /// <param name="patterns">The patterns.</param>
+        public JsonPathMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
         {
         }
 
@@ -35,7 +46,7 @@ namespace WireMock.Matchers
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params string[] patterns)
+        public JsonPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
         {
             Check.NotNull(patterns, nameof(patterns));
 
@@ -94,7 +105,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public string[] GetPatterns()
+        public AnyOf<string, StringPattern>[] GetPatterns()
         {
             return _patterns;
         }
@@ -104,7 +115,7 @@ namespace WireMock.Matchers
 
         private double IsMatch(JToken jtoken)
         {
-            return MatchScores.ToScore(_patterns.Select(pattern => jtoken.SelectToken(pattern) != null));
+            return MatchScores.ToScore(_patterns.Select(pattern => jtoken.SelectToken(pattern.GetPattern()) != null));
         }
     }
 }
