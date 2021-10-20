@@ -264,7 +264,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         new MatcherModel
                         {
-                            Name = "NotNullOrEmptyMatcher",
+                            Name = "ExactMatcher",
                             Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
                         }
                     }
