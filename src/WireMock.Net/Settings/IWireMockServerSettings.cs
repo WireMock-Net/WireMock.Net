@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
 using WireMock.Handlers;
@@ -87,6 +87,18 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         string AdminPassword { get; set; }
+
+        /// <summary>
+        /// The AzureAD Tenant needed for __admin access.
+        /// </summary>
+        [PublicAPI]
+        string AdminAzureADTenant { get; set; }
+
+        /// <summary>
+        /// The AzureAD Audience / Resource for __admin access.
+        /// </summary>
+        [PublicAPI]
+        string AdminAzureADAudience { get; set; }
 
         /// <summary>
         /// The RequestLog expiration in hours (optional).

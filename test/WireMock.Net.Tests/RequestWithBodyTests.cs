@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using NFluent;
 using System;
 using System.Text;
 using FluentAssertions;
+using Newtonsoft.Json;
+using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -96,10 +96,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyExactMatcher()
         {
-            // given
+            // Arrange
             var requestBuilder = Request.Create().UsingAnyMethod().WithBody(new ExactMatcher("cat"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "cat",
@@ -107,18 +107,18 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
 
         [Fact]
-        public void Request_WithBodyWildcardMatcher()
+        public void Request_BodyAsString_Using_WildcardMatcher()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("H*o*"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "Hello world!",
@@ -126,18 +126,38 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+            spec.GetMatchingScore(request, requestMatchResult).Should().Be(1.0);
+        }
+
+        [Fact]
+        public void Request_BodyAsJson_Using_WildcardMatcher()
+        {
+            // Arrange
+            var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("*Hello*"));
+
+            // Act
+            var body = new BodyData
+            {
+                BodyAsJson = new { Hi = "Hello world!" },
+                BodyAsString = "{ Hi = \"Hello world!\" }",
+                DetectedBodyType = BodyType.Json
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            spec.GetMatchingScore(request, requestMatchResult).Should().Be(1.0);
         }
 
         [Fact]
         public void Request_WithBodyXPathMatcher_true()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = @"
@@ -150,7 +170,7 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -158,10 +178,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyXPathMatcher_false()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new XPathMatcher("/todo-list[count(todo-item) = 99]"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = @"
@@ -174,7 +194,7 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
@@ -182,10 +202,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyJsonPathMatcher_true()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }",
@@ -193,7 +213,7 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -201,10 +221,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyJsonPathMatcher_false()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$.things[?(@.name == 'RequiredThing')]"));
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "{ \"things\": { \"name\": \"Wiremock\" } }",
@@ -212,7 +232,7 @@ namespace WireMock.Net.Tests
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
@@ -220,10 +240,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyAsJson_Object_JsonPathMatcher_true()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
 
-            // when
+            // Act
             string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"Wiremock\" } ] }";
             var bodyData = new BodyData
             {
@@ -235,7 +255,7 @@ namespace WireMock.Net.Tests
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -243,10 +263,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_1()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..books[?(@.price < 10)]"));
 
-            // when
+            // Act
             string jsonString = "{ \"books\": [ { \"category\": \"test1\", \"price\": 8.95 }, { \"category\": \"test2\", \"price\": 20 } ] }";
             var bodyData = new BodyData
             {
@@ -258,7 +278,7 @@ namespace WireMock.Net.Tests
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -266,10 +286,10 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithBodyAsJson_Array_JsonPathMatcher_2()
         {
-            // given
+            // Arrange
             var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..[?(@.Id == 1)]"));
 
-            // when
+            // Act
             string jsonString = "{ \"Id\": 1, \"Name\": \"Test\" }";
             var bodyData = new BodyData
             {
@@ -281,7 +301,7 @@ namespace WireMock.Net.Tests
 
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             double result = spec.GetMatchingScore(request, requestMatchResult);
             Check.That(result).IsEqualTo(1.0);

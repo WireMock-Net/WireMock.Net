@@ -73,6 +73,10 @@
         <PackageReference Include="FluentAssertions" Version="6.1.0" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
+        <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+    </ItemGroup>
+
     <ItemGroup>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
