@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -63,6 +63,14 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.AdminPassword"/>
         [PublicAPI]
         public string AdminPassword { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.AdminAzureADTenant"/>
+        [PublicAPI]
+        public string AdminAzureADTenant { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.AdminAzureADAudience"/>
+        [PublicAPI]
+        public string AdminAzureADAudience { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.RequestLogExpirationDuration"/>
         [PublicAPI]

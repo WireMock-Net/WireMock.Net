@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using JetBrains.Annotations;
@@ -104,9 +104,9 @@ namespace WireMock.Server
         void ReadStaticMappings([CanBeNull] string folder = null);
 
         /// <summary>
-        /// Removes the basic authentication.
+        /// Removes the authentication.
         /// </summary>
-        void RemoveBasicAuthentication();
+        void RemoveAuthentication();
 
         /// <summary>
         /// Resets LogEntries and Mappings.
@@ -133,6 +133,13 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
         void SaveStaticMappings([CanBeNull] string folder = null);
+
+        /// <summary>
+        /// Sets the basic authentication.
+        /// </summary>
+        /// <param name="tenant">The Tenant.</param>
+        /// <param name="audience">The Audience or Resource.</param>
+        void SetAzureADAuthentication([NotNull] string tenant, [NotNull] string audience);
 
         /// <summary>
         /// Sets the basic authentication.
