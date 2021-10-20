@@ -1,7 +1,9 @@
-# 1.4.24 (15 October 2021)
+# 1.4.24 (20 October 2021)
+- #637 Add support for AzureAD authentication for REST admin interface [feature]
 - #643 Support edge case: first object, next an array. [feature]
 - #644 Mapping headers in OpenAPI [feature]
 - #649 Refactor method name MapHeaders and httpStatusCode 
 - #651 Implement PatternAsFile for StringMatcher [feature]
+- #654 Update NotNullOrEmptyMatcher to also implement IStringMatcher [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
