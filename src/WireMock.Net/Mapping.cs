@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Matchers.Request;
@@ -13,49 +13,51 @@ namespace WireMock
     /// </summary>
     public class Mapping : IMapping
     {
-        /// <inheritdoc cref="IMapping.Guid" />
+        /// <inheritdoc />
         public Guid Guid { get; }
 
-        /// <inheritdoc cref="IMapping.Title" />
+        public TimeSettings TimeSettings { get; }
+
+        /// <inheritdoc />
         public string Title { get; }
 
-        /// <inheritdoc cref="IMapping.Path" />
+        /// <inheritdoc />
         public string Path { get; set; }
 
-        /// <inheritdoc cref="IMapping.Priority" />
+        /// <inheritdoc />
         public int Priority { get; }
 
-        /// <inheritdoc cref="IMapping.Scenario" />
+        /// <inheritdoc />
         public string Scenario { get; }
 
-        /// <inheritdoc cref="IMapping.ExecutionConditionState" />
+        /// <inheritdoc />
         public string ExecutionConditionState { get; }
 
-        /// <inheritdoc cref="IMapping.NextState" />
+        /// <inheritdoc />
         public string NextState { get; }
 
-        /// <inheritdoc cref="IMapping.StateTimes" />
+        /// <inheritdoc />
         public int? StateTimes { get; }
 
-        /// <inheritdoc cref="IMapping.RequestMatcher" />
+        /// <inheritdoc />
         public IRequestMatcher RequestMatcher { get; }
 
-        /// <inheritdoc cref="IMapping.Provider" />
+        /// <inheritdoc />
         public IResponseProvider Provider { get; }
 
-        /// <inheritdoc cref="IMapping.Settings" />
+        /// <inheritdoc />
         public IWireMockServerSettings Settings { get; }
 
-        /// <inheritdoc cref="IMapping.IsStartState" />
+        /// <inheritdoc />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
 
-        /// <inheritdoc cref="IMapping.IsAdminInterface" />
+        /// <inheritdoc />
         public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
-        /// <inheritdoc cref="IMapping.LogMapping" />
+        /// <inheritdoc />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
-        /// <inheritdoc cref="IMapping.Webhooks" />
+        /// <inheritdoc />
         public IWebhook[] Webhooks { get; }
 
         /// <summary>

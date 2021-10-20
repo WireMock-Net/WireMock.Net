@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using WireMock.Models;
 
 namespace WireMock.Admin.Mappings
 {
@@ -12,6 +13,11 @@ namespace WireMock.Admin.Mappings
         /// Gets or sets the unique identifier.
         /// </summary>
         public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Gets or sets the TimeSettings when which this mapping should be used.
+        /// </summary>
+        public TimeSettingsModel TimeSettings { get; set; }
 
         /// <summary>
         /// The unique title.
