@@ -96,7 +96,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
             _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
-            _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
+            _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
 
             var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
@@ -119,7 +119,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]> { { "h", new[] { "x" } } });
             _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
-            _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
+            _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
             _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
 
             var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
@@ -152,7 +152,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
             _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
-            _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
+            _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
 
             var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
             fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
@@ -201,7 +201,7 @@ namespace WireMock.Net.Tests.Owin
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, new Dictionary<string, string[]>());
             _requestMapperMock.Setup(m => m.MapAsync(It.IsAny<IRequest>(), It.IsAny<IWireMockMiddlewareOptions>())).ReturnsAsync(request);
 
-            _optionsMock.SetupGet(o => o.AuthorizationMatcher).Returns(new ExactMatcher());
+            _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
 
             var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
             fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");

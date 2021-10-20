@@ -113,10 +113,10 @@ namespace WireMock.Owin
 
                 logRequest = targetMapping.LogMapping;
 
-                if (targetMapping.IsAdminInterface && _options.AuthorizationMatcher != null)
+                if (targetMapping.IsAdminInterface && _options.AuthenticationMatcher != null)
                 {
                     bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string> authorization);
-                    if (!present || _options.AuthorizationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
+                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
                         response = ResponseMessageBuilder.Create(null, 401);

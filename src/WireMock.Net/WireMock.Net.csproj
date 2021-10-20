@@ -50,17 +50,18 @@
         <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="TinyMapper" Version="3.0.3" />
-        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-        <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
-        <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-        <PackageReference Include="AnyOf" Version="0.2.0" />
-    </ItemGroup>
+	<ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
+    <!--<PackageReference Include="Stef.Validation" Version="0.0.3" />-->
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.12" />
+    <PackageReference Include="JmesPath.Net" Version="1.0.125" />
+    <PackageReference Include="AnyOf" Version="0.2.0" />
+    <PackageReference Include="TinyMapper" Version="3.0.3" />
+  </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
@@ -69,9 +70,10 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
-        <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
-    </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
+    <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.12.2" />
+  </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net452' ">
         <!-- Required for WebRequestHandler -->
