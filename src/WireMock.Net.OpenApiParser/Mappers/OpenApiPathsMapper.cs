@@ -270,7 +270,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     }
                 })
                 .ToList();
-                
+
             return list.Any() ? list : null;
         }
 
