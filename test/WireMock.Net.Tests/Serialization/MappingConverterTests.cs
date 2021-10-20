@@ -164,6 +164,34 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void ToMappingModel_WithTimeSetrtings_ReturnsCorrectTimeSettings()
+        {
+            // Assign
+            var start = DateTime.Now;
+            var ttl = 100;
+            var end = start.AddSeconds(ttl);
+            var request = Request.Create();
+            var response = Response.Create();
+            var timeSettings = new TimeSettings
+            {
+                Start = start,
+                End = end,
+                TTL = ttl
+            };
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, timeSettings);
+
+            // Act
+            var model = _sut.ToMappingModel(mapping);
+
+            // Assert
+            model.Should().NotBeNull();
+            model.TimeSettings.Should().NotBeNull();
+            model.TimeSettings.Start.Should().Be(start);
+            model.TimeSettings.End.Should().Be(end);
+            model.TimeSettings.TTL.Should().Be(ttl);
+        }
+
+        [Fact]
         public void ToMappingModel_WithDelay_ReturnsCorrectModel()
         {
             // Assign
@@ -181,7 +209,7 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void ToMappingModel_WithRandomMininumDelay_ReturnsCorrectModel()
+        public void ToMappingModel_WithRandomMinimumDelay_ReturnsCorrectModel()
         {
             // Assign
             int minimumDelay = 1000;
@@ -217,26 +245,6 @@ namespace WireMock.Net.Tests.Serialization
             model.Response.Delay.Should().BeNull();
             model.Response.MinimumRandomDelay.Should().Be(minimumDelay);
             model.Response.MaximumRandomDelay.Should().Be(maximumDelay);
-        }
-
-        [Fact]
-        public void ToMappingModel_WithTimeSettings_ReturnsCorrectModel()
-        {
-            //// Assign
-            //int minimumDelay = 1000;
-            //int maximumDelay = 2000;
-            //var request = Request.Create();
-            //var response = Response.Create().WithRandomDelay(minimumDelay, maximumDelay);
-            //var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null);
-
-            //// Act
-            //var model = _sut.ToMappingModel(mapping);
-
-            //// Assert
-            //model.Should().NotBeNull();
-            //model.Response.Delay.Should().BeNull();
-            //model.Response.MinimumRandomDelay.Should().Be(minimumDelay);
-            //model.Response.MaximumRandomDelay.Should().Be(maximumDelay);
         }
     }
 }

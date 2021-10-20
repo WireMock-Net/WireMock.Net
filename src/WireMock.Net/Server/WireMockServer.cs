@@ -4,19 +4,15 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using JetBrains.Annotations;
-using Nelibur.ObjectMapper;
 using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Authentication;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Logging;
-using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
@@ -67,12 +63,6 @@ namespace WireMock.Server
         /// </summary>
         [PublicAPI]
         public ConcurrentDictionary<string, ScenarioState> Scenarios => new ConcurrentDictionary<string, ScenarioState>(_options.Scenarios);
-
-        static WireMockServer()
-        {
-            TinyMapper.Bind<TimeSettingsModel, TimeSettings>();
-            TinyMapper.Bind<TimeSettings, TimeSettingsModel>();
-        }
 
         #region IDisposable Members
         /// <summary>

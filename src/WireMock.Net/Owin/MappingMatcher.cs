@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using WireMock.Extensions;
 using WireMock.Validation;
 
 namespace WireMock.Owin
@@ -19,7 +20,8 @@ namespace WireMock.Owin
         public (MappingMatcherResult Match, MappingMatcherResult Partial) FindBestMatch(RequestMessage request)
         {
             var mappings = new List<MappingMatcherResult>();
-            foreach (var mapping in _options.Mappings.Values)
+
+            foreach (var mapping in _options.Mappings.Values.Where(m => m.TimeSettings.IsValid()))
             {
                 try
                 {
