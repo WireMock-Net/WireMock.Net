@@ -61,6 +61,7 @@
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
         <!--<PackageReference Include="StrongNamer" Version="0.0.8" />-->
         <PackageReference Include="AnyOf" Version="0.2.0" />
+        <PackageReference Include="TinyMapper" Version="3.0.3" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using WireMock.Models;
@@ -23,6 +23,13 @@ namespace WireMock.Server
         /// <param name="guid">The unique identifier.</param>
         /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         IRespondWithAProvider WithGuid(Guid guid);
+
+        /// <summary>
+        /// Define the TimeSettings for this mapping.
+        /// </summary>
+        /// <param name="timeSettings">The TimeSettings.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithTimeSettings(ITimeSettings timeSettings);
 
         /// <summary>
         /// Define a unique title for this mapping.

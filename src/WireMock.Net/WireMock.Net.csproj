@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
@@ -51,6 +51,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="TinyMapper" Version="3.0.3" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />

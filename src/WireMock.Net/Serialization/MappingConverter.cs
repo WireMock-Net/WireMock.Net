@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nelibur.ObjectMapper;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -36,6 +38,7 @@ namespace WireMock.Serialization
             var mappingModel = new MappingModel
             {
                 Guid = mapping.Guid,
+                TimeSettings = mapping.TimeSettings != null ? TinyMapper.Map<TimeSettingsModel>(mapping.TimeSettings) : null,
                 Title = mapping.Title,
                 Priority = mapping.Priority != 0 ? mapping.Priority : (int?)null,
                 Scenario = mapping.Scenario,

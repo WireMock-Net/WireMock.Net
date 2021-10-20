@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Nelibur.ObjectMapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
@@ -16,6 +17,7 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -448,6 +450,11 @@ namespace WireMock.Server
             else if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
             {
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
+            }
+
+            if (mappingModel.TimeSettings != null)
+            {
+                respondProvider = respondProvider.WithTimeSettings(TinyMapper.Map<TimeSettings>(mappingModel.TimeSettings));
             }
 
             if (path != null)

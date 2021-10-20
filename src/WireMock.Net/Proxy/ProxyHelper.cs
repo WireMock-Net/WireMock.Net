@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -105,7 +105,7 @@ namespace WireMock.Proxy
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
         }
     }
 }

@@ -16,8 +16,6 @@ namespace WireMock
         /// <inheritdoc />
         public Guid Guid { get; }
 
-        public TimeSettings TimeSettings { get; }
-
         /// <inheritdoc />
         public string Title { get; }
 
@@ -60,6 +58,9 @@ namespace WireMock
         /// <inheritdoc />
         public IWebhook[] Webhooks { get; }
 
+        /// <inheritdoc />
+        public ITimeSettings TimeSettings { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
@@ -75,6 +76,7 @@ namespace WireMock
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
         /// <param name="webhooks">The Webhooks. [Optional]</param>
+        /// <param name="timeSettings">The TimeSettings. [Optional]</param>
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
@@ -87,7 +89,8 @@ namespace WireMock
             [CanBeNull] string executionConditionState,
             [CanBeNull] string nextState,
             [CanBeNull] int? stateTimes,
-            [CanBeNull] IWebhook[] webhooks)
+            [CanBeNull] IWebhook[] webhooks,
+            [CanBeNull] ITimeSettings timeSettings)
         {
             Guid = guid;
             Title = title;
@@ -101,6 +104,7 @@ namespace WireMock
             NextState = nextState;
             StateTimes = stateTimes;
             Webhooks = webhooks;
+            TimeSettings = timeSettings;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
