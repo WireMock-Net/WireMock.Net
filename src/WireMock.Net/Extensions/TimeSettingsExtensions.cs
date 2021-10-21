@@ -1,11 +1,12 @@
 using System;
+using JetBrains.Annotations;
 using WireMock.Models;
 
 namespace WireMock.Extensions
 {
     internal static class TimeSettingsExtensions
     {
-        public static bool IsValid(this ITimeSettings settings)
+        public static bool IsValid([CanBeNull] this ITimeSettings settings)
         {
             if (settings == null)
             {

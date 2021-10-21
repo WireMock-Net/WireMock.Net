@@ -21,8 +21,7 @@ namespace WireMock.Proxy
 
         public ProxyHelper([NotNull] IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
-            _settings = settings;
+            _settings = Check.NotNull(settings, nameof(settings));
         }
 
         public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
