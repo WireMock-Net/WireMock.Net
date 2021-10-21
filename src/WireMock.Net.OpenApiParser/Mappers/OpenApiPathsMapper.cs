@@ -209,7 +209,14 @@ namespace WireMock.Net.OpenApiParser.Mappers
             var writer = new OpenApiJsonWriter(outputString);
             any.Write(writer, OpenApiSpecVersion.OpenApi3_0);
 
-            return JObject.Parse(outputString.ToString());
+            if (any.AnyType == AnyType.Array)
+            {
+                return JArray.Parse(outputString.ToString());
+            }
+            else
+            {
+                return JObject.Parse(outputString.ToString());
+            }
         }
 
         private IDictionary<string, object> MapHeaders(string responseContentType, IDictionary<string, OpenApiHeader> headers)
