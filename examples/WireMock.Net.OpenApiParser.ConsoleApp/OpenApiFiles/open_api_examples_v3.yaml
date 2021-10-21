@@ -1,0 +1,96 @@
+openapi: 3.0.1
+info:
+  title: API_Test
+  version: v1
+paths:
+  /WeatherForecast:
+    get:
+      tags:
+        - WeatherForecast
+      parameters:
+      - in: "header"
+        name: X-Correlation-ID
+        type: "string"
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:           
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WeatherForecast'
+  /leolplex:
+    get:
+      tags:
+        - WeatherForecast
+      parameters:
+      - in: "header"
+        name: X-Correlation-ID
+        type: "string"
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:           
+            application/json:
+              example:
+                - date: 2021-10-21T09:13:00.552+00:00
+                  temperatureC: 111
+                  temperatureF: 111
+                  summary: Just-summary
+                - date: 2021-10-21T09:13:00.000+00:00
+                  temperatureC: 222
+                  temperatureF: 222
+                  summary: Just-summary2 
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WeatherForecast'
+  /exampleop:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 1
+                name: get food
+                completed: false
+              schema:
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  completed:
+                    type: boolean
+                  completed_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                required:
+                  - id
+                  - name
+                  - completed
+components:
+  schemas:
+    WeatherForecast:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        temperatureC:
+          type: integer
+          format: int32
+        temperatureF:
+          type: integer
+          format: int32
+          readOnly: true
+        summary:
+          type: string
+          nullable: true
+      additionalProperties: false
