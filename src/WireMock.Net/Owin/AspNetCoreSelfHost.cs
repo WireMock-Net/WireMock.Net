@@ -1,4 +1,4 @@
-﻿#if USE_ASPNETCORE
+#if USE_ASPNETCORE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,17 +118,17 @@ namespace WireMock.Owin
                 });
 
 #if NETSTANDARD1_3
-                _logger.Info("WireMock.Net server using netstandard1.3");
+                _logger.Info("Server using netstandard1.3");
 #elif NETSTANDARD2_0
-                _logger.Info("WireMock.Net server using netstandard2.0");
+                _logger.Info("Server using netstandard2.0");
 #elif NETSTANDARD2_1
-                _logger.Info("WireMock.Net server using netstandard2.1");
+                _logger.Info("Server using netstandard2.1");
 #elif NETCOREAPP3_1
-                _logger.Info("WireMock.Net server using .NET Core 3.1");
+                _logger.Info("Server using .NET Core 3.1");
 #elif NET5_0
-                _logger.Info("WireMock.Net server using .NET 5.0");
+                _logger.Info("Server using .NET 5.0");
 #elif NET46
-                _logger.Info("WireMock.Net server using .NET Framework 4.6.1 or higher");
+                _logger.Info("Server using .NET Framework 4.6.1 or higher");
 #endif
 
 #if NETSTANDARD1_3

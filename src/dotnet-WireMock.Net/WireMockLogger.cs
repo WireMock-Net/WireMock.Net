@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
 
-namespace WireMock
+namespace WireMock.Net
 {
     public class WireMockLogger : IWireMockLogger
     {
