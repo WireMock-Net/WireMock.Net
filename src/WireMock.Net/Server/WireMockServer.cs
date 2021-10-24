@@ -202,8 +202,8 @@ namespace WireMock.Server
             _settings.Logger = settings.Logger ?? new WireMockNullLogger();
             _settings.FileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
-            _settings.Logger.Info("WireMock.Net by Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
-            _settings.Logger.Debug("WireMock.Net server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
+            _settings.Logger.Info("By Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
+            _settings.Logger.Debug("Server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
             HostUrlOptions urlOptions;
             if (settings.Urls != null)

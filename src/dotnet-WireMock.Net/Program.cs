@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 
-namespace WireMock
+namespace WireMock.Net
 {
     public class Program
     {
@@ -18,7 +18,7 @@ namespace WireMock
                 options.SingleLine = false;
                 options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss ";
             });
-        }).CreateLogger(string.Empty);
+        }).CreateLogger("WireMock.Net");
 
         private static WireMockServer Server;
 
@@ -43,16 +43,16 @@ namespace WireMock
 
             while (true)
             {
-                Logger.LogInformation("WireMock.Net server running : {IsStarted}", Server.IsStarted);
+                Logger.LogInformation("Server running : {IsStarted}", Server.IsStarted);
                 await Task.Delay(SleepTime);
             }
         }
 
         private static void Stop(string why)
         {
-            Logger.LogInformation("WireMock.Net server stopping because '{why}'", why);
+            Logger.LogInformation("Server stopping because '{why}'", why);
             Server.Stop();
-            Logger.LogInformation("WireMock.Net server stopped");
+            Logger.LogInformation("Server stopped");
         }
     }
 }
