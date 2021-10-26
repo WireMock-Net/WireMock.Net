@@ -52,8 +52,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
             TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
             var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
             var responseExample = responseContent?.Example;
+            var responseSchemaExample = responseContent?.Schema?.Example;
 
-            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) : MapSchemaToObject(responseSchema);
+            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) :
+                                   responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
+                                   MapSchemaToObject(responseSchema);
 
             if (!int.TryParse(response.Key, out var httpStatusCode))
             {
