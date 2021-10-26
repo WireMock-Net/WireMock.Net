@@ -323,7 +323,6 @@ namespace WireMock.Net.Tests.Matchers
         [Theory]
         [InlineData("{\"test\":\"*\"}", "{\"test\":\"xxx\",\"other\":\"xyz\"}")]
         [InlineData("\"t*t\"", "\"test\"")]
-        [InlineData("*2*", "123")]
         public void JsonPartialWildcardMatcher_IsMatch_StringInputWithWildcard_IsValidMatch(string value, string input)
         {
             // Assign
