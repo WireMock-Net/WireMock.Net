@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using WireMock.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 
@@ -8,8 +9,8 @@ namespace WireMock.Net
 {
     public class Program
     {
-        private static int SleepTime = 30000;
-        private static readonly ILogger Logger = LoggerFactory.Create(o =>
+        private static readonly int SleepTime = 30000;
+        private static readonly ILogger xLogger = LoggerFactory.Create(o =>
         {
             o.SetMinimumLevel(LogLevel.Debug);
             o.AddSimpleConsole(options =>
@@ -19,17 +20,18 @@ namespace WireMock.Net
                 options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss ";
             });
         }).CreateLogger("WireMock.Net");
+        private static readonly IWireMockLogger Logger = new WireMockLogger(xLogger);
 
         private static WireMockServer Server;
 
         static async Task Main(string[] args)
         {
-            if (!StandAloneApp.TryStart(args, out Server, new WireMockLogger(Logger)))
+            if (!StandAloneApp.TryStart(args, out Server, Logger))
             {
                 return;
             }
 
-            Logger.LogInformation("Press Ctrl+C to shut down");
+            Logger.Info("Press Ctrl+C to shut down");
 
             Console.CancelKeyPress += (s, e) =>
             {
@@ -43,16 +45,16 @@ namespace WireMock.Net
 
             while (true)
             {
-                Logger.LogInformation("Server running : {IsStarted}", Server.IsStarted);
+                Logger.Info("Server running : {IsStarted}", Server.IsStarted);
                 await Task.Delay(SleepTime);
             }
         }
 
         private static void Stop(string why)
         {
-            Logger.LogInformation("Server stopping because '{why}'", why);
+            Logger.Info("Server stopping because '{why}'", why);
             Server.Stop();
-            Logger.LogInformation("Server stopped");
+            Logger.Info("Server stopped");
         }
     }
 }
