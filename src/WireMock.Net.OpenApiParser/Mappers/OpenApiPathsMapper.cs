@@ -163,24 +163,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         string propertyName = schemaProperty.Key;
                         var openApiSchema = schemaProperty.Value;
-                        if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
-                        {
-                            var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
-                            if (mapped is JProperty jp)
-                            {
-                                propertyAsJObject.Add(jp);
-                            }
-                            else
-                            {
-                                propertyAsJObject.Add(new JProperty(schemaProperty.Key, mapped));
-                            }
-                        }
-                        else
-                        {
-                            bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
-
-                            propertyAsJObject.Add(new JProperty(propertyName, _exampleValueGenerator.GetExampleValue(openApiSchema)));
-                        }
+                        propertyAsJObject.Add(MapPropertyAsJObject(schemaProperty.Value, schemaProperty.Key));
                     }
 
                     return name != null ? new JProperty(name, propertyAsJObject) : (JToken)propertyAsJObject;
@@ -197,18 +180,32 @@ namespace WireMock.Net.OpenApiParser.Mappers
             {
                 foreach (var item in property.Properties)
                 {
-                    var objectValue = MapSchemaToObject(item.Value, item.Key);
-                    if (objectValue is JProperty jp)
-                    {
-                        arrayItem.Add(jp);
-                    }
-                    else
-                    {
-                        arrayItem.Add(new JProperty(item.Key, objectValue));
-                    }
+                    arrayItem.Add(MapPropertyAsJObject(item.Value, item.Key));
                 }
             }
             return arrayItem;
+        }
+
+        private object MapPropertyAsJObject(OpenApiSchema openApiSchema, string key)
+        {
+            if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
+            {
+                var mapped = MapSchemaToObject(openApiSchema, key);
+                if (mapped is JProperty jp)
+                {
+                    return jp;
+                }
+                else
+                {
+                    // propertyAsJObject
+                    return new JProperty(key, mapped);
+                }
+            }
+            else
+            {
+                bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
+                return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
+            }
         }
         private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
         {
