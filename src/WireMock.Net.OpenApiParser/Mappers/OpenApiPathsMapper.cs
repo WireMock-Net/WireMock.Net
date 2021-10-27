@@ -114,6 +114,27 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return null;
             }
 
+            if (schema.AllOf.Count > 0)
+            {
+                var arrayItem = new JObject();
+                foreach (var property in schema.AllOf)
+                {
+                    foreach (var item in property.Properties)
+                    {
+                        var objectValue = MapSchemaToObject(item.Value, item.Key);
+                        if (objectValue is JProperty jp)
+                        {
+                            arrayItem.Add(jp);
+                        }
+                        else
+                        {
+                            arrayItem.Add(new JProperty(item.Key, objectValue));
+                        }
+                    }
+                }
+                return arrayItem;
+            }
+            
             switch (schema.GetSchemaType())
             {
                 case SchemaType.Array:
