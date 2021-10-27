@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using System;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
@@ -17,6 +17,11 @@ namespace WireMock
         /// Gets the unique identifier.
         /// </summary>
         Guid Guid { get; }
+
+        /// <summary>
+        /// Gets the TimeSettings (Start, End and TTL).
+        /// </summary>
+        ITimeSettings TimeSettings { get; }
 
         /// <summary>
         /// Gets the unique title.

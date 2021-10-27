@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,8 @@ namespace WireMock.Server
 
         public IWebhook[] Webhooks { get; private set; }
 
+        public ITimeSettings TimeSettings { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
         /// </summary>
@@ -55,7 +57,7 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, TimeSettings), _saveToFile);
         }
 
         /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
@@ -149,6 +151,16 @@ namespace WireMock.Server
             return WillSetStateTo(state.ToString(), times);
         }
 
+        /// <inheritdoc />
+        public IRespondWithAProvider WithTimeSettings(ITimeSettings timeSettings)
+        {
+            Check.NotNull(timeSettings, nameof(timeSettings));
+
+            TimeSettings = timeSettings;
+
+            return this;
+        }
+
         /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook[])"/>
         public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
         {
@@ -207,7 +219,7 @@ namespace WireMock.Server
             return this;
         }
 
-        private IWebhook InitWebhook(
+        private static IWebhook InitWebhook(
             string url,
             string method,
             IDictionary<string, WireMockList<string>> headers,

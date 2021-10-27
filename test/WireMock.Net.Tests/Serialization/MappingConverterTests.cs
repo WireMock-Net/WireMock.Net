@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests.Serialization
                     }
                 }
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -120,8 +120,7 @@ namespace WireMock.Net.Tests.Serialization
                     }
                 }
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks
-);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -153,7 +152,7 @@ namespace WireMock.Net.Tests.Serialization
             // Assign
             var request = Request.Create();
             var response = Response.Create().WithBodyAsJson(new { x = "x" }).WithTransformer();
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -165,13 +164,41 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void ToMappingModel_WithTimeSetrtings_ReturnsCorrectTimeSettings()
+        {
+            // Assign
+            var start = DateTime.Now;
+            var ttl = 100;
+            var end = start.AddSeconds(ttl);
+            var request = Request.Create();
+            var response = Response.Create();
+            var timeSettings = new TimeSettings
+            {
+                Start = start,
+                End = end,
+                TTL = ttl
+            };
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, timeSettings);
+
+            // Act
+            var model = _sut.ToMappingModel(mapping);
+
+            // Assert
+            model.Should().NotBeNull();
+            model.TimeSettings.Should().NotBeNull();
+            model.TimeSettings.Start.Should().Be(start);
+            model.TimeSettings.End.Should().Be(end);
+            model.TimeSettings.TTL.Should().Be(ttl);
+        }
+
+        [Fact]
         public void ToMappingModel_WithDelay_ReturnsCorrectModel()
         {
             // Assign
             int delay = 1000;
             var request = Request.Create();
             var response = Response.Create().WithDelay(delay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -182,13 +209,13 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void ToMappingModel_WithRandomMininumDelay_ReturnsCorrectModel()
+        public void ToMappingModel_WithRandomMinimumDelay_ReturnsCorrectModel()
         {
             // Assign
             int minimumDelay = 1000;
             var request = Request.Create();
             var response = Response.Create().WithRandomDelay(minimumDelay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -208,7 +235,7 @@ namespace WireMock.Net.Tests.Serialization
             int maximumDelay = 2000;
             var request = Request.Create();
             var response = Response.Create().WithRandomDelay(minimumDelay, maximumDelay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -21,8 +21,7 @@ namespace WireMock.Proxy
 
         public ProxyHelper([NotNull] IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
-            _settings = settings;
+            _settings = Check.NotNull(settings, nameof(settings));
         }
 
         public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
@@ -105,7 +104,7 @@ namespace WireMock.Proxy
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
         }
     }
 }
