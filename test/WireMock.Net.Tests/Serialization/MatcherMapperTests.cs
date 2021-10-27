@@ -345,5 +345,24 @@ namespace WireMock.Net.Tests.Serialization
             matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
             matcher.Value.Should().BeEquivalentTo(pattern);
         }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonPartialWilcardMatcher_Patterns_As_Object()
+        {
+            // Assign
+            object pattern = new { X = "*" };
+            var model = new MatcherModel
+            {
+                Name = "JsonPartialWildcardMatcher",
+                Pattern = pattern
+            };
+
+            // Act
+            var matcher = (JsonPartialWildcardMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(pattern);
+        }
     }
 }
