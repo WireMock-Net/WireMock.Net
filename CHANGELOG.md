@@ -1,3 +1,9 @@
+# 1.4.25 (27 October 2021)
+- [#661](https://github.com/WireMock-Net/WireMock.Net/pull/661) - Add TimeSettings (Start, End and TTL) [feature] contributed by [StefH](https://github.com/StefH)
+- [#664](https://github.com/WireMock-Net/WireMock.Net/pull/664) - Support Array in OpenApiParser [feature] contributed by [leolplex](https://github.com/leolplex)
+- [#667](https://github.com/WireMock-Net/WireMock.Net/pull/667) - Add JsonPartialWildcardMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#669](https://github.com/WireMock-Net/WireMock.Net/pull/669) - Support Schema Example and Support AllOf in definitions  [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.24 (20 October 2021)
 - [#637](https://github.com/WireMock-Net/WireMock.Net/pull/637) - Add support for AzureAD authentication for REST admin interface [feature] contributed by [StefH](https://github.com/StefH)
 - [#643](https://github.com/WireMock-Net/WireMock.Net/pull/643) - Support edge case: first object, next an array. [feature] contributed by [leolplex](https://github.com/leolplex)
