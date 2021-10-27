@@ -116,25 +116,9 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
             if (schema.AllOf.Count > 0)
             {
-                var arrayItem = new JObject();
-                foreach (var property in schema.AllOf)
-                {
-                    foreach (var item in property.Properties)
-                    {
-                        var objectValue = MapSchemaToObject(item.Value, item.Key);
-                        if (objectValue is JProperty jp)
-                        {
-                            arrayItem.Add(jp);
-                        }
-                        else
-                        {
-                            arrayItem.Add(new JProperty(item.Key, objectValue));
-                        }
-                    }
-                }
-                return arrayItem;
+                return MapSchemaAllOfToObject(schema);
             }
-            
+
             switch (schema.GetSchemaType())
             {
                 case SchemaType.Array:
@@ -206,6 +190,26 @@ namespace WireMock.Net.OpenApiParser.Mappers
             }
         }
 
+        private JObject MapSchemaAllOfToObject(OpenApiSchema schema)
+        {
+            var arrayItem = new JObject();
+            foreach (var property in schema.AllOf)
+            {
+                foreach (var item in property.Properties)
+                {
+                    var objectValue = MapSchemaToObject(item.Value, item.Key);
+                    if (objectValue is JProperty jp)
+                    {
+                        arrayItem.Add(jp);
+                    }
+                    else
+                    {
+                        arrayItem.Add(new JProperty(item.Key, objectValue));
+                    }
+                }
+            }
+            return arrayItem;
+        }
         private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
         {
             if (parameters == null)
