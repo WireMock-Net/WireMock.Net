@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.Matchers.Request;
@@ -13,50 +13,53 @@ namespace WireMock
     /// </summary>
     public class Mapping : IMapping
     {
-        /// <inheritdoc cref="IMapping.Guid" />
+        /// <inheritdoc />
         public Guid Guid { get; }
 
-        /// <inheritdoc cref="IMapping.Title" />
+        /// <inheritdoc />
         public string Title { get; }
 
-        /// <inheritdoc cref="IMapping.Path" />
+        /// <inheritdoc />
         public string Path { get; set; }
 
-        /// <inheritdoc cref="IMapping.Priority" />
+        /// <inheritdoc />
         public int Priority { get; }
 
-        /// <inheritdoc cref="IMapping.Scenario" />
+        /// <inheritdoc />
         public string Scenario { get; }
 
-        /// <inheritdoc cref="IMapping.ExecutionConditionState" />
+        /// <inheritdoc />
         public string ExecutionConditionState { get; }
 
-        /// <inheritdoc cref="IMapping.NextState" />
+        /// <inheritdoc />
         public string NextState { get; }
 
-        /// <inheritdoc cref="IMapping.StateTimes" />
+        /// <inheritdoc />
         public int? StateTimes { get; }
 
-        /// <inheritdoc cref="IMapping.RequestMatcher" />
+        /// <inheritdoc />
         public IRequestMatcher RequestMatcher { get; }
 
-        /// <inheritdoc cref="IMapping.Provider" />
+        /// <inheritdoc />
         public IResponseProvider Provider { get; }
 
-        /// <inheritdoc cref="IMapping.Settings" />
+        /// <inheritdoc />
         public IWireMockServerSettings Settings { get; }
 
-        /// <inheritdoc cref="IMapping.IsStartState" />
+        /// <inheritdoc />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
 
-        /// <inheritdoc cref="IMapping.IsAdminInterface" />
+        /// <inheritdoc />
         public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
-        /// <inheritdoc cref="IMapping.LogMapping" />
+        /// <inheritdoc />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
-        /// <inheritdoc cref="IMapping.Webhooks" />
+        /// <inheritdoc />
         public IWebhook[] Webhooks { get; }
+
+        /// <inheritdoc />
+        public ITimeSettings TimeSettings { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -73,6 +76,7 @@ namespace WireMock
         /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
         /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
         /// <param name="webhooks">The Webhooks. [Optional]</param>
+        /// <param name="timeSettings">The TimeSettings. [Optional]</param>
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
@@ -85,7 +89,8 @@ namespace WireMock
             [CanBeNull] string executionConditionState,
             [CanBeNull] string nextState,
             [CanBeNull] int? stateTimes,
-            [CanBeNull] IWebhook[] webhooks)
+            [CanBeNull] IWebhook[] webhooks,
+            [CanBeNull] ITimeSettings timeSettings)
         {
             Guid = guid;
             Title = title;
@@ -99,6 +104,7 @@ namespace WireMock
             NextState = nextState;
             StateTimes = stateTimes;
             Webhooks = webhooks;
+            TimeSettings = timeSettings;
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />

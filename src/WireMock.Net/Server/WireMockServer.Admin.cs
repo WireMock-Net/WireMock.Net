@@ -450,6 +450,11 @@ namespace WireMock.Server
                 respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
             }
 
+            if (mappingModel.TimeSettings != null)
+            {
+                respondProvider = respondProvider.WithTimeSettings(TimeSettingsMapper.Map(mappingModel.TimeSettings));
+            }
+
             if (path != null)
             {
                 respondProvider = respondProvider.WithPath(path);

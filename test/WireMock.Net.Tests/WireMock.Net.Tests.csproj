@@ -37,6 +37,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <!--<PackageReference Include="Mapster" Version="7.2.0" />-->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -59,8 +60,9 @@
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
-        <!--<PackageReference Include="StrongNamer" Version="0.0.8" />-->
+        <!--<PackageReference Include="StrongNamer" Version="0.2.5" />-->
         <PackageReference Include="AnyOf" Version="0.2.0" />
+        <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">
