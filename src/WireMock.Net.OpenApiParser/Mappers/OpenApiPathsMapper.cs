@@ -197,7 +197,6 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 }
                 else
                 {
-                    // propertyAsJObject
                     return new JProperty(key, mapped);
                 }
             }
