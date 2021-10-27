@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
@@ -13,14 +13,12 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
     public static class Run
     {
-        public static void RunServer(string path)
+        public static WireMockServer RunServer(string path, string url)
         {
-            string url1 = "http://localhost:9091/";
-
             var server = WireMockServer.Start(new WireMockServerSettings
             {
                 AllowCSharpCodeMatcher = true,
-                Urls = new[] { url1 },
+                Urls = new[] { url },
                 StartAdminInterface = true,
                 ReadStaticMappings = false,
                 WatchStaticMappings = false,
@@ -38,9 +36,7 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
             server.WithMappingFromOpenApiFile(path, settings, out var diag);
 
-            Console.WriteLine("Press any key to stop the server");
-            System.Console.ReadKey();
-            server.Stop();
+            return server;
         }
 
         public static void RunServer(IEnumerable<MappingModel> mappings)

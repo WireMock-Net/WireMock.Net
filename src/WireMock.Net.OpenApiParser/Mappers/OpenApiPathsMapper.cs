@@ -52,8 +52,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
             TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
             var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
             var responseExample = responseContent?.Example;
+            var responseSchemaExample = responseContent?.Schema?.Example;
 
-            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) : MapSchemaToObject(responseSchema);
+            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) :
+                                   responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
+                                   MapSchemaToObject(responseSchema);
 
             if (!int.TryParse(response.Key, out var httpStatusCode))
             {
@@ -111,6 +114,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return null;
             }
 
+            if (schema.AllOf.Count > 0)
+            {
+                return MapSchemaAllOfToObject(schema);
+            }
+
             switch (schema.GetSchemaType())
             {
                 case SchemaType.Array:
@@ -155,24 +163,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         string propertyName = schemaProperty.Key;
                         var openApiSchema = schemaProperty.Value;
-                        if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
-                        {
-                            var mapped = MapSchemaToObject(schemaProperty.Value, schemaProperty.Key);
-                            if (mapped is JProperty jp)
-                            {
-                                propertyAsJObject.Add(jp);
-                            }
-                            else
-                            {
-                                propertyAsJObject.Add(new JProperty(schemaProperty.Key, mapped));
-                            }
-                        }
-                        else
-                        {
-                            bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
-
-                            propertyAsJObject.Add(new JProperty(propertyName, _exampleValueGenerator.GetExampleValue(openApiSchema)));
-                        }
+                        propertyAsJObject.Add(MapPropertyAsJObject(schemaProperty.Value, schemaProperty.Key));
                     }
 
                     return name != null ? new JProperty(name, propertyAsJObject) : (JToken)propertyAsJObject;
@@ -182,6 +173,39 @@ namespace WireMock.Net.OpenApiParser.Mappers
             }
         }
 
+        private JObject MapSchemaAllOfToObject(OpenApiSchema schema)
+        {
+            var arrayItem = new JObject();
+            foreach (var property in schema.AllOf)
+            {
+                foreach (var item in property.Properties)
+                {
+                    arrayItem.Add(MapPropertyAsJObject(item.Value, item.Key));
+                }
+            }
+            return arrayItem;
+        }
+
+        private object MapPropertyAsJObject(OpenApiSchema openApiSchema, string key)
+        {
+            if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
+            {
+                var mapped = MapSchemaToObject(openApiSchema, key);
+                if (mapped is JProperty jp)
+                {
+                    return jp;
+                }
+                else
+                {
+                    return new JProperty(key, mapped);
+                }
+            }
+            else
+            {
+                bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
+                return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
+            }
+        }
         private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
         {
             if (parameters == null)
