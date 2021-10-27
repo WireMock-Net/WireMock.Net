@@ -44,7 +44,7 @@ namespace WireMock.Serialization
 
             switch (matcherName)
             {
-                case "NotNullOrEmptyMatcher":
+                case nameof(NotNullOrEmptyMatcher):
                     return new NotNullOrEmptyMatcher(matchBehaviour);
 
                 case "CSharpCodeMatcher":
@@ -55,42 +55,46 @@ namespace WireMock.Serialization
 
                     throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because IWireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
-                case "LinqMatcher":
+                case nameof(LinqMatcher):
                     return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
-                case "ExactMatcher":
+                case nameof(ExactMatcher):
                     return new ExactMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
-                case "ExactObjectMatcher":
+                case nameof(ExactObjectMatcher):
                     return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
 
-                case "RegexMatcher":
+                case nameof(RegexMatcher):
                     return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
-                case "JsonMatcher":
+                case nameof(JsonMatcher):
                     object valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
                     return new JsonMatcher(matchBehaviour, valueForJsonMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
-                case "JsonPartialMatcher":
+                case nameof(JsonPartialMatcher):
                     object valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
                     return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
-                case "JsonPathMatcher":
+                case nameof(JsonPartialWildcardMatcher):
+                    object valueForJsonPartialWilcardMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWilcardMatcher, ignoreCase, throwExceptionWhenMatcherFails);
+
+                case nameof(JsonPathMatcher):
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
-                case "JmesPathMatcher":
+                case nameof(JmesPathMatcher):
                     return new JmesPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
-                case "XPathMatcher":
+                case nameof(XPathMatcher):
                     return new XPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
 
-                case "WildcardMatcher":
+                case nameof(WildcardMatcher):
                     return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
-                case "ContentTypeMatcher":
+                case nameof(ContentTypeMatcher):
                     return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
 
-                case "SimMetricsMatcher":
+                case nameof(SimMetricsMatcher):
                     SimMetricType type = SimMetricType.Levenstein;
                     if (!string.IsNullOrEmpty(matcherType) && !Enum.TryParse(matcherType, out type))
                     {
