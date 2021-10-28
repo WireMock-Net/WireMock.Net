@@ -7,7 +7,6 @@ namespace WireMock.Net.OpenApiParser.Settings
     /// </summary>
     public interface IWireMockOpenApiParserExampleValues
     {
-#pragma warning disable 1591
         /// <summary>
         /// An example value for a Boolean.
         /// </summary>
@@ -49,6 +48,5 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// An example value for a String.
         /// </summary>
         string String { get; set; }
-#pragma warning restore 1591
     }
 }

@@ -7,7 +7,6 @@ namespace WireMock.Net.OpenApiParser.Settings
     /// </summary>
     public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleValues
     {
-#pragma warning disable 1591
         /// <inheritdoc />
         public bool Boolean { get; set; } = true;
         /// <inheritdoc />
@@ -26,6 +25,5 @@ namespace WireMock.Net.OpenApiParser.Settings
         public object Object { get; set; } = "example-object";
         /// <inheritdoc />
         public string String { get; set; } = "example-string";
-#pragma warning restore 1591
     }
 }

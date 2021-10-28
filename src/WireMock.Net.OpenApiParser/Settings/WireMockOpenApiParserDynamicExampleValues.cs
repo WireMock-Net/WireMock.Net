@@ -9,7 +9,6 @@ namespace WireMock.Net.OpenApiParser.Settings
     /// </summary>
     public class WireMockOpenApiParserDynamicExampleValues : IWireMockOpenApiParserExampleValues
     {
-#pragma warning disable 1591
         /// <inheritdoc />
         public bool Boolean { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBoolean()).Generate() ?? true; } set { } }
         /// <inheritdoc />
@@ -28,6 +27,5 @@ namespace WireMock.Net.OpenApiParser.Settings
         public object Object { get; set; } = "example-object";
         /// <inheritdoc />
         public string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextWords()).Generate() ?? "example-string"; } set { } }
-#pragma warning restore 1591
     }
 }
