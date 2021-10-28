@@ -114,11 +114,6 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return null;
             }
 
-            if (schema.AllOf.Count > 0)
-            {
-                return MapSchemaAllOfToObject(schema);
-            }
-
             switch (schema.GetSchemaType())
             {
                 case SchemaType.Array:
@@ -149,6 +144,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
                         }
                     }
 
+                    if (schema.AllOf.Count > 0)
+                    {
+                        jArray.Add(MapSchemaAllOfToObject(schema));
+                    }
+
                     return jArray;
 
                 case SchemaType.Boolean:
@@ -161,9 +161,17 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     var propertyAsJObject = new JObject();
                     foreach (var schemaProperty in schema.Properties)
                     {
-                        string propertyName = schemaProperty.Key;
-                        var openApiSchema = schemaProperty.Value;
                         propertyAsJObject.Add(MapPropertyAsJObject(schemaProperty.Value, schemaProperty.Key));
+                    }
+                    if (schema.AllOf.Count > 0)
+                    {
+                        foreach (var property in schema.AllOf)
+                        {
+                            foreach (var item in property.Properties)
+                            {
+                                propertyAsJObject.Add(MapPropertyAsJObject(item.Value, item.Key));
+                            }
+                        }
                     }
 
                     return name != null ? new JProperty(name, propertyAsJObject) : (JToken)propertyAsJObject;
