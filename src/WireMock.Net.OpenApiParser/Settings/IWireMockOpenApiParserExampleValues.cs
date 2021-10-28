@@ -3,25 +3,51 @@
 namespace WireMock.Net.OpenApiParser.Settings
 {
     /// <summary>
-    /// A class defining the example values to use for the different types.
+    /// A interface defining the example values to use for the different types.
     /// </summary>
     public interface IWireMockOpenApiParserExampleValues
     {
 #pragma warning disable 1591
-        bool Boolean { get; set; }        
-        int Integer { get; set; }        
-        float Float { get; set; }        
+        /// <summary>
+        /// An example value for a Boolean.
+        /// </summary>
+        bool Boolean { get; set; }
+        /// <summary>
+        /// An example value for an Integer.
+        /// </summary>
+        int Integer { get; set; }
+        /// <summary>
+        /// An example value for a Float.
+        /// </summary>
+        float Float { get; set; }
+        /// <summary>
+        /// An example value for a Double.
+        /// </summary>
+        double Double { get; set; }
 
-        double Double { get; set; }        
-
+        /// <summary>
+        /// An example value for a Date.
+        /// </summary>
         Func<DateTime> Date { get; set; }
 
-        Func<DateTime> DateTime { get; set; }        
+        /// <summary>
+        /// An example value for a DateTime.
+        /// </summary>
+        Func<DateTime> DateTime { get; set; }
 
-        byte[] Bytes { get; set; }        
+        /// <summary>
+        /// An example value for Bytes.
+        /// </summary>
+        byte[] Bytes { get; set; }
 
+        /// <summary>
+        /// An example value for a Object.
+        /// </summary>
         object Object { get; set; }
 
+        /// <summary>
+        /// An example value for a String.
+        /// </summary>
         string String { get; set; }
 #pragma warning restore 1591
     }
