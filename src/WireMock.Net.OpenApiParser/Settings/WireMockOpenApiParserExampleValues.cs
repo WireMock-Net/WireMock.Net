@@ -5,7 +5,7 @@ namespace WireMock.Net.OpenApiParser.Settings
     /// <summary>
     /// A class defining the example values to use for the different types.
     /// </summary>
-    public class WireMockOpenApiParserExampleValues
+    public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleValues
     {
 #pragma warning disable 1591
         public bool Boolean { get; set; } = true;

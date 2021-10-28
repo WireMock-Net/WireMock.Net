@@ -25,6 +25,7 @@
 		<PackageReference Include="RamlToOpenApiConverter" Version="0.1.1" />
 		<PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />
 		<PackageReference Include="Stef.Validation" Version="0.0.3" />
 	</ItemGroup>
 
