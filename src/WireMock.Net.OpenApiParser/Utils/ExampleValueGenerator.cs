@@ -13,6 +13,14 @@ namespace WireMock.Net.OpenApiParser.Utils
         public ExampleValueGenerator(WireMockOpenApiParserSettings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            if (_settings.DynamicExamples)
+            {
+                _settings.ExampleValues = new WireMockOpenApiParserDynamicExampleValues();
+            }
+            else
+            {
+                _settings.ExampleValues = new WireMockOpenApiParserExampleValues();
+            }
         }
 
         public object GetExampleValue(OpenApiSchema schema)
