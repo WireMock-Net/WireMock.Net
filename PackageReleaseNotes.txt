@@ -1,7 +1,5 @@
-# 1.4.25 (27 October 2021)
-- #661 Add TimeSettings (Start, End and TTL) [feature]
-- #664 Support Array in OpenApiParser [feature]
-- #667 Add JsonPartialWildcardMatcher [feature]
-- #669 Support Schema Example and Support AllOf in definitions  [feature]
+# 1.4.26 (30 October 2021)
+- #670 Improve method MapSchemaToObject to support array and object [feature]
+- #673 Support examples random data generation
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -1,3 +1,7 @@
+# 1.4.26 (30 October 2021)
+- [#670](https://github.com/WireMock-Net/WireMock.Net/pull/670) - Improve method MapSchemaToObject to support array and object [feature] contributed by [leolplex](https://github.com/leolplex)
+- [#673](https://github.com/WireMock-Net/WireMock.Net/pull/673) - Support examples random data generation contributed by [leolplex](https://github.com/leolplex)
+
 # 1.4.25 (27 October 2021)
 - [#661](https://github.com/WireMock-Net/WireMock.Net/pull/661) - Add TimeSettings (Start, End and TTL) [feature] contributed by [StefH](https://github.com/StefH)
 - [#664](https://github.com/WireMock-Net/WireMock.Net/pull/664) - Support Array in OpenApiParser [feature] contributed by [leolplex](https://github.com/leolplex)
