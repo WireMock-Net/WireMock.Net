@@ -26,6 +26,6 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// <inheritdoc />
         public object Object { get; set; } = "example-object";
         /// <inheritdoc />
-                public string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string"; } set { } }
+        public string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string"; } set { } }
     }
 }
