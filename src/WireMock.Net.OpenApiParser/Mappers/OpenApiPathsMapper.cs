@@ -63,15 +63,13 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 httpStatusCode = 200;
             }
 
-            string basePath = MapBasePath(servers);
-
             return new MappingModel
             {
                 Guid = Guid.NewGuid(),
                 Request = new RequestModel
                 {
                     Methods = new[] { httpMethod },
-                    Path = basePath + MapPathWithParameters(path, pathParameters),
+                    Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
                     Headers = MapRequestHeaders(headers)
                 },
