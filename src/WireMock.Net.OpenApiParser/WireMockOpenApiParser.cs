@@ -62,7 +62,7 @@ namespace WireMock.Net.OpenApiParser
         [PublicAPI]
         public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings settings = null)
         {
-            return new OpenApiPathsMapper(settings).ToMappingModels(openApiDocument.Paths);
+            return new OpenApiPathsMapper(settings).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
         }
     }
 }

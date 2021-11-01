@@ -26,22 +26,22 @@ namespace WireMock.Net.OpenApiParser.Mappers
             _exampleValueGenerator = new ExampleValueGenerator(settings);
         }
 
-        public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths)
+        public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
         {
-            return paths.Select(p => MapPath(p.Key, p.Value)).SelectMany(x => x);
+            return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
         }
 
-        private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths)
+        private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
         {
-            return paths.Select(p => MapPath(p.Key, p.Value)).SelectMany(x => x);
+            return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
         }
 
-        private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem)
+        private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
         {
-            return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value));
+            return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers));
         }
 
-        private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation)
+        private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation, IList<OpenApiServer> servers)
         {
             var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
             var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
@@ -63,13 +63,15 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 httpStatusCode = 200;
             }
 
+            string basePath = MapBasePath(servers);
+
             return new MappingModel
             {
                 Guid = Guid.NewGuid(),
                 Request = new RequestModel
                 {
                     Methods = new[] { httpMethod },
-                    Path = MapPathWithParameters(path, pathParameters),
+                    Path = basePath + MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
                     Headers = MapRequestHeaders(headers)
                 },
@@ -228,6 +230,23 @@ namespace WireMock.Net.OpenApiParser.Mappers
             }
 
             return newPath;
+        }
+
+        private string MapBasePath(IList<OpenApiServer> servers)
+        {
+            if (servers == null || servers.Count == 0)
+            {
+                return null;
+            }
+
+            OpenApiServer server = servers.First();
+            Uri uriResult;
+            if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out uriResult))
+            {
+
+                return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
+            }
+            return null;
         }
 
         private JToken MapOpenApiAnyToJToken(IOpenApiAny any)
