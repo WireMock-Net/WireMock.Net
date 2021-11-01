@@ -234,17 +234,16 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             if (servers == null || servers.Count == 0)
             {
-                return null;
+                return string.Empty;
             }
 
             OpenApiServer server = servers.First();
             Uri uriResult;
             if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out uriResult))
             {
-
                 return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
             }
-            return null;
+            return string.Empty;
         }
 
         private JToken MapOpenApiAnyToJToken(IOpenApiAny any)
