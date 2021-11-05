@@ -58,6 +58,22 @@ namespace WireMock.Net.OpenApiParser.Mappers
                                    responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
                                    MapSchemaToObject(responseSchema);
 
+            BodyModel bodyRequestModel = new BodyModel();
+            if (operation.RequestBody != null && operation.RequestBody.Content != null)
+            {
+                var requestBody = operation.RequestBody.Content.First();
+                var requestBodySchema = operation.RequestBody.Content.First().Value?.Schema;
+                var requestBodyExample = requestBody.Value?.Example;
+                var requestBodySchemaExample = requestBody.Value?.Schema?.Example;
+
+                var requetBodyBuilded = requestBodyExample != null ? MapOpenApiAnyToJToken(requestBodyExample) :
+                                   requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
+                                   MapSchemaToObject(requestBodySchema);
+
+                bodyRequestModel = MapRequestBody(requetBodyBuilded);
+
+            }
+
             if (!int.TryParse(response.Key, out var httpStatusCode))
             {
                 httpStatusCode = 200;
@@ -71,7 +87,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Methods = new[] { httpMethod },
                     Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
-                    Headers = MapRequestHeaders(headers)
+                    Headers = MapRequestHeaders(headers),
+                    Body = bodyRequestModel
                 },
                 Response = new ResponseModel
                 {
@@ -80,6 +97,20 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     BodyAsJson = body
                 }
             };
+        }
+
+        private BodyModel MapRequestBody(object requestBody)
+        {
+            if (requestBody == null)
+            {
+                return null;
+            }
+
+            BodyModel bodyRequestModel = new BodyModel();
+            bodyRequestModel.Matcher = new MatcherModel();
+            bodyRequestModel.Matcher.Name = "ExactMatcher";
+            bodyRequestModel.Matcher.Pattern = requestBody;
+            return bodyRequestModel;
         }
 
         private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
