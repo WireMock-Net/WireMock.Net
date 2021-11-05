@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -35,7 +35,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create()
                 .WithBodyAsJson(new
                 {
-                    DateTime = string.Format("{{{{[Humanizer.Humanize] \"{0}\" }}}}", DateTime.UtcNow.AddHours(-30).ToString("O"))
+                    Text = string.Format("{{{{[Humanizer.Humanize] \"{0}\" }}}}", "PascalCaseInputStringIsTurnedIntoSentence")
                 })
                 .WithTransformer();
 
@@ -44,7 +44,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
-            Check.That(j["DateTime"].Value<string>()).IsEqualTo("yesterday");
+            Check.That(j["Text"].Value<string>()).IsEqualTo("Pascal case input string is turned into sentence");
         }
     }
 }
