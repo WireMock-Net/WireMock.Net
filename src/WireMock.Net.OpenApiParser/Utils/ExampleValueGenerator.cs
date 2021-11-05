@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Settings;
@@ -28,38 +29,55 @@ namespace WireMock.Net.OpenApiParser.Utils
             switch (schema?.GetSchemaType())
             {
                 case SchemaType.Boolean:
-                    return _settings.ExampleValues.Boolean;
+                    OpenApiBoolean exampleBoolean = (OpenApiBoolean)schema?.Example;
+                    return exampleBoolean?.Value ?? _settings.ExampleValues.Boolean;
 
                 case SchemaType.Integer:
-                    return _settings.ExampleValues.Integer;
+                    switch (schema?.GetSchemaFormat())
+                    {
+                        case SchemaFormat.Int64:
+                            OpenApiLong exampleLong = (OpenApiLong)schema?.Example;
+                            return exampleLong?.Value ?? _settings.ExampleValues.Integer;
+                        default:
+                            OpenApiInteger exampleInteger = (OpenApiInteger)schema?.Example;
+                            return exampleInteger?.Value ?? _settings.ExampleValues.Integer;
+                    }
+
 
                 case SchemaType.Number:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Float:
-                            return _settings.ExampleValues.Float;
+                            OpenApiFloat exampleFloat = (OpenApiFloat)schema?.Example;
+                            return exampleFloat?.Value ?? _settings.ExampleValues.Float;
 
                         default:
-                            return _settings.ExampleValues.Double;
+                            OpenApiDouble exampleDouble = (OpenApiDouble)schema?.Example;
+                            return exampleDouble?.Value ?? _settings.ExampleValues.Double;
                     }
 
                 default:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Date:
-                            return DateTimeUtils.ToRfc3339Date(_settings.ExampleValues.Date());
+                            OpenApiDate exampleDate = (OpenApiDate)schema?.Example;
+                            return DateTimeUtils.ToRfc3339Date(exampleDate?.Value ?? _settings.ExampleValues.Date());
 
                         case SchemaFormat.DateTime:
-                            return DateTimeUtils.ToRfc3339DateTime(_settings.ExampleValues.DateTime());
+                            OpenApiDate exampleDateTime = (OpenApiDate)schema?.Example;
+                            return DateTimeUtils.ToRfc3339DateTime(exampleDateTime?.Value ?? _settings.ExampleValues.DateTime());
 
                         case SchemaFormat.Byte:
-                            return _settings.ExampleValues.Bytes;
+                            OpenApiByte exampleByte = (OpenApiByte)schema?.Example;
+                            return exampleByte?.Value ?? _settings.ExampleValues.Bytes;
 
                         case SchemaFormat.Binary:
-                            return _settings.ExampleValues.Object;
+                            OpenApiBinary exampleBinary = (OpenApiBinary)schema?.Example;
+                            return exampleBinary?.Value ?? _settings.ExampleValues.Object;
 
                         default:
-                            return _settings.ExampleValues.String;
+                            OpenApiString exampleString = (OpenApiString)schema?.Example;
+                            return exampleString?.Value ?? _settings.ExampleValues.String;
                     }
             }
         }
