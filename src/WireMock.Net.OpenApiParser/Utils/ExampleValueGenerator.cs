@@ -26,33 +26,34 @@ namespace WireMock.Net.OpenApiParser.Utils
 
         public object GetExampleValue(OpenApiSchema schema)
         {
+            var schemaExample = schema?.Example;
             switch (schema?.GetSchemaType())
             {
                 case SchemaType.Boolean:
-                    OpenApiBoolean exampleBoolean = (OpenApiBoolean)schema?.Example;
-                    return exampleBoolean?.Value ?? _settings.ExampleValues.Boolean;
+                    var exampleBoolean = (OpenApiBoolean)schemaExample;
+                    return exampleBoolean is null ? _settings.ExampleValues.Boolean : exampleBoolean.Value;
 
                 case SchemaType.Integer:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Int64:
-                            OpenApiLong exampleLong = (OpenApiLong)schema?.Example;
+                            var exampleLong = (OpenApiLong)schemaExample;
                             return exampleLong?.Value ?? _settings.ExampleValues.Integer;
+                        
                         default:
-                            OpenApiInteger exampleInteger = (OpenApiInteger)schema?.Example;
+                            var exampleInteger = (OpenApiInteger)schemaExample;
                             return exampleInteger?.Value ?? _settings.ExampleValues.Integer;
                     }
-
 
                 case SchemaType.Number:
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Float:
-                            OpenApiFloat exampleFloat = (OpenApiFloat)schema?.Example;
+                            var exampleFloat = (OpenApiFloat)schemaExample;
                             return exampleFloat?.Value ?? _settings.ExampleValues.Float;
 
                         default:
-                            OpenApiDouble exampleDouble = (OpenApiDouble)schema?.Example;
+                            var exampleDouble = (OpenApiDouble)schemaExample;
                             return exampleDouble?.Value ?? _settings.ExampleValues.Double;
                     }
 
@@ -60,23 +61,23 @@ namespace WireMock.Net.OpenApiParser.Utils
                     switch (schema?.GetSchemaFormat())
                     {
                         case SchemaFormat.Date:
-                            OpenApiDate exampleDate = (OpenApiDate)schema?.Example;
+                            var exampleDate = (OpenApiDate)schemaExample;
                             return DateTimeUtils.ToRfc3339Date(exampleDate?.Value ?? _settings.ExampleValues.Date());
 
                         case SchemaFormat.DateTime:
-                            OpenApiDate exampleDateTime = (OpenApiDate)schema?.Example;
-                            return DateTimeUtils.ToRfc3339DateTime(exampleDateTime?.Value ?? _settings.ExampleValues.DateTime());
+                            var exampleDateTime = (OpenApiDateTime)schemaExample;
+                            return DateTimeUtils.ToRfc3339DateTime(exampleDateTime?.Value.DateTime ?? _settings.ExampleValues.DateTime());
 
                         case SchemaFormat.Byte:
-                            OpenApiByte exampleByte = (OpenApiByte)schema?.Example;
+                            var exampleByte = (OpenApiByte)schemaExample;
                             return exampleByte?.Value ?? _settings.ExampleValues.Bytes;
 
                         case SchemaFormat.Binary:
-                            OpenApiBinary exampleBinary = (OpenApiBinary)schema?.Example;
+                            var exampleBinary = (OpenApiBinary)schemaExample;
                             return exampleBinary?.Value ?? _settings.ExampleValues.Object;
 
                         default:
-                            OpenApiString exampleString = (OpenApiString)schema?.Example;
+                            var exampleString = (OpenApiString)schemaExample;
                             return exampleString?.Value ?? _settings.ExampleValues.String;
                     }
             }
