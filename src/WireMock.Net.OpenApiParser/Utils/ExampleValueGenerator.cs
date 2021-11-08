@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using WireMock.Net.OpenApiParser.Extensions;
@@ -27,7 +28,8 @@ namespace WireMock.Net.OpenApiParser.Utils
         public object GetExampleValue(OpenApiSchema schema)
         {
             var schemaExample = schema?.Example;
-            var schemaEnum = schema?.Enum?.Count > 0 ? schema.Enum[new Random().Next(0, schema.Enum.Count - 1)] : null;
+            var schemaEnum = MapSchemaEnum(schema.Enum);
+
             switch (schema?.GetSchemaType())
             {
                 case SchemaType.Boolean:
@@ -100,6 +102,17 @@ namespace WireMock.Net.OpenApiParser.Utils
                             return valueStringEnumOrExample ?? _settings.ExampleValues.String;
                     }
             }
+        }
+
+        private IOpenApiAny MapSchemaEnum(IList<IOpenApiAny> schemaEnum)
+        {
+            if (schemaEnum?.Count > 0)
+            {
+                int maxValue = schemaEnum.Count - 1;
+                int randomEnum = new Random().Next(0, maxValue);
+                return schemaEnum[randomEnum];
+            }
+            return null;
         }
     }
 }
