@@ -62,10 +62,12 @@ namespace WireMock.Net.OpenApiParser.Mappers
             BodyModel requestModeloBody = new BodyModel();
             if (operation.RequestBody != null && operation.RequestBody.Content != null)
             {
-                var requestBody = operation.RequestBody.Content.First();
+                var request = operation.RequestBody.Content;
+                TryGetContent(request, out OpenApiMediaType requestContent, out string requestContentType);
+
                 var requestBodySchema = operation.RequestBody.Content.First().Value?.Schema;
-                var requestBodyExample = requestBody.Value?.Example;
-                var requestBodySchemaExample = requestBody.Value?.Schema?.Example;
+                var requestBodyExample = requestContent.Example;
+                var requestBodySchemaExample = requestContent.Schema?.Example;
 
                 var requestBodyMapped = requestBodyExample != null ? MapOpenApiAnyToJToken(requestBodyExample) :
                                    requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
