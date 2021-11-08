@@ -1,5 +1,8 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Collections.Generic;
+=======
+>>>>>>> master
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using WireMock.Net.OpenApiParser.Extensions;
