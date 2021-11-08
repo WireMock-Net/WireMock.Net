@@ -6,6 +6,7 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Extensions;
@@ -108,8 +109,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
             BodyModel bodyRequestModel = new BodyModel();
             bodyRequestModel.Matcher = new MatcherModel();
-            bodyRequestModel.Matcher.Name = "ExactMatcher";
-            bodyRequestModel.Matcher.Pattern = requestBody;
+            bodyRequestModel.Matcher.Name = "JsonMatcher";
+            bodyRequestModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
             return bodyRequestModel;
         }
 
