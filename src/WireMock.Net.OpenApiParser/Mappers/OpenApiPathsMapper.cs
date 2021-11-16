@@ -108,11 +108,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return null;
             }
 
-            BodyModel bodyRequestModel = new BodyModel();
-            bodyRequestModel.Matcher = new MatcherModel();
-            bodyRequestModel.Matcher.Name = "JsonMatcher";
-            bodyRequestModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
-            return bodyRequestModel;
+            var requestBodyModel = new BodyModel();
+            requestBodyModel.Matcher = new MatcherModel();
+            requestBodyModel.Matcher.Name = "JsonMatcher";
+            requestBodyModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
+            return requestBodyModel;
         }
 
         private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
