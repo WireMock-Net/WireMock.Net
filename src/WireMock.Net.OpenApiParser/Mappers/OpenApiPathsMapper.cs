@@ -59,7 +59,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                                    responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
                                    MapSchemaToObject(responseSchema);
 
-            BodyModel requestModeloBody = new BodyModel();
+            BodyModel requestModelBody = new BodyModel();
             if (operation.RequestBody != null && operation.RequestBody.Content != null)
             {
                 var request = operation.RequestBody.Content;
@@ -73,7 +73,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                                    requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
                                    MapSchemaToObject(requestBodySchema);
 
-                requestModeloBody = MapRequestBody(requestBodyMapped);
+                requestModelBody = MapRequestBody(requestBodyMapped);
             }
 
             if (!int.TryParse(response.Key, out var httpStatusCode))
@@ -90,7 +90,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
                     Headers = MapRequestHeaders(headers),
-                    Body = requestModeloBody
+                    Body = requestModelBody
                 },
                 Response = new ResponseModel
                 {
