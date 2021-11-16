@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using WireMock.Net.OpenApiParser.Extensions;
@@ -27,6 +28,8 @@ namespace WireMock.Net.OpenApiParser.Utils
         public object GetExampleValue(OpenApiSchema schema)
         {
             var schemaExample = schema?.Example;
+            var schemaEnum = GetRandomEnumValue(schema?.Enum);
+
             switch (schema?.GetSchemaType())
             {
                 case SchemaType.Boolean:
@@ -38,11 +41,15 @@ namespace WireMock.Net.OpenApiParser.Utils
                     {
                         case SchemaFormat.Int64:
                             var exampleLong = (OpenApiLong)schemaExample;
-                            return exampleLong?.Value ?? _settings.ExampleValues.Integer;
-                        
+                            var enumLong = (OpenApiLong)schemaEnum;
+                            var valueLongEnumOrExample = enumLong is null ? exampleLong?.Value : enumLong?.Value;
+                            return valueLongEnumOrExample ?? _settings.ExampleValues.Integer;
+
                         default:
                             var exampleInteger = (OpenApiInteger)schemaExample;
-                            return exampleInteger?.Value ?? _settings.ExampleValues.Integer;
+                            var enumInteger = (OpenApiInteger)schemaEnum;
+                            var valueIntegerEnumOrExample = enumInteger is null ? exampleInteger?.Value : enumInteger?.Value;
+                            return valueIntegerEnumOrExample ?? _settings.ExampleValues.Integer;
                     }
 
                 case SchemaType.Number:
@@ -50,11 +57,15 @@ namespace WireMock.Net.OpenApiParser.Utils
                     {
                         case SchemaFormat.Float:
                             var exampleFloat = (OpenApiFloat)schemaExample;
-                            return exampleFloat?.Value ?? _settings.ExampleValues.Float;
+                            var enumFloat = (OpenApiFloat)schemaEnum;
+                            var valueFloatEnumOrExample = enumFloat is null ? exampleFloat?.Value : enumFloat?.Value;
+                            return valueFloatEnumOrExample ?? _settings.ExampleValues.Float;
 
                         default:
                             var exampleDouble = (OpenApiDouble)schemaExample;
-                            return exampleDouble?.Value ?? _settings.ExampleValues.Double;
+                            var enumDouble = (OpenApiDouble)schemaEnum;
+                            var valueDoubleEnumOrExample = enumDouble is null ? exampleDouble?.Value : enumDouble?.Value;
+                            return valueDoubleEnumOrExample ?? _settings.ExampleValues.Double;
                     }
 
                 default:
@@ -62,25 +73,45 @@ namespace WireMock.Net.OpenApiParser.Utils
                     {
                         case SchemaFormat.Date:
                             var exampleDate = (OpenApiDate)schemaExample;
-                            return DateTimeUtils.ToRfc3339Date(exampleDate?.Value ?? _settings.ExampleValues.Date());
+                            var enumDate = (OpenApiDate)schemaEnum;
+                            var valueDateEnumOrExample = enumDate is null ? exampleDate?.Value : enumDate?.Value;
+                            return DateTimeUtils.ToRfc3339Date(valueDateEnumOrExample ?? _settings.ExampleValues.Date());
 
                         case SchemaFormat.DateTime:
                             var exampleDateTime = (OpenApiDateTime)schemaExample;
-                            return DateTimeUtils.ToRfc3339DateTime(exampleDateTime?.Value.DateTime ?? _settings.ExampleValues.DateTime());
+                            var enumDateTime = (OpenApiDateTime)schemaEnum;
+                            var valueDateTimeEnumOrExample = enumDateTime is null ? exampleDateTime?.Value : enumDateTime?.Value;
+                            return DateTimeUtils.ToRfc3339DateTime(valueDateTimeEnumOrExample?.DateTime ?? _settings.ExampleValues.DateTime());
 
                         case SchemaFormat.Byte:
                             var exampleByte = (OpenApiByte)schemaExample;
-                            return exampleByte?.Value ?? _settings.ExampleValues.Bytes;
+                            var enumByte = (OpenApiByte)schemaEnum;
+                            var valueByteEnumOrExample = enumByte is null ? exampleByte?.Value : enumByte?.Value;
+                            return valueByteEnumOrExample ?? _settings.ExampleValues.Bytes;
 
                         case SchemaFormat.Binary:
                             var exampleBinary = (OpenApiBinary)schemaExample;
-                            return exampleBinary?.Value ?? _settings.ExampleValues.Object;
+                            var enumBinary = (OpenApiBinary)schemaEnum;
+                            var valueBinaryEnumOrExample = enumBinary is null ? exampleBinary?.Value : enumBinary?.Value;
+                            return valueBinaryEnumOrExample ?? _settings.ExampleValues.Object;
 
                         default:
                             var exampleString = (OpenApiString)schemaExample;
-                            return exampleString?.Value ?? _settings.ExampleValues.String;
+                            var enumString = (OpenApiString)schemaEnum;
+                            var valueStringEnumOrExample = enumString is null ? exampleString?.Value : enumString?.Value;
+                            return valueStringEnumOrExample ?? _settings.ExampleValues.String;
                     }
             }
+        }
+        private static IOpenApiAny GetRandomEnumValue(IList<IOpenApiAny> schemaEnum)
+        {
+            if (schemaEnum?.Count > 0)
+            {
+                int maxValue = schemaEnum.Count - 1;
+                int randomEnum = new Random().Next(0, maxValue);
+                return schemaEnum[randomEnum];
+            }
+            return null;
         }
     }
 }
