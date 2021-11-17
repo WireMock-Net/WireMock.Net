@@ -1,3 +1,8 @@
+# 1.4.27 (17 November 2021)
+- [#678](https://github.com/WireMock-Net/WireMock.Net/pull/678) - Support RequestBody [feature] contributed by [leolplex](https://github.com/leolplex)
+- [#680](https://github.com/WireMock-Net/WireMock.Net/pull/680) - Support examples in properties [feature] contributed by [leolplex](https://github.com/leolplex)
+- [#681](https://github.com/WireMock-Net/WireMock.Net/pull/681) - Support enums in properties [feature] contributed by [leolplex](https://github.com/leolplex)
+
 # 1.4.26 (04 November 2021)
 - [#670](https://github.com/WireMock-Net/WireMock.Net/pull/670) - Improve method MapSchemaToObject to support array and object [feature] contributed by [leolplex](https://github.com/leolplex)
 - [#673](https://github.com/WireMock-Net/WireMock.Net/pull/673) - Support examples random data generation contributed by [leolplex](https://github.com/leolplex)

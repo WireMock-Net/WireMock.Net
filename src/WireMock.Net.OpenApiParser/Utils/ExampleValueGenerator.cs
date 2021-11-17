@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Stef.Validation;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Settings;
 using WireMock.Net.OpenApiParser.Types;
@@ -14,7 +15,8 @@ namespace WireMock.Net.OpenApiParser.Utils
 
         public ExampleValueGenerator(WireMockOpenApiParserSettings settings)
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _settings = Guard.NotNull(settings, nameof(settings));
+
             if (_settings.DynamicExamples)
             {
                 _settings.ExampleValues = new WireMockOpenApiParserDynamicExampleValues();

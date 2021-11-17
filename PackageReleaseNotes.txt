@@ -1,7 +1,6 @@
-# 1.4.26 (04 November 2021)
-- #670 Improve method MapSchemaToObject to support array and object [feature]
-- #673 Support examples random data generation
-- #675 Support basepath from servers
-- #676 Fix random generate data in url no spaces [feature]
+# 1.4.27 (17 November 2021)
+- #678 Support RequestBody [feature]
+- #680 Support examples in properties [feature]
+- #681 Support enums in properties [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
