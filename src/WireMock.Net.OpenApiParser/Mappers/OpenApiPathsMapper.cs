@@ -6,6 +6,7 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Extensions;
@@ -58,6 +59,23 @@ namespace WireMock.Net.OpenApiParser.Mappers
                                    responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
                                    MapSchemaToObject(responseSchema);
 
+            var requestBodyModel = new BodyModel();
+            if (operation.RequestBody != null && operation.RequestBody.Content != null)
+            {
+                var request = operation.RequestBody.Content;
+                TryGetContent(request, out OpenApiMediaType requestContent, out string requestContentType);
+
+                var requestBodySchema = operation.RequestBody.Content.First().Value?.Schema;
+                var requestBodyExample = requestContent.Example;
+                var requestBodySchemaExample = requestContent.Schema?.Example;
+
+                var requestBodyMapped = requestBodyExample != null ? MapOpenApiAnyToJToken(requestBodyExample) :
+                                   requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
+                                   MapSchemaToObject(requestBodySchema);
+
+                requestBodyModel = MapRequestBody(requestBodyMapped);
+            }
+
             if (!int.TryParse(response.Key, out var httpStatusCode))
             {
                 httpStatusCode = 200;
@@ -71,7 +89,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Methods = new[] { httpMethod },
                     Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
                     Params = MapQueryParameters(queryParameters),
-                    Headers = MapRequestHeaders(headers)
+                    Headers = MapRequestHeaders(headers),
+                    Body = requestBodyModel
                 },
                 Response = new ResponseModel
                 {
@@ -80,6 +99,20 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     BodyAsJson = body
                 }
             };
+        }
+
+        private BodyModel MapRequestBody(object requestBody)
+        {
+            if (requestBody == null)
+            {
+                return null;
+            }
+
+            var requestBodyModel = new BodyModel();
+            requestBodyModel.Matcher = new MatcherModel();
+            requestBodyModel.Matcher.Name = "JsonMatcher";
+            requestBodyModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
+            return requestBodyModel;
         }
 
         private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
