@@ -32,8 +32,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Codecov" Version="1.10.0" />
-        <PackageReference Include="coverlet.msbuild" Version="3.0.2">
+        <PackageReference Include="Codecov" Version="1.13.0" />
+        <PackageReference Include="coverlet.msbuild" Version="3.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -44,18 +44,18 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.0.2">
+        <PackageReference Include="coverlet.collector" Version="3.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Include="Moq" Version="4.16.0" />
+        <PackageReference Include="Moq" Version="4.16.1" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.5" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <PackageReference Include="NFluent" Version="2.7.1" />
+        <PackageReference Include="NFluent" Version="2.7.2" />
         <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
