@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -332,8 +332,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         new MatcherModel
                         {
-                            Name = "ExactMatcher",
-                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
+                            Name = GetMatcherName(_settings.HeaderPatternToUse),
+                            Pattern = GetExampleValue(qp.Schema, _settings.HeaderPatternToUse)
                         }
                     }
                 })
@@ -352,8 +352,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     {
                         new MatcherModel
                         {
-                            Name = "ExactMatcher",
-                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
+                            Name = GetMatcherName(_settings.HeaderPatternToUse),
+                            Pattern = GetExampleValue(qp.Schema, _settings.HeaderPatternToUse)
                         }
                     }
                 })
@@ -385,6 +385,18 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
                 default:
                     return "*";
+            }
+        }
+
+        private string GetMatcherName(ExampleValueType type)
+        {
+            switch (type)
+            {
+                case ExampleValueType.Value:
+                    return "ExactMatcher";
+
+                default:
+                    return "WildcardMatcher";
             }
         }
     }
