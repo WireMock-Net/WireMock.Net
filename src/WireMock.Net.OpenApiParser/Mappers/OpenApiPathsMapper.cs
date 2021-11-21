@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Settings;
@@ -23,7 +24,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
 
         public OpenApiPathsMapper(WireMockOpenApiParserSettings settings)
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _settings = Guard.NotNull(settings, nameof(settings));
             _exampleValueGenerator = new ExampleValueGenerator(settings);
         }
 
@@ -243,7 +244,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
             }
             else
             {
-                bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
+                // bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
                 return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
             }
         }
@@ -271,11 +272,11 @@ namespace WireMock.Net.OpenApiParser.Mappers
             }
 
             OpenApiServer server = servers.First();
-            Uri uriResult;
-            if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out uriResult))
+            if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out Uri uriResult))
             {
                 return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
             }
+
             return string.Empty;
         }
 

@@ -105,6 +105,7 @@ namespace WireMock.Net.OpenApiParser.Utils
                     }
             }
         }
+
         private static IOpenApiAny GetRandomEnumValue(IList<IOpenApiAny> schemaEnum)
         {
             if (schemaEnum?.Count > 0)
@@ -113,6 +114,7 @@ namespace WireMock.Net.OpenApiParser.Utils
                 int randomEnum = new Random().Next(0, maxValue);
                 return schemaEnum[randomEnum];
             }
+
             return null;
         }
     }
