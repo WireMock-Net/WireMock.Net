@@ -8,11 +8,11 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
         private const string Folder = "OpenApiFiles";
         static void Main(string[] args)
         {
-            var serverOpenAPIExamples = Run.RunServer(Path.Combine(Folder, "openAPIExamples.yaml"), "http://localhost:9091/");
-            var serverPetstore_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.json"), "http://localhost:9092/");
-            var serverPetstore_V2_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.yaml"), "http://localhost:9093/");
-            var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "http://localhost:9094/");
-            var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "http://localhost:9095/");
+            var serverOpenAPIExamples = Run.RunServer(Path.Combine(Folder, "openAPIExamples.yaml"), "https://localhost:9091/");
+            var serverPetstore_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.json"), "https://localhost:9092/");
+            var serverPetstore_V2_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.yaml"), "https://localhost:9093/");
+            var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "https://localhost:9094/");
+            var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "https://localhost:9095/");
 
             Console.WriteLine("Press any key to stop the servers");
             Console.ReadKey();

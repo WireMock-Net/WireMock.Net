@@ -19,6 +19,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
 {
     internal class OpenApiPathsMapper
     {
+        private const string HeaderContentType = "Content-Type";
+
         private readonly WireMockOpenApiParserSettings _settings;
         private readonly ExampleValueGenerator _exampleValueGenerator;
 
@@ -248,6 +250,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
             }
         }
+
         private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
         {
             if (parameters == null)
@@ -258,7 +261,8 @@ namespace WireMock.Net.OpenApiParser.Mappers
             string newPath = path;
             foreach (var parameter in parameters)
             {
-                newPath = newPath.Replace($"{{{parameter.Name}}}", GetExampleValue(parameter.Schema, _settings.PathPatternToUse));
+                var exampleMatcherModel = GetExampleMatcherModel(parameter.Schema, _settings.PathPatternToUse);
+                newPath = newPath.Replace($"{{{parameter.Name}}}", exampleMatcherModel.Pattern as string);
             }
 
             return newPath;
@@ -305,19 +309,12 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             var mappedHeaders = headers.ToDictionary(
                 item => item.Key,
-                item => GetExampleValue(null, _settings.HeaderPatternToUse) as object
+                item => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern
             );
 
             if (!string.IsNullOrEmpty(responseContentType))
             {
-                if (!mappedHeaders.ContainsKey("Content-Type"))
-                {
-                    mappedHeaders.Add("Content-Type", responseContentType);
-                }
-                else
-                {
-                    mappedHeaders["Content-Type"] = responseContentType;
-                }
+                mappedHeaders.TryAdd(HeaderContentType, responseContentType);
             }
 
             return mappedHeaders.Keys.Any() ? mappedHeaders : null;
@@ -331,11 +328,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Name = qp.Name,
                     Matchers = new[]
                     {
-                        new MatcherModel
-                        {
-                            Name = "ExactMatcher",
-                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
-                        }
+                        GetExampleMatcherModel(qp.Schema, _settings.QueryParameterPatternToUse)
                     }
                 })
                 .ToList();
@@ -351,11 +344,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                     Name = qp.Name,
                     Matchers = new[]
                     {
-                        new MatcherModel
-                        {
-                            Name = "ExactMatcher",
-                            Pattern = GetDefaultValueAsStringForSchemaType(qp.Schema)
-                        }
+                        GetExampleMatcherModel(qp.Schema, _settings.HeaderPatternToUse)
                     }
                 })
                 .ToList();
@@ -363,30 +352,26 @@ namespace WireMock.Net.OpenApiParser.Mappers
             return list.Any() ? list : null;
         }
 
-        private string GetDefaultValueAsStringForSchemaType(OpenApiSchema schema)
+        private MatcherModel GetExampleMatcherModel(OpenApiSchema schema, ExampleValueType type)
+        {
+            return type switch
+            {
+                ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema) },
+
+                _ => new MatcherModel { Name = "WildcardMatcher", Pattern = "*" }
+            };
+        }
+
+        private string GetExampleValueAsStringForSchemaType(OpenApiSchema schema)
         {
             var value = _exampleValueGenerator.GetExampleValue(schema);
 
-            switch (value)
+            return value switch
             {
-                case string valueAsString:
-                    return valueAsString;
+                string valueAsString => valueAsString,
 
-                default:
-                    return value.ToString();
-            }
-        }
-
-        private string GetExampleValue(OpenApiSchema schema, ExampleValueType type)
-        {
-            switch (type)
-            {
-                case ExampleValueType.Value:
-                    return GetDefaultValueAsStringForSchemaType(schema);
-
-                default:
-                    return "*";
-            }
+                _ => value.ToString(),
+            };
         }
     }
 }
