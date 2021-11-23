@@ -1,4 +1,4 @@
-﻿using WireMock.Net.OpenApiParser.Types;
+using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.Settings
 {
@@ -23,9 +23,14 @@ namespace WireMock.Net.OpenApiParser.Settings
         public ExampleValueType HeaderPatternToUse { get; set; } = ExampleValueType.Value;
 
         /// <summary>
+        /// The example value type to use when generating a Query Parameter
+        /// </summary>
+        public ExampleValueType QueryParameterPatternToUse { get; set; } = ExampleValueType.Value;
+
+        /// <summary>
         /// The example values to use
         /// </summary>
-        public IWireMockOpenApiParserExampleValues ExampleValues { get; set; } = new WireMockOpenApiParserExampleValues();
+        public IWireMockOpenApiParserExampleValues ExampleValues { get; set; }
 
         /// <summary>
         /// Are examples generated dynamically?

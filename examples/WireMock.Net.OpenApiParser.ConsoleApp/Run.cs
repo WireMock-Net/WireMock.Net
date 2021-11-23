@@ -13,7 +13,7 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
     public static class Run
     {
-        public static WireMockServer RunServer(string path, string url)
+        public static WireMockServer RunServer(string path, string url, bool dynamicExamples = true)
         {
             var server = WireMockServer.Start(new WireMockServerSettings
             {
@@ -31,7 +31,9 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 
             var settings = new WireMockOpenApiParserSettings
             {
-                PathPatternToUse = ExampleValueType.Wildcard
+                DynamicExamples = dynamicExamples,
+                PathPatternToUse = ExampleValueType.Wildcard,
+                HeaderPatternToUse = ExampleValueType.Wildcard
             };
 
             server.WithMappingFromOpenApiFile(path, settings, out var diag);

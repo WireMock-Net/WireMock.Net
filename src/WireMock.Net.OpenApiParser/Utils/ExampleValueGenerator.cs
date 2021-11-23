@@ -17,13 +17,17 @@ namespace WireMock.Net.OpenApiParser.Utils
         {
             _settings = Guard.NotNull(settings, nameof(settings));
 
-            if (_settings.DynamicExamples)
+            // Check if user provided an own implementation
+            if (settings.ExampleValues is null)
             {
-                _settings.ExampleValues = new WireMockOpenApiParserDynamicExampleValues();
-            }
-            else
-            {
-                _settings.ExampleValues = new WireMockOpenApiParserExampleValues();
+                if (_settings.DynamicExamples)
+                {
+                    _settings.ExampleValues = new WireMockOpenApiParserDynamicExampleValues();
+                }
+                else
+                {
+                    _settings.ExampleValues = new WireMockOpenApiParserExampleValues();
+                }
             }
         }
 
