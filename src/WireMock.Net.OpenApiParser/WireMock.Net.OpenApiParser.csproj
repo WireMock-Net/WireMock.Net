@@ -22,7 +22,7 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
-		<PackageReference Include="RamlToOpenApiConverter" Version="0.4.3" />
+		<PackageReference Include="RamlToOpenApiConverter" Version="0.5.0" />
 		<PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />
