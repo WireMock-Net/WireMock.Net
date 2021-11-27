@@ -63,7 +63,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                                    MapSchemaToObject(responseSchema);
 
             var requestBodyModel = new BodyModel();
-            if (operation.RequestBody != null && operation.RequestBody.Content != null)
+            if (operation.RequestBody != null && operation.RequestBody.Content != null && operation.RequestBody.Required)
             {
                 var request = operation.RequestBody.Content;
                 TryGetContent(request, out OpenApiMediaType requestContent, out string requestContentType);
@@ -323,6 +323,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
         private IList<ParamModel> MapQueryParameters(IEnumerable<OpenApiParameter> queryParameters)
         {
             var list = queryParameters
+                .Where(req => req.Required)
                 .Select(qp => new ParamModel
                 {
                     Name = qp.Name,
@@ -339,6 +340,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
         private IList<HeaderModel> MapRequestHeaders(IEnumerable<OpenApiParameter> headers)
         {
             var list = headers
+                .Where(req => req.Required)
                 .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
