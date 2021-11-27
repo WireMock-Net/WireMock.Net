@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -115,6 +115,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
             requestBodyModel.Matcher = new MatcherModel();
             requestBodyModel.Matcher.Name = "JsonMatcher";
             requestBodyModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
+            requestBodyModel.Matcher.IgnoreCase = true;
             return requestBodyModel;
         }
 
@@ -326,6 +327,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 .Select(qp => new ParamModel
                 {
                     Name = qp.Name,
+                    IgnoreCase = true,
                     Matchers = new[]
                     {
                         GetExampleMatcherModel(qp.Schema, _settings.QueryParameterPatternToUse)
@@ -342,6 +344,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
+                    IgnoreCase = true,
                     Matchers = new[]
                     {
                         GetExampleMatcherModel(qp.Schema, _settings.HeaderPatternToUse)
@@ -356,7 +359,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
         {
             return type switch
             {
-                ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema) },
+                ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema), IgnoreCase = true },
 
                 _ => new MatcherModel { Name = "WildcardMatcher", Pattern = "*" }
             };
