@@ -36,5 +36,33 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// Are examples generated dynamically?
         /// </summary>
         public bool DynamicExamples { get; set; } = false;
+
+        /// <summary>
+        /// Is headers case sensitive? (default is true).        
+        /// true = no case sensitive;
+        /// false = case sensitive 
+        /// </summary>
+        public bool IgnoreCaseHeaders { get; set; } = true;
+
+        /// <summary>
+        /// Is query params case sensitive? (default is true).        
+        /// true = no case sensitive;
+        /// false = case sensitive 
+        /// </summary>
+        public bool IgnoreCaseQueryParams { get; set; } = true;
+
+        /// <summary>
+        /// Is request body case sensitive? (default is true).        
+        /// true = no case sensitive;
+        /// false = case sensitive 
+        /// </summary>
+        public bool IgnoreCaseRequestBody { get; set; } = true;
+
+        /// <summary>
+        /// Is example values case sensitive? (default is true).        
+        /// true = no case sensitive;
+        /// false = case sensitive 
+        /// </summary>
+        public bool IgnoreCaseExampleValues { get; set; } = true;
     }
 }
