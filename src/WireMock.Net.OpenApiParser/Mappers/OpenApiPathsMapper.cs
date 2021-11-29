@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -111,12 +111,15 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 return null;
             }
 
-            var requestBodyModel = new BodyModel();
-            requestBodyModel.Matcher = new MatcherModel();
-            requestBodyModel.Matcher.Name = "JsonMatcher";
-            requestBodyModel.Matcher.Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented);
-            requestBodyModel.Matcher.IgnoreCase = _settings.IgnoreCaseRequestBody;
-            return requestBodyModel;
+            return new BodyModel
+            {
+                Matcher = new MatcherModel
+                {
+                    Name = "JsonMatcher",
+                    Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented),
+                    IgnoreCase = _settings.RequestBodyIgnoreCase
+                }
+            };
         }
 
         private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
@@ -328,7 +331,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 .Select(qp => new ParamModel
                 {
                     Name = qp.Name,
-                    IgnoreCase = _settings.IgnoreCaseQueryParams,
+                    IgnoreCase = _settings.QueryParameterPatternIgnoreCase,
                     Matchers = new[]
                     {
                         GetExampleMatcherModel(qp.Schema, _settings.QueryParameterPatternToUse)
@@ -346,7 +349,7 @@ namespace WireMock.Net.OpenApiParser.Mappers
                 .Select(qp => new HeaderModel
                 {
                     Name = qp.Name,
-                    IgnoreCase = _settings.IgnoreCaseHeaders,
+                    IgnoreCase = _settings.HeaderPatternIgnoreCase,
                     Matchers = new[]
                     {
                         GetExampleMatcherModel(qp.Schema, _settings.HeaderPatternToUse)

@@ -28,33 +28,37 @@ namespace WireMock.Net.OpenApiParser.Settings
         public ExampleValueType QueryParameterPatternToUse { get; set; } = ExampleValueType.Value;
 
         /// <summary>
-        /// The example values to use
+        /// The example values to use.
+        ///
+        /// Default implementations are:
+        /// - <see cref="WireMockOpenApiParserExampleValues"/>
+        /// - <see cref="WireMockOpenApiParserDynamicExampleValues"/>
         /// </summary>
         public IWireMockOpenApiParserExampleValues ExampleValues { get; set; }
 
         /// <summary>
-        /// Are examples generated dynamically?
+        /// Is a Header match case insensitive? (default is true).
         /// </summary>
-        public bool DynamicExamples { get; set; } = false;
+        public bool HeaderPatternIgnoreCase { get; set; } = true;
 
         /// <summary>
-        /// Is headers case sensitive? (default is true).
+        /// Is a Query Parameter match case insensitive? (default is true).
         /// </summary>
-        public bool IgnoreCaseHeaders { get; set; } = true;
+        public bool QueryParameterPatternIgnoreCase { get; set; } = true;
 
         /// <summary>
-        /// Is query params case sensitive? (default is true).
+        /// Is a Request Body match case insensitive? (default is true).
         /// </summary>
-        public bool IgnoreCaseQueryParams { get; set; } = true;
+        public bool RequestBodyIgnoreCase { get; set; } = true;
 
         /// <summary>
-        /// Is request body case sensitive? (default is true).
-        /// </summary>
-        public bool IgnoreCaseRequestBody { get; set; } = true;
-
-        /// <summary>
-        /// Are example values case sensitive? (default is true).                
+        /// Is a ExampleValue match case insensitive? (default is true).
         /// </summary>
         public bool IgnoreCaseExampleValues { get; set; } = true;
+
+        /// <summary>
+        /// Are examples generated dynamically? (default is false).
+        /// </summary>
+        public bool DynamicExamples { get; set; } = false;
     }
 }
