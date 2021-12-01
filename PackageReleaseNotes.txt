@@ -1,6 +1,12 @@
-# 1.4.27 (17 November 2021)
-- #678 Support RequestBody [feature]
-- #680 Support examples in properties [feature]
-- #681 Support enums in properties [feature]
+# 1.4.28 (01 December 2021)
+- #686 [Snyk] Security upgrade Microsoft.Owin from 4.0.0 to 4.1.1 [dependencies]
+- #688 Bump System.Text.Encodings.Web from 4.5.0 to 4.5.1 in /examples/WireMock.Net.Console.Net472.Classic [dependencies]
+- #689 Upgrade some NuGet's (Codecov, coverlet, Moq and NFluent) [dependencies]
+- #691 Update the OpenApiPathsMapper to handle Value/Wildcard [feature]
+- #694 RamlToOpenAPI updated to 0.5.0
+- #695 Allow configure IgnoreCase in settings [feature]
+- #696 Filter required property in headers, query params, request body [feature]
+- #666 Example is not working as expected [bug]
+- #692 Case insensitive and ignoring optional path and header parameters in OpenApiPathsMapper [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
