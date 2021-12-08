@@ -1,9 +1,6 @@
 using System;
 using NFluent;
-using WireMock.Matchers;
-using WireMock.Matchers.Request;
 using WireMock.RegularExpressions;
-using WireMock.RequestBuilders;
 using Xunit;
 
 namespace WireMock.Net.Tests.RegularExpressions
@@ -14,7 +11,6 @@ namespace WireMock.Net.Tests.RegularExpressions
         /// Input guid used for testing
         /// </summary>
         public Guid InputGuid { get; } = Guid.NewGuid();
-
 
         [Fact]
         public void RegexGuid_GuidB_Pattern()
@@ -33,7 +29,6 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
 
-
         [Fact]
         public void RegexGuid_GuidD_Pattern()
         {
@@ -50,7 +45,6 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputUpper)).Equals(true);
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
-
 
         [Fact]
         public void RegexGuid_GuidN_Pattern()
@@ -69,7 +63,6 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
 
-
         [Fact]
         public void RegexGuid_GuidP_Pattern()
         {
@@ -87,7 +80,6 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
 
-
         [Fact]
         public void RegexGuid_GuidX_Pattern()
         {
@@ -104,7 +96,6 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputUpper)).Equals(true);
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
-
 
     }
 }
