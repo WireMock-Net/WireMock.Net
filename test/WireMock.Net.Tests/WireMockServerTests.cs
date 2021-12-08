@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -93,7 +94,7 @@ namespace WireMock.Net.Tests
         [Fact]
         public async Task WireMockServer_Should_delay_responses_for_a_given_route()
         {
-            // given
+            // Arrange
             var server = WireMockServer.Start();
 
             server
@@ -103,14 +104,14 @@ namespace WireMock.Net.Tests
                     .WithBody(@"{ msg: ""Hello world!""}")
                     .WithDelay(TimeSpan.FromMilliseconds(200)));
 
-            // when
+            // Act
             var watch = new Stopwatch();
             watch.Start();
             await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo");
             watch.Stop();
 
-            // then
-            Check.That(watch.ElapsedMilliseconds).IsStrictlyGreaterThan(200);
+            // Asser.
+            watch.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(200);
 
             server.Stop();
         }
