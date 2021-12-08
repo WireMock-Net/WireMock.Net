@@ -13,7 +13,6 @@ namespace WireMock.RegularExpressions
     /// </summary>
     public class RegexGuid : Regex
     {
-
         /// <summary>
         /// Token for a GUID formated with `B` format specifier with lower case
         /// values.
@@ -126,12 +125,10 @@ namespace WireMock.RegularExpressions
         /// </summary>
         public const string GuidXRegexPattern = @"(\{0x[A-F0-9]{8},0x[A-F0-9]{4},0x[A-F0-9]{4},\{(0x[A-F0-9]{2},){7}(0x[A-F0-9]{2})\}\})";
 
-
         /// <inheritdoc cref="Regex"/>
         public RegexGuid(string pattern) : this(pattern, RegexOptions.None)
         {
         }
-
 
         /// <inheritdoc cref="Regex"/>
         public RegexGuid(string pattern,
@@ -140,7 +137,6 @@ namespace WireMock.RegularExpressions
         {
         }
 
-
         /// <inheritdoc cref="Regex"/>
         public RegexGuid(string pattern,
                          RegexOptions options,
@@ -148,7 +144,6 @@ namespace WireMock.RegularExpressions
           : base(ReplaceGuidPattern(pattern), options, matchTimeout)
         {
         }
-
 
         /// <summary>
         /// Replaces all instances of valid GUID tokens with the correct regular

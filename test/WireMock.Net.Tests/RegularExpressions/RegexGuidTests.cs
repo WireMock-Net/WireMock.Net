@@ -96,6 +96,5 @@ namespace WireMock.Net.Tests.RegularExpressions
             Check.That(regexUpper.IsMatch(inputUpper)).Equals(true);
             Check.That(regexUpper.IsMatch(inputLower)).Equals(false);
         }
-
     }
 }
