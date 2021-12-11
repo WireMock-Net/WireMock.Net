@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Text;
 using WireMock.Matchers;
@@ -9,7 +9,7 @@ namespace WireMock.Server
 {
     public partial class WireMockServer
     {
-        private readonly RegexMatcher _adminFilesFilenamePathMatcher = new RegexMatcher(MatchBehaviour.AcceptOnMatch, @"^\/__admin\/files\/.*$");
+        private readonly RegexMatcher _adminFilesFilenamePathMatcher = new RegexMatcher(@"^\/__admin\/files\/.*$");
         private static readonly Encoding[] FileBodyIsString = { Encoding.UTF8, Encoding.ASCII };
 
         #region Files/{filename}

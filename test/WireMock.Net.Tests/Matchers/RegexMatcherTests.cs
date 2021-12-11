@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
@@ -72,7 +73,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void RegexMatcher_IsMatch_IgnoreCase()
+        public void RegexMatcher_IsMatch_RegexExtended_Guid()
         {
             // Assign
             var matcher = new RegexMatcher(@"\GUIDB", true);
@@ -81,11 +82,24 @@ namespace WireMock.Net.Tests.Matchers
             double result = matcher.IsMatch(Guid.NewGuid().ToString("B"));
 
             // Assert
-            Check.That(result).IsEqualTo(1.0d);
+            result.Should().Be(1.0);
         }
 
         [Fact]
-        public void RegexMatcher_IsMatch_Guid()
+        public void RegexMatcher_IsMatch_Regex_Guid()
+        {
+            // Assign
+            var matcher = new RegexMatcher(@"\GUIDB", true, false, false);
+
+            // Act
+            double result = matcher.IsMatch(Guid.NewGuid().ToString("B"));
+
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void RegexMatcher_IsMatch_IgnoreCase()
         {
             // Assign
             var matcher = new RegexMatcher("H.*o", true);

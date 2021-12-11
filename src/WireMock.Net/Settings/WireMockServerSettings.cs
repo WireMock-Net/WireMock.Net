@@ -151,5 +151,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.WebhookSettings"/>
         [PublicAPI]
         public IWebhookSettings WebhookSettings { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.UseRegexExtended"/>
+        [PublicAPI]
+        public bool? UseRegexExtended { get; set; } = true;
     }
 }
