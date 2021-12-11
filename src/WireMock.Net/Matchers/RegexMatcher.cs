@@ -113,5 +113,10 @@ namespace WireMock.Matchers
 
         /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
         public bool IgnoreCase { get; }
+
+        /// <summary>
+        /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/>.
+        /// </summary>
+        public bool Extended { get; } = true;
     }
 }

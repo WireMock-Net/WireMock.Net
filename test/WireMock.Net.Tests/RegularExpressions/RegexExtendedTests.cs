@@ -10,7 +10,7 @@ namespace WireMock.Net.Tests.RegularExpressions
         /// <summary>
         /// Input guid used for testing
         /// </summary>
-        public Guid InputGuid { get; } = Guid.NewGuid();
+        public Guid InputGuid => Guid.NewGuid();
 
         [Fact]
         public void RegexExtended_GuidB_Pattern()
