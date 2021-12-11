@@ -5,6 +5,7 @@ using AnyOfTypes;
 using JetBrains.Annotations;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.RegularExpressions;
 using WireMock.Validation;
 
 namespace WireMock.Matchers
@@ -17,7 +18,7 @@ namespace WireMock.Matchers
     public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     {
         private readonly AnyOf<string, StringPattern>[] _patterns;
-        private readonly Regex[] _expressions;
+        private readonly RegexExtended[] _expressions;
 
         /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
         public MatchBehaviour MatchBehaviour { get; }
@@ -76,7 +77,7 @@ namespace WireMock.Matchers
                 options |= RegexOptions.IgnoreCase;
             }
 
-            _expressions = patterns.Select(p => new Regex(p.GetPattern(), options)).ToArray();
+            _expressions = patterns.Select(p => new RegexExtended(p.GetPattern(), options)).ToArray();
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
