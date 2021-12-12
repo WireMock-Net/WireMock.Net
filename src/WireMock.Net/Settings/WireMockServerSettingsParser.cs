@@ -48,7 +48,8 @@ namespace WireMock.Settings
                 AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
                 DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
                 HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
-                ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails")
+                ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
+                UseRegexExtended = parser.GetBoolValue(nameof(IWireMockServerSettings.UseRegexExtended), true)
             };
 
             if (logger != null)

@@ -34,7 +34,7 @@
 
     <ItemGroup>
         <!--<PackageReference Include="AnyOf" Version="0.1.0" />-->
-        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" PrivateAssets="All" />
+        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
 
