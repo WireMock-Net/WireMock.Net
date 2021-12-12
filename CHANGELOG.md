@@ -1,9 +1,13 @@
+# 1.4.29 (12 December 2021)
+- [#699](https://github.com/WireMock-Net/WireMock.Net/pull/699) - GUID Pattern support in RegexMatcher contributed by [brogdogg](https://github.com/brogdogg)
+- [#700](https://github.com/WireMock-Net/WireMock.Net/pull/700) - RegexExtended in settings [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.28 (01 December 2021)
 - [#686](https://github.com/WireMock-Net/WireMock.Net/pull/686) - [Snyk] Security upgrade Microsoft.Owin from 4.0.0 to 4.1.1 [dependencies] contributed by [snyk-bot](https://github.com/snyk-bot)
 - [#688](https://github.com/WireMock-Net/WireMock.Net/pull/688) - Bump System.Text.Encodings.Web from 4.5.0 to 4.5.1 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#689](https://github.com/WireMock-Net/WireMock.Net/pull/689) - Upgrade some NuGet's (Codecov, coverlet, Moq and NFluent) [dependencies] contributed by [StefH](https://github.com/StefH)
 - [#691](https://github.com/WireMock-Net/WireMock.Net/pull/691) - Update the OpenApiPathsMapper to handle Value/Wildcard [feature] contributed by [StefH](https://github.com/StefH)
-- [#694](https://github.com/WireMock-Net/WireMock.Net/pull/694) - RamlToOpenAPI updated to 0.5.0 contributed by [mcheguini](https://github.com/mcheguini)
+- [#694](https://github.com/WireMock-Net/WireMock.Net/pull/694) - RamlToOpenAPI updated to 0.5.0 [feature] contributed by [mcheguini](https://github.com/mcheguini)
 - [#695](https://github.com/WireMock-Net/WireMock.Net/pull/695) - Allow configure IgnoreCase in settings [feature] contributed by [leolplex](https://github.com/leolplex)
 - [#696](https://github.com/WireMock-Net/WireMock.Net/pull/696) - Filter required property in headers, query params, request body [feature] contributed by [leolplex](https://github.com/leolplex)
 - [#666](https://github.com/WireMock-Net/WireMock.Net/issues/666) - Example is not working as expected [bug]
