@@ -1,3 +1,5 @@
+using System;
+using FluentAssertions;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
@@ -68,6 +70,32 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             Check.That(result).IsEqualTo(0.0d);
+        }
+
+        [Fact]
+        public void RegexMatcher_IsMatch_RegexExtended_Guid()
+        {
+            // Assign
+            var matcher = new RegexMatcher(@"\GUIDB", true);
+
+            // Act
+            double result = matcher.IsMatch(Guid.NewGuid().ToString("B"));
+
+            // Assert
+            result.Should().Be(1.0);
+        }
+
+        [Fact]
+        public void RegexMatcher_IsMatch_Regex_Guid()
+        {
+            // Assign
+            var matcher = new RegexMatcher(@"\GUIDB", true, false, false);
+
+            // Act
+            double result = matcher.IsMatch(Guid.NewGuid().ToString("B"));
+
+            // Assert
+            result.Should().Be(0);
         }
 
         [Fact]

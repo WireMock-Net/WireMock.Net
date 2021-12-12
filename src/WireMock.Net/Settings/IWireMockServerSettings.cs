@@ -1,9 +1,11 @@
 using System;
+using System.Text.RegularExpressions;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.RegularExpressions;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -215,5 +217,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         IWebhookSettings WebhookSettings { get; set; }
+
+        /// <summary>
+        /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/>.
+        /// </summary>
+        [PublicAPI]
+        bool? UseRegexExtended { get; }
     }
 }

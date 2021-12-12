@@ -41,6 +41,7 @@ namespace WireMock.Serialization
             var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
             bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
+            bool useRegexExtended = _settings.UseRegexExtended == true;
 
             switch (matcherName)
             {
@@ -65,7 +66,7 @@ namespace WireMock.Serialization
                     return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
 
                 case nameof(RegexMatcher):
-                    return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
+                    return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended);
 
                 case nameof(JsonMatcher):
                     object valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
