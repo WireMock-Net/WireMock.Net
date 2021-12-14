@@ -8,7 +8,10 @@ namespace WireMock.RegularExpressions
     /// <summary>
     /// Extension to the <see cref="Regex"/> object, adding support for GUID tokens for matching on.
     /// </summary>
-    public class RegexExtended : Regex
+#if !NETSTANDARD1_3
+    [Serializable]
+#endif
+    internal class RegexExtended : Regex
     {
         /// <inheritdoc cref="Regex"/>
         public RegexExtended(string pattern) : this(pattern, RegexOptions.None)
@@ -16,17 +19,24 @@ namespace WireMock.RegularExpressions
         }
 
         /// <inheritdoc cref="Regex"/>
-        public RegexExtended(string pattern, RegexOptions options)
-          : this(pattern, options, Regex.InfiniteMatchTimeout)
+        public RegexExtended(string pattern, RegexOptions options) :
+            this(pattern, options, Regex.InfiniteMatchTimeout)
         {
         }
 
         /// <inheritdoc cref="Regex"/>
-        public RegexExtended(string pattern, RegexOptions options, TimeSpan matchTimeout)
-          : base(ReplaceGuidPattern(pattern), options, matchTimeout)
+        public RegexExtended(string pattern, RegexOptions options, TimeSpan matchTimeout) :
+            base(ReplaceGuidPattern(pattern), options, matchTimeout)
         {
         }
 
+#if !NETSTANDARD1_3
+        /// <inheritdoc cref="Regex"/>
+        protected RegexExtended(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) :
+            base(info, context)
+        {
+        }
+#endif
         // Dictionary of various Guid tokens with a corresponding regular expression pattern to use instead.
         private static readonly Dictionary<string, string> GuidTokenPatterns = new Dictionary<string, string>
         {
