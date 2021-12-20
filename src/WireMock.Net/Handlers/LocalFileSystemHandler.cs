@@ -11,6 +11,7 @@ namespace WireMock.Handlers
     public class LocalFileSystemHandler : IFileSystemHandler
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
+        private static readonly string UnmatchedRequestsFolder = Path.Combine("requests", "unmatched");
 
         private readonly string _rootFolder;
 
@@ -102,7 +103,7 @@ namespace WireMock.Handlers
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.Exists(AdjustPath(filename));
+            return File.Exists(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
@@ -111,7 +112,7 @@ namespace WireMock.Handlers
             Check.NotNullOrEmpty(filename, nameof(filename));
             Check.NotNull(bytes, nameof(bytes));
 
-            File.WriteAllBytes(AdjustPath(filename), bytes);
+            File.WriteAllBytes(AdjustPathForMappingFolder(filename), bytes);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
@@ -119,7 +120,7 @@ namespace WireMock.Handlers
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            File.Delete(AdjustPath(filename));
+            File.Delete(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
@@ -127,13 +128,31 @@ namespace WireMock.Handlers
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.ReadAllBytes(AdjustPath(filename));
+            return File.ReadAllBytes(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
         public string ReadFileAsString(string filename)
         {
-            return File.ReadAllText(AdjustPath(Check.NotNullOrEmpty(filename, nameof(filename))));
+            return File.ReadAllText(AdjustPathForMappingFolder(Check.NotNullOrEmpty(filename, nameof(filename))));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>
+        public string GetUnmatchedRequestsFolder()
+        {
+            return Path.Combine(_rootFolder, UnmatchedRequestsFolder);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.WriteUnmatchedRequest"/>
+        public void WriteUnmatchedRequest(string filename, string text)
+        {
+            Check.NotNullOrEmpty(filename, nameof(filename));
+            Check.NotNull(text, nameof(text));
+
+            var folder = GetUnmatchedRequestsFolder();
+            Directory.CreateDirectory(folder);
+
+            File.WriteAllText(Path.Combine(folder, filename), text);
         }
 
         /// <summary>
@@ -141,7 +160,7 @@ namespace WireMock.Handlers
         /// </summary>
         /// <param name="filename">The path.</param>
         /// <returns>Adjusted path</returns>
-        private string AdjustPath(string filename)
+        private string AdjustPathForMappingFolder(string filename)
         {
             return Path.Combine(GetMappingFolder(), filename);
         }

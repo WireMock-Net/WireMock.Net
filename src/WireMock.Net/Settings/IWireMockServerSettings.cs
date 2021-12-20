@@ -213,7 +213,7 @@ namespace WireMock.Settings
         bool CustomCertificateDefined { get; }
 
         /// <summary>
-        /// Defines the global IWebhookSettingsto use
+        /// Defines the global IWebhookSettings to use.
         /// </summary>
         [PublicAPI]
         IWebhookSettings WebhookSettings { get; set; }
@@ -222,6 +222,12 @@ namespace WireMock.Settings
         /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/>.
         /// </summary>
         [PublicAPI]
-        bool? UseRegexExtended { get; }
+        bool? UseRegexExtended { get; set; }
+
+        /// <summary>
+        /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>.
+        /// </summary>
+        [PublicAPI]
+        bool? SaveUnmatchedRequests { get; set; }
     }
 }

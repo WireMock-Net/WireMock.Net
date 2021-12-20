@@ -20,7 +20,6 @@ namespace WireMock.Settings
         public int? Port { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.UseSSL"/>
-        // ReSharper disable once InconsistentNaming
         [PublicAPI]
         public bool? UseSSL { get; set; }
 
@@ -155,5 +154,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.UseRegexExtended"/>
         [PublicAPI]
         public bool? UseRegexExtended { get; set; } = true;
+
+        /// <inheritdoc cref="IWireMockServerSettings.SaveUnmatchedRequests"/>
+        [PublicAPI]
+        public bool? SaveUnmatchedRequests { get; set; }
     }
 }

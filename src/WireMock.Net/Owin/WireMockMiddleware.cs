@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using System.Linq;
+using HandlebarsDotNet.Helpers.Utils;
 using WireMock.Matchers;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
@@ -35,28 +36,18 @@ namespace WireMock.Owin
 #if !USE_ASPNETCORE
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
         {
-            Check.NotNull(options, nameof(options));
-            Check.NotNull(requestMapper, nameof(requestMapper));
-            Check.NotNull(responseMapper, nameof(responseMapper));
-            Check.NotNull(mappingMatcher, nameof(mappingMatcher));
-
-            _options = options;
-            _requestMapper = requestMapper;
-            _responseMapper = responseMapper;
-            _mappingMatcher = mappingMatcher;
+            _options = Check.NotNull(options, nameof(options));
+            _requestMapper = Check.NotNull(requestMapper, nameof(requestMapper));
+            _responseMapper = Check.NotNull(responseMapper, nameof(responseMapper));
+            _mappingMatcher = Check.NotNull(mappingMatcher, nameof(mappingMatcher));
         }
 #else
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
         {
-            Check.NotNull(options, nameof(options));
-            Check.NotNull(requestMapper, nameof(requestMapper));
-            Check.NotNull(responseMapper, nameof(responseMapper));
-            Check.NotNull(mappingMatcher, nameof(mappingMatcher));
-
-            _options = options;
-            _requestMapper = requestMapper;
-            _responseMapper = responseMapper;
-            _mappingMatcher = mappingMatcher;
+            _options = Check.NotNull(options, nameof(options));
+            _requestMapper = Check.NotNull(requestMapper, nameof(requestMapper));
+            _responseMapper = Check.NotNull(responseMapper, nameof(responseMapper));
+            _mappingMatcher = Check.NotNull(mappingMatcher, nameof(mappingMatcher));
         }
 #endif
 
@@ -70,20 +61,18 @@ namespace WireMock.Owin
             {
                 lock (_lock)
                 {
-                    return InvokeInternal(ctx);
+                    return InvokeInternalAsync(ctx);
                 }
             }
-            else
-            {
-                return InvokeInternal(ctx);
-            }
+
+            return InvokeInternalAsync(ctx);
         }
 
-        private async Task InvokeInternal(IContext ctx)
+        private async Task InvokeInternalAsync(IContext ctx)
         {
             var request = await _requestMapper.MapAsync(ctx.Request, _options);
 
-            bool logRequest = false;
+            var logRequest = false;
             ResponseMessage response = null;
             (MappingMatcherResult Match, MappingMatcherResult Partial) result = (null, null);
             try
@@ -105,6 +94,12 @@ namespace WireMock.Owin
                 var targetMapping = result.Match?.Mapping;
                 if (targetMapping == null)
                 {
+                    if (_options.SaveUnmatchedRequests == true)
+                    {
+                        var filename = $"{Guid.NewGuid()}.request.json";
+                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, WireMock.Util.JsonUtils.Serialize(request));
+                    }
+
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
                     response = ResponseMessageBuilder.Create("No matching mapping found", 404);

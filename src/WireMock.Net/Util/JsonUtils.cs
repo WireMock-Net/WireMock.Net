@@ -1,18 +1,19 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WireMock.Serialization;
 
 namespace WireMock.Util
 {
     internal static class JsonUtils
     {
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        public static string Serialize<T>(T value)
         {
-            DateParseHandling = DateParseHandling.None
-        };
+            return JsonConvert.SerializeObject(value, JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues);
+        }
 
         /// <summary>
         /// Load a Newtonsoft.Json.Linq.JObject from a string that contains JSON.
@@ -22,7 +23,7 @@ namespace WireMock.Util
         /// <returns>A Newtonsoft.Json.Linq.JToken populated from the string that contains JSON.</returns>
         public static JToken Parse(string json)
         {
-            return JsonConvert.DeserializeObject<JToken>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<JToken>(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace WireMock.Util
         /// <returns>The deserialized object from the JSON string.</returns>
         public static object DeserializeObject(string json)
         {
-            return JsonConvert.DeserializeObject(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace WireMock.Util
         /// <returns>The deserialized object from the JSON string.</returns>
         public static T DeserializeObject<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<T>(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
         }
 
         public static T ParseJTokenToObject<T>(object value)

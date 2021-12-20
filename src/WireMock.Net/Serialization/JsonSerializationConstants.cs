@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace WireMock.Serialization
 {
@@ -14,6 +14,11 @@ namespace WireMock.Serialization
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Include
+        };
+
+        public static readonly JsonSerializerSettings JsonDeserializerSettingsWithDateParsingNone = new JsonSerializerSettings
+        {
+            DateParseHandling = DateParseHandling.None
         };
     }
 }

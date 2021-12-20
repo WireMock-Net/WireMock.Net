@@ -7,6 +7,7 @@ namespace WireMock.Net.ConsoleApplication
     internal class CustomFileSystemFileHandler : IFileSystemHandler
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
+        private static readonly string UnmatchedRequestsFolder = Path.Combine("requests", "unmatched");
 
         /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
         public bool FolderExists(string path)
@@ -84,6 +85,21 @@ namespace WireMock.Net.ConsoleApplication
         public string ReadFileAsString(string path)
         {
             return File.ReadAllText(path);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>
+        public string GetUnmatchedRequestsFolder()
+        {
+            return Path.Combine(@"c:\temp-wiremock", UnmatchedRequestsFolder);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.WriteUnmatchedRequest"/>
+        public void WriteUnmatchedRequest(string filename, string text)
+        {
+            var folder = GetUnmatchedRequestsFolder();
+            Directory.CreateDirectory(folder);
+
+            File.WriteAllText(Path.Combine(folder, filename), text);
         }
 
         /// <summary>
