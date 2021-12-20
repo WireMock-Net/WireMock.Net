@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using WireMock.Settings;
 
@@ -17,7 +17,7 @@ namespace WireMock.ResponseProviders
 
         public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
-            return (await _responseMessageFunc(requestMessage, _settings), null);
+            return (await _responseMessageFunc(requestMessage, _settings).ConfigureAwait(false), null);
         }
     }
 }

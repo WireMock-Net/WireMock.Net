@@ -81,7 +81,7 @@ namespace WireMock.Owin
 
         private async Task InvokeInternal(IContext ctx)
         {
-            var request = await _requestMapper.MapAsync(ctx.Request, _options);
+            var request = await _requestMapper.MapAsync(ctx.Request, _options).ConfigureAwait(false);
 
             bool logRequest = false;
             ResponseMessage response = null;
@@ -126,10 +126,10 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && _options.RequestProcessingDelay > TimeSpan.Zero)
                 {
-                    await Task.Delay(_options.RequestProcessingDelay.Value);
+                    await Task.Delay(_options.RequestProcessingDelay.Value).ConfigureAwait(false);
                 }
 
-                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request);
+                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request).ConfigureAwait(false);
                 response = theResponse;
 
                 var responseBuilder = targetMapping.Provider as Response;
@@ -185,10 +185,10 @@ namespace WireMock.Owin
 
                 LogRequest(log, logRequest);
 
-                await _responseMapper.MapAsync(response, ctx.Response);
+                await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
             }
 
-            await CompletedTask;
+            await CompletedTask.ConfigureAwait(false);
         }
 
         private async Task SendToWebhooksAsync(IMapping mapping, RequestMessage request, ResponseMessage response)

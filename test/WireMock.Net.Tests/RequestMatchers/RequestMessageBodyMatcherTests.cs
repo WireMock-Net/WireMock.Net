@@ -301,7 +301,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                     ContentType = null,
                     DeserializeJson = true
                 };
-                bodyData = await BodyParser.Parse(bodyParserSettings);
+                bodyData = await BodyParser.ParseAsync(bodyParserSettings);
             }
             else if (body is string s)
             {
@@ -311,7 +311,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                     ContentType = null,
                     DeserializeJson = true
                 };
-                bodyData = await BodyParser.Parse(bodyParserSettings);
+                bodyData = await BodyParser.ParseAsync(bodyParserSettings);
             }
             else
             {

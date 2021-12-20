@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -107,11 +107,11 @@ namespace WireMock.Util
             return BodyType.Bytes;
         }
 
-        public static async Task<BodyData> Parse([NotNull] BodyParserSettings settings)
+        public static async Task<BodyData> ParseAsync([NotNull] BodyParserSettings settings)
         {
             Check.NotNull(settings, nameof(settings));
 
-            var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate);
+            var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate).ConfigureAwait(false);
             var data = new BodyData
             {
                 BodyAsBytes = bodyWithContentEncoding.Value,
@@ -167,7 +167,7 @@ namespace WireMock.Util
         {
             using (var memoryStream = new MemoryStream())
             {
-                await stream.CopyToAsync(memoryStream);
+                await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
                 byte[] data = memoryStream.ToArray();
 
                 string type = contentEncoding?.ToLowerInvariant();

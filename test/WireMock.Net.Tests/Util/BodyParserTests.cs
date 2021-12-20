@@ -30,7 +30,7 @@ namespace WireMock.Net.Tests.Util
             };
 
             // Act
-            var body = await BodyParser.Parse(bodyParserSettings);
+            var body = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -54,7 +54,7 @@ namespace WireMock.Net.Tests.Util
             };
 
             // Act
-            var body = await BodyParser.Parse(bodyParserSettings);
+            var body = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -79,7 +79,7 @@ namespace WireMock.Net.Tests.Util
             };
 
             // act
-            var body = await BodyParser.Parse(bodyParserSettings);
+            var body = await BodyParser.ParseAsync(bodyParserSettings);
 
             // assert
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
@@ -100,7 +100,7 @@ namespace WireMock.Net.Tests.Util
             };
 
             // act
-            var body = await BodyParser.Parse(bodyParserSettings);
+            var body = await BodyParser.ParseAsync(bodyParserSettings);
 
             // assert
             Check.That(body.DetectedBodyType).IsEqualTo(detectedBodyType);
@@ -139,7 +139,7 @@ Content-Type: text/html
             };
 
             // Act
-            var result = await BodyParser.Parse(bodyParserSettings);
+            var result = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.String);
@@ -163,7 +163,7 @@ Content-Type: text/html
             };
 
             // Act
-            var result = await BodyParser.Parse(bodyParserSettings);
+            var result = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             Check.That(result.DetectedBodyType).IsEqualTo(BodyType.Bytes);
@@ -186,7 +186,7 @@ Content-Type: text/html
             };
 
             // Act
-            var body = await BodyParser.Parse(bodyParserSettings);
+            var body = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             Check.That(body.BodyAsBytes).IsNotNull();
@@ -214,7 +214,7 @@ Content-Type: text/html
             };
 
             // Act
-            var result = await BodyParser.Parse(bodyParserSettings);
+            var result = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             result.DetectedBodyType.Should().Be(BodyType.String);
@@ -243,7 +243,7 @@ Content-Type: text/html
             };
 
             // Act
-            var result = await BodyParser.Parse(bodyParserSettings);
+            var result = await BodyParser.ParseAsync(bodyParserSettings);
 
             // Assert
             result.BodyAsBytes.Should().BeEquivalentTo(compressed);

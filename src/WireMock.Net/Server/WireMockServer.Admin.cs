@@ -261,7 +261,7 @@ namespace WireMock.Server
                 _httpClientForProxy,
                 requestMessage,
                 proxyUriWithRequestPathAndQuery.AbsoluteUri
-            );
+            ).ConfigureAwait(false);
 
             if (mapping != null)
             {

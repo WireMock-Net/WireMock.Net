@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -103,7 +103,7 @@ namespace WireMock.Owin.Mappers
 
             if (bytes != null)
             {
-                await response.Body.WriteAsync(bytes, 0, bytes.Length);
+                await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false); ;
             }
         }
 
