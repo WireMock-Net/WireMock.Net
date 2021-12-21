@@ -219,13 +219,13 @@ namespace WireMock.Settings
         IWebhookSettings WebhookSettings { get; set; }
 
         /// <summary>
-        /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/>.
+        /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/> (default set to true).
         /// </summary>
         [PublicAPI]
         bool? UseRegexExtended { get; set; }
 
         /// <summary>
-        /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>.
+        /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/> (default set to false).
         /// </summary>
         [PublicAPI]
         bool? SaveUnmatchedRequests { get; set; }

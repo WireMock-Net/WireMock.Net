@@ -1,4 +1,7 @@
-﻿namespace WireMock.Admin.Settings
+using System.Text.RegularExpressions;
+using WireMock.Handlers;
+
+namespace WireMock.Admin.Settings
 {
     /// <summary>
     /// Settings
@@ -40,5 +43,15 @@
         /// Throw an exception when the Matcher fails because of invalid input. (default set to false).
         /// </summary>
         public bool? ThrowExceptionWhenMatcherFails { get; set; }
+
+        /// <summary>
+        /// Use the RegexExtended instead of the default <see cref="Regex"/>.  (default set to true).
+        /// </summary>
+        public bool? UseRegexExtended { get; set; }
+
+        /// <summary>
+        /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>. (default set to false).
+        /// </summary>
+        public bool? SaveUnmatchedRequests { get; set; }
     }
 }
