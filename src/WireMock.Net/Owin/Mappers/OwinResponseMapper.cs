@@ -103,7 +103,7 @@ namespace WireMock.Owin.Mappers
 
             if (bytes != null)
             {
-                await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false); ;
+                await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
         }
 
