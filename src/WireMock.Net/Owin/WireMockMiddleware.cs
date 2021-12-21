@@ -94,12 +94,6 @@ namespace WireMock.Owin
                 var targetMapping = result.Match?.Mapping;
                 if (targetMapping == null)
                 {
-                    if (_options.SaveUnmatchedRequests == true)
-                    {
-                        var filename = $"{Guid.NewGuid()}.request.json";
-                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, WireMock.Util.JsonUtils.Serialize(request));
-                    }
-
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
                     response = ResponseMessageBuilder.Create("No matching mapping found", 404);
@@ -179,6 +173,19 @@ namespace WireMock.Owin
                 };
 
                 LogRequest(log, logRequest);
+
+                try
+                {
+                    if (_options.SaveUnmatchedRequests == true && result.Match?.RequestMatchResult.IsPerfectMatch != true)
+                    {
+                        var filename = $"{log.Guid}.LogEntry.json";
+                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, Util.JsonUtils.Serialize(log));
+                    }
+                }
+                catch
+                {
+                    // Empty catch
+                }
 
                 await _responseMapper.MapAsync(response, ctx.Response);
             }
