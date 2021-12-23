@@ -32,7 +32,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
-        public bool FolderExists(string path)
+        public virtual bool FolderExists(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -40,7 +40,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
-        public void CreateFolder(string path)
+        public virtual void CreateFolder(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -48,7 +48,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
-        public IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
+        public virtual IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -56,13 +56,13 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
-        public string GetMappingFolder()
+        public virtual string GetMappingFolder()
         {
             return Path.Combine(_rootFolder, AdminMappingsFolder);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
-        public string ReadMappingFile(string path)
+        public virtual string ReadMappingFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -70,7 +70,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile(string, string)"/>
-        public void WriteMappingFile(string path, string text)
+        public virtual void WriteMappingFile(string path, string text)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             Check.NotNull(text, nameof(text));
@@ -79,7 +79,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
-        public byte[] ReadResponseBodyAsFile(string path)
+        public virtual byte[] ReadResponseBodyAsFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
@@ -89,7 +89,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
-        public string ReadResponseBodyAsString(string path)
+        public virtual string ReadResponseBodyAsString(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
@@ -99,7 +99,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
-        public bool FileExists(string filename)
+        public virtual bool FileExists(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
@@ -107,7 +107,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
-        public void WriteFile(string filename, byte[] bytes)
+        public virtual void WriteFile(string filename, byte[] bytes)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
             Check.NotNull(bytes, nameof(bytes));
@@ -116,7 +116,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
-        public void DeleteFile(string filename)
+        public virtual void DeleteFile(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
@@ -124,7 +124,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
-        public byte[] ReadFile(string filename)
+        public virtual byte[] ReadFile(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
@@ -132,25 +132,28 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
-        public string ReadFileAsString(string filename)
+        public virtual string ReadFileAsString(string filename)
         {
             return File.ReadAllText(AdjustPathForMappingFolder(Check.NotNullOrEmpty(filename, nameof(filename))));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>
-        public string GetUnmatchedRequestsFolder()
+        public virtual string GetUnmatchedRequestsFolder()
         {
             return Path.Combine(_rootFolder, UnmatchedRequestsFolder);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteUnmatchedRequest"/>
-        public void WriteUnmatchedRequest(string filename, string text)
+        public virtual void WriteUnmatchedRequest(string filename, string text)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
             Check.NotNull(text, nameof(text));
 
             var folder = GetUnmatchedRequestsFolder();
-            Directory.CreateDirectory(folder);
+            if (!FolderExists(folder))
+            {
+                CreateFolder(folder);
+            }
 
             File.WriteAllText(Path.Combine(folder, filename), text);
         }
