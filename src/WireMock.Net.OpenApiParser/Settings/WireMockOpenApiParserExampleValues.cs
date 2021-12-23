@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.OpenApi.Models;
 
 namespace WireMock.Net.OpenApiParser.Settings
 {
@@ -25,5 +26,7 @@ namespace WireMock.Net.OpenApiParser.Settings
         public object Object { get; set; } = "example-object";
         /// <inheritdoc />
         public string String { get; set; } = "example-string";
+        /// <inheritdoc />
+        public OpenApiSchema SchemaExample { get; set; }
     }
 }
