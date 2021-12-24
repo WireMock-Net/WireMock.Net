@@ -41,13 +41,13 @@ namespace WireMock.Proxy
             var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, url);
 
             // Call the URL
-            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead);
+            var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
 
             // Create ResponseMessage
             bool deserializeJson = !_settings.DisableJsonBodyParsing.GetValueOrDefault(false);
             bool decompressGzipAndDeflate = !_settings.DisableRequestBodyDecompressing.GetValueOrDefault(false);
 
-            var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate);
+            var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
 
             IMapping mapping = null;
             if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&

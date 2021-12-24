@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using JetBrains.Annotations;
@@ -16,7 +16,7 @@ namespace WireMock.Util
         // Default Watch Interval in Milliseconds
         private const int DefaultWatchInterval = 100;
 
-        // This Dictionary keeps the track of when an event occured last for a particular file
+        // This Dictionary keeps the track of when an event occurred last for a particular file
         private ConcurrentDictionary<string, DateTime> _lastFileEvent;
 
         // Watch Interval in Milliseconds
@@ -176,13 +176,13 @@ namespace WireMock.Util
         }
 
         /// <summary>
-        /// This method searches the dictionary to find out when the last event occured 
-        /// for a particular file. If that event occured within the specified timespan
+        /// This method searches the dictionary to find out when the last event occurred 
+        /// for a particular file. If that event occurred within the specified timespan
         /// it returns true, else false
         /// </summary>
         /// <param name="fileName">The filename to be checked</param>
-        /// <returns>True if an event has occured within the specified interval, False otherwise</returns>
-        private bool HasAnotherFileEventOccuredRecently(string fileName)
+        /// <returns>True if an event has occurred within the specified interval, False otherwise</returns>
+        private bool HasAnotherFileEventOccurredRecently(string fileName)
         {
             // Check dictionary only if user wants to filter recent events otherwise return value stays false.
             if (!FilterRecentEvents)
@@ -194,7 +194,7 @@ namespace WireMock.Util
             if (_lastFileEvent.ContainsKey(fileName))
             {
                 // If dictionary contains the filename, check how much time has elapsed
-                // since the last event occured. If the timespan is less that the 
+                // since the last event occurred. If the timespan is less that the 
                 // specified interval, set return value to true 
                 // and store current datetime in dictionary for this file
                 DateTime lastEventTime = _lastFileEvent[fileName];
@@ -206,7 +206,7 @@ namespace WireMock.Util
             else
             {
                 // If dictionary does not contain the filename, 
-                // no event has occured in past for this file, so set return value to false
+                // no event has occurred in past for this file, so set return value to false
                 // and append filename along with current datetime to the dictionary
                 _lastFileEvent.TryAdd(fileName, DateTime.Now);
             }
@@ -215,11 +215,11 @@ namespace WireMock.Util
         }
 
         #region FileSystemWatcher EventHandlers
-        // Base class Event Handlers. Check if an event has occured recently and call method
+        // Base class Event Handlers. Check if an event has occurred recently and call method
         // to raise appropriate event only if no recent event is detected
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (!HasAnotherFileEventOccuredRecently(e.FullPath))
+            if (!HasAnotherFileEventOccurredRecently(e.FullPath))
             {
                 OnChanged(e);
             }
@@ -227,7 +227,7 @@ namespace WireMock.Util
 
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
-            if (!HasAnotherFileEventOccuredRecently(e.FullPath))
+            if (!HasAnotherFileEventOccurredRecently(e.FullPath))
             {
                 OnCreated(e);
             }
@@ -235,7 +235,7 @@ namespace WireMock.Util
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            if (!HasAnotherFileEventOccuredRecently(e.FullPath))
+            if (!HasAnotherFileEventOccurredRecently(e.FullPath))
             {
                 OnDeleted(e);
             }
@@ -243,7 +243,7 @@ namespace WireMock.Util
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
-            if (!HasAnotherFileEventOccuredRecently(e.OldFullPath))
+            if (!HasAnotherFileEventOccurredRecently(e.OldFullPath))
             {
                 OnRenamed(e);
             }

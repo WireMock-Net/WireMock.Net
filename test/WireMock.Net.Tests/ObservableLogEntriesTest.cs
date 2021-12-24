@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -41,7 +41,7 @@ namespace WireMock.Net.Tests
             server.LogEntriesChanged += (sender, args) => throw new Exception();
 
             // Act
-            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}");
+            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}").ConfigureAwait(false);
 
             // Assert
             loggerMock.Verify(l => l.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests
             server.LogEntriesChanged += (sender, args) => count++;
 
             // Act
-            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}");
+            await new HttpClient().GetAsync($"http://localhost:{server.Ports[0]}{path}").ConfigureAwait(false);
 
             // Assert
             Check.That(count).Equals(1);
@@ -101,7 +101,7 @@ namespace WireMock.Net.Tests
                 Thread.Sleep(50);
                 listOfTasks.Add(http.GetAsync($"{server.Urls[0]}{path}"));
             }
-            var responses = await Task.WhenAll(listOfTasks);
+            var responses = await Task.WhenAll(listOfTasks).ConfigureAwait(false);
             var countResponsesWithStatusNotOk = responses.Count(r => r.StatusCode != HttpStatusCode.OK);
 
             // Assert

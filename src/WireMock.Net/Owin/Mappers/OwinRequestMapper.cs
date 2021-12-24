@@ -65,25 +65,25 @@ namespace WireMock.Owin.Mappers
                     DecompressGZipAndDeflate = !options.DisableRequestBodyDecompressing.GetValueOrDefault(false)
                 };
 
-                body = await BodyParser.Parse(bodyParserSettings);
+                body = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
             }
 
             return new RequestMessage(urlDetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
         }
 
-        private (UrlDetails UrlDetails, string ClientIP) ParseRequest(IRequest request)
+        private static (UrlDetails UrlDetails, string ClientIP) ParseRequest(IRequest request)
         {
 #if !USE_ASPNETCORE
-            var urldetails = UrlUtils.Parse(request.Uri, request.PathBase);
+            var urlDetails = UrlUtils.Parse(request.Uri, request.PathBase);
             string clientIP = request.RemoteIpAddress;
 #else
-            var urldetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
+            var urlDetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
             var connection = request.HttpContext.Connection;
             string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
                 ? connection.RemoteIpAddress.MapToIPv4().ToString()
                 : connection.RemoteIpAddress.ToString();
 #endif
-            return (urldetails, clientIP);
+            return (urlDetails, clientIP);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Xml;
 using NFluent;
 using WireMock.Models;
@@ -53,7 +53,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
@@ -84,7 +84,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("abc");
@@ -112,7 +112,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
@@ -170,7 +170,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Contain("TokenIdLijst").And.Contain("0000083256").And.Contain("0000083259");
@@ -198,7 +198,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsEqualIgnoringCase("True");
@@ -226,7 +226,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("a1");

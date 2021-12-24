@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -77,7 +77,7 @@ namespace WireMock.Server
         [PublicAPI]
         public bool DeleteLogEntry(Guid guid)
         {
-            // Check a logentry exists with the same GUID, if so, remove it.
+            // Check a LogEntry exists with the same GUID, if so, remove it.
             var existing = _options.LogEntries.ToList().FirstOrDefault(m => m.Guid == guid);
             if (existing != null)
             {

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Moq;
 using NFluent;
 using WireMock.Handlers;
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // assert
             Check.That(response.Message.BodyData.BodyAsString).Equals("ABC");

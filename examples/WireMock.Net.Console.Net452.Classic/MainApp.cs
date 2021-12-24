@@ -556,7 +556,7 @@ namespace WireMock.Net.ConsoleApplication
                 .Given(Request.Create().WithPath("/random200or505async").UsingGet())
                 .RespondWith(Response.Create().WithCallback(async request =>
                 {
-                    await Task.Delay(1);
+                    await Task.Delay(1).ConfigureAwait(false);
 
                     int code = new Random().Next(1, 2) == 1 ? 505 : 200;
 

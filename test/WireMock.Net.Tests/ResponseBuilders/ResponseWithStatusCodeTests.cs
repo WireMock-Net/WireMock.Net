@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using System.Net;
 using System.Threading.Tasks;
@@ -40,7 +40,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                     break;
             }
 
-            var response = await responseBuilder.ProvideResponseAsync(request, _settingsMock.Object);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settingsMock.Object).ConfigureAwait(false);
 
             // Assert
             response.Message.StatusCode.Should().Be(expectedStatusCode);

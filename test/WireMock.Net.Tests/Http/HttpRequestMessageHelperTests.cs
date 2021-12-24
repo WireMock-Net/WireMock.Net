@@ -1,4 +1,4 @@
-﻿using NFluent;
+using NFluent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(await message.Content.ReadAsByteArrayAsync()).ContainsExactly(Encoding.UTF8.GetBytes("hi"));
+            Check.That(await message.Content.ReadAsByteArrayAsync().ConfigureAwait(false)).ContainsExactly(Encoding.UTF8.GetBytes("hi"));
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
+            Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
+            Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
             Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json");
         }
 
@@ -100,7 +100,7 @@ namespace WireMock.Net.Tests.Http
             var message = HttpRequestMessageHelper.Create(request, "http://url");
 
             // Assert
-            Check.That(await message.Content.ReadAsStringAsync()).Equals("{\"x\":42}");
+            Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
             Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json; charset=utf-8");
         }
 

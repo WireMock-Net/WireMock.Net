@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests
             };
 
             // Act
-            var response = await new HttpClient().PostAsJsonAsync("http://localhost:" + server.Ports[0] + "/foo", jsonObject);
+            var response = await new HttpClient().PostAsJsonAsync("http://localhost:" + server.Ports[0] + "/foo", jsonObject).ConfigureAwait(false);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -58,7 +58,7 @@ namespace WireMock.Net.Tests
                 );
 
             // Act
-            var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/foo", new StringContent("{ Hi = \"Hello World\" }"));
+            var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/foo", new StringContent("{ Hi = \"Hello World\" }")).ConfigureAwait(false);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

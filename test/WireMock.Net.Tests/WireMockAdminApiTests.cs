@@ -1,4 +1,4 @@
-﻿#if !NET452 && !NET461
+#if !NET452 && !NET461
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -31,7 +31,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
-            var settings = await api.GetSettingsAsync();
+            var settings = await api.GetSettingsAsync().ConfigureAwait(false);
             Check.That(settings).IsNotNull();
         }
 
@@ -44,7 +44,7 @@ namespace WireMock.Net.Tests
 
             // Act
             var settings = new SettingsModel();
-            var status = await api.PostSettingsAsync(settings);
+            var status = await api.PostSettingsAsync(settings).ConfigureAwait(false);
             Check.That(status.Status).Equals("Settings updated");
         }
 
@@ -57,7 +57,7 @@ namespace WireMock.Net.Tests
 
             // Act
             var settings = new SettingsModel();
-            var status = await api.PutSettingsAsync(settings);
+            var status = await api.PutSettingsAsync(settings).ConfigureAwait(false);
             Check.That(status.Status).Equals("Settings updated");
         }
 
@@ -77,7 +77,7 @@ namespace WireMock.Net.Tests
                 Priority = 500,
                 Title = "test"
             };
-            var result = await api.PutMappingAsync(new Guid("a0000000-0000-0000-0000-000000000000"), model);
+            var result = await api.PutMappingAsync(new Guid("a0000000-0000-0000-0000-000000000000"), model).ConfigureAwait(false);
 
             // Assert
             Check.That(result).IsNotNull();
@@ -111,7 +111,7 @@ namespace WireMock.Net.Tests
                 Priority = 500,
                 Title = "test"
             };
-            var result = await api.PostMappingAsync(model);
+            var result = await api.PostMappingAsync(model).ConfigureAwait(false);
 
             // Assert
             Check.That(result).IsNotNull();
@@ -122,7 +122,7 @@ namespace WireMock.Net.Tests
             Check.That(mapping).IsNotNull();
             Check.That(mapping.Title).Equals("test");
 
-            var response = await mapping.ProvideResponseAsync(new RequestMessage(new UrlDetails("http://localhost/1"), "GET", ""));
+            var response = await mapping.ProvideResponseAsync(new RequestMessage(new UrlDetails("http://localhost/1"), "GET", "")).ConfigureAwait(false);
             Check.That(response.Message.StatusCode).Equals(expectedStatusCode);
 
             server.Stop();
@@ -148,7 +148,7 @@ namespace WireMock.Net.Tests
                 Response = new ResponseModel { Body = "txt 2" },
                 Title = "test 2"
             };
-            var result = await api.PostMappingsAsync(new[] { model1, model2 });
+            var result = await api.PostMappingsAsync(new[] { model1, model2 }).ConfigureAwait(false);
 
             // Assert
             Check.That(result).IsNotNull();
@@ -169,11 +169,11 @@ namespace WireMock.Net.Tests
                 Logger = new WireMockNullLogger()
             });
             var serverUrl = "http://localhost:" + server.Ports[0];
-            await new HttpClient().GetAsync(serverUrl + "/foo");
+            await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
             var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
-            var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } });
+            var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } }).ConfigureAwait(false);
 
             // Assert
             Check.That(requests).HasSize(1);
@@ -193,11 +193,11 @@ namespace WireMock.Net.Tests
                 Logger = new WireMockNullLogger()
             });
             var serverUrl = "http://localhost:" + server.Ports[0];
-            await new HttpClient().GetAsync(serverUrl + "/foo");
+            await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
             var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
-            var requests = await api.GetRequestsAsync();
+            var requests = await api.GetRequestsAsync().ConfigureAwait(false);
 
             // Assert
             Check.That(requests).HasSize(1);
@@ -233,7 +233,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
-            var requests = await api.GetRequestsAsync();
+            var requests = await api.GetRequestsAsync().ConfigureAwait(false);
 
             // Assert
             Check.That(requests).HasSize(1);
@@ -270,7 +270,7 @@ namespace WireMock.Net.Tests
                 },
                 Response = new ResponseModel { Body = "world" }
             };
-            var postMappingResult = await api.PostMappingAsync(model);
+            var postMappingResult = await api.PostMappingAsync(model).ConfigureAwait(false);
 
             // Assert
             postMappingResult.Should().NotBeNull();
@@ -278,7 +278,7 @@ namespace WireMock.Net.Tests
             var mapping = server.Mappings.FirstOrDefault(m => m.Guid == guid);
             mapping.Should().NotBeNull();
 
-            var getMappingResult = await api.GetMappingAsync(guid);
+            var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
             getMappingResult.Should().NotBeNull();
 
             getMappingResult.Request.Body.Should().BeEquivalentTo(model.Request.Body);
@@ -311,7 +311,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
             // Act
-            var requests = await api.GetRequestsAsync();
+            var requests = await api.GetRequestsAsync().ConfigureAwait(false);
 
             // Assert
             Check.That(requests).HasSize(1);
@@ -340,7 +340,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
-            var request = await api.PostFileAsync("filename.txt", "abc");
+            var request = await api.PostFileAsync("filename.txt", "abc").ConfigureAwait(false);
 
             // Assert
             Check.That(request.Guid).IsNull();
@@ -373,7 +373,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
-            var request = await api.PutFileAsync("filename.txt", "abc-abc");
+            var request = await api.PutFileAsync("filename.txt", "abc-abc").ConfigureAwait(false);
 
             // Assert
             Check.That(request.Guid).IsNull();
@@ -459,7 +459,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
-            string file = await api.GetFileAsync("filename.txt");
+            string file = await api.GetFileAsync("filename.txt").ConfigureAwait(false);
 
             // Assert
             Check.That(file).Equals(data);
@@ -490,7 +490,7 @@ namespace WireMock.Net.Tests
             var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
             // Act
-            await api.DeleteFileAsync("filename.txt");
+            await api.DeleteFileAsync("filename.txt").ConfigureAwait(false);
 
             // Verify
             filesystemHandlerMock.Verify(fs => fs.FileExists(It.Is<string>(p => p == "filename.txt")), Times.Once);

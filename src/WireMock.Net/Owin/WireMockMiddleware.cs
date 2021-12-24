@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using System.Linq;
-using HandlebarsDotNet.Helpers.Utils;
 using WireMock.Matchers;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
@@ -70,7 +69,7 @@ namespace WireMock.Owin
 
         private async Task InvokeInternalAsync(IContext ctx)
         {
-            var request = await _requestMapper.MapAsync(ctx.Request, _options);
+            var request = await _requestMapper.MapAsync(ctx.Request, _options).ConfigureAwait(false);
 
             var logRequest = false;
             ResponseMessage response = null;
@@ -115,22 +114,22 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && _options.RequestProcessingDelay > TimeSpan.Zero)
                 {
-                    await Task.Delay(_options.RequestProcessingDelay.Value);
+                    await Task.Delay(_options.RequestProcessingDelay.Value).ConfigureAwait(false);
                 }
 
-                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request);
+                var (theResponse, theOptionalNewMapping) = await targetMapping.ProvideResponseAsync(request).ConfigureAwait(false);
                 response = theResponse;
 
                 var responseBuilder = targetMapping.Provider as Response;
 
                 if (!targetMapping.IsAdminInterface && theOptionalNewMapping != null)
                 {
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
                     {
                         _options.Mappings.TryAdd(theOptionalNewMapping.Guid, theOptionalNewMapping);
                     }
 
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
                     {
                         var matcherMapper = new MatcherMapper(targetMapping.Settings);
                         var mappingConverter = new MappingConverter(matcherMapper);
@@ -187,10 +186,10 @@ namespace WireMock.Owin
                     // Empty catch
                 }
 
-                await _responseMapper.MapAsync(response, ctx.Response);
+                await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
             }
 
-            await CompletedTask;
+            await CompletedTask.ConfigureAwait(false);
         }
 
         private async Task SendToWebhooksAsync(IMapping mapping, RequestMessage request, ResponseMessage response)

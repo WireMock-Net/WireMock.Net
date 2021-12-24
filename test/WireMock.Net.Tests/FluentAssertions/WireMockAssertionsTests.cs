@@ -33,7 +33,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
         {
-            await _httpClient.GetAsync("anyurl");
+            await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
             _server.Should()
                 .HaveReceivedACall()
@@ -56,7 +56,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task AtAbsoluteUrl_Should_ThrowWhenNoCallsMatchingTheAbsoluteUrlWereMade()
         {
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -72,7 +72,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         public async Task WithHeader_WhenACallWasMadeWithExpectedHeader_Should_BeOK()
         {
             _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer a");
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             _server.Should()
                 .HaveReceivedACall()
@@ -84,7 +84,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             _server.Should()
                 .HaveReceivedACall()
@@ -94,7 +94,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderNameWereMade()
         {
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -110,7 +110,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -134,7 +134,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         {
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -153,7 +153,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
         {
-            await _httpClient.GetAsync("anyurl");
+            await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
             _server.Should()
                 .HaveReceivedACall()
@@ -176,7 +176,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task AtUrl_Should_ThrowWhenNoCallsMatchingTheUrlWereMade()
         {
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -195,7 +195,7 @@ namespace WireMock.Net.Tests.FluentAssertions
             _server.Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             _server.Should()
                 .HaveReceivedACall()
@@ -226,7 +226,7 @@ namespace WireMock.Net.Tests.FluentAssertions
             _server.Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
 
             Action act = () => _server.Should()
                 .HaveReceivedACall()
@@ -241,7 +241,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task FromClientIP_whenACallWasMadeFromClientIP_Should_BeOK()
         {
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
             var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
 
             _server.Should()
@@ -265,7 +265,7 @@ namespace WireMock.Net.Tests.FluentAssertions
         [Fact]
         public async Task FromClientIP_Should_ThrowWhenNoCallsFromClientIPWereMade()
         {
-            await _httpClient.GetAsync("");
+            await _httpClient.GetAsync("").ConfigureAwait(false);
             var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
 
             Action act = () => _server.Should()

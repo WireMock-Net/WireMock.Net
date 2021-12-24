@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+using System;
+using FluentAssertions;
 using HandlebarsDotNet;
 using Moq;
-using System;
 using WireMock.Handlers;
 using WireMock.Transformers.Handlebars;
 using Xunit;

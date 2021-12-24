@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -17,7 +17,7 @@ namespace WireMock.Http
             var headers = (httpResponseMessage.Content?.Headers.Union(httpResponseMessage.Headers) ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>()).ToArray();
             if (httpResponseMessage.Content != null)
             {
-                var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                var stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 IEnumerable<string> contentTypeHeader = null;
                 if (headers.Any(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentType, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -38,7 +38,7 @@ namespace WireMock.Http
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
                     DecompressGZipAndDeflate = decompressGzipAndDeflate
                 };
-                responseMessage.BodyData = await BodyParser.Parse(bodyParserSettings);
+                responseMessage.BodyData = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
             }
 
             foreach (var header in headers)

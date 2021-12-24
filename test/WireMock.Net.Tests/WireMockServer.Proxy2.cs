@@ -1,4 +1,4 @@
-﻿using NFluent;
+using NFluent;
 using System;
 using System.Linq;
 using System.Net;
@@ -35,8 +35,8 @@ namespace WireMock.Net.Tests
             request.Headers.Add("prx", "1");
 
             // Assert
-            var response = await new HttpClient().SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             Check.That(content).IsEqualTo("{\"p\":42}");
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.Created);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
@@ -43,7 +43,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.String, Encoding.ASCII);
 
             // act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // then
             Check.That(response.Message.BodyData.BodyAsString).Equals("01");
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody(new byte[] { 48, 49 }, BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
             // act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // then
             Check.That(response.Message.BodyData.BodyAsBytes).ContainsExactly(new byte[] { 48, 49 });
@@ -87,7 +87,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody("test", null, Encoding.ASCII);
 
             // act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // then
             Check.That(response.Message.BodyData.BodyAsString).Equals("test");
@@ -109,7 +109,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBodyAsJson(x, Encoding.ASCII);
 
             // act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // then
             Check.That(response.Message.BodyData.BodyAsJson).Equals(x);
@@ -131,7 +131,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBodyAsJson(x, true);
 
             // act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // then
             Check.That(response.Message.BodyData.BodyAsJson).Equals(x);
@@ -147,7 +147,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody("r", BodyDestinationFormat.SameAsSource, Encoding.ASCII);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsBytes).IsNull();
@@ -165,7 +165,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody("r", BodyDestinationFormat.Bytes, Encoding.ASCII);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsNull();
@@ -183,7 +183,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithBody("{ \"value\": 42 }", BodyDestinationFormat.Json, Encoding.ASCII);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsNull();
@@ -205,7 +205,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithBody(req => $"path: {req.Path}");
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("path: /test");
@@ -229,12 +229,12 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithHeader("H2", "X2")
                 .WithBody(async req =>
                 {
-                    await Task.Delay(1);
+                    await Task.Delay(1).ConfigureAwait(false);
                     return $"path: {req.Path}";
                 });
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("path: /test");
@@ -262,8 +262,8 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response1 = await responseBuilder.ProvideResponseAsync(request1, _settings);
-            var response2 = await responseBuilder.ProvideResponseAsync(request2, _settings);
+            var response1 = await responseBuilder.ProvideResponseAsync(request1, _settings).ConfigureAwait(false);
+            var response2 = await responseBuilder.ProvideResponseAsync(request2, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(((JToken)response1.Message.BodyData.BodyAsJson).SelectToken("id")?.Value<int>()).IsEqualTo(request1Id);
@@ -287,7 +287,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var responseBuilder = Response.Create().WithStatusCode(200).WithBody(fileContents);
 
-            var response = await responseBuilder.ProvideResponseAsync(request1, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request1, _settings).ConfigureAwait(false);
 
             Check.That(response.Message.StatusCode).IsEqualTo(200);
             Check.That(response.Message.BodyData.BodyAsString).Contains(fileContents);
@@ -303,7 +303,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var responseBuilder = Response.Create().WithStatusCode(200).WithBody(fileContents);
 
-            var response = await responseBuilder.ProvideResponseAsync(request1, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request1, _settings).ConfigureAwait(false);
 
             Check.That(response.Message.StatusCode).IsEqualTo(200);
             Check.That(response.Message.BodyData.BodyAsString).Contains(fileContents);
@@ -319,7 +319,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var responseBuilder = Response.Create().WithStatusCode(200).WithBody("File deleted.");
 
-            var response = await responseBuilder.ProvideResponseAsync(request1, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request1, _settings).ConfigureAwait(false);
 
             Check.That(response.Message.StatusCode).IsEqualTo(200);
             Check.That(response.Message.BodyData.BodyAsString).Contains("File deleted.");

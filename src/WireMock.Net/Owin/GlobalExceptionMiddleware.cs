@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 #if !USE_ASPNETCORE
@@ -52,19 +52,22 @@ namespace WireMock.Owin
         public Task Invoke(IContext ctx)
 #endif
         {
-            return InvokeInternal(ctx);
+            return InvokeInternalAsync(ctx);
         }
 
-        private async Task InvokeInternal(IContext ctx)
+        private async Task InvokeInternalAsync(IContext ctx)
         {
             try
             {
-                await Next?.Invoke(ctx);
+                if (Next != null)
+                {
+                    await Next.Invoke(ctx).ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
                 _options.Logger.Error("HttpStatusCode set to 500 {0}", ex);
-                await _responseMapper.MapAsync(ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500), ctx.Response);
+                await _responseMapper.MapAsync(ResponseMessageBuilder.Create(JsonConvert.SerializeObject(ex), 500), ctx.Response).ConfigureAwait(false);
             }
         }
     }

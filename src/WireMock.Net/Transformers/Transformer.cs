@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using WireMock.Types;
 using WireMock.Util;
 
-namespace WireMock.Transformers.Handlebars
+namespace WireMock.Transformers
 {
     internal class Transformer : ITransformer
     {

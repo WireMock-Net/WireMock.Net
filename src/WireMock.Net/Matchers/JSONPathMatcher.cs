@@ -63,8 +63,8 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    var jtoken = JToken.Parse(input);
-                    match = IsMatch(jtoken);
+                    var jToken = JToken.Parse(input);
+                    match = IsMatch(jToken);
                 }
                 catch (JsonException)
                 {
@@ -89,8 +89,8 @@ namespace WireMock.Matchers
                 try
                 {
                     // Check if JToken or object
-                    JToken jtoken = input is JToken token ? token : JObject.FromObject(input);
-                    match = IsMatch(jtoken);
+                    JToken jToken = input is JToken token ? token : JObject.FromObject(input);
+                    match = IsMatch(jToken);
                 }
                 catch (JsonException)
                 {
@@ -113,9 +113,9 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "JsonPathMatcher";
 
-        private double IsMatch(JToken jtoken)
+        private double IsMatch(JToken jToken)
         {
-            return MatchScores.ToScore(_patterns.Select(pattern => jtoken.SelectToken(pattern.GetPattern()) != null));
+            return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null));
         }
     }
 }

@@ -50,7 +50,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 });
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
@@ -74,7 +74,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 });
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
@@ -103,7 +103,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 });
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
@@ -135,7 +135,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithHeader(header, "Stef");
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
@@ -161,7 +161,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer();
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(requestMessage, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.BodyAsString.Should().Be("/fooBar");

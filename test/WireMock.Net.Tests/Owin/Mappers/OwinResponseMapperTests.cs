@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using Moq;
@@ -66,7 +66,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
         public async Task OwinResponseMapper_MapAsync_Null()
         {
             // Act
-            await _sut.MapAsync(null, _responseMock.Object);
+            await _sut.MapAsync(null, _responseMock.Object).ConfigureAwait(false);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
@@ -102,7 +102,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
@@ -118,7 +118,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = It.IsAny<int>(), Times.Never);
@@ -138,7 +138,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = expected, Times.Once);
@@ -154,7 +154,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _stream.Verify(s => s.WriteAsync(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -172,7 +172,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _stream.Verify(s => s.WriteAsync(new byte[] { 97, 98, 99, 100 }, 0, 4, It.IsAny<CancellationToken>()), Times.Once);
@@ -190,7 +190,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _stream.Verify(s => s.WriteAsync(bytes, 0, bytes.Length, It.IsAny<CancellationToken>()), Times.Once);
@@ -208,7 +208,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _stream.Verify(s => s.WriteAsync(new byte[] { 123, 34, 116, 34, 58, 34, 120, 34, 125 }, 0, 9, It.IsAny<CancellationToken>()), Times.Once);
@@ -224,7 +224,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
 #if NET452
@@ -248,7 +248,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _stream.Verify(s => s.WriteAsync(new byte[0], 0, 0, It.IsAny<CancellationToken>()), Times.Once);
@@ -270,7 +270,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             };
 
             // Act
-            await _sut.MapAsync(responseMessage, _responseMock.Object);
+            await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
             _responseMock.VerifySet(r => r.StatusCode = 100, Times.Once);

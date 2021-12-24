@@ -46,7 +46,7 @@ namespace WireMock.Net
             while (true)
             {
                 Logger.Info("Server running : {IsStarted}", Server.IsStarted);
-                await Task.Delay(SleepTime);
+                await Task.Delay(SleepTime).ConfigureAwait(false);
             }
         }
 

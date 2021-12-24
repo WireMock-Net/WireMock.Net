@@ -54,10 +54,7 @@ namespace WireMock.ResponseBuilders
                 return _delay;
             }
 
-            private set
-            {
-                _delay = value;
-            }
+            private set => _delay = value;
         }
 
         /// <summary>
@@ -219,7 +216,7 @@ namespace WireMock.ResponseBuilders
                 BodyData = new BodyData
                 {
                     DetectedBodyType = BodyType.String,
-                    BodyAsString = await bodyFactory(req),
+                    BodyAsString = await bodyFactory(req).ConfigureAwait(false),
                     Encoding = encoding ?? Encoding.UTF8
                 }
             });
@@ -385,7 +382,7 @@ namespace WireMock.ResponseBuilders
 
             if (Delay != null)
             {
-                await Task.Delay(Delay.Value);
+                await Task.Delay(Delay.Value).ConfigureAwait(false);
             }
 
             if (ProxyAndRecordSettings != null && _httpClientForProxy != null)
@@ -409,7 +406,7 @@ namespace WireMock.ResponseBuilders
                     _httpClientForProxy,
                     requestMessage,
                     requestMessage.ProxyUrl
-                );
+                ).ConfigureAwait(false);
             }
 
             ResponseMessage responseMessage;
@@ -425,7 +422,7 @@ namespace WireMock.ResponseBuilders
                 }
                 else
                 {
-                    responseMessage = await CallbackAsync(requestMessage);
+                    responseMessage = await CallbackAsync(requestMessage).ConfigureAwait(false);
                 }
 
                 // Copy StatusCode from ResponseMessage (if defined)

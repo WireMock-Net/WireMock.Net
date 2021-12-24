@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -49,7 +49,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithProxy(_server.Urls[0]);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(request.ProxyUrl).IsNotNull();
