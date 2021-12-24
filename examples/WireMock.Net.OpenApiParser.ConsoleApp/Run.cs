@@ -23,7 +23,8 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
                 ReadStaticMappings = false,
                 WatchStaticMappings = false,
                 WatchStaticMappingsInSubdirectories = false,
-                Logger = new WireMockConsoleLogger()
+                Logger = new WireMockConsoleLogger(),
+                SaveUnmatchedRequests = true
             });
             Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 

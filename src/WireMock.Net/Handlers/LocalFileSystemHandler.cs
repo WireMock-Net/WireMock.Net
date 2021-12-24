@@ -11,6 +11,7 @@ namespace WireMock.Handlers
     public class LocalFileSystemHandler : IFileSystemHandler
     {
         private static readonly string AdminMappingsFolder = Path.Combine("__admin", "mappings");
+        private static readonly string UnmatchedRequestsFolder = Path.Combine("requests", "unmatched");
 
         private readonly string _rootFolder;
 
@@ -31,7 +32,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
-        public bool FolderExists(string path)
+        public virtual bool FolderExists(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -39,7 +40,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
-        public void CreateFolder(string path)
+        public virtual void CreateFolder(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -47,7 +48,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
-        public IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
+        public virtual IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -55,13 +56,13 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.GetMappingFolder"/>
-        public string GetMappingFolder()
+        public virtual string GetMappingFolder()
         {
             return Path.Combine(_rootFolder, AdminMappingsFolder);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
-        public string ReadMappingFile(string path)
+        public virtual string ReadMappingFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
 
@@ -69,7 +70,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile(string, string)"/>
-        public void WriteMappingFile(string path, string text)
+        public virtual void WriteMappingFile(string path, string text)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             Check.NotNull(text, nameof(text));
@@ -78,7 +79,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
-        public byte[] ReadResponseBodyAsFile(string path)
+        public virtual byte[] ReadResponseBodyAsFile(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
@@ -88,7 +89,7 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
-        public string ReadResponseBodyAsString(string path)
+        public virtual string ReadResponseBodyAsString(string path)
         {
             Check.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
@@ -98,42 +99,63 @@ namespace WireMock.Handlers
         }
 
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
-        public bool FileExists(string filename)
+        public virtual bool FileExists(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.Exists(AdjustPath(filename));
+            return File.Exists(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
-        public void WriteFile(string filename, byte[] bytes)
+        public virtual void WriteFile(string filename, byte[] bytes)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
             Check.NotNull(bytes, nameof(bytes));
 
-            File.WriteAllBytes(AdjustPath(filename), bytes);
+            File.WriteAllBytes(AdjustPathForMappingFolder(filename), bytes);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
-        public void DeleteFile(string filename)
+        public virtual void DeleteFile(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            File.Delete(AdjustPath(filename));
+            File.Delete(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
-        public byte[] ReadFile(string filename)
+        public virtual byte[] ReadFile(string filename)
         {
             Check.NotNullOrEmpty(filename, nameof(filename));
 
-            return File.ReadAllBytes(AdjustPath(filename));
+            return File.ReadAllBytes(AdjustPathForMappingFolder(filename));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
-        public string ReadFileAsString(string filename)
+        public virtual string ReadFileAsString(string filename)
         {
-            return File.ReadAllText(AdjustPath(Check.NotNullOrEmpty(filename, nameof(filename))));
+            return File.ReadAllText(AdjustPathForMappingFolder(Check.NotNullOrEmpty(filename, nameof(filename))));
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>
+        public virtual string GetUnmatchedRequestsFolder()
+        {
+            return Path.Combine(_rootFolder, UnmatchedRequestsFolder);
+        }
+
+        /// <inheritdoc cref="IFileSystemHandler.WriteUnmatchedRequest"/>
+        public virtual void WriteUnmatchedRequest(string filename, string text)
+        {
+            Check.NotNullOrEmpty(filename, nameof(filename));
+            Check.NotNull(text, nameof(text));
+
+            var folder = GetUnmatchedRequestsFolder();
+            if (!FolderExists(folder))
+            {
+                CreateFolder(folder);
+            }
+
+            File.WriteAllText(Path.Combine(folder, filename), text);
         }
 
         /// <summary>
@@ -141,7 +163,7 @@ namespace WireMock.Handlers
         /// </summary>
         /// <param name="filename">The path.</param>
         /// <returns>Adjusted path</returns>
-        private string AdjustPath(string filename)
+        private string AdjustPathForMappingFolder(string filename)
         {
             return Path.Combine(GetMappingFolder(), filename);
         }

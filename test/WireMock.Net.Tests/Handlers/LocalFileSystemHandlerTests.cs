@@ -85,5 +85,22 @@ namespace WireMock.Net.Tests.Handlers
             // Act
             Check.ThatCode(() => _sut.DeleteFile(null)).Throws<ArgumentNullException>();
         }
+
+        [Fact]
+        public void LocalFileSystemHandler_GetUnmatchedRequestsFolder()
+        {
+            // Act
+            string result = _sut.GetUnmatchedRequestsFolder();
+
+            // Assert
+            Check.That(result).EndsWith(Path.Combine("requests", "unmatched"));
+        }
+
+        [Fact]
+        public void LocalFileSystemHandler_WriteUnmatchedRequest()
+        {
+            // Act
+            Check.ThatCode(() => _sut.WriteUnmatchedRequest(null, null)).Throws<ArgumentNullException>();
+        }
     }
 }

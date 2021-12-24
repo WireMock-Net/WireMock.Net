@@ -96,5 +96,18 @@ namespace WireMock.Handlers
         /// <param name="filename">The filename.</param>
         /// <returns>The file content as a string.</returns>
         string ReadFileAsString([NotNull] string filename);
+
+        /// <summary>
+        /// Gets the folder where the unmatched requests should be stored. For local file system, this would be `{CurrentFolder}/requests/unmatched`.
+        /// </summary>
+        /// <returns>The folder name.</returns>
+        string GetUnmatchedRequestsFolder();
+
+        /// <summary>
+        /// Write a unmatched request to the Unmatched RequestsFolder.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="text">The text.</param>
+        void WriteUnmatchedRequest([NotNull] string filename, [NotNull] string text);
     }
 }

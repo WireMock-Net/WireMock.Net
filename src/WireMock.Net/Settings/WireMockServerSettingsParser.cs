@@ -49,7 +49,8 @@ namespace WireMock.Settings
                 DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
                 HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
                 ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
-                UseRegexExtended = parser.GetBoolValue(nameof(IWireMockServerSettings.UseRegexExtended), true)
+                UseRegexExtended = parser.GetBoolValue(nameof(IWireMockServerSettings.UseRegexExtended), true),
+                SaveUnmatchedRequests = parser.GetBoolValue(nameof(IWireMockServerSettings.SaveUnmatchedRequests))
             };
 
             if (logger != null)

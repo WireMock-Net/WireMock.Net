@@ -226,6 +226,7 @@ namespace WireMock.Server
             _options.Logger = _settings.Logger;
             _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
             _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
+            _options.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
 
             if (settings.CustomCertificateDefined)
             {
