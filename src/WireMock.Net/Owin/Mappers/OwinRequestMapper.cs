@@ -23,7 +23,7 @@ namespace WireMock.Owin.Mappers
         /// <inheritdoc cref="IOwinRequestMapper.MapAsync"/>
         public async Task<RequestMessage> MapAsync(IRequest request, IWireMockMiddlewareOptions options)
         {
-            (UrlDetails urldetails, string clientIP) = ParseRequest(request);
+            var (urlDetails, clientIP) = ParseRequest(request);
 
             string method = request.Method;
 
@@ -68,7 +68,7 @@ namespace WireMock.Owin.Mappers
                 body = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
             }
 
-            return new RequestMessage(urldetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
+            return new RequestMessage(urlDetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
         }
 
         private static (UrlDetails UrlDetails, string ClientIP) ParseRequest(IRequest request)

@@ -4,6 +4,7 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
+using JetBrains.Annotations;
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -64,5 +65,7 @@ namespace WireMock.Owin
         string X509CertificatePassword { get; set; }
 
         bool CustomCertificateDefined { get; }
+
+        bool? SaveUnmatchedRequests { get; set; }
     }
 }

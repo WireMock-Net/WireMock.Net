@@ -291,7 +291,9 @@ namespace WireMock.Server
                 GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
                 AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods,
                 HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
-                ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails
+                ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails,
+                UseRegexExtended = _settings.UseRegexExtended,
+                SaveUnmatchedRequests = _settings.SaveUnmatchedRequests
             };
 
             return ToJson(model);
@@ -302,31 +304,16 @@ namespace WireMock.Server
             var settings = DeserializeObject<SettingsModel>(requestMessage);
             _options.MaxRequestLogCount = settings.MaxRequestLogCount;
             _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
-
-            if (settings.AllowPartialMapping != null)
-            {
-                _options.AllowPartialMapping = settings.AllowPartialMapping.Value;
-            }
-
+            _options.AllowPartialMapping = settings.AllowPartialMapping;
             if (settings.GlobalProcessingDelay != null)
             {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
             }
-
-            if (settings.AllowBodyForAllHttpMethods != null)
-            {
-                _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods.Value;
-            }
-
-            if (settings.HandleRequestsSynchronously != null)
-            {
-                _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously.Value;
-            }
-
-            if (settings.ThrowExceptionWhenMatcherFails != null)
-            {
-                _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails.Value;
-            }
+            _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
+            _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
+            _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
+            _settings.UseRegexExtended = settings.UseRegexExtended;
+            _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
 
             return ResponseMessageBuilder.Create("Settings updated");
         }

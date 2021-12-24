@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -78,5 +78,8 @@ namespace WireMock.Owin
         public bool CustomCertificateDefined =>
             !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
             !string.IsNullOrEmpty(X509CertificateFilePath) && !string.IsNullOrEmpty(X509CertificatePassword);
+
+        /// <inheritdoc cref="IWireMockMiddlewareOptions.SaveUnmatchedRequests"/>
+        public bool? SaveUnmatchedRequests { get; set; }
     }
 }
