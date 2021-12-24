@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -324,7 +324,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings).HasSize(2);
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/1");
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/1").ConfigureAwait(false);
 
             // then
             Check.That((int)response.StatusCode).IsEqualTo(400);
@@ -339,7 +339,7 @@ namespace WireMock.Net.Tests
             var server = WireMockServer.Start();
 
             // when
-            await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo");
+            await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
 
             // then
             Check.That(server.LogEntries).HasSize(1);
@@ -359,9 +359,9 @@ namespace WireMock.Net.Tests
             var server = WireMockServer.Start();
             server.SetMaxRequestLogCount(2);
 
-            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo1");
-            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo2");
-            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo3");
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo1").ConfigureAwait(false);
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo2").ConfigureAwait(false);
+            await client.GetAsync("http://localhost:" + server.Ports[0] + "/foo3").ConfigureAwait(false);
 
             // Assert
             Check.That(server.LogEntries).HasSize(2);
@@ -469,7 +469,7 @@ namespace WireMock.Net.Tests
                 Content = new StringContent(guidsJsonBody, Encoding.UTF8, "application/json")
             };
 
-            var response = await new HttpClient().SendAsync(request);
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
 
             // Assert
             IEnumerable<Guid> guids = server.MappingModels.Select(mapping => mapping.Guid.Value);
@@ -477,7 +477,7 @@ namespace WireMock.Net.Tests
             Check.That(guids.Contains(guid2.Value)).IsFalse();
             Check.That(guids.Contains(guid3.Value)).IsTrue();
             Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
-            Check.That(await response.Content.ReadAsStringAsync()).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
+            Check.That(await response.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
         }
     }
 }

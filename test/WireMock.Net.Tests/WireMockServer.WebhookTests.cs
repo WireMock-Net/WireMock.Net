@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -70,8 +70,8 @@ namespace WireMock.Net.Tests
             };
 
             // Assert
-            var response = await new HttpClient().SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should().Be("a-response");
@@ -118,8 +118,8 @@ namespace WireMock.Net.Tests
             };
 
             // Assert
-            var response = await new HttpClient().SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should().Be("a-response");
@@ -151,8 +151,8 @@ namespace WireMock.Net.Tests
             };
 
             // Assert
-            var response = await new HttpClient().SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should().Be("a-response");
@@ -185,8 +185,8 @@ namespace WireMock.Net.Tests
             };
 
             // Assert
-            var response = await new HttpClient().SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
+            var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should().Be("a-response");

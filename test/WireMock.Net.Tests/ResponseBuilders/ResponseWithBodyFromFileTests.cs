@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +37,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content").ConfigureAwait(false);
 
             // Assert
             response.Should().Contain("<hello>world</hello>");
@@ -68,7 +68,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content").ConfigureAwait(false);
 
             // Assert
             response.Should().Contain("<hello>world</hello>");
@@ -99,7 +99,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 );
 
             // Act
-            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content");
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/v1/content").ConfigureAwait(false);
 
             // Assert
             response.Should().Contain("<hello>world</hello>");

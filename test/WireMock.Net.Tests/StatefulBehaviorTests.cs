@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create());
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + path);
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             Check.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
@@ -56,8 +56,8 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("Test state msg"));
 
             // when
-            var responseNoState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseWithState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseNoState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseWithState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             Check.That(responseNoState).Equals("No state msg");
@@ -90,9 +90,9 @@ namespace WireMock.Net.Tests
 
             // when
             var client = new HttpClient();
-            var responseScenario1 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseScenario2 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseWithState = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseScenario1 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseScenario2 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseWithState = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             responseScenario1.Should().Be(body1);
@@ -137,11 +137,11 @@ namespace WireMock.Net.Tests
 
             // when
             var client = new HttpClient();
-            var t1a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1);
-            var t1b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1);
-            var t2a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2);
-            var t2b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2);
-            var t3 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path3);
+            var t1a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1).ConfigureAwait(false);
+            var t1b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path1).ConfigureAwait(false);
+            var t2a = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2).ConfigureAwait(false);
+            var t2b = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path2).ConfigureAwait(false);
+            var t3 = await client.GetStringAsync("http://localhost:" + server.Ports[0] + path3).ConfigureAwait(false);
 
             // then
             t1a.Should().Be(body1);
@@ -173,8 +173,8 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("Scenario 1, State 2"));
 
             // when
-            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             Check.That(responseIntScenario).Equals("Scenario 1, Setting State 2");
@@ -203,8 +203,8 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("string state, State 2"));
 
             // when
-            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             Check.That(responseIntScenario).Equals("string state, Setting State 2");
@@ -233,8 +233,8 @@ namespace WireMock.Net.Tests
                 .RespondWith(Response.Create().WithBody("string state, State 2"));
 
             // when
-            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
-            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path);
+            var responseIntScenario = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
+            var responseWithIntState = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + path).ConfigureAwait(false);
 
             // then
             Check.That(responseIntScenario).Equals("int state, Setting State 2");
@@ -280,7 +280,7 @@ namespace WireMock.Net.Tests
             Check.That(server.Scenarios["To do list"].Started).IsTrue();
             Check.That(server.Scenarios["To do list"].Finished).IsFalse();
 
-            var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription"));
+            var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription")).ConfigureAwait(false);
             Check.That(postResponse.StatusCode).Equals(HttpStatusCode.Created);
 
             Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
@@ -288,7 +288,7 @@ namespace WireMock.Net.Tests
             Check.That(server.Scenarios["To do list"].Started).IsTrue();
             Check.That(server.Scenarios["To do list"].Finished).IsFalse();
 
-            string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items");
+            string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items").ConfigureAwait(false);
             Check.That(getResponse2).Equals("Buy milk;Cancel newspaper subscription");
 
             Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
@@ -331,16 +331,16 @@ namespace WireMock.Net.Tests
 
             // Act and Assert
             string url = "http://localhost:" + server.Ports[0];
-            var responseNoState1 = await new HttpClient().GetStringAsync(url + "/state1");
+            var responseNoState1 = await new HttpClient().GetStringAsync(url + "/state1").ConfigureAwait(false);
             Check.That(responseNoState1).Equals("No state msg 1");
 
-            var responseNoState2 = await new HttpClient().GetStringAsync(url + "/state2");
+            var responseNoState2 = await new HttpClient().GetStringAsync(url + "/state2").ConfigureAwait(false);
             Check.That(responseNoState2).Equals("No state msg 2");
 
-            var responseWithState1 = await new HttpClient().GetStringAsync(url + "/foo1X");
+            var responseWithState1 = await new HttpClient().GetStringAsync(url + "/foo1X").ConfigureAwait(false);
             Check.That(responseWithState1).Equals("Test state msg 1");
 
-            var responseWithState2 = await new HttpClient().GetStringAsync(url + "/foo2X");
+            var responseWithState2 = await new HttpClient().GetStringAsync(url + "/foo2X").ConfigureAwait(false);
             Check.That(responseWithState2).Equals("Test state msg 2");
 
             server.Stop();

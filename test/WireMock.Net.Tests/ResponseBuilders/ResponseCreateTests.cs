@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
@@ -21,7 +21,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create(() => responseMessage);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message).Equals(responseMessage);

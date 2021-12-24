@@ -46,7 +46,7 @@ namespace WireMock.Authentication
             try
             {
                 var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(_stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
-                var config = configManager.GetConfigurationAsync().GetAwaiter().GetResult();
+                var config = configManager.GetConfigurationAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                 var validationParameters = new TokenValidationParameters
                 {

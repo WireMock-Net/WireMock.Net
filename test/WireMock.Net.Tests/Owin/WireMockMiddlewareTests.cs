@@ -80,7 +80,7 @@ namespace WireMock.Net.Tests.Owin
         public async Task WireMockMiddleware_Invoke_NoMatch()
         {
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
 
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -103,7 +103,7 @@ namespace WireMock.Net.Tests.Owin
             _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
 
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -126,7 +126,7 @@ namespace WireMock.Net.Tests.Owin
             _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
 
             // Assert and Verify
             _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -142,7 +142,7 @@ namespace WireMock.Net.Tests.Owin
             _optionsMock.SetupGet(o => o.RequestLogExpirationDuration).Returns(1);
 
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
         }
 
         [Fact]
@@ -186,7 +186,7 @@ namespace WireMock.Net.Tests.Owin
             _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
 
             // Assert and Verify
             fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -240,7 +240,7 @@ namespace WireMock.Net.Tests.Owin
             _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
             // Act
-            await _sut.Invoke(_contextMock.Object);
+            await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
 
             // Assert and Verify
             fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

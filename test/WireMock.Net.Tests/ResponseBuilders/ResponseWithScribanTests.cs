@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NFluent;
@@ -43,7 +43,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.BodyData.Should().BeNull();
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 .WithTransformer(TransformerType.Scriban);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");

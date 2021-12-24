@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NFluent;
 using WireMock.Models;
@@ -25,7 +25,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValue);
 
             // Act
-            var response = await builder.ProvideResponseAsync(requestMock, _settings);
+            var response = await builder.ProvideResponseAsync(requestMock, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.Headers[headerName].ToString()).Equals(headerValue);
@@ -41,7 +41,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             IResponseBuilder builder = Response.Create().WithHeader(headerName, headerValues);
 
             // Act
-            var response = await builder.ProvideResponseAsync(requestMock, _settings);
+            var response = await builder.ProvideResponseAsync(requestMock, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.Headers[headerName].ToArray()).Equals(headerValues);
@@ -56,7 +56,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var response = Response.Create().WithHeaders(headers);
 
             // Act
-            var responseMessage = await response.ProvideResponseAsync(request, _settings);
+            var responseMessage = await response.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(responseMessage.Message.Headers["h"]).ContainsExactly("x");
@@ -71,7 +71,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var responseBuilder = Response.Create().WithHeaders(headers);
 
             // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.Headers["h"]).ContainsExactly("x");
@@ -86,7 +86,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var builder = Response.Create().WithHeaders(headers);
 
             // Act
-            var response = await builder.ProvideResponseAsync(request, _settings);
+            var response = await builder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             Check.That(response.Message.Headers["h"]).ContainsExactly("x");

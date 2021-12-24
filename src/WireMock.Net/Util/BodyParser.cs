@@ -114,8 +114,8 @@ namespace WireMock.Util
             var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate).ConfigureAwait(false);
             var data = new BodyData
             {
-                BodyAsBytes = bodyWithContentEncoding.Value,
-                DetectedCompression = bodyWithContentEncoding.Key,
+                BodyAsBytes = bodyWithContentEncoding.Bytes,
+                DetectedCompression = bodyWithContentEncoding.ContentType,
                 DetectedBodyType = BodyType.Bytes,
                 DetectedBodyTypeFromContentType = DetectBodyTypeFromContentType(settings.ContentType)
             };
@@ -163,7 +163,7 @@ namespace WireMock.Util
             return data;
         }
 
-        private static async Task<KeyValuePair<string, byte[]>> ReadBytesAsync(Stream stream, string contentEncoding = null, bool decompressGZipAndDeflate = true)
+        private static async Task<(string ContentType, byte[] Bytes)> ReadBytesAsync(Stream stream, string contentEncoding = null, bool decompressGZipAndDeflate = true)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -173,10 +173,10 @@ namespace WireMock.Util
                 string type = contentEncoding?.ToLowerInvariant();
                 if (decompressGZipAndDeflate && (type == "gzip" || type == "deflate"))
                 {
-                    return new KeyValuePair<string, byte[]>(type, CompressionUtils.Decompress(type, data));
+                    return (type, CompressionUtils.Decompress(type, data));
                 }
 
-                return new KeyValuePair<string, byte[]>(null, data);
+                return (null, data);
             }
         }
     }

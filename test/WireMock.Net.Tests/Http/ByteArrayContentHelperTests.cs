@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -20,7 +20,7 @@ namespace WireMock.Net.Tests.Http
 
             // Assert
             result.Headers.ContentType.Should().BeNull();
-            (await result.ReadAsByteArrayAsync()).Should().BeEquivalentTo(content);
+            (await result.ReadAsByteArrayAsync().ConfigureAwait(false)).Should().BeEquivalentTo(content);
         }
 
         [Theory]
@@ -38,7 +38,7 @@ namespace WireMock.Net.Tests.Http
 
             // Assert
             result.Headers.ContentType.ToString().Should().Be(expected);
-            (await result.ReadAsByteArrayAsync()).Should().BeEquivalentTo(content);
+            (await result.ReadAsByteArrayAsync().ConfigureAwait(false)).Should().BeEquivalentTo(content);
         }
     }
 }

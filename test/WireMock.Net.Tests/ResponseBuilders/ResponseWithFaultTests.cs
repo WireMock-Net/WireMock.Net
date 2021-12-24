@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using FluentAssertions;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
@@ -22,7 +22,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Act
             var responseBuilder = Response.Create().WithFault(faultType);
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.FaultType.Should().Be(faultType);
@@ -38,7 +38,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Act
             var responseBuilder = Response.Create().WithFault(faultType, percentage);
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings);
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             response.Message.FaultType.Should().Be(faultType);

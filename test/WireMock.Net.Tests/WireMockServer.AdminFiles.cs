@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NFluent;
 using System.IO;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
 
             // Act
-            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
+            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent).ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.OK);
@@ -74,7 +74,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes("Here's a string."))));
 
             // Act
-            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent);
+            var httpResponseMessage = await _client.PostAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt", multipartFormDataContent).ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.OK);
@@ -107,7 +107,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream()));
 
             // Act
-            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt");
+            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt").ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessageGet.StatusCode).Equals(HttpStatusCode.OK);
@@ -143,7 +143,7 @@ namespace WireMock.Net.Tests
             multipartFormDataContent.Add(new StreamContent(new MemoryStream()));
 
             // Act
-            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.bin");
+            var httpResponseMessageGet = await _client.GetAsync("http://localhost:" + server.Ports[0] + "/__admin/files/filename.bin").ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessageGet.StatusCode).Equals(HttpStatusCode.OK);
@@ -173,7 +173,7 @@ namespace WireMock.Net.Tests
             // Act
             var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
-            var httpResponseMessage = await _client.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await _client.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NoContent);
@@ -201,7 +201,7 @@ namespace WireMock.Net.Tests
             // Act
             var requestUri = "http://localhost:" + server.Ports[0] + "/__admin/files/filename.txt";
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, requestUri);
-            var httpResponseMessage = await _client.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await _client.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             // Assert
             Check.That(httpResponseMessage.StatusCode).Equals(HttpStatusCode.NotFound);
