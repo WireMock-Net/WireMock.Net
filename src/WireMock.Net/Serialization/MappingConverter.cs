@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;

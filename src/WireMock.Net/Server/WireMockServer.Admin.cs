@@ -673,13 +673,13 @@ namespace WireMock.Server
                 }
             }
 
-            bool pathOrUrlmatchersValid = false;
+            bool pathOrUrlMatchersValid = false;
             if (requestModel.Path != null)
             {
                 if (requestModel.Path is string path)
                 {
                     requestBuilder = requestBuilder.WithPath(path);
-                    pathOrUrlmatchersValid = true;
+                    pathOrUrlMatchersValid = true;
                 }
                 else
                 {
@@ -687,7 +687,7 @@ namespace WireMock.Server
                     if (pathModel?.Matchers != null)
                     {
                         requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                        pathOrUrlmatchersValid = true;
+                        pathOrUrlMatchersValid = true;
                     }
                 }
             }
@@ -696,7 +696,7 @@ namespace WireMock.Server
                 if (requestModel.Url is string url)
                 {
                     requestBuilder = requestBuilder.WithUrl(url);
-                    pathOrUrlmatchersValid = true;
+                    pathOrUrlMatchersValid = true;
                 }
                 else
                 {
@@ -704,12 +704,12 @@ namespace WireMock.Server
                     if (urlModel?.Matchers != null)
                     {
                         requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                        pathOrUrlmatchersValid = true;
+                        pathOrUrlMatchersValid = true;
                     }
                 }
             }
 
-            if (pathOrUrlRequired && !pathOrUrlmatchersValid)
+            if (pathOrUrlRequired && !pathOrUrlMatchersValid)
             {
                 _settings.Logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
                 return null;

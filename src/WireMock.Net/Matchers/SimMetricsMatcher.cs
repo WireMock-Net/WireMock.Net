@@ -83,9 +83,9 @@ namespace WireMock.Matchers
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
         public double IsMatch(string input)
         {
-            IStringMetric stringmetricType = GetStringMetricType();
+            IStringMetric stringMetricType = GetStringMetricType();
 
-            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_patterns.Select(p => stringmetricType.GetSimilarity(p.GetPattern(), input))));
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(_patterns.Select(p => stringMetricType.GetSimilarity(p.GetPattern(), input))));
         }
 
         private IStringMetric GetStringMetricType()

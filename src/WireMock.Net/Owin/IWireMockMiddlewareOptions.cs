@@ -4,7 +4,6 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
-using JetBrains.Annotations;
 #if !USE_ASPNETCORE
 using Owin;
 #else

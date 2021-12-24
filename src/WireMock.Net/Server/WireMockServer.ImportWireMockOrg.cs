@@ -114,7 +114,7 @@ namespace WireMock.Server
                 {
                     ProcessWireMockOrgJObjectAndUseStringMatcher(headers, (key, match) =>
                     {
-                        requestBuilder = requestBuilder.WithHeader(key, match as IStringMatcher);
+                        requestBuilder = requestBuilder.WithHeader(key, match);
                     });
                 }
 
@@ -122,7 +122,7 @@ namespace WireMock.Server
                 {
                     ProcessWireMockOrgJObjectAndUseStringMatcher(cookies, (key, match) =>
                     {
-                        requestBuilder = requestBuilder.WithCookie(key, match as IStringMatcher);
+                        requestBuilder = requestBuilder.WithCookie(key, match);
                     });
                 }
 

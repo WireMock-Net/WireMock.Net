@@ -54,10 +54,7 @@ namespace WireMock.ResponseBuilders
                 return _delay;
             }
 
-            private set
-            {
-                _delay = value;
-            }
+            private set => _delay = value;
         }
 
         /// <summary>

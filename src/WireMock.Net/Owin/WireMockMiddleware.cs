@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using System.Linq;
-using HandlebarsDotNet.Helpers.Utils;
 using WireMock.Matchers;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
@@ -125,12 +124,12 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && theOptionalNewMapping != null)
                 {
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
                     {
                         _options.Mappings.TryAdd(theOptionalNewMapping.Guid, theOptionalNewMapping);
                     }
 
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping?.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
                     {
                         var matcherMapper = new MatcherMapper(targetMapping.Settings);
                         var mappingConverter = new MappingConverter(matcherMapper);

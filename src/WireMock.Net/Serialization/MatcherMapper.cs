@@ -77,8 +77,8 @@ namespace WireMock.Serialization
                     return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case nameof(JsonPartialWildcardMatcher):
-                    object valueForJsonPartialWilcardMatcher = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWilcardMatcher, ignoreCase, throwExceptionWhenMatcherFails);
+                    object valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case nameof(JsonPathMatcher):
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
