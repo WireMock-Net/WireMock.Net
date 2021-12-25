@@ -1,3 +1,10 @@
+# 1.4.30 (25 December 2021)
+- [#703](https://github.com/WireMock-Net/WireMock.Net/pull/703) - SaveUnmatchedRequests [feature] contributed by [StefH](https://github.com/StefH)
+- [#704](https://github.com/WireMock-Net/WireMock.Net/pull/704) - Add .ConfigureAwait(false); to the await Task calls [bug] contributed by [StefH](https://github.com/StefH)
+- [#534](https://github.com/WireMock-Net/WireMock.Net/issues/534) - Mock server not answer if integrated in Xamarin UITest project [bug]
+- [#567](https://github.com/WireMock-Net/WireMock.Net/issues/567) - Can't start WireMock.Net server in Xamarin.UITest project (.NET Framework 4.7.2) on MacOS [bug]
+- [#685](https://github.com/WireMock-Net/WireMock.Net/issues/685) - GuidWildcardMatcher to match on GUIDs [feature]
+
 # 1.4.29 (12 December 2021)
 - [#699](https://github.com/WireMock-Net/WireMock.Net/pull/699) - GUID Pattern support in RegexMatcher contributed by [brogdogg](https://github.com/brogdogg)
 - [#700](https://github.com/WireMock-Net/WireMock.Net/pull/700) - RegexExtended in settings [feature] contributed by [StefH](https://github.com/StefH)
