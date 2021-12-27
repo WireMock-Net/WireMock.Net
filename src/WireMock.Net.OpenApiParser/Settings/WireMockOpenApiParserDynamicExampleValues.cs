@@ -11,24 +11,24 @@ namespace WireMock.Net.OpenApiParser.Settings
     public class WireMockOpenApiParserDynamicExampleValues : IWireMockOpenApiParserExampleValues
     {
         /// <inheritdoc />
-        public bool Boolean { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBoolean()).Generate() ?? true; } set { } }
+        public virtual bool Boolean { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBoolean()).Generate() ?? true; } set { } }
         /// <inheritdoc />
-        public int Integer { get { return RandomizerFactory.GetRandomizer(new FieldOptionsInteger()).Generate() ?? 42; } set { } }
+        public virtual int Integer { get { return RandomizerFactory.GetRandomizer(new FieldOptionsInteger()).Generate() ?? 42; } set { } }
         /// <inheritdoc />
-        public float Float { get { return RandomizerFactory.GetRandomizer(new FieldOptionsFloat()).Generate() ?? 4.2f; } set { } }
+        public virtual float Float { get { return RandomizerFactory.GetRandomizer(new FieldOptionsFloat()).Generate() ?? 4.2f; } set { } }
         /// <inheritdoc />
-        public double Double { get { return RandomizerFactory.GetRandomizer(new FieldOptionsDouble()).Generate() ?? 4.2d; } set { } }
+        public virtual double Double { get { return RandomizerFactory.GetRandomizer(new FieldOptionsDouble()).Generate() ?? 4.2d; } set { } }
         /// <inheritdoc />
-        public Func<DateTime> Date { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow.Date; } set { } }
+        public virtual Func<DateTime> Date { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow.Date; } set { } }
         /// <inheritdoc />
-        public Func<DateTime> DateTime { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow; } set { } }
+        public virtual Func<DateTime> DateTime { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow; } set { } }
         /// <inheritdoc />
-        public byte[] Bytes { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBytes()).Generate(); } set { } }
+        public virtual byte[] Bytes { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBytes()).Generate(); } set { } }
         /// <inheritdoc />
-        public object Object { get; set; } = "example-object";
+        public virtual object Object { get; set; } = "example-object";
         /// <inheritdoc />
-        public string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string"; } set { } }
+        public virtual string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string"; } set { } }
         /// <inheritdoc />
-        public OpenApiSchema Schema { get; set; }
+        public virtual OpenApiSchema Schema { get; set; }
     }
 }
