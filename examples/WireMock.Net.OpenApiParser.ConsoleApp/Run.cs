@@ -24,8 +24,8 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
                 WatchStaticMappings = false,
                 WatchStaticMappingsInSubdirectories = false,
                 Logger = new WireMockConsoleLogger()
-
             });
+
             Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
             //server.SetBasicAuthentication("a", "b");

@@ -6,10 +6,8 @@ using WireMock.Net.OpenApiParser.Settings;
 
 namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
-
     public class DynamicDataGeneration : IWireMockOpenApiParserExampleValues
     {
-
         public bool Boolean { get { return RandomizerFactory.GetRandomizer(new FieldOptionsBoolean()).Generate() ?? true; } set { } }
 
         public int Integer { get { return RandomizerFactory.GetRandomizer(new FieldOptionsInteger()).Generate() ?? 42; } set { } }
@@ -40,9 +38,6 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
             }
             set { }
         }
-
         public OpenApiSchema Schema { get; set; } = new OpenApiSchema();
-
     }
-
 }
