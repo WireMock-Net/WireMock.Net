@@ -13,27 +13,29 @@ namespace WireMock.Net.OpenApiParser.ConsoleApp
 {
     public static class Run
     {
-        public static WireMockServer RunServer(string path, string url, bool dynamicExamples = true)
+        public static WireMockServer RunServer(string path, string url, bool dynamicExamples = true, IWireMockOpenApiParserExampleValues examplesValuesGenerator =  null, ExampleValueType pathPatternToUse = ExampleValueType.Wildcard, ExampleValueType headerPatternToUse = ExampleValueType.Wildcard)
         {
             var server = WireMockServer.Start(new WireMockServerSettings
             {
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url },
                 StartAdminInterface = true,
-                ReadStaticMappings = false,
+                ReadStaticMappings = true,
                 WatchStaticMappings = false,
                 WatchStaticMappingsInSubdirectories = false,
                 Logger = new WireMockConsoleLogger()
+
             });
             Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
-            server.SetBasicAuthentication("a", "b");
+            //server.SetBasicAuthentication("a", "b");
 
             var settings = new WireMockOpenApiParserSettings
             {
                 DynamicExamples = dynamicExamples,
-                PathPatternToUse = ExampleValueType.Wildcard,
-                HeaderPatternToUse = ExampleValueType.Wildcard
+                ExampleValues = examplesValuesGenerator,
+                PathPatternToUse = pathPatternToUse,
+                HeaderPatternToUse = headerPatternToUse,
             };
 
             server.WithMappingFromOpenApiFile(path, settings, out var diag);

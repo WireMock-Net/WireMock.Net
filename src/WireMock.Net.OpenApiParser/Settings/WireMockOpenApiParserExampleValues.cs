@@ -27,6 +27,6 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// <inheritdoc />
         public string String { get; set; } = "example-string";
         /// <inheritdoc />
-        public OpenApiSchema SchemaExample { get; set; }
+        public OpenApiSchema Schema { get; set; } = new OpenApiSchema();
     }
 }

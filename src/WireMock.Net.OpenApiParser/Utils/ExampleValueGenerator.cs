@@ -36,7 +36,7 @@ namespace WireMock.Net.OpenApiParser.Utils
             var schemaExample = schema?.Example;
             var schemaEnum = GetRandomEnumValue(schema?.Enum);
 
-            _settings.ExampleValues.SchemaExample = schema;
+            _settings.ExampleValues.Schema = schema;
 
             switch (schema?.GetSchemaType())
             {

@@ -53,6 +53,6 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// <summary>
         /// OpenApi Schema to generate dynamic examples more accurate
         /// </summary>
-        OpenApiSchema SchemaExample { get; set; }
+        OpenApiSchema Schema { get; set; }
     }
 }

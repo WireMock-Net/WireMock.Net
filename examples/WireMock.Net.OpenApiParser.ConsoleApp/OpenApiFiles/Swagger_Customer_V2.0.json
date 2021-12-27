@@ -1,0 +1,73 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "customer",
+        "description": "It contains basic customer actions.",
+        "version": "v1"
+    },
+    "host": "localhost",
+    "basePath": "/v1/customer/",
+    "schemes": [
+        "https"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Correlation-Id",
+                        "required": true,
+                        "in": "header",
+                        "type": "string",
+                        "maxLength": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "x-amf-mediaType": "application/json",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseCustmer"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ResponseCustmer": {
+
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+                "first-name",
+                "last-name",
+                "status",
+                "interest"
+            ],
+            "properties": {
+                "first-name": {
+                    "type": "string"
+                },
+                "last-name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "maxLength": 2
+                },
+                "interest": {
+                    "type": "string",
+                    "maxLength": 45
+                }
+            }
+        }
+    }
+}
+

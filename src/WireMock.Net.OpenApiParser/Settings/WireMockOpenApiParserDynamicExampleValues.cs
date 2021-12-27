@@ -29,6 +29,6 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// <inheritdoc />
         public string String { get { return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string"; } set { } }
         /// <inheritdoc />
-        public OpenApiSchema SchemaExample { get; set; }
+        public OpenApiSchema Schema { get; set; }
     }
 }
