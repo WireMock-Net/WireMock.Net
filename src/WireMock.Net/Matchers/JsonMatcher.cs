@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -61,7 +61,7 @@ namespace WireMock.Matchers
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public JsonMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false, bool throwException = false)
         {
-            Check.NotNull(value, nameof(value));
+            Guard.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
             IgnoreCase = ignoreCase;

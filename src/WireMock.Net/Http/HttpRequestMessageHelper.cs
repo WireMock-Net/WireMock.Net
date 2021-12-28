@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Http
 {
@@ -14,8 +14,8 @@ namespace WireMock.Http
     {
         internal static HttpRequestMessage Create([NotNull] RequestMessage requestMessage, [NotNull] string url)
         {
-            Check.NotNull(requestMessage, nameof(requestMessage));
-            Check.NotNullOrEmpty(url, nameof(url));
+            Guard.NotNull(requestMessage, nameof(requestMessage));
+            Guard.NotNullOrEmpty(url, nameof(url));
 
             var httpRequestMessage = new HttpRequestMessage(new HttpMethod(requestMessage.Method), url);
 

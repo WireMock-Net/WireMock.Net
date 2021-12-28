@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.RequestBuilders
 {
@@ -19,8 +19,8 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(string, string, bool, MatchBehaviour)"/>
         public IRequestBuilder WithHeader(string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNull(pattern, nameof(pattern));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNull(pattern, nameof(pattern));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, pattern, ignoreCase));
             return this;
@@ -35,8 +35,8 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(string, string[], bool, MatchBehaviour)"/>
         public IRequestBuilder WithHeader(string name, string[] patterns, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNull(patterns, nameof(patterns));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNull(patterns, nameof(patterns));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, ignoreCase, patterns));
             return this;
@@ -45,8 +45,8 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(string, IStringMatcher[])"/>
         public IRequestBuilder WithHeader(string name, params IStringMatcher[] matchers)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, name, false, matchers));
             return this;
@@ -55,8 +55,8 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(string, bool, IStringMatcher[])"/>
         public IRequestBuilder WithHeader(string name, bool ignoreCase, params IStringMatcher[] matchers)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(MatchBehaviour.AcceptOnMatch, name, ignoreCase, matchers));
             return this;
@@ -65,8 +65,8 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(string, IStringMatcher[])"/>
         public IRequestBuilder WithHeader(string name, bool ignoreCase, MatchBehaviour matchBehaviour, params IStringMatcher[] matchers)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(matchBehaviour, name, ignoreCase, matchers));
             return this;
@@ -75,7 +75,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IHeadersRequestBuilder.WithHeader(Func{IDictionary{string, string[]}, bool}[])"/>
         public IRequestBuilder WithHeader(params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
+            Guard.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageHeaderMatcher(funcs));
             return this;

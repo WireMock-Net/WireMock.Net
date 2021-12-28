@@ -1,5 +1,5 @@
 ﻿using System;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Models
 {
@@ -41,8 +41,8 @@ namespace WireMock.Models
         /// <param name="url">The URL (relative).</param>
         public UrlDetails(Uri absoluteUrl, Uri url)
         {
-            Check.NotNull(absoluteUrl, nameof(absoluteUrl));
-            Check.NotNull(url, nameof(url));
+            Guard.NotNull(absoluteUrl, nameof(absoluteUrl));
+            Guard.NotNull(url, nameof(url));
 
             AbsoluteUrl = absoluteUrl;
             Url = url;

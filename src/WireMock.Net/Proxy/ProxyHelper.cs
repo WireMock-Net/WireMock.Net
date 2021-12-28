@@ -11,7 +11,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Proxy
 {
@@ -21,7 +21,7 @@ namespace WireMock.Proxy
 
         public ProxyHelper([NotNull] IWireMockServerSettings settings)
         {
-            _settings = Check.NotNull(settings, nameof(settings));
+            _settings = Guard.NotNull(settings, nameof(settings));
         }
 
         public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
@@ -30,9 +30,9 @@ namespace WireMock.Proxy
             [NotNull] RequestMessage requestMessage,
             [NotNull] string url)
         {
-            Check.NotNull(client, nameof(client));
-            Check.NotNull(requestMessage, nameof(requestMessage));
-            Check.NotNull(url, nameof(url));
+            Guard.NotNull(client, nameof(client));
+            Guard.NotNull(requestMessage, nameof(requestMessage));
+            Guard.NotNull(url, nameof(url));
 
             var originalUri = new Uri(requestMessage.Url);
             var requiredUri = new Uri(url);

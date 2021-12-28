@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Extensions;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Owin
 {
@@ -12,7 +12,7 @@ namespace WireMock.Owin
 
         public MappingMatcher(IWireMockMiddlewareOptions options)
         {
-            Check.NotNull(options, nameof(options));
+            Guard.NotNull(options, nameof(options));
 
             _options = options;
         }

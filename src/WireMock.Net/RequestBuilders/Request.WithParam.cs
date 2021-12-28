@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.RequestBuilders
 {
@@ -20,7 +20,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, bool, MatchBehaviour)"/>
         public IRequestBuilder WithParam(string key, bool ignoreCase, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
         {
-            Check.NotNull(key, nameof(key));
+            Guard.NotNull(key, nameof(key));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase));
             return this;
@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, bool, string[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, bool ignoreCase = false, params string[] values)
         {
-            Check.NotNull(key, nameof(key));
+            Guard.NotNull(key, nameof(key));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase, values));
             return this;
@@ -74,7 +74,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, bool, IStringMatcher[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, bool ignoreCase, params IStringMatcher[] matchers)
         {
-            Check.NotNull(key, nameof(key));
+            Guard.NotNull(key, nameof(key));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase, matchers));
             return this;
@@ -83,7 +83,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
         public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
+            Guard.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
             return this;

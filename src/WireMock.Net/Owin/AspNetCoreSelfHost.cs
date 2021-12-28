@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Owin
 {
@@ -35,8 +35,8 @@ namespace WireMock.Owin
 
         public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions wireMockMiddlewareOptions, [NotNull] HostUrlOptions urlOptions)
         {
-            Check.NotNull(wireMockMiddlewareOptions, nameof(wireMockMiddlewareOptions));
-            Check.NotNull(urlOptions, nameof(urlOptions));
+            Guard.NotNull(wireMockMiddlewareOptions, nameof(wireMockMiddlewareOptions));
+            Guard.NotNull(urlOptions, nameof(urlOptions));
 
             _logger = wireMockMiddlewareOptions.Logger ?? new WireMockConsoleLogger();
 

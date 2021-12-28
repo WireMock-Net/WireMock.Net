@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 using WireMock.Logging;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Settings
 {
@@ -18,7 +18,7 @@ namespace WireMock.Settings
         [PublicAPI]
         public static bool TryParseArguments([NotNull] string[] args, out IWireMockServerSettings settings, [CanBeNull] IWireMockLogger logger = null)
         {
-            Check.HasNoNulls(args, nameof(args));
+            Guard.HasNoNulls(args, nameof(args));
 
             var parser = new SimpleCommandLineParser();
             parser.Parse(args);

@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Util
 {
@@ -109,7 +109,7 @@ namespace WireMock.Util
 
         public static async Task<BodyData> ParseAsync([NotNull] BodyParserSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
 
             var bodyWithContentEncoding = await ReadBytesAsync(settings.Stream, settings.ContentEncoding, settings.DecompressGZipAndDeflate).ConfigureAwait(false);
             var data = new BodyData

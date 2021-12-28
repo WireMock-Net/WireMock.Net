@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace WireMock.Validation
+namespace Stef.Validation
 {
     /// <summary>
     /// To fix 'xxx' is null on at least one execution path. See also https://rules.sonarsource.com/csharp/RSPEC-3900.

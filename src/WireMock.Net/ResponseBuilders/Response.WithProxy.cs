@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using WireMock.Http;
 using WireMock.Settings;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.ResponseBuilders
 {
@@ -17,7 +17,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
         public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
         {
-            Check.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
+            Guard.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
 
             var settings = new ProxyAndRecordSettings
             {
@@ -31,7 +31,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
         public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
 
             ProxyAndRecordSettings = settings;
 

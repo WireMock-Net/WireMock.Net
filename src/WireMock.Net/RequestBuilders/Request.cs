@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.RequestBuilders
 {
@@ -68,7 +68,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(IStringMatcher[])"/>
         public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
         {
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(matchers));
             return this;
@@ -83,7 +83,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(string[])"/>
         public IRequestBuilder WithClientIP(MatchBehaviour matchBehaviour, params string[] clientIPs)
         {
-            Check.NotNullOrEmpty(clientIPs, nameof(clientIPs));
+            Guard.NotNullOrEmpty(clientIPs, nameof(clientIPs));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(matchBehaviour, clientIPs));
             return this;
@@ -92,7 +92,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(Func{string, bool}[])"/>
         public IRequestBuilder WithClientIP(params Func<string, bool>[] funcs)
         {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
+            Guard.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageClientIPMatcher(funcs));
             return this;
@@ -101,7 +101,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(IStringMatcher[])"/>
         public IRequestBuilder WithPath(params IStringMatcher[] matchers)
         {
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(matchers));
             return this;
@@ -116,7 +116,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(MatchBehaviour, string[])"/>
         public IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths)
         {
-            Check.NotNullOrEmpty(paths, nameof(paths));
+            Guard.NotNullOrEmpty(paths, nameof(paths));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, paths));
             return this;
@@ -125,7 +125,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(Func{string, bool}[])"/>
         public IRequestBuilder WithPath(params Func<string, bool>[] funcs)
         {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
+            Guard.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
             return this;
@@ -134,7 +134,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(IStringMatcher[])"/>
         public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
         {
-            Check.NotNullOrEmpty(matchers, nameof(matchers));
+            Guard.NotNullOrEmpty(matchers, nameof(matchers));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(matchers));
             return this;
@@ -149,7 +149,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(MatchBehaviour, string[])"/>
         public IRequestBuilder WithUrl(MatchBehaviour matchBehaviour, params string[] urls)
         {
-            Check.NotNullOrEmpty(urls, nameof(urls));
+            Guard.NotNullOrEmpty(urls, nameof(urls));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(matchBehaviour, urls));
             return this;
@@ -158,7 +158,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(Func{string, bool}[])"/>
         public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
         {
-            Check.NotNullOrEmpty(funcs, nameof(funcs));
+            Guard.NotNullOrEmpty(funcs, nameof(funcs));
 
             _requestMatchers.Add(new RequestMessageUrlMatcher(funcs));
             return this;

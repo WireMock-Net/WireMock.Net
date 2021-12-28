@@ -9,7 +9,7 @@ using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 using OrgMapping = WireMock.Org.Abstractions.Mapping;
 
 namespace WireMock.Server
@@ -23,7 +23,7 @@ namespace WireMock.Server
         [PublicAPI]
         public void ReadStaticWireMockOrgMappingAndAddOrUpdate([NotNull] string path)
         {
-            Check.NotNull(path, nameof(path));
+            Guard.NotNull(path, nameof(path));
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 

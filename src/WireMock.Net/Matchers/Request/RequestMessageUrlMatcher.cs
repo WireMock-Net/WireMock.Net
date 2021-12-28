@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -36,7 +36,7 @@ namespace WireMock.Matchers.Request
         /// <param name="matchers">The matchers.</param>
         public RequestMessageUrlMatcher([NotNull] params IStringMatcher[] matchers)
         {
-            Check.NotNull(matchers, nameof(matchers));
+            Guard.NotNull(matchers, nameof(matchers));
             Matchers = matchers;
         }
 
@@ -46,7 +46,7 @@ namespace WireMock.Matchers.Request
         /// <param name="funcs">The url functions.</param>
         public RequestMessageUrlMatcher([NotNull] params Func<string, bool>[] funcs)
         {
-            Check.NotNull(funcs, nameof(funcs));
+            Guard.NotNull(funcs, nameof(funcs));
             Funcs = funcs;
         }
 

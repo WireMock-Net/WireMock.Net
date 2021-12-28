@@ -8,7 +8,7 @@ using System.Net;
 using WireMock.Models;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock
 {
@@ -103,9 +103,9 @@ namespace WireMock
         /// <param name="cookies">The cookies.</param>
         public RequestMessage([NotNull] UrlDetails urlDetails, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] IBodyData bodyData = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
         {
-            Check.NotNull(urlDetails, nameof(urlDetails));
-            Check.NotNull(method, nameof(method));
-            Check.NotNull(clientIP, nameof(clientIP));
+            Guard.NotNull(urlDetails, nameof(urlDetails));
+            Guard.NotNull(method, nameof(method));
+            Guard.NotNull(clientIP, nameof(clientIP));
 
             AbsoluteUrl = urlDetails.AbsoluteUrl.ToString();
             Url = urlDetails.Url.ToString();

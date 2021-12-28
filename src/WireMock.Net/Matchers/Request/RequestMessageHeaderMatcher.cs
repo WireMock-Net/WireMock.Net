@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -40,8 +40,8 @@ namespace WireMock.Matchers.Request
         /// <param name="matchBehaviour">The match behaviour.</param>
         public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, [NotNull] string pattern, bool ignoreCase)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNull(pattern, nameof(pattern));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNull(pattern, nameof(pattern));
 
             _matchBehaviour = matchBehaviour;
             _ignoreCase = ignoreCase;
@@ -59,7 +59,7 @@ namespace WireMock.Matchers.Request
         public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, bool ignoreCase, [NotNull] params string[] patterns) :
             this(matchBehaviour, name, ignoreCase, patterns.Select(pattern => new WildcardMatcher(matchBehaviour, pattern, ignoreCase)).Cast<IStringMatcher>().ToArray())
         {
-            Check.NotNull(patterns, nameof(patterns));
+            Guard.NotNull(patterns, nameof(patterns));
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace WireMock.Matchers.Request
         /// <param name="ignoreCase">Ignore the case from the pattern.</param>
         public RequestMessageHeaderMatcher(MatchBehaviour matchBehaviour, [NotNull] string name, bool ignoreCase, [NotNull] params IStringMatcher[] matchers)
         {
-            Check.NotNull(name, nameof(name));
-            Check.NotNull(matchers, nameof(matchers));
+            Guard.NotNull(name, nameof(name));
+            Guard.NotNull(matchers, nameof(matchers));
 
             _matchBehaviour = matchBehaviour;
             Name = name;
@@ -86,7 +86,7 @@ namespace WireMock.Matchers.Request
         /// <param name="funcs">The funcs.</param>
         public RequestMessageHeaderMatcher([NotNull] params Func<IDictionary<string, string[]>, bool>[] funcs)
         {
-            Check.NotNull(funcs, nameof(funcs));
+            Guard.NotNull(funcs, nameof(funcs));
 
             Funcs = funcs;
         }

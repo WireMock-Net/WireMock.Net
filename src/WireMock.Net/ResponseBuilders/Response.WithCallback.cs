@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.ResponseBuilders
 {
@@ -24,7 +24,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback(Func{RequestMessage, ResponseMessage})"/>
         public IResponseBuilder WithCallback(Func<RequestMessage, ResponseMessage> callbackHandler)
         {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
+            Guard.NotNull(callbackHandler, nameof(callbackHandler));
 
             return WithCallbackInternal(true, callbackHandler);
         }
@@ -32,14 +32,14 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="ICallbackResponseBuilder.WithCallback(Func{RequestMessage, Task{ResponseMessage}})"/>
         public IResponseBuilder WithCallback(Func<RequestMessage, Task<ResponseMessage>> callbackHandler)
         {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
+            Guard.NotNull(callbackHandler, nameof(callbackHandler));
 
             return WithCallbackInternal(true, callbackHandler);
         }
 
         private IResponseBuilder WithCallbackInternal(bool withCallbackUsed, Func<RequestMessage, ResponseMessage> callbackHandler)
         {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
+            Guard.NotNull(callbackHandler, nameof(callbackHandler));
 
             WithCallbackUsed = withCallbackUsed;
             Callback = callbackHandler;
@@ -49,7 +49,7 @@ namespace WireMock.ResponseBuilders
 
         private IResponseBuilder WithCallbackInternal(bool withCallbackUsed, Func<RequestMessage, Task<ResponseMessage>> callbackHandler)
         {
-            Check.NotNull(callbackHandler, nameof(callbackHandler));
+            Guard.NotNull(callbackHandler, nameof(callbackHandler));
 
             WithCallbackUsed = withCallbackUsed;
             CallbackAsync = callbackHandler;

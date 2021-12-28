@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using WireMock.Settings;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Serialization
 {
@@ -13,7 +13,7 @@ namespace WireMock.Serialization
 
         public MappingToFileSaver(IWireMockServerSettings settings, MappingConverter mappingConverter)
         {
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
 
             _settings = settings;
             _mappingConverter = mappingConverter;

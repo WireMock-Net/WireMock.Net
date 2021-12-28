@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using System.Threading;
 using WireMock.Handlers;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Util
 {
@@ -12,8 +12,8 @@ namespace WireMock.Util
 
         public static bool TryReadMappingFileWithRetryAndDelay([NotNull] IFileSystemHandler handler, [NotNull] string path, out string value)
         {
-            Check.NotNull(handler, nameof(handler));
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNull(handler, nameof(handler));
+            Guard.NotNullOrEmpty(path, nameof(path));
 
             value = null;
 

@@ -6,7 +6,7 @@ using SimMetrics.Net.API;
 using SimMetrics.Net.Metric;
 using WireMock.Extensions;
 using WireMock.Models;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -71,7 +71,7 @@ namespace WireMock.Matchers
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
         public SimMetricsMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern>[] patterns, SimMetricType simMetricType = SimMetricType.Levenstein, bool throwException = false)
         {
-            Check.NotNull(patterns, nameof(patterns));
+            Guard.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;
