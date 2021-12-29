@@ -28,7 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="Handlebars.Net.Helpers" Version="2.*" />
-    <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="log4net" Version="2.0.13" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>

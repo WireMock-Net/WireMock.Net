@@ -55,7 +55,7 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="Stef.Validation" Version="0.0.4" />
+        <PackageReference Include="Stef.Validation" Version="0.1.0" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
