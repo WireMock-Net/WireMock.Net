@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using WireMock.Extensions;
 using WireMock.Models;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -55,7 +55,7 @@ namespace WireMock.Matchers
         /// <param name="patterns">The patterns.</param>
         public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
         {
-            Check.NotNull(patterns, nameof(patterns));
+            Guard.NotNull(patterns, nameof(patterns));
 
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;

@@ -3,7 +3,7 @@ using AnyOfTypes;
 using JetBrains.Annotations;
 using WireMock.Extensions;
 using WireMock.Models;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -37,7 +37,7 @@ namespace WireMock.Matchers
         /// <param name="values">The values.</param>
         public ExactMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] values)
         {
-            Check.NotNull(values, nameof(values));
+            Guard.NotNull(values, nameof(values));
 
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;

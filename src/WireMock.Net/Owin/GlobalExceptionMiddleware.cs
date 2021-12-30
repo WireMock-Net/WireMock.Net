@@ -12,7 +12,7 @@ using IContext = Microsoft.AspNetCore.Http.HttpContext;
 using Next = Microsoft.AspNetCore.Http.RequestDelegate;
 #endif
 using WireMock.Owin.Mappers;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Owin
 {
@@ -24,8 +24,8 @@ namespace WireMock.Owin
 #if !USE_ASPNETCORE
         public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper) : base(next)
         {
-            Check.NotNull(options, nameof(options));
-            Check.NotNull(responseMapper, nameof(responseMapper));
+            Guard.NotNull(options, nameof(options));
+            Guard.NotNull(responseMapper, nameof(responseMapper));
 
             _options = options;
             _responseMapper = responseMapper;
@@ -33,8 +33,8 @@ namespace WireMock.Owin
 #else
         public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper)
         {
-            Check.NotNull(options, nameof(options));
-            Check.NotNull(responseMapper, nameof(responseMapper));
+            Guard.NotNull(options, nameof(options));
+            Guard.NotNull(responseMapper, nameof(responseMapper));
 
             Next = next;
             _options = options;

@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using WireMock.Extensions;
 using WireMock.Models;
 using WireMock.RegularExpressions;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -61,7 +61,7 @@ namespace WireMock.Matchers
         /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
         public RegexMatcher(MatchBehaviour matchBehaviour, [NotNull, RegexPattern] AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false, bool throwException = false, bool useRegexExtended = true)
         {
-            Check.NotNull(patterns, nameof(patterns));
+            Guard.NotNull(patterns, nameof(patterns));
 
             _patterns = patterns;
             IgnoreCase = ignoreCase;

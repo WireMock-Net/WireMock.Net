@@ -9,7 +9,7 @@ using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Server
 {
@@ -154,7 +154,7 @@ namespace WireMock.Server
         /// <inheritdoc />
         public IRespondWithAProvider WithTimeSettings(ITimeSettings timeSettings)
         {
-            Check.NotNull(timeSettings, nameof(timeSettings));
+            Guard.NotNull(timeSettings, nameof(timeSettings));
 
             TimeSettings = timeSettings;
 
@@ -164,7 +164,7 @@ namespace WireMock.Server
         /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook[])"/>
         public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
         {
-            Check.HasNoNulls(webhooks, nameof(webhooks));
+            Guard.HasNoNulls(webhooks, nameof(webhooks));
 
             Webhooks = webhooks;
 

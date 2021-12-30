@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Util
 {
@@ -58,7 +58,7 @@ namespace WireMock.Util
         /// <param name="interval">The interval.</param>
         public EnhancedFileSystemWatcher(int interval = DefaultWatchInterval)
         {
-            Check.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.Condition(interval, i => i >= 0, nameof(interval));
 
             InitializeMembers(interval);
         }
@@ -70,8 +70,8 @@ namespace WireMock.Util
         /// <param name="interval">The interval.</param>
         public EnhancedFileSystemWatcher([NotNull] string path, int interval = DefaultWatchInterval) : base(path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
-            Check.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.NotNullOrEmpty(path, nameof(path));
+            Guard.Condition(interval, i => i >= 0, nameof(interval));
 
             InitializeMembers(interval);
         }
@@ -84,9 +84,9 @@ namespace WireMock.Util
         /// <param name="interval">The interval.</param>
         public EnhancedFileSystemWatcher([NotNull] string path, [NotNull] string filter, int interval = DefaultWatchInterval) : base(path, filter)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
-            Check.NotNullOrEmpty(filter, nameof(filter));
-            Check.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(filter, nameof(filter));
+            Guard.Condition(interval, i => i >= 0, nameof(interval));
 
             InitializeMembers(interval);
         }

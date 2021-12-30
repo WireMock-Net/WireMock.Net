@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -24,7 +24,7 @@ namespace WireMock.Matchers.Request
         /// <param name="methods">The methods.</param>
         public RequestMessageMethodMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] methods)
         {
-            Check.NotNull(methods, nameof(methods));
+            Guard.NotNull(methods, nameof(methods));
             _matchBehaviour = matchBehaviour;
 
             Methods = methods;

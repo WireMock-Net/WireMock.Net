@@ -18,7 +18,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Server
 {
@@ -93,7 +93,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
 
             return new WireMockServer(settings);
         }
@@ -122,7 +122,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static WireMockServer Start(params string[] urls)
         {
-            Check.NotNullOrEmpty(urls, nameof(urls));
+            Guard.NotNullOrEmpty(urls, nameof(urls));
 
             return new WireMockServer(new WireMockServerSettings
             {
@@ -155,7 +155,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static WireMockServer StartWithAdminInterface(params string[] urls)
         {
-            Check.NotNullOrEmpty(urls, nameof(urls));
+            Guard.NotNullOrEmpty(urls, nameof(urls));
 
             return new WireMockServer(new WireMockServerSettings
             {
@@ -172,7 +172,7 @@ namespace WireMock.Server
         [PublicAPI]
         public static WireMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
         {
-            Check.NotNullOrEmpty(urls, nameof(urls));
+            Guard.NotNullOrEmpty(urls, nameof(urls));
 
             return new WireMockServer(new WireMockServerSettings
             {
@@ -413,8 +413,8 @@ namespace WireMock.Server
         [PublicAPI]
         public void SetAzureADAuthentication([NotNull] string tenant, [NotNull] string audience)
         {
-            Check.NotNull(tenant, nameof(tenant));
-            Check.NotNull(audience, nameof(audience));
+            Guard.NotNull(tenant, nameof(tenant));
+            Guard.NotNull(audience, nameof(audience));
 
 #if NETSTANDARD1_3
             throw new NotSupportedException("AzureADAuthentication is not supported for NETStandard 1.3");
@@ -427,8 +427,8 @@ namespace WireMock.Server
         [PublicAPI]
         public void SetBasicAuthentication([NotNull] string username, [NotNull] string password)
         {
-            Check.NotNull(username, nameof(username));
-            Check.NotNull(password, nameof(password));
+            Guard.NotNull(username, nameof(username));
+            Guard.NotNull(password, nameof(password));
 
             _options.AuthenticationMatcher = new BasicAuthenticationMatcher(username, password);
         }

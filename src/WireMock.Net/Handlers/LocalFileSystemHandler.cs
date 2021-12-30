@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Handlers
 {
@@ -34,7 +34,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.FolderExists"/>
         public virtual bool FolderExists(string path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
 
             return Directory.Exists(path);
         }
@@ -42,7 +42,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.CreateFolder"/>
         public virtual void CreateFolder(string path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
 
             Directory.CreateDirectory(path);
         }
@@ -50,7 +50,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.EnumerateFiles"/>
         public virtual IEnumerable<string> EnumerateFiles(string path, bool includeSubdirectories)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
 
             return includeSubdirectories ? Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories) : Directory.EnumerateFiles(path);
         }
@@ -64,7 +64,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.ReadMappingFile"/>
         public virtual string ReadMappingFile(string path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
 
             return File.ReadAllText(path);
         }
@@ -72,8 +72,8 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile(string, string)"/>
         public virtual void WriteMappingFile(string path, string text)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
-            Check.NotNull(text, nameof(text));
+            Guard.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNull(text, nameof(text));
 
             File.WriteAllText(path, text);
         }
@@ -81,7 +81,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsFile"/>
         public virtual byte[] ReadResponseBodyAsFile(string path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
             // If the file exists at the given path relative to the MappingsFolder, then return that.
             // Else the path will just be as-is.
@@ -91,7 +91,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
         public virtual string ReadResponseBodyAsString(string path)
         {
-            Check.NotNullOrEmpty(path, nameof(path));
+            Guard.NotNullOrEmpty(path, nameof(path));
             path = PathUtils.CleanPath(path);
             // In case the path is a filename, the path will be adjusted to the MappingFolder.
             // Else the path will just be as-is.
@@ -101,7 +101,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
         public virtual bool FileExists(string filename)
         {
-            Check.NotNullOrEmpty(filename, nameof(filename));
+            Guard.NotNullOrEmpty(filename, nameof(filename));
 
             return File.Exists(AdjustPathForMappingFolder(filename));
         }
@@ -109,8 +109,8 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
         public virtual void WriteFile(string filename, byte[] bytes)
         {
-            Check.NotNullOrEmpty(filename, nameof(filename));
-            Check.NotNull(bytes, nameof(bytes));
+            Guard.NotNullOrEmpty(filename, nameof(filename));
+            Guard.NotNull(bytes, nameof(bytes));
 
             File.WriteAllBytes(AdjustPathForMappingFolder(filename), bytes);
         }
@@ -118,7 +118,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
         public virtual void DeleteFile(string filename)
         {
-            Check.NotNullOrEmpty(filename, nameof(filename));
+            Guard.NotNullOrEmpty(filename, nameof(filename));
 
             File.Delete(AdjustPathForMappingFolder(filename));
         }
@@ -126,7 +126,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.ReadFile"/>
         public virtual byte[] ReadFile(string filename)
         {
-            Check.NotNullOrEmpty(filename, nameof(filename));
+            Guard.NotNullOrEmpty(filename, nameof(filename));
 
             return File.ReadAllBytes(AdjustPathForMappingFolder(filename));
         }
@@ -134,7 +134,7 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
         public virtual string ReadFileAsString(string filename)
         {
-            return File.ReadAllText(AdjustPathForMappingFolder(Check.NotNullOrEmpty(filename, nameof(filename))));
+            return File.ReadAllText(AdjustPathForMappingFolder(Guard.NotNullOrEmpty(filename, nameof(filename))));
         }
 
         /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>
@@ -146,8 +146,8 @@ namespace WireMock.Handlers
         /// <inheritdoc cref="IFileSystemHandler.WriteUnmatchedRequest"/>
         public virtual void WriteUnmatchedRequest(string filename, string text)
         {
-            Check.NotNullOrEmpty(filename, nameof(filename));
-            Check.NotNull(text, nameof(text));
+            Guard.NotNullOrEmpty(filename, nameof(filename));
+            Guard.NotNull(text, nameof(text));
 
             var folder = GetUnmatchedRequestsFolder();
             if (!FolderExists(folder))

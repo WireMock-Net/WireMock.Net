@@ -12,7 +12,7 @@ using RandomDataGenerator.Randomizers;
 using WireMock.Http;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
@@ -47,7 +47,7 @@ namespace WireMock.Owin.Mappers
         /// <param name="options">The IWireMockMiddlewareOptions.</param>
         public OwinResponseMapper(IWireMockMiddlewareOptions options)
         {
-            Check.NotNull(options, nameof(options));
+            Guard.NotNull(options, nameof(options));
 
             _options = options;
         }

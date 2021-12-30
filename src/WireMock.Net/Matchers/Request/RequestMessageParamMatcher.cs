@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -64,7 +64,7 @@ namespace WireMock.Matchers.Request
         /// <param name="matchers">The matchers.</param>
         public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] IStringMatcher[] matchers)
         {
-            Check.NotNull(key, nameof(key));
+            Guard.NotNull(key, nameof(key));
 
             _matchBehaviour = matchBehaviour;
             Key = key;
@@ -78,7 +78,7 @@ namespace WireMock.Matchers.Request
         /// <param name="funcs">The funcs.</param>
         public RequestMessageParamMatcher([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
         {
-            Check.NotNull(funcs, nameof(funcs));
+            Guard.NotNull(funcs, nameof(funcs));
 
             Funcs = funcs;
         }

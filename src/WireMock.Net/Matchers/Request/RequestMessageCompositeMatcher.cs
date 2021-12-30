@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -27,7 +27,7 @@ namespace WireMock.Matchers.Request
         /// <param name="type">The CompositeMatcherType type (Defaults to 'And')</param>
         protected RequestMessageCompositeMatcher([NotNull] IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
         {
-            Check.NotNull(requestMatchers, nameof(requestMatchers));
+            Guard.NotNull(requestMatchers, nameof(requestMatchers));
 
             _type = type;
             RequestMatchers = requestMatchers;

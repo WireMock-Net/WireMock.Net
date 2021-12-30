@@ -16,7 +16,7 @@ using WireMock.Transformers.Handlebars;
 using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.ResponseBuilders
 {
@@ -97,7 +97,7 @@ namespace WireMock.ResponseBuilders
         [PublicAPI]
         public static IResponseBuilder Create([NotNull] Func<ResponseMessage> func)
         {
-            Check.NotNull(func, nameof(func));
+            Guard.NotNull(func, nameof(func));
 
             return new Response(func());
         }
@@ -159,7 +159,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
         public IResponseBuilder WithHeader(string name, params string[] values)
         {
-            Check.NotNull(name, nameof(name));
+            Guard.NotNull(name, nameof(name));
 
             ResponseMessage.AddHeader(name, values);
             return this;
@@ -168,7 +168,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
         {
-            Check.NotNull(headers, nameof(headers));
+            Guard.NotNull(headers, nameof(headers));
 
             ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             return this;
@@ -177,7 +177,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
         public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
         {
-            Check.NotNull(headers, nameof(headers));
+            Guard.NotNull(headers, nameof(headers));
 
             ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
             return this;
@@ -193,7 +193,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
         public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            Check.NotNull(bodyFactory, nameof(bodyFactory));
+            Guard.NotNull(bodyFactory, nameof(bodyFactory));
 
             return WithCallbackInternal(true, req => new ResponseMessage
             {
@@ -209,7 +209,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, Task{string}}, string, Encoding)"/>
         public IResponseBuilder WithBody(Func<RequestMessage, Task<string>> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            Check.NotNull(bodyFactory, nameof(bodyFactory));
+            Guard.NotNull(bodyFactory, nameof(bodyFactory));
 
             return WithCallbackInternal(true, async req => new ResponseMessage
             {
@@ -225,7 +225,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(byte[], string, Encoding)"/>
         public IResponseBuilder WithBody(byte[] body, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            Check.NotNull(body, nameof(body));
+            Guard.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = destination;
             ResponseMessage.BodyData = new BodyData();
@@ -251,7 +251,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromFile"/>
         public IResponseBuilder WithBodyFromFile(string filename, bool cache = true)
         {
-            Check.NotNull(filename, nameof(filename));
+            Guard.NotNull(filename, nameof(filename));
 
             ResponseMessage.BodyData = new BodyData
             {
@@ -274,7 +274,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBody(string, string, Encoding)"/>
         public IResponseBuilder WithBody(string body, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
-            Check.NotNull(body, nameof(body));
+            Guard.NotNull(body, nameof(body));
 
             encoding = encoding ?? Encoding.UTF8;
 
@@ -309,7 +309,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool?)"/>
         public IResponseBuilder WithBodyAsJson(object body, Encoding encoding = null, bool? indented = null)
         {
-            Check.NotNull(body, nameof(body));
+            Guard.NotNull(body, nameof(body));
 
             ResponseMessage.BodyDestination = null;
             ResponseMessage.BodyData = new BodyData
@@ -350,7 +350,7 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(TimeSpan)"/>
         public IResponseBuilder WithDelay(TimeSpan delay)
         {
-            Check.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
+            Guard.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
 
             Delay = delay;
             return this;
@@ -365,8 +365,8 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
         public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
         {
-            Check.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
-            Check.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
+            Guard.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
+            Guard.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
 
             MinimumDelayMilliseconds = minimumMilliseconds;
             MaximumDelayMilliseconds = maximumMilliseconds;
@@ -377,8 +377,8 @@ namespace WireMock.ResponseBuilders
         /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, IWireMockServerSettings)"/>
         public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, IWireMockServerSettings settings)
         {
-            Check.NotNull(requestMessage, nameof(requestMessage));
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(requestMessage, nameof(requestMessage));
+            Guard.NotNull(settings, nameof(settings));
 
             if (Delay != null)
             {

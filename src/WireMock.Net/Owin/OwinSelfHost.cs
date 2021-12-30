@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Owin
 {
@@ -22,8 +22,8 @@ namespace WireMock.Owin
 
         public OwinSelfHost([NotNull] IWireMockMiddlewareOptions options, [NotNull] HostUrlOptions urlOptions)
         {
-            Check.NotNull(options, nameof(options));
-            Check.NotNull(urlOptions, nameof(urlOptions));
+            Guard.NotNull(options, nameof(options));
+            Guard.NotNull(urlOptions, nameof(urlOptions));
 
             _options = options;
             _logger = options.Logger ?? new WireMockConsoleLogger();

@@ -24,7 +24,7 @@ using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Server
 {
@@ -206,7 +206,7 @@ namespace WireMock.Server
         [PublicAPI]
         public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
         {
-            Check.NotNull(path, nameof(path));
+            Guard.NotNull(path, nameof(path));
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
@@ -414,9 +414,9 @@ namespace WireMock.Server
 
         private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string path = null)
         {
-            Check.NotNull(mappingModel, nameof(mappingModel));
-            Check.NotNull(mappingModel.Request, nameof(mappingModel.Request));
-            Check.NotNull(mappingModel.Response, nameof(mappingModel.Response));
+            Guard.NotNull(mappingModel, nameof(mappingModel));
+            Guard.NotNull(mappingModel.Request, nameof(mappingModel.Request));
+            Guard.NotNull(mappingModel.Response, nameof(mappingModel.Response));
 
             var requestBuilder = InitRequestBuilder(mappingModel.Request, true);
             if (requestBuilder == null)

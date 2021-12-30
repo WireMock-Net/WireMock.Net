@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Http
 {
@@ -15,7 +15,7 @@ namespace WireMock.Http
         /// <returns>StringContent</returns>
         internal static StringContent Create([NotNull] string content, [CanBeNull] MediaTypeHeaderValue contentType)
         {
-            Check.NotNull(content, nameof(content));
+            Guard.NotNull(content, nameof(content));
 
             var stringContent = new StringContent(content);
             stringContent.Headers.ContentType = contentType;

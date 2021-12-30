@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 using System.Linq;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -41,7 +41,7 @@ namespace WireMock.Matchers
         /// <param name="value">The value.</param>
         public ExactObjectMatcher(MatchBehaviour matchBehaviour, [NotNull] object value)
         {
-            Check.NotNull(value, nameof(value));
+            Guard.NotNull(value, nameof(value));
 
             ValueAsObject = value;
             MatchBehaviour = matchBehaviour;
@@ -63,7 +63,7 @@ namespace WireMock.Matchers
         /// <param name="value">The value.</param>
         public ExactObjectMatcher(MatchBehaviour matchBehaviour, [NotNull] byte[] value, bool throwException = false)
         {
-            Check.NotNull(value, nameof(value));
+            Guard.NotNull(value, nameof(value));
 
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;

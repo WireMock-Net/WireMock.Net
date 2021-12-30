@@ -4,7 +4,7 @@ using System.Linq;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.RequestBuilders
 {
@@ -106,7 +106,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IMethodRequestBuilder.UsingMethod(MatchBehaviour, string[])"/>
         public IRequestBuilder UsingMethod(MatchBehaviour matchBehaviour, params string[] methods)
         {
-            Check.NotNullOrEmpty(methods, nameof(methods));
+            Guard.NotNullOrEmpty(methods, nameof(methods));
 
             _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, methods));
             return this;

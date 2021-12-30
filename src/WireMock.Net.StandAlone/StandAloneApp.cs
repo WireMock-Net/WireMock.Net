@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Net.StandAlone
 {
@@ -22,7 +22,7 @@ namespace WireMock.Net.StandAlone
         [PublicAPI]
         public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
         {
-            Check.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
 
             var server = WireMockServer.Start(settings);
 
@@ -40,7 +40,7 @@ namespace WireMock.Net.StandAlone
         [PublicAPI]
         public static WireMockServer Start([NotNull] string[] args, [CanBeNull] IWireMockLogger logger = null)
         {
-            Check.NotNull(args, nameof(args));
+            Guard.NotNull(args, nameof(args));
 
             if (WireMockServerSettingsParser.TryParseArguments(args, out var settings, logger))
             {
@@ -62,7 +62,7 @@ namespace WireMock.Net.StandAlone
         [PublicAPI]
         public static bool TryStart([NotNull] string[] args, out WireMockServer server, [CanBeNull] IWireMockLogger logger = null)
         {
-            Check.NotNull(args, nameof(args));
+            Guard.NotNull(args, nameof(args));
 
             if (WireMockServerSettingsParser.TryParseArguments(args, out var settings, logger))
             {

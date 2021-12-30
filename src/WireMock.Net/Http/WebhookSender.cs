@@ -11,7 +11,7 @@ using WireMock.Transformers.Handlebars;
 using WireMock.Transformers.Scriban;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Http
 {
@@ -28,10 +28,10 @@ namespace WireMock.Http
 
         public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] RequestMessage originalRequestMessage, [NotNull] ResponseMessage originalResponseMessage)
         {
-            Check.NotNull(client, nameof(client));
-            Check.NotNull(request, nameof(request));
-            Check.NotNull(originalRequestMessage, nameof(originalRequestMessage));
-            Check.NotNull(originalResponseMessage, nameof(originalResponseMessage));
+            Guard.NotNull(client, nameof(client));
+            Guard.NotNull(request, nameof(request));
+            Guard.NotNull(originalRequestMessage, nameof(originalRequestMessage));
+            Guard.NotNull(originalResponseMessage, nameof(originalResponseMessage));
 
             IBodyData bodyData;
             IDictionary<string, WireMockList<string>> headers;

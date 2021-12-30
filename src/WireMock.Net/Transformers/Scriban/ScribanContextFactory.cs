@@ -1,6 +1,6 @@
 ﻿using WireMock.Handlers;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Transformers.Scriban
 {
@@ -11,8 +11,8 @@ namespace WireMock.Transformers.Scriban
 
         public ScribanContextFactory(IFileSystemHandler fileSystemHandler, TransformerType transformerType)
         {
-            Check.NotNull(fileSystemHandler, nameof(fileSystemHandler));
-            Check.Condition(transformerType, t => t == TransformerType.Scriban || t == TransformerType.ScribanDotLiquid, nameof(transformerType));
+            Guard.NotNull(fileSystemHandler, nameof(fileSystemHandler));
+            Guard.Condition(transformerType, t => t == TransformerType.Scriban || t == TransformerType.ScribanDotLiquid, nameof(transformerType));
 
             _fileSystemHandler = fileSystemHandler;
             _transformerType = transformerType;

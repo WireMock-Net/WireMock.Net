@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.RegularExpressions
 {
@@ -77,7 +77,7 @@ namespace WireMock.RegularExpressions
         /// <param name="pattern">Pattern to replace token for.</param>
         private static string ReplaceGuidPattern(string pattern)
         {
-            Check.NotNull(pattern, nameof(pattern));
+            Guard.NotNull(pattern, nameof(pattern));
 
             foreach (var tokenPattern in GuidTokenPatterns)
             {

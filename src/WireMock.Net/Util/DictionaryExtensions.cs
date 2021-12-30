@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Util
 {
@@ -19,7 +19,7 @@ namespace WireMock.Util
         /// <param name="action">The action.</param>
         public static void Loop<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, [NotNull] Action<TKey, TValue> action)
         {
-            Check.NotNull(action, nameof(action));
+            Guard.NotNull(action, nameof(action));
 
             if (dictionary != null)
             {

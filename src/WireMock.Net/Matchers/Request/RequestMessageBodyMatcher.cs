@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock.Matchers.Request
 {
@@ -70,7 +70,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">The function.</param>
         public RequestMessageBodyMatcher([NotNull] Func<string, bool> func)
         {
-            Check.NotNull(func, nameof(func));
+            Guard.NotNull(func, nameof(func));
             Func = func;
         }
 
@@ -80,7 +80,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">The function.</param>
         public RequestMessageBodyMatcher([NotNull] Func<byte[], bool> func)
         {
-            Check.NotNull(func, nameof(func));
+            Guard.NotNull(func, nameof(func));
             DataFunc = func;
         }
 
@@ -90,7 +90,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">The function.</param>
         public RequestMessageBodyMatcher([NotNull] Func<object, bool> func)
         {
-            Check.NotNull(func, nameof(func));
+            Guard.NotNull(func, nameof(func));
             JsonFunc = func;
         }
 
@@ -100,7 +100,7 @@ namespace WireMock.Matchers.Request
         /// <param name="func">The function.</param>
         public RequestMessageBodyMatcher([NotNull] Func<IBodyData, bool> func)
         {
-            Check.NotNull(func, nameof(func));
+            Guard.NotNull(func, nameof(func));
             BodyDataFunc = func;
         }
 
@@ -110,7 +110,7 @@ namespace WireMock.Matchers.Request
         /// <param name="matchers">The matchers.</param>
         public RequestMessageBodyMatcher([NotNull] params IMatcher[] matchers)
         {
-            Check.NotNull(matchers, nameof(matchers));
+            Guard.NotNull(matchers, nameof(matchers));
             Matchers = matchers;
         }
 

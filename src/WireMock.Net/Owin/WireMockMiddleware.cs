@@ -7,7 +7,7 @@ using WireMock.Http;
 using WireMock.Owin.Mappers;
 using WireMock.Serialization;
 using WireMock.Types;
-using WireMock.Validation;
+using Stef.Validation;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 #if !USE_ASPNETCORE
@@ -35,18 +35,18 @@ namespace WireMock.Owin
 #if !USE_ASPNETCORE
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
         {
-            _options = Check.NotNull(options, nameof(options));
-            _requestMapper = Check.NotNull(requestMapper, nameof(requestMapper));
-            _responseMapper = Check.NotNull(responseMapper, nameof(responseMapper));
-            _mappingMatcher = Check.NotNull(mappingMatcher, nameof(mappingMatcher));
+            _options = Guard.NotNull(options, nameof(options));
+            _requestMapper = Guard.NotNull(requestMapper, nameof(requestMapper));
+            _responseMapper = Guard.NotNull(responseMapper, nameof(responseMapper));
+            _mappingMatcher = Guard.NotNull(mappingMatcher, nameof(mappingMatcher));
         }
 #else
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
         {
-            _options = Check.NotNull(options, nameof(options));
-            _requestMapper = Check.NotNull(requestMapper, nameof(requestMapper));
-            _responseMapper = Check.NotNull(responseMapper, nameof(responseMapper));
-            _mappingMatcher = Check.NotNull(mappingMatcher, nameof(mappingMatcher));
+            _options = Guard.NotNull(options, nameof(options));
+            _requestMapper = Guard.NotNull(requestMapper, nameof(requestMapper));
+            _responseMapper = Guard.NotNull(responseMapper, nameof(responseMapper));
+            _mappingMatcher = Guard.NotNull(mappingMatcher, nameof(mappingMatcher));
         }
 #endif
 

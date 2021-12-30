@@ -5,7 +5,7 @@ using System.Linq;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 using WireMock.Util;
-using WireMock.Validation;
+using Stef.Validation;
 
 namespace WireMock
 {
@@ -44,7 +44,7 @@ namespace WireMock
         /// <inheritdoc cref="IResponseMessage.AddHeader(string, string[])" />
         public void AddHeader(string name, params string[] values)
         {
-            Check.NotNullOrEmpty(values, nameof(values));
+            Guard.NotNullOrEmpty(values, nameof(values));
 
             var newHeaderValues = Headers.TryGetValue(name, out WireMockList<string> existingValues)
                 ? values.Union(existingValues).ToArray()
