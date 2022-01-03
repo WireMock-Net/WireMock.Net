@@ -7,6 +7,7 @@ using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
@@ -73,8 +74,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
         }
 
-        [Fact(Skip = "Transformer.cs - ReplaceNodeValue")]
-        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer()
+        [Theory]
+        [InlineData(ReplaceNodeOption.Bool, JTokenType.String)]
+        [InlineData(ReplaceNodeOption.Integer, JTokenType.Integer)]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOption option, JTokenType expected)
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -84,14 +87,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     Value = "{{Random Type=\"Integer\"}}"
                 })
-                .WithTransformer();
+                .WithTransformer(option);
 
             // Act
             var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
 
             // Assert
             JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
-            Check.That(j["Value"].Type).IsEqualTo(JTokenType.Integer);
+            Check.That(j["Value"].Type).IsEqualTo(expected);
         }
 
         [Fact]

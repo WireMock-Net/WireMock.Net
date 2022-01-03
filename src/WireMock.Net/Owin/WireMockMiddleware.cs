@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using WireMock.Logging;
 using System.Linq;
+using Stef.Validation;
+using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
 using WireMock.Serialization;
 using WireMock.Types;
-using Stef.Validation;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 #if !USE_ASPNETCORE

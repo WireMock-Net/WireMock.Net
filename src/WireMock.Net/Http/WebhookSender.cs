@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -55,7 +55,7 @@ namespace WireMock.Http
                         throw new NotImplementedException($"TransformerType '{request.TransformerType}' is not supported.");
                 }
 
-                (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers);
+                (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers, request.TransformerReplaceNodeOption);
             }
             else
             {

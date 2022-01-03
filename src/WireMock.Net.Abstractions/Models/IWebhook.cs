@@ -1,4 +1,4 @@
-﻿namespace WireMock.Models
+namespace WireMock.Models
 {
     /// <summary>
     /// IWebhook

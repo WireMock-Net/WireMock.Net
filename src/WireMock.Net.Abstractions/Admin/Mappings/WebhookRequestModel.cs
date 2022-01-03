@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using WireMock.Types;
 
 namespace WireMock.Admin.Mappings
 {
@@ -42,5 +43,10 @@ namespace WireMock.Admin.Mappings
         /// Gets the type of the transformer.
         /// </summary>
         public string TransformerType { get; set; }
+
+        /// <summary>
+        /// The ReplaceNodeOption to use when transforming a JSON node.
+        /// </summary>
+        public string TransformerReplaceNodeOption { get; set; }
     }
 }
