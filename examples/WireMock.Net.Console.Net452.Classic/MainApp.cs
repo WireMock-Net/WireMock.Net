@@ -1,19 +1,17 @@
-using Newtonsoft.Json;
-using HandlebarsDotNet;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
-using WireMock.Util;
-using System.Threading.Tasks;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Net.ConsoleApplication
 {
