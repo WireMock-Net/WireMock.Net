@@ -75,6 +75,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Theory]
+        [InlineData(ReplaceNodeOption.None, JTokenType.String)]
         [InlineData(ReplaceNodeOption.Bool, JTokenType.String)]
         [InlineData(ReplaceNodeOption.Integer, JTokenType.Integer)]
         public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOption option, JTokenType expected)

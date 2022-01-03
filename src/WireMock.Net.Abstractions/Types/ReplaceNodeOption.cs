@@ -9,6 +9,11 @@ namespace WireMock.Types
     public enum ReplaceNodeOption
     {
         /// <summary>
+        /// Don't replace any of the below types.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// Replace boolean string value to a real boolean value. (This is used by default to maintain backward compatibility.)
         /// </summary>
         Bool = 0b00000001,
