@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace WireMock.Admin.Mappings
 {
@@ -64,9 +64,14 @@ namespace WireMock.Admin.Mappings
         public string TransformerType { get; set; }
 
         /// <summary>
-        /// Use the Handlerbars transformer for the content from the referenced BodyAsFile.
+        /// Use the Handlebars transformer for the content from the referenced BodyAsFile.
         /// </summary>
         public bool? UseTransformerForBodyAsFile { get; set; }
+
+        /// <summary>
+        /// The ReplaceNodeOption to use when transforming a JSON node.
+        /// </summary>
+        public string TransformerReplaceNodeOption { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.

@@ -26,6 +26,11 @@ namespace WireMock.Types
         /// <summary>
         /// Replace long string value to a real long value.
         /// </summary>
-        Long = 0b00000100
+        Long = 0b00000100,
+
+        /// <summary>
+        /// Replace all string values to a real values.
+        /// </summary>
+        All = Bool | Integer | Long
     }
 }
