@@ -1,4 +1,4 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 using WireMock.Handlers;
 
 namespace WireMock.Transformers.Handlebars

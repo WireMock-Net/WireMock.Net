@@ -387,14 +387,13 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
         [Theory]
         [InlineData(TransformerType.Handlebars, "a")]
-        [InlineData(TransformerType.Scriban, "a")]
-        [InlineData(TransformerType.ScribanDotLiquid, "a")]
         [InlineData(TransformerType.Handlebars, "42")]
-        [InlineData(TransformerType.Scriban, "42")]
-        [InlineData(TransformerType.ScribanDotLiquid, "42")]
-        public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_ResultAsObject2(TransformerType transformerType, string text)
+        [InlineData(TransformerType.Handlebars, "{")]
+        [InlineData(TransformerType.Handlebars, "]")]
+        [InlineData(TransformerType.Handlebars, " ")]
+        public async Task Response_ProvideResponse_Transformer_WithBodyAsJsonWithText_ResultAsObject(TransformerType transformerType, string text)
         {
-            string jsonString = $"{{ \"text\": \"{text}\" }}";
+            string jsonString = $"{{ \"x\": \"{text}\" }}";
             var bodyData = new BodyData
             {
                 BodyAsJson = JsonConvert.DeserializeObject(jsonString),
@@ -404,7 +403,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
             var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
             var responseBuilder = Response.Create()
-                .WithBodyAsJson(new { text = "{{request.bodyAsJson.text}}" })
+                .WithBodyAsJson(new { text = "{{request.bodyAsJson.x}}" })
                 .WithTransformer(transformerType);
 
             // Act
@@ -412,6 +411,34 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":\"{text}\"}}");
+        }
+
+        [Theory]
+        [InlineData(TransformerType.Handlebars, "false", "false")]
+        [InlineData(TransformerType.Handlebars, "true", "true")]
+        [InlineData(TransformerType.Handlebars, "-42", "\"-42\"")]
+        [InlineData(TransformerType.Handlebars, "2147483647", "\"2147483647\"")]
+        [InlineData(TransformerType.Handlebars, "9223372036854775807", "\"9223372036854775807\"")]
+        public async Task Response_ProvideResponse_Transformer_WithBodyAsJsonWithPrimitive_ResultAsObject(TransformerType transformerType, string value, string expected)
+        {
+            string jsonString = $"{{ \"x\": {value} }}";
+            var bodyData = new BodyData
+            {
+                BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+                DetectedBodyType = BodyType.Json,
+                Encoding = Encoding.UTF8
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+            var responseBuilder = Response.Create()
+                .WithBodyAsJson(new { text = "{{request.bodyAsJson.x}}" })
+                .WithTransformer(transformerType);
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+
+            // Assert
+            JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
         }
 
         [Theory]

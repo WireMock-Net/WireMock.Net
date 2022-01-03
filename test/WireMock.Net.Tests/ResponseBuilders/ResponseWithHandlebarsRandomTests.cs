@@ -73,6 +73,27 @@ namespace WireMock.Net.Tests.ResponseBuilders
             Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
         }
 
+        [Fact(Skip = "Transformer.cs - ReplaceNodeValue")]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer()
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+            var responseBuilder = Response.Create()
+                .WithBodyAsJson(new
+                {
+                    Value = "{{Random Type=\"Integer\"}}"
+                })
+                .WithTransformer();
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+
+            // Assert
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+            Check.That(j["Value"].Type).IsEqualTo(JTokenType.Integer);
+        }
+
         [Fact]
         public async Task Response_ProvideResponseAsync_Handlebars_Random1_Guid()
         {

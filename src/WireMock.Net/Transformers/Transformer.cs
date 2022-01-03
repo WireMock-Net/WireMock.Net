@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Types;
 using WireMock.Util;
@@ -209,15 +208,21 @@ namespace WireMock.Transformers
                 return;
             }
 
-            JToken value;
-            try
+            //if (int.TryParse(stringValue, out int valueAsInteger))
+            //{
+            //    node.Replace(valueAsInteger);
+            //    return;
+            //}
+
+            //if (long.TryParse(stringValue, out long valueAsLong))
+            //{
+            //    node.Replace(valueAsLong);
+            //    return;
+            //}
+
+            if (!JsonUtils.TryParseAsComplexObject(stringValue, out JToken value))
             {
-                // Try to convert this string into a JsonObject
-                value = JToken.Parse(stringValue);
-            }
-            catch (JsonException)
-            {
-                // Ignore JsonException and just keep string value and convert to JToken
+                // Just keep string value and convert to JToken
                 value = stringValue;
             }
 

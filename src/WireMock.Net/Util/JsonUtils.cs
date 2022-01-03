@@ -10,6 +10,33 @@ namespace WireMock.Util
 {
     internal static class JsonUtils
     {
+        public static bool TryParseAsComplexObject(string strInput, out JToken token)
+        {
+            token = null;
+
+            if (string.IsNullOrWhiteSpace(strInput))
+            {
+                return false;
+            }
+
+            strInput = strInput.Trim();
+            if ((!strInput.StartsWith("{") || !strInput.EndsWith("}")) && (!strInput.StartsWith("[") || !strInput.EndsWith("]")))
+            {
+                return false;
+            }
+
+            try
+            {
+                // Try to convert this string into a JToken
+                token = JToken.Parse(strInput);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string Serialize<T>(T value)
         {
             return JsonConvert.SerializeObject(value, JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues);
