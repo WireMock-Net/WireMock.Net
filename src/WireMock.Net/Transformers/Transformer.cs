@@ -167,36 +167,38 @@ namespace WireMock.Transformers
 
         private static void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOption option, JToken node, object model)
         {
-            if (node.Type == JTokenType.Object)
+            switch (node.Type)
             {
-                // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JProperty child in node.Children<JProperty>().ToArray())
-                {
-                    WalkNode(handlebarsContext, option, child.Value, model);
-                }
-            }
-            else if (node.Type == JTokenType.Array)
-            {
-                // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JToken child in node.Children().ToArray())
-                {
-                    WalkNode(handlebarsContext, option, child, model);
-                }
-            }
-            else if (node.Type == JTokenType.String)
-            {
-                // In case of string, try to transform the value.
-                string stringValue = node.Value<string>();
-                if (string.IsNullOrEmpty(stringValue))
-                {
-                    return;
-                }
+                case JTokenType.Object:
+                    // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
+                    foreach (var child in node.Children<JProperty>().ToArray())
+                    {
+                        WalkNode(handlebarsContext, option, child.Value, model);
+                    }
+                    break;
 
-                string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
-                if (!string.Equals(stringValue, transformedString))
-                {
-                    ReplaceNodeValue(option, node, transformedString);
-                }
+                case JTokenType.Array:
+                    // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
+                    foreach (var child in node.Children().ToArray())
+                    {
+                        WalkNode(handlebarsContext, option, child, model);
+                    }
+                    break;
+
+                case JTokenType.String:
+                    // In case of string, try to transform the value.
+                    string stringValue = node.Value<string>();
+                    if (string.IsNullOrEmpty(stringValue))
+                    {
+                        return;
+                    }
+
+                    string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
+                    if (!string.Equals(stringValue, transformedString))
+                    {
+                        ReplaceNodeValue(option, node, transformedString);
+                    }
+                    break;
             }
         }
 
