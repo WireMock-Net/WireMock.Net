@@ -349,7 +349,7 @@ namespace WireMock.ResponseBuilders
 #pragma warning disable CS1574
         /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool, ReplaceNodeOption)"/>
 #pragma warning restore CS1574
-        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOption option = ReplaceNodeOption.Bool)
+        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOption option = ReplaceNodeOption.Default)
         {
             UseTransformer = true;
             TransformerType = transformerType;

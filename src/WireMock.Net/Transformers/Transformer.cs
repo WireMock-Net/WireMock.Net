@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.Types;
 using WireMock.Util;
@@ -193,39 +194,35 @@ namespace WireMock.Transformers
                         return;
                     }
 
-                    string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
-                    if (!string.Equals(stringValue, transformedString))
+                    string transformed = handlebarsContext.ParseAndRender(stringValue, model);
+                    if (!string.Equals(stringValue, transformed))
                     {
-                        ReplaceNodeValue(option, node, transformedString);
+                        ReplaceNodeValue(option, node, transformed);
                     }
                     break;
             }
         }
 
-        private static void ReplaceNodeValue(ReplaceNodeOption option, JToken node, string stringValue)
+        private static void ReplaceNodeValue(ReplaceNodeOption option, JToken node, string transformedString)
         {
-            if (option.HasFlag(ReplaceNodeOption.Bool) && bool.TryParse(stringValue, out bool valueAsBoolean))
+            StringUtils.TryParseQuotedString(transformedString, out var result, out _);
+            bool valueAsBoolean;
+            if (bool.TryParse(result, out valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
             {
                 node.Replace(valueAsBoolean);
                 return;
             }
 
-            if (option.HasFlag(ReplaceNodeOption.Integer) && int.TryParse(stringValue, out int valueAsInteger))
+            JToken value;
+            try
             {
-                node.Replace(valueAsInteger);
-                return;
+                // Try to convert this string into a JsonObject
+                value = JToken.Parse(transformedString);
             }
-
-            if (option.HasFlag(ReplaceNodeOption.Long) && long.TryParse(stringValue, out long valueAsLong))
+            catch (JsonException)
             {
-                node.Replace(valueAsLong);
-                return;
-            }
-
-            if (!JsonUtils.TryParseAsComplexObject(stringValue, out JToken value))
-            {
-                // Just keep string value and convert to JToken
-                value = stringValue;
+                // Ignore JsonException and just keep string value and convert to JToken
+                value = transformedString;
             }
 
             node.Replace(value);

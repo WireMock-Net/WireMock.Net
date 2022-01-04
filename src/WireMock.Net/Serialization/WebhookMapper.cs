@@ -34,7 +34,7 @@ namespace WireMock.Serialization
 
                 if (!Enum.TryParse<ReplaceNodeOption>(model.Request.TransformerReplaceNodeOption, out var option))
                 {
-                    option = ReplaceNodeOption.Bool;
+                    option = ReplaceNodeOption.Default;
                 }
 
                 webhook.Request.TransformerReplaceNodeOption = option;

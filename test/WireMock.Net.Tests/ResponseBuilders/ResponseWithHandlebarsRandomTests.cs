@@ -16,15 +16,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private const string ClientIp = "::1";
 
-        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         public ResponseWithHandlebarsRandomTests()
         {
-            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+            _settings.FileSystemHandler = filesystemHandlerMock.Object;
         }
 
         [Fact]
@@ -75,10 +74,10 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Theory]
-        [InlineData(ReplaceNodeOption.None, JTokenType.String)]
-        [InlineData(ReplaceNodeOption.Bool, JTokenType.String)]
-        [InlineData(ReplaceNodeOption.Integer, JTokenType.Integer)]
-        [InlineData(ReplaceNodeOption.Bool | ReplaceNodeOption.Integer, JTokenType.Integer)]
+        [InlineData(ReplaceNodeOption.Default, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOption.Bool, JTokenType.String)]
+        //[InlineData(ReplaceNodeOption.Integer, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOption.Bool | ReplaceNodeOption.Integer, JTokenType.Integer)]
         public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOption option, JTokenType expected)
         {
             // Assign
