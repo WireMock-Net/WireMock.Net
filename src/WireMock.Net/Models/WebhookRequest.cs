@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -26,5 +26,8 @@ namespace WireMock.Models
 
         /// <inheritdoc cref="IWebhookRequest.TransformerType"/>
         public TransformerType TransformerType { get; set; }
+
+        /// <inheritdoc cref="IWebhookRequest.TransformerReplaceNodeOptions"/>
+        public ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
     }
 }

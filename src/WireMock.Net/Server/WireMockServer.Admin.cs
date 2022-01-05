@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
@@ -24,7 +25,6 @@ using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using Stef.Validation;
 
 namespace WireMock.Server
 {
@@ -785,7 +785,15 @@ namespace WireMock.Server
                 {
                     transformerType = TransformerType.Handlebars;
                 }
-                responseBuilder = responseBuilder.WithTransformer(transformerType, responseModel.UseTransformerForBodyAsFile == true);
+
+                if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
+                {
+                    option = ReplaceNodeOptions.None;
+                }
+                responseBuilder = responseBuilder.WithTransformer(
+                    transformerType,
+                    responseModel.UseTransformerForBodyAsFile == true,
+                    option);
             }
 
             if (!string.IsNullOrEmpty(responseModel.ProxyUrl))

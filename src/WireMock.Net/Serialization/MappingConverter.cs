@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
@@ -16,7 +16,7 @@ namespace WireMock.Serialization
 
         public MappingConverter(MatcherMapper mapper)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _mapper = Guard.NotNull(mapper, nameof(mapper));
         }
 
         public MappingModel ToMappingModel(IMapping mapping)
@@ -130,6 +130,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.UseTransformer = null;
                 mappingModel.Response.TransformerType = null;
                 mappingModel.Response.UseTransformerForBodyAsFile = null;
+                mappingModel.Response.TransformerReplaceNodeOptions = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
                 mappingModel.Response.Fault = null;
@@ -150,6 +151,7 @@ namespace WireMock.Serialization
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
                     mappingModel.Response.TransformerType = response.TransformerType.ToString();
+                    mappingModel.Response.TransformerReplaceNodeOptions = response.TransformerReplaceNodeOptions.ToString();
                 }
 
                 if (response.UseTransformerForBodyAsFile)

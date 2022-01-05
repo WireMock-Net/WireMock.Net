@@ -1,19 +1,17 @@
-using Newtonsoft.Json;
-using HandlebarsDotNet;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
-using WireMock.Util;
-using System.Threading.Tasks;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Net.ConsoleApplication
 {
@@ -359,7 +357,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithHeader("Transformed-Postman-Token", "token is {{request.headers.Postman-Token}}")
                     .WithHeader("xyz_{{request.headers.Postman-Token}}", "token is {{request.headers.Postman-Token}}")
                     .WithBody(@"{""msg"": ""Hello world CATCH-ALL on /*, {{request.path}}, add={{Math.Add request.query.start.[0] 42}} bykey={{request.query.start}}, bykey={{request.query.stop}}, byidx0={{request.query.stop.[0]}}, byidx1={{request.query.stop.[1]}}"" }")
-                    .WithTransformer(TransformerType.Handlebars)
+                    .WithTransformer(TransformerType.Handlebars, true, ReplaceNodeOptions.None)
                     .WithDelay(TimeSpan.FromMilliseconds(100))
                 );
 

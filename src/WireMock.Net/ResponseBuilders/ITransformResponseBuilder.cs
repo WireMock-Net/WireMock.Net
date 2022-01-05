@@ -1,4 +1,4 @@
-﻿using WireMock.Types;
+using WireMock.Types;
 
 namespace WireMock.ResponseBuilders
 {
@@ -13,7 +13,15 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile = false);
+        IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile);
+
+        /// <summary>
+        /// Use the Handlebars.Net ResponseMessage transformer.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IResponseBuilder"/>.
+        /// </returns>
+        IResponseBuilder WithTransformer(ReplaceNodeOptions options);
 
         /// <summary>
         /// Use a specific ResponseMessage transformer.
@@ -21,6 +29,6 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false);
+        IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None);
     }
 }

@@ -18,7 +18,7 @@ namespace WireMock.Transformers
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers)
+        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 
@@ -31,13 +31,13 @@ namespace WireMock.Transformers
             IBodyData newBodyData = null;
             if (bodyData?.DetectedBodyType != null)
             {
-                newBodyData = TransformBodyData(transformerContext, model, bodyData, false);
+                newBodyData = TransformBodyData(transformerContext, options, model, bodyData, false);
             }
 
             return (newBodyData, TransformHeaders(transformerContext, model, headers));
         }
 
-        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile)
+        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 
@@ -50,7 +50,7 @@ namespace WireMock.Transformers
 
             if (original.BodyData?.DetectedBodyType != null)
             {
-                responseMessage.BodyData = TransformBodyData(transformerContext, model, original.BodyData, useTransformerForBodyAsFile);
+                responseMessage.BodyData = TransformBodyData(transformerContext, options, model, original.BodyData, useTransformerForBodyAsFile);
 
                 if (original.BodyData.DetectedBodyType == BodyType.String)
                 {
@@ -77,12 +77,12 @@ namespace WireMock.Transformers
             return responseMessage;
         }
 
-        private static IBodyData TransformBodyData(ITransformerContext transformerContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
+        private static IBodyData TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original, bool useTransformerForBodyAsFile)
         {
             switch (original?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    return TransformBodyAsJson(transformerContext, model, original);
+                    return TransformBodyAsJson(transformerContext, options, model, original);
 
                 case BodyType.File:
                     return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
@@ -114,28 +114,28 @@ namespace WireMock.Transformers
             return newHeaders;
         }
 
-        private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, object model, IBodyData original)
+        private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOptions options, object model, IBodyData original)
         {
             JToken jToken;
             switch (original.BodyAsJson)
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject.DeepClone();
-                    WalkNode(handlebarsContext, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
 
                 case Array bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
-                    WalkNode(handlebarsContext, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
 
                 case string bodyAsString:
-                    jToken = ReplaceSingleNode(handlebarsContext, bodyAsString, model);
+                    jToken = ReplaceSingleNode(handlebarsContext, options, bodyAsString, model);
                     break;
 
                 default:
                     jToken = JObject.FromObject(original.BodyAsJson);
-                    WalkNode(handlebarsContext, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
             }
 
@@ -148,7 +148,7 @@ namespace WireMock.Transformers
             };
         }
 
-        private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, string stringValue, object model)
+        private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, string stringValue, object model)
         {
             string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
 
@@ -158,7 +158,7 @@ namespace WireMock.Transformers
                 JObject dummy = JObject.Parse($"{{ \"{property}\": null }}");
                 JToken node = dummy[property];
 
-                ReplaceNodeValue(node, transformedString);
+                ReplaceNodeValue(options, node, transformedString);
 
                 return dummy[property];
             }
@@ -166,44 +166,47 @@ namespace WireMock.Transformers
             return stringValue;
         }
 
-        private static void WalkNode(ITransformerContext handlebarsContext, JToken node, object model)
+        private static void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, JToken node, object model)
         {
-            if (node.Type == JTokenType.Object)
+            switch (node.Type)
             {
-                // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JProperty child in node.Children<JProperty>().ToArray())
-                {
-                    WalkNode(handlebarsContext, child.Value, model);
-                }
-            }
-            else if (node.Type == JTokenType.Array)
-            {
-                // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
-                foreach (JToken child in node.Children().ToArray())
-                {
-                    WalkNode(handlebarsContext, child, model);
-                }
-            }
-            else if (node.Type == JTokenType.String)
-            {
-                // In case of string, try to transform the value.
-                string stringValue = node.Value<string>();
-                if (string.IsNullOrEmpty(stringValue))
-                {
-                    return;
-                }
+                case JTokenType.Object:
+                    // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
+                    foreach (var child in node.Children<JProperty>().ToArray())
+                    {
+                        WalkNode(handlebarsContext, options, child.Value, model);
+                    }
+                    break;
 
-                string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
-                if (!string.Equals(stringValue, transformedString))
-                {
-                    ReplaceNodeValue(node, transformedString);
-                }
+                case JTokenType.Array:
+                    // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
+                    foreach (var child in node.Children().ToArray())
+                    {
+                        WalkNode(handlebarsContext, options, child, model);
+                    }
+                    break;
+
+                case JTokenType.String:
+                    // In case of string, try to transform the value.
+                    string stringValue = node.Value<string>();
+                    if (string.IsNullOrEmpty(stringValue))
+                    {
+                        return;
+                    }
+
+                    string transformed = handlebarsContext.ParseAndRender(stringValue, model);
+                    if (!string.Equals(stringValue, transformed))
+                    {
+                        ReplaceNodeValue(options, node, transformed);
+                    }
+                    break;
             }
         }
 
-        private static void ReplaceNodeValue(JToken node, string stringValue)
+        private static void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, string transformedString)
         {
-            if (bool.TryParse(stringValue, out bool valueAsBoolean))
+            StringUtils.TryParseQuotedString(transformedString, out var result, out _);
+            if (bool.TryParse(result, out var valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
             {
                 node.Replace(valueAsBoolean);
                 return;
@@ -213,12 +216,12 @@ namespace WireMock.Transformers
             try
             {
                 // Try to convert this string into a JsonObject
-                value = JToken.Parse(stringValue);
+                value = JToken.Parse(transformedString);
             }
             catch (JsonException)
             {
                 // Ignore JsonException and just keep string value and convert to JToken
-                value = stringValue;
+                value = transformedString;
             }
 
             node.Replace(value);
@@ -248,18 +251,15 @@ namespace WireMock.Transformers
                     BodyAsFile = transformedBodyAsFilename
                 };
             }
-            else
-            {
-                string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
 
-                return new BodyData
-                {
-                    DetectedBodyType = BodyType.String,
-                    DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
-                    BodyAsString = handlebarsContext.ParseAndRender(text, model),
-                    BodyAsFile = transformedBodyAsFilename
-                };
-            }
+            string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+            return new BodyData
+            {
+                DetectedBodyType = BodyType.String,
+                DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
+                BodyAsString = handlebarsContext.ParseAndRender(text, model),
+                BodyAsFile = transformedBodyAsFilename
+            };
         }
     }
 }

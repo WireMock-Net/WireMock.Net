@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -38,5 +38,10 @@ namespace WireMock.Models
         /// The transformer type.
         /// </summary>
         TransformerType TransformerType { get; set; }
+
+        /// <summary>
+        /// The ReplaceNodeOptions to use when transforming a JSON node.
+        /// </summary>
+        ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
     }
 }

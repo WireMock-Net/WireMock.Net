@@ -7,6 +7,7 @@ using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders
@@ -15,15 +16,14 @@ namespace WireMock.Net.Tests.ResponseBuilders
     {
         private const string ClientIp = "::1";
 
-        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
         private readonly WireMockServerSettings _settings = new WireMockServerSettings();
 
         public ResponseWithHandlebarsRandomTests()
         {
-            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+            var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+            filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+            _settings.FileSystemHandler = filesystemHandlerMock.Object;
         }
 
         [Fact]
@@ -71,6 +71,31 @@ namespace WireMock.Net.Tests.ResponseBuilders
             // Assert
             JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
             Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
+        }
+
+        [Theory]
+        [InlineData(ReplaceNodeOptions.None, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOptions.Bool, JTokenType.String)]
+        //[InlineData(ReplaceNodeOptions.Integer, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOptions.Bool | ReplaceNodeOptions.Integer, JTokenType.Integer)]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOptions options, JTokenType expected)
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+            var responseBuilder = Response.Create()
+                .WithBodyAsJson(new
+                {
+                    Value = "{{Random Type=\"Integer\"}}"
+                })
+                .WithTransformer(options);
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+
+            // Assert
+            JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+            Check.That(j["Value"].Type).IsEqualTo(expected);
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
@@ -31,6 +31,13 @@ namespace WireMock.Serialization
                     transformerType = TransformerType.Handlebars;
                 }
                 webhook.Request.TransformerType = transformerType;
+
+                if (!Enum.TryParse<ReplaceNodeOptions>(model.Request.TransformerReplaceNodeOptions, out var option))
+                {
+                    option = ReplaceNodeOptions.None;
+                }
+
+                webhook.Request.TransformerReplaceNodeOptions = option;
             }
 
             IEnumerable<string> contentTypeHeader = null;
@@ -76,7 +83,8 @@ namespace WireMock.Serialization
                     Method = webhook.Request.Method,
                     Headers = webhook.Request.Headers?.ToDictionary(x => x.Key, x => x.Value.ToString()),
                     UseTransformer = webhook.Request.UseTransformer,
-                    TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null
+                    TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null,
+                    TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString()
                 }
             };
 
@@ -93,6 +101,7 @@ namespace WireMock.Serialization
                         break;
 
                     default:
+                        // Empty
                         break;
                 }
             }
