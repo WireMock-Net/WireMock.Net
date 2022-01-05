@@ -69,9 +69,9 @@ namespace WireMock.Admin.Mappings
         public bool? UseTransformerForBodyAsFile { get; set; }
 
         /// <summary>
-        /// The ReplaceNodeOption to use when transforming a JSON node.
+        /// The ReplaceNodeOptions to use when transforming a JSON node.
         /// </summary>
-        public string TransformerReplaceNodeOption { get; set; }
+        public string TransformerReplaceNodeOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.

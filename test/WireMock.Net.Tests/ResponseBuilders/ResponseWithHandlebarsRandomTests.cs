@@ -74,11 +74,11 @@ namespace WireMock.Net.Tests.ResponseBuilders
         }
 
         [Theory]
-        [InlineData(ReplaceNodeOption.Default, JTokenType.Integer)]
-        //[InlineData(ReplaceNodeOption.Bool, JTokenType.String)]
-        //[InlineData(ReplaceNodeOption.Integer, JTokenType.Integer)]
-        //[InlineData(ReplaceNodeOption.Bool | ReplaceNodeOption.Integer, JTokenType.Integer)]
-        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOption option, JTokenType expected)
+        [InlineData(ReplaceNodeOptions.None, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOptions.Bool, JTokenType.String)]
+        //[InlineData(ReplaceNodeOptions.Integer, JTokenType.Integer)]
+        //[InlineData(ReplaceNodeOptions.Bool | ReplaceNodeOptions.Integer, JTokenType.Integer)]
+        public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOptions options, JTokenType expected)
         {
             // Assign
             var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -88,7 +88,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
                 {
                     Value = "{{Random Type=\"Integer\"}}"
                 })
-                .WithTransformer(option);
+                .WithTransformer(options);
 
             // Act
             var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);

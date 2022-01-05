@@ -55,7 +55,7 @@ namespace WireMock.Http
                         throw new NotImplementedException($"TransformerType '{request.TransformerType}' is not supported.");
                 }
 
-                (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers, request.TransformerReplaceNodeOption);
+                (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers, request.TransformerReplaceNodeOptions);
             }
             else
             {

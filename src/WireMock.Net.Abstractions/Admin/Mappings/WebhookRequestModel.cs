@@ -45,8 +45,8 @@ namespace WireMock.Admin.Mappings
         public string TransformerType { get; set; }
 
         /// <summary>
-        /// The ReplaceNodeOption to use when transforming a JSON node.
+        /// The ReplaceNodeOptions to use when transforming a JSON node.
         /// </summary>
-        public string TransformerReplaceNodeOption { get; set; }
+        public string TransformerReplaceNodeOptions { get; set; }
     }
 }

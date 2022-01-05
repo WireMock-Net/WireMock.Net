@@ -27,7 +27,7 @@ namespace WireMock.Models
         /// <inheritdoc cref="IWebhookRequest.TransformerType"/>
         public TransformerType TransformerType { get; set; }
 
-        /// <inheritdoc cref="IWebhookRequest.TransformerReplaceNodeOption"/>
-        public ReplaceNodeOption TransformerReplaceNodeOption { get; set; }
+        /// <inheritdoc cref="IWebhookRequest.TransformerReplaceNodeOptions"/>
+        public ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
     }
 }

@@ -786,9 +786,9 @@ namespace WireMock.Server
                     transformerType = TransformerType.Handlebars;
                 }
 
-                if (!Enum.TryParse<ReplaceNodeOption>(responseModel.TransformerReplaceNodeOption, out var option))
+                if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
                 {
-                    option = ReplaceNodeOption.Default;
+                    option = ReplaceNodeOptions.None;
                 }
                 responseBuilder = responseBuilder.WithTransformer(
                     transformerType,

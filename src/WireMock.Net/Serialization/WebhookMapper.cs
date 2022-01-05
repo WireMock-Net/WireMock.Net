@@ -32,12 +32,12 @@ namespace WireMock.Serialization
                 }
                 webhook.Request.TransformerType = transformerType;
 
-                if (!Enum.TryParse<ReplaceNodeOption>(model.Request.TransformerReplaceNodeOption, out var option))
+                if (!Enum.TryParse<ReplaceNodeOptions>(model.Request.TransformerReplaceNodeOptions, out var option))
                 {
-                    option = ReplaceNodeOption.Default;
+                    option = ReplaceNodeOptions.None;
                 }
 
-                webhook.Request.TransformerReplaceNodeOption = option;
+                webhook.Request.TransformerReplaceNodeOptions = option;
             }
 
             IEnumerable<string> contentTypeHeader = null;
@@ -84,7 +84,7 @@ namespace WireMock.Serialization
                     Headers = webhook.Request.Headers?.ToDictionary(x => x.Key, x => x.Value.ToString()),
                     UseTransformer = webhook.Request.UseTransformer,
                     TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null,
-                    TransformerReplaceNodeOption = webhook.Request.TransformerReplaceNodeOption.ToString()
+                    TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString()
                 }
             };
 

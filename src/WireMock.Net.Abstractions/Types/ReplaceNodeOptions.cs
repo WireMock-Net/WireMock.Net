@@ -6,21 +6,12 @@ namespace WireMock.Types
     /// Flags to use when replace a JSON node using the Transformer.
     /// </summary>
     [Flags]
-    public enum ReplaceNodeOption
+    public enum ReplaceNodeOptions
     {
-        Default = 0,
-        //None = 0,
-
-        //StripQuotes = 0b00001000,
-
-        //AddQuotes = 0b00010000,
-
-        //Keep = 0b00000010,
-
-        ///// <summary>
-        ///// Don't replace any of the below types.
-        ///// </summary>
-        //None = 0,
+        /// <summary>
+        /// Default
+        /// </summary>
+        None = 0
 
         ///// <summary>
         ///// Replace boolean string value to a real boolean value. (This is used by default to maintain backward compatibility.)

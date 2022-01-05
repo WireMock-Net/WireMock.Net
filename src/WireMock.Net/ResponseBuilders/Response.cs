@@ -73,9 +73,9 @@ namespace WireMock.ResponseBuilders
         public bool UseTransformerForBodyAsFile { get; private set; }
 
         /// <summary>
-        /// Gets the ReplaceNodeOption to use when transforming a JSON node.
+        /// Gets the ReplaceNodeOptions to use when transforming a JSON node.
         /// </summary>
-        public ReplaceNodeOption TransformerReplaceNodeOption { get; private set; }
+        public ReplaceNodeOptions TransformerReplaceNodeOptions { get; private set; }
 
         /// <summary>
         /// Gets the response message.
@@ -340,21 +340,21 @@ namespace WireMock.ResponseBuilders
             return WithTransformer(TransformerType.Handlebars, transformContentFromBodyAsFile);
         }
 
-        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(ReplaceNodeOption)"/>
-        public IResponseBuilder WithTransformer(ReplaceNodeOption option)
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(ReplaceNodeOptions)"/>
+        public IResponseBuilder WithTransformer(ReplaceNodeOptions options)
         {
-            return WithTransformer(TransformerType.Handlebars, false, option);
+            return WithTransformer(TransformerType.Handlebars, false, options);
         }
 
 #pragma warning disable CS1574
-        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool, ReplaceNodeOption)"/>
+        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool, ReplaceNodeOptions)"/>
 #pragma warning restore CS1574
-        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOption option = ReplaceNodeOption.Default)
+        public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None)
         {
             UseTransformer = true;
             TransformerType = transformerType;
             UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
-            TransformerReplaceNodeOption = option;
+            TransformerReplaceNodeOptions = options;
             return this;
         }
 
@@ -469,7 +469,7 @@ namespace WireMock.ResponseBuilders
                         throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
                 }
 
-                return (responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile, TransformerReplaceNodeOption), null);
+                return (responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile, TransformerReplaceNodeOptions), null);
             }
 
             if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)

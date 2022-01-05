@@ -404,7 +404,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
         //    var responseBuilder = Response.Create()
         //        .WithBodyAsJson(new { text = "\"{{request.bodyAsJson.x}}\"" })
-        //        .WithTransformer(transformerType, false, ReplaceNodeOption.Default);
+        //        .WithTransformer(transformerType, false, ReplaceNodeOptions.Default);
 
         //    // Act
         //    var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
@@ -428,7 +428,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
         [InlineData(TransformerType.Handlebars, "2147483647", "2147483647")]
         [InlineData(TransformerType.Handlebars, "\"9223372036854775807\"", "9223372036854775807")] // todo
         [InlineData(TransformerType.Handlebars, "9223372036854775807", "9223372036854775807")]
-        public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_And_ReplaceNodeOptionKeep(TransformerType transformerType, string value, string expected)
+        public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_And_ReplaceNodeOptionsKeep(TransformerType transformerType, string value, string expected)
         {
             string jsonString = $"{{ \"x\": {value} }}";
             var bodyData = new BodyData
@@ -441,7 +441,7 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             var responseBuilder = Response.Create()
                 .WithBodyAsJson(new { text = "{{request.bodyAsJson.x}}" })
-                .WithTransformer(transformerType, false, ReplaceNodeOption.Default);
+                .WithTransformer(transformerType, false, ReplaceNodeOptions.None);
 
             // Act
             var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);

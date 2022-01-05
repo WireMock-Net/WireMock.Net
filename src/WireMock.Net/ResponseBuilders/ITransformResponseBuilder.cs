@@ -21,7 +21,7 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithTransformer(ReplaceNodeOption option);
+        IResponseBuilder WithTransformer(ReplaceNodeOptions options);
 
         /// <summary>
         /// Use a specific ResponseMessage transformer.
@@ -29,6 +29,6 @@ namespace WireMock.ResponseBuilders
         /// <returns>
         /// The <see cref="IResponseBuilder"/>.
         /// </returns>
-        IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOption option = ReplaceNodeOption.Default);
+        IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None);
     }
 }

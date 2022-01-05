@@ -130,7 +130,7 @@ namespace WireMock.Serialization
                 mappingModel.Response.UseTransformer = null;
                 mappingModel.Response.TransformerType = null;
                 mappingModel.Response.UseTransformerForBodyAsFile = null;
-                mappingModel.Response.TransformerReplaceNodeOption = null;
+                mappingModel.Response.TransformerReplaceNodeOptions = null;
                 mappingModel.Response.BodyEncoding = null;
                 mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
                 mappingModel.Response.Fault = null;
@@ -151,7 +151,7 @@ namespace WireMock.Serialization
                 {
                     mappingModel.Response.UseTransformer = response.UseTransformer;
                     mappingModel.Response.TransformerType = response.TransformerType.ToString();
-                    mappingModel.Response.TransformerReplaceNodeOption = response.TransformerReplaceNodeOption.ToString();
+                    mappingModel.Response.TransformerReplaceNodeOptions = response.TransformerReplaceNodeOptions.ToString();
                 }
 
                 if (response.UseTransformerForBodyAsFile)

@@ -18,7 +18,7 @@ namespace WireMock.Transformers
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOption option)
+        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 
@@ -31,13 +31,13 @@ namespace WireMock.Transformers
             IBodyData newBodyData = null;
             if (bodyData?.DetectedBodyType != null)
             {
-                newBodyData = TransformBodyData(transformerContext, option, model, bodyData, false);
+                newBodyData = TransformBodyData(transformerContext, options, model, bodyData, false);
             }
 
             return (newBodyData, TransformHeaders(transformerContext, model, headers));
         }
 
-        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOption option)
+        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 
@@ -50,7 +50,7 @@ namespace WireMock.Transformers
 
             if (original.BodyData?.DetectedBodyType != null)
             {
-                responseMessage.BodyData = TransformBodyData(transformerContext, option, model, original.BodyData, useTransformerForBodyAsFile);
+                responseMessage.BodyData = TransformBodyData(transformerContext, options, model, original.BodyData, useTransformerForBodyAsFile);
 
                 if (original.BodyData.DetectedBodyType == BodyType.String)
                 {
@@ -77,12 +77,12 @@ namespace WireMock.Transformers
             return responseMessage;
         }
 
-        private static IBodyData TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOption option, object model, IBodyData original, bool useTransformerForBodyAsFile)
+        private static IBodyData TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original, bool useTransformerForBodyAsFile)
         {
             switch (original?.DetectedBodyType)
             {
                 case BodyType.Json:
-                    return TransformBodyAsJson(transformerContext, option, model, original);
+                    return TransformBodyAsJson(transformerContext, options, model, original);
 
                 case BodyType.File:
                     return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
@@ -114,28 +114,28 @@ namespace WireMock.Transformers
             return newHeaders;
         }
 
-        private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOption option, object model, IBodyData original)
+        private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOptions options, object model, IBodyData original)
         {
             JToken jToken;
             switch (original.BodyAsJson)
             {
                 case JObject bodyAsJObject:
                     jToken = bodyAsJObject.DeepClone();
-                    WalkNode(handlebarsContext, option, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
 
                 case Array bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
-                    WalkNode(handlebarsContext, option, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
 
                 case string bodyAsString:
-                    jToken = ReplaceSingleNode(handlebarsContext, option, bodyAsString, model);
+                    jToken = ReplaceSingleNode(handlebarsContext, options, bodyAsString, model);
                     break;
 
                 default:
                     jToken = JObject.FromObject(original.BodyAsJson);
-                    WalkNode(handlebarsContext, option, jToken, model);
+                    WalkNode(handlebarsContext, options, jToken, model);
                     break;
             }
 
@@ -148,7 +148,7 @@ namespace WireMock.Transformers
             };
         }
 
-        private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOption option, string stringValue, object model)
+        private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, string stringValue, object model)
         {
             string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
 
@@ -158,7 +158,7 @@ namespace WireMock.Transformers
                 JObject dummy = JObject.Parse($"{{ \"{property}\": null }}");
                 JToken node = dummy[property];
 
-                ReplaceNodeValue(option, node, transformedString);
+                ReplaceNodeValue(options, node, transformedString);
 
                 return dummy[property];
             }
@@ -166,7 +166,7 @@ namespace WireMock.Transformers
             return stringValue;
         }
 
-        private static void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOption option, JToken node, object model)
+        private static void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, JToken node, object model)
         {
             switch (node.Type)
             {
@@ -174,7 +174,7 @@ namespace WireMock.Transformers
                     // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
                     foreach (var child in node.Children<JProperty>().ToArray())
                     {
-                        WalkNode(handlebarsContext, option, child.Value, model);
+                        WalkNode(handlebarsContext, options, child.Value, model);
                     }
                     break;
 
@@ -182,7 +182,7 @@ namespace WireMock.Transformers
                     // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
                     foreach (var child in node.Children().ToArray())
                     {
-                        WalkNode(handlebarsContext, option, child, model);
+                        WalkNode(handlebarsContext, options, child, model);
                     }
                     break;
 
@@ -197,17 +197,16 @@ namespace WireMock.Transformers
                     string transformed = handlebarsContext.ParseAndRender(stringValue, model);
                     if (!string.Equals(stringValue, transformed))
                     {
-                        ReplaceNodeValue(option, node, transformed);
+                        ReplaceNodeValue(options, node, transformed);
                     }
                     break;
             }
         }
 
-        private static void ReplaceNodeValue(ReplaceNodeOption option, JToken node, string transformedString)
+        private static void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, string transformedString)
         {
             StringUtils.TryParseQuotedString(transformedString, out var result, out _);
-            bool valueAsBoolean;
-            if (bool.TryParse(result, out valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
+            if (bool.TryParse(result, out var valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
             {
                 node.Replace(valueAsBoolean);
                 return;

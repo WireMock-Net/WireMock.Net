@@ -40,8 +40,8 @@ namespace WireMock.Models
         TransformerType TransformerType { get; set; }
 
         /// <summary>
-        /// The ReplaceNodeOption to use when transforming a JSON node.
+        /// The ReplaceNodeOptions to use when transforming a JSON node.
         /// </summary>
-        ReplaceNodeOption TransformerReplaceNodeOption { get; set; }
+        ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
     }
 }
