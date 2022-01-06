@@ -46,10 +46,7 @@ namespace WireMock.Owin
         [PublicAPI]
         public Task StartAsync()
         {
-            return Task.Run(() =>
-            {
-                StartServers();
-            }, _cts.Token);
+            return Task.Run(StartServers, _cts.Token);
         }
 
         [PublicAPI]

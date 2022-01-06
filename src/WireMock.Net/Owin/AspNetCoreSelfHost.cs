@@ -1,6 +1,7 @@
 #if USE_ASPNETCORE
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,10 +9,10 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Stef.Validation;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using WireMock.Util;
-using Stef.Validation;
 
 namespace WireMock.Owin
 {
@@ -54,7 +55,7 @@ namespace WireMock.Owin
             // a filesystem handler).
             if (string.IsNullOrEmpty(AppContext.BaseDirectory))
             {
-                builder.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
+                builder.UseContentRoot(Directory.GetCurrentDirectory());
             }
 
             _host = builder
