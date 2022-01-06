@@ -1,5 +1,5 @@
-﻿using System;
 using Scriban;
+using Stef.Validation;
 using WireMock.Handlers;
 using WireMock.Types;
 
@@ -13,7 +13,7 @@ namespace WireMock.Transformers.Scriban
 
         public ScribanContext(IFileSystemHandler fileSystemHandler, TransformerType transformerType)
         {
-            FileSystemHandler = fileSystemHandler ?? throw new ArgumentNullException(nameof(fileSystemHandler));
+            FileSystemHandler = Guard.NotNull(fileSystemHandler);
             _transformerType = transformerType;
         }
 

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
+using Stef.Validation;
 using WireMock.Handlers;
 
 namespace WireMock.Transformers.Handlebars
@@ -12,7 +13,7 @@ namespace WireMock.Transformers.Handlebars
 
         public HandlebarsContextFactory([NotNull] IFileSystemHandler fileSystemHandler, [CanBeNull] Action<IHandlebars, IFileSystemHandler> action)
         {
-            _fileSystemHandler = fileSystemHandler ?? throw new ArgumentNullException(nameof(fileSystemHandler));
+            _fileSystemHandler = Guard.NotNull(fileSystemHandler);
             _action = action;
         }
 
