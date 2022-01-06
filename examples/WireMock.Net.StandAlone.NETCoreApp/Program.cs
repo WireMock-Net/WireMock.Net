@@ -37,10 +37,11 @@ namespace WireMock.Net.StandAlone.NETCoreApp
 
             /* https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core */
             /* Enable Cors */
+            var policyName = "MyPolicy";
             settings.AdditionalServiceRegistration = services =>
             {
                 services.AddCors(corsOptions =>
-                    corsOptions.AddPolicy("MyPolicy",
+                    corsOptions.AddPolicy(policyName,
                         corsPolicyBuilder =>
                         {
                             corsPolicyBuilder
@@ -56,7 +57,7 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             settings.PreWireMockMiddlewareInit = app =>
             {
                 var appBuilder = (IApplicationBuilder)app;
-                appBuilder.UseCors();
+                appBuilder.UseCors(policyName);
 
                 settings.Logger.Debug("Use Cors");
             };
