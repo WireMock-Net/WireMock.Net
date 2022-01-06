@@ -1,3 +1,8 @@
+# 1.4.31 (06 January 2022)
+- [#706](https://github.com/WireMock-Net/WireMock.Net/pull/706) - Provide open api schema to dynamic examples generator so you can generate accurate data [feature] contributed by [brunotarghetta](https://github.com/brunotarghetta)
+- [#707](https://github.com/WireMock-Net/WireMock.Net/pull/707) - Use NuGet &quot;Stef.Validation&quot; [feature] contributed by [StefH](https://github.com/StefH)
+- [#710](https://github.com/WireMock-Net/WireMock.Net/pull/710) - Add ReplaceNodeOption flag [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.30 (25 December 2021)
 - [#703](https://github.com/WireMock-Net/WireMock.Net/pull/703) - SaveUnmatchedRequests [feature] contributed by [StefH](https://github.com/StefH)
 - [#704](https://github.com/WireMock-Net/WireMock.Net/pull/704) - Add .ConfigureAwait(false); to the await Task calls [bug] contributed by [StefH](https://github.com/StefH)

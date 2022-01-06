@@ -1,8 +1,6 @@
-# 1.4.30 (25 December 2021)
-- #703 SaveUnmatchedRequests [feature]
-- #704 Add .ConfigureAwait(false); to the await Task calls [bug]
-- #534 Mock server not answer if integrated in Xamarin UITest project [bug]
-- #567 Can't start WireMock.Net server in Xamarin.UITest project (.NET Framework 4.7.2) on MacOS [bug]
-- #685 GuidWildcardMatcher to match on GUIDs [feature]
+# 1.4.31 (06 January 2022)
+- #706 Provide open api schema to dynamic examples generator so you can generate accurate data [feature]
+- #707 Use NuGet &quot;Stef.Validation&quot; [feature]
+- #710 Add ReplaceNodeOption flag [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
