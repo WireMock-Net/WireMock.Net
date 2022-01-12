@@ -24,7 +24,6 @@ namespace WireMock.Net.Tests.Serialization
 
         public CustomPathParamMatcher(string path, Dictionary<string, string> pathParams) : this(MatchBehaviour.AcceptOnMatch, path, pathParams)
         {
-
         }
 
         public CustomPathParamMatcher(MatchBehaviour matchBehaviour, string path, Dictionary<string, string> pathParams, bool throwException = false)
@@ -90,23 +89,6 @@ namespace WireMock.Net.Tests.Serialization
                 path = path.Substring(0, queryParamsIndex);
 
             return path.Trim().Trim('/').ToLower().Split('/');
-        }
-    }
-
-    public class CustomPathParamMatcherModel
-    {
-        public string Path { get; set; }
-        public Dictionary<string, string> PathParams { get; set; }
-
-        public CustomPathParamMatcherModel()
-        {
-            
-        }
-
-        public CustomPathParamMatcherModel(string path, Dictionary<string, string> pathParams)
-        {
-            Path = path;
-            PathParams = pathParams;
         }
     }
 }
