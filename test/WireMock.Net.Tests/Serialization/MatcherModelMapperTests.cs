@@ -331,8 +331,8 @@ namespace WireMock.Net.Tests.Serialization
             };
 
             var settings = new WireMockServerSettings();
-            settings.CustomMatcherMapping = settings.CustomMatcherMapping ?? new Dictionary<string, Func<MatcherModel, IMatcher>>();
-            settings.CustomMatcherMapping[nameof(CustomPathParamMatcher)] = matcherModel =>
+            settings.CustomMatcherMappings = settings.CustomMatcherMappings ?? new Dictionary<string, Func<MatcherModel, IMatcher>>();
+            settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
             {
                 var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
                 return new CustomPathParamMatcher(

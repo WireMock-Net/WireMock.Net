@@ -236,6 +236,6 @@ namespace WireMock.Settings
         /// Custom matcher mappings for static mappings
         /// </summary>
         [PublicAPI]
-        IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMapping { get; set; }
+        IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMappings { get; set; }
     }
 }
