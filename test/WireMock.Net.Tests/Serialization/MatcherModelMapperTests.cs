@@ -369,6 +369,7 @@ namespace WireMock.Net.Tests.Serialization
             {
                 model.Should().NotBeNull();
                 model.Name.Should().Be(nameof(CustomPathParamMatcher));
+
                 var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)model.Pattern);
                 matcherParams.Path.Should().Be("/customer/{customerId}/document/{documentId}");
                 matcherParams.PathParams.Should().BeEquivalentTo(new Dictionary<string, string>(2)
