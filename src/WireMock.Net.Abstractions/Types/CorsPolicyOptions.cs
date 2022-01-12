@@ -9,7 +9,7 @@ namespace WireMock.Types
     public enum CorsPolicyOptions
     {
         /// <summary>
-        /// Default
+        /// Cors is disabled
         /// </summary>
         None = 0,
 
