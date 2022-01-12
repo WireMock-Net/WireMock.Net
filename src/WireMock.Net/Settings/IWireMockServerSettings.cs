@@ -8,6 +8,7 @@ using WireMock.Matchers;
 using WireMock.RegularExpressions;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.Types;
 #endif
 
 namespace WireMock.Settings
@@ -132,6 +133,12 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+
+        /// <summary>
+        /// Policies to use when using CORS. By default CORS is disabled. [Optional]
+        /// </summary>
+        [PublicAPI]
+        CorsPolicyOptions? CorsPolicyOptions { get; set; }
 #endif
 
         /// <summary>
