@@ -293,7 +293,11 @@ namespace WireMock.Server
                 HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
                 ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails,
                 UseRegexExtended = _settings.UseRegexExtended,
-                SaveUnmatchedRequests = _settings.SaveUnmatchedRequests
+                SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
+
+#if USE_ASPNETCORE
+                CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
+#endif
             };
 
             return ToJson(model);
@@ -314,6 +318,13 @@ namespace WireMock.Server
             _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
             _settings.UseRegexExtended = settings.UseRegexExtended;
             _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
+
+#if USE_ASPNETCORE
+            if (Enum.TryParse<CorsPolicyOptions>(settings.CorsPolicyOptions, true, out var corsPolicyOptions))
+            {
+                _settings.CorsPolicyOptions = corsPolicyOptions;
+            }
+#endif
 
             return ResponseMessageBuilder.Create("Settings updated");
         }

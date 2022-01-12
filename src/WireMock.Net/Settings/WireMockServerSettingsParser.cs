@@ -1,7 +1,8 @@
 using System;
+using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Logging;
 using Stef.Validation;
+using WireMock.Logging;
 using WireMock.Types;
 
 namespace WireMock.Settings
@@ -56,7 +57,12 @@ namespace WireMock.Settings
             };
 
 #if USE_ASPNETCORE
-            settings.CorsPolicyOptions = parser.GetValue<CorsPolicyOptions>(nameof(IWireMockServerSettings.CorsPolicyOptions), values => Enum.Parse<CorsPolicyOptions>())
+            settings.CorsPolicyOptions = parser.GetValue(
+                nameof(IWireMockServerSettings.CorsPolicyOptions), values =>
+                {
+                    var value = string.Join(string.Empty, values);
+                    return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
+                });
 #endif
 
             if (logger != null)

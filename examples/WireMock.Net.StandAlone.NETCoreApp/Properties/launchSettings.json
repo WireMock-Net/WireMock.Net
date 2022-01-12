@@ -1,8 +1,8 @@
 {
   "profiles": {
     "WireMock.Net.StandAlone.NETCoreApp": {
-      "commandName": "Project",
-      "commandLineArgs": "--Urls http://localhost:9091 --WireMockLogger WireMockConsoleLogger"
+        "commandName": "Project",
+        "commandLineArgs": "--Urls http://localhost:9091 --CorsPolicyOptions AllowAll --WireMockLogger WireMockConsoleLogger"
     }
   }
 }

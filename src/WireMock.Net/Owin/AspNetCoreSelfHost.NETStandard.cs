@@ -1,10 +1,11 @@
-﻿#if USE_ASPNETCORE && !NETSTANDARD1_3
+#if USE_ASPNETCORE && !NETSTANDARD1_3
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.HttpsCertificate;
+using WireMock.Types;
 
 namespace WireMock.Owin
 {
