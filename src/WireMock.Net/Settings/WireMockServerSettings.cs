@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using WireMock.Admin.Mappings;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -158,5 +161,9 @@ namespace WireMock.Settings
         /// <inheritdoc cref="IWireMockServerSettings.SaveUnmatchedRequests"/>
         [PublicAPI]
         public bool? SaveUnmatchedRequests { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CustomMatcherMapping"/>
+        [PublicAPI]
+        public IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMapping { get; set; }
     }
 }

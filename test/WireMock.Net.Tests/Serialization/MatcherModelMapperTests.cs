@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using AnyOfTypes;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
+using Newtonsoft.Json;
 using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Handlers;
@@ -309,6 +312,71 @@ namespace WireMock.Net.Tests.Serialization
 
             // Act
             Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_MatcherModelToCustomMatcher()
+        {
+            // Arrange
+            var patternModel = new CustomPathParamMatcherModel("/customer/{customerId}/document/{documentId}",
+                new Dictionary<string, string>(2)
+                {
+                    { "customerId", @"^[0-9]+$" },
+                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+                });
+            var model = new MatcherModel
+            {
+                Name = nameof(CustomPathParamMatcher),
+                Pattern = JsonConvert.SerializeObject(patternModel)
+            };
+
+            var settings = new WireMockServerSettings();
+            settings.CustomMatcherMapping = settings.CustomMatcherMapping ?? new Dictionary<string, Func<MatcherModel, IMatcher>>();
+            settings.CustomMatcherMapping[nameof(CustomPathParamMatcher)] = matcherModel =>
+            {
+                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
+                return new CustomPathParamMatcher(
+                    matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                    matcherParams.Path, matcherParams.PathParams,
+                    settings.ThrowExceptionWhenMatcherFails == true
+                );
+            };
+            var sut = new MatcherMapper(settings);
+
+            // Act
+            var matcher = sut.Map(model) as CustomPathParamMatcher;
+
+            // Assert
+            matcher.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void MatcherModelMapper_Map_CustomMatcherToMatcherModel()
+        {
+            // Arrange
+            var matcher = new CustomPathParamMatcher("/customer/{customerId}/document/{documentId}",
+                new Dictionary<string, string>(2)
+                {
+                    { "customerId", @"^[0-9]+$" },
+                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+                });
+
+            // Act
+            var model = _sut.Map(matcher);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                model.Should().NotBeNull();
+                model.Name.Should().Be(nameof(CustomPathParamMatcher));
+                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)model.Pattern);
+                matcherParams.Path.Should().Be("/customer/{customerId}/document/{documentId}");
+                matcherParams.PathParams.Should().BeEquivalentTo(new Dictionary<string, string>(2)
+                {
+                    { "customerId", @"^[0-9]+$" },
+                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+                });
+            }
         }
     }
 }
