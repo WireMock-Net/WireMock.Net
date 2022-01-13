@@ -163,7 +163,7 @@ namespace WireMock.Settings
         public bool? SaveUnmatchedRequests { get; set; }
 
         /// <inheritdoc cref="IWireMockServerSettings.CustomMatcherMappings"/>
-        [PublicAPI]
+        [PublicAPI, JsonIgnore]
         public IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMappings { get; set; }
     }
 }

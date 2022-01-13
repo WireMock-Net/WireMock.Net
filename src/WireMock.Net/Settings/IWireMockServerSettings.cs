@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using HandlebarsDotNet;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Handlers;
 using WireMock.Logging;
@@ -235,7 +236,7 @@ namespace WireMock.Settings
         /// <summary>
         /// Custom matcher mappings for static mappings
         /// </summary>
-        [PublicAPI]
+        [PublicAPI, JsonIgnore]
         IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMappings { get; set; }
     }
 }

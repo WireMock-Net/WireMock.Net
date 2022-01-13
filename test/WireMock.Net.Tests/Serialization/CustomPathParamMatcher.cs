@@ -77,6 +77,8 @@ namespace WireMock.Net.Tests.Serialization
                 {
                     throw;
                 }
+
+                return MatchScores.Mismatch;
             }
 
             return MatchScores.Perfect;
