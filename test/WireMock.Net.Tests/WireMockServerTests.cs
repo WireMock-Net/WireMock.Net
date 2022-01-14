@@ -11,6 +11,8 @@ using NFluent;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
@@ -90,6 +92,29 @@ namespace WireMock.Net.Tests
 
             server.Stop();
         }
+
+#if NETCOREAPP3_1_OR_GREATER
+        [Fact]
+        public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
+        {
+            // Arrange
+            var settings = new WireMockServerSettings
+            {
+                CorsPolicyOptions = CorsPolicyOptions.AllowAll
+            };
+            var server = WireMockServer.Start(settings);
+
+            server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+
+            // Asser.
+            response.Should().Be("x");
+
+            server.Stop();
+        }
+#endif
 
         [Fact]
         public async Task WireMockServer_Should_delay_responses_for_a_given_route()
