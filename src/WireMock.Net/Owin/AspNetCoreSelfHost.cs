@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Stef.Validation;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
-using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Owin
@@ -72,32 +71,8 @@ namespace WireMock.Owin
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
 
 #if NETCOREAPP3_1_OR_GREATER
-                    if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
-                    {
-                        /* https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core */
-                        /* Enable Cors */
-                        services.AddCors(corsOptions => corsOptions
-                            .AddPolicy(CorsPolicyName,
-                                corsPolicyBuilder =>
-                                {
-                                    if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyHeader))
-                                    {
-                                        corsPolicyBuilder.AllowAnyHeader();
-                                    }
-
-                                    if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyMethod))
-                                    {
-                                        corsPolicyBuilder.AllowAnyMethod();
-                                    }
-
-                                    if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyOrigin))
-                                    {
-                                        corsPolicyBuilder.AllowAnyOrigin();
-                                    }
-                                }));
-                    }
+                    AddCors(services);
 #endif
-
                     _wireMockMiddlewareOptions.AdditionalServiceRegistration?.Invoke(services);
                 })
                 .Configure(appBuilder =>
@@ -105,13 +80,8 @@ namespace WireMock.Owin
                     appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
 
 #if NETCOREAPP3_1_OR_GREATER
-                    if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
-                    {
-                        /* Use Cors */
-                        appBuilder.UseCors(CorsPolicyName);
-                    }
+                    UseCors(appBuilder);
 #endif
-
                     _wireMockMiddlewareOptions.PreWireMockMiddlewareInit?.Invoke(appBuilder);
 
                     appBuilder.UseMiddleware<WireMockMiddleware>();
