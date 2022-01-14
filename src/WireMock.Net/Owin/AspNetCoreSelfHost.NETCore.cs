@@ -1,5 +1,4 @@
 #if NETCOREAPP3_1_OR_GREATER
-using System.Reflection.PortableExecutable;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.Types;
