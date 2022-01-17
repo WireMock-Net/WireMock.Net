@@ -105,6 +105,11 @@ namespace WireMock.Serialization
                     return new SimMetricsMatcher(matchBehaviour, stringPatterns, type, throwExceptionWhenMatcherFails);
 
                 default:
+                    if (_settings.CustomMatcherMappings != null && _settings.CustomMatcherMappings.ContainsKey(matcherName))
+                    {
+                        return _settings.CustomMatcherMappings[matcherName](matcher);
+                    }
+
                     throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
             }
         }

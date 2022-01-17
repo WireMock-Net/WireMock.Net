@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -7,10 +8,15 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Newtonsoft.Json;
 using NFluent;
+using WireMock.Admin.Mappings;
+using WireMock.Matchers;
+using WireMock.Net.Tests.Serialization;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using WireMock.Util;
 using Xunit;
 
@@ -380,6 +386,102 @@ namespace WireMock.Net.Tests
 
             // Assert
             Check.That(response).IsEqualTo("from ipv6 loopback");
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task WireMockServer_Using_JsonMapping_And_CustomMatcher_WithCorrectParams_ShouldMatch()
+        {
+            // Arrange
+            var settings = new WireMockServerSettings();
+            settings.WatchStaticMappings = true;
+            settings.WatchStaticMappingsInSubdirectories = true;
+            settings.CustomMatcherMappings = new Dictionary<string, Func<MatcherModel, IMatcher>>();
+            settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
+            {
+                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
+                return new CustomPathParamMatcher(
+                    matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                    matcherParams.Path, matcherParams.PathParams,
+                    settings.ThrowExceptionWhenMatcherFails == true
+                );
+            };
+
+            var server = WireMockServer.Start(settings);
+            server.WithMapping(@"{
+    ""Request"": {
+        ""Path"": {
+            ""Matchers"": [
+                {
+                    ""Name"": ""CustomPathParamMatcher"",
+                    ""Pattern"": ""{\""path\"":\""/customer/{customerId}/document/{documentId}\"",\""pathParams\"":{\""customerId\"":\""^[0-9]+$\"",\""documentId\"":\""^[0-9a-zA-Z\\\\-_]+\\\\.[a-zA-Z]+$\""}}""
+                }
+            ]
+        }
+    },
+    ""Response"": {
+        ""StatusCode"": 200,
+        ""Headers"": {
+            ""Content-Type"": ""application/json""
+        },
+        ""Body"": ""OK""
+    }
+}");
+
+            // Act
+            var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/customer/132/document/pic.jpg", new StringContent("{ Hi = \"Hello World\" }")).ConfigureAwait(false);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            server.Stop();
+        }
+
+        [Fact]
+        public async Task WireMockServer_Using_JsonMapping_And_CustomMatcher_WithIncorrectParams_ShouldNotMatch()
+        {
+            // Arrange
+            var settings = new WireMockServerSettings();
+            settings.WatchStaticMappings = true;
+            settings.WatchStaticMappingsInSubdirectories = true;
+            settings.CustomMatcherMappings = new Dictionary<string, Func<MatcherModel, IMatcher>>();
+            settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
+            {
+                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
+                return new CustomPathParamMatcher(
+                    matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                    matcherParams.Path, matcherParams.PathParams,
+                    settings.ThrowExceptionWhenMatcherFails == true
+                );
+            };
+
+            var server = WireMockServer.Start(settings);
+            server.WithMapping(@"{
+    ""Request"": {
+        ""Path"": {
+            ""Matchers"": [
+                {
+                    ""Name"": ""CustomPathParamMatcher"",
+                    ""Pattern"": ""{\""path\"":\""/customer/{customerId}/document/{documentId}\"",\""pathParams\"":{\""customerId\"":\""^[0-9]+$\"",\""documentId\"":\""^[0-9a-zA-Z\\\\-_]+\\\\.[a-zA-Z]+$\""}}""
+                }
+            ]
+        }
+    },
+    ""Response"": {
+        ""StatusCode"": 200,
+        ""Headers"": {
+            ""Content-Type"": ""application/json""
+        },
+        ""Body"": ""OK""
+    }
+}");
+
+            // Act
+            var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/customer/132/document/pic", new StringContent("{ Hi = \"Hello World\" }")).ConfigureAwait(false);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
             server.Stop();
         }
