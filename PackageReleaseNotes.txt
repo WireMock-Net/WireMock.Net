@@ -1,6 +1,4 @@
-# 1.4.31 (06 January 2022)
-- #706 Provide open api schema to dynamic examples generator so you can generate accurate data [feature]
-- #707 Use NuGet &quot;Stef.Validation&quot; [feature]
-- #710 Add ReplaceNodeOption flag [feature]
+# 1.4.32 (17 January 2022)
+- #713 Added support of custom matchers in static mappings
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
