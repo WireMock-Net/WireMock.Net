@@ -11,12 +11,10 @@
         "Body": {
             "Matcher": {
                 "Name": "JsonMatcher",
-                "Patterns": [
-                    {
+                "Pattern": {
                         "post1": "value 1",
                         "post2": "value 2"
-                    }
-                ],
+                },
                 "IgnoreCase": true
             }
         },
