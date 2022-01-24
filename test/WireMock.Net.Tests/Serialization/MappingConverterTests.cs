@@ -164,7 +164,7 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void ToMappingModel_WithTimeSetrtings_ReturnsCorrectTimeSettings()
+        public void ToMappingModel_WithTimeSettings_ReturnsCorrectTimeSettings()
         {
             // Assign
             var start = DateTime.Now;

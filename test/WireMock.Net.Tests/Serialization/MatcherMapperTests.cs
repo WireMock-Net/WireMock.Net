@@ -187,16 +187,36 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_As_String()
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_1_Value_As_String()
+        {
+            // Assign
+            var pattern = "{ \"post1\": \"value1\", \"post2\": \"value2\" }";
+            var patterns = new[] { pattern };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Patterns = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_2_Values_As_String()
         {
             // Assign
             var pattern1 = "{ \"AccountIds\": [ 1, 2, 3 ] }";
-            var pattern2 = "{ \"X\": \"x\" }";
+            var pattern2 = "{ \"post1\": \"value1\", \"post2\": \"value2\" }";
             var patterns = new[] { pattern1, pattern2 };
             var model = new MatcherModel
             {
                 Name = "JsonMatcher",
-                Pattern = patterns
+                Patterns = patterns
             };
 
             // Act
@@ -227,11 +247,31 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_As_Object()
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_1_Value_As_Object()
+        {
+            // Assign
+            object pattern = new { post1 = "value1", post2 = "value2" };
+            var patterns = new[] { pattern };
+            var model = new MatcherModel
+            {
+                Name = "JsonMatcher",
+                Patterns = patterns
+            };
+
+            // Act
+            var matcher = (JsonMatcher)_sut.Map(model);
+
+            // Assert
+            matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+            matcher.Value.Should().BeEquivalentTo(patterns);
+        }
+
+        [Fact]
+        public void MatcherMapper_Map_MatcherModel_JsonMatcher_Patterns_2_Values_As_Object()
         {
             // Assign
             object pattern1 = new { AccountIds = new[] { 1, 2, 3 } };
-            object pattern2 = new { X = "x" };
+            object pattern2 = new { post1 = "value1", post2 = "value2" };
             var patterns = new[] { pattern1, pattern2 };
             var model = new MatcherModel
             {

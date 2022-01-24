@@ -1,15 +1,28 @@
-﻿{
+{
     "Request": {
         "Path": {
             "Matchers": [
                 {
                     "Name": "WildcardMatcher",
-                    "Pattern": "/static/mapping"
+                    "Patterns": [ "/static/mapping", "/static/mapping2" ]
                 }
             ]
         },
+        "Body": {
+            "Matcher": {
+                "Name": "JsonMatcher",
+                "Patterns": [
+                    {
+                        "post1": "value 1",
+                        "post2": "value 2"
+                    }
+                ],
+                "IgnoreCase": true
+            }
+        },
         "Methods": [
-            "get"
+            "get",
+            "post"
         ]
     },
     "Response": {
