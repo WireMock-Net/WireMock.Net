@@ -12,8 +12,8 @@
             "Matcher": {
                 "Name": "JsonMatcher",
                 "Pattern": {
-                        "post1": "value 1",
-                        "post2": "value 2"
+                    "post1": "value 1",
+                    "post2": "value 2"
                 },
                 "IgnoreCase": true
             }
@@ -25,9 +25,9 @@
     },
     "Response": {
         "BodyAsJson": { "body": "static mapping" },
-      "Headers": {
-        "Content-Type": "application/json",
-        "Test-X": [ "test 1", "test 2" ]
-      }
+        "Headers": {
+            "Content-Type": "application/json",
+            "Test-X": [ "test 1", "test 2" ]
+        }
     }
 }
