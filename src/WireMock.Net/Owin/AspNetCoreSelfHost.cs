@@ -18,6 +18,8 @@ namespace WireMock.Owin
 {
     internal partial class AspNetCoreSelfHost : IOwinSelfHost
     {
+        private const string CorsPolicyName = "WireMock.Net - Policy";
+
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly IWireMockMiddlewareOptions _wireMockMiddlewareOptions;
         private readonly IWireMockLogger _logger;
@@ -68,12 +70,18 @@ namespace WireMock.Owin
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
 
+#if NETCOREAPP3_1_OR_GREATER
+                    AddCors(services);
+#endif
                     _wireMockMiddlewareOptions.AdditionalServiceRegistration?.Invoke(services);
                 })
                 .Configure(appBuilder =>
                 {
                     appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
 
+#if NETCOREAPP3_1_OR_GREATER
+                    UseCors(appBuilder);
+#endif
                     _wireMockMiddlewareOptions.PreWireMockMiddlewareInit?.Invoke(appBuilder);
 
                     appBuilder.UseMiddleware<WireMockMiddleware>();

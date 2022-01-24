@@ -7,6 +7,7 @@ using WireMock.Admin.Mappings;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Types;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -97,6 +98,10 @@ namespace WireMock.Settings
         [PublicAPI]
         [JsonIgnore]
         public Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+
+        /// <inheritdoc cref="IWireMockServerSettings.CorsPolicyOptions"/>
+        [PublicAPI]
+        public CorsPolicyOptions? CorsPolicyOptions { get; set; }
 #endif
 
         /// <inheritdoc cref="IWireMockServerSettings.Logger"/>

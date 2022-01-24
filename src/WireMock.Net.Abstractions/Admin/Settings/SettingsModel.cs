@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using WireMock.Handlers;
+using WireMock.Types;
 
 namespace WireMock.Admin.Settings
 {
@@ -53,5 +54,10 @@ namespace WireMock.Admin.Settings
         /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>. (default set to false).
         /// </summary>
         public bool? SaveUnmatchedRequests { get; set; }
+
+        /// <summary>
+        /// Policies to use when using CORS. By default CORS is disabled. [Optional]
+        /// </summary>
+        public string CorsPolicyOptions { get; set; }
     }
 }

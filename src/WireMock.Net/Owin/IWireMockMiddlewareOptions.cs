@@ -4,6 +4,8 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
+using JetBrains.Annotations;
+using WireMock.Types;
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -39,6 +41,8 @@ namespace WireMock.Owin
 
 #if USE_ASPNETCORE
         Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+
+        CorsPolicyOptions? CorsPolicyOptions { get; set; }
 #endif
 
         IFileSystemHandler FileSystemHandler { get; set; }

@@ -243,6 +243,8 @@ namespace WireMock.Server
 
 #if USE_ASPNETCORE
             _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;
+            _options.CorsPolicyOptions = _settings.CorsPolicyOptions;
+
             _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
             _httpServer = new OwinSelfHost(_options, urlOptions);

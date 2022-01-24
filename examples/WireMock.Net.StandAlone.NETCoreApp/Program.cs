@@ -6,8 +6,6 @@ using System.Threading;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -34,33 +32,6 @@ namespace WireMock.Net.StandAlone.NETCoreApp
             }
 
             settings.Logger.Debug("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
-
-            /* https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core */
-            /* Enable Cors */
-            var policyName = "MyPolicy";
-            settings.AdditionalServiceRegistration = services =>
-            {
-                services.AddCors(corsOptions =>
-                    corsOptions.AddPolicy(policyName,
-                        corsPolicyBuilder =>
-                        {
-                            corsPolicyBuilder
-                                .AllowAnyHeader()
-                                .AllowAnyMethod()
-                                .AllowAnyOrigin();
-                        }));
-
-                settings.Logger.Debug("Enable Cors");
-            };
-
-            /* Use Cors */
-            settings.PreWireMockMiddlewareInit = app =>
-            {
-                var appBuilder = (IApplicationBuilder)app;
-                appBuilder.UseCors(policyName);
-
-                settings.Logger.Debug("Use Cors");
-            };
 
             _server = WireMockServer.Start(settings);
 

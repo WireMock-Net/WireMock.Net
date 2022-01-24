@@ -1,6 +1,9 @@
+using System;
+using System.Linq;
 using JetBrains.Annotations;
-using WireMock.Logging;
 using Stef.Validation;
+using WireMock.Logging;
+using WireMock.Types;
 
 namespace WireMock.Settings
 {
@@ -50,8 +53,17 @@ namespace WireMock.Settings
                 HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
                 ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
                 UseRegexExtended = parser.GetBoolValue(nameof(IWireMockServerSettings.UseRegexExtended), true),
-                SaveUnmatchedRequests = parser.GetBoolValue(nameof(IWireMockServerSettings.SaveUnmatchedRequests))
+                SaveUnmatchedRequests = parser.GetBoolValue(nameof(IWireMockServerSettings.SaveUnmatchedRequests)),
             };
+
+#if USE_ASPNETCORE
+            settings.CorsPolicyOptions = parser.GetValue(
+                nameof(IWireMockServerSettings.CorsPolicyOptions), values =>
+                {
+                    var value = string.Join(string.Empty, values);
+                    return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
+                });
+#endif
 
             if (logger != null)
             {
