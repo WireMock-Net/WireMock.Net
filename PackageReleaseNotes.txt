@@ -1,4 +1,4 @@
-# 1.4.32 (17 January 2022)
-- #713 Added support of custom matchers in static mappings
+# 1.4.33 (24 January 2022)
+- #714 Add support for Cors [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
