@@ -1,3 +1,7 @@
+# 1.4.34 (27 January 2022)
+- [#716](https://github.com/WireMock-Net/WireMock.Net/pull/716) - MatcherMapper : Always use Pattern [bug] contributed by [StefH](https://github.com/StefH)
+- [#715](https://github.com/WireMock-Net/WireMock.Net/issues/715) - Record request mapping outputs JsonMatcher with Patterns instead of Pattern [bug]
+
 # 1.4.33 (24 January 2022)
 - [#714](https://github.com/WireMock-Net/WireMock.Net/pull/714) - Add support for Cors [feature] contributed by [StefH](https://github.com/StefH)
 
