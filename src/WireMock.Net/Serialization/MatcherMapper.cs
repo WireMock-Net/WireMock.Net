@@ -161,12 +161,12 @@ namespace WireMock.Serialization
 
                 // If the matcher is a IValueMatcher, get the value (can be string or object).
                 case IValueMatcher valueMatcher:
-                    model.Patterns = new[] { valueMatcher.Value };
+                    model.Pattern = valueMatcher.Value;
                     break;
 
                 // If the matcher is a ExactObjectMatcher, get the ValueAsObject or ValueAsBytes.
                 case ExactObjectMatcher exactObjectMatcher:
-                    model.Patterns = new[] { exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes };
+                    model.Pattern = exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes;
                     break;
             }
 
