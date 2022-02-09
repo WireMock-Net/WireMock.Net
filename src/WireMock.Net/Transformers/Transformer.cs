@@ -124,6 +124,11 @@ namespace WireMock.Transformers
                     WalkNode(handlebarsContext, options, jToken, model);
                     break;
 
+                case JArray bodyAsJArray:
+                    jToken = bodyAsJArray.DeepClone();
+                    WalkNode(handlebarsContext, options, jToken, model);
+                    break;
+
                 case Array bodyAsArray:
                     jToken = JArray.FromObject(bodyAsArray);
                     WalkNode(handlebarsContext, options, jToken, model);
