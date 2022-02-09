@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Handlers;
 using WireMock.Models;
@@ -383,6 +384,47 @@ namespace WireMock.Net.Tests.ResponseBuilders
 
             // Assert
             Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+        }
+
+        [Theory]
+        [InlineData(TransformerType.Handlebars)]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Transformer_ResultAsArray(TransformerType transformerType)
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "GET", ClientIp);
+
+            var responseBuilder = Response.Create()
+                .WithBodyAsJson(new [] { new { x = "test" }})
+                .WithTransformer(transformerType);
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+
+            // Assert
+            JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
+        }
+
+        [Theory]
+        [InlineData(TransformerType.Handlebars)]
+        [InlineData(TransformerType.Scriban)]
+        [InlineData(TransformerType.ScribanDotLiquid)]
+        public async Task Response_ProvideResponse_Transformer_ResultAsJArray(TransformerType transformerType)
+        {
+            // Assign
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "GET", ClientIp);
+
+            var array = JArray.Parse("[{\"x\":\"test\"}]");
+            var responseBuilder = Response.Create()
+                .WithBodyAsJson(array)
+                .WithTransformer(transformerType);
+
+            // Act
+            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+
+            // Assert
+            JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
         }
 
         //[Theory]

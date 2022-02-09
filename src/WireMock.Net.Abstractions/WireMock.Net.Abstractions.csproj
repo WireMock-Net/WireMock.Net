@@ -4,11 +4,9 @@
         <Description>Commonly used models, enumerations and types.</Description>
         <AssemblyTitle>WireMock.Net.Abstractions</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-
+        <TargetFrameworks>net45;net451;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591;8603</NoWarn>
-
         <AssemblyName>WireMock.Net.Abstractions</AssemblyName>
         <PackageId>WireMock.Net.Abstractions</PackageId>
         <PackageTags>wiremock;wiremock.org;interfaces;models;classes;enumerations;types</PackageTags>
