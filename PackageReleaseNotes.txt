@@ -1,5 +1,4 @@
-# 1.4.34 (27 January 2022)
-- #716 MatcherMapper : Always use Pattern [bug]
-- #715 Record request mapping outputs JsonMatcher with Patterns instead of Pattern [bug]
+# 1.4.35 (09 February 2022)
+- #722 Fixed 'Response BodyAsJson with JArray does not work' [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
