@@ -163,18 +163,12 @@ namespace WireMock.Server
 
             _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
-            var watcher = new FileSystemWatcherEx(folder)
+            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
             {
-                Filter = "*.json",
                 IncludeSubdirectories = includeSubdirectories
             };
 
-            //var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
-            //{
-            //    IncludeSubdirectories = includeSubdirectories
-            //};
-
-            watcher.OnCreated += (sender, args) =>
+            watcher.Created += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
@@ -182,7 +176,7 @@ namespace WireMock.Server
                     _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
-            watcher.OnChanged += (sender, args) =>
+            watcher.Changed += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
@@ -190,7 +184,7 @@ namespace WireMock.Server
                     _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
-            watcher.OnDeleted += (sender, args) =>
+            watcher.Deleted += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
@@ -205,7 +199,7 @@ namespace WireMock.Server
                 }
             };
 
-            watcher.Start(); //.EnableRaisingEvents = true;
+            watcher.EnableRaisingEvents = true;
         }
 
         /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
