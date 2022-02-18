@@ -4,19 +4,9 @@
             "Matchers": [
                 {
                     "Name": "WildcardMatcher",
-                    "Patterns": [ "/static/mapping", "/static/mapping2" ]
+                    "Pattern": "/static/mapping",
                 }
             ]
-        },
-        "Body": {
-            "Matcher": {
-                "Name": "JsonMatcher",
-                "Pattern": {
-                    "post1": "value 1",
-                    "post2": "value 2"
-                },
-                "IgnoreCase": true
-            }
         },
         "Methods": [
             "get",

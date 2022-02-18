@@ -13,7 +13,7 @@
         ]
     },
     "Response": {
-        "BodyAsJson": { "body": "static mapping" },
+        "BodyAsJson": { "body": "static mapping1" },
       "Headers": {
         "Content-Type": "application/json",
         "Test-X": [ "test 1", "test 2" ]

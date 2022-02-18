@@ -33,7 +33,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class WireMockServer
     {
-        private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
+        private const int EnhancedFileSystemWatcherTimeoutMs = 10000; // Chnaged from 1000 to 10000 (#726)
         private const int AdminPriority = int.MinValue;
         private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";
@@ -163,12 +163,18 @@ namespace WireMock.Server
 
             _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
-            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            var watcher = new FileSystemWatcherEx(folder)
             {
+                Filter = "*.json",
                 IncludeSubdirectories = includeSubdirectories
             };
 
-            watcher.Created += (sender, args) =>
+            //var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            //{
+            //    IncludeSubdirectories = includeSubdirectories
+            //};
+
+            watcher.OnCreated += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
@@ -176,7 +182,7 @@ namespace WireMock.Server
                     _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
-            watcher.Changed += (sender, args) =>
+            watcher.OnChanged += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
                 if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
@@ -184,7 +190,7 @@ namespace WireMock.Server
                     _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
                 }
             };
-            watcher.Deleted += (sender, args) =>
+            watcher.OnDeleted += (sender, args) =>
             {
                 _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
                 string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
@@ -199,7 +205,7 @@ namespace WireMock.Server
                 }
             };
 
-            watcher.EnableRaisingEvents = true;
+            watcher.Start(); //.EnableRaisingEvents = true;
         }
 
         /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
