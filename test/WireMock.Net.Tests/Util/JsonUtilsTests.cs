@@ -42,7 +42,7 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact(Skip = "Bug in System.Linq.Dynamic.Core ?")]
-        public void JsonUtils_GenerateDynamicLinqStatement_JObject()
+        public void JsonUtils_GenerateDynamicLinqStatement_JObject1()
         {
             // Assign
             var j = new JObject
@@ -53,7 +53,7 @@ namespace WireMock.Net.Tests.Util
                 {"Flt", new JValue(10.0f)},
                 {"Dbl", new JValue(Math.PI)},
                 {"Check", new JValue(true)},
-                {"Items", new JArray(new[] { new JValue(4), new JValue(8) })},
+                {"Items", new JArray(new[] { new JValue(4), new JValue(8) })}, // This fails
                 {
                     "Child", new JObject
                     {
@@ -75,6 +75,41 @@ namespace WireMock.Net.Tests.Util
             var queryable = new[] { j }.AsQueryable().Select(line);
             //   bool result = queryable.Any("int(I) > 1 && L > 1");
             //  Check.That(result).IsTrue();
+        }
+
+        [Fact]
+        public void JsonUtils_GenerateDynamicLinqStatement_JObject2()
+        {
+            // Assign
+            var j = new JObject
+            {
+                {"U", new JValue(new Uri("http://localhost:80/abc?a=5"))},
+                {"N", new JValue((object) null)},
+                {"G", new JValue(Guid.NewGuid())},
+                {"Flt", new JValue(10.0f)},
+                {"Dbl", new JValue(Math.PI)},
+                {"Check", new JValue(true)},
+                {
+                    "Child", new JObject
+                    {
+                        {"ChildId", new JValue(4)},
+                        {"ChildDateTime", new JValue(new DateTime(2018, 2, 17))},
+                        {"TS", new JValue(TimeSpan.FromMilliseconds(999))}
+                    }
+                },
+                {"I", new JValue(9)},
+                {"L", new JValue(long.MaxValue)},
+                {"Name", new JValue("Test")}
+            };
+
+            // Act
+            string line = JsonUtils.GenerateDynamicLinqStatement(j);
+            line.Should().Be("new (Uri(U) as U, null as N, Guid(G) as G, double(Flt) as Flt, double(Dbl) as Dbl, bool(Check) as Check, new (long(Child.ChildId) as ChildId, DateTime(Child.ChildDateTime) as ChildDateTime, TimeSpan(Child.TS) as TS) as Child, long(I) as I, long(L) as L, string(Name) as Name)");
+
+            // Assert
+            var queryable = new[] { j }.AsQueryable().Select(line);
+            bool result = queryable.Any("I > 1 && L > 1");
+            result.Should().BeTrue();
         }
 
         [Fact]
