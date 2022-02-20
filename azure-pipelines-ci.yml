@@ -42,14 +42,14 @@ jobs:
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework netcoreapp3.1'
+      arguments: '--configuration Debug --framework net6.0'
   
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit tests'
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
@@ -64,7 +64,7 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.net6.0.opencover.xml
     displayName: 'codecov'
   
   - task: PublishTestResults@2
@@ -82,7 +82,7 @@ jobs:
   dependsOn: Linux_Build_Test_SonarCloud
 
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'windows-2022'
 
   steps:
   - task: DotNetCoreCLI@2
@@ -90,20 +90,20 @@ jobs:
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework netcoreapp3.1'
+      arguments: '--configuration Debug --framework net6.0'
   
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit tests'
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework netcoreapp3.1 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
 - job: Windows_Release_to_MyGet
   dependsOn: Windows_Build_Test
 
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'windows-2022'
 
   steps:
   - task: DotNetCoreCLI@2
