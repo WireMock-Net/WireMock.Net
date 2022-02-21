@@ -1,4 +1,5 @@
 {
+    "Guid": "1234567A-940e-4b86-a1f4-4f0fc7be8b8b",
     "Request": {
         "Path": {
             "Matchers": [
@@ -15,7 +16,7 @@
     },
     "Response": {
         "StatusCode": 200,
-        "Headers": {"Content-Type": "application/xml"},
+        "Headers": { "Content-Type": "application/xml" },
         "BodyAsFile": "MyXmlResponse.xml",
         "UseTransformer": false
     }
