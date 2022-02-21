@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="__admin\mappings\array.json" />
+    <None Remove="__admin\mappings\BodyAsFileExample2.json" />
   </ItemGroup>
 
   <ItemGroup>
