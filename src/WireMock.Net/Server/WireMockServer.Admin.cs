@@ -868,7 +868,7 @@ namespace WireMock.Server
             }
             else if (responseModel.BodyAsFile != null)
             {
-                responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile);
+                responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile, responseModel.BodyAsFileIsCached == true);
             }
 
             if (responseModel.Fault != null && Enum.TryParse(responseModel.Fault.Type, out FaultType faultType))
