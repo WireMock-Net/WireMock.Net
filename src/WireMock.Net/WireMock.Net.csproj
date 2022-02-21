@@ -104,6 +104,9 @@
         <PackageReference Include="Scriban.Signed" Version="2.1.4" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
+        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/697 -->
+        <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
+
         <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
