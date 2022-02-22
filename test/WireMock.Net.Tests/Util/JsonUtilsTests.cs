@@ -54,7 +54,7 @@ namespace WireMock.Net.Tests.Util
             string line = JsonUtils.GenerateDynamicLinqStatement(j);
 
             // Assert 1
-            line.Should().Be("(new [] { long(Items[0]), long(Items[1])}) as Items)");
+            line.Should().Be("new ((new [] { long(Items[0]), long(Items[1])}) as Items)");
 
             // Assert 2
             var queryable = new[] { j }.AsQueryable().Select(line);
