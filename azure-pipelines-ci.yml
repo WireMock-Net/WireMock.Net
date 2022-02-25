@@ -14,12 +14,6 @@ jobs:
       echo "BuildId = $(buildId)"
     displayName: 'Print buildId'
 
-  - task: UseDotNet@2
-    displayName: Use .NET 6.0
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
-
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
     inputs:
@@ -91,6 +85,12 @@ jobs:
     vmImage: 'windows-2022'
 
   steps:
+  - task: UseDotNet@2
+    displayName: Use .NET 6.0
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
@@ -112,6 +112,12 @@ jobs:
     vmImage: 'windows-2022'
 
   steps:
+  - task: UseDotNet@2
+    displayName: Use .NET 6.0
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
   - task: DotNetCoreCLI@2
     displayName: Build Release
     inputs:
