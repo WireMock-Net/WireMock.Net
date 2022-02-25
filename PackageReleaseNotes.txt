@@ -1,5 +1,5 @@
-# 1.4.35 (09 February 2022)
-- #722 Fixed 'Response BodyAsJson with JArray does not work' [bug]
-- #721 Response BodyAsJson with array does not work [bug]
+# 1.4.36 (25 February 2022)
+- #728 Update NuGet packages [feature]
+- #729 BodyAsFile should use BodyAsFileIsCached value [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
