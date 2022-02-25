@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using WireMock.HttpsCertificate;
 using WireMock.Settings;
@@ -9,7 +9,7 @@ namespace WireMock.Http
     {
         public static HttpClient Build(IHttpClientSettings settings)
         {
-#if NETSTANDARD || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD || NETCOREAPP3_1 || NET5_0 || NET6_0
             var handler = new HttpClientHandler
             {
                 CheckCertificateRevocationList = false,

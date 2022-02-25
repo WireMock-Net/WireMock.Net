@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using RestEase;
 using System;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using WireMock.Admin.Settings;
 using WireMock.Client;
 
 namespace WireMock.Net.Client
@@ -22,7 +23,7 @@ namespace WireMock.Net.Client
             var settings1 = await api.GetSettingsAsync();
             Console.WriteLine($"settings1 = {JsonConvert.SerializeObject(settings1)}");
 
-            var settingsViaBuilder = new FluentBuilder.SettingsModelBuilder()
+            var settingsViaBuilder = new SettingsModelBuilder()
                 .WithGlobalProcessingDelay(1077)
                 .WithoutGlobalProcessingDelay()
                 .Build();

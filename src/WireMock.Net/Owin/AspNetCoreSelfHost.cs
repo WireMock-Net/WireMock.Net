@@ -70,7 +70,7 @@ namespace WireMock.Owin
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1 || NET5_0 || NET6_0
                     AddCors(services);
 #endif
                     _wireMockMiddlewareOptions.AdditionalServiceRegistration?.Invoke(services);
@@ -79,7 +79,7 @@ namespace WireMock.Owin
                 {
                     appBuilder.UseMiddleware<GlobalExceptionMiddleware>();
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1 || NET5_0 || NET6_0
                     UseCors(appBuilder);
 #endif
                     _wireMockMiddlewareOptions.PreWireMockMiddlewareInit?.Invoke(appBuilder);
@@ -136,6 +136,8 @@ namespace WireMock.Owin
                 _logger.Info("Server using .NET Core 3.1");
 #elif NET5_0
                 _logger.Info("Server using .NET 5.0");
+#elif NET6_0
+                _logger.Info("Server using .NET 6.0");
 #elif NET46
                 _logger.Info("Server using .NET Framework 4.6.1 or higher");
 #endif

@@ -3,7 +3,7 @@
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <AssemblyName>WireMock.Net</AssemblyName>
         <PackageId>WireMock.Net</PackageId>
@@ -42,7 +42,7 @@
         <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'or '$(TargetFramework)' == 'net6.0' ">
         <DefineConstants>USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
@@ -51,15 +51,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="Stef.Validation" Version="0.1.0" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.17" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-        <PackageReference Include="AnyOf" Version="0.2.0" />
+        <PackageReference Include="AnyOf" Version="0.3.0" />
         <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
         <!--<PackageReference Include="Mapster" Version="7.2.0" />-->
     </ItemGroup>
@@ -72,7 +76,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
-        <PackageReference Include="XPath2.Extensions" Version="1.1.0" />
+        <PackageReference Include="XPath2.Extensions" Version="1.1.2" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.12.2" />
     </ItemGroup>
 
@@ -100,6 +104,9 @@
         <PackageReference Include="Scriban.Signed" Version="2.1.4" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
 
+        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/697 -->
+        <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
+
         <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
@@ -121,19 +128,19 @@
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' ">
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Scriban.Signed" Version="3.3.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Handlebars.Net.Helpers" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.2.1" />
-        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.3" />
     </ItemGroup>
 
     <ItemGroup>

@@ -33,7 +33,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class WireMockServer
     {
-        private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
+        private const int EnhancedFileSystemWatcherTimeoutMs = 10000; // Changed from 1000 to 10000 (#726)
         private const int AdminPriority = int.MinValue;
         private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";

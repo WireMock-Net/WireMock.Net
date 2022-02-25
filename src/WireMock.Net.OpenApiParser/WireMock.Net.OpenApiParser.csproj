@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<Description>An OpenApi (swagger) parser to generate MappingModel or mapping.json file.</Description>
@@ -22,7 +22,7 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
-		<PackageReference Include="RamlToOpenApiConverter" Version="0.6.0" />
+		<PackageReference Include="RamlToOpenApiConverter" Version="0.6.1" />
 		<PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="RandomDataGenerator.Net" Version="1.0.13" />

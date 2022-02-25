@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net452;net461;netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net452;net461;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>
         <AssemblyName>WireMock.Net.Tests</AssemblyName>
@@ -33,7 +33,7 @@
 
     <ItemGroup>
         <PackageReference Include="Codecov" Version="1.13.0" />
-        <PackageReference Include="coverlet.msbuild" Version="3.1.0">
+        <PackageReference Include="coverlet.msbuild" Version="3.1.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -44,7 +44,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.1.0">
+        <PackageReference Include="coverlet.collector" Version="3.1.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -59,9 +59,9 @@
         <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.12" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.17" />
         <!--<PackageReference Include="StrongNamer" Version="0.2.5" />-->
-        <PackageReference Include="AnyOf" Version="0.2.0" />
+        <PackageReference Include="AnyOf" Version="0.3.0" />
         <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
     </ItemGroup>
 
@@ -72,7 +72,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="FluentAssertions" Version="6.1.0" />
+        <PackageReference Include="FluentAssertions" Version="6.5.1" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">

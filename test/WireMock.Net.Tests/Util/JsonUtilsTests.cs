@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
-using System.Linq.Dynamic.Core;
 using WireMock.Util;
 using Xunit;
 
@@ -41,7 +42,28 @@ namespace WireMock.Net.Tests.Util
         }
 
         [Fact]
-        public void JsonUtils_GenerateDynamicLinqStatement_JObject()
+        public void JsonUtils_GenerateDynamicLinqStatement_JArray_Indexer()
+        {
+            // Assign
+            var j = new JObject
+            {
+                { "Items", new JArray(new[] { new JValue(4), new JValue(8) }) }
+            };
+
+            // Act
+            string line = JsonUtils.GenerateDynamicLinqStatement(j);
+
+            // Assert 1
+            line.Should().Be("new ((new [] { long(Items[0]), long(Items[1])}) as Items)");
+
+            // Assert 2
+            var queryable = new[] { j }.AsQueryable().Select(line);
+            bool result = queryable.Any("Items != null");
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public void JsonUtils_GenerateDynamicLinqStatement_JObject2()
         {
             // Assign
             var j = new JObject
@@ -52,7 +74,6 @@ namespace WireMock.Net.Tests.Util
                 {"Flt", new JValue(10.0f)},
                 {"Dbl", new JValue(Math.PI)},
                 {"Check", new JValue(true)},
-                {"Items", new JArray(new[] { new JValue(4), new JValue(8) })},
                 {
                     "Child", new JObject
                     {
@@ -69,12 +90,13 @@ namespace WireMock.Net.Tests.Util
             // Act
             string line = JsonUtils.GenerateDynamicLinqStatement(j);
 
-            // Assert
+            // Assert 1
+            line.Should().Be("new (Uri(U) as U, null as N, Guid(G) as G, double(Flt) as Flt, double(Dbl) as Dbl, bool(Check) as Check, new (long(Child.ChildId) as ChildId, DateTime(Child.ChildDateTime) as ChildDateTime, TimeSpan(Child.TS) as TS) as Child, long(I) as I, long(L) as L, string(Name) as Name)");
+
+            // Assert 2
             var queryable = new[] { j }.AsQueryable().Select(line);
             bool result = queryable.Any("I > 1 && L > 1");
-            Check.That(result).IsTrue();
-
-            Check.That(line).IsEqualTo("new (Uri(U) as U, null as N, Guid(G) as G, double(Flt) as Flt, double(Dbl) as Dbl, bool(Check) as Check, (new [] { long(Items[0]), long(Items[1])}) as Items, new (long(Child.ChildId) as ChildId, DateTime(Child.ChildDateTime) as ChildDateTime, TimeSpan(Child.TS) as TS) as Child, long(I) as I, long(L) as L, string(Name) as Name)");
+            result.Should().BeTrue();
         }
 
         [Fact]

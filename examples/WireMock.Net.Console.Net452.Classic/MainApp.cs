@@ -460,6 +460,15 @@ namespace WireMock.Net.ConsoleApplication
                 );
 
             server
+                .Given(Request.Create().WithPath("/linq2")
+                    .WithBody(new LinqMatcher("it.applicationId != null"))
+                    .UsingPost()
+                )
+                .RespondWith(Response.Create()
+                    .WithBody("linq2 match !!!")
+                );
+
+            server
                 .Given(Request.Create().WithPath("/myendpoint").UsingAnyMethod())
                 .RespondWith(Response.Create()
                     .WithStatusCode(500)
