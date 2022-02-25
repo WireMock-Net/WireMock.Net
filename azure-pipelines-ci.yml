@@ -79,7 +79,6 @@ jobs:
       PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
 
 - job: Windows_Build_Test
-  dependsOn: Linux_Build_Test_SonarCloud
 
   pool:
     vmImage: 'windows-2022'
