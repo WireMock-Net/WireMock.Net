@@ -147,4 +147,4 @@ jobs:
     inputs:
       command: custom
       custom: nuget
-      arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg -n true -s https://www.myget.org/F/wiremock-net/api/v3/index.json -k $(MyGetKey)
+      arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg -n -s https://www.myget.org/F/wiremock-net/api/v3/index.json -k $(MyGetKey)
