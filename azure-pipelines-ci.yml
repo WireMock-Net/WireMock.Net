@@ -79,12 +79,17 @@ jobs:
       PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
 
 - job: Windows_Build_Test
-  dependsOn: Linux_Build_Test_SonarCloud
 
   pool:
     vmImage: 'windows-2022'
 
   steps:
+  - task: UseDotNet@2
+    displayName: Use .NET 6.0
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
@@ -106,6 +111,12 @@ jobs:
     vmImage: 'windows-2022'
 
   steps:
+  - task: UseDotNet@2
+    displayName: Use .NET 6.0
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
   - task: DotNetCoreCLI@2
     displayName: Build Release
     inputs:
@@ -136,4 +147,4 @@ jobs:
     inputs:
       command: custom
       custom: nuget
-      arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg -n true -s https://www.myget.org/F/wiremock-net/api/v3/index.json -k $(MyGetKey)
+      arguments: push $(Build.ArtifactStagingDirectory)\packages\*.nupkg -n -s https://www.myget.org/F/wiremock-net/api/v3/index.json -k $(MyGetKey)
