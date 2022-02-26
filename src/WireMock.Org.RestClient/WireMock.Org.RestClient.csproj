@@ -9,7 +9,7 @@
         <AssemblyName>WireMock.Org.RestClient</AssemblyName>
         <PackageId>WireMock.Org.RestClient</PackageId>
         <PackageTags>wiremock;wiremock.org;rest;client;restclient;restease;rest;json</PackageTags>
-        <RootNamespace>WireMock.Org.Client</RootNamespace>
+        <RootNamespace>WireMock.Org.RestClient</RootNamespace>
         <ProjectGuid>{08B29DB1-FEFE-408A-AD0A-6BA6DDC8D70F}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>

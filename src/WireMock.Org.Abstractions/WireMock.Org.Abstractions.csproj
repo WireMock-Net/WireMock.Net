@@ -7,10 +7,10 @@
         <TargetFrameworks>net45;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591;8603</NoWarn>
+        <RootNamespace>WireMock.Org.Abstractions</RootNamespace>
         <AssemblyName>WireMock.Org.Abstractions</AssemblyName>
         <PackageId>WireMock.Org.Abstractions</PackageId>
         <PackageTags>wiremock;wiremock.org;interfaces;models;classes;enumerations;types</PackageTags>
-        <RootNamespace>WireMock</RootNamespace>
         <ProjectGuid>{3BA5109E-5F30-4CC2-B699-02EC82560AA6}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
