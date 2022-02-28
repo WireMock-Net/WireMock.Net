@@ -33,7 +33,7 @@ namespace WireMock.Server
     /// </summary>
     public partial class WireMockServer
     {
-        private const int EnhancedFileSystemWatcherTimeoutMs = 10000; // Changed from 1000 to 10000 (#726)
+        private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
         private const int AdminPriority = int.MinValue;
         private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";
@@ -48,6 +48,8 @@ namespace WireMock.Server
         private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(ContentTypeJson, true);
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
+
+        private EnhancedFileSystemWatcher _enhancedFileSystemWatcher;
 
         #region InitAdmin
         private void InitAdmin()
@@ -163,45 +165,17 @@ namespace WireMock.Server
 
             _settings.Logger.Info($"Watching folder '{folder}'{includeSubdirectoriesText} for new, updated and deleted MappingFiles.");
 
-            var watcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            DisposeEnhancedFileSystemWatcher();
+            _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(folder, "*.json", EnhancedFileSystemWatcherTimeoutMs)
             {
                 IncludeSubdirectories = includeSubdirectories
             };
-
-            watcher.Created += (sender, args) =>
-            {
-                _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
-                if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
-                {
-                    _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
-                }
-            };
-            watcher.Changed += (sender, args) =>
-            {
-                _settings.Logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
-                if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
-                {
-                    _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
-                }
-            };
-            watcher.Deleted += (sender, args) =>
-            {
-                _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
-                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
-
-                if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
-                {
-                    DeleteMapping(guidFromFilename);
-                }
-                else
-                {
-                    DeleteMapping(args.FullPath);
-                }
-            };
-
-            watcher.EnableRaisingEvents = true;
+            _enhancedFileSystemWatcher.Created += EnhancedFileSystemWatcherCreated;
+            _enhancedFileSystemWatcher.Changed += EnhancedFileSystemWatcherChanged;
+            _enhancedFileSystemWatcher.Deleted += EnhancedFileSystemWatcherDeleted;
+            _enhancedFileSystemWatcher.EnableRaisingEvents = true;
         }
-
+        
         /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
@@ -939,6 +913,53 @@ namespace WireMock.Server
         private T[] DeserializeJsonToArray<T>(string value)
         {
             return DeserializeObjectToArray<T>(JsonUtils.DeserializeObject(value));
+        }
+
+        private void DisposeEnhancedFileSystemWatcher()
+        {
+            if (_enhancedFileSystemWatcher != null)
+            {
+                _enhancedFileSystemWatcher.EnableRaisingEvents = false;
+
+                _enhancedFileSystemWatcher.Created -= EnhancedFileSystemWatcherCreated;
+                _enhancedFileSystemWatcher.Changed -= EnhancedFileSystemWatcherChanged;
+                _enhancedFileSystemWatcher.Deleted -= EnhancedFileSystemWatcherDeleted;
+
+                _enhancedFileSystemWatcher.Dispose();
+            }
+        }
+
+        private void EnhancedFileSystemWatcherCreated(object sender, FileSystemEventArgs args)
+        {
+            _settings.Logger.Info("MappingFile created : '{0}', reading file.", args.FullPath);
+            if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
+            {
+                _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+            }
+        }
+
+        private void EnhancedFileSystemWatcherChanged(object sender, FileSystemEventArgs args)
+        {
+            _settings.Logger.Info("MappingFile updated : '{0}', reading file.", args.FullPath);
+            if (!ReadStaticMappingAndAddOrUpdate(args.FullPath))
+            {
+                _settings.Logger.Error("Unable to read MappingFile '{0}'.", args.FullPath);
+            }
+        }
+
+        private void EnhancedFileSystemWatcherDeleted(object sender, FileSystemEventArgs args)
+        {
+            _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
+
+            if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+            {
+                DeleteMapping(guidFromFilename);
+            }
+            else
+            {
+                DeleteMapping(args.FullPath);
+            }
         }
     }
 }

@@ -80,6 +80,7 @@ namespace WireMock.Server
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
+            DisposeEnhancedFileSystemWatcher();
             _httpServer?.StopAsync();
         }
         #endregion
