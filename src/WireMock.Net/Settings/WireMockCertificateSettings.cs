@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
@@ -31,6 +31,6 @@ namespace WireMock.Settings
         [PublicAPI]
         public bool IsDefined =>
             !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
-            !string.IsNullOrEmpty(X509CertificateFilePath) && !string.IsNullOrEmpty(X509CertificatePassword);
+            !string.IsNullOrEmpty(X509CertificateFilePath);
     }
 }

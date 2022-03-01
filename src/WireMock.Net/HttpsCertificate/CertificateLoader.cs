@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
@@ -57,7 +57,12 @@ namespace WireMock.HttpsCertificate
                 return new X509Certificate2(filePath, password);
             }
 
-            throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath and X509CertificatePassword are mandatory.");
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                return new X509Certificate2(filePath);
+            }
+
+            throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
         }
 
         /// <summary>

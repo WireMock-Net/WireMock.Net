@@ -80,7 +80,7 @@ namespace WireMock.Owin
         /// <inheritdoc cref="IWireMockMiddlewareOptions.CustomCertificateDefined"/>
         public bool CustomCertificateDefined =>
             !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
-            !string.IsNullOrEmpty(X509CertificateFilePath) && !string.IsNullOrEmpty(X509CertificatePassword);
+            !string.IsNullOrEmpty(X509CertificateFilePath);
 
         /// <inheritdoc cref="IWireMockMiddlewareOptions.SaveUnmatchedRequests"/>
         public bool? SaveUnmatchedRequests { get; set; }
