@@ -586,6 +586,9 @@ namespace WireMock.Net.ConsoleApplication
 
             System.Console.WriteLine("Press any key to quit");
             System.Console.ReadKey();
+
+            server.Stop();
+            server.Dispose();
         }
     }
 }
