@@ -1,3 +1,9 @@
+# 1.4.37 (02 March 2022)
+- [#730](https://github.com/WireMock-Net/WireMock.Net/pull/730) - Fixed bug &quot;dotnet nuget push -n&quot; [bug] contributed by [StefH](https://github.com/StefH)
+- [#732](https://github.com/WireMock-Net/WireMock.Net/pull/732) - Make X509CertificatePassword optional [feature] contributed by [StefH](https://github.com/StefH)
+- [#733](https://github.com/WireMock-Net/WireMock.Net/pull/733) - Fix FileSystemWatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#726](https://github.com/WireMock-Net/WireMock.Net/issues/726) - Wiremock -  WatchStaticMappings only works until the first request is made  [bug]
+
 # 1.4.36 (25 February 2022)
 - [#728](https://github.com/WireMock-Net/WireMock.Net/pull/728) - Update NuGet packages [feature] contributed by [StefH](https://github.com/StefH)
 - [#729](https://github.com/WireMock-Net/WireMock.Net/pull/729) - BodyAsFile should use BodyAsFileIsCached value [bug] contributed by [StefH](https://github.com/StefH)
