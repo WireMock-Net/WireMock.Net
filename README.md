@@ -29,7 +29,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 
 ### NuGet packages
 
-| | Official | Preview |
+| | Official | Preview [:information_source:](https://github.com/WireMock-Net/WireMock.Net/wiki/MyGet-preview-versions) |
 | - | - | - |
 | &nbsp;&nbsp;**WireMock.Net** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |  [![MyGet Badge WireMock.Net](https://buildstats.info/myget/wiremock-net/WireMock.Net?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net)
 | &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net](https://buildstats.info/nuget/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |  [![MyGet Badge WireMock.Net.StandAlone](https://buildstats.info/myget/wiremock-net/WireMock.Net.StandAlone?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.StandAlone)
