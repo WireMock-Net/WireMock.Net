@@ -1,19 +1,27 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
-    /// <seealso cref="IWebProxySettings" />
-    public class WebProxySettings : IWebProxySettings
+    /// <summary>
+    /// WebProxySettings
+    /// </summary>
+    public class WebProxySettings
     {
-        /// <inheritdoc cref="IWebProxySettings.Address"/>
+        /// <summary>
+        /// A string instance that contains the address of the proxy server.
+        /// </summary>
         [PublicAPI]
         public string Address { get; set; }
 
-        /// <inheritdoc cref="IWebProxySettings.UserName"/>
+        /// <summary>
+        /// The user name associated with the credentials.
+        /// </summary>
         [PublicAPI]
         public string UserName { get; set; }
 
-        /// <inheritdoc cref="IWebProxySettings.Password"/>
+        /// <summary>
+        /// The password for the user name associated with the credentials.
+        /// </summary>
         [PublicAPI]
         public string Password { get; set; }
     }

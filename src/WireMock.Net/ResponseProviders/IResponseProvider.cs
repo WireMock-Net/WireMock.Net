@@ -17,6 +17,6 @@ namespace WireMock.ResponseProviders
         /// <param name="requestMessage">The request.</param>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync([NotNull] RequestMessage requestMessage, [NotNull] IWireMockServerSettings settings);
+        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync([NotNull] RequestMessage requestMessage, [NotNull] WireMockServerSettings settings);
     }
 }

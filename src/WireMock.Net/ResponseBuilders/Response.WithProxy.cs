@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using WireMock.Http;
 using WireMock.Settings;
 using Stef.Validation;
@@ -12,7 +12,7 @@ namespace WireMock.ResponseBuilders
         /// <summary>
         /// The WebProxy settings.
         /// </summary>
-        public IProxyAndRecordSettings ProxyAndRecordSettings { get; private set; }
+        public ProxyAndRecordSettings ProxyAndRecordSettings { get; private set; }
 
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
         public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
@@ -29,7 +29,7 @@ namespace WireMock.ResponseBuilders
         }
 
         /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
-        public IResponseBuilder WithProxy(IProxyAndRecordSettings settings)
+        public IResponseBuilder WithProxy(ProxyAndRecordSettings settings)
         {
             Guard.NotNull(settings, nameof(settings));
 

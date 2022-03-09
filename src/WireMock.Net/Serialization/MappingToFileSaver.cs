@@ -8,10 +8,10 @@ namespace WireMock.Serialization
 {
     internal class MappingToFileSaver
     {
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
         private readonly MappingConverter _mappingConverter;
 
-        public MappingToFileSaver(IWireMockServerSettings settings, MappingConverter mappingConverter)
+        public MappingToFileSaver(WireMockServerSettings settings, MappingConverter mappingConverter)
         {
             Guard.NotNull(settings, nameof(settings));
 

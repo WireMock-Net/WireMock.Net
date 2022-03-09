@@ -29,7 +29,7 @@ namespace WireMock.Server
     {
         private const int ServerStartDelayInMs = 100;
 
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
         private readonly IOwinSelfHost _httpServer;
         private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
         private readonly MappingConverter _mappingConverter;
@@ -92,7 +92,7 @@ namespace WireMock.Server
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <returns>The <see cref="WireMockServer"/>.</returns>
         [PublicAPI]
-        public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
+        public static WireMockServer Start([NotNull] WireMockServerSettings settings)
         {
             Guard.NotNull(settings, nameof(settings));
 
@@ -193,7 +193,7 @@ namespace WireMock.Server
         /// Service start failed with error: {startTask.Exception.Message}
         /// </exception>
         /// <exception cref="TimeoutException">Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}</exception>
-        protected WireMockServer(IWireMockServerSettings settings)
+        protected WireMockServer(WireMockServerSettings settings)
         {
             _settings = settings;
 

@@ -76,8 +76,8 @@ namespace WireMock
         /// <summary>
         /// The WireMockServerSettings.
         /// </summary>
-        IWireMockServerSettings Settings { get; }
-        
+        WireMockServerSettings Settings { get; }
+
         /// <summary>
         /// Is State started ?
         /// </summary>
@@ -90,7 +90,7 @@ namespace WireMock
         /// <c>true</c> if this mapping is an Admin Interface; otherwise, <c>false</c>.
         /// </value>
         bool IsAdminInterface { get; }
-        
+
         /// <summary>
         /// Gets a value indicating whether this mapping to be logged.
         /// </summary>

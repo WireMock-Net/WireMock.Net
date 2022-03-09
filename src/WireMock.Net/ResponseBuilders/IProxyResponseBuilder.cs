@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using WireMock.Settings;
 
 namespace WireMock.ResponseBuilders
@@ -21,6 +21,6 @@ namespace WireMock.ResponseBuilders
         /// </summary>
         /// <param name="settings">The IProxyAndRecordSettings.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithProxy([NotNull] IProxyAndRecordSettings settings);
+        IResponseBuilder WithProxy([NotNull] ProxyAndRecordSettings settings);
     }
 }
