@@ -8,7 +8,7 @@ using WireMock.Types;
 namespace WireMock.Settings
 {
     /// <summary>
-    /// A static helper class to parse commandline arguments into IWireMockServerSettings.
+    /// A static helper class to parse commandline arguments into WireMockServerSettings.
     /// </summary>
     public static class WireMockServerSettingsParser
     {
@@ -19,7 +19,7 @@ namespace WireMock.Settings
         /// <param name="logger">The logger (optional, can be null)</param>
         /// <param name="settings">The parsed settings</param>
         [PublicAPI]
-        public static bool TryParseArguments([NotNull] string[] args, out IWireMockServerSettings settings, [CanBeNull] IWireMockLogger logger = null)
+        public static bool TryParseArguments([NotNull] string[] args, out WireMockServerSettings settings, [CanBeNull] IWireMockLogger logger = null)
         {
             Guard.HasNoNulls(args, nameof(args));
 
@@ -42,8 +42,8 @@ namespace WireMock.Settings
                 WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
                 AdminUsername = parser.GetStringValue("AdminUsername"),
                 AdminPassword = parser.GetStringValue("AdminPassword"),
-                AdminAzureADTenant = parser.GetStringValue(nameof(IWireMockServerSettings.AdminAzureADTenant)),
-                AdminAzureADAudience = parser.GetStringValue(nameof(IWireMockServerSettings.AdminAzureADAudience)),
+                AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
+                AdminAzureADAudience = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADAudience)),
                 MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
                 RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
                 AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
@@ -52,13 +52,13 @@ namespace WireMock.Settings
                 DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
                 HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
                 ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
-                UseRegexExtended = parser.GetBoolValue(nameof(IWireMockServerSettings.UseRegexExtended), true),
-                SaveUnmatchedRequests = parser.GetBoolValue(nameof(IWireMockServerSettings.SaveUnmatchedRequests)),
+                UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
+                SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
             };
 
 #if USE_ASPNETCORE
             settings.CorsPolicyOptions = parser.GetValue(
-                nameof(IWireMockServerSettings.CorsPolicyOptions), values =>
+                nameof(WireMockServerSettings.CorsPolicyOptions), values =>
                 {
                     var value = string.Join(string.Empty, values);
                     return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;

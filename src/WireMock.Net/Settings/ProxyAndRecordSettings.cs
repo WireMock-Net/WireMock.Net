@@ -1,11 +1,11 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace WireMock.Settings
 {
     /// <summary>
     /// ProxyAndRecordSettings
     /// </summary>
-    public class ProxyAndRecordSettings : HttpClientSettings, IProxyAndRecordSettings
+    public class ProxyAndRecordSettings : HttpClientSettings
     {
         /// <summary>
         /// The URL to proxy.
@@ -32,11 +32,15 @@ namespace WireMock.Settings
         [PublicAPI]
         public string SaveMappingForStatusCodePattern { get; set; } = "*";
 
-        /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedHeaders"/>
+        /// <summary>
+        /// Defines a list from headers which will be excluded from the saved mappings.
+        /// </summary>
         [PublicAPI]
         public string[] ExcludedHeaders { get; set; }
 
-        /// <inheritdoc cref="IProxyAndRecordSettings.ExcludedCookies"/>
+        /// <summary>
+        /// Defines a list of cookies which will be excluded from the saved mappings.
+        /// </summary>
         [PublicAPI]
         public string[] ExcludedCookies { get; set; }
     }

@@ -209,7 +209,7 @@ namespace WireMock.Serialization
             return mappingModel;
         }
 
-        private static WebProxyModel MapWebProxy(IWebProxySettings settings)
+        private static WebProxyModel MapWebProxy(WebProxySettings settings)
         {
             return settings != null ? new WebProxyModel
             {

@@ -19,9 +19,9 @@ namespace WireMock.Http
     {
         private const string ClientIp = "::1";
 
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
 
-        public WebhookSender(IWireMockServerSettings settings)
+        public WebhookSender(WireMockServerSettings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }

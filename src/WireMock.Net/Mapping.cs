@@ -44,7 +44,7 @@ namespace WireMock
         public IResponseProvider Provider { get; }
 
         /// <inheritdoc />
-        public IWireMockServerSettings Settings { get; }
+        public WireMockServerSettings Settings { get; }
 
         /// <inheritdoc />
         public bool IsStartState => Scenario == null || Scenario != null && NextState != null && ExecutionConditionState == null;
@@ -81,7 +81,7 @@ namespace WireMock
             Guid guid,
             [CanBeNull] string title,
             [CanBeNull] string path,
-            [NotNull] IWireMockServerSettings settings,
+            [NotNull] WireMockServerSettings settings,
             [NotNull] IRequestMatcher requestMatcher,
             [NotNull] IResponseProvider provider,
             int priority,

@@ -16,11 +16,11 @@ namespace WireMock.Net.StandAlone
         private static readonly string Version = typeof(StandAloneApp).GetTypeInfo().Assembly.GetName().Version.ToString();
 
         /// <summary>
-        /// Start WireMock.Net standalone Server based on the IWireMockServerSettings.
+        /// Start WireMock.Net standalone Server based on the WireMockServerSettings.
         /// </summary>
-        /// <param name="settings">The IWireMockServerSettings</param>
+        /// <param name="settings">The WireMockServerSettings</param>
         [PublicAPI]
-        public static WireMockServer Start([NotNull] IWireMockServerSettings settings)
+        public static WireMockServer Start([NotNull] WireMockServerSettings settings)
         {
             Guard.NotNull(settings, nameof(settings));
 

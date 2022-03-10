@@ -15,9 +15,9 @@ namespace WireMock.Serialization
 {
     internal class MatcherMapper
     {
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
 
-        public MatcherMapper(IWireMockServerSettings settings)
+        public MatcherMapper(WireMockServerSettings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
@@ -54,7 +54,7 @@ namespace WireMock.Serialization
                         return PluginLoader.Load<ICSharpCodeMatcher>(matchBehaviour, stringPatterns);
                     }
 
-                    throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because IWireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
+                    throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
                 case nameof(LinqMatcher):
                     return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);

@@ -17,15 +17,15 @@ namespace WireMock.Proxy
 {
     internal class ProxyHelper
     {
-        private readonly IWireMockServerSettings _settings;
+        private readonly WireMockServerSettings _settings;
 
-        public ProxyHelper([NotNull] IWireMockServerSettings settings)
+        public ProxyHelper([NotNull] WireMockServerSettings settings)
         {
             _settings = Guard.NotNull(settings, nameof(settings));
         }
 
         public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
-            [NotNull] IProxyAndRecordSettings proxyAndRecordSettings,
+            [NotNull] ProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] HttpClient client,
             [NotNull] RequestMessage requestMessage,
             [NotNull] string url)
@@ -59,7 +59,7 @@ namespace WireMock.Proxy
             return (responseMessage, mapping);
         }
 
-        private IMapping ToMapping(IProxyAndRecordSettings proxyAndRecordSettings, RequestMessage requestMessage, ResponseMessage responseMessage)
+        private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, RequestMessage requestMessage, ResponseMessage responseMessage)
         {
             string[] excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
             string[] excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
