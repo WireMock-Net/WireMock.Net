@@ -28,7 +28,7 @@ namespace WireMock.ResponseBuilders
             return WithProxy(settings);
         }
 
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(IProxyAndRecordSettings)"/>
+        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(ProxyAndRecordSettings)"/>
         public IResponseBuilder WithProxy(ProxyAndRecordSettings settings)
         {
             Guard.NotNull(settings, nameof(settings));
