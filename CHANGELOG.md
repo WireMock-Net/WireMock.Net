@@ -1,3 +1,6 @@
+# 1.4.38 (11 March 2022)
+- [#736](https://github.com/WireMock-Net/WireMock.Net/pull/736) - Remove interface for all Setting classes [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.4.37 (02 March 2022)
 - [#730](https://github.com/WireMock-Net/WireMock.Net/pull/730) - Fixed bug &quot;dotnet nuget push -n&quot; [bug] contributed by [StefH](https://github.com/StefH)
 - [#732](https://github.com/WireMock-Net/WireMock.Net/pull/732) - Make X509CertificatePassword optional [feature] contributed by [StefH](https://github.com/StefH)

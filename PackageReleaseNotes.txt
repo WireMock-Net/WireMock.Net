@@ -1,7 +1,4 @@
-# 1.4.37 (02 March 2022)
-- #730 Fixed bug &quot;dotnet nuget push -n&quot; [bug]
-- #732 Make X509CertificatePassword optional [feature]
-- #733 Fix FileSystemWatcher [bug]
-- #726 Wiremock -  WatchStaticMappings only works until the first request is made  [bug]
+# 1.4.38 (11 March 2022)
+- #736 Remove interface for all Setting classes [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
