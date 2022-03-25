@@ -1,5 +1,9 @@
+# 1.4.39 (25 March 2022)
+- [#739](https://github.com/WireMock-Net/WireMock.Net/pull/739) - Upgrade NuGet for RandomDataGenerator.Net to 1.0.14 contributed by [StefH](https://github.com/StefH)
+
 # 1.4.38 (11 March 2022)
 - [#736](https://github.com/WireMock-Net/WireMock.Net/pull/736) - Remove interface for all Setting classes [feature] contributed by [StefH](https://github.com/StefH)
+- [#737](https://github.com/WireMock-Net/WireMock.Net/pull/737) - Add WireMock.Net.WebApplication.NET6 example contributed by [StefH](https://github.com/StefH)
 
 # 1.4.37 (02 March 2022)
 - [#730](https://github.com/WireMock-Net/WireMock.Net/pull/730) - Fixed bug &quot;dotnet nuget push -n&quot; [bug] contributed by [StefH](https://github.com/StefH)
