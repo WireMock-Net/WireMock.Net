@@ -1,4 +1,4 @@
-# 1.4.38 (11 March 2022)
-- #736 Remove interface for all Setting classes [feature]
+# 1.4.39 (25 March 2022)
+- #739 Upgrade NuGet for RandomDataGenerator.Net to 1.0.14
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
