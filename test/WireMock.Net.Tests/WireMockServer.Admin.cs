@@ -324,7 +324,7 @@ namespace WireMock.Net.Tests
             Check.That(mappings).HasSize(2);
 
             // when
-            var response = await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/1").ConfigureAwait(false);
+            var response = await new HttpClient().GetAsync("http://localhost:" + server.Port + "/1").ConfigureAwait(false);
 
             // then
             Check.That((int)response.StatusCode).IsEqualTo(400);

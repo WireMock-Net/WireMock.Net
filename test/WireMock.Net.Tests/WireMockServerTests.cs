@@ -328,7 +328,7 @@ namespace WireMock.Net.Tests
             var server = WireMockServer.StartWithAdminInterface();
 
             // Act
-            var response = await new HttpClient().PostAsync($"{server.Urls[0]}/__admin/mappings", stringContent).ConfigureAwait(false);
+            var response = await new HttpClient().PostAsync($"{server.Url}/__admin/mappings", stringContent).ConfigureAwait(false);
 
             // Assert
             Check.That(response.StatusCode).Equals(HttpStatusCode.Created);
