@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Authentication;
 using WireMock.Exceptions;
@@ -18,7 +19,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
-using Stef.Validation;
 
 namespace WireMock.Server
 {
@@ -40,13 +40,21 @@ namespace WireMock.Server
         [PublicAPI]
         public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
 
-        /// <inheritdoc cref="IWireMockServer.Ports" />
+        /// <inheritdoc />
         [PublicAPI]
         public List<int> Ports { get; }
 
-        /// <inheritdoc cref="IWireMockServer.Urls" />
+        /// <inheritdoc />
+        [PublicAPI]
+        public int Port => Ports?.FirstOrDefault() ?? default(int);
+
+        /// <inheritdoc />
         [PublicAPI]
         public string[] Urls { get; }
+
+        /// <inheritdoc />
+        [PublicAPI]
+        public string Url => Urls?.FirstOrDefault();
 
         /// <summary>
         /// Gets the mappings.

@@ -39,9 +39,19 @@ namespace WireMock.Server
         List<int> Ports { get; }
 
         /// <summary>
+        /// Gets the first port.
+        /// </summary>
+        int Port { get; }
+
+        /// <summary>
         /// Gets the urls.
         /// </summary>
         string[] Urls { get; }
+
+        /// <summary>
+        /// Gets the first url.
+        /// </summary>
+        string Url { get; }
 
         //ConcurrentDictionary<string, ScenarioState> Scenarios { get; }
 
