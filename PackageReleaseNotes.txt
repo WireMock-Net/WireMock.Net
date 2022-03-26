@@ -1,4 +1,4 @@
-# 1.4.39 (25 March 2022)
-- #739 Upgrade NuGet for RandomDataGenerator.Net to 1.0.14
+# 1.4.40 (26 March 2022)
+- #740 Add Port and Url property to WireMockServer + upgrade System.Linq.Dynamic.Core [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
