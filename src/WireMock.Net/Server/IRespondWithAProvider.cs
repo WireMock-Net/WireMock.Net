@@ -39,6 +39,13 @@ namespace WireMock.Server
         IRespondWithAProvider WithTitle(string title);
 
         /// <summary>
+        /// Define a description for this mapping.
+        /// </summary>
+        /// <param name="description">The description.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        IRespondWithAProvider WithDescription(string description);
+
+        /// <summary>
         /// Define the full filepath for this mapping.
         /// </summary>
         /// <param name="path">The full filepath.</param>

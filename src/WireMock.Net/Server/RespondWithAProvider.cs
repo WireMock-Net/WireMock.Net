@@ -20,6 +20,7 @@ namespace WireMock.Server
     {
         private int _priority;
         private string _title;
+        private string _description;
         private string _path;
         private string _executionConditionState;
         private string _nextState;
@@ -57,16 +58,16 @@ namespace WireMock.Server
         /// <param name="provider">The provider.</param>
         public void RespondWith(IResponseProvider provider)
         {
-            _registrationCallback(new Mapping(Guid, _title, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, TimeSettings), _saveToFile);
+            _registrationCallback(new Mapping(Guid, _title, _description, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, TimeSettings), _saveToFile);
         }
 
-        /// <see cref="IRespondWithAProvider.WithGuid(string)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithGuid(string guid)
         {
             return WithGuid(Guid.Parse(guid));
         }
 
-        /// <see cref="IRespondWithAProvider.WithGuid(Guid)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithGuid(Guid guid)
         {
             Guid = guid;
@@ -74,10 +75,18 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithTitle"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithTitle(string title)
         {
             _title = title;
+
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IRespondWithAProvider WithDescription(string description)
+        {
+            _description = description;
 
             return this;
         }
@@ -90,7 +99,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.AtPriority"/>
+        /// <inheritdoc />
         public IRespondWithAProvider AtPriority(int priority)
         {
             _priority = priority;
@@ -98,7 +107,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.InScenario(string)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider InScenario(string scenario)
         {
             _scenario = scenario;
@@ -106,13 +115,13 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.InScenario(int)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider InScenario(int scenario)
         {
             return InScenario(scenario.ToString());
         }
 
-        /// <see cref="IRespondWithAProvider.WhenStateIs(string)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WhenStateIs(string state)
         {
             if (string.IsNullOrEmpty(_scenario))
@@ -125,13 +134,13 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WhenStateIs(int)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WhenStateIs(int state)
         {
             return WhenStateIs(state.ToString());
         }
 
-        /// <see cref="IRespondWithAProvider.WillSetStateTo(string, int?)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WillSetStateTo(string state, int? times = 1)
         {
             if (string.IsNullOrEmpty(_scenario))
@@ -145,7 +154,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WillSetStateTo(int, int?)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WillSetStateTo(int state, int? times = 1)
         {
             return WillSetStateTo(state.ToString(), times);
@@ -161,7 +170,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(IWebhook[])"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
         {
             Guard.HasNoNulls(webhooks, nameof(webhooks));
@@ -171,7 +180,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, string, bool, TransformerType)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithWebhook(
             [NotNull] string url,
             [CanBeNull] string method = "post",
@@ -195,7 +204,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <see cref="IRespondWithAProvider.WithWebhook(string, string, IDictionary{string, WireMockList{string}}, object, bool, TransformerType)"/>
+        /// <inheritdoc />
         public IRespondWithAProvider WithWebhook(
             [NotNull] string url,
             [CanBeNull] string method = "post",

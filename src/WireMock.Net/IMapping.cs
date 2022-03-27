@@ -29,6 +29,11 @@ namespace WireMock
         string Title { get; }
 
         /// <summary>
+        /// Gets the description.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
         /// The full filename path for this mapping (only defined for static mappings).
         /// </summary>
         string Path { get; set; }

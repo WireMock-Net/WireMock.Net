@@ -437,6 +437,11 @@ namespace WireMock.Server
                 respondProvider = respondProvider.WithTitle(mappingModel.Title);
             }
 
+            if (!string.IsNullOrEmpty(mappingModel.Description))
+            {
+                respondProvider = respondProvider.WithTitle(mappingModel.Description);
+            }
+
             if (mappingModel.Priority != null)
             {
                 respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);

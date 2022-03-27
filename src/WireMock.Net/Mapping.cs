@@ -20,6 +20,9 @@ namespace WireMock
         public string Title { get; }
 
         /// <inheritdoc />
+        public string Description { get; }
+
+        /// <inheritdoc />
         public string Path { get; set; }
 
         /// <inheritdoc />
@@ -66,6 +69,7 @@ namespace WireMock
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
         /// <param name="title">The unique title (can be null).</param>
+        /// <param name="description">The description (can be null).</param>
         /// <param name="path">The full file path from this mapping title (can be null).</param>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <param name="requestMatcher">The request matcher.</param>
@@ -80,6 +84,7 @@ namespace WireMock
         public Mapping(
             Guid guid,
             [CanBeNull] string title,
+            [CanBeNull] string description,
             [CanBeNull] string path,
             [NotNull] WireMockServerSettings settings,
             [NotNull] IRequestMatcher requestMatcher,
@@ -94,6 +99,7 @@ namespace WireMock
         {
             Guid = guid;
             Title = title;
+            Description = description;
             Path = path;
             Settings = settings;
             RequestMatcher = requestMatcher;

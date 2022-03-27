@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests.Serialization
                     }
                 }
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -120,7 +120,7 @@ namespace WireMock.Net.Tests.Serialization
                     }
                 }
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 0, null, null, null, null, webhooks, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -147,12 +147,31 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
+        public void ToMappingModel_WithTitle_And_Description_ReturnsCorrectModel()
+        {
+            // Assign
+            var title = "my-title";
+            var description = "my-description";
+            var request = Request.Create();
+            var response = Response.Create();
+            var mapping = new Mapping(Guid.NewGuid(), title, description, null, _settings, request, response, 0, null, null, null, null, null, null);
+
+            // Act
+            var model = _sut.ToMappingModel(mapping);
+
+            // Assert
+            model.Should().NotBeNull();
+            model.Title.Should().Be(title);
+            model.Description.Should().Be(description);
+        }
+
+        [Fact]
         public void ToMappingModel_WithPriority_ReturnsPriority()
         {
             // Assign
             var request = Request.Create();
             var response = Response.Create().WithBodyAsJson(new { x = "x" }).WithTransformer();
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -178,7 +197,7 @@ namespace WireMock.Net.Tests.Serialization
                 End = end,
                 TTL = ttl
             };
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, timeSettings);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, timeSettings);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -198,7 +217,7 @@ namespace WireMock.Net.Tests.Serialization
             int delay = 1000;
             var request = Request.Create();
             var response = Response.Create().WithDelay(delay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -215,7 +234,7 @@ namespace WireMock.Net.Tests.Serialization
             int minimumDelay = 1000;
             var request = Request.Create();
             var response = Response.Create().WithRandomDelay(minimumDelay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -235,7 +254,7 @@ namespace WireMock.Net.Tests.Serialization
             int maximumDelay = 2000;
             var request = Request.Create();
             var response = Response.Create().WithRandomDelay(minimumDelay, maximumDelay);
-            var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
+            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
