@@ -36,6 +36,9 @@ namespace WireMock.Server
         private readonly MatcherMapper _matcherMapper;
         private readonly MappingToFileSaver _mappingToFileSaver;
 
+        private string _consumer;
+        private string _provider;
+
         /// <inheritdoc cref="IWireMockServer.IsStarted" />
         [PublicAPI]
         public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
@@ -507,6 +510,22 @@ namespace WireMock.Server
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {
             return new RespondWithAProvider(RegisterMapping, requestMatcher, _settings, saveToFile);
+        }
+
+        /// <inheritdoc />
+        [PublicAPI]
+        public IWireMockServer WithConsumer(string consumer)
+        {
+            _consumer = consumer;
+            return this;
+        }
+
+        /// <inheritdoc />
+        [PublicAPI]
+        public IWireMockServer WithProvider(string provider)
+        {
+            _provider = provider;
+            return this;
         }
 
         private void RegisterMapping(IMapping mapping, bool saveToFile)

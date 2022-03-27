@@ -51,7 +51,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
+        <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -131,6 +131,12 @@
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' ">
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Scriban.Signed" Version="3.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Server\WireMockServer.*.cs">
+            <DependentUpon>WireMockServer.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
