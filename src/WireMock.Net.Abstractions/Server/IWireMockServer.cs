@@ -53,6 +53,16 @@ namespace WireMock.Server
         /// </summary>
         string Url { get; }
 
+        /// <summary>
+        /// Gets the consumer.
+        /// </summary>
+        string Consumer { get; }
+
+        /// <summary>
+        /// Gets the provider.
+        /// </summary>
+        string Provider { get; }
+
         //ConcurrentDictionary<string, ScenarioState> Scenarios { get; }
 
         /// <summary>

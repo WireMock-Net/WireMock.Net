@@ -36,10 +36,7 @@ namespace WireMock.Server
         private readonly MatcherMapper _matcherMapper;
         private readonly MappingToFileSaver _mappingToFileSaver;
 
-        private string _consumer;
-        private string _provider;
-
-        /// <inheritdoc cref="IWireMockServer.IsStarted" />
+        /// <inheritdoc />
         [PublicAPI]
         public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
 
@@ -58,6 +55,14 @@ namespace WireMock.Server
         /// <inheritdoc />
         [PublicAPI]
         public string Url => Urls?.FirstOrDefault();
+
+        /// <inheritdoc />
+        [PublicAPI]
+        public string Consumer { get; private set; }
+
+        /// <inheritdoc />
+        [PublicAPI]
+        public string Provider { get; private set; }
 
         /// <summary>
         /// Gets the mappings.
@@ -516,7 +521,7 @@ namespace WireMock.Server
         [PublicAPI]
         public IWireMockServer WithConsumer(string consumer)
         {
-            _consumer = consumer;
+            Consumer = consumer;
             return this;
         }
 
@@ -524,7 +529,7 @@ namespace WireMock.Server
         [PublicAPI]
         public IWireMockServer WithProvider(string provider)
         {
-            _provider = provider;
+            Provider = provider;
             return this;
         }
 
