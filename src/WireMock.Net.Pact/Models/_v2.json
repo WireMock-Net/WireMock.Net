@@ -1,0 +1,206 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "definitions": {
+        "headers": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
+        },
+        "interaction": {
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "providerState": {
+                    "type": "string"
+                },
+                "request": {
+                    "$ref": "#/definitions/request"
+                },
+                "response": {
+                    "$ref": "#/definitions/response"
+                }
+            },
+            "required": [
+                "description",
+                "request",
+                "response"
+            ],
+            "type": "object"
+        },
+        "interactions": {
+            "items": {
+                "$ref": "#/definitions/interaction"
+            },
+            "type": "array"
+        },
+        "matchingRules": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^\\$.*$": {
+                    "oneOf": [
+                        {
+                            "additionalProperties": false,
+                            "properties": {
+                                "match": {
+                                    "enum": [ "type" ],
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "type": "number"
+                                },
+                                "min": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [ "match" ],
+                            "type": "object"
+                        },
+                        {
+                            "additionalProperties": false,
+                            "properties": {
+                                "match": {
+                                    "enum": [ "regex" ],
+                                    "type": "string"
+                                },
+                                "regex": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "match",
+                                "regex"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "metadata": {
+            "properties": {
+                "pactSpecification": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "version" ],
+                    "type": "object"
+                },
+                "pactSpecificationVersion": {
+                    "type": "string"
+                },
+                "pact-specification": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "version" ],
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "pacticipant": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [ "name" ],
+            "type": "object"
+        },
+        "request": {
+            "additionalProperties": false,
+            "properties": {
+                "body": {},
+                "headers": {
+                    "$ref": "#/definitions/headers"
+                },
+                "matchingRules": {
+                    "$ref": "#/definitions/matchingRules"
+                },
+                "method": {
+                    "enum": [
+                        "connect",
+                        "CONNECT",
+                        "delete",
+                        "DELETE",
+                        "get",
+                        "GET",
+                        "head",
+                        "HEAD",
+                        "options",
+                        "OPTIONS",
+                        "post",
+                        "POST",
+                        "put",
+                        "PUT",
+                        "trace",
+                        "TRACE"
+                    ],
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "query": {
+                    "pattern": "^$|^[^=&]+=[^=&]+&?$|^[^=&]+=[^=&]+(&[^=&]+=[^=&]+)*&?$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "method",
+                "path"
+            ],
+            "type": "object"
+        },
+        "response": {
+            "additionalProperties": false,
+            "properties": {
+                "body": {},
+                "headers": {
+                    "$ref": "#/definitions/headers"
+                },
+                "matchingRules": {
+                    "$ref": "#/definitions/matchingRules"
+                },
+                "status": {
+                    "maximum": 599,
+                    "minimum": 100,
+                    "type": "integer"
+                }
+            },
+            "required": [ "status" ],
+            "type": "object"
+        }
+    },
+    "description": "Schema for a Pact file",
+    "properties": {
+        "consumer": {
+            "$ref": "#/definitions/pacticipant"
+        },
+        "interactions": {
+            "$ref": "#/definitions/interactions"
+        },
+        "metadata": {
+            "$ref": "#/definitions/metadata"
+        },
+        "provider": {
+            "$ref": "#/definitions/pacticipant"
+        }
+    },
+    "required": [
+        "consumer",
+        "interactions",
+        "provider"
+    ],
+    "type": "object"
+}

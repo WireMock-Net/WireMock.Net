@@ -14,6 +14,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
+        <!--<RootNamespace>WireMock</RootNamespace>-->
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">

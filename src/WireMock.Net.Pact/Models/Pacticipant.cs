@@ -1,6 +1,6 @@
 namespace WireMock.Net.Pact.Models;
 
-public class Provider
+public class Pacticipant
 {
     public string? Name { get; set; }
 }

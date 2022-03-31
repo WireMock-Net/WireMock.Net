@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-
 namespace WireMock.Net.Pact.Models;
 
 public class Interaction
 {
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-    public List<ProviderState> ProviderStates { get; set; } = new();
+    public string? ProviderState { get; set; }
 
-    public Request Request { get; set; }
+    public Request Request { get; set; } = new();
 
-    public Response Response { get; set; }
+    public Response Response { get; set; } = new();
 }

@@ -9,4 +9,6 @@ public class Request
     public string Method { get; set; } = "GET";
 
     public string Path { get; set; } = "/";
+
+    public MatchingRule[]? MatchingRules;
 }
