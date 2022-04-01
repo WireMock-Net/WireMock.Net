@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace WireMock.Net.Pact.Models;
 
@@ -6,7 +7,7 @@ public class Pact
 {
     public Pacticipant? Consumer { get; set; }
 
-    public Interaction[] Interactions { get; set; } = Array.Empty<Interaction>();
+    public List<Interaction> Interactions { get; set; } = new();
 
     public Metadata? Metadata { get; set; }
 
