@@ -10,5 +10,5 @@ public class Request
 
     public string Path { get; set; } = "/";
 
-    public MatchingRule[]? MatchingRules;
+    public List<MatchingRule>? MatchingRules;
 }

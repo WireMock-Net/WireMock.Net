@@ -22,24 +22,24 @@ public static class WireMockServerExtensions
             {
                 Description = mapping.Description,
                 ProviderState = mapping.Title,
-                Request = Map(mapping.Request)
+                Request = MapRequest(mapping.Request)
             };
 
             pact.Interactions.Add(interaction);
         }
     }
 
-    private static Request Map(RequestModel request)
+    private static Request MapRequest(RequestModel request)
     {
         return new Request
         {
             Method = request.Methods.FirstOrDefault() ?? "GET",
             Path = request.Path as string ?? "/",
-            Headers = Map(request.Headers)
+            Headers = MapHeaders(request.Headers)
         };
     }
 
-    private static IDictionary<string, string>? Map(IList<HeaderModel> headers)
+    private static IDictionary<string, string>? MapHeaders(IList<HeaderModel> headers)
     {
         if (!headers.Any())
         {
