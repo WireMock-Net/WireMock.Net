@@ -175,7 +175,7 @@ namespace WireMock.Server
             _enhancedFileSystemWatcher.Deleted += EnhancedFileSystemWatcherDeleted;
             _enhancedFileSystemWatcher.EnableRaisingEvents = true;
         }
-        
+
         /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
         public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
@@ -280,23 +280,34 @@ namespace WireMock.Server
         private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
         {
             var settings = DeserializeObject<SettingsModel>(requestMessage);
-            _options.MaxRequestLogCount = settings.MaxRequestLogCount;
-            _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
-            _options.AllowPartialMapping = settings.AllowPartialMapping;
+
+            // _settings
+            _settings.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
+            _settings.AllowPartialMapping = settings.AllowPartialMapping;
+            _settings.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
+            _settings.MaxRequestLogCount = settings.MaxRequestLogCount;
+            _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
+            _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
+            _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
+            _settings.UseRegexExtended = settings.UseRegexExtended;
+
+            // _options
             if (settings.GlobalProcessingDelay != null)
             {
                 _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
             }
             _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
+            _options.AllowPartialMapping = settings.AllowPartialMapping;
             _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
-            _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
-            _settings.UseRegexExtended = settings.UseRegexExtended;
-            _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
+            _options.MaxRequestLogCount = settings.MaxRequestLogCount;
+            _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
 
+            // _settings & _options
 #if USE_ASPNETCORE
             if (Enum.TryParse<CorsPolicyOptions>(settings.CorsPolicyOptions, true, out var corsPolicyOptions))
             {
                 _settings.CorsPolicyOptions = corsPolicyOptions;
+                _options.CorsPolicyOptions = corsPolicyOptions;
             }
 #endif
 
