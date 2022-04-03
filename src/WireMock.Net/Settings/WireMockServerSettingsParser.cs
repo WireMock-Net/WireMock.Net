@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Logging;
@@ -35,34 +34,33 @@ namespace WireMock.Settings
 
             settings = new WireMockServerSettings
             {
-                StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
-                ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
-                WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
-                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
-                WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
-                AdminUsername = parser.GetStringValue("AdminUsername"),
-                AdminPassword = parser.GetStringValue("AdminPassword"),
-                AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
                 AdminAzureADAudience = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADAudience)),
-                MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
-                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
-                AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
+                AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
+                AdminPassword = parser.GetStringValue("AdminPassword"),
+                AdminUsername = parser.GetStringValue("AdminUsername"),
                 AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods"),
+                AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
                 AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
+                AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
                 DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
                 HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
+                MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
+                ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
+                RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
+                SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
+                StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
                 ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
                 UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
-                SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
+                WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
+                WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
             };
 
 #if USE_ASPNETCORE
-            settings.CorsPolicyOptions = parser.GetValue(
-                nameof(WireMockServerSettings.CorsPolicyOptions), values =>
-                {
-                    var value = string.Join(string.Empty, values);
-                    return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
-                });
+            settings.CorsPolicyOptions = parser.GetValue(nameof(WireMockServerSettings.CorsPolicyOptions), values =>
+            {
+                var value = string.Join(string.Empty, values);
+                return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
+            });
 #endif
 
             if (logger != null)
@@ -75,9 +73,9 @@ namespace WireMock.Settings
                 settings.Logger = new WireMockConsoleLogger();
             }
 
-            if (parser.Contains("Port"))
+            if (parser.Contains(nameof(WireMockServerSettings.Port)))
             {
-                settings.Port = parser.GetIntValue("Port");
+                settings.Port = parser.GetIntValue(nameof(WireMockServerSettings.Port));
             }
             else
             {
@@ -89,14 +87,14 @@ namespace WireMock.Settings
             {
                 settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = proxyUrl,
-                    SaveMapping = parser.GetBoolValue("SaveMapping"),
-                    SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
-                    SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
+                    AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect"),
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
-                    ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
                     ExcludedCookies = parser.GetValues("ExcludedCookies"),
-                    AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect")
+                    ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
+                    SaveMapping = parser.GetBoolValue("SaveMapping"),
+                    SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
+                    SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
+                    Url = proxyUrl
                 };
 
                 string proxyAddress = parser.GetStringValue("WebProxyAddress");
