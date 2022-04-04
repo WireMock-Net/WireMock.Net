@@ -13,6 +13,7 @@ using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
+using WireMock.Constants;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -34,8 +35,6 @@ namespace WireMock.Server
     public partial class WireMockServer
     {
         private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
-        private const int AdminPriority = int.MinValue;
-        private const int ProxyPriority = 1000;
         private const string ContentTypeJson = "application/json";
         private const string AdminFiles = "/__admin/files";
         private const string AdminMappings = "/__admin/mappings";
@@ -55,53 +54,53 @@ namespace WireMock.Server
         private void InitAdmin()
         {
             // __admin/settings
-            Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
-            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
+            Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
+            Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
 
             // __admin/mappings
-            Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
-            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
-            Given(Request.Create().WithPath(AdminMappingsWireMockOrg).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPostWireMockOrg));
-            Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
+            Given(Request.Create().WithPath(AdminMappings).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsGet));
+            Given(Request.Create().WithPath(AdminMappings).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPost));
+            Given(Request.Create().WithPath(AdminMappingsWireMockOrg).UsingPost().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsPostWireMockOrg));
+            Given(Request.Create().WithPath(AdminMappings).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsDelete));
 
             // __admin/mappings/reset
-            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsReset));
+            Given(Request.Create().WithPath(AdminMappings + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsReset));
 
             // __admin/mappings/{guid}
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
-            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, _adminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
+            Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
 
             // __admin/mappings/save
-            Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(MappingsSave));
+            Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsSave));
 
             // __admin/requests
-            Given(Request.Create().WithPath(AdminRequests).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsGet));
-            Given(Request.Create().WithPath(AdminRequests).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
+            Given(Request.Create().WithPath(AdminRequests).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsGet));
+            Given(Request.Create().WithPath(AdminRequests).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
 
             // __admin/requests/reset
-            Given(Request.Create().WithPath(AdminRequests + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
+            Given(Request.Create().WithPath(AdminRequests + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsDelete));
 
             // __admin/request/{guid}
-            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestGet));
-            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestDelete));
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestGet));
+            Given(Request.Create().WithPath(_adminRequestsGuidPathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestDelete));
 
             // __admin/requests/find
-            Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFind));
+            Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFind));
 
             // __admin/scenarios
-            Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
-            Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
+            Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
+            Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
 
             // __admin/scenarios/reset
-            Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
+            Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
 
             // __admin/files/{filename}
-            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPost()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
-            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPut()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
-            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
-            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
-            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPut()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
+            Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
         }
         #endregion
 
@@ -216,7 +215,7 @@ namespace WireMock.Server
             var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
             if (settings.StartAdminInterface == true)
             {
-                respondProvider.AtPriority(ProxyPriority);
+                respondProvider.AtPriority(WireMockConstants.ProxyPriority);
             }
 
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));

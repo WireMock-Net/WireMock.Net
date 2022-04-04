@@ -34,7 +34,7 @@ namespace WireMock
         string Path { get; set; }
 
         /// <summary>
-        /// Gets the priority.
+        /// Gets the priority.  (A low value means higher priority.)
         /// </summary>
         int Priority { get; }
 

@@ -10,6 +10,7 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Stef.Validation;
+using WireMock.Constants;
 
 namespace WireMock.Server
 {
