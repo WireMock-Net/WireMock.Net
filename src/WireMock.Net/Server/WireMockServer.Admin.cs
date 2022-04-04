@@ -222,7 +222,7 @@ namespace WireMock.Server
             respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
-        private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, WireMockServerSettings settings)
+        private async Task<IResponseMessage> ProxyAndRecordAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
         {
             var requestUri = new Uri(requestMessage.Url);
             var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
@@ -255,7 +255,7 @@ namespace WireMock.Server
         #endregion
 
         #region Settings
-        private ResponseMessage SettingsGet(RequestMessage requestMessage)
+        private IResponseMessage SettingsGet(IRequestMessage requestMessage)
         {
             var model = new SettingsModel
             {
@@ -277,7 +277,7 @@ namespace WireMock.Server
             return ToJson(model);
         }
 
-        private ResponseMessage SettingsUpdate(RequestMessage requestMessage)
+        private IResponseMessage SettingsUpdate(IRequestMessage requestMessage)
         {
             var settings = DeserializeObject<SettingsModel>(requestMessage);
             _options.MaxRequestLogCount = settings.MaxRequestLogCount;
@@ -305,7 +305,7 @@ namespace WireMock.Server
         #endregion Settings
 
         #region Mapping/{guid}
-        private ResponseMessage MappingGet(RequestMessage requestMessage)
+        private IResponseMessage MappingGet(IRequestMessage requestMessage)
         {
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
             var mapping = Mappings.FirstOrDefault(m => !m.IsAdminInterface && m.Guid == guid);
@@ -321,7 +321,7 @@ namespace WireMock.Server
             return ToJson(model);
         }
 
-        private ResponseMessage MappingPut(RequestMessage requestMessage)
+        private IResponseMessage MappingPut(IRequestMessage requestMessage)
         {
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
@@ -331,7 +331,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("Mapping added or updated", 200, guidFromPut);
         }
 
-        private ResponseMessage MappingDelete(RequestMessage requestMessage)
+        private IResponseMessage MappingDelete(IRequestMessage requestMessage)
         {
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
@@ -343,14 +343,14 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("Mapping not found", 404);
         }
 
-        private Guid ParseGuidFromRequestMessage(RequestMessage requestMessage)
+        private Guid ParseGuidFromRequestMessage(IRequestMessage requestMessage)
         {
             return Guid.Parse(requestMessage.Path.Substring(AdminMappings.Length + 1));
         }
         #endregion Mapping/{guid}
 
         #region Mappings
-        private ResponseMessage MappingsSave(RequestMessage requestMessage)
+        private IResponseMessage MappingsSave(IRequestMessage requestMessage)
         {
             SaveStaticMappings();
 
@@ -362,12 +362,12 @@ namespace WireMock.Server
             return Mappings.Where(m => !m.IsAdminInterface).Select(_mappingConverter.ToMappingModel);
         }
 
-        private ResponseMessage MappingsGet(RequestMessage requestMessage)
+        private IResponseMessage MappingsGet(IRequestMessage requestMessage)
         {
             return ToJson(ToMappingModels());
         }
 
-        private ResponseMessage MappingsPost(RequestMessage requestMessage)
+        private IResponseMessage MappingsPost(IRequestMessage requestMessage)
         {
             try
             {
@@ -469,7 +469,7 @@ namespace WireMock.Server
             return respondProvider.Guid;
         }
 
-        private ResponseMessage MappingsDelete(RequestMessage requestMessage)
+        private IResponseMessage MappingsDelete(IRequestMessage requestMessage)
         {
             if (!string.IsNullOrEmpty(requestMessage.Body))
             {
@@ -494,7 +494,7 @@ namespace WireMock.Server
             }
         }
 
-        private IEnumerable<Guid> MappingsDeleteMappingFromBody(RequestMessage requestMessage)
+        private IEnumerable<Guid> MappingsDeleteMappingFromBody(IRequestMessage requestMessage)
         {
             var deletedGuids = new List<Guid>();
 
@@ -530,7 +530,7 @@ namespace WireMock.Server
             return deletedGuids;
         }
 
-        private ResponseMessage MappingsReset(RequestMessage requestMessage)
+        private IResponseMessage MappingsReset(IRequestMessage requestMessage)
         {
             ResetMappings();
 
@@ -550,7 +550,7 @@ namespace WireMock.Server
         #endregion Mappings
 
         #region Request/{guid}
-        private ResponseMessage RequestGet(RequestMessage requestMessage)
+        private IResponseMessage RequestGet(IRequestMessage requestMessage)
         {
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
             var entry = LogEntries.FirstOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
@@ -566,7 +566,7 @@ namespace WireMock.Server
             return ToJson(model);
         }
 
-        private ResponseMessage RequestDelete(RequestMessage requestMessage)
+        private IResponseMessage RequestDelete(IRequestMessage requestMessage)
         {
             Guid guid = ParseGuidFromRequestMessage(requestMessage);
 
@@ -580,7 +580,7 @@ namespace WireMock.Server
         #endregion Request/{guid}
 
         #region Requests
-        private ResponseMessage RequestsGet(RequestMessage requestMessage)
+        private IResponseMessage RequestsGet(IRequestMessage requestMessage)
         {
             var result = LogEntries
                 .Where(r => !r.RequestMessage.Path.StartsWith("/__admin/"))
@@ -589,7 +589,7 @@ namespace WireMock.Server
             return ToJson(result);
         }
 
-        private ResponseMessage RequestsDelete(RequestMessage requestMessage)
+        private IResponseMessage RequestsDelete(IRequestMessage requestMessage)
         {
             ResetLogEntries();
 
@@ -598,7 +598,7 @@ namespace WireMock.Server
         #endregion Requests
 
         #region Requests/find
-        private ResponseMessage RequestsFind(RequestMessage requestMessage)
+        private IResponseMessage RequestsFind(IRequestMessage requestMessage)
         {
             var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
@@ -621,7 +621,7 @@ namespace WireMock.Server
         #endregion Requests/find
 
         #region Scenarios
-        private ResponseMessage ScenariosGet(RequestMessage requestMessage)
+        private IResponseMessage ScenariosGet(IRequestMessage requestMessage)
         {
             var scenariosStates = Scenarios.Values.Select(s => new ScenarioStateModel
             {
@@ -635,7 +635,7 @@ namespace WireMock.Server
             return ToJson(scenariosStates, true);
         }
 
-        private ResponseMessage ScenariosReset(RequestMessage requestMessage)
+        private IResponseMessage ScenariosReset(IRequestMessage requestMessage)
         {
             ResetScenarios();
 
@@ -877,7 +877,7 @@ namespace WireMock.Server
             return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
         }
 
-        private T DeserializeObject<T>(RequestMessage requestMessage)
+        private T DeserializeObject<T>(IRequestMessage requestMessage)
         {
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
             {
@@ -892,7 +892,7 @@ namespace WireMock.Server
             return default(T);
         }
 
-        private T[] DeserializeRequestMessageToArray<T>(RequestMessage requestMessage)
+        private T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
         {
             if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
             {

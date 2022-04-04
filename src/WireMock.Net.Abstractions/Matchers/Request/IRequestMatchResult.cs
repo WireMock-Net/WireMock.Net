@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace WireMock.Matchers.Request
@@ -44,5 +44,13 @@ namespace WireMock.Matchers.Request
         /// The match-score.
         /// </value>
         double TotalScore { get; }
+
+        /// <summary>
+        /// Adds the score.
+        /// </summary>
+        /// <param name="matcherType">The matcher Type.</param>
+        /// <param name="score">The score.</param>
+        /// <returns>The score.</returns>
+        double AddScore(Type matcherType, double score);
     }
 }

@@ -195,8 +195,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, string}, string, Encoding)"/>
-        public IResponseBuilder WithBody(Func<RequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        /// <inheritdoc />
+        public IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
             Guard.NotNull(bodyFactory, nameof(bodyFactory));
 
@@ -211,8 +211,8 @@ namespace WireMock.ResponseBuilders
             });
         }
 
-        /// <inheritdoc cref="IBodyResponseBuilder.WithBody(Func{RequestMessage, Task{string}}, string, Encoding)"/>
-        public IResponseBuilder WithBody(Func<RequestMessage, Task<string>> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
+        /// <inheritdoc />
+        public IResponseBuilder WithBody(Func<IRequestMessage, Task<string>> bodyFactory, string destination = BodyDestinationFormat.SameAsSource, Encoding encoding = null)
         {
             Guard.NotNull(bodyFactory, nameof(bodyFactory));
 
@@ -385,8 +385,8 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IResponseProvider.ProvideResponseAsync(RequestMessage, WireMockServerSettings)"/>
-        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, WireMockServerSettings settings)
+        /// <inheritdoc />
+        public async Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
         {
             Guard.NotNull(requestMessage, nameof(requestMessage));
             Guard.NotNull(settings, nameof(settings));

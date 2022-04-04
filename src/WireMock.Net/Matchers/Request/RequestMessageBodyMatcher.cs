@@ -114,8 +114,8 @@ namespace WireMock.Matchers.Request
             Matchers = matchers;
         }
 
-        /// <see cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        /// <inheritdoc />
+        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
         {
             double score = CalculateMatchScore(requestMessage);
             return requestMatchResult.AddScore(GetType(), score);

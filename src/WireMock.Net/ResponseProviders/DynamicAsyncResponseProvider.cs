@@ -6,14 +6,14 @@ namespace WireMock.ResponseProviders
 {
     internal class DynamicAsyncResponseProvider : IResponseProvider
     {
-        private readonly Func<RequestMessage, Task<ResponseMessage>> _responseMessageFunc;
+        private readonly Func<IRequestMessage, Task<IResponseMessage>> _responseMessageFunc;
 
-        public DynamicAsyncResponseProvider(Func<RequestMessage, Task<ResponseMessage>> responseMessageFunc)
+        public DynamicAsyncResponseProvider(Func<IRequestMessage, Task<IResponseMessage>> responseMessageFunc)
         {
             _responseMessageFunc = responseMessageFunc;
         }
 
-        public async Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage, WireMockServerSettings settings)
+        public async Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
         {
             return (await _responseMessageFunc(requestMessage).ConfigureAwait(false), null);
         }

@@ -44,7 +44,7 @@ namespace WireMock.Server
             }
         }
 
-        private ResponseMessage MappingsPostWireMockOrg(RequestMessage requestMessage)
+        private IResponseMessage MappingsPostWireMockOrg(IRequestMessage requestMessage)
         {
             try
             {

@@ -7,8 +7,8 @@ namespace WireMock.Transformers
 {
     interface ITransformer
     {
-        ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options);
+        ResponseMessage Transform(IRequestMessage requestMessage, IResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options);
 
-        (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options);
+        (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options);
     }
 }

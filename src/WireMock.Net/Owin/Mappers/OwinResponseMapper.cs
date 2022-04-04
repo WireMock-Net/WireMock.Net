@@ -53,7 +53,7 @@ namespace WireMock.Owin.Mappers
         }
 
         /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
-        public async Task MapAsync(ResponseMessage responseMessage, IResponse response)
+        public async Task MapAsync(IResponseMessage responseMessage, IResponse response)
         {
             if (responseMessage == null)
             {
@@ -117,12 +117,12 @@ namespace WireMock.Owin.Mappers
             return code;
         }
 
-        private bool IsFault(ResponseMessage responseMessage)
+        private bool IsFault(IResponseMessage responseMessage)
         {
             return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
         }
 
-        private byte[] GetNormalBody(ResponseMessage responseMessage)
+        private byte[] GetNormalBody(IResponseMessage responseMessage)
         {
             byte[] bytes = null;
             switch (responseMessage.BodyData?.DetectedBodyType)
@@ -151,7 +151,7 @@ namespace WireMock.Owin.Mappers
             return bytes;
         }
 
-        private static void SetResponseHeaders(ResponseMessage responseMessage, IResponse response)
+        private static void SetResponseHeaders(IResponseMessage responseMessage, IResponse response)
         {
             // Force setting the Date header (#577)
             AppendResponseHeader(

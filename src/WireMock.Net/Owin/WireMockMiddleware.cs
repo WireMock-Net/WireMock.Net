@@ -72,7 +72,7 @@ namespace WireMock.Owin
             var request = await _requestMapper.MapAsync(ctx.Request, _options).ConfigureAwait(false);
 
             var logRequest = false;
-            ResponseMessage response = null;
+            IResponseMessage response = null;
             (MappingMatcherResult Match, MappingMatcherResult Partial) result = (null, null);
             try
             {
@@ -192,7 +192,7 @@ namespace WireMock.Owin
             await CompletedTask.ConfigureAwait(false);
         }
 
-        private async Task SendToWebhooksAsync(IMapping mapping, RequestMessage request, ResponseMessage response)
+        private async Task SendToWebhooksAsync(IMapping mapping, IRequestMessage request, IResponseMessage response)
         {
             for (int index = 0; index < mapping.Webhooks.Length; index++)
             {

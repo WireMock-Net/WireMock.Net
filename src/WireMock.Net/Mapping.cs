@@ -114,13 +114,13 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-        public Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage)
+        public Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
         {
             return Provider.ProvideResponseAsync(requestMessage, Settings);
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, string nextState)
+        public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string nextState)
         {
             var result = new RequestMatchResult();
 

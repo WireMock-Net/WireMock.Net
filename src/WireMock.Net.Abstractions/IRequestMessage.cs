@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using WireMock.Types;
 using WireMock.Util;
@@ -28,7 +28,7 @@ namespace WireMock
         /// <summary>
         /// The ProxyUrl (if a proxy is used).
         /// </summary>
-        string ProxyUrl { get; }
+        string ProxyUrl { get; set; }
 
         /// <summary>
         /// Gets the DateTime.

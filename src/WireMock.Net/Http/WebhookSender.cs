@@ -26,7 +26,7 @@ namespace WireMock.Http
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] RequestMessage originalRequestMessage, [NotNull] ResponseMessage originalResponseMessage)
+        public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] IRequestMessage originalRequestMessage, [NotNull] IResponseMessage originalResponseMessage)
         {
             Guard.NotNull(client, nameof(client));
             Guard.NotNull(request, nameof(request));

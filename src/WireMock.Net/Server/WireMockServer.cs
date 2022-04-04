@@ -505,12 +505,7 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <summary>
-        /// The given.
-        /// </summary>
-        /// <param name="requestMatcher">The request matcher.</param>
-        /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
-        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+        /// <inheritdoc />
         [PublicAPI]
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {

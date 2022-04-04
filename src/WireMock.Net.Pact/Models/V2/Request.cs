@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace WireMock.Net.Pact.Models;
+namespace WireMock.Net.Pact.Models.V2;
 
 public class Request
 {
@@ -9,6 +9,10 @@ public class Request
     public string Method { get; set; } = "GET";
 
     public string Path { get; set; } = "/";
+
+    public string? Query { get; set; }
+
+    public object? Body { get; set; }
 
     public List<MatchingRule>? MatchingRules;
 }

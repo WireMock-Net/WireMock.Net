@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using WireMock.Admin.Mappings;
-using WireMock.Net.Pact.Models;
+using WireMock.Net.Pact.Models.V2;
 using WireMock.Server;
 
 namespace WireMock.Net.Pact.Extensions;
@@ -10,7 +11,7 @@ public static class WireMockServerExtensions
 {
     public static void SavePact(this WireMockServer server, string? folder = null)
     {
-        var pact = new Models.Pact
+        var pact = new Models.V2.Pact
         {
             Consumer = new Pacticipant { Name = server.Consumer },
             Provider = new Pacticipant { Name = server.Provider }
@@ -35,8 +36,27 @@ public static class WireMockServerExtensions
         {
             Method = request.Methods.FirstOrDefault() ?? "GET",
             Path = request.Path as string ?? "/",
-            Headers = MapHeaders(request.Headers)
+            Query = MapQueryParameters(request.Params),
+            Headers = MapHeaders(request.Headers),
+            Body = MapBody(request.Body)
+            //MatchingRules = 
         };
+    }
+
+    private static string? MapQueryParameters(IList<ParamModel>? queryParameters)
+    {
+        if (queryParameters == null)
+        {
+            return null;
+        }
+
+        var httpValueCollection = HttpUtility.ParseQueryString(string.Empty);
+        foreach (var param in queryParameters.Where(qp => qp.Matchers.Any() && qp.Matchers[0].Pattern is string))
+        {
+            httpValueCollection.Add(param.Name, (string)param.Matchers[0].Pattern);
+        }
+
+        return httpValueCollection.ToString();
     }
 
     private static IDictionary<string, string>? MapHeaders(IList<HeaderModel> headers)
@@ -48,5 +68,15 @@ public static class WireMockServerExtensions
 
         var validHeaders = headers.Where(h => h.Matchers.Any() && h.Matchers[0].Pattern is string);
         return validHeaders.ToDictionary(x => x.Name, y => y.Matchers[0].Pattern as string ?? string.Empty);
+    }
+
+    private static object? MapBody(BodyModel? body)
+    {
+        if (body == null || body.Matcher.Name != "JsonMatcher")
+        {
+            return null;
+        }
+
+        return body.Matcher.Pattern;
     }
 }

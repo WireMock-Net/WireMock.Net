@@ -13,7 +13,7 @@ namespace WireMock.Server
         private static readonly Encoding[] FileBodyIsString = { Encoding.UTF8, Encoding.ASCII };
 
         #region Files/{filename}
-        private ResponseMessage FilePost(RequestMessage requestMessage)
+        private IResponseMessage FilePost(IRequestMessage requestMessage)
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
@@ -28,7 +28,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("File created");
         }
 
-        private ResponseMessage FilePut(RequestMessage requestMessage)
+        private IResponseMessage FilePut(IRequestMessage requestMessage)
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
@@ -43,7 +43,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("File updated");
         }
 
-        private ResponseMessage FileGet(RequestMessage requestMessage)
+        private IResponseMessage FileGet(IRequestMessage requestMessage)
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
@@ -79,7 +79,7 @@ namespace WireMock.Server
         /// Note: Response is returned with no body as a head request doesn't accept a body, only the status code.
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
-        private ResponseMessage FileHead(RequestMessage requestMessage)
+        private IResponseMessage FileHead(IRequestMessage requestMessage)
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
@@ -92,7 +92,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create(204);
         }
 
-        private ResponseMessage FileDelete(RequestMessage requestMessage)
+        private IResponseMessage FileDelete(IRequestMessage requestMessage)
         {
             string filename = GetFileNameFromRequestMessage(requestMessage);
 
@@ -106,7 +106,7 @@ namespace WireMock.Server
             return ResponseMessageBuilder.Create("File deleted.");
         }
 
-        private string GetFileNameFromRequestMessage(RequestMessage requestMessage)
+        private string GetFileNameFromRequestMessage(IRequestMessage requestMessage)
         {
             return Path.GetFileName(requestMessage.Path.Substring(AdminFiles.Length + 1));
         }

@@ -77,6 +77,8 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+
+        <ProjectReference Include="..\..\src\WireMock.Net.Pact\WireMock.Net.Pact.csproj" />
     </ItemGroup>
 
     <ItemGroup>

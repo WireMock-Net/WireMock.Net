@@ -1,4 +1,4 @@
-namespace WireMock.Net.Pact.Models;
+namespace WireMock.Net.Pact.Models.V2;
 
 public class MatchingRule
 {

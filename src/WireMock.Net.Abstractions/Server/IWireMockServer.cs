@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using JetBrains.Annotations;
 using WireMock.Admin.Mappings;
 using WireMock.Logging;
+using WireMock.Matchers.Request;
 
 namespace WireMock.Server
 {
@@ -104,7 +105,7 @@ namespace WireMock.Server
 
         //IEnumerable<LogEntry> FindLogEntries([NotNull] params IRequestMatcher[] matchers);
 
-        //IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false);
+        // IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false);
 
         /// <summary>
         /// Reads a static mapping file and adds or updates a single mapping.
