@@ -14,12 +14,14 @@ static class Program
         {
             Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
             StartAdminInterface = true,
-            ReadStaticMappings = false,
+            ReadStaticMappings = true,
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
                 Url = "http://postman-echo.com/post",
                 SaveMapping = true,
-                SaveMappingToFile = true
+                SaveMappingToFile = true,
+                ExcludedHeaders = new[] { "Postman-Token" },
+                ExcludedCookies = new[] { "sails.sid" }
             }
         });
 
