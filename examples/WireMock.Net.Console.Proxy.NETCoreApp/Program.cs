@@ -14,7 +14,8 @@ static class Program
         {
             Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
             StartAdminInterface = true,
-            ReadStaticMappings = true,
+            ReadStaticMappings = false,
+            WatchStaticMappings = false,
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
                 Url = "http://postman-echo.com/post",
