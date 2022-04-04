@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using WireMock.Admin.Mappings;
 using WireMock.Net.Pact.Models.V2;
 using WireMock.Server;
@@ -39,7 +39,6 @@ public static class WireMockServerExtensions
             Query = MapQueryParameters(request.Params),
             Headers = MapHeaders(request.Headers),
             Body = MapBody(request.Body)
-            //MatchingRules = 
         };
     }
 
@@ -50,13 +49,13 @@ public static class WireMockServerExtensions
             return null;
         }
 
-        var httpValueCollection = HttpUtility.ParseQueryString(string.Empty);
+        var values = new List<string>();
         foreach (var param in queryParameters.Where(qp => qp.Matchers.Any() && qp.Matchers[0].Pattern is string))
         {
-            httpValueCollection.Add(param.Name, (string)param.Matchers[0].Pattern);
+            values.Add($"{Uri.EscapeDataString(param.Name)}={Uri.EscapeDataString((string)param.Matchers[0].Pattern)}");
         }
 
-        return httpValueCollection.ToString();
+        return string.Join("&", values);
     }
 
     private static IDictionary<string, string>? MapHeaders(IList<HeaderModel> headers)

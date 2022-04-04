@@ -20,8 +20,8 @@ namespace WireMock.Net.Tests.Pact
         {
             var server = WireMockServer.Start();
             server
-                //.WithConsumer("Something API Consumer")
-                //.WithProvider("Something API")
+                .WithConsumer("Something API Consumer")
+                .WithProvider("Something API")
                 .Given(Request.Create()
                     .UsingGet()
                     .WithPath("/tester")
@@ -29,7 +29,7 @@ namespace WireMock.Net.Tests.Pact
                     .WithParam("q2", "ok")
                     .WithHeader("Accept", "application/json")
                 )
-                .WithTitle("A GET request to retrieve the somethingSomething API Consumer-Something API")
+                .WithTitle("A GET request to retrieve the something")
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode(HttpStatusCode.OK)

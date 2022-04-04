@@ -505,24 +505,35 @@ namespace WireMock.Server
             return this;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// The given.
+        /// </summary>
+        /// <param name="requestMatcher">The request matcher.</param>
+        /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
+        /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
         [PublicAPI]
         public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
         {
             return new RespondWithAProvider(RegisterMapping, requestMatcher, _settings, saveToFile);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// This stores details about the consumer of the interaction.
+        /// </summary>
+        /// <param name="consumer">the consumer</param>
         [PublicAPI]
-        public IWireMockServer WithConsumer(string consumer)
+        public WireMockServer WithConsumer(string consumer)
         {
             Consumer = consumer;
             return this;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// This stores details about the provider of the interaction.
+        /// </summary>
+        /// <param name="provider">the provider</param>
         [PublicAPI]
-        public IWireMockServer WithProvider(string provider)
+        public WireMockServer WithProvider(string provider)
         {
             Provider = provider;
             return this;

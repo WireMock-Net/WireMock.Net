@@ -207,17 +207,5 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="mappings">The mapping(s) as json string.</param>
         IWireMockServer WithMapping(string mappings);
-
-        /// <summary>
-        /// This stores details about the consumer of the interaction.
-        /// </summary>
-        /// <param name="consumer"></param>
-        IWireMockServer WithConsumer(string consumer);
-
-        /// <summary>
-        /// This stores details about the provider of the interaction.
-        /// </summary>
-        /// <param name="provider"></param>
-        IWireMockServer WithProvider(string provider);
     }
 }
