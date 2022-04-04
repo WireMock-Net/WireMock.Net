@@ -273,6 +273,8 @@ namespace WireMock.Server
 #endif
             };
 
+            model.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(_settings.ProxyAndRecordSettings);
+
             return ToJson(model);
         }
 
@@ -289,6 +291,7 @@ namespace WireMock.Server
             _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
             _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
             _settings.UseRegexExtended = settings.UseRegexExtended;
+            _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
 
             // _options
             if (settings.GlobalProcessingDelay != null)

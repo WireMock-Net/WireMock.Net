@@ -59,5 +59,10 @@ namespace WireMock.Admin.Settings
         /// Policies to use when using CORS. By default CORS is disabled. [Optional]
         /// </summary>
         public string CorsPolicyOptions { get; set; }
+
+        /// <summary>
+        /// The proxy and record settings.
+        /// </summary>
+        public ProxyAndRecordSettingsModel ProxyAndRecordSettings { get; set; }
     }
 }
