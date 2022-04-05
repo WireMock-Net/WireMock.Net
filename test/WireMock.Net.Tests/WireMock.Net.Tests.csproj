@@ -29,7 +29,6 @@
         <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
-        <ProjectReference Include="..\..\src\WireMock.Net.Pact\WireMock.Net.Pact.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -112,6 +111,10 @@
 
     <ItemGroup>
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pact\files\" />
     </ItemGroup>
 
 </Project>

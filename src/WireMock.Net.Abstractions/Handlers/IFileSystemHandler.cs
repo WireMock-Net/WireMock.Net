@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace WireMock.Handlers
 {
     /// <summary>
-    /// Handler to interact with the file system to handle folders and read and write static mapping files.
+    /// Handler to interact with the file system to handle folders and read and write (static mapping) files.
     /// </summary>
     public interface IFileSystemHandler
     {
@@ -82,6 +82,14 @@ namespace WireMock.Handlers
         /// <param name="filename">The filename.</param>
         /// <param name="bytes">The bytes.</param>
         void WriteFile([NotNull] string filename, [NotNull] byte[] bytes);
+
+        /// <summary>
+        /// Write a file.
+        /// </summary>
+        /// <param name="folder">The folder.</param>
+        /// <param name="filename">The filename.</param>
+        /// <param name="bytes">The bytes.</param>
+        void WriteFile([NotNull] string folder, [NotNull] string filename, [NotNull] byte[] bytes);
 
         /// <summary>
         /// Read a file as bytes.

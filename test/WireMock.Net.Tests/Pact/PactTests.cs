@@ -1,11 +1,5 @@
-#if !NET452
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using WireMock.Net.Pact.Extensions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -20,7 +14,7 @@ namespace WireMock.Net.Tests.Pact
         {
             var server = WireMockServer.Start();
             server
-                .WithConsumer("Something API Consumer")
+                .WithConsumer("Something API Consumer Get")
                 .WithProvider("Something API")
                 .Given(Request.Create()
                     .UsingGet()
@@ -42,8 +36,7 @@ namespace WireMock.Net.Tests.Pact
                         })
                 );
 
-            server.SavePact();
+            server.SavePact(Path.Combine("../../../", "Pact", "files"), "pact-get.json");
         }
     }
 }
-#endif

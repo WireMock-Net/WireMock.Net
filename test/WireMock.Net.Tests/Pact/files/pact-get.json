@@ -1,0 +1,32 @@
+{
+  "Consumer": {
+    "Name": "Something API Consumer Get"
+  },
+  "Interactions": [
+    {
+      "ProviderState": "A GET request to retrieve the something",
+      "Request": {
+        "Headers": {
+          "Accept": "application/json"
+        },
+        "Method": "GET",
+        "Path": "/tester",
+        "Query": "q1=test&q2=ok"
+      },
+      "Response": {
+        "Body": {
+          "Id": "tester",
+          "FirstName": "Totally",
+          "LastName": "Awesome"
+        },
+        "Headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "Status": 200
+      }
+    }
+  ],
+  "Provider": {
+    "Name": "Something API"
+  }
+}

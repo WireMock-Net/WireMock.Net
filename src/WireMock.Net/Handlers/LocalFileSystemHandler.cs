@@ -106,13 +106,23 @@ namespace WireMock.Handlers
             return File.Exists(AdjustPathForMappingFolder(filename));
         }
 
-        /// <inheritdoc cref="IFileSystemHandler.WriteFile(string, byte[])"/>
+        /// <inheritdoc />
         public virtual void WriteFile(string filename, byte[] bytes)
         {
             Guard.NotNullOrEmpty(filename, nameof(filename));
             Guard.NotNull(bytes, nameof(bytes));
 
             File.WriteAllBytes(AdjustPathForMappingFolder(filename), bytes);
+        }
+
+        /// <inheritdoc />
+        public virtual void WriteFile(string folder, string filename, byte[] bytes)
+        {
+            Guard.NotNullOrEmpty(folder);
+            Guard.NotNullOrEmpty(filename);
+            Guard.NotNull(bytes);
+
+            File.WriteAllBytes(PathUtils.Combine(folder, filename), bytes);
         }
 
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
