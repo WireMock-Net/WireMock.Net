@@ -51,7 +51,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
+        <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
     </ItemGroup>
 
     <ItemGroup>

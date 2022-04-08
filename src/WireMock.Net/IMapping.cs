@@ -92,6 +92,14 @@ namespace WireMock
         bool IsAdminInterface { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this mapping is a Proxy Mapping.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this mapping is a Proxy Mapping; otherwise, <c>false</c>.
+        /// </value>
+        bool IsProxy { get; }
+
+        /// <summary>
         /// Gets a value indicating whether this mapping to be logged.
         /// </summary>
         /// <value>

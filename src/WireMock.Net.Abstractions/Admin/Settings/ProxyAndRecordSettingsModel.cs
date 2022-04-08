@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace WireMock.Admin.Settings
 {
     [FluentBuilder.AutoGenerateBuilder]
@@ -49,5 +51,11 @@ namespace WireMock.Admin.Settings
         /// Defines a list of cookies which will be excluded from the saved mappings.
         /// </summary>
         public string[] ExcludedCookies { get; set; }
+
+        /// <summary>
+        /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
+        /// </summary>
+        public bool PreferProxyMapping { get; set; }
+
     }
 }

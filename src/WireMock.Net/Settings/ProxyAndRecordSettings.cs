@@ -43,5 +43,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         public string[] ExcludedCookies { get; set; }
+
+        /// <summary>
+        /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
+        /// </summary>
+        [PublicAPI]
+        public bool PreferProxyMapping { get; set; }
     }
 }
