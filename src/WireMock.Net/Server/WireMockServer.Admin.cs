@@ -44,6 +44,7 @@ namespace WireMock.Server
         private const string AdminScenarios = "/__admin/scenarios";
         private const string QueryParamReloadStaticMappings = "reloadStaticMappings";
 
+        private readonly Guid _proxyMappingGuid = new Guid("e59914fd-782e-428e-91c1-4810ffb86567");
         private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(ContentTypeJson, true);
         private readonly RegexMatcher _adminMappingsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
         private readonly RegexMatcher _adminRequestsGuidPathMatcher = new RegexMatcher(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
@@ -177,9 +178,9 @@ namespace WireMock.Server
 
         /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
         [PublicAPI]
-        public bool ReadStaticMappingAndAddOrUpdate([NotNull] string path)
+        public bool ReadStaticMappingAndAddOrUpdate(string path)
         {
-            Guard.NotNull(path, nameof(path));
+            Guard.NotNull(path);
 
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
@@ -206,19 +207,27 @@ namespace WireMock.Server
         #endregion
 
         #region Proxy and Record
+        [CanBeNull]
         private HttpClient _httpClientForProxy;
 
         private void InitProxyAndRecord(WireMockServerSettings settings)
         {
-            _httpClientForProxy = HttpClientBuilder.Build(settings.ProxyAndRecordSettings);
-
-            var respondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod());
-            if (settings.StartAdminInterface == true)
+            if (settings.ProxyAndRecordSettings == null)
             {
-                respondProvider.AtPriority(WireMockConstants.ProxyPriority);
+                _httpClientForProxy = null;
+                DeleteMapping(_proxyMappingGuid);
+                return;
             }
 
-            respondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
+            _httpClientForProxy = HttpClientBuilder.Build(settings.ProxyAndRecordSettings);
+
+            var proxyRespondProvider = Given(Request.Create().WithPath("/*").UsingAnyMethod()).WithGuid(_proxyMappingGuid);
+            if (settings.StartAdminInterface == true)
+            {
+                proxyRespondProvider.AtPriority(WireMockConstants.ProxyPriority);
+            }
+
+            proxyRespondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
         }
 
         private async Task<ResponseMessage> ProxyAndRecordAsync(RequestMessage requestMessage, WireMockServerSettings settings)
@@ -292,6 +301,8 @@ namespace WireMock.Server
             _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
             _settings.UseRegexExtended = settings.UseRegexExtended;
             _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
+
+            InitProxyAndRecord(_settings);
 
             // _options
             if (settings.GlobalProcessingDelay != null)

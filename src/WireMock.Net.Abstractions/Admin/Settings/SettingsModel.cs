@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using WireMock.Handlers;
-using WireMock.Types;
 
 namespace WireMock.Admin.Settings
 {
