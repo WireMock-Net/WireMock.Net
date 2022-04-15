@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-
 using WireMock.Admin.Requests;
 using WireMock.Logging;
 using WireMock.Server;
@@ -12,7 +11,7 @@ namespace WireMock.Net.WebApplication
 {
     public class WireMockService : IWireMockService
     {
-        private WireMockServer _server;
+        private WireMockServer? _server;
         private readonly ILogger _logger;
         private readonly WireMockServerSettings _settings;
 

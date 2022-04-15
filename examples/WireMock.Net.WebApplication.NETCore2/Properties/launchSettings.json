@@ -2,13 +2,9 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost//wiremock",
-      "sslPort": 0
-    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:56513/",
-      "sslPort": 0
+      "applicationUrl": "http://localhost:60097/",
+      "sslPort": 44321
     }
   },
   "profiles": {
