@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using WireMock.Logging;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -12,10 +13,12 @@ static class Program
     {
         var server = WireMockServer.Start(new WireMockServerSettings
         {
+            Logger = new WireMockConsoleLogger(),
             Urls = new[] { "http://localhost:9091/", "https://localhost:9443/" },
             StartAdminInterface = true,
-            ReadStaticMappings = false,
-            WatchStaticMappings = false,
+            ReadStaticMappings = true,
+            WatchStaticMappings = true,
+            WatchStaticMappingsInSubdirectories = true,
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
                 Url = "http://postman-echo.com/post",
