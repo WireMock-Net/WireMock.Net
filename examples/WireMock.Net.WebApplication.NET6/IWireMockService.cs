@@ -1,9 +1,8 @@
-﻿namespace WireMock.Net.WebApplication
-{
-    public interface IWireMockService
-    {
-        void Start();
+namespace WireMock.Net.WebApplication;
 
-        void Stop();
-    }
+public interface IWireMockService
+{
+    void Start();
+
+    void Stop();
 }
