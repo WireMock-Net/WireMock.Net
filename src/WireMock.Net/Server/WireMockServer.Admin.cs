@@ -267,18 +267,21 @@ public partial class WireMockServer
     {
         var model = new SettingsModel
         {
-            AllowPartialMapping = _settings.AllowPartialMapping,
-            MaxRequestLogCount = _settings.MaxRequestLogCount,
-            RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
-            GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
             AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods,
+            AllowPartialMapping = _settings.AllowPartialMapping,
+            GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
             HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
+            MaxRequestLogCount = _settings.MaxRequestLogCount,
+            ReadStaticMappings = _settings.ReadStaticMappings,
+            RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
+            SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
             ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails,
             UseRegexExtended = _settings.UseRegexExtended,
-            SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
+            WatchStaticMappings = _settings.WatchStaticMappings,
+            WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
 
 #if USE_ASPNETCORE
-                CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
+            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
 #endif
         };
 
@@ -296,13 +299,16 @@ public partial class WireMockServer
         _settings.AllowPartialMapping = settings.AllowPartialMapping;
         _settings.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _settings.MaxRequestLogCount = settings.MaxRequestLogCount;
+        _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
+        _settings.ReadStaticMappings = settings.ReadStaticMappings;
         _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
         _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
         _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
         _settings.UseRegexExtended = settings.UseRegexExtended;
-        _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
+        _settings.WatchStaticMappings = settings.WatchStaticMappings;
+        _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;
 
-        InitProxyAndRecord(_settings);
+        InitSettings(_settings);
 
         // _options
         if (settings.GlobalProcessingDelay != null)
@@ -317,11 +323,11 @@ public partial class WireMockServer
 
         // _settings & _options
 #if USE_ASPNETCORE
-            if (Enum.TryParse<CorsPolicyOptions>(settings.CorsPolicyOptions, true, out var corsPolicyOptions))
-            {
-                _settings.CorsPolicyOptions = corsPolicyOptions;
-                _options.CorsPolicyOptions = corsPolicyOptions;
-            }
+        if (Enum.TryParse<CorsPolicyOptions>(settings.CorsPolicyOptions, true, out var corsPolicyOptions))
+        {
+            _settings.CorsPolicyOptions = corsPolicyOptions;
+            _options.CorsPolicyOptions = corsPolicyOptions;
+        }
 #endif
 
         return ResponseMessageBuilder.Create("Settings updated");
