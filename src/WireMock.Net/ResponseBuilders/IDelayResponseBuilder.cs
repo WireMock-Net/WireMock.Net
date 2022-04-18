@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace WireMock.ResponseBuilders
 {
@@ -8,14 +8,14 @@ namespace WireMock.ResponseBuilders
     public interface IDelayResponseBuilder : ICallbackResponseBuilder
     {
         /// <summary>
-        /// The with delay.
+        /// The delay defined as a <see cref="TimeSpan"/>.
         /// </summary>
         /// <param name="delay">The TimeSpan to delay.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
         IResponseBuilder WithDelay(TimeSpan delay);
 
         /// <summary>
-        /// The with delay.
+        /// The delay defined as milliseconds.
         /// </summary>
         /// <param name="milliseconds">The milliseconds to delay.</param>
         /// <returns>The <see cref="IResponseBuilder"/>.</returns>
