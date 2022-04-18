@@ -346,9 +346,7 @@ namespace WireMock.ResponseBuilders
             return WithTransformer(TransformerType.Handlebars, false, options);
         }
 
-#pragma warning disable CS1574
-        /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(TransformerType, bool, ReplaceNodeOptions)"/>
-#pragma warning restore CS1574
+        /// <inheritdoc />
         public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None)
         {
             UseTransformer = true;
@@ -358,26 +356,26 @@ namespace WireMock.ResponseBuilders
             return this;
         }
 
-        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(TimeSpan)"/>
+        /// <inheritdoc />
         public IResponseBuilder WithDelay(TimeSpan delay)
         {
-            Guard.Condition(delay, d => d > TimeSpan.Zero, nameof(delay));
+            Guard.Condition(delay, d => d == Timeout.InfiniteTimeSpan || d > TimeSpan.Zero);
 
             Delay = delay;
             return this;
         }
 
-        /// <inheritdoc cref="IDelayResponseBuilder.WithDelay(int)"/>
+        /// <inheritdoc />
         public IResponseBuilder WithDelay(int milliseconds)
         {
             return WithDelay(TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        /// <inheritdoc cref="IDelayResponseBuilder.WithRandomDelay(int, int)"/>
+        /// <inheritdoc />
         public IResponseBuilder WithRandomDelay(int minimumMilliseconds = 0, int maximumMilliseconds = 60_000)
         {
-            Guard.Condition(minimumMilliseconds, min => min >= 0, nameof(minimumMilliseconds));
-            Guard.Condition(maximumMilliseconds, max => max > minimumMilliseconds, nameof(maximumMilliseconds));
+            Guard.Condition(minimumMilliseconds, min => min >= 0);
+            Guard.Condition(maximumMilliseconds, max => max > minimumMilliseconds);
 
             MinimumDelayMilliseconds = minimumMilliseconds;
             MaximumDelayMilliseconds = maximumMilliseconds;
