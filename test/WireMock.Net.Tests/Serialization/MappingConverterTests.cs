@@ -196,12 +196,17 @@ namespace WireMock.Net.Tests.Serialization
         public void ToMappingModel_WithDelayAsTimeSpan_ReturnsCorrectModel()
         {
             // Arrange
-            var delays = new[] { Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(1), TimeSpan.MaxValue };
+            var tests = new[]
+            {
+                new { Delay = Timeout.InfiniteTimeSpan, Expected = (int) TimeSpan.MaxValue.TotalMilliseconds },
+                new { Delay = TimeSpan.FromSeconds(1), Expected = 1000},
+                new { Delay = TimeSpan.MaxValue, Expected = (int) TimeSpan.MaxValue.TotalMilliseconds }
+            };
 
-            foreach (var delay in delays)
+            foreach (var test in tests)
             {
                 var request = Request.Create();
-                var response = Response.Create().WithDelay(delay);
+                var response = Response.Create().WithDelay(test.Delay);
                 var mapping = new Mapping(Guid.NewGuid(), "", null, _settings, request, response, 42, null, null, null, null, null, null);
 
                 // Act
@@ -209,7 +214,7 @@ namespace WireMock.Net.Tests.Serialization
 
                 // Assert
                 model.Should().NotBeNull();
-                model.Response.Delay.Should().Be(delay.Milliseconds);
+                model.Response.Delay.Should().Be(test.Expected);
             }
         }
 
