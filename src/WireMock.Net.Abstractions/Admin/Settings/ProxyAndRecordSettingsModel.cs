@@ -55,5 +55,5 @@ public class ProxyAndRecordSettingsModel
     /// <summary>
     /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
     /// </summary>
-    public bool PreferProxyMapping { get; set; }
+    // public bool PreferProxyMapping { get; set; }
 }

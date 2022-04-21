@@ -91,7 +91,7 @@ namespace WireMock.Settings
                     ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
                     ExcludedCookies = parser.GetValues("ExcludedCookies"),
                     ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
-                    PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
+                    // PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
                     SaveMapping = parser.GetBoolValue("SaveMapping"),
                     SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern"),
                     SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),

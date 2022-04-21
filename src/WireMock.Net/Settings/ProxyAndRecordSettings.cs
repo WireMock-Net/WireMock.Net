@@ -47,7 +47,7 @@ namespace WireMock.Settings
         /// <summary>
         /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
         /// </summary>
-        [PublicAPI]
-        public bool PreferProxyMapping { get; set; }
+        //[PublicAPI]
+        //public bool PreferProxyMapping { get; set; }
     }
 }
