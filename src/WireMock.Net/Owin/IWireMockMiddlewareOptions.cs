@@ -4,7 +4,6 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
-using JetBrains.Annotations;
 using WireMock.Types;
 #if !USE_ASPNETCORE
 using Owin;
@@ -21,7 +20,7 @@ namespace WireMock.Owin
 
         TimeSpan? RequestProcessingDelay { get; set; }
 
-        IStringMatcher AuthenticationMatcher { get; set; }
+        IStringMatcher? AuthenticationMatcher { get; set; }
 
         bool? AllowPartialMapping { get; set; }
 
@@ -35,17 +34,17 @@ namespace WireMock.Owin
 
         int? MaxRequestLogCount { get; set; }
 
-        Action<IAppBuilder> PreWireMockMiddlewareInit { get; set; }
+        Action<IAppBuilder>? PreWireMockMiddlewareInit { get; set; }
 
-        Action<IAppBuilder> PostWireMockMiddlewareInit { get; set; }
+        Action<IAppBuilder>? PostWireMockMiddlewareInit { get; set; }
 
 #if USE_ASPNETCORE
-        Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+        Action<IServiceCollection>? AdditionalServiceRegistration { get; set; }
 
         CorsPolicyOptions? CorsPolicyOptions { get; set; }
 #endif
 
-        IFileSystemHandler FileSystemHandler { get; set; }
+        IFileSystemHandler? FileSystemHandler { get; set; }
 
         bool? AllowBodyForAllHttpMethods { get; set; }
 
@@ -57,15 +56,15 @@ namespace WireMock.Owin
 
         bool? HandleRequestsSynchronously { get; set; }
 
-        string X509StoreName { get; set; }
+        string? X509StoreName { get; set; }
 
-        string X509StoreLocation { get; set; }
+        string? X509StoreLocation { get; set; }
 
-        string X509ThumbprintOrSubjectName { get; set; }
+        string? X509ThumbprintOrSubjectName { get; set; }
 
-        string X509CertificateFilePath { get; set; }
+        string? X509CertificateFilePath { get; set; }
 
-        string X509CertificatePassword { get; set; }
+        string? X509CertificatePassword { get; set; }
 
         bool CustomCertificateDefined { get; }
 

@@ -30,7 +30,7 @@ public partial class WireMockServer : IWireMockServer
     private const int ServerStartDelayInMs = 100;
 
     private readonly WireMockServerSettings _settings;
-    private readonly IOwinSelfHost _httpServer;
+    private readonly IOwinSelfHost? _httpServer;
     private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
     private readonly MappingConverter _mappingConverter;
     private readonly MatcherMapper _matcherMapper;
@@ -38,7 +38,7 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc cref="IWireMockServer.IsStarted" />
     [PublicAPI]
-    public bool IsStarted => _httpServer != null && _httpServer.IsStarted;
+    public bool IsStarted => _httpServer is { IsStarted: true };
 
     /// <inheritdoc />
     [PublicAPI]
@@ -54,15 +54,15 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc />
     [PublicAPI]
-    public string Url => Urls?.FirstOrDefault();
+    public string? Url => Urls?.FirstOrDefault();
 
     /// <inheritdoc />
     [PublicAPI]
-    public string Consumer { get; private set; }
+    public string? Consumer { get; private set; }
 
     /// <inheritdoc />
     [PublicAPI]
-    public string Provider { get; private set; }
+    public string? Provider { get; private set; }
 
     /// <summary>
     /// Gets the mappings.
@@ -108,9 +108,9 @@ public partial class WireMockServer : IWireMockServer
     /// <param name="settings">The WireMockServerSettings.</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer Start([NotNull] WireMockServerSettings settings)
+    public static WireMockServer Start(WireMockServerSettings settings)
     {
-        Guard.NotNull(settings, nameof(settings));
+        Guard.NotNull(settings);
 
         return new WireMockServer(settings);
     }
@@ -122,7 +122,7 @@ public partial class WireMockServer : IWireMockServer
     /// <param name="ssl">The SSL support.</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer Start([CanBeNull] int? port = 0, bool ssl = false)
+    public static WireMockServer Start(int? port = 0, bool ssl = false)
     {
         return new WireMockServer(new WireMockServerSettings
         {
@@ -247,7 +247,7 @@ public partial class WireMockServer : IWireMockServer
 
         if (settings.CustomCertificateDefined)
         {
-            _options.X509StoreName = settings.CertificateSettings.X509StoreName;
+            _options.X509StoreName = settings.CertificateSettings!.X509StoreName;
             _options.X509StoreLocation = settings.CertificateSettings.X509StoreLocation;
             _options.X509ThumbprintOrSubjectName = settings.CertificateSettings.X509StoreThumbprintOrSubjectName;
             _options.X509CertificateFilePath = settings.CertificateSettings.X509CertificateFilePath;
@@ -316,7 +316,7 @@ public partial class WireMockServer : IWireMockServer
         Given(Request.Create().WithPath("/*").UsingAnyMethod())
             .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
             .AtPriority(1000)
-            .RespondWith(new DynamicResponseProvider(request => ResponseMessageBuilder.Create("No matching mapping found", 404)));
+            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create("No matching mapping found", 404)));
     }
 
     /// <inheritdoc cref="IWireMockServer.Reset" />
@@ -381,7 +381,7 @@ public partial class WireMockServer : IWireMockServer
         Guard.NotNull(audience, nameof(audience));
 
 #if NETSTANDARD1_3
-            throw new NotSupportedException("AzureADAuthentication is not supported for NETStandard 1.3");
+        throw new NotSupportedException("AzureADAuthentication is not supported for NETStandard 1.3");
 #else
         _options.AuthenticationMatcher = new AzureADAuthenticationMatcher(tenant, audience);
 #endif
@@ -389,7 +389,7 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc cref="IWireMockServer.SetBasicAuthentication(string, string)" />
     [PublicAPI]
-    public void SetBasicAuthentication([NotNull] string username, [NotNull] string password)
+    public void SetBasicAuthentication(string username, string password)
     {
         Guard.NotNull(username, nameof(username));
         Guard.NotNull(password, nameof(password));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JetBrains.Annotations;
 using WireMock.Admin.Requests;
 
@@ -17,7 +17,7 @@ namespace WireMock.Logging
         /// <param name="args">The arguments.</param>
         [PublicAPI]
         [StringFormatMethod("formatString")]
-        void Debug([NotNull] string formatString, [NotNull] params object[] args);
+        void Debug(string formatString, params object[] args);
 
         /// <summary>
         /// Writes the message at the Info level using the specified parameters. 
@@ -26,7 +26,7 @@ namespace WireMock.Logging
         /// <param name="args">The arguments.</param>
         [PublicAPI]
         [StringFormatMethod("formatString")]
-        void Info([NotNull] string formatString, [NotNull] params object[] args);
+        void Info(string formatString, params object[] args);
 
         /// <summary>
         /// Writes the message at the Warning level using the specified parameters. 
@@ -35,7 +35,7 @@ namespace WireMock.Logging
         /// <param name="args">The arguments.</param>
         [PublicAPI]
         [StringFormatMethod("formatString")]
-        void Warn([NotNull] string formatString, [NotNull] params object[] args);
+        void Warn(string formatString, params object[] args);
 
         /// <summary>
         /// Writes the message at the Error level using the specified parameters. 
@@ -44,7 +44,7 @@ namespace WireMock.Logging
         /// <param name="args">The arguments.</param>
         [PublicAPI]
         [StringFormatMethod("formatString")]
-        void Error([NotNull] string formatString, [NotNull] params object[] args);
+        void Error(string formatString, params object[] args);
 
         /// <summary>
         /// Writes the message at the Error level using the specified exception. 
@@ -53,7 +53,7 @@ namespace WireMock.Logging
         /// <param name="exception">The exception.</param>
         [PublicAPI]
         [StringFormatMethod("formatString")]
-        void Error([NotNull] string formatString, [NotNull] Exception exception);
+        void Error(string formatString, Exception exception);
 
         /// <summary>
         /// Writes the LogEntryModel (LogRequestModel, LogResponseModel and more).
@@ -61,6 +61,6 @@ namespace WireMock.Logging
         /// <param name="logEntryModel">The Request Log Model.</param>
         /// <param name="isAdminRequest">Defines if this request is an admin request.</param>
         [PublicAPI]
-        void DebugRequestResponse([NotNull] LogEntryModel logEntryModel, bool isAdminRequest);
+        void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest);
     }
 }

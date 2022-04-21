@@ -62,13 +62,13 @@ namespace WireMock.Settings
         /// Gets or sets if the proxy and record settings.
         /// </summary>
         [PublicAPI]
-        public ProxyAndRecordSettings ProxyAndRecordSettings { get; set; }
+        public ProxyAndRecordSettings? ProxyAndRecordSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the urls.
         /// </summary>
         [PublicAPI]
-        public string[] Urls { get; set; }
+        public string[]? Urls { get; set; }
 
         /// <summary>
         /// StartTimeout
@@ -86,25 +86,25 @@ namespace WireMock.Settings
         /// The username needed for __admin access.
         /// </summary>
         [PublicAPI]
-        public string AdminUsername { get; set; }
+        public string? AdminUsername { get; set; }
 
         /// <summary>
         /// The password needed for __admin access.
         /// </summary>
         [PublicAPI]
-        public string AdminPassword { get; set; }
+        public string? AdminPassword { get; set; }
 
         /// <summary>
         /// The AzureAD Tenant needed for __admin access.
         /// </summary>
         [PublicAPI]
-        public string AdminAzureADTenant { get; set; }
+        public string? AdminAzureADTenant { get; set; }
 
         /// <summary>
         /// The AzureAD Audience / Resource for __admin access.
         /// </summary>
         [PublicAPI]
-        public string AdminAzureADAudience { get; set; }
+        public string? AdminAzureADAudience { get; set; }
 
         /// <summary>
         /// The RequestLog expiration in hours (optional).
@@ -123,14 +123,14 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public Action<object> PreWireMockMiddlewareInit { get; set; }
+        public Action<object>? PreWireMockMiddlewareInit { get; set; }
 
         /// <summary>
         /// Action which is called (with the IAppBuilder or IApplicationBuilder) after the internal WireMockMiddleware is initialized. [Optional]
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public Action<object> PostWireMockMiddlewareInit { get; set; }
+        public Action<object>? PostWireMockMiddlewareInit { get; set; }
 
 #if USE_ASPNETCORE
         /// <summary>
@@ -138,7 +138,7 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public Action<IServiceCollection> AdditionalServiceRegistration { get; set; }
+        public Action<IServiceCollection>? AdditionalServiceRegistration { get; set; }
 
         /// <summary>
         /// Policies to use when using CORS. By default CORS is disabled. [Optional]
@@ -152,21 +152,21 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public IWireMockLogger Logger { get; set; }
+        public IWireMockLogger Logger { get; set; } = null!;
 
         /// <summary>
         /// Handler to interact with the file system to read and write static mapping files.
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public IFileSystemHandler FileSystemHandler { get; set; }
+        public IFileSystemHandler FileSystemHandler { get; set; } = null!;
 
         /// <summary>
         /// Action which can be used to add additional Handlebars registrations. [Optional]
         /// </summary>
         [PublicAPI]
         [JsonIgnore]
-        public Action<IHandlebars, IFileSystemHandler> HandlebarsRegistrationCallback { get; set; }
+        public Action<IHandlebars, IFileSystemHandler>? HandlebarsRegistrationCallback { get; set; }
 
         /// <summary>
         /// Allow the usage of CSharpCodeMatcher (default is not allowed).
@@ -220,7 +220,7 @@ namespace WireMock.Settings
         /// X509CertificateFilePath and X509CertificatePassword should be defined
         /// </summary>
         [PublicAPI]
-        public WireMockCertificateSettings CertificateSettings { get; set; }
+        public WireMockCertificateSettings? CertificateSettings { get; set; }
 
         /// <summary>
         /// Defines if custom CertificateSettings are defined
@@ -232,7 +232,7 @@ namespace WireMock.Settings
         /// Defines the global IWebhookSettings to use.
         /// </summary>
         [PublicAPI]
-        public WebhookSettings WebhookSettings { get; set; }
+        public WebhookSettings? WebhookSettings { get; set; }
 
         /// <summary>
         /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/> (default set to true).
@@ -250,6 +250,6 @@ namespace WireMock.Settings
         /// Custom matcher mappings for static mappings
         /// </summary>
         [PublicAPI, JsonIgnore]
-        public IDictionary<string, Func<MatcherModel, IMatcher>> CustomMatcherMappings { get; set; }
+        public IDictionary<string, Func<MatcherModel, IMatcher>>? CustomMatcherMappings { get; set; }
     }
 }

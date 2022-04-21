@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] string body, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
+        IResponseBuilder WithBody(string body, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
         /// <summary>
         /// WithBody : Create a ... response based on a callback function.
@@ -26,7 +25,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] Func<IRequestMessage, string> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
+        IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
         /// <summary>
         /// WithBody : Create a ... response based on a callback function.
@@ -35,7 +34,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] Func<IRequestMessage, Task<string>> bodyFactory, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
+        IResponseBuilder WithBody(Func<IRequestMessage, Task<string>> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
         /// <summary>
         /// WithBody : Create a ... response based on a bytearray.
@@ -44,7 +43,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
         /// <param name="encoding">The body encoding.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBody([NotNull] byte[] body, [CanBeNull] string destination = BodyDestinationFormat.SameAsSource, [CanBeNull] Encoding encoding = null);
+        IResponseBuilder WithBody(byte[] body, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
         /// <summary>
         /// WithBody : Create a string response based on a object (which will be converted to a JSON string).
@@ -53,7 +52,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="encoding">The body encoding.</param>
         /// <param name="indented">Use JSON indented.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBodyAsJson([NotNull] object body, [CanBeNull] Encoding encoding = null, bool? indented = null);
+        IResponseBuilder WithBodyAsJson(object body, Encoding? encoding = null, bool? indented = null);
 
         /// <summary>
         /// WithBody : Create a string response based on a object (which will be converted to a JSON string).
@@ -61,7 +60,7 @@ namespace WireMock.ResponseBuilders
         /// <param name="body">The body.</param>
         /// <param name="indented">Define whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBodyAsJson([NotNull] object body, bool indented);
+        IResponseBuilder WithBodyAsJson(object body, bool indented);
 
         /// <summary>
         /// WithBodyFromFile : Create a ... response based on a File.
@@ -69,6 +68,6 @@ namespace WireMock.ResponseBuilders
         /// <param name="filename">The filename.</param>
         /// <param name="cache">Defines if this file is cached in memory or retrieved from disk every time the response is created.</param>
         /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-        IResponseBuilder WithBodyFromFile([NotNull] string filename, bool cache = true);
+        IResponseBuilder WithBodyFromFile(string filename, bool cache = true);
     }
 }

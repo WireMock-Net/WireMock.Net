@@ -15,31 +15,31 @@ namespace WireMock.Settings
         /// X509 StoreName (AddressBook, AuthRoot, CertificateAuthority, My, Root, TrustedPeople or TrustedPublisher)
         /// </summary>
         [PublicAPI]
-        public string X509StoreName { get; set; }
+        public string? X509StoreName { get; set; }
 
         /// <summary>
         /// X509 StoreLocation (CurrentUser or LocalMachine)
         /// </summary>
         [PublicAPI]
-        public string X509StoreLocation { get; set; }
+        public string? X509StoreLocation { get; set; }
 
         /// <summary>
         /// X509 Thumbprint or SubjectName (if not defined, the 'host' is used)
         /// </summary>
         [PublicAPI]
-        public string X509StoreThumbprintOrSubjectName { get; set; }
+        public string? X509StoreThumbprintOrSubjectName { get; set; }
 
         /// <summary>
         /// X509Certificate FilePath
         /// </summary>
         [PublicAPI]
-        public string X509CertificateFilePath { get; set; }
+        public string? X509CertificateFilePath { get; set; }
 
         /// <summary>
         /// X509Certificate Password
         /// </summary>
         [PublicAPI]
-        public string X509CertificatePassword { get; set; }
+        public string? X509CertificatePassword { get; set; }
 
         /// <summary>
         /// X509StoreName and X509StoreLocation should be defined

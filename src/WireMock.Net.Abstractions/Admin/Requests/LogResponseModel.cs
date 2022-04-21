@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using WireMock.Admin.Mappings;
 using WireMock.Types;
 
@@ -58,22 +58,22 @@ namespace WireMock.Admin.Requests
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        public EncodingModel BodyEncoding { get; set; }
+        public EncodingModel? BodyEncoding { get; set; }
 
         /// <summary>
         /// The detected body type (detection based on body content).
         /// </summary>
-        public BodyType DetectedBodyType { get; set; }
+        public BodyType? DetectedBodyType { get; set; }
 
         /// <summary>
         /// The detected body type (detection based on Content-Type).
         /// </summary>
-        public BodyType DetectedBodyTypeFromContentType { get; set; }
+        public BodyType? DetectedBodyTypeFromContentType { get; set; }
 
         /// <summary>
         /// The FaultType.
         /// </summary>
-        public string FaultType { get; set; }
+        public string? FaultType { get; set; }
 
         /// <summary>
         /// Gets or sets the Fault percentage.

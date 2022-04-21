@@ -1,24 +1,23 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings;
+
+/// <summary>
+/// Param Model
+/// </summary>
+[FluentBuilder.AutoGenerateBuilder]
+public class ParamModel
 {
     /// <summary>
-    /// Param Model
+    /// Gets or sets the name.
     /// </summary>
-    [FluentBuilder.AutoGenerateBuilder]
-    public class ParamModel
-    {
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
-        /// <summary>
-        /// Defines if the key should be matched using case-ignore.
-        /// </summary>
-        public bool? IgnoreCase { get; set; }
+    /// <summary>
+    /// Defines if the key should be matched using case-ignore.
+    /// </summary>
+    public bool? IgnoreCase { get; set; }
 
-        /// <summary>
-        /// Gets or sets the matchers.
-        /// </summary>
-        public MatcherModel[] Matchers { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the matchers.
+    /// </summary>
+    public MatcherModel[]? Matchers { get; set; }
 }

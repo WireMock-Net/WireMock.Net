@@ -49,7 +49,7 @@ public partial class WireMockServer
     private readonly RegexMatcher _adminMappingsGuidPathMatcher = new(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
     private readonly RegexMatcher _adminRequestsGuidPathMatcher = new(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
-    private EnhancedFileSystemWatcher _enhancedFileSystemWatcher;
+    private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
     #region InitAdmin
     private void InitAdmin()
@@ -108,7 +108,7 @@ public partial class WireMockServer
     #region StaticMappings
     /// <inheritdoc cref="IWireMockServer.SaveStaticMappings" />
     [PublicAPI]
-    public void SaveStaticMappings([CanBeNull] string folder = null)
+    public void SaveStaticMappings(string? folder = null)
     {
         foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
         {
@@ -118,7 +118,7 @@ public partial class WireMockServer
 
     /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
     [PublicAPI]
-    public void ReadStaticMappings([CanBeNull] string folder = null)
+    public void ReadStaticMappings(string? folder = null)
     {
         if (folder == null)
         {
@@ -207,8 +207,7 @@ public partial class WireMockServer
     #endregion
 
     #region Proxy and Record
-    [CanBeNull]
-    private HttpClient _httpClientForProxy;
+    private HttpClient? _httpClientForProxy;
 
     private void InitProxyAndRecord(WireMockServerSettings settings)
     {
@@ -427,7 +426,7 @@ public partial class WireMockServer
         }
     }
 
-    private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string path = null)
+    private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
     {
         Guard.NotNull(mappingModel, nameof(mappingModel));
         Guard.NotNull(mappingModel.Request, nameof(mappingModel.Request));
@@ -690,7 +689,7 @@ public partial class WireMockServer
         return this;
     }
 
-    private IRequestBuilder InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
+    private IRequestBuilder? InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
     {
         IRequestBuilder requestBuilder = Request.Create();
 
@@ -765,7 +764,7 @@ public partial class WireMockServer
                     headerModel.Name,
                     headerModel.IgnoreCase == true,
                     headerModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    headerModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray()
+                    headerModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray()
                 );
             }
         }
@@ -778,16 +777,16 @@ public partial class WireMockServer
                     cookieModel.Name,
                     cookieModel.IgnoreCase == true,
                     cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    cookieModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                    cookieModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
             }
         }
 
         if (requestModel.Params != null)
         {
-            foreach (var paramModel in requestModel.Params.Where(p => p != null && p.Matchers != null))
+            foreach (var paramModel in requestModel.Params.Where(p => p is { Matchers: { } }))
             {
                 bool ignoreCase = paramModel.IgnoreCase == true;
-                requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
             }
         }
 
@@ -924,7 +923,7 @@ public partial class WireMockServer
         return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
     }
 
-    private T DeserializeObject<T>(IRequestMessage requestMessage)
+    private T? DeserializeObject<T>(IRequestMessage requestMessage)
     {
         if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
         {
@@ -941,7 +940,7 @@ public partial class WireMockServer
 
     private T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
     {
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
+        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
         {
             var bodyAsJson = requestMessage.BodyData.BodyAsJson;
 

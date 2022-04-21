@@ -52,17 +52,17 @@ namespace WireMock.Server
         /// <summary>
         /// Gets the first url.
         /// </summary>
-        string Url { get; }
+        string? Url { get; }
 
         /// <summary>
         /// Gets the consumer.
         /// </summary>
-        string Consumer { get; }
+        string? Consumer { get; }
 
         /// <summary>
         /// Gets the provider.
         /// </summary>
-        string Provider { get; }
+        string? Provider { get; }
 
         //ConcurrentDictionary<string, ScenarioState> Scenarios { get; }
 
@@ -113,7 +113,7 @@ namespace WireMock.Server
         /// Calling this method manually forces WireMock.Net to read and apply the specified static mapping file.
         /// </summary>
         /// <param name="path">The path to the static mapping file.</param>
-        bool ReadStaticMappingAndAddOrUpdate([NotNull] string path);
+        bool ReadStaticMappingAndAddOrUpdate(string path);
 
         /// <summary>
         /// Reads the static mappings from a folder.
@@ -122,7 +122,7 @@ namespace WireMock.Server
         /// Calling this method manually forces WireMock.Net to read and apply all static mapping files in the specified folder.
         /// </summary>
         /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
-        void ReadStaticMappings([CanBeNull] string folder = null);
+        void ReadStaticMappings(string? folder = null);
 
         /// <summary>
         /// Removes the authentication.
@@ -153,33 +153,33 @@ namespace WireMock.Server
         /// Saves the static mappings.
         /// </summary>
         /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
-        void SaveStaticMappings([CanBeNull] string folder = null);
+        void SaveStaticMappings(string? folder = null);
 
         /// <summary>
         /// Sets the basic authentication.
         /// </summary>
         /// <param name="tenant">The Tenant.</param>
         /// <param name="audience">The Audience or Resource.</param>
-        void SetAzureADAuthentication([NotNull] string tenant, [NotNull] string audience);
+        void SetAzureADAuthentication(string tenant, string audience);
 
         /// <summary>
         /// Sets the basic authentication.
         /// </summary>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
-        void SetBasicAuthentication([NotNull] string username, [NotNull] string password);
+        void SetBasicAuthentication(string username, string password);
 
         /// <summary>
         /// Sets the maximum RequestLog count.
         /// </summary>
         /// <param name="maxRequestLogCount">The maximum RequestLog count.</param>
-        void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount);
+        void SetMaxRequestLogCount(int? maxRequestLogCount);
 
         /// <summary>
         /// Sets RequestLog expiration in hours.
         /// </summary>
         /// <param name="requestLogExpirationDuration">The RequestLog expiration in hours.</param>
-        void SetRequestLogExpirationDuration([CanBeNull] int? requestLogExpirationDuration);
+        void SetRequestLogExpirationDuration(int? requestLogExpirationDuration);
 
         /// <summary>
         /// Stop this server.
@@ -190,7 +190,7 @@ namespace WireMock.Server
         /// Watches the static mappings for changes.
         /// </summary>
         /// <param name="folder">The optional folder. If not defined, use {CurrentFolder}/__admin/mappings</param>
-        void WatchStaticMappings([CanBeNull] string folder = null);
+        void WatchStaticMappings(string? folder = null);
 
         /// <summary>
         /// Register the mappings (via <see cref="MappingModel"/>).

@@ -83,7 +83,7 @@ namespace WireMock
         /// <summary>
         /// The body.
         /// </summary>
-        IBodyData BodyData { get; }
+        IBodyData? BodyData { get; }
 
         /// <summary>
         /// The original body as string. Convenience getter for Handlebars.
