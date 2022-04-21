@@ -1,3 +1,8 @@
+# 1.4.41 (21 April 2022)
+- [#746](https://github.com/WireMock-Net/WireMock.Net/pull/746) - Allow Timeout.InfiniteTimeSpan for WithDelay [feature] contributed by [StefH](https://github.com/StefH)
+- [#747](https://github.com/WireMock-Net/WireMock.Net/pull/747) - Update the logic for ProxyAndRecord contributed by [StefH](https://github.com/StefH)
+- [#744](https://github.com/WireMock-Net/WireMock.Net/issues/744) - System.ArgumentOutOfRangeException when Timeout.InfiniteTimeSpan used as an argument for IResponseBuilder.WithDelay() [bug]
+
 # 1.4.40 (26 March 2022)
 - [#740](https://github.com/WireMock-Net/WireMock.Net/pull/740) - Add Port and Url property to WireMockServer + upgrade System.Linq.Dynamic.Core [feature] contributed by [StefH](https://github.com/StefH)
 
