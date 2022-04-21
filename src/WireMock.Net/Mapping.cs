@@ -56,6 +56,9 @@ namespace WireMock
         public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
         /// <inheritdoc />
+        public bool IsProxy => Provider is ProxyAsyncResponseProvider;
+
+        /// <inheritdoc />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
         /// <inheritdoc />
@@ -83,19 +86,19 @@ namespace WireMock
         /// <param name="timeSettings">The TimeSettings. [Optional]</param>
         public Mapping(
             Guid guid,
-            [CanBeNull] string title,
-            [CanBeNull] string description,
-            [CanBeNull] string path,
-            [NotNull] WireMockServerSettings settings,
-            [NotNull] IRequestMatcher requestMatcher,
-            [NotNull] IResponseProvider provider,
+            string? title,
+            string? description,
+            string? path,
+            WireMockServerSettings settings,
+            IRequestMatcher requestMatcher,
+            IResponseProvider provider,
             int priority,
-            [CanBeNull] string scenario,
-            [CanBeNull] string executionConditionState,
-            [CanBeNull] string nextState,
-            [CanBeNull] int? stateTimes,
-            [CanBeNull] IWebhook[] webhooks,
-            [CanBeNull] ITimeSettings timeSettings)
+            string? scenario,
+            string? executionConditionState,
+            string? nextState,
+            int? stateTimes,
+            IWebhook[]? webhooks,
+            ITimeSettings? timeSettings)
         {
             Guid = guid;
             Title = title;

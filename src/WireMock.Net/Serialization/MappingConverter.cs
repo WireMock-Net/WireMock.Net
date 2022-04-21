@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
@@ -91,7 +93,7 @@ namespace WireMock.Serialization
             }
             else
             {
-                mappingModel.Response.Delay = (int?)response.Delay?.TotalMilliseconds;
+                mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
             }
 
             if (mapping.Webhooks?.Length == 1)

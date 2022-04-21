@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.4.40</VersionPrefix>
+        <VersionPrefix>1.4.41</VersionPrefix>
         <PackageReleaseNotes>See CHANGELOG.md</PackageReleaseNotes>
         <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
         <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
@@ -13,6 +13,8 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
         <ApplicationIcon>../../resources/WireMock.Net-Logo.ico</ApplicationIcon>
+        <LangVersion>Latest</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
@@ -23,6 +25,10 @@
         <None Include="../../resources/WireMock.Net-Logo.png" Pack="true" PackagePath="" />
         <!--<None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>-->
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' != 'net45'">
+        <!--<Nullable>enable</Nullable>-->
+    </PropertyGroup>
 
     <Choose>
         <!-- The environment variable `Prerelease` is set in the azure-pipelines.yml file. -->

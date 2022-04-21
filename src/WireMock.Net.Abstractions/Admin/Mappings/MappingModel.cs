@@ -30,7 +30,7 @@ namespace WireMock.Admin.Mappings
         public string Description { get; set; }
 
         /// <summary>
-        /// The priority.
+        /// The priority. (A low value means higher priority.)
         /// </summary>
         public int? Priority { get; set; }
 

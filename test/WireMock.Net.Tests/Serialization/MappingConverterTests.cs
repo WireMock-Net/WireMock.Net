@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using FluentAssertions;
 using WireMock.Models;
 using WireMock.RequestBuilders;
@@ -211,10 +212,36 @@ namespace WireMock.Net.Tests.Serialization
         }
 
         [Fact]
-        public void ToMappingModel_WithDelay_ReturnsCorrectModel()
+        public void ToMappingModel_WithDelayAsTimeSpan_ReturnsCorrectModel()
+        {
+            // Arrange
+            var tests = new[]
+            {
+                new { Delay = Timeout.InfiniteTimeSpan, Expected = (int) TimeSpan.MaxValue.TotalMilliseconds },
+                new { Delay = TimeSpan.FromSeconds(1), Expected = 1000},
+                new { Delay = TimeSpan.MaxValue, Expected = (int) TimeSpan.MaxValue.TotalMilliseconds }
+            };
+
+            foreach (var test in tests)
+            {
+                var request = Request.Create();
+                var response = Response.Create().WithDelay(test.Delay);
+                var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, string.Empty, _settings, request, response, 42, null, null, null, null, null, null);
+
+                // Act
+                var model = _sut.ToMappingModel(mapping);
+
+                // Assert
+                model.Should().NotBeNull();
+                model.Response.Delay.Should().Be(test.Expected);
+            }
+        }
+
+        [Fact]
+        public void ToMappingModel_WithDelayAsMilleSeconds_ReturnsCorrectModel()
         {
             // Assign
-            int delay = 1000;
+            var delay = 1000;
             var request = Request.Create();
             var response = Response.Create().WithDelay(delay);
             var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, null);

@@ -1,5 +1,6 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Settings;
 using Stef.Validation;
@@ -13,13 +14,14 @@ namespace WireMock.Serialization
 
         public MappingToFileSaver(WireMockServerSettings settings, MappingConverter mappingConverter)
         {
-            Guard.NotNull(settings, nameof(settings));
+            Guard.NotNull(settings);
+            Guard.NotNull(mappingConverter);
 
             _settings = settings;
             _mappingConverter = mappingConverter;
         }
 
-        public void SaveMappingToFile(IMapping mapping, string folder = null)
+        public void SaveMappingToFile(IMapping mapping, [CanBeNull] string folder = null)
         {
             if (folder == null)
             {
