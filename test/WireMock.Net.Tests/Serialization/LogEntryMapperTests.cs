@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NFluent;
 using WireMock.Logging;
 using WireMock.Models;
@@ -8,114 +8,113 @@ using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests.Serialization
+namespace WireMock.Net.Tests.Serialization;
+
+public class LogEntryMapperTests
 {
-    public class LogEntryMapperTests
+    [Fact]
+    public void LogEntryMapper_Map_LogEntry_Check_BodyTypeBytes()
     {
-        [Fact]
-        public void LogEntryMapper_Map_LogEntry_Check_BodyTypeBytes()
+        // Assign
+        var logEntry = new LogEntry
         {
-            // Assign
-            var logEntry = new LogEntry
-            {
-                RequestMessage = new RequestMessage(
-                    new UrlDetails("http://localhost"),
-                    "post",
-                    "::1",
-                    new BodyData
-                    {
-                        DetectedBodyType = BodyType.Bytes,
-                        BodyAsBytes = new byte[] { 0 }
-                    }
-                ),
-                ResponseMessage = new ResponseMessage
+            RequestMessage = new RequestMessage(
+                new UrlDetails("http://localhost"),
+                "post",
+                "::1",
+                new BodyData
                 {
-                    BodyData = new BodyData
-                    {
-                        DetectedBodyType = BodyType.Bytes,
-                        BodyAsBytes = new byte[] { 0 }
-                    }
+                    DetectedBodyType = BodyType.Bytes,
+                    BodyAsBytes = new byte[] { 0 }
                 }
-            };
+            ),
+            ResponseMessage = new ResponseMessage
+            {
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.Bytes,
+                    BodyAsBytes = new byte[] { 0 }
+                }
+            }
+        };
 
-            // Act
-            var result = LogEntryMapper.Map(logEntry);
+        // Act
+        var result = LogEntryMapper.Map(logEntry);
 
-            // Assert
-            Check.That(result.Request.DetectedBodyType).IsEqualTo("Bytes");
-            Check.That(result.Request.DetectedBodyTypeFromContentType).IsEqualTo("None");
-            Check.That(result.Request.BodyAsBytes).ContainsExactly(new byte[] { 0 });
-            Check.That(result.Request.Body).IsNull();
-            Check.That(result.Request.BodyAsJson).IsNull();
+        // Assert
+        Check.That(result.Request.DetectedBodyType).IsEqualTo("Bytes");
+        Check.That(result.Request.DetectedBodyTypeFromContentType).IsNull();
+        Check.That(result.Request.BodyAsBytes).ContainsExactly(new byte[] { 0 });
+        Check.That(result.Request.Body).IsNull();
+        Check.That(result.Request.BodyAsJson).IsNull();
 
-            Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.Bytes);
-            Check.That(result.Response.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.None);
-            Check.That(result.Response.BodyAsBytes).ContainsExactly(new byte[] { 0 });
-            Check.That(result.Response.Body).IsNull();
-            Check.That(result.Response.BodyAsJson).IsNull();
-            Check.That(result.Response.BodyAsFile).IsNull();
-        }
+        Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.Bytes);
+        Check.That(result.Response.DetectedBodyTypeFromContentType).IsNull();
+        Check.That(result.Response.BodyAsBytes).ContainsExactly(new byte[] { 0 });
+        Check.That(result.Response.Body).IsNull();
+        Check.That(result.Response.BodyAsJson).IsNull();
+        Check.That(result.Response.BodyAsFile).IsNull();
+    }
 
-        [Fact]
-        public void LogEntryMapper_Map_LogEntry_Check_ResponseBodyTypeFile()
+    [Fact]
+    public void LogEntryMapper_Map_LogEntry_Check_ResponseBodyTypeFile()
+    {
+        // Assign
+        var logEntry = new LogEntry
         {
-            // Assign
-            var logEntry = new LogEntry
+            RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
+            ResponseMessage = new ResponseMessage
             {
-                RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
-                ResponseMessage = new ResponseMessage
+                BodyData = new BodyData
                 {
-                    BodyData = new BodyData
-                    {
-                        DetectedBodyType = BodyType.File,
-                        BodyAsFile = "test"
-                    }
+                    DetectedBodyType = BodyType.File,
+                    BodyAsFile = "test"
                 }
-            };
+            }
+        };
 
-            // Act
-            var result = LogEntryMapper.Map(logEntry);
+        // Act
+        var result = LogEntryMapper.Map(logEntry);
 
-            // Assert
-            Check.That(result.Request.DetectedBodyType).IsNull();
-            Check.That(result.Request.DetectedBodyTypeFromContentType).IsNull();
-            Check.That(result.Request.BodyAsBytes).IsNull();
-            Check.That(result.Request.Body).IsNull();
-            Check.That(result.Request.BodyAsJson).IsNull();
+        // Assert
+        Check.That(result.Request.DetectedBodyType).IsNull();
+        Check.That(result.Request.DetectedBodyTypeFromContentType).IsNull();
+        Check.That(result.Request.BodyAsBytes).IsNull();
+        Check.That(result.Request.Body).IsNull();
+        Check.That(result.Request.BodyAsJson).IsNull();
 
-            Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.File);
-            Check.That(result.Response.DetectedBodyTypeFromContentType).IsEqualTo(BodyType.None);
-            Check.That(result.Request.BodyAsBytes).IsNull();
-            Check.That(result.Response.Body).IsNull();
-            Check.That(result.Response.BodyAsJson).IsNull();
-            Check.That(result.Response.BodyAsFile).IsEqualTo("test");
-        }
+        Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.File);
+        Check.That(result.Response.DetectedBodyTypeFromContentType).IsNull();
+        Check.That(result.Request.BodyAsBytes).IsNull();
+        Check.That(result.Response.Body).IsNull();
+        Check.That(result.Response.BodyAsJson).IsNull();
+        Check.That(result.Response.BodyAsFile).IsEqualTo("test");
+    }
 
-        [Fact]
-        public void LogEntryMapper_Map_LogEntry_WithFault()
+    [Fact]
+    public void LogEntryMapper_Map_LogEntry_WithFault()
+    {
+        // Assign
+        var logEntry = new LogEntry
         {
-            // Assign
-            var logEntry = new LogEntry
+            RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
+            ResponseMessage = new ResponseMessage
             {
-                RequestMessage = new RequestMessage(new UrlDetails("http://localhost"), "get", "::1"),
-                ResponseMessage = new ResponseMessage
+                BodyData = new BodyData
                 {
-                    BodyData = new BodyData
-                    {
-                        DetectedBodyType = BodyType.File,
-                        BodyAsFile = "test"
-                    },
-                    FaultType = FaultType.EMPTY_RESPONSE,
-                    FaultPercentage = 0.5
-                }
-            };
+                    DetectedBodyType = BodyType.File,
+                    BodyAsFile = "test"
+                },
+                FaultType = FaultType.EMPTY_RESPONSE,
+                FaultPercentage = 0.5
+            }
+        };
 
-            // Act
-            var result = LogEntryMapper.Map(logEntry);
+        // Act
+        var result = LogEntryMapper.Map(logEntry);
 
-            // Assert
-            result.Response.FaultType.Should().Be("EMPTY_RESPONSE");
-            result.Response.FaultPercentage.Should().Be(0.5);
-        }
+        // Assert
+        result.Response.FaultType.Should().Be("EMPTY_RESPONSE");
+        result.Response.FaultPercentage.Should().Be(0.5);
     }
 }
