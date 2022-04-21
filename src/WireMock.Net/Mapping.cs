@@ -53,6 +53,9 @@ namespace WireMock
         public bool IsAdminInterface => Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider || Provider is ProxyAsyncResponseProvider;
 
         /// <inheritdoc />
+        public bool IsProxy => Provider is ProxyAsyncResponseProvider;
+
+        /// <inheritdoc />
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
         /// <inheritdoc />

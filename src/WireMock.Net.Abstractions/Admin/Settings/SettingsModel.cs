@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using WireMock.Handlers;
-using WireMock.Types;
 
 namespace WireMock.Admin.Settings
 {
@@ -56,8 +56,28 @@ namespace WireMock.Admin.Settings
         public bool? SaveUnmatchedRequests { get; set; }
 
         /// <summary>
+        /// Gets or sets if the static mappings should be read at startup.
+        /// </summary>
+        public bool? ReadStaticMappings { get; set; }
+
+        /// <summary>
+        /// Watch the static mapping files + folder for changes when running.
+        /// </summary>
+        public bool? WatchStaticMappings { get; set; }
+
+        /// <summary>
+        /// A value indicating whether subdirectories within the static mappings path should be monitored.
+        /// </summary>
+        public bool? WatchStaticMappingsInSubdirectories { get; set; }
+
+        /// <summary>
         /// Policies to use when using CORS. By default CORS is disabled. [Optional]
         /// </summary>
         public string CorsPolicyOptions { get; set; }
+
+        /// <summary>
+        /// The proxy and record settings.
+        /// </summary>
+        public ProxyAndRecordSettingsModel ProxyAndRecordSettings { get; set; }
     }
 }

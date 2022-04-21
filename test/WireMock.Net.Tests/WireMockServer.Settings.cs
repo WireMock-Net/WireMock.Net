@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NFluent;
 using WireMock.Authentication;
+using WireMock.Constants;
 using WireMock.Logging;
 using WireMock.Owin;
 using WireMock.Server;
@@ -79,13 +80,13 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var mappings = server.Mappings;
-            Check.That(mappings.Count()).IsEqualTo(25);
-            Check.That(mappings.All(m => m.Priority == int.MinValue)).IsTrue();
+            server.Mappings.Should().NotBeNull();
+            server.Mappings.Should().HaveCount(25);
+            server.Mappings.All(m => m.Priority == WireMockConstants.AdminPriority).Should().BeTrue();
         }
 
         [Fact]
-        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is1000_When_StartAdminInterface_IsTrue()
+        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_IsMinus2000000_When_StartAdminInterface_IsTrue()
         {
             // Assign and Act
             var server = WireMockServer.Start(new WireMockServerSettings
@@ -98,10 +99,11 @@ namespace WireMock.Net.Tests
             });
 
             // Assert
-            var mappings = server.Mappings;
-            Check.That(mappings.Count()).IsEqualTo(26);
-            Check.That(mappings.Count(m => m.Priority == int.MinValue)).IsEqualTo(25);
-            Check.That(mappings.Count(m => m.Priority == 1000)).IsEqualTo(1);
+            server.Mappings.Should().NotBeNull();
+            server.Mappings.Should().HaveCount(26);
+
+            server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(25);
+            server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
         }
 
         [Fact]

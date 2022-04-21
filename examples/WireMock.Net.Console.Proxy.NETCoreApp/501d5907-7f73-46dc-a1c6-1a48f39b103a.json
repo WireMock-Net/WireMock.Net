@@ -1,0 +1,169 @@
+{
+  "Guid": "501d5907-7f73-46dc-a1c6-1a48f39b103a",
+  "Title": "",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/post",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Headers": [
+      {
+        "Name": "Accept",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "*/*",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Connection",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "keep-alive",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Host",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "localhost:9091",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "User-Agent",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "PostmanRuntime/7.29.0",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Accept-Encoding",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "gzip, deflate, br",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Authorization",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "BASIC 1234",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Content-Type",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/vnd.contoso+json",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Content-Length",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "16",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "postmanecho",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "post",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Test123",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/vnd.contoso+json",
+            "IgnoreCase": true
+          }
+        ]
+      }
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "JsonMatcher",
+        "Pattern": {
+          "test": 42
+        },
+        "IgnoreCase": true
+      }
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "BodyAsJson": {
+      "args": {},
+      "data": {
+        "test": "Stef"
+      },
+      "files": {},
+      "form": {},
+      "headers": {
+        "x-forwarded-proto": "http",
+        "x-forwarded-port": "80",
+        "host": "postman-echo.com",
+        "x-amzn-trace-id": "Root=1-624a96e3-023cf5a15966164e7156c20d",
+        "content-length": "11",
+        "accept": "*/*",
+        "user-agent": "PostmanRuntime/7.29.0",
+        "accept-encoding": "gzip, deflate, br",
+        "authorization": "BASIC 1234",
+        "cookie": "sails.sid=s%3AMpD3hNdjm1Ilte_ml7vgmEopThEhwAbr.HDn7RFcO3qK7oVXIxK3Pxk23g1qHDrNZIN4NozK5oog",
+        "postmanecho": "post",
+        "test123": "application/vnd.contoso+json",
+        "postman-token": "050b1136-19ed-4fbe-ad2a-338a20237321",
+        "content-type": "application/vnd.contoso+json"
+      },
+      "json": {
+        "test": "Stef"
+      },
+      "url": "http://postman-echo.com/post"
+    },
+    "Headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "663",
+      "Date": "Mon, 04 Apr 2022 06:57:39 GMT",
+      "Connection": "keep-alive",
+      "ETag": "W/\"297-FimzXopdNUy6DBi49iOW6Tm9q0o\"",
+      "Vary": "Accept-Encoding",
+      "Set-Cookie": "sails.sid=s%3AhtpOsTOJqbHuXmMAZT6cyHLR6FBx1XhV.0loKIsdu5GJKgjJeha16NVWYl%2B0BvPeEQYHcLBCLJ20; Path=/; HttpOnly"
+    }
+  }
+}

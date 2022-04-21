@@ -51,7 +51,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
+        <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -64,7 +64,7 @@
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.14" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
-        <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
+        <PackageReference Include="TinyMapper" Version="3.0.3" />
         <!--<PackageReference Include="Mapster" Version="7.2.0" />-->
     </ItemGroup>
 
