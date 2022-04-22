@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Pact.Models.V2;
-using WireMock.Serialization;
+using WireMock.Util;
 
 namespace WireMock.Server;
 
@@ -18,10 +16,10 @@ public partial class WireMockServer
     private const string DefaultProvider = "Default Provider";
 
     /// <summary>
-    /// Save Pact Json file
+    /// Save the mappings as a Pact Json file V2.
     /// </summary>
-    /// <param name="folder"></param>
-    /// <param name="filename"></param>
+    /// <param name="folder">The folder to save the pact file.</param>
+    /// <param name="filename">The filename for the .json file [optional].</param>
     public void SavePact(string folder, string? filename = null)
     {
         var consumer = Consumer ?? DefaultConsumer;
@@ -48,9 +46,7 @@ public partial class WireMockServer
             pact.Interactions.Add(interaction);
         }
 
-        var json = JsonConvert.SerializeObject(pact, JsonSerializationConstants.JsonSerializerSettingsPact);
-        var bytes = Encoding.UTF8.GetBytes(json);
-
+        var bytes = JsonUtils.SerializeAsPactFile(pact);
         _settings.FileSystemHandler.WriteFile(folder, filename, bytes);
     }
 
@@ -138,11 +134,11 @@ public partial class WireMockServer
         return validHeaders.ToDictionary(x => x.Name, y => (string)y.Matchers![0].Pattern);
     }
 
-    private static IDictionary<string, string> MapResponseHeaders(IDictionary<string, object> headers)
+    private static IDictionary<string, string>? MapResponseHeaders(IDictionary<string, object>? headers)
     {
-        if (!headers.Any())
+        if (headers == null)
         {
-            return new Dictionary<string, string>();
+            return null;
         }
 
         var validHeaders = headers.Where(h => h.Value is string);

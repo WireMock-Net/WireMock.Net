@@ -6,7 +6,7 @@ public class Response
 {
     public object? Body { get; set; }
 
-    public IDictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+    public IDictionary<string, string>? Headers { get; set; }
 
     public int Status { get; set; } = 200;
 }

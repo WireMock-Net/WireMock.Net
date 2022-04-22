@@ -76,7 +76,7 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the headers.
         /// </summary>
-        public IDictionary<string, object> Headers { get; set; } = new Dictionary<string, object>();
+        public IDictionary<string, object>? Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the Headers (Raw).
