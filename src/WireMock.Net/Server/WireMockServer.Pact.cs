@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using WireMock.Admin.Mappings;
 using WireMock.Pact.Models.V2;
@@ -13,6 +12,7 @@ namespace WireMock.Server;
 public partial class WireMockServer
 {
     private const string DefaultPath = "/";
+    private const string DefaultMethod = "GET";
     private const int DefaultStatus = 200;
     private const string DefaultConsumer = "Default Consumer";
     private const string DefaultProvider = "Default Provider";
@@ -74,7 +74,7 @@ public partial class WireMockServer
 
         return new Request
         {
-            Method = request.Methods.FirstOrDefault() ?? "GET",
+            Method = request.Methods?.FirstOrDefault() ?? DefaultMethod,
             Path = path,
             Query = MapQueryParameters(request.Params),
             Headers = MapRequestHeaders(request.Headers),
@@ -82,11 +82,11 @@ public partial class WireMockServer
         };
     }
 
-    private static Response MapResponse(ResponseModel response)
+    private static Response MapResponse(ResponseModel? response)
     {
         if (response == null)
         {
-            return null;
+            return new Response();
         }
 
         return new Response
@@ -97,7 +97,7 @@ public partial class WireMockServer
         };
     }
 
-    private static int MapStatusCode(object statusCode)
+    private static int MapStatusCode(object? statusCode)
     {
         if (statusCode is string statusCodeAsString)
         {
@@ -113,45 +113,43 @@ public partial class WireMockServer
         return DefaultStatus;
     }
 
-    private static string MapQueryParameters(IList<ParamModel> queryParameters)
+    private static string? MapQueryParameters(IList<ParamModel>? queryParameters)
     {
         if (queryParameters == null)
         {
             return null;
         }
 
-        var values = new List<string>();
-        foreach (var param in queryParameters.Where(qp => qp.Matchers.Any() && qp.Matchers[0].Pattern is string))
-        {
-            values.Add($"{Uri.EscapeDataString(param.Name)}={Uri.EscapeDataString((string)param.Matchers[0].Pattern)}");
-        }
+        var values = queryParameters
+            .Where(qp => qp.Matchers != null && qp.Matchers.Any() && qp.Matchers[0].Pattern is string)
+            .Select(param => $"{Uri.EscapeDataString(param.Name)}={Uri.EscapeDataString((string)param.Matchers![0].Pattern)}");
 
         return string.Join("&", values);
     }
 
-    private static IDictionary<string, string> MapRequestHeaders(IList<HeaderModel> headers)
+    private static IDictionary<string, string>? MapRequestHeaders(IList<HeaderModel>? headers)
     {
-        if (!headers.Any())
+        if (headers == null)
         {
             return null;
         }
 
-        var validHeaders = headers.Where(h => h.Matchers.Any() && h.Matchers[0].Pattern is string);
-        return validHeaders.ToDictionary(x => x.Name, y => y.Matchers[0].Pattern as string ?? string.Empty);
+        var validHeaders = headers.Where(h => h.Matchers != null && h.Matchers.Any() && h.Matchers[0].Pattern is string);
+        return validHeaders.ToDictionary(x => x.Name, y => (string)y.Matchers![0].Pattern);
     }
 
     private static IDictionary<string, string> MapResponseHeaders(IDictionary<string, object> headers)
     {
         if (!headers.Any())
         {
-            return null;
+            return new Dictionary<string, string>();
         }
 
         var validHeaders = headers.Where(h => h.Value is string);
-        return validHeaders.ToDictionary(x => x.Key, y => y.Value as string);
+        return validHeaders.ToDictionary(x => x.Key, y => (string)y.Value);
     }
 
-    private static object MapBody(BodyModel body)
+    private static object? MapBody(BodyModel? body)
     {
         if (body == null || body.Matcher.Name != "JsonMatcher")
         {
@@ -161,11 +159,11 @@ public partial class WireMockServer
         return body.Matcher.Pattern;
     }
 
-    private static string GetPatternAsStringFromMatchers(MatcherModel[] matchers, string defaultValue)
+    private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
     {
-        if (matchers != null && matchers.Any() && matchers[0].Pattern is string s)
+        if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
         {
-            return s;
+            return patternAsString;
         }
 
         return defaultValue;

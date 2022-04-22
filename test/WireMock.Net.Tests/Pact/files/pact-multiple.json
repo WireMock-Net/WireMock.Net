@@ -1,0 +1,51 @@
+{
+  "Consumer": {
+    "Name": "Something API Consumer Multiple"
+  },
+  "Interactions": [
+    {
+      "ProviderState": "A Post request to add the something",
+      "Request": {
+        "Headers": {
+          "Accept": "application/json"
+        },
+        "Method": "POST",
+        "Path": "/add",
+        "Body": "{ \"Id\" : \"1\", \"FirstName\" : \"Totally\" }"
+      },
+      "Response": {
+        "Body": {
+          "Id": "1",
+          "FirstName": "Totally"
+        },
+        "Headers": {},
+        "Status": 303
+      }
+    },
+    {
+      "ProviderState": "A GET request to retrieve the something",
+      "Request": {
+        "Headers": {
+          "Accept": "application/json"
+        },
+        "Method": "POST",
+        "Path": "/tester",
+        "Query": "q1=test&q2=ok"
+      },
+      "Response": {
+        "Body": {
+          "Id": "tester",
+          "FirstName": "Totally",
+          "LastName": "Awesome"
+        },
+        "Headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "Status": 200
+      }
+    }
+  ],
+  "Provider": {
+    "Name": "Something API"
+  }
+}
