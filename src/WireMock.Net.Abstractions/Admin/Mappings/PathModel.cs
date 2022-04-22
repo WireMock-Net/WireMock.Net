@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin.Mappings
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// PathModel
@@ -9,6 +9,6 @@
         /// <summary>
         /// Gets or sets the matchers.
         /// </summary>
-        public MatcherModel[] Matchers { get; set; }
+        public MatcherModel[]? Matchers { get; set; }
     }
 }

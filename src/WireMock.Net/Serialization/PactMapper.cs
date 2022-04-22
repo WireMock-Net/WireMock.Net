@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
+using WireMock.Extensions;
+using WireMock.Matchers;
 using WireMock.Pact.Models.V2;
 using WireMock.Server;
 using WireMock.Util;
@@ -10,9 +12,8 @@ namespace WireMock.Serialization;
 
 internal static class PactMapper
 {
-    private const string DefaultPath = "/";
     private const string DefaultMethod = "GET";
-    private const int DefaultStatus = 200;
+    private const int DefaultStatusCode = 200;
     private const string DefaultConsumer = "Default Consumer";
     private const string DefaultProvider = "Default Provider";
 
@@ -31,11 +32,18 @@ internal static class PactMapper
 
         foreach (var mapping in server.MappingModels)
         {
+            var path = mapping.Request.GetPathAsString();
+            if (path == null)
+            {
+                // Path is null (probably a Func<>), skip this.
+                continue;
+            }
+
             var interaction = new Interaction
             {
                 Description = mapping.Description,
                 ProviderState = mapping.Title,
-                Request = MapRequest(mapping.Request),
+                Request = MapRequest(mapping.Request, path),
                 Response = MapResponse(mapping.Response)
             };
 
@@ -45,24 +53,8 @@ internal static class PactMapper
         return (filename, JsonUtils.SerializeAsPactFile(pact));
     }
 
-    private static Request MapRequest(RequestModel request)
+    private static Request MapRequest(RequestModel request, string path)
     {
-        string path;
-        switch (request.Path)
-        {
-            case string pathAsString:
-                path = pathAsString;
-                break;
-
-            case PathModel pathModel:
-                path = GetPatternAsStringFromMatchers(pathModel.Matchers, DefaultPath);
-                break;
-
-            default:
-                path = DefaultPath;
-                break;
-        }
-
         return new Request
         {
             Method = request.Methods?.FirstOrDefault() ?? DefaultMethod,
@@ -92,7 +84,7 @@ internal static class PactMapper
     {
         if (statusCode is string statusCodeAsString)
         {
-            return int.TryParse(statusCodeAsString, out var statusCodeAsInt) ? statusCodeAsInt : DefaultStatus;
+            return int.TryParse(statusCodeAsString, out var statusCodeAsInt) ? statusCodeAsInt : DefaultStatusCode;
         }
 
         if (statusCode != null)
@@ -101,7 +93,7 @@ internal static class PactMapper
             return Convert.ToInt32(statusCode);
         }
 
-        return DefaultStatus;
+        return DefaultStatusCode;
     }
 
     private static string? MapQueryParameters(IList<ParamModel>? queryParameters)
@@ -113,41 +105,37 @@ internal static class PactMapper
 
         var values = queryParameters
             .Where(qp => qp.Matchers != null && qp.Matchers.Any() && qp.Matchers[0].Pattern is string)
-            .Select(param => $"{Uri.EscapeDataString(param.Name)}={Uri.EscapeDataString((string)param.Matchers![0].Pattern)}");
+            .Select(param => $"{Uri.EscapeDataString(param.Name)}={Uri.EscapeDataString((string)param.Matchers![0].Pattern!)}");
 
         return string.Join("&", values);
     }
 
     private static IDictionary<string, string>? MapRequestHeaders(IList<HeaderModel>? headers)
     {
-        if (headers == null)
-        {
-            return null;
-        }
-
-        var validHeaders = headers.Where(h => h.Matchers != null && h.Matchers.Any() && h.Matchers[0].Pattern is string);
-        return validHeaders.ToDictionary(x => x.Name, y => (string)y.Matchers![0].Pattern);
+        var validHeaders = headers?.Where(h => h.Matchers != null && h.Matchers.Any() && h.Matchers[0].Pattern is string);
+        return validHeaders?.ToDictionary(x => x.Name, y => (string)y.Matchers![0].Pattern!);
     }
 
     private static IDictionary<string, string>? MapResponseHeaders(IDictionary<string, object>? headers)
     {
-        if (headers == null)
-        {
-            return null;
-        }
-
-        var validHeaders = headers.Where(h => h.Value is string);
-        return validHeaders.ToDictionary(x => x.Key, y => (string)y.Value);
+        var validHeaders = headers?.Where(h => h.Value is string);
+        return validHeaders?.ToDictionary(x => x.Key, y => (string)y.Value);
     }
 
     private static object? MapBody(BodyModel? body)
     {
-        if (body == null || body.Matcher.Name != "JsonMatcher")
+        if (body?.Matcher == null || body.Matchers == null)
         {
             return null;
         }
 
-        return body.Matcher.Pattern;
+        if (body.Matcher is { Name: nameof(JsonMatcher) })
+        {
+            return body.Matcher.Pattern;
+        }
+
+        var jsonMatcher = body.Matchers.FirstOrDefault(m => m.Name == nameof(JsonMatcher));
+        return jsonMatcher?.Pattern;
     }
 
     private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
