@@ -20,6 +20,9 @@ namespace WireMock
         public string Title { get; }
 
         /// <inheritdoc />
+        public string Description { get; }
+
+        /// <inheritdoc />
         public string Path { get; set; }
 
         /// <inheritdoc />
@@ -69,6 +72,7 @@ namespace WireMock
         /// </summary>
         /// <param name="guid">The unique identifier.</param>
         /// <param name="title">The unique title (can be null).</param>
+        /// <param name="description">The description (can be null).</param>
         /// <param name="path">The full file path from this mapping title (can be null).</param>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <param name="requestMatcher">The request matcher.</param>
@@ -82,21 +86,23 @@ namespace WireMock
         /// <param name="timeSettings">The TimeSettings. [Optional]</param>
         public Mapping(
             Guid guid,
-            [CanBeNull] string title,
-            [CanBeNull] string path,
-            [NotNull] WireMockServerSettings settings,
-            [NotNull] IRequestMatcher requestMatcher,
-            [NotNull] IResponseProvider provider,
+            string? title,
+            string? description,
+            string? path,
+            WireMockServerSettings settings,
+            IRequestMatcher requestMatcher,
+            IResponseProvider provider,
             int priority,
-            [CanBeNull] string scenario,
-            [CanBeNull] string executionConditionState,
-            [CanBeNull] string nextState,
-            [CanBeNull] int? stateTimes,
-            [CanBeNull] IWebhook[] webhooks,
-            [CanBeNull] ITimeSettings timeSettings)
+            string? scenario,
+            string? executionConditionState,
+            string? nextState,
+            int? stateTimes,
+            IWebhook[]? webhooks,
+            ITimeSettings? timeSettings)
         {
             Guid = guid;
             Title = title;
+            Description = description;
             Path = path;
             Settings = settings;
             RequestMatcher = requestMatcher;
@@ -111,13 +117,13 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-        public Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage)
+        public Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
         {
             return Provider.ProvideResponseAsync(requestMessage, Settings);
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-        public RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, string nextState)
+        public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string nextState)
         {
             var result = new RequestMatchResult();
 

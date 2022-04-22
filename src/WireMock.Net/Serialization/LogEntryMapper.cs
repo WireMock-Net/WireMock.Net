@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
@@ -29,8 +29,8 @@ namespace WireMock.Serialization
 
             if (logEntry.RequestMessage.BodyData != null)
             {
-                logRequestModel.DetectedBodyType = logEntry.RequestMessage.BodyData.DetectedBodyType.ToString();
-                logRequestModel.DetectedBodyTypeFromContentType = logEntry.RequestMessage.BodyData.DetectedBodyTypeFromContentType.ToString();
+                logRequestModel.DetectedBodyType = logEntry.RequestMessage.BodyData.DetectedBodyType?.ToString();
+                logRequestModel.DetectedBodyTypeFromContentType = logEntry.RequestMessage.BodyData.DetectedBodyTypeFromContentType?.ToString();
 
                 switch (logEntry.RequestMessage.BodyData.DetectedBodyType)
                 {

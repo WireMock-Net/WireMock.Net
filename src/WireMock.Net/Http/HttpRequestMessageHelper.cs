@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -12,7 +12,7 @@ namespace WireMock.Http
 {
     internal static class HttpRequestMessageHelper
     {
-        internal static HttpRequestMessage Create([NotNull] RequestMessage requestMessage, [NotNull] string url)
+        internal static HttpRequestMessage Create([NotNull] IRequestMessage requestMessage, [NotNull] string url)
         {
             Guard.NotNull(requestMessage, nameof(requestMessage));
             Guard.NotNullOrEmpty(url, nameof(url));

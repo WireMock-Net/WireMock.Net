@@ -11,22 +11,22 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the HTTP status.
         /// </summary>
-        public object StatusCode { get; set; }
+        public object? StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the body destination (SameAsSource, String or Bytes).
         /// </summary>
-        public string BodyDestination { get; set; }
+        public string? BodyDestination { get; set; }
 
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
         /// <summary>
         /// Gets or sets the body (as JSON object).
         /// </summary>
-        public object BodyAsJson { get; set; }
+        public object? BodyAsJson { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.
@@ -36,12 +36,12 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the body (as bytearray).
         /// </summary>
-        public byte[] BodyAsBytes { get; set; }
+        public byte[]? BodyAsBytes { get; set; }
 
         /// <summary>
         /// Gets or sets the body as a file.
         /// </summary>
-        public string BodyAsFile { get; set; }
+        public string? BodyAsFile { get; set; }
 
         /// <summary>
         /// Is the body as file cached?
@@ -51,7 +51,7 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the body encoding.
         /// </summary>
-        public EncodingModel BodyEncoding { get; set; }
+        public EncodingModel? BodyEncoding { get; set; }
 
         /// <summary>
         /// Use ResponseMessage Transformer.
@@ -61,7 +61,7 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets the type of the transformer.
         /// </summary>
-        public string TransformerType { get; set; }
+        public string? TransformerType { get; set; }
 
         /// <summary>
         /// Use the Handlebars transformer for the content from the referenced BodyAsFile.
@@ -71,17 +71,17 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// The ReplaceNodeOptions to use when transforming a JSON node.
         /// </summary>
-        public string TransformerReplaceNodeOptions { get; set; }
+        public string? TransformerReplaceNodeOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.
         /// </summary>
-        public IDictionary<string, object> Headers { get; set; }
+        public IDictionary<string, object>? Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the Headers (Raw).
         /// </summary>
-        public string HeadersRaw { get; set; }
+        public string? HeadersRaw { get; set; }
 
         /// <summary>
         /// Gets or sets the delay in milliseconds.
@@ -101,21 +101,21 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the Proxy URL.
         /// </summary>
-        public string ProxyUrl { get; set; }
+        public string? ProxyUrl { get; set; }
 
         /// <summary>
         /// The client X509Certificate2 Thumbprint or SubjectName to use.
         /// </summary>
-        public string X509Certificate2ThumbprintOrSubjectName { get; set; }
+        public string? X509Certificate2ThumbprintOrSubjectName { get; set; }
 
         /// <summary>
         /// Gets or sets the fault.
         /// </summary>
-        public FaultModel Fault { get; set; }
+        public FaultModel? Fault { get; set; }
 
         /// <summary>
         /// Gets or sets the WebProxy settings.
         /// </summary>
-        public WebProxyModel WebProxy { get; set; }
+        public WebProxyModel? WebProxy { get; set; }
     }
 }

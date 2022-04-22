@@ -69,6 +69,12 @@ namespace WireMock.Net.ConsoleApplication
             File.WriteAllBytes(AdjustPath(path), bytes);
         }
 
+        public void WriteFile(string folder, string filename, byte[] bytes)
+        {
+            File.WriteAllBytes(Path.Combine(folder, filename), bytes);
+
+        }
+
         /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
         public void DeleteFile(string path)
         {

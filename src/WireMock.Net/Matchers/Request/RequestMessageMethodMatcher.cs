@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using JetBrains.Annotations;
 using Stef.Validation;
@@ -30,8 +30,8 @@ namespace WireMock.Matchers.Request
             Methods = methods;
         }
 
-        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        /// <inheritdoc />
+        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
         {
             double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
             return requestMatchResult.AddScore(GetType(), score);

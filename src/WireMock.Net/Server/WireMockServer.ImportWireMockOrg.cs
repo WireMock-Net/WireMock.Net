@@ -21,7 +21,7 @@ namespace WireMock.Server
         /// </summary>
         /// <param name="path">The path to the WireMock.org mapping json file.</param>
         [PublicAPI]
-        public void ReadStaticWireMockOrgMappingAndAddOrUpdate([NotNull] string path)
+        public void ReadStaticWireMockOrgMappingAndAddOrUpdate(string path)
         {
             Guard.NotNull(path, nameof(path));
 
@@ -44,7 +44,7 @@ namespace WireMock.Server
             }
         }
 
-        private ResponseMessage MappingsPostWireMockOrg(RequestMessage requestMessage)
+        private IResponseMessage MappingsPostWireMockOrg(IRequestMessage requestMessage)
         {
             try
             {

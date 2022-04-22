@@ -29,6 +29,11 @@ namespace WireMock
         string Title { get; }
 
         /// <summary>
+        /// Gets the description.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
         /// The full filename path for this mapping (only defined for static mappings).
         /// </summary>
         string Path { get; set; }
@@ -117,7 +122,7 @@ namespace WireMock
         /// </summary>
         /// <param name="requestMessage">The request message.</param>
         /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(RequestMessage requestMessage);
+        Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage);
 
         /// <summary>
         /// Gets the RequestMatchResult based on the RequestMessage.
@@ -125,6 +130,6 @@ namespace WireMock
         /// <param name="requestMessage">The request message.</param>
         /// <param name="nextState">The Next State.</param>
         /// <returns>The <see cref="IRequestMatchResult"/>.</returns>
-        RequestMatchResult GetRequestMatchResult(RequestMessage requestMessage, [CanBeNull] string nextState);
+        IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, [CanBeNull] string nextState);
     }
 }

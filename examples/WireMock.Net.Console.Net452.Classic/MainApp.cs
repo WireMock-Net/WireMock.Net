@@ -89,6 +89,8 @@ namespace WireMock.Net.ConsoleApplication
             server
                 .Given(Request.Create().WithPath(p => p.Contains("x")).UsingGet())
                 .AtPriority(4)
+                .WithTitle("t")
+                .WithDescription("d")
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")

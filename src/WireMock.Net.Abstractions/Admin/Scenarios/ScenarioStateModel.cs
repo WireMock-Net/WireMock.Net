@@ -1,4 +1,4 @@
-﻿namespace WireMock.Admin.Scenarios
+namespace WireMock.Admin.Scenarios
 {
     /// <summary>
     /// ScenarioStateModel
@@ -14,7 +14,7 @@
         /// <summary>
         /// Gets or sets the NextState.
         /// </summary>
-        public string NextState { get; set; }
+        public string? NextState { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="ScenarioStateModel"/> is started.

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace WireMock.Admin.Mappings
 {
@@ -11,12 +11,12 @@ namespace WireMock.Admin.Mappings
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the matchers.
         /// </summary>
-        public IList<MatcherModel> Matchers { get; set; }
+        public IList<MatcherModel>? Matchers { get; set; }
 
         /// <summary>
         /// Gets or sets the ignore case.

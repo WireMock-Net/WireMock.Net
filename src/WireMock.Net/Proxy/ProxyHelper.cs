@@ -24,10 +24,10 @@ namespace WireMock.Proxy
             _settings = Guard.NotNull(settings, nameof(settings));
         }
 
-        public async Task<(ResponseMessage Message, IMapping Mapping)> SendAsync(
+        public async Task<(IResponseMessage Message, IMapping Mapping)> SendAsync(
             [NotNull] ProxyAndRecordSettings proxyAndRecordSettings,
             [NotNull] HttpClient client,
-            [NotNull] RequestMessage requestMessage,
+            [NotNull] IRequestMessage requestMessage,
             [NotNull] string url)
         {
             Guard.NotNull(client, nameof(client));
@@ -59,7 +59,7 @@ namespace WireMock.Proxy
             return (responseMessage, mapping);
         }
 
-        private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, RequestMessage requestMessage, ResponseMessage responseMessage)
+        private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
         {
             string[] excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
             string[] excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
@@ -104,7 +104,7 @@ namespace WireMock.Proxy
 
             var response = Response.Create(responseMessage);
 
-            return new Mapping(Guid.NewGuid(), string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
+            return new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
         }
     }
 }

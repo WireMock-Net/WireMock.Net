@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace WireMock.Matchers.Request
 {
@@ -15,6 +15,6 @@ namespace WireMock.Matchers.Request
         /// <returns>
         /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        double GetMatchingScore([NotNull] IRequestMessage requestMessage, [NotNull] RequestMatchResult requestMatchResult);
+        double GetMatchingScore([NotNull] IRequestMessage requestMessage, [NotNull] IRequestMatchResult requestMatchResult);
     }
 }

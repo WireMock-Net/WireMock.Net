@@ -25,6 +25,11 @@ namespace WireMock.Admin.Mappings
         public string Title { get; set; }
 
         /// <summary>
+        /// The description.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// The priority. (A low value means higher priority.)
         /// </summary>
         public int? Priority { get; set; }

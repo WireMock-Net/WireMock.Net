@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace WireMock.Matchers.Request
 {
@@ -32,7 +32,7 @@ namespace WireMock.Matchers.Request
         }
 
         /// <inheritdoc />
-        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
         {
             double score = IsMatch();
             return requestMatchResult.AddScore(GetType(), score);

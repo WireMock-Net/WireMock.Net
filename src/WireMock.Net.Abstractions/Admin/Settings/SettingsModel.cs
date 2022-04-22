@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 using WireMock.Handlers;
 
 namespace WireMock.Admin.Settings
@@ -73,11 +72,11 @@ namespace WireMock.Admin.Settings
         /// <summary>
         /// Policies to use when using CORS. By default CORS is disabled. [Optional]
         /// </summary>
-        public string CorsPolicyOptions { get; set; }
+        public string? CorsPolicyOptions { get; set; }
 
         /// <summary>
         /// The proxy and record settings.
         /// </summary>
-        public ProxyAndRecordSettingsModel ProxyAndRecordSettings { get; set; }
+        public ProxyAndRecordSettingsModel? ProxyAndRecordSettings { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -50,8 +50,8 @@ namespace WireMock.Matchers.Request
             Funcs = funcs;
         }
 
-        /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
-        public double GetMatchingScore(IRequestMessage requestMessage, RequestMatchResult requestMatchResult)
+        /// <inheritdoc />
+        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
         {
             double score = IsMatch(requestMessage);
             return requestMatchResult.AddScore(GetType(), score);

@@ -20,5 +20,11 @@ namespace WireMock.Serialization
         {
             DateParseHandling = DateParseHandling.None
         };
+
+        public static readonly JsonSerializerSettings JsonSerializerSettingsPact = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore
+        };
     }
 }

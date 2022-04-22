@@ -18,7 +18,7 @@ namespace WireMock.Transformers
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(RequestMessage originalRequestMessage, ResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options)
+        public (IBodyData BodyData, IDictionary<string, WireMockList<string>> Headers) Transform(IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, IBodyData bodyData, IDictionary<string, WireMockList<string>> headers, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 
@@ -37,7 +37,7 @@ namespace WireMock.Transformers
             return (newBodyData, TransformHeaders(transformerContext, model, headers));
         }
 
-        public ResponseMessage Transform(RequestMessage requestMessage, ResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
+        public ResponseMessage Transform(IRequestMessage requestMessage, IResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
         {
             var transformerContext = _factory.Create();
 

@@ -40,6 +40,7 @@ namespace WireMock.Serialization
                 Guid = mapping.Guid,
                 TimeSettings = TimeSettingsMapper.Map(mapping.TimeSettings),
                 Title = mapping.Title,
+                Description = mapping.Description,
                 Priority = mapping.Priority != 0 ? mapping.Priority : (int?)null,
                 Scenario = mapping.Scenario,
                 WhenStateIs = mapping.ExecutionConditionState,

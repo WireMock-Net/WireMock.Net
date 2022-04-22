@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -17,6 +17,6 @@ namespace WireMock.ResponseProviders
         /// <param name="requestMessage">The request.</param>
         /// <param name="settings">The WireMockServerSettings.</param>
         /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-        Task<(ResponseMessage Message, IMapping Mapping)> ProvideResponseAsync([NotNull] RequestMessage requestMessage, [NotNull] WireMockServerSettings settings);
+        Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync([NotNull] IRequestMessage requestMessage, [NotNull] WireMockServerSettings settings);
     }
 }
