@@ -59,6 +59,7 @@
         <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="NSwag.Core" Version="13.15.10" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="Stef.Validation" Version="0.1.0" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
@@ -67,6 +68,16 @@
         <PackageReference Include="AnyOf" Version="0.3.0" />
         <PackageReference Include="TinyMapper" Version="3.0.3" />
         <!--<PackageReference Include="Mapster" Version="7.2.0" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.3.3" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.3" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
@@ -144,16 +155,6 @@
         <Compile Update="Server\WireMockServer.*.cs">
             <DependentUpon>WireMockServer.cs</DependentUpon>
         </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Handlebars.Net.Helpers" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.3.3" />
-        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.3" />
     </ItemGroup>
 
     <ItemGroup>

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Pact.Models.V2;
+using WireMock.Server;
 using WireMock.Util;
 
-namespace WireMock.Server;
+namespace WireMock.Serialization;
 
-public partial class WireMockServer
+internal static class PactMapper
 {
     private const string DefaultPath = "/";
     private const string DefaultMethod = "GET";
@@ -15,15 +16,10 @@ public partial class WireMockServer
     private const string DefaultConsumer = "Default Consumer";
     private const string DefaultProvider = "Default Provider";
 
-    /// <summary>
-    /// Save the mappings as a Pact Json file V2.
-    /// </summary>
-    /// <param name="folder">The folder to save the pact file.</param>
-    /// <param name="filename">The filename for the .json file [optional].</param>
-    public void SavePact(string folder, string? filename = null)
+    public static (string FileName, byte[] Bytes) ToPact(WireMockServer server, string? filename = null)
     {
-        var consumer = Consumer ?? DefaultConsumer;
-        var provider = Provider ?? DefaultProvider;
+        var consumer = server.Consumer ?? DefaultConsumer;
+        var provider = server.Provider ?? DefaultProvider;
 
         filename ??= $"{consumer} - {provider}.json";
 
@@ -33,7 +29,7 @@ public partial class WireMockServer
             Provider = new Pacticipant { Name = provider }
         };
 
-        foreach (var mapping in MappingModels)
+        foreach (var mapping in server.MappingModels)
         {
             var interaction = new Interaction
             {
@@ -46,8 +42,7 @@ public partial class WireMockServer
             pact.Interactions.Add(interaction);
         }
 
-        var bytes = JsonUtils.SerializeAsPactFile(pact);
-        _settings.FileSystemHandler.WriteFile(folder, filename, bytes);
+        return (filename, JsonUtils.SerializeAsPactFile(pact));
     }
 
     private static Request MapRequest(RequestModel request)
