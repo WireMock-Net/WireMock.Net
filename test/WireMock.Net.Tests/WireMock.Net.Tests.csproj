@@ -54,7 +54,7 @@
         <PackageReference Include="RestEase" Version="1.5.5" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.14" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="NFluent" Version="2.7.2" />
         <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
