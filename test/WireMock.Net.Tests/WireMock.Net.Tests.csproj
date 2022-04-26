@@ -49,13 +49,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Include="Moq" Version="4.16.1" />
+        <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
-        <PackageReference Include="RestEase" Version="1.5.5" />
+        <PackageReference Include="RestEase" Version="1.5.6" />
         <!--<PackageReference Include="RandomDataGenerator.Net" Version="1.0.14" />-->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="NFluent" Version="2.7.2" />
+        <PackageReference Include="NFluent" Version="2.8.0" />
         <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
