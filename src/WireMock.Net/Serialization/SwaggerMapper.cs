@@ -243,12 +243,9 @@ internal static class SwaggerMapper
             });
         }
 
-        var openApiResponse = new OpenApiResponse
-        {
-            Schema = schema
-        };
-        openApiResponse.Schema.Description = null;
-        openApiResponse.Schema.Title = null;
+        // Clear Description and Title  
+        schema.Description = null;
+        schema.Title = null;
 
         // Remove "null" from the type.
         // Example:
@@ -259,12 +256,15 @@ internal static class SwaggerMapper
         //     "string"
         //   ]
         // }
-        foreach (var property in openApiResponse.Schema.Properties.Where(p => p.Value.Type.HasFlag(JsonObjectType.Null)))
+        foreach (var property in schema.Properties.Where(p => p.Value.Type.HasFlag(JsonObjectType.Null)))
         {
             property.Value.Type &= ~JsonObjectType.Null;
         }
 
-        return openApiResponse;
+        return new OpenApiResponse
+        {
+            Schema = schema
+        };
     }
 
     private static object? MapBody(BodyModel? body)
