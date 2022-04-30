@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.Generation;
 using NSwag;
@@ -9,6 +10,7 @@ using WireMock.Constants;
 using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Server;
+using WireMock.Util;
 
 namespace WireMock.Serialization;
 
@@ -227,12 +229,23 @@ internal static class SwaggerMapper
 
     private static OpenApiResponse CreateOpenApiResponse(object bodyAsJson)
     {
-        var openApiResponse = new OpenApiResponse
+        JsonSchema schema;
+        if (bodyAsJson is JObject)
         {
-            Schema = JsonSchema.FromType(bodyAsJson.GetType(), new JsonSchemaGeneratorSettings
+            string json = JsonUtils.Serialize(bodyAsJson);
+            schema = JsonSchema.FromSampleJson(json);
+        }
+        else
+        {
+            schema = JsonSchema.FromType(bodyAsJson.GetType(), new JsonSchemaGeneratorSettings
             {
                 GenerateCustomNullableProperties = false
-            })
+            });
+        }
+
+        var openApiResponse = new OpenApiResponse
+        {
+            Schema = schema
         };
         openApiResponse.Schema.Description = null;
         openApiResponse.Schema.Title = null;
