@@ -230,10 +230,10 @@ internal static class SwaggerMapper
     private static OpenApiResponse CreateOpenApiResponse(object bodyAsJson)
     {
         JsonSchema schema;
-        if (bodyAsJson is JObject)
+        if (bodyAsJson is JObject bodyAsJObject)
         {
-            string json = JsonUtils.Serialize(bodyAsJson);
-            schema = JsonSchema.FromSampleJson(json);
+            var type = JObjectUtils.CreateType(bodyAsJObject);
+            schema = JsonSchema.FromType(type);
         }
         else
         {
@@ -243,7 +243,16 @@ internal static class SwaggerMapper
             });
         }
 
-        // Clear Description and Title  
+        FixSchema(schema);
+        
+        return new OpenApiResponse
+        {
+            Schema = schema
+        };
+    }
+
+    private static void FixSchema(JsonSchema schema)
+    {
         schema.Description = null;
         schema.Title = null;
 
@@ -261,10 +270,31 @@ internal static class SwaggerMapper
             property.Value.Type &= ~JsonObjectType.Null;
         }
 
-        return new OpenApiResponse
+        // Fix OneOf and null
+        foreach (var property in schema.Properties.Where(p => p.Value.OneOf.Any()).ToArray())
         {
-            Schema = schema
-        };
+            var oneOfItems = property.Value.OneOf.Where(one => !one.Type.HasFlag(JsonObjectType.Null)).ToArray();
+            if (oneOfItems.Length == 0)
+            {
+                property.Value.OneOf.Clear();
+            }
+            else if (oneOfItems.Length == 1)
+            {
+                schema.Properties.Remove(property);
+                schema.Properties.Add(property.Key, new JsonSchemaProperty
+                {
+                    Type = oneOfItems.First().Type
+                });
+            }
+            else
+            {
+                property.Value.OneOf.Clear();
+                foreach (var newOneOf in oneOfItems)
+                {
+                    property.Value.OneOf.Add(newOneOf);
+                }
+            }
+        }
     }
 
     private static object? MapBody(BodyModel? body)
