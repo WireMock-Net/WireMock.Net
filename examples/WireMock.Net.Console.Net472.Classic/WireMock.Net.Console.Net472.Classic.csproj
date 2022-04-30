@@ -45,20 +45,41 @@
     <Reference Include="Fare, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Fare.2.2.0\lib\net35\Fare.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars, Version=2.1.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.2.1.0\lib\net46\Handlebars.dll</HintPath>
+    <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.2.1.2\lib\net46\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars.Net.Helpers, Version=2.3.2.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.2\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.3.5.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.5\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.3\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.5.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.5\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.DynamicLinq, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.DynamicLinq.2.3.3\lib\net452\HandlebarsDotNet.Helpers.DynamicLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Humanizer, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Humanizer.2.3.3\lib\net452\HandlebarsDotNet.Helpers.Humanizer.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Json, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Json.2.3.3\lib\net452\HandlebarsDotNet.Helpers.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Random, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Random.2.3.3\lib\net452\HandlebarsDotNet.Helpers.Random.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.Xeger, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Xeger.2.3.3\lib\net452\HandlebarsDotNet.Helpers.Xeger.dll</HintPath>
+    </Reference>
+    <Reference Include="HandlebarsDotNet.Helpers.XPath, Version=2.3.3.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.XPath.2.3.3\lib\net452\HandlebarsDotNet.Helpers.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer, Version=2.14.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Humanizer.Core.2.14.1\lib\netstandard2.0\Humanizer.dll</HintPath>
     </Reference>
     <Reference Include="JmesPath.Net, Version=1.0.125.0, Culture=neutral, PublicKeyToken=b29d616b7f4faff0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\JmesPath.Net.1.0.125\lib\net45\JmesPath.Net.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\log4net.2.0.13\lib\net45\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNetCore.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.dll</HintPath>
@@ -207,6 +228,21 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Extensions.Primitives.5.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.JsonWebTokens.6.12.2\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.6.12.2\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Protocols.6.12.2\lib\net472\Microsoft.IdentityModel.Protocols.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Protocols.OpenIdConnect.6.12.2\lib\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.6.12.2\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Net.Http.Headers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Net.Http.Headers.2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
     </Reference>
@@ -221,6 +257,9 @@
     </Reference>
     <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Stef.Validation, Version=0.1.0.0, Culture=neutral, PublicKeyToken=8f3400880c321038, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Stef.Validation.0.1.0\lib\net40\Stef.Validation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -237,6 +276,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.6.12.2\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Pipelines, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.IO.Pipelines.4.5.3\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
@@ -264,8 +306,8 @@
     <Reference Include="System.Security.Principal.Windows, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.Principal.Windows.4.5.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.5.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.Encodings.Web.4.7.2\lib\net461\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -280,11 +322,23 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="XPath2, Version=1.1.0.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\XPath2.1.1.0\lib\net40\XPath2.dll</HintPath>
+    <Reference Include="TinyMapper, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\TinyMapper.3.0.3\lib\net40\TinyMapper.dll</HintPath>
     </Reference>
-    <Reference Include="XPath2.Extensions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\XPath2.Extensions.1.1.0\lib\net40\XPath2.Extensions.dll</HintPath>
+    <Reference Include="WireMock.Net, Version=1.4.41.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Net.1.4.41\lib\net461\WireMock.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="WireMock.Net.Abstractions, Version=1.4.41.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Net.Abstractions.1.4.41\lib\net451\WireMock.Net.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="WireMock.Org.Abstractions, Version=1.4.41.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Org.Abstractions.1.4.41\lib\net45\WireMock.Org.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="XPath2, Version=1.1.3.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\XPath2.1.1.3\lib\net452\XPath2.dll</HintPath>
+    </Reference>
+    <Reference Include="XPath2.Extensions, Version=1.1.3.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\XPath2.Extensions.1.1.3\lib\net452\XPath2.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -305,16 +359,6 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj">
-      <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
-      <Name>WireMock.Net.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
-      <Project>{d3804228-91f4-4502-9595-39584e5a01ad}</Project>
-      <Name>WireMock.Net</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

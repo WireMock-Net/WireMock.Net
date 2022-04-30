@@ -31,11 +31,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="All" />
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 
         <!-- See also https://mstack.nl/blog/20210801-source-generators -->
-        <PackageReference Include="FluentBuilder" Version="0.4.1">
+        <PackageReference Include="FluentBuilder" Version="0.4.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
