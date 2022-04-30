@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WireMock.Pact.Models.V2;
 using WireMock.Serialization;
 
 namespace WireMock.Util;
