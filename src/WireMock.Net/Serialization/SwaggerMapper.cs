@@ -239,14 +239,20 @@ internal static class SwaggerMapper
     private static JsonSchema GetJsonSchema(object instance)
     {
         JsonSchema schema;
-        if (instance is JObject bodyAsJObject)
+        switch (instance)
         {
-            var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
-            schema = JsonSchema.FromType(type);
-        }
-        else
-        {
-            schema = JsonSchema.FromType(instance.GetType());
+            case string instanceAsString:
+                schema = JsonSchema.FromJsonAsync(instanceAsString).GetAwaiter().GetResult();
+                break;
+
+            case JObject bodyAsJObject:
+                var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
+                schema = JsonSchema.FromType(type);
+                break;
+
+            default:
+                schema = JsonSchema.FromType(instance.GetType());
+                break;
         }
 
         FixSchema(schema);
