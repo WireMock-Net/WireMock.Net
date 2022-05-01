@@ -43,11 +43,11 @@ internal static class JsonUtils
         return TypeBuilderUtils.BuildType(properties, fullName) ?? throw new InvalidOperationException();
     }
 
-    public static bool TryParseAsComplexObject(string strInput, [NotNullWhen(true)] out JToken? token)
+    public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
     {
-        token = null;
+        value = null;
 
-        if (string.IsNullOrWhiteSpace(strInput))
+        if (strInput == null || string.IsNullOrWhiteSpace(strInput))
         {
             return false;
         }
@@ -61,7 +61,7 @@ internal static class JsonUtils
         try
         {
             // Try to convert this string into a JToken
-            token = JToken.Parse(strInput);
+            value = JObject.Parse(strInput);
             return true;
         }
         catch

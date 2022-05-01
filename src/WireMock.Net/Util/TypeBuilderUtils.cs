@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -19,16 +20,56 @@ internal static class TypeBuilderUtils
 
     public static Type BuildType(IDictionary<string, Type> properties, string? name = null)
     {
-        return Types.GetOrAdd(properties, props =>
+        var keyExists = Types.Keys.FirstOrDefault(k => Compare(k, properties));
+        if (keyExists != null)
         {
-            var typeBuilder = GetTypeBuilder(name ?? Guid.NewGuid().ToString());
-            foreach (var property in props)
+            return Types[keyExists];
+        }
+
+        var typeBuilder = GetTypeBuilder(name ?? Guid.NewGuid().ToString());
+        foreach (var property in properties)
+        {
+            CreateGetSetMethods(typeBuilder, property.Key, property.Value);
+        }
+
+        var type = typeBuilder.CreateTypeInfo().AsType();
+
+        Types.TryAdd(properties, type);
+
+        return type;
+    }
+
+    /// <summary>
+    /// https://stackoverflow.com/questions/3804367/testing-for-equality-between-dictionaries-in-c-sharp
+    /// </summary>
+    private static bool Compare<TKey, TValue>(IDictionary<TKey, TValue> dict1, IDictionary<TKey, TValue> dict2)
+    {
+        if (dict1 == dict2)
+        {
+            return true;
+        }
+
+        if (dict1.Count != dict2.Count)
+        {
+            return false;
+        }
+
+        var valueComparer = EqualityComparer<TValue>.Default;
+
+        foreach (var kvp in dict1)
+        {
+            if (!dict2.TryGetValue(kvp.Key, out var value2))
             {
-                CreateGetSetMethods(typeBuilder, property.Key, property.Value);
+                return false;
             }
 
-            return typeBuilder.CreateTypeInfo().AsType();
-        });
+            if (!valueComparer.Equals(kvp.Value, value2))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static TypeBuilder GetTypeBuilder(string name)

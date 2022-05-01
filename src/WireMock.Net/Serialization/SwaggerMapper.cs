@@ -3,7 +3,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
-using NJsonSchema.Generation;
 using NSwag;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
@@ -26,8 +25,7 @@ internal static class SwaggerMapper
             Generator = Generator,
             Info = new OpenApiInfo
             {
-                Title = Generator,
-                Description = $"{Generator} Mappings",
+                Title = $"{Generator} Mappings Swagger specification",
                 Version = SystemUtils.Version
             }
         };
@@ -176,7 +174,7 @@ internal static class SwaggerMapper
 
     private static OpenApiRequestBody? MapRequestBody(RequestModel request)
     {
-        var body = MapBody(request.Body);
+        var body = MapRequestBody(request.Body);
         if (body == null)
         {
             return null;
@@ -184,10 +182,8 @@ internal static class SwaggerMapper
 
         var openApiMediaType = new OpenApiMediaType
         {
-            Schema = JsonSchema.FromType(body.GetType())
+            Schema = GetJsonSchema(body)
         };
-        openApiMediaType.Schema.Description = null;
-        openApiMediaType.Schema.Title = null;
 
         var requestBodyPost = new OpenApiRequestBody();
         requestBodyPost.Content.Add(GetContentType(request), openApiMediaType);
@@ -234,35 +230,28 @@ internal static class SwaggerMapper
             return null;
         }
 
-        return CreateOpenApiResponse(response.BodyAsJson);
+        return new OpenApiResponse
+        {
+            Schema = GetJsonSchema(response.BodyAsJson)
+        };
     }
 
-    private static OpenApiResponse CreateOpenApiResponse(object bodyAsJson)
+    private static JsonSchema GetJsonSchema(object instance)
     {
         JsonSchema schema;
-        if (bodyAsJson is JObject bodyAsJObject)
+        if (instance is JObject bodyAsJObject)
         {
             var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
-            //schema = ConvertJObjectToJsonSchema(bodyAsJObject);
-            schema = JsonSchema.FromType(type, new JsonSchemaGeneratorSettings
-            {
-                AllowReferencesWithProperties = false
-            });
+            schema = JsonSchema.FromType(type);
         }
         else
         {
-            schema = JsonSchema.FromType(bodyAsJson.GetType(), new JsonSchemaGeneratorSettings
-            {
-                GenerateCustomNullableProperties = false
-            });
+            schema = JsonSchema.FromType(instance.GetType());
         }
 
         FixSchema(schema);
 
-        return new OpenApiResponse
-        {
-            Schema = schema
-        };
+        return schema;
     }
 
     //private static JsonSchema ConvertJObjectToJsonSchema(JObject instance)
@@ -346,20 +335,26 @@ internal static class SwaggerMapper
         //}
     }
 
-    private static object? MapBody(BodyModel? body)
+    private static object? MapRequestBody(BodyModel? body)
     {
-        if (body == null || body.Matcher == null || body.Matchers == null)
+        if (body == null)
         {
             return null;
         }
 
-        if (body.Matcher is { Name: nameof(JsonMatcher) })
+        var matcher = GetMatcher(body.Matcher, body.Matchers);
+        if (matcher is { Name: nameof(JsonMatcher) })
         {
-            return body.Matcher.Pattern;
+            var pattern = GetPatternAsStringFromMatcher(matcher);
+            if (JsonUtils.TryParseAsJObject(pattern, out var jObject))
+            {
+                return jObject;
+            }
+
+            return pattern;
         }
 
-        var jsonMatcher = body.Matchers.FirstOrDefault(m => m.Name == nameof(JsonMatcher));
-        return jsonMatcher?.Pattern;
+        return null;
     }
 
     private static string GetContentType(RequestModel request)
@@ -389,5 +384,10 @@ internal static class SwaggerMapper
         }
 
         return matcher.Patterns?.FirstOrDefault() as string;
+    }
+
+    private static MatcherModel? GetMatcher(MatcherModel? matcher, MatcherModel[]? matchers)
+    {
+        return matcher ?? matchers?.FirstOrDefault();
     }
 }
