@@ -246,7 +246,7 @@ internal static class SwaggerMapper
             //schema = ConvertJObjectToJsonSchema(bodyAsJObject);
             schema = JsonSchema.FromType(type, new JsonSchemaGeneratorSettings
             {
-                AllowReferencesWithProperties = true
+                AllowReferencesWithProperties = false
             });
         }
         else
@@ -274,16 +274,16 @@ internal static class SwaggerMapper
     //        {
     //            JTokenType.Array => new JsonSchemaProperty { Type = JsonObjectType.Array, Items = { new JsonSchemaProperty { Type = value.HasValues ? ConvertJToken(value.First!).Type : JsonObjectType.Object } } },
     //            JTokenType.Boolean => new JsonSchemaProperty { Type = JsonObjectType.Boolean },
-    //            JTokenType.Bytes => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "byte" },
-    //            JTokenType.Date => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "date-time" },
-    //            JTokenType.Guid => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "guid" },
-    //            JTokenType.Float => new JsonSchemaProperty { Type = JsonObjectType.Number, Format = "float" },
-    //            JTokenType.Integer => new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = "int64" },
+    //            JTokenType.Bytes => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte },
+    //            JTokenType.Date => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.DateTime },
+    //            JTokenType.Guid => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Guid },
+    //            JTokenType.Float => new JsonSchemaProperty { Type = JsonObjectType.Number, Format = JsonFormatStrings.Float },
+    //            JTokenType.Integer => new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Integer },
     //            JTokenType.Null => new JsonSchemaProperty { Type = JsonObjectType.Null },
     //            JTokenType.Object => ConvertJObjectToJsonSchema((JObject)value),
     //            JTokenType.String => new JsonSchemaProperty { Type = JsonObjectType.String },
     //            JTokenType.TimeSpan => new JsonSchemaProperty { Type = JsonObjectType.String },
-    //            JTokenType.Uri => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "uri" },
+    //            JTokenType.Uri => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Uri },
     //            _ => new JsonSchemaProperty { Type = JsonObjectType.Object }
     //        };
     //    }
@@ -302,6 +302,32 @@ internal static class SwaggerMapper
         schema.Description = null;
         schema.Title = null;
 
+        // Fix OneOf with null
+        //foreach (var property in schema.Properties.Where(p => p.Value.OneOf.Any()).ToArray())
+        //{
+        //    var oneOfItems = property.Value.OneOf.Where(one => !one.Type.HasFlag(JsonObjectType.Null)).ToArray();
+        //    if (oneOfItems.Length == 0)
+        //    {
+        //        property.Value.OneOf.Clear();
+        //    }
+        //    else if (oneOfItems.Length == 1)
+        //    {
+        //        schema.Properties.Remove(property);
+        //        schema.Properties.Add(property.Key, new JsonSchemaProperty
+        //        {
+        //            Reference = oneOfItems.First().Reference
+        //        });
+        //    }
+        //    else
+        //    {
+        //        property.Value.OneOf.Clear();
+        //        foreach (var newOneOf in oneOfItems)
+        //        {
+        //            property.Value.OneOf.Add(newOneOf);
+        //        }
+        //    }
+        //}
+
         // Remove "null" from the type.
         // Example:
         //
@@ -311,48 +337,14 @@ internal static class SwaggerMapper
         //     "string"
         //   ]
         // }
-        foreach (var property in schema.Properties.Where(p => p.Value.Type.HasFlag(JsonObjectType.Null)))
-        {
-            property.Value.Type &= ~JsonObjectType.Null;
-        }
-
-        // Fix OneOf and null
-        foreach (var property in schema.Properties.Where(p => p.Value.OneOf.Any()).ToArray())
-        {
-            var oneOfItems = property.Value.OneOf.Where(one => !one.Type.HasFlag(JsonObjectType.Null)).ToArray();
-            if (oneOfItems.Length == 0)
-            {
-                property.Value.OneOf.Clear();
-            }
-            else if (oneOfItems.Length == 1)
-            {
-                schema.Properties.Remove(property);
-                schema.Properties.Add(property.Key, new JsonSchemaProperty
-                {
-                    Reference = oneOfItems.First().Reference
-                });
-            }
-            else
-            {
-                property.Value.OneOf.Clear();
-                foreach (var newOneOf in oneOfItems)
-                {
-                    property.Value.OneOf.Add(newOneOf);
-                }
-            }
-        }
-
-        // Fix References
-        // FixR(schema);
+        //foreach (var property in schema.Properties)
+        //{
+        //    if (property.Value.Type.HasFlag(JsonObjectType.Null))
+        //    {
+        //        property.Value.Type &= ~JsonObjectType.Null;
+        //    }
+        //}
     }
-
-    //private static void FixR(JsonSchema schema)
-    //{
-    //    foreach (var property in schema.Properties.Where(p => p.Value.Reference != null))
-    //    {
-    //        int x = 0;
-    //    }
-    //}
 
     private static object? MapBody(BodyModel? body)
     {
