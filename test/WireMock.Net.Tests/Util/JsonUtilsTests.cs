@@ -157,7 +157,7 @@ public class JsonUtilsTests
             "Single get_Flt()",
             "Single get_Dbl()",
             "Boolean get_Check()",
-            "System.Object get_Child()",
+            "Child get_Child()",
             "Int64 get_I()",
             "Int64 get_L()",
             "System.String get_S()",
