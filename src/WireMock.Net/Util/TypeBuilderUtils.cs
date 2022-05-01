@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -7,13 +9,29 @@ namespace WireMock.Util;
 /// <summary>
 /// Code based on https://stackoverflow.com/questions/40507909/convert-jobject-to-anonymous-object
 /// </summary>
-internal static class ReflectionUtils
+internal static class TypeBuilderUtils
 {
+    private static readonly ConcurrentDictionary<IDictionary<string, Type>, Type> Types = new();
+
     private static readonly ModuleBuilder ModuleBuilder =
         AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("WireMock.Net.Reflection"), AssemblyBuilderAccess.Run)
             .DefineDynamicModule("WireMock.Net.Reflection.Module");
 
-    public static TypeBuilder GetTypeBuilder(string name)
+    public static Type BuildType(IDictionary<string, Type> properties, string? name = null)
+    {
+        return Types.GetOrAdd(properties, props =>
+        {
+            var typeBuilder = GetTypeBuilder(name ?? Guid.NewGuid().ToString());
+            foreach (var property in props)
+            {
+                CreateGetSetMethods(typeBuilder, property.Key, property.Value);
+            }
+
+            return typeBuilder.CreateTypeInfo().AsType();
+        });
+    }
+
+    private static TypeBuilder GetTypeBuilder(string name)
     {
         return ModuleBuilder.DefineType(name,
             TypeAttributes.Public |
@@ -25,7 +43,7 @@ internal static class ReflectionUtils
             null);
     }
 
-    public static void CreateProperty(this TypeBuilder typeBuilder, string propertyName, Type propertyType)
+    private static void CreateGetSetMethods(TypeBuilder typeBuilder, string propertyName, Type propertyType)
     {
         var fieldBuilder = typeBuilder.DefineField("_" + propertyName, propertyType, FieldAttributes.Private);
 

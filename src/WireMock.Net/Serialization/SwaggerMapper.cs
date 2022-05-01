@@ -232,7 +232,7 @@ internal static class SwaggerMapper
         JsonSchema schema;
         if (bodyAsJson is JObject bodyAsJObject)
         {
-            var type = JObjectUtils.CreateType(bodyAsJObject);
+            var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
             schema = JsonSchema.FromType(type);
         }
         else

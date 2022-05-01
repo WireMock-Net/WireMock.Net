@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +11,46 @@ namespace WireMock.Util;
 
 internal static class JsonUtils
 {
+    public static Type CreateTypeFromJObject(JObject instance, string? fullName = null)
+    {
+        static Type ConvertType(JToken value)
+        {
+            var type = value.Type;
+            return type switch
+            {
+                JTokenType.Array => value.HasValues ? ConvertType(value.First!).MakeArrayType() : typeof(object).MakeArrayType(),
+                JTokenType.Boolean => typeof(bool),
+                JTokenType.Bytes => typeof(byte[]),
+                JTokenType.Date => typeof(DateTime),
+                JTokenType.Guid => typeof(Guid),
+                JTokenType.Float => typeof(float),
+                JTokenType.Integer => typeof(long),
+                JTokenType.Null => typeof(object),
+                JTokenType.Object => typeof(object),
+                JTokenType.String => typeof(string),
+                JTokenType.TimeSpan => typeof(TimeSpan),
+                JTokenType.Uri => typeof(string),
+                _ => typeof(object)
+            };
+        }
+
+        var properties = new Dictionary<string, Type>();
+        foreach (var item in instance.Properties())
+        {
+            if (item.Type == JTokenType.Object)
+            {
+                var type = CreateTypeFromJObject((JObject)item.Value);
+                properties.Add(item.Name, type);
+            }
+            else
+            {
+                properties.Add(item.Name, ConvertType(item.Value));
+            }
+        }
+
+        return TypeBuilderUtils.BuildType(properties, fullName) ?? throw new InvalidOperationException();
+    }
+
     public static bool TryParseAsComplexObject(string strInput, [NotNullWhen(true)] out JToken? token)
     {
         token = null;
