@@ -17,10 +17,20 @@ namespace WireMock.Serialization;
 internal static class SwaggerMapper
 {
     private const string DefaultMethod = "GET";
+    private const string Generator = "WireMock.Net";
 
     public static string ToSwagger(WireMockServer server)
     {
-        var openApiDocument = new OpenApiDocument();
+        var openApiDocument = new OpenApiDocument
+        {
+            Generator = Generator,
+            Info = new OpenApiInfo
+            {
+                Title = Generator,
+                Description = $"{Generator} Mappings",
+                Version = SystemUtils.Version
+            }
+        };
 
         foreach (var mapping in server.MappingModels)
         {
@@ -233,7 +243,11 @@ internal static class SwaggerMapper
         if (bodyAsJson is JObject bodyAsJObject)
         {
             var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
-            schema = JsonSchema.FromType(type);
+            //schema = ConvertJObjectToJsonSchema(bodyAsJObject);
+            schema = JsonSchema.FromType(type, new JsonSchemaGeneratorSettings
+            {
+                AllowReferencesWithProperties = true
+            });
         }
         else
         {
@@ -244,12 +258,44 @@ internal static class SwaggerMapper
         }
 
         FixSchema(schema);
-        
+
         return new OpenApiResponse
         {
             Schema = schema
         };
     }
+
+    //private static JsonSchema ConvertJObjectToJsonSchema(JObject instance)
+    //{
+    //    static JsonSchema ConvertJToken(JToken value, string? propertyName = null)
+    //    {
+    //        var type = value.Type;
+    //        return type switch
+    //        {
+    //            JTokenType.Array => new JsonSchemaProperty { Type = JsonObjectType.Array, Items = { new JsonSchemaProperty { Type = value.HasValues ? ConvertJToken(value.First!).Type : JsonObjectType.Object } } },
+    //            JTokenType.Boolean => new JsonSchemaProperty { Type = JsonObjectType.Boolean },
+    //            JTokenType.Bytes => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "byte" },
+    //            JTokenType.Date => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "date-time" },
+    //            JTokenType.Guid => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "guid" },
+    //            JTokenType.Float => new JsonSchemaProperty { Type = JsonObjectType.Number, Format = "float" },
+    //            JTokenType.Integer => new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = "int64" },
+    //            JTokenType.Null => new JsonSchemaProperty { Type = JsonObjectType.Null },
+    //            JTokenType.Object => ConvertJObjectToJsonSchema((JObject)value),
+    //            JTokenType.String => new JsonSchemaProperty { Type = JsonObjectType.String },
+    //            JTokenType.TimeSpan => new JsonSchemaProperty { Type = JsonObjectType.String },
+    //            JTokenType.Uri => new JsonSchemaProperty { Type = JsonObjectType.String, Format = "uri" },
+    //            _ => new JsonSchemaProperty { Type = JsonObjectType.Object }
+    //        };
+    //    }
+
+    //    var schema = new JsonSchema();
+    //    //foreach (var item in instance.Properties())
+    //    //{
+    //    //    schema.Properties.Add(item.Name, ConvertJToken(item.Value));
+    //    //}
+
+    //    return schema;
+    //}
 
     private static void FixSchema(JsonSchema schema)
     {
@@ -283,7 +329,7 @@ internal static class SwaggerMapper
                 schema.Properties.Remove(property);
                 schema.Properties.Add(property.Key, new JsonSchemaProperty
                 {
-                    Type = oneOfItems.First().Type
+                    Reference = oneOfItems.First().Reference
                 });
             }
             else
@@ -295,7 +341,18 @@ internal static class SwaggerMapper
                 }
             }
         }
+
+        // Fix References
+        // FixR(schema);
     }
+
+    //private static void FixR(JsonSchema schema)
+    //{
+    //    foreach (var property in schema.Properties.Where(p => p.Value.Reference != null))
+    //    {
+    //        int x = 0;
+    //    }
+    //}
 
     private static object? MapBody(BodyModel? body)
     {
