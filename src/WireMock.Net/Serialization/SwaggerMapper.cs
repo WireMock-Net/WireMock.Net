@@ -8,6 +8,7 @@ using WireMock.Admin.Mappings;
 using WireMock.Constants;
 using WireMock.Extensions;
 using WireMock.Matchers;
+using WireMock.NSwagExtensions;
 using WireMock.Server;
 using WireMock.Util;
 
@@ -242,103 +243,27 @@ internal static class SwaggerMapper
         switch (instance)
         {
             case string instanceAsString:
-                schema = JsonSchema.FromJsonAsync(instanceAsString).GetAwaiter().GetResult();
+                schema = JsonSchema.FromSampleJson(instanceAsString);
                 break;
 
             case JObject bodyAsJObject:
-                var type = JsonUtils.CreateTypeFromJObject(bodyAsJObject);
-                schema = JsonSchema.FromType(type);
+                schema = bodyAsJObject.ToJsonSchema();
                 break;
 
             default:
-                schema = JsonSchema.FromType(instance.GetType());
+                //schema = JsonSchema.FromType(instance.GetType());
+                schema = instance.ToJsonSchema();
                 break;
         }
 
-        FixSchema(schema);
-
-        return schema;
+        return FixSchema(schema);
     }
 
-    //private static JsonSchema ConvertJObjectToJsonSchema(JObject instance)
-    //{
-    //    static JsonSchema ConvertJToken(JToken value, string? propertyName = null)
-    //    {
-    //        var type = value.Type;
-    //        return type switch
-    //        {
-    //            JTokenType.Array => new JsonSchemaProperty { Type = JsonObjectType.Array, Items = { new JsonSchemaProperty { Type = value.HasValues ? ConvertJToken(value.First!).Type : JsonObjectType.Object } } },
-    //            JTokenType.Boolean => new JsonSchemaProperty { Type = JsonObjectType.Boolean },
-    //            JTokenType.Bytes => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte },
-    //            JTokenType.Date => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.DateTime },
-    //            JTokenType.Guid => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Guid },
-    //            JTokenType.Float => new JsonSchemaProperty { Type = JsonObjectType.Number, Format = JsonFormatStrings.Float },
-    //            JTokenType.Integer => new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Integer },
-    //            JTokenType.Null => new JsonSchemaProperty { Type = JsonObjectType.Null },
-    //            JTokenType.Object => ConvertJObjectToJsonSchema((JObject)value),
-    //            JTokenType.String => new JsonSchemaProperty { Type = JsonObjectType.String },
-    //            JTokenType.TimeSpan => new JsonSchemaProperty { Type = JsonObjectType.String },
-    //            JTokenType.Uri => new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Uri },
-    //            _ => new JsonSchemaProperty { Type = JsonObjectType.Object }
-    //        };
-    //    }
-
-    //    var schema = new JsonSchema();
-    //    //foreach (var item in instance.Properties())
-    //    //{
-    //    //    schema.Properties.Add(item.Name, ConvertJToken(item.Value));
-    //    //}
-
-    //    return schema;
-    //}
-
-    private static void FixSchema(JsonSchema schema)
+    private static JsonSchema FixSchema(JsonSchema schema)
     {
         schema.Description = null;
         schema.Title = null;
-
-        // Fix OneOf with null
-        //foreach (var property in schema.Properties.Where(p => p.Value.OneOf.Any()).ToArray())
-        //{
-        //    var oneOfItems = property.Value.OneOf.Where(one => !one.Type.HasFlag(JsonObjectType.Null)).ToArray();
-        //    if (oneOfItems.Length == 0)
-        //    {
-        //        property.Value.OneOf.Clear();
-        //    }
-        //    else if (oneOfItems.Length == 1)
-        //    {
-        //        schema.Properties.Remove(property);
-        //        schema.Properties.Add(property.Key, new JsonSchemaProperty
-        //        {
-        //            Reference = oneOfItems.First().Reference
-        //        });
-        //    }
-        //    else
-        //    {
-        //        property.Value.OneOf.Clear();
-        //        foreach (var newOneOf in oneOfItems)
-        //        {
-        //            property.Value.OneOf.Add(newOneOf);
-        //        }
-        //    }
-        //}
-
-        // Remove "null" from the type.
-        // Example:
-        //
-        // "result": {
-        //   "type": [
-        //     "null",
-        //     "string"
-        //   ]
-        // }
-        //foreach (var property in schema.Properties)
-        //{
-        //    if (property.Value.Type.HasFlag(JsonObjectType.Null))
-        //    {
-        //        property.Value.Type &= ~JsonObjectType.Null;
-        //    }
-        //}
+        return schema;
     }
 
     private static object? MapRequestBody(BodyModel? body)

@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
 namespace WireMock.Net.OpenApiParser.ConsoleApp;
 
@@ -31,6 +33,19 @@ class Program
         var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "https://localhost:9094/");
         var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "https://localhost:9095/");
         var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
+
+        testopenapifile_json
+            .Given(Request.Create().WithPath("x").UsingGet())
+            .WithTitle("t")
+            .WithDescription("d")
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(new
+                {
+                    result = "ok"
+                })
+            );
 
         Console.WriteLine("Press any key to stop the servers");
         Console.ReadKey();
