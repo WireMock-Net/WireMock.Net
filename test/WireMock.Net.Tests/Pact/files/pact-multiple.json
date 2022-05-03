@@ -4,6 +4,23 @@
   },
   "Interactions": [
     {
+      "ProviderState": "A Post request to add the something",
+      "Request": {
+        "Headers": {
+          "Accept": "application/json"
+        },
+        "Method": "POST",
+        "Path": "/add"
+      },
+      "Response": {
+        "Body": {
+          "Id": "1",
+          "FirstName": "Totally"
+        },
+        "Status": 303
+      }
+    },
+    {
       "ProviderState": "A GET request to retrieve the something",
       "Request": {
         "Headers": {
@@ -23,23 +40,6 @@
           "Content-Type": "application/json; charset=utf-8"
         },
         "Status": 200
-      }
-    },
-    {
-      "ProviderState": "A Post request to add the something",
-      "Request": {
-        "Headers": {
-          "Accept": "application/json"
-        },
-        "Method": "POST",
-        "Path": "/add"
-      },
-      "Response": {
-        "Body": {
-          "Id": "1",
-          "FirstName": "Totally"
-        },
-        "Status": 303
       }
     }
   ],

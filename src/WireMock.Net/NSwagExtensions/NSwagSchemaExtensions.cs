@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
@@ -8,78 +9,26 @@ namespace WireMock.NSwagExtensions;
 
 internal static class NSwagSchemaExtensions
 {
+    private static readonly JsonSchemaProperty Boolean = new() { Type = JsonObjectType.Boolean };
+    private static readonly JsonSchemaProperty Byte = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte };
+    private static readonly JsonSchemaProperty Date = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.DateTime };
+    private static readonly JsonSchemaProperty Float = new() { Type = JsonObjectType.Number, Format = JsonFormatStrings.Float };
+    private static readonly JsonSchemaProperty Double = new() { Type = JsonObjectType.Number, Format = JsonFormatStrings.Double };
+    private static readonly JsonSchemaProperty Guid = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.Guid };
+    private static readonly JsonSchemaProperty Integer = new() { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Integer };
+    private static readonly JsonSchemaProperty Long = new() { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Long };
+    private static readonly JsonSchemaProperty Null = new() { Type = JsonObjectType.Null };
+    private static readonly JsonSchemaProperty Object = new() { Type = JsonObjectType.Object };
+    private static readonly JsonSchemaProperty String = new() { Type = JsonObjectType.String };
+    private static readonly JsonSchemaProperty TimeSpan = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.TimeSpan };
+    private static readonly JsonSchemaProperty Uri = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.Uri };
+
     public static JsonSchema ToJsonSchema(this JObject instance)
     {
-        static JsonSchemaProperty ConvertJToken(JToken value)
-        {
-            var type = value.Type;
-            switch (type)
-            {
-                case JTokenType.Array:
-                    return new JsonSchemaProperty
-                    {
-                        Type = JsonObjectType.Array,
-                        Items =
-                        {
-                            new JsonSchemaProperty
-                            {
-                                Type = value.HasValues
-                                    ? ConvertJToken(value.First!).Type
-                                    : JsonObjectType.Object
-                            }
-                        }
-                    };
-
-                case JTokenType.Boolean:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Boolean };
-
-                case JTokenType.Bytes:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte };
-
-                case JTokenType.Date:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.DateTime };
-
-                case JTokenType.Guid:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Guid };
-
-                case JTokenType.Float:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Number, Format = JsonFormatStrings.Float };
-
-                case JTokenType.Integer:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Integer };
-
-                case JTokenType.Null:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Null };
-
-                case JTokenType.Object:
-                    var schemaForObject = ToJsonSchema((JObject)value);
-                    var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
-                    foreach (var property in schemaForObject.Properties)
-                    {
-                        jsonSchemaProperty.Properties.Add(property.Key, property.Value);
-                    }
-
-                    return jsonSchemaProperty;
-
-                case JTokenType.String:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String };
-
-                case JTokenType.TimeSpan:
-
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.TimeSpan };
-
-                case JTokenType.Uri:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Uri };
-
-                default:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Object };
-            }
-        }
-
         var schema = new JsonSchema();
-        foreach (var property in instance.Properties())
+        foreach (var jProperty in instance.Properties())
         {
-            schema.Properties.Add(property.Name, ConvertJToken(property.Value));
+            schema.Properties.Add(jProperty.Name, ConvertJToken(jProperty.Value));
         }
 
         return schema;
@@ -87,78 +36,202 @@ internal static class NSwagSchemaExtensions
 
     public static JsonSchema ToJsonSchema(this object instance)
     {
-        static JsonSchemaProperty ConvertValue(object value)
-        {
-            switch (value)
-            {
-                case IEnumerable<byte>:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte };
-
-                //case Array enumerable:
-                //    return new JsonSchemaProperty
-                //    {
-                //        Type = JsonObjectType.Array,
-                //        Items =
-                //        {
-                //            new JsonSchemaProperty
-                //            {
-                //                Type = enumerable.Length > 0
-                //                    ? ConvertJToken(enumerable[0]).Type
-                //                    : JsonObjectType.Object
-                //            }
-                //        }
-                //    };
-
-                case bool:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Boolean };
-
-                case DateTime:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.DateTime };
-
-                case Guid:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Guid };
-
-                case double:
-                case float:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Number, Format = JsonFormatStrings.Float };
-
-                case short:
-                case int:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Integer };
-
-                case long:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Integer, Format = JsonFormatStrings.Long };
-
-                case string:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String };
-
-                case TimeSpan:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.TimeSpan };
-
-                case Uri:
-                    return new JsonSchemaProperty { Type = JsonObjectType.String, Format = JsonFormatStrings.Uri };
-
-                case not null: // object
-                    var schemaForObject = ToJsonSchema(value);
-                    var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
-                    foreach (var property in schemaForObject.Properties)
-                    {
-                        jsonSchemaProperty.Properties.Add(property.Key, property.Value);
-                    }
-
-                    return jsonSchemaProperty;
-
-                default:
-                    return new JsonSchemaProperty { Type = JsonObjectType.Object };
-            }
-        }
-
         var schema = new JsonSchema();
-        foreach (var item in instance.GetType().GetProperties())
+        foreach (var propertyInfo in instance.GetType().GetProperties())
         {
-            schema.Properties.Add(item.Name, ConvertValue(item.GetValue(instance)));
+            var value = propertyInfo.GetValue(instance);
+            var jsonSchemaProperty = value != null ? ConvertValue(value) : ConvertType(propertyInfo.PropertyType);
+            schema.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
         }
 
         return schema;
+    }
+
+    private static JsonSchemaProperty ConvertJToken(JToken value)
+    {
+        var type = value.Type;
+        switch (type)
+        {
+            case JTokenType.Array:
+                var arrayItem = value.HasValues ? ConvertJToken(value.First!) : Object;
+                return new JsonSchemaProperty
+                {
+                    Type = JsonObjectType.Array,
+                    Items = { arrayItem }
+                };
+
+            case JTokenType.Boolean:
+                return Boolean;
+
+            case JTokenType.Bytes:
+                return Byte;
+
+            case JTokenType.Date:
+                return Date;
+
+            case JTokenType.Guid:
+                return Guid;
+
+            case JTokenType.Float:
+                return Float;
+
+            case JTokenType.Integer:
+                var valueAsLong = value.Value<long>();
+                return valueAsLong is > int.MaxValue or < int.MinValue ? Long : Integer;
+
+            case JTokenType.Null:
+                return Null;
+
+            case JTokenType.Object:
+                var schemaForObject = ToJsonSchema((JObject)value);
+                var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
+                foreach (var property in schemaForObject.Properties)
+                {
+                    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
+                }
+
+                return jsonSchemaProperty;
+
+            case JTokenType.String:
+                return String;
+
+            case JTokenType.TimeSpan:
+                return TimeSpan;
+
+            case JTokenType.Uri:
+                return Uri;
+
+            default:
+                return Object;
+        }
+    }
+
+    static JsonSchemaProperty ConvertValue(object value)
+    {
+        switch (value)
+        {
+            case Array array:
+                return new JsonSchemaProperty
+                {
+                    Type = JsonObjectType.Array,
+                    Items = { ConvertType(array.GetType().GetElementType()!) }
+                };
+
+            case IList list:
+                var genericArguments = list.GetType().GetGenericArguments();
+
+                JsonSchemaProperty arrayType;
+                if (genericArguments.Length > 0)
+                {
+                    arrayType = ConvertType(genericArguments[0]);
+                }
+                else
+                {
+                    arrayType = list.Count > 0 ? ConvertValue(list[0]!) : Object;
+                }
+
+                return new JsonSchemaProperty
+                {
+                    Type = JsonObjectType.Array,
+                    Items = { arrayType }
+                };
+
+            case IEnumerable<byte>:
+                return Byte;
+
+            case bool:
+                return Boolean;
+
+            case DateTime:
+                return Date;
+
+            case double:
+                return Double;
+
+            case System.Guid:
+                return Guid;
+
+            case float:
+                return Float;
+
+            case short:
+            case int:
+                return Integer;
+
+            case long:
+                return Long;
+
+            case string:
+                return String;
+
+            case System.TimeSpan:
+                return TimeSpan;
+
+            case System.Uri:
+                return Uri;
+
+            case not null: // object
+                var schemaForObject = ToJsonSchema(value);
+                var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
+                foreach (var property in schemaForObject.Properties)
+                {
+                    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
+                }
+
+                return jsonSchemaProperty;
+
+            default:
+                return Object;
+        }
+    }
+
+    private static JsonSchemaProperty ConvertType(Type type)
+    {
+        if (type == typeof(DateTime) || type == typeof(DateTime?))
+        {
+            return Date;
+        }
+
+        if (type == typeof(float) || type == typeof(float?))
+        {
+            return Float;
+        }
+
+        if (type == typeof(double) || type == typeof(double?))
+        {
+            return Double;
+        }
+
+        if (type == typeof(Guid) || type == typeof(Guid?))
+        {
+            return Guid;
+        }
+
+        if (type == typeof(int) || type == typeof(short) || type == typeof(int?) || type == typeof(short?))
+        {
+            return Integer;
+        }
+
+        if (type == typeof(long) || type == typeof(long?))
+        {
+            return Long;
+        }
+
+        if (type == typeof(string))
+        {
+            return String;
+        }
+
+        if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+        {
+            return TimeSpan;
+        }
+
+        if (type == typeof(Uri))
+        {
+            return Uri;
+        }
+
+        return Object;
     }
 }

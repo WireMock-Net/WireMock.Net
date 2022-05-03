@@ -251,7 +251,6 @@ internal static class SwaggerMapper
                 break;
 
             default:
-                //schema = JsonSchema.FromType(instance.GetType());
                 schema = instance.ToJsonSchema();
                 break;
         }

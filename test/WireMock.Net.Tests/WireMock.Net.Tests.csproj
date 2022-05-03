@@ -80,31 +80,22 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="NSwagExtensions\*.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="__admin\mappings.org\mapping1.json">
+        <None Update="__admin\mappings.org\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d86.json">
+        <None Update="__admin\mappings\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="__admin\mappings\00000002-ee28-4f29-ae63-1ac9b0802d87.json">
+        <None Update="__admin\mappings\*.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="__admin\mappings\351f0240-bba0-4bcb-93c6-1feba0fe8799.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="__admin\mappings\array.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="__admin\mappings\documentdb_root.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="__admin\mappings\MyXmlResponse.xml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="__admin\mappings\subdirectory\MyXmlResponse.xml">
+        <None Update="__admin\mappings\subdirectory\*.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
