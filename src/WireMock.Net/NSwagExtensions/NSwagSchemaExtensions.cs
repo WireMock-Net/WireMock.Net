@@ -73,7 +73,7 @@ internal static class NSwagSchemaExtensions
                 return Guid;
 
             case JTokenType.Float:
-                return value.Path == "Double" ? Double : Float;
+                return value is JValue { Value: double } ? Double : Float;
 
             case JTokenType.Integer:
                 var valueAsLong = value.Value<long>();
@@ -84,13 +84,13 @@ internal static class NSwagSchemaExtensions
 
             case JTokenType.Object:
                 var schemaForObject = ToJsonSchema((JObject)value);
-                var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
+                var jsonSchemaPropertyForObject = new JsonSchemaProperty { Type = JsonObjectType.Object };
                 foreach (var property in schemaForObject.Properties)
                 {
-                    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
+                    jsonSchemaPropertyForObject.Properties.Add(property.Key, property.Value);
                 }
 
-                return jsonSchemaProperty;
+                return jsonSchemaPropertyForObject;
 
             case JTokenType.String:
                 return String;
@@ -120,20 +120,20 @@ internal static class NSwagSchemaExtensions
             case IList list:
                 var genericArguments = list.GetType().GetGenericArguments();
 
-                JsonSchemaProperty arrayType;
+                JsonSchemaProperty listType;
                 if (genericArguments.Length > 0)
                 {
-                    arrayType = ConvertType(genericArguments[0]);
+                    listType = ConvertType(genericArguments[0]);
                 }
                 else
                 {
-                    arrayType = list.Count > 0 ? ConvertValue(list[0]!) : Object;
+                    listType = list.Count > 0 ? ConvertValue(list[0]!) : Object;
                 }
 
                 return new JsonSchemaProperty
                 {
                     Type = JsonObjectType.Array,
-                    Items = { arrayType }
+                    Items = { listType }
                 };
 
             case IEnumerable<byte>:

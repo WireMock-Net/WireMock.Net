@@ -62,6 +62,40 @@
                     "format": "byte"
                 }
             ]
+        },
+        "ListT": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            ]
+        },
+        "IList": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            ]
+        },
+        "IEnumerableT": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "IEnumerable": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
         }
     }
 }

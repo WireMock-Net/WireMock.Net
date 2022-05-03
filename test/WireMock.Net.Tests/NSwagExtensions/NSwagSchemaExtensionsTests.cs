@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -69,7 +71,11 @@ public class NSwagSchemaExtensionsTests
             Long = long.MaxValue,
             String = "test",
             Char = 'c',
-            Bytes = _bytes
+            Bytes = _bytes,
+            ListT = new List<int> { 1 },
+            IList = (IList) new List<int> { 1 },
+            IEnumerableT = (IEnumerable<string>) new [] { "s" },
+            IEnumerable = (IEnumerable) new[] { "s" }
         };
 
         // Act
