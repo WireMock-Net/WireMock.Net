@@ -73,7 +73,7 @@ internal static class NSwagSchemaExtensions
                 return Guid;
 
             case JTokenType.Float:
-                return Float;
+                return value.Path == "Double" ? Double : Float;
 
             case JTokenType.Integer:
                 var valueAsLong = value.Value<long>();
@@ -183,8 +183,8 @@ internal static class NSwagSchemaExtensions
             case null: // null
                 return Null;
 
-            //default:
-            //    return Object;
+                //default:
+                //    return Object;
         }
     }
 

@@ -57,7 +57,7 @@ public class NSwagSchemaExtensionsTests
             Null = (object?)null,
             Guid = _guid,
             Float = 10.0f,
-            Double = double.MaxValue,
+            Double = Math.E,
             Check = true,
             Child = new
             {
