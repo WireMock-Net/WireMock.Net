@@ -106,7 +106,7 @@ internal static class NSwagSchemaExtensions
         }
     }
 
-    static JsonSchemaProperty ConvertValue(object value)
+    private static JsonSchemaProperty ConvertValue(object value)
     {
         switch (value)
         {
@@ -180,13 +180,26 @@ internal static class NSwagSchemaExtensions
 
                 return jsonSchemaProperty;
 
-            default:
-                return Object;
+            case null: // null
+                return Null;
+
+            //default:
+            //    return Object;
         }
     }
 
     private static JsonSchemaProperty ConvertType(Type type)
     {
+        if (type == typeof(bool) || type == typeof(bool?))
+        {
+            return Boolean;
+        }
+
+        if (type == typeof(byte) || type == typeof(byte?))
+        {
+            return Byte;
+        }
+
         if (type == typeof(DateTime) || type == typeof(DateTime?))
         {
             return Date;

@@ -5,12 +5,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WireMock.NSwagExtensions;
 using Xunit;
-using static Humanizer.In;
 
 namespace WireMock.Net.Tests.NSwagExtensions;
 
 public class NSwagSchemaExtensionsTests
 {
+    private readonly Guid _guid = new("9579ec16-0f66-486c-a056-2f89f2e0c2dc");
+    private readonly byte[] _bytes = { 1, 2, 3 };
+
     [Fact]
     public void JObjectToJsonSchema()
     {
@@ -19,7 +21,7 @@ public class NSwagSchemaExtensionsTests
         {
             {"Uri", new JValue(new Uri("http://localhost:80/abc?a=5"))},
             {"Null", new JValue((object?) null)},
-            {"Guid", new JValue(Guid.NewGuid())},
+            {"Guid", new JValue(_guid)},
             {"Float", new JValue(10.0f)},
             {"Double", new JValue(Math.PI)},
             {"Check", new JValue(true)},
@@ -34,7 +36,8 @@ public class NSwagSchemaExtensionsTests
             {"Integer", new JValue(9)},
             {"Long", new JValue(long.MaxValue)},
             {"String", new JValue("Test")},
-            {"Char", new JValue('c')}
+            {"Char", new JValue('c')},
+            {"Bytes", new JValue(_bytes)}
         };
 
         // Act
@@ -42,5 +45,37 @@ public class NSwagSchemaExtensionsTests
 
         // Assert
         schema.Should().Be(File.ReadAllText(Path.Combine("../../../", "NSwagExtensions", "JObject.json")));
+    }
+
+    [Fact]
+    public void ObjectToJsonSchema()
+    {
+        // Arrange
+        var instance = new
+        {
+            Uri = new Uri("http://localhost:80/abc?a=5"),
+            Null = (object?)null,
+            Guid = _guid,
+            Float = 10.0f,
+            Double = double.MaxValue,
+            Check = true,
+            Child = new
+            {
+                ChildInteger = 4,
+                ChildDateTime = new DateTime(2018, 2, 17),
+                ChildTimeSpan = TimeSpan.FromMilliseconds(999)
+            },
+            Integer = 9,
+            Long = long.MaxValue,
+            String = "test",
+            Char = 'c',
+            Bytes = _bytes
+        };
+
+        // Act
+        var schema = instance.ToJsonSchema().ToJson(Formatting.Indented).Replace("  ", "    ");
+
+        // Assert
+        schema.Should().Be(File.ReadAllText(Path.Combine("../../../", "NSwagExtensions", "object.json")));
     }
 }

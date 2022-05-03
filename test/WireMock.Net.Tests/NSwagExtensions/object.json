@@ -6,7 +6,7 @@
             "format": "uri"
         },
         "Null": {
-            "type": "null"
+            "type": "object"
         },
         "Guid": {
             "type": "string",
@@ -18,7 +18,7 @@
         },
         "Double": {
             "type": "number",
-            "format": "float"
+            "format": "double"
         },
         "Check": {
             "type": "boolean"
@@ -52,11 +52,16 @@
             "type": "string"
         },
         "Char": {
-            "type": "string"
+            "type": "object"
         },
         "Bytes": {
-            "type": "string",
-            "format": "byte"
+            "type": "array",
+            "items": [
+                {
+                    "type": "string",
+                    "format": "byte"
+                }
+            ]
         }
     }
 }
