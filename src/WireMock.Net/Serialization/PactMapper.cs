@@ -30,7 +30,7 @@ internal static class PactMapper
             Provider = new Pacticipant { Name = provider }
         };
 
-        foreach (var mapping in server.MappingModels)
+        foreach (var mapping in server.MappingModels.OrderBy(m => m.Guid))
         {
             var path = mapping.Request.GetPathAsString();
             if (path == null)

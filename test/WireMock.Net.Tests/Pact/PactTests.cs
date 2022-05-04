@@ -57,6 +57,7 @@ public class PactTests
                 .WithHeader("Accept", "application/json")
             )
             .WithTitle("A GET request to retrieve the something")
+            .WithGuid("23e2aedb-166c-467b-b9f6-9b0817cb1636")
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
@@ -77,6 +78,7 @@ public class PactTests
                 .WithBody(new JsonMatcher("{ \"Id\" : \"1\", \"FirstName\" : \"Totally\" }"))
             )
             .WithTitle("A Post request to add the something")
+            .WithGuid("f3f8abe7-7d1e-4518-afa1-d295ce7dadfd")
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.RedirectMethod)
