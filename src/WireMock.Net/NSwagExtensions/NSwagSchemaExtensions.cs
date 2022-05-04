@@ -36,15 +36,16 @@ internal static class NSwagSchemaExtensions
 
     public static JsonSchema ToJsonSchema(this object instance)
     {
-        var schema = new JsonSchema();
-        foreach (var propertyInfo in instance.GetType().GetProperties())
-        {
-            var value = propertyInfo.GetValue(instance);
-            var jsonSchemaProperty = value != null ? ConvertValue(value) : ConvertType(propertyInfo.PropertyType);
-            schema.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
-        }
+        return ConvertValue(instance);
+        //var schema = new JsonSchema();
+        //foreach (var propertyInfo in instance.GetType().GetProperties())
+        //{
+        //    var value = propertyInfo.GetValue(instance);
+        //    var jsonSchemaProperty = value != null ? ConvertValue(value) : ConvertType(propertyInfo.PropertyType);
+        //    schema.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
+        //}
 
-        return schema;
+        //return schema;
     }
 
     private static JsonSchemaProperty ConvertJToken(JToken value)
@@ -170,14 +171,22 @@ internal static class NSwagSchemaExtensions
                 return Uri;
 
             case not null: // object
-                var schemaForObject = ToJsonSchema(value);
-                var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
-                foreach (var property in schemaForObject.Properties)
+                var jsonSchemaPropertyForObject = new JsonSchemaProperty { Type = JsonObjectType.Object };
+                foreach (var propertyInfo in value.GetType().GetProperties())
                 {
-                    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
+                    var propertyValue = propertyInfo.GetValue(value);
+                    var jsonSchemaProperty = value != null ? ConvertValue(propertyValue) : ConvertType(propertyInfo.PropertyType);
+                    jsonSchemaPropertyForObject.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
                 }
 
-                return jsonSchemaProperty;
+                //var schemaForObject = ToJsonSchema(value);
+                //var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
+                //foreach (var property in schemaForObject.Properties)
+                //{
+                //    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
+                //}
+
+                return jsonSchemaPropertyForObject;
 
             case null: // null
                 return Null;

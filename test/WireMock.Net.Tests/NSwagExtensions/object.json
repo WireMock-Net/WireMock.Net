@@ -1,12 +1,13 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
     "properties": {
         "Uri": {
             "type": "string",
             "format": "uri"
         },
         "Null": {
-            "type": "object"
+            "type": "null"
         },
         "Guid": {
             "type": "string",

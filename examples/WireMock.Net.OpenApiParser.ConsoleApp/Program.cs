@@ -47,6 +47,16 @@ class Program
                 })
             );
 
+        testopenapifile_json
+            .Given(Request.Create().WithPath("y").UsingGet())
+            .WithTitle("t2")
+            .WithDescription("d2")
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(new[] { "string-value"})
+            );
+
         Console.WriteLine("Press any key to stop the servers");
         Console.ReadKey();
 

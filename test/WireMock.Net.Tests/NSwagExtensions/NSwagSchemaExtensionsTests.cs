@@ -64,6 +64,19 @@ public class NSwagSchemaExtensionsTests
     }
 
     [Fact]
+    public void ArrayToJsonSchema()
+    {
+        // Arrange
+        var instance = new[] { "a1" };
+
+        // Act
+        var schema = instance.ToJsonSchema().ToJson(Formatting.Indented).Replace("  ", "    ");
+
+        // Assert
+        schema.Should().Be(File.ReadAllText(Path.Combine("../../../", "NSwagExtensions", "array.json")));
+    }
+
+    [Fact]
     public void ObjectToJsonSchema()
     {
         // Arrange

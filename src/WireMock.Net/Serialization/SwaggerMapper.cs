@@ -246,6 +246,10 @@ internal static class SwaggerMapper
                 schema = JsonSchema.FromSampleJson(instanceAsString);
                 break;
 
+            case JArray bodyAsJArray:
+                schema = bodyAsJArray.ToJsonSchema();
+                break;
+
             case JObject bodyAsJObject:
                 schema = bodyAsJObject.ToJsonSchema();
                 break;
