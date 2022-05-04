@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using AnyOfTypes;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
 
@@ -37,15 +36,6 @@ internal static class NSwagSchemaExtensions
     public static JsonSchema ToJsonSchema(this object instance)
     {
         return ConvertValue(instance);
-        //var schema = new JsonSchema();
-        //foreach (var propertyInfo in instance.GetType().GetProperties())
-        //{
-        //    var value = propertyInfo.GetValue(instance);
-        //    var jsonSchemaProperty = value != null ? ConvertValue(value) : ConvertType(propertyInfo.PropertyType);
-        //    schema.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
-        //}
-
-        //return schema;
     }
 
     private static JsonSchemaProperty ConvertJToken(JToken value)
@@ -179,16 +169,9 @@ internal static class NSwagSchemaExtensions
                     jsonSchemaPropertyForObject.Properties.Add(propertyInfo.Name, jsonSchemaProperty);
                 }
 
-                //var schemaForObject = ToJsonSchema(value);
-                //var jsonSchemaProperty = new JsonSchemaProperty { Type = JsonObjectType.Object };
-                //foreach (var property in schemaForObject.Properties)
-                //{
-                //    jsonSchemaProperty.Properties.Add(property.Key, property.Value);
-                //}
-
                 return jsonSchemaPropertyForObject;
 
-            case null: // null
+            case null:
                 return Null;
         }
     }
