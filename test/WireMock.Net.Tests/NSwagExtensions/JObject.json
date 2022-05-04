@@ -1,5 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
     "properties": {
         "Uri": {
             "type": "string",
@@ -57,6 +58,14 @@
         "Bytes": {
             "type": "string",
             "format": "byte"
+        },
+        "Array": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
         }
     }
 }

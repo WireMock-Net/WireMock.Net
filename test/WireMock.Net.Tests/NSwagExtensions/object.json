@@ -63,6 +63,14 @@
                 }
             ]
         },
+        "Array": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
         "ListT": {
             "type": "array",
             "items": [

@@ -39,7 +39,8 @@ public class NSwagSchemaExtensionsTests
             {"Long", new JValue(long.MaxValue)},
             {"String", new JValue("Test")},
             {"Char", new JValue('c')},
-            {"Bytes", new JValue(_bytes)}
+            {"Bytes", new JValue(_bytes)},
+            {"Array", new JArray("a1")}
         };
 
         // Act
@@ -47,6 +48,19 @@ public class NSwagSchemaExtensionsTests
 
         // Assert
         schema.Should().Be(File.ReadAllText(Path.Combine("../../../", "NSwagExtensions", "JObject.json")));
+    }
+
+    [Fact]
+    public void JArrayToJsonSchema()
+    {
+        // Arrange
+        var instance = new JArray("a1", "a2");
+
+        // Act
+        var schema = instance.ToJsonSchema().ToJson(Formatting.Indented).Replace("  ", "    ");
+
+        // Assert
+        schema.Should().Be(File.ReadAllText(Path.Combine("../../../", "NSwagExtensions", "JArray.json")));
     }
 
     [Fact]
@@ -72,6 +86,7 @@ public class NSwagSchemaExtensionsTests
             String = "test",
             Char = 'c',
             Bytes = _bytes,
+            Array = new[] { "a1" },
             ListT = new List<int> { 1 },
             IList = (IList) new List<int> { 1 },
             IEnumerableT = (IEnumerable<string>) new [] { "s" },
