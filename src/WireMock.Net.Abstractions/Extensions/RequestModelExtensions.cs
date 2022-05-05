@@ -7,11 +7,23 @@ public static class RequestModelExtensions
 {
     public static string? GetPathAsString(this RequestModel request)
     {
-        return request.Path switch
+        var path = request.Path switch
         {
             string pathAsString => pathAsString,
             PathModel pathModel => pathModel.Matchers?.FirstOrDefault()?.Pattern as string,
             _ => null
         };
+
+        return FixPath(path);
+    }
+
+    private static string? FixPath(string? path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return path;
+        }
+
+        return path!.StartsWith("/") ? path : $"/{path}";
     }
 }

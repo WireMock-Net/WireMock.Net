@@ -7,7 +7,7 @@ using NJsonSchema;
 
 namespace WireMock.NSwagExtensions;
 
-internal static class NSwagSchemaExtensions
+internal static class NJsonSchemaExtensions
 {
     private static readonly JsonSchemaProperty Boolean = new() { Type = JsonObjectType.Boolean };
     private static readonly JsonSchemaProperty Byte = new() { Type = JsonObjectType.String, Format = JsonFormatStrings.Byte };
@@ -48,7 +48,7 @@ internal static class NSwagSchemaExtensions
                 return new JsonSchemaProperty
                 {
                     Type = JsonObjectType.Array,
-                    Items = { arrayItem }
+                    Item = arrayItem
                 };
 
             case JTokenType.Boolean:
@@ -104,7 +104,8 @@ internal static class NSwagSchemaExtensions
                 return new JsonSchemaProperty
                 {
                     Type = JsonObjectType.Array,
-                    Items = { ConvertType(array.GetType().GetElementType()!) }
+                    Item = ConvertType(array.GetType().GetElementType()!)
+                    // Items = { ConvertType(array.GetType().GetElementType()!) }
                 };
 
             case IList list:

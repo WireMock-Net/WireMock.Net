@@ -10,7 +10,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.NSwagExtensions;
 
-public class NSwagSchemaExtensionsTests
+public class NJsonSchemaExtensionsTests
 {
     private readonly Guid _guid = new("9579ec16-0f66-486c-a056-2f89f2e0c2dc");
     private readonly byte[] _bytes = { 1, 2, 3 };

@@ -35,7 +35,7 @@ class Program
         var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
 
         testopenapifile_json
-            .Given(Request.Create().WithPath("x").UsingGet())
+            .Given(Request.Create().WithPath("/x").UsingGet())
             .WithTitle("t")
             .WithDescription("d")
             .RespondWith(Response.Create()
@@ -48,7 +48,7 @@ class Program
             );
 
         testopenapifile_json
-            .Given(Request.Create().WithPath("y").UsingGet())
+            .Given(Request.Create().WithPath("/y").UsingGet())
             .WithTitle("t2")
             .WithDescription("d2")
             .RespondWith(Response.Create()
