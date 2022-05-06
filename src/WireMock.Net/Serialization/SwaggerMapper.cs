@@ -3,12 +3,12 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
+using NJsonSchema.Extensions;
 using NSwag;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
 using WireMock.Extensions;
 using WireMock.Matchers;
-using WireMock.NSwagExtensions;
 using WireMock.Server;
 using WireMock.Util;
 

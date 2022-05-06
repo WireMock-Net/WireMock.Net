@@ -80,9 +80,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="NSwagExtensions\*.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
