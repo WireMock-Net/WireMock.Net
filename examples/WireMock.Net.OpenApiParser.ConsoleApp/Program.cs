@@ -33,6 +33,7 @@ class Program
         var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "https://localhost:9094/");
         var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "https://localhost:9095/");
         var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
+        var file_errorYaml = Run.RunServer(Path.Combine(Folder, "file_error.yaml"), "https://localhost:9097/");
 
         testopenapifile_json
             .Given(Request.Create().WithPath("/x").UsingGet())
@@ -66,6 +67,7 @@ class Program
         serverPetstore_V300_yaml.Stop();
         serverPetstore_V302_json.Stop();
         testopenapifile_json.Stop();
+        file_errorYaml.Stop();
 
         //IWireMockOpenApiParser parser = new WireMockOpenApiParser();
 

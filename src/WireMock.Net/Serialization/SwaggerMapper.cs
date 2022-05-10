@@ -97,14 +97,14 @@ internal static class SwaggerMapper
             .Select(x => new
             {
                 x.Name,
-                X = GetDetailsFromMatcher(x.Matchers![0])
+                Details = GetDetailsFromMatcher(x.Matchers![0])
             })
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                Pattern = x.X.RegexPattern,
-                Example = x.X.Example,
-                Description = x.X.Description,
+                Pattern = x.Details.RegexPattern,
+                Example = x.Details.Example,
+                Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Query
             })
             .ToList();
@@ -135,14 +135,14 @@ internal static class SwaggerMapper
             .Select(x => new
             {
                 x.Name,
-                X = GetDetailsFromMatcher(x.Matchers![0])
+                Details = GetDetailsFromMatcher(x.Matchers![0])
             })
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                Pattern = x.X.RegexPattern,
-                Example = x.X.Example,
-                Description = x.X.Description,
+                Pattern = x.Details.RegexPattern,
+                Example = x.Details.Example,
+                Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Header
             })
             .ToList();
@@ -160,14 +160,14 @@ internal static class SwaggerMapper
             .Select(x => new
             {
                 x.Name,
-                X = GetDetailsFromMatcher(x.Matchers![0])
+                Details = GetDetailsFromMatcher(x.Matchers![0])
             })
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                Pattern = x.X.RegexPattern,
-                Example = x.X.Example,
-                Description = x.X.Description,
+                Pattern = x.Details.RegexPattern,
+                Example = x.Details.Example,
+                Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Cookie
             })
             .ToList();
@@ -243,7 +243,17 @@ internal static class SwaggerMapper
         switch (instance)
         {
             case string instanceAsString:
-                schema = JsonSchema.FromSampleJson(instanceAsString);
+                try
+                {
+                    schema = JsonSchema.FromSampleJson(instanceAsString);
+                }
+                catch
+                {
+                    schema = new JsonSchema
+                    {
+                        Type = JsonObjectType.String
+                    };
+                }
                 break;
 
             case JArray bodyAsJArray:

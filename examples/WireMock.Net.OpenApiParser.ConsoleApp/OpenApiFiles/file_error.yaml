@@ -1,0 +1,130 @@
+openapi: 3.0.1
+info:
+  title: Basic-String-Test
+  description: Basic string test
+  version: "4.5.2"
+servers:
+  - url: https://localhost/examples
+paths:
+  /string/basic:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test
+      operationId: getBasicString1
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+  /string/maxlenght/minlenght:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with maxlength and minlength properties
+      operationId: getBasicString2
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                maxLength: 8
+                minLength: 8
+  /string/maxlenght:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with maxlength property
+      operationId: getBasicString3
+      
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                maxLength: 5
+  /string/minlenght:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with minlength property
+      operationId: getBasicString
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                minLength: 10
+  /string/enum:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with enum property
+      operationId: getBasicString4
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - response1
+                  - response2
+  /string/pattern/uri:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with uri pattern property
+      operationId: getBasicString5
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                pattern: '^(http|https|ftp|sftp)://((([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))\.){3}([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))|((www\.|())[a-z0-9]{2,5}\.([a-z]{2,3}((\.[a-z]{2})|()))))(()|(:((102[5-9])|(1[0-9][3-9][0-9])|(1[1-9][0-9]{2})|([2-9][0-9]{3})|([2-5][0-9]{4})|(1[0-9]{4})|(60000))))$'
+  /string/pattern/ipv4:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with ipv4 pattern property
+      operationId: getBasicString6
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                pattern: '^(([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))\.){3}([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))$'
+  /string/header/ipv4:
+    get:
+      tags:
+        - basic-string
+      description: Basic string test with ipv4 pattern property
+      operationId: getBasicString7
+      parameters:
+        - name: Header-Sample
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: "ipv4 pattern"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                pattern: '^(([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))\.){3}([0-9]|([1-9][0-9])|(1[0-9][0-9])|(2[0-4][0-9]))$'
