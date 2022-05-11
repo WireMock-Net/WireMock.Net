@@ -34,6 +34,7 @@ class Program
         var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "https://localhost:9095/");
         var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
         var file_errorYaml = Run.RunServer(Path.Combine(Folder, "file_error.yaml"), "https://localhost:9097/");
+        var file_petJson = Run.RunServer(Path.Combine(Folder, "pet.json"), "https://localhost:9098/");
 
         testopenapifile_json
             .Given(Request.Create().WithPath("/x").UsingGet())

@@ -19,6 +19,8 @@ internal static class SwaggerMapper
     private const string DefaultMethod = "GET";
     private const string Generator = "WireMock.Net";
 
+    private static readonly JsonSchema JsonSchemaString = new() { Type = JsonObjectType.String };
+
     public static string ToSwagger(WireMockServer server)
     {
         var openApiDocument = new OpenApiDocument
@@ -105,22 +107,12 @@ internal static class SwaggerMapper
                 Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
-                Kind = OpenApiParameterKind.Query
+                Kind = OpenApiParameterKind.Query,
+                Schema = JsonSchemaString,
+                IsRequired = !x.Details.Reject,
+                AllowAdditionalProperties = x.Details.RegexPattern != null
             })
             .ToList();
-    }
-
-    private static (string? RegexPattern, string? Example, string? Description) GetDetailsFromMatcher(MatcherModel matcher)
-    {
-        var pattern = GetPatternAsStringFromMatcher(matcher);
-        var description = $"{matcher.Name} (RejectOnMatch = {matcher.RejectOnMatch == true})";
-
-        if (matcher.Name is nameof(RegexMatcher) or nameof(WildcardMatcher) or nameof(ExactMatcher))
-        {
-            return (pattern, pattern, description);
-        }
-
-        return (null, pattern, description);
     }
 
     private static IEnumerable<OpenApiParameter> MapRequestHeaders(IList<HeaderModel>? headers)
@@ -143,7 +135,10 @@ internal static class SwaggerMapper
                 Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
-                Kind = OpenApiParameterKind.Header
+                Kind = OpenApiParameterKind.Header,
+                Schema = JsonSchemaString,
+                IsRequired = !x.Details.Reject,
+                AllowAdditionalProperties = x.Details.RegexPattern != null
             })
             .ToList();
     }
@@ -168,9 +163,26 @@ internal static class SwaggerMapper
                 Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
-                Kind = OpenApiParameterKind.Cookie
+                Kind = OpenApiParameterKind.Cookie,
+                Schema = JsonSchemaString,
+                IsRequired = !x.Details.Reject,
+                AllowAdditionalProperties = x.Details.RegexPattern != null
             })
             .ToList();
+    }
+
+    private static (string? RegexPattern, string? Example, string? Description, bool Reject) GetDetailsFromMatcher(MatcherModel matcher)
+    {
+        var pattern = GetPatternAsStringFromMatcher(matcher);
+        var reject = matcher.RejectOnMatch == true;
+        var description = $"{matcher.Name} (RejectOnMatch = {reject})";
+
+        if (matcher.Name is nameof(RegexMatcher) or nameof(WildcardMatcher) or nameof(ExactMatcher))
+        {
+            return (pattern, pattern, description, reject);
+        }
+
+        return (null, pattern, description, reject);
     }
 
     private static OpenApiRequestBody? MapRequestBody(RequestModel request)
@@ -249,10 +261,7 @@ internal static class SwaggerMapper
                 }
                 catch
                 {
-                    schema = new JsonSchema
-                    {
-                        Type = JsonObjectType.String
-                    };
+                    schema = JsonSchemaString;
                 }
                 break;
 
