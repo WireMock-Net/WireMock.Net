@@ -47,20 +47,18 @@ namespace WireMock.Owin.Mappers
         /// <param name="options">The IWireMockMiddlewareOptions.</param>
         public OwinResponseMapper(IWireMockMiddlewareOptions options)
         {
-            Guard.NotNull(options, nameof(options));
-
-            _options = options;
+            _options = Guard.NotNull(options);
         }
 
         /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
-        public async Task MapAsync(IResponseMessage responseMessage, IResponse response)
+        public async Task MapAsync(IResponseMessage? responseMessage, IResponse response)
         {
             if (responseMessage == null)
             {
                 return;
             }
 
-            byte[] bytes;
+            byte[]? bytes;
             switch (responseMessage.FaultType)
             {
                 case FaultType.EMPTY_RESPONSE:
@@ -122,33 +120,28 @@ namespace WireMock.Owin.Mappers
             return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
         }
 
-        private byte[] GetNormalBody(IResponseMessage responseMessage)
+        private byte[]? GetNormalBody(IResponseMessage responseMessage)
         {
-            byte[] bytes = null;
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.String:
-                    bytes = (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString);
-                    break;
+                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString);
 
                 case BodyType.Json:
-                    Formatting formatting = responseMessage.BodyData.BodyAsJsonIndented == true
+                    var formatting = responseMessage.BodyData.BodyAsJsonIndented == true
                         ? Formatting.Indented
                         : Formatting.None;
                     string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
-                    bytes = (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
-                    break;
+                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
                 case BodyType.Bytes:
-                    bytes = responseMessage.BodyData.BodyAsBytes;
-                    break;
+                    return responseMessage.BodyData.BodyAsBytes;
 
                 case BodyType.File:
-                    bytes = _options.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
-                    break;
+                    return _options.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
-            return bytes;
+            return null;
         }
 
         private static void SetResponseHeaders(IResponseMessage responseMessage, IResponse response)

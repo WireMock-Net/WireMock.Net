@@ -17,6 +17,6 @@ namespace WireMock.Owin.Mappers
         /// </summary>
         /// <param name="responseMessage">The ResponseMessage</param>
         /// <param name="response">The OwinResponse/HttpResponse</param>
-        Task MapAsync(IResponseMessage responseMessage, IResponse response);
+        Task MapAsync(IResponseMessage? responseMessage, IResponse response);
     }
 }

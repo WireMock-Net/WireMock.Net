@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 using WireMock.Util;
@@ -13,7 +13,7 @@ namespace WireMock
         /// <summary>
         /// The Body.
         /// </summary>
-        IBodyData BodyData { get; }
+        IBodyData? BodyData { get; }
 
         /// <summary>
         /// Gets the body destination (SameAsSource, String or Bytes).

@@ -1,50 +1,49 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using WireMock.Admin.Mappings;
+using WireMock.Constants;
 using WireMock.Http;
 using WireMock.Types;
 using WireMock.Util;
 
-namespace WireMock
+namespace WireMock;
+
+internal static class ResponseMessageBuilder
 {
-    internal static class ResponseMessageBuilder
+    private static readonly IDictionary<string, WireMockList<string>> ContentTypeJsonHeaders = new Dictionary<string, WireMockList<string>>
     {
-        private static string ContentTypeJson = "application/json";
-        private static readonly IDictionary<string, WireMockList<string>> ContentTypeJsonHeaders = new Dictionary<string, WireMockList<string>>
+        { HttpKnownHeaderNames.ContentType, new WireMockList<string> { WireMockConstants.ContentTypeJson } }
+    };
+
+    internal static ResponseMessage Create(string? message, int statusCode = 200, Guid? guid = null)
+    {
+        var response = new ResponseMessage
         {
-            { HttpKnownHeaderNames.ContentType, new WireMockList<string> { ContentTypeJson } }
+            StatusCode = statusCode,
+            Headers = ContentTypeJsonHeaders
         };
 
-        internal static ResponseMessage Create(string message, int statusCode = 200, Guid? guid = null)
+        if (message != null)
         {
-            var response = new ResponseMessage
+            response.BodyData = new BodyData
             {
-                StatusCode = statusCode,
-                Headers = ContentTypeJsonHeaders
-            };
-
-            if (message != null)
-            {
-                response.BodyData = new BodyData
+                DetectedBodyType = BodyType.Json,
+                BodyAsJson = new StatusModel
                 {
-                    DetectedBodyType = BodyType.Json,
-                    BodyAsJson = new StatusModel
-                    {
-                        Guid = guid,
-                        Status = message
-                    }
-                };
-            }
-
-            return response;
-        }
-
-        internal static ResponseMessage Create(int statusCode)
-        {
-            return new ResponseMessage
-            {
-                StatusCode = statusCode
+                    Guid = guid,
+                    Status = message
+                }
             };
         }
+
+        return response;
+    }
+
+    internal static ResponseMessage Create(int statusCode)
+    {
+        return new ResponseMessage
+        {
+            StatusCode = statusCode
+        };
     }
 }
