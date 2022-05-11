@@ -12,277 +12,318 @@ using WireMock.Settings;
 using Xunit;
 using static System.Environment;
 
-namespace WireMock.Net.Tests.FluentAssertions
+namespace WireMock.Net.Tests.FluentAssertions;
+
+public class WireMockAssertionsTests : IDisposable
 {
-    public class WireMockAssertionsTests : IDisposable
+    private readonly WireMockServer _server;
+    private readonly HttpClient _httpClient;
+    private readonly int _portUsed;
+
+    public WireMockAssertionsTests()
     {
-        private readonly WireMockServer _server;
-        private readonly HttpClient _httpClient;
-        private readonly int _portUsed;
+        _server = WireMockServer.Start();
+        _server.Given(Request.Create().UsingAnyMethod())
+            .RespondWith(Response.Create().WithSuccess());
+        _portUsed = _server.Ports.First();
 
-        public WireMockAssertionsTests()
-        {
-            _server = WireMockServer.Start();
-            _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithSuccess());
-            _portUsed = _server.Ports.First();
+        _httpClient = new HttpClient { BaseAddress = new Uri(_server.Urls[0]) };
+    }
 
-            _httpClient = new HttpClient { BaseAddress = new Uri(_server.Urls[0]) };
-        }
+    [Fact]
+    public async Task HaveReceivedNoCalls_AtAbsoluteUrl_WhenACallWasNotMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("xxx").ConfigureAwait(false);
 
-        [Fact]
-        public async Task AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
-        {
-            await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+        _server.Should()
+            .HaveReceivedNoCalls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-            _server.Should()
-                .HaveReceivedACall()
-                .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
-        }
+    [Fact]
+    public async Task HaveReceived0Calls_AtAbsoluteUrl_WhenACallWasNotMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("xxx").ConfigureAwait(false);
 
-        [Fact]
-        public void AtAbsoluteUrl_Should_ThrowWhenNoCallsWereMade()
-        {
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .AtAbsoluteUrl("anyurl");
+        _server.Should()
+            .HaveReceived(0).Calls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    "Expected _server to have been called at address matching the absolute url \"anyurl\", but no calls were made.");
-        }
+    [Fact]
+    public async Task HaveReceived1Calls_AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
-        [Fact]
-        public async Task AtAbsoluteUrl_Should_ThrowWhenNoCallsMatchingTheAbsoluteUrlWereMade()
-        {
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        _server.Should()
+            .HaveReceived(1).Calls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .AtAbsoluteUrl("anyurl");
+    [Fact]
+    public async Task HaveReceived2Calls_AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    $"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
-        }
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
-        [Fact]
-        public async Task WithHeader_WhenACallWasMadeWithExpectedHeader_Should_BeOK()
-        {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer a");
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        _server.Should()
+            .HaveReceived(2).Calls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-            _server.Should()
-                .HaveReceivedACall()
-                .WithHeader("Authorization", "Bearer a");
-        }
+    [Fact]
+    public async Task HaveReceivedACall_AtAbsoluteUrl_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
-        [Fact]
-        public async Task WithHeader_WhenACallWasMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
-        {
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        _server.Should()
+            .HaveReceivedACall()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-            _server.Should()
-                .HaveReceivedACall()
-                .WithHeader("Accept", new[] { "application/xml", "application/json" });
-        }
+    [Fact]
+    public void HaveReceivedACall_AtAbsoluteUrl_Should_ThrowWhenNoCallsWereMade()
+    {
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .AtAbsoluteUrl("anyurl");
 
-        [Fact]
-        public async Task WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderNameWereMade()
-        {
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called at address matching the absolute url \"anyurl\", but no calls were made.");
+    }
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .WithHeader("Authorization", "value");
+    [Fact]
+    public async Task HaveReceivedACall_AtAbsoluteUrl_Should_ThrowWhenNoCallsMatchingTheAbsoluteUrlWereMade()
+    {
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Contain("to contain key \"Authorization\".");
-        }
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .AtAbsoluteUrl("anyurl");
 
-        [Fact]
-        public async Task WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderValuesWereMade()
-        {
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                $"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
+    }
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .WithHeader("Accept", "missing-value");
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_WhenACallWasMadeWithExpectedHeader_Should_BeOK()
+    {
+        _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer a");
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            var sentHeaders = _server.LogEntries.SelectMany(x => x.RequestMessage.Headers)
-                .ToDictionary(x => x.Key, x => x.Value)["Accept"]
-                .Select(x => $"\"{x}\"")
-                .ToList();
+        _server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Authorization", "Bearer a");
+    }
 
-            var sentHeaderString = "{" + string.Join(", ", sentHeaders) + "}";
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_WhenACallWasMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
+    {
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    $"Expected header \"Accept\" from requests sent with value(s) {sentHeaderString} to contain \"missing-value\".{NewLine}");
-        }
+        _server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Accept", new[] { "application/xml", "application/json" });
+    }
 
-        [Fact]
-        public async Task WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderWithMultipleValuesWereMade()
-        {
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderNameWereMade()
+    {
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .WithHeader("Accept", new[] { "missing-value1", "missing-value2" });
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Authorization", "value");
 
-            const string missingValue1Message =
-                "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value1\".";
-            const string missingValue2Message =
-                "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value2\".";
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Contain("to contain key \"Authorization\".");
+    }
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be($"{string.Join(NewLine, missingValue1Message, missingValue2Message)}{NewLine}");
-        }
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderValuesWereMade()
+    {
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-        [Fact]
-        public async Task AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
-        {
-            await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Accept", "missing-value");
 
-            _server.Should()
-                .HaveReceivedACall()
-                .AtUrl($"http://localhost:{_portUsed}/anyurl");
-        }
+        var sentHeaders = _server.LogEntries.SelectMany(x => x.RequestMessage.Headers)
+            .ToDictionary(x => x.Key, x => x.Value)["Accept"]
+            .Select(x => $"\"{x}\"")
+            .ToList();
 
-        [Fact]
-        public void AtUrl_Should_ThrowWhenNoCallsWereMade()
-        {
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .AtUrl("anyurl");
+        var sentHeaderString = "{" + string.Join(", ", sentHeaders) + "}";
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    "Expected _server to have been called at address matching the url \"anyurl\", but no calls were made.");
-        }
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                $"Expected header \"Accept\" from requests sent with value(s) {sentHeaderString} to contain \"missing-value\".{NewLine}");
+    }
 
-        [Fact]
-        public async Task AtUrl_Should_ThrowWhenNoCallsMatchingTheUrlWereMade()
-        {
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderWithMultipleValuesWereMade()
+    {
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .AtUrl("anyurl");
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Accept", new[] { "missing-value1", "missing-value2" });
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    $"Expected _server to have been called at address matching the url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
-        }
+        const string missingValue1Message =
+            "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value1\".";
+        const string missingValue2Message =
+            "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value2\".";
 
-        [Fact]
-        public async Task WithProxyUrl_WhenACallWasMadeWithProxyUrl_Should_BeOK()
-        {
-            _server.ResetMappings();
-            _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be($"{string.Join(NewLine, missingValue1Message, missingValue2Message)}{NewLine}");
+    }
 
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+    [Fact]
+    public async Task HaveReceivedACall_AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
 
-            _server.Should()
-                .HaveReceivedACall()
-                .WithProxyUrl($"http://localhost:9999");
-        }
+        _server.Should()
+            .HaveReceivedACall()
+            .AtUrl($"http://localhost:{_portUsed}/anyurl");
+    }
 
-        [Fact]
-        public void WithProxyUrl_Should_ThrowWhenNoCallsWereMade()
-        {
-            _server.ResetMappings();
-            _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
+    [Fact]
+    public void HaveReceivedACall_AtUrl_Should_ThrowWhenNoCallsWereMade()
+    {
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .AtUrl("anyurl");
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .WithProxyUrl("anyurl");
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called at address matching the url \"anyurl\", but no calls were made.");
+    }
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    "Expected _server to have been called with proxy url \"anyurl\", but no calls were made.");
-        }
+    [Fact]
+    public async Task HaveReceivedACall_AtUrl_Should_ThrowWhenNoCallsMatchingTheUrlWereMade()
+    {
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-        [Fact]
-        public async Task WithProxyUrl_Should_ThrowWhenNoCallsWithTheProxyUrlWereMade()
-        {
-            _server.ResetMappings();
-            _server.Given(Request.Create().UsingAnyMethod())
-                .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .AtUrl("anyurl");
 
-            await _httpClient.GetAsync("").ConfigureAwait(false);
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                $"Expected _server to have been called at address matching the url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
+    }
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .WithProxyUrl("anyurl");
+    [Fact]
+    public async Task HaveReceivedACall_WithProxyUrl_WhenACallWasMadeWithProxyUrl_Should_BeOK()
+    {
+        _server.ResetMappings();
+        _server.Given(Request.Create().UsingAnyMethod())
+            .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    $"Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {{\"http://localhost:9999\"}}.");
-        }
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-        [Fact]
-        public async Task FromClientIP_whenACallWasMadeFromClientIP_Should_BeOK()
-        {
-            await _httpClient.GetAsync("").ConfigureAwait(false);
-            var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+        _server.Should()
+            .HaveReceivedACall()
+            .WithProxyUrl($"http://localhost:9999");
+    }
 
-            _server.Should()
-                .HaveReceivedACall()
-                .FromClientIP(clientIP);
-        }
+    [Fact]
+    public void HaveReceivedACall_WithProxyUrl_Should_ThrowWhenNoCallsWereMade()
+    {
+        _server.ResetMappings();
+        _server.Given(Request.Create().UsingAnyMethod())
+            .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
-        [Fact]
-        public void FromClientIP_Should_ThrowWhenNoCallsWereMade()
-        {
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .FromClientIP("different-ip");
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .WithProxyUrl("anyurl");
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    "Expected _server to have been called from client IP \"different-ip\", but no calls were made.");
-        }
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called with proxy url \"anyurl\", but no calls were made.");
+    }
 
-        [Fact]
-        public async Task FromClientIP_Should_ThrowWhenNoCallsFromClientIPWereMade()
-        {
-            await _httpClient.GetAsync("").ConfigureAwait(false);
-            var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+    [Fact]
+    public async Task HaveReceivedACall_WithProxyUrl_Should_ThrowWhenNoCallsWithTheProxyUrlWereMade()
+    {
+        _server.ResetMappings();
+        _server.Given(Request.Create().UsingAnyMethod())
+            .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings { Url = "http://localhost:9999" }));
 
-            Action act = () => _server.Should()
-                .HaveReceivedACall()
-                .FromClientIP("different-ip");
+        await _httpClient.GetAsync("").ConfigureAwait(false);
 
-            act.Should().Throw<Exception>()
-                .And.Message.Should()
-                .Be(
-                    $"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
-        }
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .WithProxyUrl("anyurl");
 
-        public void Dispose()
-        {
-            _server?.Stop();
-            _server?.Dispose();
-            _httpClient?.Dispose();
-        }
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                $"Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {{\"http://localhost:9999\"}}.");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_FromClientIP_whenACallWasMadeFromClientIP_Should_BeOK()
+    {
+        await _httpClient.GetAsync("").ConfigureAwait(false);
+        var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+
+        _server.Should()
+            .HaveReceivedACall()
+            .FromClientIP(clientIP);
+    }
+
+    [Fact]
+    public void HaveReceivedACall_FromClientIP_Should_ThrowWhenNoCallsWereMade()
+    {
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .FromClientIP("different-ip");
+
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called from client IP \"different-ip\", but no calls were made.");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_FromClientIP_Should_ThrowWhenNoCallsFromClientIPWereMade()
+    {
+        await _httpClient.GetAsync("").ConfigureAwait(false);
+        var clientIP = _server.LogEntries.Last().RequestMessage.ClientIP;
+
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .FromClientIP("different-ip");
+
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                $"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
+    }
+
+    public void Dispose()
+    {
+        _server?.Stop();
+        _server?.Dispose();
+        _httpClient?.Dispose();
     }
 }

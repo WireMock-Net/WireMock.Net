@@ -18,6 +18,15 @@ namespace WireMock.FluentAssertions
         }
 
         /// <summary>
+        /// Asserts if <see cref="IWireMockServer"/> has received no calls.
+        /// </summary>
+        /// <returns><see cref="WireMockAssertions"/></returns>
+        public WireMockAssertions HaveReceivedNoCalls()
+        {
+            return new WireMockAssertions(Subject, 0);
+        }
+
+        /// <summary>
         /// Asserts if <see cref="IWireMockServer"/> has received a call.
         /// </summary>
         /// <returns><see cref="WireMockAssertions"/></returns>
