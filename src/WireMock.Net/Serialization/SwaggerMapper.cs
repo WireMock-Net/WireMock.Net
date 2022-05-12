@@ -250,41 +250,28 @@ internal static class SwaggerMapper
 
     private static JsonSchema GetJsonSchema(object instance)
     {
-        JsonSchema schema;
         switch (instance)
         {
             case string instanceAsString:
                 try
                 {
-                    schema = JsonSchema.FromSampleJson(instanceAsString);
+                    var value = JsonConvert.DeserializeObject(instanceAsString);
+                    return GetJsonSchema(value!);
                 }
                 catch
                 {
-                    schema = JsonSchemaString;
+                    return JsonSchemaString;
                 }
-                break;
 
             case JArray bodyAsJArray:
-                schema = bodyAsJArray.ToJsonSchema();
-                break;
+                return bodyAsJArray.ToJsonSchema();
 
             case JObject bodyAsJObject:
-                schema = bodyAsJObject.ToJsonSchema();
-                break;
+                return bodyAsJObject.ToJsonSchema();
 
             default:
-                schema = instance.ToJsonSchema();
-                break;
+                return instance.ToJsonSchema();
         }
-
-        return FixSchema(schema);
-    }
-
-    private static JsonSchema FixSchema(JsonSchema schema)
-    {
-        schema.Description = null;
-        schema.Title = null;
-        return schema;
     }
 
     private static object? MapRequestBody(BodyModel? body)

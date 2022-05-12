@@ -35,6 +35,7 @@ class Program
         var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
         var file_errorYaml = Run.RunServer(Path.Combine(Folder, "file_error.yaml"), "https://localhost:9097/");
         var file_petJson = Run.RunServer(Path.Combine(Folder, "pet.json"), "https://localhost:9098/");
+        var refsYaml = Run.RunServer(Path.Combine(Folder, "refs.yaml"), "https://localhost:9099/");
 
         testopenapifile_json
             .Given(Request.Create().WithPath("/x").UsingGet())
@@ -69,6 +70,8 @@ class Program
         serverPetstore_V302_json.Stop();
         testopenapifile_json.Stop();
         file_errorYaml.Stop();
+        file_petJson.Stop();
+        refsYaml.Stop();
 
         //IWireMockOpenApiParser parser = new WireMockOpenApiParser();
 
