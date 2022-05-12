@@ -104,11 +104,10 @@ internal static class SwaggerMapper
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                // Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Query,
-                Schema = JsonSchemaString,
+                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
                 IsRequired = !x.Details.Reject
             })
             .ToList();
@@ -131,11 +130,10 @@ internal static class SwaggerMapper
             .Select(x => new OpenApiHeader
             {
                 Name = x.Name,
-                // Pattern = x.Details.RegexPattern, Structural error at ... should NOT have additional properties additionalProperty: pattern
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Header,
-                Schema = JsonSchemaString,
+                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
                 IsRequired = !x.Details.Reject
             })
             .ToList();
@@ -158,11 +156,10 @@ internal static class SwaggerMapper
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                // Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Cookie,
-                Schema = JsonSchemaString,
+                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
                 IsRequired = !x.Details.Reject
             })
             .ToList();
