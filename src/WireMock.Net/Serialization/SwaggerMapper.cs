@@ -104,7 +104,7 @@ internal static class SwaggerMapper
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                Pattern = x.Details.RegexPattern,
+                // Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Query,
@@ -158,7 +158,7 @@ internal static class SwaggerMapper
             .Select(x => new OpenApiParameter
             {
                 Name = x.Name,
-                Pattern = x.Details.RegexPattern,
+                // Pattern = x.Details.RegexPattern,
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Cookie,
