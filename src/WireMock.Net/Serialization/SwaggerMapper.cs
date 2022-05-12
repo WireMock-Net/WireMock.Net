@@ -109,8 +109,7 @@ internal static class SwaggerMapper
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Query,
                 Schema = JsonSchemaString,
-                IsRequired = !x.Details.Reject,
-                AllowAdditionalProperties = x.Details.RegexPattern != null
+                IsRequired = !x.Details.Reject
             })
             .ToList();
     }
@@ -119,7 +118,7 @@ internal static class SwaggerMapper
     {
         if (headers == null)
         {
-            return new List<OpenApiParameter>();
+            return new List<OpenApiHeader>();
         }
 
         return headers
@@ -129,16 +128,15 @@ internal static class SwaggerMapper
                 x.Name,
                 Details = GetDetailsFromMatcher(x.Matchers![0])
             })
-            .Select(x => new OpenApiParameter
+            .Select(x => new OpenApiHeader
             {
                 Name = x.Name,
-                Pattern = x.Details.RegexPattern,
+                // Pattern = x.Details.RegexPattern, Structural error at ... should NOT have additional properties additionalProperty: pattern
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Header,
                 Schema = JsonSchemaString,
-                IsRequired = !x.Details.Reject,
-                AllowAdditionalProperties = x.Details.RegexPattern != null
+                IsRequired = !x.Details.Reject
             })
             .ToList();
     }
@@ -165,8 +163,7 @@ internal static class SwaggerMapper
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Cookie,
                 Schema = JsonSchemaString,
-                IsRequired = !x.Details.Reject,
-                AllowAdditionalProperties = x.Details.RegexPattern != null
+                IsRequired = !x.Details.Reject
             })
             .ToList();
     }
@@ -175,14 +172,11 @@ internal static class SwaggerMapper
     {
         var pattern = GetPatternAsStringFromMatcher(matcher);
         var reject = matcher.RejectOnMatch == true;
-        var description = $"{matcher.Name} (RejectOnMatch = {reject})";
+        var description = $"{matcher.Name} with RejectOnMatch = '{reject}' and Pattern = '{pattern}'";
 
-        if (matcher.Name is nameof(RegexMatcher) or nameof(WildcardMatcher) or nameof(ExactMatcher))
-        {
-            return (pattern, pattern, description, reject);
-        }
-
-        return (null, pattern, description, reject);
+        return matcher.Name is nameof(RegexMatcher) or nameof(WildcardMatcher) or nameof(ExactMatcher) ?
+            (pattern, pattern, description, reject) :
+            (null, pattern, description, reject);
     }
 
     private static OpenApiRequestBody? MapRequestBody(RequestModel request)
