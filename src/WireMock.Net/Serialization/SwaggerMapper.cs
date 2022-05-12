@@ -30,8 +30,16 @@ internal static class SwaggerMapper
             {
                 Title = $"{Generator} Mappings Swagger specification",
                 Version = SystemUtils.Version
-            }
+            },
         };
+
+        foreach (var url in server.Urls)
+        {
+            openApiDocument.Servers.Add(new OpenApiServer
+            {
+                Url = url
+            });
+        }
 
         foreach (var mapping in server.MappingModels)
         {
@@ -107,7 +115,7 @@ internal static class SwaggerMapper
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Query,
-                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
+                Schema = x.Details.JsonSchemaRegex,
                 IsRequired = !x.Details.Reject
             })
             .ToList();
@@ -133,7 +141,7 @@ internal static class SwaggerMapper
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Header,
-                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
+                Schema = x.Details.JsonSchemaRegex,
                 IsRequired = !x.Details.Reject
             })
             .ToList();
@@ -159,21 +167,21 @@ internal static class SwaggerMapper
                 Example = x.Details.Example,
                 Description = x.Details.Description,
                 Kind = OpenApiParameterKind.Cookie,
-                Schema = new JsonSchema { Type = JsonObjectType.String, Pattern = x.Details.RegexPattern },
+                Schema = x.Details.JsonSchemaRegex,
                 IsRequired = !x.Details.Reject
             })
             .ToList();
     }
 
-    private static (string? RegexPattern, string? Example, string? Description, bool Reject) GetDetailsFromMatcher(MatcherModel matcher)
+    private static (JsonSchema JsonSchemaRegex, string? Example, string? Description, bool Reject) GetDetailsFromMatcher(MatcherModel matcher)
     {
         var pattern = GetPatternAsStringFromMatcher(matcher);
         var reject = matcher.RejectOnMatch == true;
         var description = $"{matcher.Name} with RejectOnMatch = '{reject}' and Pattern = '{pattern}'";
 
-        return matcher.Name is nameof(RegexMatcher) or nameof(WildcardMatcher) or nameof(ExactMatcher) ?
-            (pattern, pattern, description, reject) :
-            (null, pattern, description, reject);
+        return matcher.Name is nameof(RegexMatcher) ?
+            (new JsonSchema { Type = JsonObjectType.String, Format = "regex", Pattern = pattern }, pattern, description, reject) :
+            (JsonSchemaString, pattern, description, reject);
     }
 
     private static OpenApiRequestBody? MapRequestBody(RequestModel request)
@@ -222,7 +230,7 @@ internal static class SwaggerMapper
                         new JsonSchema
                         {
                             Type = JsonObjectType.String,
-                            Format = "byte"
+                            Format = JsonFormatStrings.Byte
                         }
                     }
                 }
