@@ -1,6 +1,9 @@
-# 1.4.41 (21 April 2022)
-- #746 Allow Timeout.InfiniteTimeSpan for WithDelay [feature]
-- #747 Update the logic for ProxyAndRecord
-- #744 System.ArgumentOutOfRangeException when Timeout.InfiniteTimeSpan used as an argument for IResponseBuilder.WithDelay() [bug]
+# 1.4.42 (13 May 2022)
+- #748 Initial support for converting the mappings to a Pact(flow) json file [feature]
+- #749 Swagger support [feature]
+- #750 [Snyk] Security upgrade Newtonsoft.Json from 11.0.2 to 13.0.1
+- #751 Update NuGets packages [feature]
+- #741 Integrate with Pact [feature]
+- #753 FluentAssertions - assert the server has not received a call  [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

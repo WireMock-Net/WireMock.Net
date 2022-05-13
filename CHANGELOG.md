@@ -1,3 +1,11 @@
+# 1.4.42 (13 May 2022)
+- [#748](https://github.com/WireMock-Net/WireMock.Net/pull/748) - Initial support for converting the mappings to a Pact(flow) json file [feature] contributed by [StefH](https://github.com/StefH)
+- [#749](https://github.com/WireMock-Net/WireMock.Net/pull/749) - Swagger support [feature] contributed by [StefH](https://github.com/StefH)
+- [#750](https://github.com/WireMock-Net/WireMock.Net/pull/750) - [Snyk] Security upgrade Newtonsoft.Json from 11.0.2 to 13.0.1 contributed by [snyk-bot](https://github.com/snyk-bot)
+- [#751](https://github.com/WireMock-Net/WireMock.Net/pull/751) - Update NuGets packages [feature] contributed by [StefH](https://github.com/StefH)
+- [#741](https://github.com/WireMock-Net/WireMock.Net/issues/741) - Integrate with Pact [feature]
+- [#753](https://github.com/WireMock-Net/WireMock.Net/issues/753) - FluentAssertions - assert the server has not received a call  [feature]
+
 # 1.4.41 (21 April 2022)
 - [#746](https://github.com/WireMock-Net/WireMock.Net/pull/746) - Allow Timeout.InfiniteTimeSpan for WithDelay [feature] contributed by [StefH](https://github.com/StefH)
 - [#747](https://github.com/WireMock-Net/WireMock.Net/pull/747) - Update the logic for ProxyAndRecord contributed by [StefH](https://github.com/StefH)
@@ -803,7 +811,7 @@
 - [#58](https://github.com/WireMock-Net/WireMock.Net/issues/58) - Multiple headers with same name [feature]
 
 # 1.0.2.5 (24 October 2017)
-- [#55](https://github.com/WireMock-Net/WireMock.Net/pull/55) - Fix the problem with headers passthrough [bug] contributed by [deeptowncitizen](https://github.com/deeptowncitizen)
+- [#55](https://github.com/WireMock-Net/WireMock.Net/pull/55) - Fix the problem with headers passthrough [bug] contributed by [dmtrrk](https://github.com/dmtrrk)
 - [#44](https://github.com/WireMock-Net/WireMock.Net/issues/44) - Bug: Server not listening after Start() returns (on macOS) [bug]
 - [#48](https://github.com/WireMock-Net/WireMock.Net/issues/48) - Stateful support [feature]
 - [#52](https://github.com/WireMock-Net/WireMock.Net/issues/52) - SimMetrics.NET error when trying to install NuGet Package
@@ -815,7 +823,7 @@
 - [#40](https://github.com/WireMock-Net/WireMock.Net/pull/40) - Expose more settings to stand-alone app contributed by [StefH](https://github.com/StefH)
 - [#41](https://github.com/WireMock-Net/WireMock.Net/pull/41) - Dotnet 20 preview final [feature] contributed by [StefH](https://github.com/StefH)
 - [#45](https://github.com/WireMock-Net/WireMock.Net/pull/45) - Add RequestLogExpirationDuration and MaxRequestLogCount (#43) contributed by [StefH](https://github.com/StefH)
-- [#51](https://github.com/WireMock-Net/WireMock.Net/pull/51) - Observable logs contributed by [deeptowncitizen](https://github.com/deeptowncitizen)
+- [#51](https://github.com/WireMock-Net/WireMock.Net/pull/51) - Observable logs contributed by [dmtrrk](https://github.com/dmtrrk)
 - [#15](https://github.com/WireMock-Net/WireMock.Net/issues/15) - New feature: Proxying [feature]
 - [#31](https://github.com/WireMock-Net/WireMock.Net/issues/31) - Feature request: Nuget package for standalone version [feature]
 - [#33](https://github.com/WireMock-Net/WireMock.Net/issues/33) - Issue with launching sample code (StandAlone server) [bug]
