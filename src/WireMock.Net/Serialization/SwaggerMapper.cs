@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.Extensions;
 using NSwag;
@@ -262,12 +261,6 @@ internal static class SwaggerMapper
                 {
                     return JsonSchemaString;
                 }
-
-            case JArray bodyAsJArray:
-                return bodyAsJArray.ToJsonSchema();
-
-            case JObject bodyAsJObject:
-                return bodyAsJObject.ToJsonSchema();
 
             default:
                 return instance.ToJsonSchema();
