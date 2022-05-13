@@ -35,7 +35,6 @@ namespace WireMock.Server;
 public partial class WireMockServer
 {
     private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
-    private const string ContentTypeJson = "application/json";
     private const string AdminFiles = "/__admin/files";
     private const string AdminMappings = "/__admin/mappings";
     private const string AdminMappingsWireMockOrg = "/__admin/mappings/wiremock.org";
@@ -45,7 +44,7 @@ public partial class WireMockServer
     private const string QueryParamReloadStaticMappings = "reloadStaticMappings";
 
     private readonly Guid _proxyMappingGuid = new("e59914fd-782e-428e-91c1-4810ffb86567");
-    private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(ContentTypeJson, true);
+    private readonly RegexMatcher _adminRequestContentTypeJson = new ContentTypeMatcher(WireMockConstants.ContentTypeJson, true);
     private readonly RegexMatcher _adminMappingsGuidPathMatcher = new(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
     private readonly RegexMatcher _adminRequestsGuidPathMatcher = new(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
 
@@ -73,7 +72,10 @@ public partial class WireMockServer
         Given(Request.Create().WithPath(_adminMappingsGuidPathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingDelete));
 
         // __admin/mappings/save
-        Given(Request.Create().WithPath(AdminMappings + "/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsSave));
+        Given(Request.Create().WithPath($"{AdminMappings}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsSave));
+
+        // __admin/mappings/swagger
+        Given(Request.Create().WithPath($"{AdminMappings}/swagger").UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SwaggerGet));
 
         // __admin/requests
         Given(Request.Create().WithPath(AdminRequests).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsGet));
@@ -148,7 +150,7 @@ public partial class WireMockServer
 
     /// <inheritdoc cref="IWireMockServer.WatchStaticMappings" />
     [PublicAPI]
-    public void WatchStaticMappings([CanBeNull] string folder = null)
+    public void WatchStaticMappings(string? folder = null)
     {
         if (folder == null)
         {
@@ -379,6 +381,20 @@ public partial class WireMockServer
     #endregion Mapping/{guid}
 
     #region Mappings
+    private IResponseMessage SwaggerGet(IRequestMessage requestMessage)
+    {
+        return new ResponseMessage
+        {
+            BodyData = new BodyData
+            {
+                DetectedBodyType = BodyType.String,
+                BodyAsString = SwaggerMapper.ToSwagger(this)
+            },
+            StatusCode = (int)HttpStatusCode.OK,
+            Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(WireMockConstants.ContentTypeJson) } }
+        };
+    }
+
     private IResponseMessage MappingsSave(IRequestMessage requestMessage)
     {
         SaveStaticMappings();
@@ -667,6 +683,19 @@ public partial class WireMockServer
     }
     #endregion
 
+    #region Pact
+    /// <summary>
+    /// Save the mappings as a Pact Json file V2.
+    /// </summary>
+    /// <param name="folder">The folder to save the pact file.</param>
+    /// <param name="filename">The filename for the .json file [optional].</param>
+    [PublicAPI]
+    public void SavePact(string folder, string? filename = null)
+    {
+        var (filenameUpdated, bytes) = PactMapper.ToPact(this, filename);
+        _settings.FileSystemHandler.WriteFile(folder, filenameUpdated, bytes);
+    }
+
     /// <summary>
     /// This stores details about the consumer of the interaction.
     /// </summary>
@@ -688,7 +717,7 @@ public partial class WireMockServer
         Provider = provider;
         return this;
     }
-
+    #endregion
     private IRequestBuilder? InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
     {
         IRequestBuilder requestBuilder = Request.Create();
@@ -904,68 +933,6 @@ public partial class WireMockServer
         return responseBuilder;
     }
 
-    private ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
-    {
-        return new ResponseMessage
-        {
-            BodyData = new BodyData
-            {
-                DetectedBodyType = BodyType.String,
-                BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues : JsonSerializationConstants.JsonSerializerSettingsDefault)
-            },
-            StatusCode = (int)HttpStatusCode.OK,
-            Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(ContentTypeJson) } }
-        };
-    }
-
-    private Encoding? ToEncoding(EncodingModel? encodingModel)
-    {
-        return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
-    }
-
-    private T? DeserializeObject<T>(IRequestMessage requestMessage)
-    {
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
-        {
-            return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
-        }
-
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
-        {
-            return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
-        }
-
-        return default(T);
-    }
-
-    private T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
-    {
-        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
-        {
-            var bodyAsJson = requestMessage.BodyData.BodyAsJson;
-
-            return DeserializeObjectToArray<T>(bodyAsJson);
-        }
-
-        return default(T[]);
-    }
-
-    private T[] DeserializeObjectToArray<T>(object value)
-    {
-        if (value is JArray jArray)
-        {
-            return jArray.ToObject<T[]>();
-        }
-
-        var singleResult = ((JObject)value).ToObject<T>();
-        return new[] { singleResult };
-    }
-
-    private T[] DeserializeJsonToArray<T>(string value)
-    {
-        return DeserializeObjectToArray<T>(JsonUtils.DeserializeObject(value));
-    }
-
     private void DisposeEnhancedFileSystemWatcher()
     {
         if (_enhancedFileSystemWatcher != null)
@@ -1011,5 +978,67 @@ public partial class WireMockServer
         {
             DeleteMapping(args.FullPath);
         }
+    }
+
+    private static Encoding? ToEncoding(EncodingModel? encodingModel)
+    {
+        return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
+    }
+
+    private static ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
+    {
+        return new ResponseMessage
+        {
+            BodyData = new BodyData
+            {
+                DetectedBodyType = BodyType.String,
+                BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues : JsonSerializationConstants.JsonSerializerSettingsDefault)
+            },
+            StatusCode = (int)HttpStatusCode.OK,
+            Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(WireMockConstants.ContentTypeJson) } }
+        };
+    }
+
+    private static T? DeserializeObject<T>(IRequestMessage requestMessage)
+    {
+        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
+        {
+            return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
+        }
+
+        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
+        {
+            return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
+        }
+
+        return default(T);
+    }
+
+    private static T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
+    {
+        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
+        {
+            var bodyAsJson = requestMessage.BodyData.BodyAsJson;
+
+            return DeserializeObjectToArray<T>(bodyAsJson);
+        }
+
+        return default(T[]);
+    }
+
+    private static T[] DeserializeJsonToArray<T>(string value)
+    {
+        return DeserializeObjectToArray<T>(JsonUtils.DeserializeObject(value));
+    }
+
+    private static T[] DeserializeObjectToArray<T>(object value)
+    {
+        if (value is JArray jArray)
+        {
+            return jArray.ToObject<T[]>();
+        }
+
+        var singleResult = ((JObject)value).ToObject<T>();
+        return new[] { singleResult };
     }
 }

@@ -5,18 +5,49 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WireMock.Pact.Models.V2;
 using WireMock.Serialization;
 
 namespace WireMock.Util;
 
 internal static class JsonUtils
 {
-    public static bool TryParseAsComplexObject(string strInput, [NotNullWhen(true)] out JToken? token)
+    public static Type CreateTypeFromJObject(JObject instance, string? fullName = null)
     {
-        token = null;
+        static Type ConvertType(JToken value, string? propertyName = null)
+        {
+            var type = value.Type;
+            return type switch
+            {
+                JTokenType.Array => value.HasValues ? ConvertType(value.First!, propertyName).MakeArrayType() : typeof(object).MakeArrayType(),
+                JTokenType.Boolean => typeof(bool),
+                JTokenType.Bytes => typeof(byte[]),
+                JTokenType.Date => typeof(DateTime),
+                JTokenType.Guid => typeof(Guid),
+                JTokenType.Float => typeof(float),
+                JTokenType.Integer => typeof(long),
+                JTokenType.Null => typeof(object),
+                JTokenType.Object => CreateTypeFromJObject((JObject)value, propertyName),
+                JTokenType.String => typeof(string),
+                JTokenType.TimeSpan => typeof(TimeSpan),
+                JTokenType.Uri => typeof(string),
+                _ => typeof(object)
+            };
+        }
 
-        if (string.IsNullOrWhiteSpace(strInput))
+        var properties = new Dictionary<string, Type>();
+        foreach (var item in instance.Properties())
+        {
+            properties.Add(item.Name, ConvertType(item.Value, item.Name));
+        }
+
+        return TypeBuilderUtils.BuildType(properties, fullName) ?? throw new InvalidOperationException();
+    }
+
+    public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
+    {
+        value = null;
+
+        if (strInput == null || string.IsNullOrWhiteSpace(strInput))
         {
             return false;
         }
@@ -30,7 +61,7 @@ internal static class JsonUtils
         try
         {
             // Try to convert this string into a JToken
-            token = JToken.Parse(strInput);
+            value = JObject.Parse(strInput);
             return true;
         }
         catch
@@ -105,17 +136,19 @@ internal static class JsonUtils
 
     private static void WalkNode(JToken node, string? path, string? propertyName, List<string> lines)
     {
-        if (node.Type == JTokenType.Object)
+        switch (node.Type)
         {
-            ProcessObject(node, propertyName, lines);
-        }
-        else if (node.Type == JTokenType.Array)
-        {
-            ProcessArray(node, propertyName, lines);
-        }
-        else
-        {
-            ProcessItem(node, path ?? "it", propertyName, lines);
+            case JTokenType.Object:
+                ProcessObject(node, propertyName, lines);
+                break;
+
+            case JTokenType.Array:
+                ProcessArray(node, propertyName, lines);
+                break;
+
+            default:
+                ProcessItem(node, path ?? "it", propertyName, lines);
+                break;
         }
     }
 
@@ -125,7 +158,7 @@ internal static class JsonUtils
         var text = new StringBuilder("new (");
 
         // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
-        foreach (JProperty child in node.Children<JProperty>().ToArray())
+        foreach (var child in node.Children<JProperty>().ToArray())
         {
             WalkNode(child.Value, child.Path, child.Name, items);
         }
@@ -147,8 +180,8 @@ internal static class JsonUtils
         var text = new StringBuilder("(new [] { ");
 
         // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
-        int idx = 0;
-        foreach (JToken child in node.Children().ToArray())
+        var idx = 0;
+        foreach (var child in node.Children().ToArray())
         {
             WalkNode(child, $"{node.Path}[{idx}]", null, items);
             idx++;
@@ -165,50 +198,21 @@ internal static class JsonUtils
         lines.Add(text.ToString());
     }
 
-    private static void ProcessItem(JToken node, string path, string propertyName, List<string> lines)
+    private static void ProcessItem(JToken node, string path, string? propertyName, List<string> lines)
     {
-        string castText;
-        switch (node.Type)
+        var castText = node.Type switch
         {
-            case JTokenType.Boolean:
-                castText = $"bool({path})";
-                break;
-
-            case JTokenType.Date:
-                castText = $"DateTime({path})";
-                break;
-
-            case JTokenType.Float:
-                castText = $"double({path})";
-                break;
-
-            case JTokenType.Guid:
-                castText = $"Guid({path})";
-                break;
-
-            case JTokenType.Integer:
-                castText = $"long({path})";
-                break;
-
-            case JTokenType.Null:
-                castText = "null";
-                break;
-
-            case JTokenType.String:
-                castText = $"string({path})";
-                break;
-
-            case JTokenType.TimeSpan:
-                castText = $"TimeSpan({path})";
-                break;
-
-            case JTokenType.Uri:
-                castText = $"Uri({path})";
-                break;
-
-            default:
-                throw new NotSupportedException($"JTokenType '{node.Type}' cannot be converted to a Dynamic Linq cast operator.");
-        }
+            JTokenType.Boolean => $"bool({path})",
+            JTokenType.Date => $"DateTime({path})",
+            JTokenType.Float => $"double({path})",
+            JTokenType.Guid => $"Guid({path})",
+            JTokenType.Integer => $"long({path})",
+            JTokenType.Null => "null",
+            JTokenType.String => $"string({path})",
+            JTokenType.TimeSpan => $"TimeSpan({path})",
+            JTokenType.Uri => $"Uri({path})",
+            _ => throw new NotSupportedException($"JTokenType '{node.Type}' cannot be converted to a Dynamic Linq cast operator.")
+        };
 
         if (!string.IsNullOrEmpty(propertyName))
         {

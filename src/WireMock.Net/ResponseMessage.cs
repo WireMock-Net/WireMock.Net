@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace WireMock
         public string BodyDestination { get; set; }
 
         /// <inheritdoc cref="IResponseMessage.BodyData" />
-        public IBodyData BodyData { get; set; }
+        public IBodyData? BodyData { get; set; }
 
         /// <inheritdoc cref="IResponseMessage.FaultType" />
         public FaultType FaultType { get; set; }

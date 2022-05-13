@@ -72,8 +72,8 @@ namespace WireMock.Owin
             var request = await _requestMapper.MapAsync(ctx.Request, _options).ConfigureAwait(false);
 
             var logRequest = false;
-            IResponseMessage response = null;
-            (MappingMatcherResult Match, MappingMatcherResult Partial) result = (null, null);
+            IResponseMessage? response = null;
+            (MappingMatcherResult? Match, MappingMatcherResult? Partial) result = (null, null);
             try
             {
                 foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))

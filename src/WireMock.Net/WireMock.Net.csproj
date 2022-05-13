@@ -58,11 +58,12 @@
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" /> 
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="NJsonSchema.Extensions" Version="0.1.0" />
+        <PackageReference Include="NSwag.Core" Version="13.15.10" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="Stef.Validation" Version="0.1.0" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
-        <!--<PackageReference Include="RandomDataGenerator.Net" Version="1.0.15" />-->
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
         <PackageReference Include="TinyMapper" Version="3.0.3" />

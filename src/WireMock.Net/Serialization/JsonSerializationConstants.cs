@@ -1,30 +1,34 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace WireMock.Serialization
+namespace WireMock.Serialization;
+
+internal static class JsonSerializationConstants
 {
-    internal static class JsonSerializationConstants
+    public static readonly JsonSerializerSettings JsonSerializerSettingsDefault = new()
     {
-        public static readonly JsonSerializerSettings JsonSerializerSettingsDefault = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
-        };
+        Formatting = Formatting.Indented,
+        NullValueHandling = NullValueHandling.Ignore
+    };
 
-        public static readonly JsonSerializerSettings JsonSerializerSettingsIncludeNullValues = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Include
-        };
+    public static readonly JsonSerializerSettings JsonSerializerSettingsIncludeNullValues = new()
+    {
+        Formatting = Formatting.Indented,
+        NullValueHandling = NullValueHandling.Include
+    };
 
-        public static readonly JsonSerializerSettings JsonDeserializerSettingsWithDateParsingNone = new JsonSerializerSettings
-        {
-            DateParseHandling = DateParseHandling.None
-        };
+    public static readonly JsonSerializerSettings JsonDeserializerSettingsWithDateParsingNone = new()
+    {
+        DateParseHandling = DateParseHandling.None
+    };
 
-        public static readonly JsonSerializerSettings JsonSerializerSettingsPact = new JsonSerializerSettings
+    public static readonly JsonSerializerSettings JsonSerializerSettingsPact = new()
+    {
+        Formatting = Formatting.Indented,
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = new DefaultContractResolver
         {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
-        };
-    }
+            NamingStrategy = new CamelCaseNamingStrategy()
+        }
+    };
 }

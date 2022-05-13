@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnyOfTypes;
-using JetBrains.Annotations;
 using SimMetrics.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Extensions;
@@ -22,12 +21,12 @@ namespace WireMock.Serialization
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public IMatcher[] Map([CanBeNull] IEnumerable<MatcherModel> matchers)
+        public IMatcher[] Map(IEnumerable<MatcherModel>? matchers)
         {
             return matchers?.Select(Map).Where(m => m != null).ToArray();
         }
 
-        public IMatcher Map([CanBeNull] MatcherModel matcher)
+        public IMatcher? Map(MatcherModel? matcher)
         {
             if (matcher == null)
             {
@@ -36,7 +35,7 @@ namespace WireMock.Serialization
 
             string[] parts = matcher.Name.Split('.');
             string matcherName = parts[0];
-            string matcherType = parts.Length > 1 ? parts[1] : null;
+            string? matcherType = parts.Length > 1 ? parts[1] : null;
             var stringPatterns = ParseStringPatterns(matcher);
             var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
             bool ignoreCase = matcher.IgnoreCase == true;
@@ -69,16 +68,16 @@ namespace WireMock.Serialization
                     return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended);
 
                 case nameof(JsonMatcher):
-                    object valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonMatcher(matchBehaviour, valueForJsonMatcher, ignoreCase, throwExceptionWhenMatcherFails);
+                    var valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case nameof(JsonPartialMatcher):
-                    object valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher, ignoreCase, throwExceptionWhenMatcherFails);
+                    var valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case nameof(JsonPartialWildcardMatcher):
-                    object valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
-                    return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher, ignoreCase, throwExceptionWhenMatcherFails);
+                    var valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
+                    return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
 
                 case nameof(JsonPathMatcher):
                     return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, stringPatterns);
@@ -114,12 +113,12 @@ namespace WireMock.Serialization
             }
         }
 
-        public MatcherModel[] Map([CanBeNull] IEnumerable<IMatcher> matchers)
+        public MatcherModel[] Map(IEnumerable<IMatcher>? matchers)
         {
             return matchers?.Select(Map).Where(m => m != null).ToArray();
         }
 
-        public MatcherModel Map([CanBeNull] IMatcher matcher)
+        public MatcherModel? Map(IMatcher? matcher)
         {
             if (matcher == null)
             {
