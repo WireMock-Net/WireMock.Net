@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -54,22 +54,45 @@ namespace WireMock.Matchers
         /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
+        /// <param name="matchOperator">The <see cref="MatchOperator"/>.</param>
         /// <returns>average score</returns>
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public static double ToScore(IEnumerable<bool> values)
+        public static double ToScore(IEnumerable<bool> values, MatchOperator matchOperator)
         {
-            return values.Any() ? values.Select(ToScore).Average() : Mismatch;
+            return ToScore(values.Select(ToScore), matchOperator);
+            //if (!values.Any())
+            //{
+            //    return Mismatch;
+            //}
+
+            //return matchOperator switch
+            //{
+            //    MatchOperator.Or => ToScore(values.Any(v => v)),
+            //    MatchOperator.And => ToScore(values.All(v => v)),
+            //    _ => values.Select(ToScore).Average()
+            //};
         }
 
         /// <summary>
         /// Calculates the score from multiple values.
         /// </summary>
         /// <param name="values">The values.</param>
+        /// <param name="matchOperator"></param>
         /// <returns>average score</returns>
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public static double ToScore(IEnumerable<double> values)
+        public static double ToScore(IEnumerable<double> values, MatchOperator matchOperator)
         {
-            return values.Any() ? values.Average() : Mismatch;
+            if (!values.Any())
+            {
+                return Mismatch;
+            }
+
+            return matchOperator switch
+            {
+                MatchOperator.Or => ToScore(values.Any(IsPerfect)),
+                MatchOperator.And => ToScore(values.All(IsPerfect)),
+                _ => values.Average()
+            };
         }
     }
 }

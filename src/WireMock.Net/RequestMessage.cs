@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using JetBrains.Annotations;
 using System;
@@ -144,7 +144,7 @@ namespace WireMock
         /// <param name="key">The key.</param>
         /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <returns>The query parameter.</returns>
-        public WireMockList<string> GetParameter(string key, bool ignoreCase = false)
+        public WireMockList<string>? GetParameter(string key, bool ignoreCase = false)
         {
             if (Query == null)
             {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace WireMock.Matchers
@@ -16,7 +15,7 @@ namespace WireMock.Matchers
         /// <param name="value">The string value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        protected AbstractJsonPartialMatcher([NotNull] string value, bool ignoreCase = false, bool throwException = false) 
+        protected AbstractJsonPartialMatcher(string value, bool ignoreCase = false, bool throwException = false) 
             : base(value, ignoreCase, throwException)
         {
         }
@@ -27,7 +26,7 @@ namespace WireMock.Matchers
         /// <param name="value">The object value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        protected AbstractJsonPartialMatcher([NotNull] object value, bool ignoreCase = false, bool throwException = false) 
+        protected AbstractJsonPartialMatcher(object value, bool ignoreCase = false, bool throwException = false) 
             : base(value, ignoreCase, throwException)
         {
         }
@@ -39,7 +38,7 @@ namespace WireMock.Matchers
         /// <param name="value">The value to check for equality.</param>
         /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, [NotNull] object value, bool ignoreCase = false, bool throwException = false) 
+        protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false) 
             : base(matchBehaviour, value, ignoreCase, throwException)
         {
         }

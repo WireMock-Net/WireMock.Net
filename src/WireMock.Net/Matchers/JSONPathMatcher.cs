@@ -1,121 +1,126 @@
 using System.Linq;
 using AnyOfTypes;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
-using Stef.Validation;
 
-namespace WireMock.Matchers
+namespace WireMock.Matchers;
+
+/// <summary>
+/// JsonPathMatcher
+/// </summary>
+/// <seealso cref="IMatcher" />
+/// <seealso cref="IObjectMatcher" />
+public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 {
+    private readonly AnyOf<string, StringPattern>[] _patterns;
+
+    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    public MatchBehaviour MatchBehaviour { get; }
+
+    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    public bool ThrowException { get; }
+
     /// <summary>
-    /// JsonPathMatcher
+    /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
     /// </summary>
-    /// <seealso cref="IMatcher" />
-    /// <seealso cref="IObjectMatcher" />
-    public class JsonPathMatcher : IStringMatcher, IObjectMatcher
+    /// <param name="patterns">The patterns.</param>
+    public JsonPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns.ToAnyOfPatterns())
     {
-        private readonly AnyOf<string, StringPattern>[] _patterns;
+    }
 
-        /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
-        public MatchBehaviour MatchBehaviour { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
+    /// </summary>
+    /// <param name="patterns">The patterns.</param>
+    public JsonPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
+    {
+    }
 
-        /// <inheritdoc cref="IMatcher.ThrowException"/>
-        public bool ThrowException { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="patterns">The patterns.</param>
+    public JsonPathMatcher(
+        MatchBehaviour matchBehaviour,
+        bool throwException = false,
+        MatchOperator matchOperator = MatchOperator.Or,
+        params AnyOf<string, StringPattern>[] patterns)
+    {
+        _patterns = Guard.NotNull(patterns);
+        MatchBehaviour = matchBehaviour;
+        ThrowException = throwException;
+        Operator = matchOperator;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
-        /// </summary>
-        /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns.ToAnyOfPatterns())
+    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
+    public double IsMatch(string input)
+    {
+        double match = MatchScores.Mismatch;
+        if (input != null)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
-        /// </summary>
-        /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        /// <param name="patterns">The patterns.</param>
-        public JsonPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
-        {
-            Guard.NotNull(patterns, nameof(patterns));
-
-            MatchBehaviour = matchBehaviour;
-            ThrowException = throwException;
-            _patterns = patterns;
-        }
-
-        /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-        public double IsMatch(string input)
-        {
-            double match = MatchScores.Mismatch;
-            if (input != null)
+            try
             {
-                try
+                var jToken = JToken.Parse(input);
+                match = IsMatch(jToken);
+            }
+            catch (JsonException)
+            {
+                if (ThrowException)
                 {
-                    var jToken = JToken.Parse(input);
-                    match = IsMatch(jToken);
-                }
-                catch (JsonException)
-                {
-                    if (ThrowException)
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
-
-            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
-        /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-        public double IsMatch(object input)
-        {
-            double match = MatchScores.Mismatch;
+        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+    }
 
-            // When input is null or byte[], return Mismatch.
-            if (input != null && !(input is byte[]))
+    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
+    public double IsMatch(object input)
+    {
+        double match = MatchScores.Mismatch;
+
+        // When input is null or byte[], return Mismatch.
+        if (input != null && !(input is byte[]))
+        {
+            try
             {
-                try
+                // Check if JToken or object
+                JToken jToken = input is JToken token ? token : JObject.FromObject(input);
+                match = IsMatch(jToken);
+            }
+            catch (JsonException)
+            {
+                if (ThrowException)
                 {
-                    // Check if JToken or object
-                    JToken jToken = input is JToken token ? token : JObject.FromObject(input);
-                    match = IsMatch(jToken);
-                }
-                catch (JsonException)
-                {
-                    if (ThrowException)
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
-
-            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
 
-        /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
-        public AnyOf<string, StringPattern>[] GetPatterns()
-        {
-            return _patterns;
-        }
+        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+    }
 
-        /// <inheritdoc cref="IMatcher.Name"/>
-        public string Name => "JsonPathMatcher";
+    /// <inheritdoc />
+    public AnyOf<string, StringPattern>[] GetPatterns()
+    {
+        return _patterns;
+    }
 
-        private double IsMatch(JToken jToken)
-        {
-            return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null));
-        }
+    /// <inheritdoc />
+    public MatchOperator Operator { get; }
+
+    /// <inheritdoc cref="IMatcher.Name"/>
+    public string Name => "JsonPathMatcher";
+
+    private double IsMatch(JToken jToken)
+    {
+        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null), Operator);
     }
 }

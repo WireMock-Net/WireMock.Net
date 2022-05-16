@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Xml;
 using AnyOfTypes;
-using JetBrains.Annotations;
 using WireMock.Extensions;
 using WireMock.Models;
 using Stef.Validation;
@@ -30,7 +29,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="XPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public XPathMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        public XPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
         {
         }
 
@@ -39,14 +38,18 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
         /// <param name="patterns">The patterns.</param>
-        public XPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
+        public XPathMatcher(
+            MatchBehaviour matchBehaviour,
+            bool throwException = false,
+            MatchOperator matchOperator = MatchOperator.Or,
+            params AnyOf<string, StringPattern>[] patterns)
         {
-            Guard.NotNull(patterns, nameof(patterns));
-
+            _patterns = Guard.NotNull(patterns);
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;
-            _patterns = patterns;
+            Operator = matchOperator;
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -59,9 +62,9 @@ namespace WireMock.Matchers
                 {
                     var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
 #if NETSTANDARD1_3
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))));
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))), Operator);
 #else
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))));
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))), Operator);
 #endif
                 }
                 catch (Exception)
@@ -81,6 +84,9 @@ namespace WireMock.Matchers
         {
             return _patterns;
         }
+
+        /// <inheritdoc />
+        public MatchOperator Operator { get; }
 
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "XPathMatcher";
