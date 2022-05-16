@@ -35,5 +35,14 @@ namespace WireMock.Admin.Mappings
         /// Reject on match.
         /// </summary>
         public bool? RejectOnMatch { get; set; }
+
+        /// <summary>
+        /// The Operator to use when multiple patterns are defined. Optional.
+        /// - null      = Same as "or".
+        /// - "or"      = Only one pattern should match.
+        /// - "and"     = All patterns should match.
+        /// - "average" = The average value from all patterns.
+        /// </summary>
+        public string? MatchOperator { get; set; }
     }
 }

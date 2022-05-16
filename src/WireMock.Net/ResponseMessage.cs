@@ -15,7 +15,7 @@ namespace WireMock
     public class ResponseMessage : IResponseMessage
     {
         /// <inheritdoc cref="IResponseMessage.Headers" />
-        public IDictionary<string, WireMockList<string>> Headers { get; set; } = new Dictionary<string, WireMockList<string>>();
+        public IDictionary<string, WireMockList<string>>? Headers { get; set; } = new Dictionary<string, WireMockList<string>>();
 
         /// <inheritdoc cref="IResponseMessage.StatusCode" />
         public object StatusCode { get; set; }
