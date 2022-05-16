@@ -1,9 +1,8 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireMock.Types;
 using Stef.Validation;
+using WireMock.Types;
 
 namespace WireMock.Matchers.Request;
 
@@ -22,7 +21,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <summary>
     /// The key
     /// </summary>
-    public string Key { get; }
+    public string? Key { get; }
 
     /// <summary>
     /// Defines if the key should be matched using case-ignore.
