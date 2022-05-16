@@ -33,8 +33,14 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
-    public RegexMatcher([RegexPattern] AnyOf<string, StringPattern> pattern, bool ignoreCase = false, bool throwException = false, bool useRegexExtended = true) :
-        this(MatchBehaviour.AcceptOnMatch, new[] { pattern }, ignoreCase, throwException, useRegexExtended)
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    public RegexMatcher(
+        [RegexPattern] AnyOf<string, StringPattern> pattern,
+        bool ignoreCase = false,
+        bool throwException = false,
+        bool useRegexExtended = true,
+        MatchOperator matchOperator = MatchOperator.Or) :
+        this(MatchBehaviour.AcceptOnMatch, new[] { pattern }, ignoreCase, throwException, useRegexExtended, matchOperator)
     {
     }
 
@@ -46,8 +52,15 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
-    public RegexMatcher(MatchBehaviour matchBehaviour, [RegexPattern] AnyOf<string, StringPattern> pattern, bool ignoreCase = false, bool throwException = false, bool useRegexExtended = true) :
-        this(matchBehaviour, new[] { pattern }, ignoreCase, throwException, useRegexExtended)
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    public RegexMatcher(
+        MatchBehaviour matchBehaviour,
+        [RegexPattern] AnyOf<string, StringPattern> pattern,
+        bool ignoreCase = false,
+        bool throwException = false,
+        bool useRegexExtended = true,
+        MatchOperator matchOperator = MatchOperator.Or) :
+        this(matchBehaviour, new[] { pattern }, ignoreCase, throwException, useRegexExtended, matchOperator)
     {
     }
 

@@ -50,7 +50,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <param name="key">The key.</param>
     /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
     /// <param name="values">The values.</param>
-    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, string[]? values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, value)).Cast<IStringMatcher>().ToArray())
+    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, string[]? values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
     {
     }
 
@@ -92,7 +92,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
         }
 
-        WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage) requestMessage).GetParameter(Key, IgnoreCase ?? false);
+        WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase ?? false);
         if (valuesPresentInRequestMessage == null)
         {
             // Key is not present at all, just return Mismatch
@@ -141,6 +141,6 @@ public class RequestMessageParamMatcher : IRequestMatcher
             }
         }
 
-        return total.Any() ? MatchScores.ToScore(total) : MatchScores.Mismatch;
+        return total.Any() ? MatchScores.ToScore(total, MatchOperator.Average) : MatchScores.Mismatch;
     }
 }

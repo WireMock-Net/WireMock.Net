@@ -41,7 +41,7 @@ internal class MappingConverter
             TimeSettings = TimeSettingsMapper.Map(mapping.TimeSettings),
             Title = mapping.Title,
             Description = mapping.Description,
-            Priority = mapping.Priority != 0 ? mapping.Priority : (int?)null,
+            Priority = mapping.Priority != 0 ? mapping.Priority : null,
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
@@ -79,7 +79,7 @@ internal class MappingConverter
                 Params = paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                 {
                     Name = pm.Key,
-                    IgnoreCase = pm.IgnoreCase == true ? true : (bool?)null,
+                    IgnoreCase = pm.IgnoreCase == true ? true : null,
                     Matchers = _mapper.Map(pm.Matchers)
                 }).ToList() : null
             },
@@ -227,7 +227,7 @@ internal class MappingConverter
         var newDictionary = new Dictionary<string, object>();
         foreach (var entry in dictionary)
         {
-            object value = entry.Value.Count == 1 ? (object)entry.Value.ToString() : entry.Value;
+            object value = entry.Value.Count == 1 ? entry.Value.ToString() : entry.Value;
             newDictionary.Add(entry.Key, value);
         }
 

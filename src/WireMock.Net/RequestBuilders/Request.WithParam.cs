@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, bool, string[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, bool ignoreCase = false, params string[] values)
         {
-            Guard.NotNull(key, nameof(key));
+            Guard.NotNull(key);
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase, values));
             return this;

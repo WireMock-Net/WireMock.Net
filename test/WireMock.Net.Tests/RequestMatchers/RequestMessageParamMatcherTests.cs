@@ -1,4 +1,4 @@
-﻿using NFluent;
+using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -24,7 +24,7 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Fact]
-        public void RequestMessageParamMatcher_GetMatchingScore_KeyWith1ValuePresentInUrl_And_With2Strings_Returns0_5()
+        public void RequestMessageParamMatcher_GetMatchingScore_KeyWith1ValuePresentInUrl_And_With2Strings_Or_Returns0_5()
         {
             // Assign
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost?key=test1"), "GET", "127.0.0.1");

@@ -74,7 +74,7 @@ public class SimMetricsMatcher : IStringMatcher
         AnyOf<string, StringPattern>[] patterns,
         SimMetricType simMetricType = SimMetricType.Levenstein,
         bool throwException = false,
-        MatchOperator matchOperator = MatchOperator.Or)
+        MatchOperator matchOperator = MatchOperator.Average)
     {
         _patterns = Guard.NotNull(patterns);
         _simMetricType = simMetricType;
@@ -142,7 +142,7 @@ public class SimMetricsMatcher : IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator Operator { get; } = MatchOperator.Average;
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => $"SimMetricsMatcher.{_simMetricType}";

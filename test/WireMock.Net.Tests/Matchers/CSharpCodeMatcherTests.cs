@@ -39,7 +39,7 @@ namespace WireMock.Net.Tests.Matchers
             string input = "x";
 
             // Act
-            var matcher = new CSharpCodeMatcher(MatchBehaviour.RejectOnMatch, "return it == \"x\";");
+            var matcher = new CSharpCodeMatcher(MatchBehaviour.RejectOnMatch, MatchOperator.Or, "return it == \"x\";");
 
             // Assert
             Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);

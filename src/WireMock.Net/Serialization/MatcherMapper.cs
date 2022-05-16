@@ -55,7 +55,7 @@ internal class MatcherMapper
             case "CSharpCodeMatcher":
                 if (_settings.AllowCSharpCodeMatcher == true)
                 {
-                    return PluginLoader.Load<ICSharpCodeMatcher>(matchBehaviour, stringPatterns);
+                    return PluginLoader.Load<ICSharpCodeMatcher>(matchBehaviour, matchOperator, stringPatterns);
                 }
 
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
@@ -94,7 +94,7 @@ internal class MatcherMapper
                 return new XPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
 
             case nameof(WildcardMatcher):
-                return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
+                return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, matchOperator);
 
             case nameof(ContentTypeMatcher):
                 return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);

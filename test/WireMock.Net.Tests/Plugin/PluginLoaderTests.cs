@@ -6,33 +6,32 @@ using WireMock.Models;
 using WireMock.Plugin;
 using Xunit;
 
-namespace WireMock.Net.Tests.Plugin
+namespace WireMock.Net.Tests.Plugin;
+
+public class PluginLoaderTests
 {
-    public class PluginLoaderTests
+    public interface IDummy
     {
-        public interface IDummy
-        {
-        }
+    }
 
-        [Fact]
-        public void Load_Valid()
-        {
-            // Act
-            AnyOf<string, StringPattern> pattern = "x";
-            var result = PluginLoader.Load<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, pattern);
+    [Fact]
+    public void Load_Valid()
+    {
+        // Act
+        AnyOf<string, StringPattern> pattern = "x";
+        var result = PluginLoader.Load<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
 
-            // Assert
-            result.Should().NotBeNull();
-        }
+        // Assert
+        result.Should().NotBeNull();
+    }
 
-        [Fact]
-        public void Load_Invalid_ThrowsException()
-        {
-            // Act
-            Action a = () => PluginLoader.Load<IDummy>();
+    [Fact]
+    public void Load_Invalid_ThrowsException()
+    {
+        // Act
+        Action a = () => PluginLoader.Load<IDummy>();
 
-            // Assert
-            a.Should().Throw<DllNotFoundException>();
-        }
+        // Assert
+        a.Should().Throw<DllNotFoundException>();
     }
 }

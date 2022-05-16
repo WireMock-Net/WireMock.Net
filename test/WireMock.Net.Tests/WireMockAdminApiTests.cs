@@ -264,7 +264,8 @@ namespace WireMock.Net.Tests
                         {
                             Name = "RegexMatcher",
                             Pattern = "hello",
-                            IgnoreCase = true
+                            IgnoreCase = true,
+                            MatchOperator = "Or"
                         }
                     }
                 },
