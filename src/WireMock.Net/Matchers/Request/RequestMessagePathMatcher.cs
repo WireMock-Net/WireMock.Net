@@ -54,7 +54,7 @@ public class RequestMessagePathMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
     /// <param name="matchers">The matchers.</param>
     public RequestMessagePathMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params IStringMatcher[] matchers)
     {

@@ -197,7 +197,8 @@ public partial class WireMockServer
         }
         else if (requestModel.Body?.Matchers != null)
         {
-            requestBuilder = requestBuilder.WithBody(_matcherMapper.Map(requestModel.Body.Matchers)!);
+            var matchOperator = StringUtils.ParseMatchOperator(requestModel.Body.MatchOperator);
+            requestBuilder = requestBuilder.WithBody(_matcherMapper.Map(requestModel.Body.Matchers)!, matchOperator);
         }
 
         return requestBuilder;

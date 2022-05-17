@@ -125,6 +125,7 @@ internal class MappingConverter
             else if (bodyMatcher.Matchers.Length > 1)
             {
                 mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatcher.Matchers);
+                mappingModel.Request.Body.MatchOperator = bodyMatcher.MatchOperator.ToString();
             }
         }
 
