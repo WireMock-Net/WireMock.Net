@@ -16,28 +16,44 @@ public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     IRequestBuilder WithPath(params IStringMatcher[] matchers);
 
     /// <summary>
+    /// WithPath: add path matching based on IStringMatchers.
+    /// </summary>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
+    /// <param name="matchers">The matchers.</param>
+    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+    IRequestBuilder WithPath(MatchOperator matchOperator, params IStringMatcher[] matchers);
+
+    /// <summary>
     /// WithPath: add path matching based on paths.
     /// </summary>
     /// <param name="paths">The paths.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
     IRequestBuilder WithPath(params string[] paths);
 
-    /// <summary>
-    /// WithPath: add path matching based on paths and matchBehaviour.
-    /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="paths">The paths.</param>
-    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths);
+    ///// <summary>
+    ///// WithPath: add path matching based on paths and matchBehaviour.
+    ///// </summary>
+    ///// <param name="matchBehaviour">The match behaviour.</param>
+    ///// <param name="paths">The paths.</param>
+    ///// <returns>The <see cref="IRequestBuilder"/>.</returns>
+    //IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths);
+
+    ///// <summary>
+    ///// WithPath: add path matching based on paths , matchBehaviour and MatchOperator.
+    ///// </summary>
+    ///// <param name="matchBehaviour">The match behaviour.</param>
+    ///// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
+    ///// <param name="paths">The paths.</param>
+    ///// <returns>The <see cref="IRequestBuilder"/>.</returns>
+    //IRequestBuilder WithPath(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params string[] paths);
 
     /// <summary>
     /// WithPath: add path matching based on paths , matchBehaviour and MatchOperator.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
     /// <param name="paths">The paths.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithPath(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params string[] paths);
+    IRequestBuilder WithPath(MatchOperator matchOperator, params string[] paths);
 
     /// <summary>
     /// WithPath: add path matching based on functions.

@@ -22,12 +22,12 @@ namespace WireMock.Models
         /// <summary>
         /// The Headers to send.
         /// </summary>
-        IDictionary<string, WireMockList<string>> Headers { get; }
+        IDictionary<string, WireMockList<string>>? Headers { get; }
 
         /// <summary>
         /// The body to send.
         /// </summary>
-        IBodyData BodyData { get; set; }
+        IBodyData? BodyData { get; set; }
 
         /// <summary>
         /// Use Transformer.

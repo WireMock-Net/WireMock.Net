@@ -26,15 +26,15 @@ namespace WireMock.Http
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public Task<HttpResponseMessage> SendAsync([NotNull] HttpClient client, [NotNull] IWebhookRequest request, [NotNull] IRequestMessage originalRequestMessage, [NotNull] IResponseMessage originalResponseMessage)
+        public Task<HttpResponseMessage> SendAsync(HttpClient client, IWebhookRequest request, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage)
         {
-            Guard.NotNull(client, nameof(client));
-            Guard.NotNull(request, nameof(request));
-            Guard.NotNull(originalRequestMessage, nameof(originalRequestMessage));
-            Guard.NotNull(originalResponseMessage, nameof(originalResponseMessage));
+            Guard.NotNull(client);
+            Guard.NotNull(request);
+            Guard.NotNull(originalRequestMessage);
+            Guard.NotNull(originalResponseMessage);
 
-            IBodyData bodyData;
-            IDictionary<string, WireMockList<string>> headers;
+            IBodyData? bodyData;
+            IDictionary<string, WireMockList<string>>? headers;
             if (request.UseTransformer == true)
             {
                 ITransformer responseMessageTransformer;

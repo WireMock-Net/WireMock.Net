@@ -27,7 +27,7 @@ internal class MappingConverter
         var response = (Response)mapping.Provider;
 
         var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
-        var pathMatchers = request.GetRequestMessageMatchers<RequestMessagePathMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
+        var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
         var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
         var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
         var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
@@ -50,11 +50,6 @@ internal class MappingConverter
                 ClientIP = clientIPMatchers.Any() ? new ClientIPModel
                 {
                     Matchers = _mapper.Map(clientIPMatchers)
-                } : null,
-
-                Path = pathMatchers.Any() ? new PathModel
-                {
-                    Matchers = _mapper.Map(pathMatchers)
                 } : null,
 
                 Url = urlMatchers.Any() ? new UrlModel
@@ -85,6 +80,16 @@ internal class MappingConverter
             },
             Response = new ResponseModel()
         };
+
+        if (pathMatcher is { Matchers: { } })
+        {
+            var pathMatchers = _mapper.Map(pathMatcher.Matchers);
+            mappingModel.Request.Path = new PathModel
+            {
+                Matchers = pathMatchers,
+                MatchOperator = pathMatchers.Length > 1 ? pathMatcher.MatchOperator.ToString() : null
+            };
+        }
 
         if (response.MinimumDelayMilliseconds >= 0 || response.MaximumDelayMilliseconds > 0)
         {

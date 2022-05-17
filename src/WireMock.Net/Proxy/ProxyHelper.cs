@@ -23,7 +23,7 @@ internal class ProxyHelper
         _settings = Guard.NotNull(settings);
     }
 
-    public async Task<(IResponseMessage Message, IMapping Mapping)> SendAsync(
+    public async Task<(IResponseMessage Message, IMapping? Mapping)> SendAsync(
         ProxyAndRecordSettings proxyAndRecordSettings,
         HttpClient client,
         IRequestMessage requestMessage,
@@ -48,7 +48,7 @@ internal class ProxyHelper
 
         var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
 
-        IMapping mapping = null;
+        IMapping? mapping = null;
         if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
             (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
         {
@@ -60,15 +60,15 @@ internal class ProxyHelper
 
     private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
-        string[] excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
-        string[] excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
+        var excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
         var request = Request.Create();
         request.WithPath(requestMessage.Path);
         request.UsingMethod(requestMessage.Method);
 
-        requestMessage.Query.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
-        requestMessage.Cookies.Loop((key, value) =>
+        requestMessage.Query?.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
+        requestMessage.Cookies?.Loop((key, value) =>
         {
             if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
@@ -77,7 +77,7 @@ internal class ProxyHelper
         });
 
         var allExcludedHeaders = new List<string>(excludedHeaders) { "Cookie" };
-        requestMessage.Headers.Loop((key, value) =>
+        requestMessage.Headers?.Loop((key, value) =>
         {
             if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
@@ -89,7 +89,7 @@ internal class ProxyHelper
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Json:
-                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson, true, throwExceptionWhenMatcherFails));
+                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
                 break;
 
             case BodyType.String:

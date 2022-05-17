@@ -234,14 +234,14 @@ public partial class WireMockServer
     private async Task<IResponseMessage> ProxyAndRecordAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
     {
         var requestUri = new Uri(requestMessage.Url);
-        var proxyUri = new Uri(settings.ProxyAndRecordSettings.Url);
+        var proxyUri = new Uri(settings.ProxyAndRecordSettings!.Url);
         var proxyUriWithRequestPathAndQuery = new Uri(proxyUri, requestUri.PathAndQuery);
 
         var proxyHelper = new ProxyHelper(settings);
 
         var (responseMessage, mapping) = await proxyHelper.SendAsync(
-            _settings.ProxyAndRecordSettings,
-            _httpClientForProxy,
+            _settings.ProxyAndRecordSettings!,
+            _httpClientForProxy!,
             requestMessage,
             proxyUriWithRequestPathAndQuery.AbsoluteUri
         ).ConfigureAwait(false);
@@ -442,73 +442,6 @@ public partial class WireMockServer
         }
     }
 
-    private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
-    {
-        Guard.NotNull(mappingModel, nameof(mappingModel));
-        Guard.NotNull(mappingModel.Request, nameof(mappingModel.Request));
-        Guard.NotNull(mappingModel.Response, nameof(mappingModel.Response));
-
-        var requestBuilder = InitRequestBuilder(mappingModel.Request, true);
-        if (requestBuilder == null)
-        {
-            return null;
-        }
-
-        var responseBuilder = InitResponseBuilder(mappingModel.Response);
-
-        var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
-
-        if (guid != null)
-        {
-            respondProvider = respondProvider.WithGuid(guid.Value);
-        }
-        else if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
-        {
-            respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
-        }
-
-        if (mappingModel.TimeSettings != null)
-        {
-            respondProvider = respondProvider.WithTimeSettings(TimeSettingsMapper.Map(mappingModel.TimeSettings));
-        }
-
-        if (path != null)
-        {
-            respondProvider = respondProvider.WithPath(path);
-        }
-
-        if (!string.IsNullOrEmpty(mappingModel.Title))
-        {
-            respondProvider = respondProvider.WithTitle(mappingModel.Title);
-        }
-
-        if (mappingModel.Priority != null)
-        {
-            respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
-        }
-
-        if (mappingModel.Scenario != null)
-        {
-            respondProvider = respondProvider.InScenario(mappingModel.Scenario);
-            respondProvider = respondProvider.WhenStateIs(mappingModel.WhenStateIs);
-            respondProvider = respondProvider.WillSetStateTo(mappingModel.SetStateTo);
-        }
-
-        if (mappingModel.Webhook != null)
-        {
-            respondProvider = respondProvider.WithWebhook(WebhookMapper.Map(mappingModel.Webhook));
-        }
-        else if (mappingModel.Webhooks?.Length > 1)
-        {
-            var webhooks = mappingModel.Webhooks.Select(WebhookMapper.Map).ToArray();
-            respondProvider = respondProvider.WithWebhook(webhooks);
-        }
-
-        respondProvider.RespondWith(responseBuilder);
-
-        return respondProvider.Guid;
-    }
-
     private IResponseMessage MappingsDelete(IRequestMessage requestMessage)
     {
         if (!string.IsNullOrEmpty(requestMessage.Body))
@@ -518,23 +451,19 @@ public partial class WireMockServer
             {
                 return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
             }
-            else
-            {
-                // return bad request
-                return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
-            }
-        }
-        else
-        {
-            ResetMappings();
 
-            ResetScenarios();
-
-            return ResponseMessageBuilder.Create("Mappings deleted");
+            // return bad request
+            return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
         }
+
+        ResetMappings();
+
+        ResetScenarios();
+
+        return ResponseMessageBuilder.Create("Mappings deleted");
     }
 
-    private IEnumerable<Guid> MappingsDeleteMappingFromBody(IRequestMessage requestMessage)
+    private IEnumerable<Guid>? MappingsDeleteMappingFromBody(IRequestMessage requestMessage)
     {
         var deletedGuids = new List<Guid>();
 
@@ -577,9 +506,10 @@ public partial class WireMockServer
         ResetScenarios();
 
         string message = "Mappings reset";
-        if (requestMessage.Query.ContainsKey(QueryParamReloadStaticMappings) &&
-            bool.TryParse(requestMessage.Query[QueryParamReloadStaticMappings].ToString(), out bool reloadStaticMappings)
-            && reloadStaticMappings)
+        if (requestMessage.Query != null &&
+            requestMessage.Query.ContainsKey(QueryParamReloadStaticMappings) &&
+            bool.TryParse(requestMessage.Query[QueryParamReloadStaticMappings].ToString(), out bool reloadStaticMappings) &&
+            reloadStaticMappings)
         {
             ReadStaticMappings();
             message = $"{message} and static mappings reloaded";
@@ -718,220 +648,6 @@ public partial class WireMockServer
         return this;
     }
     #endregion
-    private IRequestBuilder? InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
-    {
-        IRequestBuilder requestBuilder = Request.Create();
-
-        if (requestModel.ClientIP != null)
-        {
-            if (requestModel.ClientIP is string clientIP)
-            {
-                requestBuilder = requestBuilder.WithClientIP(clientIP);
-            }
-            else
-            {
-                var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
-                if (clientIPModel?.Matchers != null)
-                {
-                    requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                }
-            }
-        }
-
-        bool pathOrUrlMatchersValid = false;
-        if (requestModel.Path != null)
-        {
-            if (requestModel.Path is string path)
-            {
-                requestBuilder = requestBuilder.WithPath(path);
-                pathOrUrlMatchersValid = true;
-            }
-            else
-            {
-                var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
-                if (pathModel?.Matchers != null)
-                {
-                    requestBuilder = requestBuilder.WithPath(pathModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                    pathOrUrlMatchersValid = true;
-                }
-            }
-        }
-        else if (requestModel.Url != null)
-        {
-            if (requestModel.Url is string url)
-            {
-                requestBuilder = requestBuilder.WithUrl(url);
-                pathOrUrlMatchersValid = true;
-            }
-            else
-            {
-                var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
-                if (urlModel?.Matchers != null)
-                {
-                    requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                    pathOrUrlMatchersValid = true;
-                }
-            }
-        }
-
-        if (pathOrUrlRequired && !pathOrUrlMatchersValid)
-        {
-            _settings.Logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
-            return null;
-        }
-
-        if (requestModel.Methods != null)
-        {
-            requestBuilder = requestBuilder.UsingMethod(requestModel.Methods);
-        }
-
-        if (requestModel.Headers != null)
-        {
-            foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
-            {
-                requestBuilder = requestBuilder.WithHeader(
-                    headerModel.Name,
-                    headerModel.IgnoreCase == true,
-                    headerModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    headerModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray()
-                );
-            }
-        }
-
-        if (requestModel.Cookies != null)
-        {
-            foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
-            {
-                requestBuilder = requestBuilder.WithCookie(
-                    cookieModel.Name,
-                    cookieModel.IgnoreCase == true,
-                    cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    cookieModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-            }
-        }
-
-        if (requestModel.Params != null)
-        {
-            foreach (var paramModel in requestModel.Params.Where(p => p is { Matchers: { } }))
-            {
-                bool ignoreCase = paramModel.IgnoreCase == true;
-                requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-            }
-        }
-
-        if (requestModel.Body?.Matcher != null)
-        {
-            requestBuilder = requestBuilder.WithBody(_matcherMapper.Map(requestModel.Body.Matcher));
-        }
-        else if (requestModel.Body?.Matchers != null)
-        {
-            requestBuilder = requestBuilder.WithBody(_matcherMapper.Map(requestModel.Body.Matchers));
-        }
-
-        return requestBuilder;
-    }
-
-    private IResponseBuilder InitResponseBuilder(ResponseModel responseModel)
-    {
-        IResponseBuilder responseBuilder = Response.Create();
-
-        if (responseModel.Delay > 0)
-        {
-            responseBuilder = responseBuilder.WithDelay(responseModel.Delay.Value);
-        }
-        else if (responseModel.MinimumRandomDelay >= 0 || responseModel.MaximumRandomDelay > 0)
-        {
-            responseBuilder = responseBuilder.WithRandomDelay(responseModel.MinimumRandomDelay ?? 0, responseModel.MaximumRandomDelay ?? 60_000);
-        }
-
-        if (responseModel.UseTransformer == true)
-        {
-            if (!Enum.TryParse<TransformerType>(responseModel.TransformerType, out var transformerType))
-            {
-                transformerType = TransformerType.Handlebars;
-            }
-
-            if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
-            {
-                option = ReplaceNodeOptions.None;
-            }
-            responseBuilder = responseBuilder.WithTransformer(
-                transformerType,
-                responseModel.UseTransformerForBodyAsFile == true,
-                option);
-        }
-
-        if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
-        {
-            var proxyAndRecordSettings = new ProxyAndRecordSettings
-            {
-                Url = responseModel.ProxyUrl,
-                ClientX509Certificate2ThumbprintOrSubjectName = responseModel.X509Certificate2ThumbprintOrSubjectName,
-                WebProxySettings = responseModel.WebProxy != null ? new WebProxySettings
-                {
-                    Address = responseModel.WebProxy.Address,
-                    UserName = responseModel.WebProxy.UserName,
-                    Password = responseModel.WebProxy.Password
-                } : null
-            };
-
-            return responseBuilder.WithProxy(proxyAndRecordSettings);
-        }
-
-        if (responseModel.StatusCode is string statusCodeAsString)
-        {
-            responseBuilder = responseBuilder.WithStatusCode(statusCodeAsString);
-        }
-        else if (responseModel.StatusCode != null)
-        {
-            // Convert to Int32 because Newtonsoft deserializes an 'object' with a number value to a long.
-            responseBuilder = responseBuilder.WithStatusCode(Convert.ToInt32(responseModel.StatusCode));
-        }
-
-        if (responseModel.Headers != null)
-        {
-            foreach (var entry in responseModel.Headers)
-            {
-                responseBuilder = entry.Value is string value ?
-                    responseBuilder.WithHeader(entry.Key, value) :
-                    responseBuilder.WithHeader(entry.Key, JsonUtils.ParseJTokenToObject<string[]>(entry.Value));
-            }
-        }
-        else if (responseModel.HeadersRaw != null)
-        {
-            foreach (string headerLine in responseModel.HeadersRaw.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                int indexColon = headerLine.IndexOf(":", StringComparison.Ordinal);
-                string key = headerLine.Substring(0, indexColon).TrimStart(' ', '\t');
-                string value = headerLine.Substring(indexColon + 1).TrimStart(' ', '\t');
-                responseBuilder = responseBuilder.WithHeader(key, value);
-            }
-        }
-
-        if (responseModel.BodyAsBytes != null)
-        {
-            responseBuilder = responseBuilder.WithBody(responseModel.BodyAsBytes, responseModel.BodyDestination, ToEncoding(responseModel.BodyEncoding));
-        }
-        else if (responseModel.Body != null)
-        {
-            responseBuilder = responseBuilder.WithBody(responseModel.Body, responseModel.BodyDestination, ToEncoding(responseModel.BodyEncoding));
-        }
-        else if (responseModel.BodyAsJson != null)
-        {
-            responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
-        }
-        else if (responseModel.BodyAsFile != null)
-        {
-            responseBuilder = responseBuilder.WithBodyFromFile(responseModel.BodyAsFile, responseModel.BodyAsFileIsCached == true);
-        }
-
-        if (responseModel.Fault != null && Enum.TryParse(responseModel.Fault.Type, out FaultType faultType))
-        {
-            responseBuilder.WithFault(faultType, responseModel.Fault.Percentage);
-        }
-
-        return responseBuilder;
-    }
 
     private void DisposeEnhancedFileSystemWatcher()
     {

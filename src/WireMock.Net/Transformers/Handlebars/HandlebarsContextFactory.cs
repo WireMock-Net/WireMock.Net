@@ -1,35 +1,33 @@
 using System;
 using HandlebarsDotNet;
-using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Handlers;
 
-namespace WireMock.Transformers.Handlebars
+namespace WireMock.Transformers.Handlebars;
+
+internal class HandlebarsContextFactory : ITransformerContextFactory
 {
-    internal class HandlebarsContextFactory : ITransformerContextFactory
+    private readonly IFileSystemHandler _fileSystemHandler;
+    private readonly Action<IHandlebars, IFileSystemHandler>? _action;
+
+    public HandlebarsContextFactory(IFileSystemHandler fileSystemHandler, Action<IHandlebars, IFileSystemHandler>? action)
     {
-        private readonly IFileSystemHandler _fileSystemHandler;
-        private readonly Action<IHandlebars, IFileSystemHandler> _action;
+        _fileSystemHandler = Guard.NotNull(fileSystemHandler);
+        _action = action;
+    }
 
-        public HandlebarsContextFactory([NotNull] IFileSystemHandler fileSystemHandler, [CanBeNull] Action<IHandlebars, IFileSystemHandler> action)
+    public ITransformerContext Create()
+    {
+        var handlebars = HandlebarsDotNet.Handlebars.Create();
+
+        WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
+
+        _action?.Invoke(handlebars, _fileSystemHandler);
+
+        return new HandlebarsContext
         {
-            _fileSystemHandler = Guard.NotNull(fileSystemHandler);
-            _action = action;
-        }
-
-        public ITransformerContext Create()
-        {
-            var handlebars = HandlebarsDotNet.Handlebars.Create();
-
-            WireMockHandlebarsHelpers.Register(handlebars, _fileSystemHandler);
-
-            _action?.Invoke(handlebars, _fileSystemHandler);
-
-            return new HandlebarsContext
-            {
-                Handlebars = handlebars,
-                FileSystemHandler = _fileSystemHandler
-            };
-        }
+            Handlebars = handlebars,
+            FileSystemHandler = _fileSystemHandler
+        };
     }
 }

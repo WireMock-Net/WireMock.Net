@@ -9,6 +9,7 @@ using WireMock.Matchers;
 using WireMock.Models;
 using WireMock.Plugin;
 using WireMock.Settings;
+using WireMock.Util;
 
 namespace WireMock.Serialization;
 
@@ -42,7 +43,7 @@ internal class MatcherMapper
         string? matcherType = parts.Length > 1 ? parts[1] : null;
         var stringPatterns = ParseStringPatterns(matcher);
         var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
-        var matchOperator = Enum.TryParse(matcher.MatchOperator, out MatchOperator @operator) ? @operator : MatchOperator.Or;
+        var matchOperator = StringUtils.ParseMatchOperator(matcher.MatchOperator);
         bool ignoreCase = matcher.IgnoreCase == true;
         bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
         bool useRegexExtended = _settings.UseRegexExtended == true;
@@ -118,9 +119,14 @@ internal class MatcherMapper
         }
     }
 
-    public MatcherModel[] Map(IEnumerable<IMatcher>? matchers)
+    public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
     {
-        return matchers?.Where(m => m != null).Select(Map).ToArray()!;
+        if (matchers == null)
+        {
+            return null;
+        }
+
+        return matchers.Where(m => m != null).Select(Map).ToArray()!;
     }
 
     public MatcherModel? Map(IMatcher? matcher)
@@ -144,8 +150,6 @@ internal class MatcherMapper
         {
             // If the matcher is a IStringMatcher, get the operator & patterns.
             case IStringMatcher stringMatcher:
-                model.MatchOperator = stringMatcher.Operator.ToString();
-
                 var stringPatterns = stringMatcher.GetPatterns();
                 if (stringPatterns.Length == 1)
                 {
@@ -162,6 +166,7 @@ internal class MatcherMapper
                 else
                 {
                     model.Patterns = stringPatterns.Select(p => p.GetPattern()).Cast<object>().ToArray();
+                    model.MatchOperator = stringMatcher.Operator.ToString();
                 }
                 break;
 
