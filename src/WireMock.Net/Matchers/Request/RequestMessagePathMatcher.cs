@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Models;
 
 namespace WireMock.Matchers.Request
 {
@@ -14,42 +15,60 @@ namespace WireMock.Matchers.Request
         /// <summary>
         /// The matchers
         /// </summary>
-        public IReadOnlyList<IStringMatcher> Matchers { get; }
+        public IReadOnlyList<IStringMatcher>? Matchers { get; }
 
         /// <summary>
         /// The path functions
         /// </summary>
-        public Func<string, bool>[] Funcs { get; }
+        public Func<string, bool>[]? Funcs { get; }
+
+        /// <summary>
+        /// The <see cref="MatchBehaviour"/>
+        /// </summary>
+        public MatchBehaviour Behaviour { get; }
+
+        /// <summary>
+        /// The <see cref="MatchOperator"/>
+        /// </summary>
+        public MatchOperator Operator { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
         /// <param name="paths">The paths.</param>
-        public RequestMessagePathMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] paths) : this(paths.Select(path => new WildcardMatcher(matchBehaviour, path)).Cast<IStringMatcher>().ToArray())
+        public RequestMessagePathMatcher(
+            MatchBehaviour matchBehaviour,
+            MatchOperator matchOperator,
+            params string[] paths) :
+            this(matchBehaviour, matchOperator, paths
+                .Select(path => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { path }, false, false, matchOperator))
+                .Cast<IStringMatcher>().ToArray())
         {
+            Operator = matchOperator;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
         /// <param name="matchers">The matchers.</param>
-        public RequestMessagePathMatcher([NotNull] params IStringMatcher[] matchers)
+        public RequestMessagePathMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params IStringMatcher[] matchers)
         {
-            Guard.NotNull(matchers, nameof(matchers));
-
-            Matchers = matchers;
+            Matchers = Guard.NotNull(matchers);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessagePathMatcher"/> class.
         /// </summary>
+        /// <param name="matchBehaviour">The match behaviour.</param>
+        /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
         /// <param name="funcs">The path functions.</param>
-        public RequestMessagePathMatcher([NotNull] params Func<string, bool>[] funcs)
+        public RequestMessagePathMatcher(params Func<string, bool>[] funcs)
         {
-            Guard.NotNull(funcs, nameof(funcs));
-
-            Funcs = funcs;
+            Funcs = Guard.NotNull(funcs);
         }
 
         /// <inheritdoc cref="IRequestMatcher.GetMatchingScore"/>
@@ -68,7 +87,7 @@ namespace WireMock.Matchers.Request
 
             if (Funcs != null)
             {
-                return MatchScores.ToScore(requestMessage.Path != null && Funcs.Any(func => func(requestMessage.Path)));
+                return MatchScores.ToScore(Behaviour, requestMessage.Path != null && Funcs.Any(func => func(requestMessage.Path)));
             }
 
             return MatchScores.Mismatch;

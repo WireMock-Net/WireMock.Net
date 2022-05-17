@@ -60,7 +60,7 @@ namespace WireMock
         public string RawQuery { get; }
 
         /// <inheritdoc cref="IRequestMessage.BodyData" />
-        public IBodyData BodyData { get; }
+        public IBodyData? BodyData { get; }
 
         /// <inheritdoc cref="IRequestMessage.Body" />
         public string Body { get; }

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using AnyOfTypes;
+using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
 
@@ -58,7 +59,7 @@ public class WildcardMatcher : RegexMatcher
         MatchOperator matchOperator = MatchOperator.Or) :
             base(matchBehaviour, CreateArray(patterns), ignoreCase, throwException, true, matchOperator)
     {
-        _patterns = patterns;
+        _patterns = Guard.NotNull(patterns);
     }
 
     /// <inheritdoc />

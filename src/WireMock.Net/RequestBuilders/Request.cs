@@ -103,7 +103,7 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         Guard.NotNullOrEmpty(matchers);
 
-        _requestMatchers.Add(new RequestMessagePathMatcher(matchers));
+        _requestMatchers.Add(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, matchers));
         return this;
     }
 
@@ -118,7 +118,16 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         Guard.NotNullOrEmpty(paths);
 
-        _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, paths));
+        _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, MatchOperator.Or, paths));
+        return this;
+    }
+
+    /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(MatchBehaviour, MatchOperator, string[])"/>
+    public IRequestBuilder WithPath(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params string[] paths)
+    {
+        Guard.NotNullOrEmpty(paths);
+
+        _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, matchOperator, paths));
         return this;
     }
 
@@ -127,7 +136,7 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         Guard.NotNullOrEmpty(funcs);
 
-        _requestMatchers.Add(new RequestMessagePathMatcher(funcs));
+        _requestMatchers.Add(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, funcs));
         return this;
     }
 
