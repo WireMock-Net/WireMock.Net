@@ -97,37 +97,4 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
         _requestMatchers.Add(new RequestMessageClientIPMatcher(funcs));
         return this;
     }
-
-    /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(IStringMatcher[])"/>
-    public IRequestBuilder WithUrl(params IStringMatcher[] matchers)
-    {
-        Guard.NotNullOrEmpty(matchers);
-
-        _requestMatchers.Add(new RequestMessageUrlMatcher(matchers));
-        return this;
-    }
-
-    /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(string[])"/>
-    public IRequestBuilder WithUrl(params string[] urls)
-    {
-        return WithUrl(MatchBehaviour.AcceptOnMatch, urls);
-    }
-
-    /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(MatchBehaviour, string[])"/>
-    public IRequestBuilder WithUrl(MatchBehaviour matchBehaviour, params string[] urls)
-    {
-        Guard.NotNullOrEmpty(urls);
-
-        _requestMatchers.Add(new RequestMessageUrlMatcher(matchBehaviour, urls));
-        return this;
-    }
-
-    /// <inheritdoc cref="IUrlAndPathRequestBuilder.WithUrl(Func{string, bool}[])"/>
-    public IRequestBuilder WithUrl(params Func<string, bool>[] funcs)
-    {
-        Guard.NotNullOrEmpty(funcs);
-
-        _requestMatchers.Add(new RequestMessageUrlMatcher(funcs));
-        return this;
-    }
 }

@@ -28,15 +28,6 @@ public partial class Request
         return WithPath(MatchOperator.Or, paths);
     }
 
-    ///// <inheritdoc cref="IUrlAndPathRequestBuilder.WithPath(MatchBehaviour, string[])"/>
-    //public IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths)
-    //{
-    //    Guard.NotNullOrEmpty(paths);
-
-    //    _requestMatchers.Add(new RequestMessagePathMatcher(matchBehaviour, MatchOperator.Or, paths));
-    //    return this;
-    //}
-
     /// <inheritdoc />
     public IRequestBuilder WithPath(MatchOperator matchOperator, params string[] paths)
     {

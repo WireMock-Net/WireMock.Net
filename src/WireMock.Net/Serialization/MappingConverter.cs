@@ -28,7 +28,7 @@ internal class MappingConverter
 
         var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
-        var urlMatchers = request.GetRequestMessageMatchers<RequestMessageUrlMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
+        var urlMatcher = request.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
         var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
         var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
@@ -50,11 +50,6 @@ internal class MappingConverter
                 ClientIP = clientIPMatchers.Any() ? new ClientIPModel
                 {
                     Matchers = _mapper.Map(clientIPMatchers)
-                } : null,
-
-                Url = urlMatchers.Any() ? new UrlModel
-                {
-                    Matchers = _mapper.Map(urlMatchers)
                 } : null,
 
                 Methods = methodMatcher?.Methods,
@@ -87,7 +82,16 @@ internal class MappingConverter
             mappingModel.Request.Path = new PathModel
             {
                 Matchers = pathMatchers,
-                MatchOperator = pathMatchers.Length > 1 ? pathMatcher.MatchOperator.ToString() : null
+                MatchOperator = pathMatchers?.Length > 1 ? pathMatcher.MatchOperator.ToString() : null
+            };
+        }
+        else if (urlMatcher is { Matchers: { } })
+        {
+            var urlMatchers = _mapper.Map(urlMatcher.Matchers);
+            mappingModel.Request.Url = new UrlModel
+            {
+                Matchers = urlMatchers,
+                MatchOperator = urlMatchers?.Length > 1 ? urlMatcher.MatchOperator.ToString() : null
             };
         }
 

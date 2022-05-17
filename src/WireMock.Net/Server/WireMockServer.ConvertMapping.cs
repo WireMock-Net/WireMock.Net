@@ -139,7 +139,8 @@ public partial class WireMockServer
                 var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
                 if (urlModel?.Matchers != null)
                 {
-                    requestBuilder = requestBuilder.WithUrl(urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                    var matchOperator = StringUtils.ParseMatchOperator(urlModel.MatchOperator);
+                    requestBuilder = requestBuilder.WithUrl(matchOperator, urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                     pathOrUrlMatchersValid = true;
                 }
             }

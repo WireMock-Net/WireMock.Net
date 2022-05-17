@@ -16,7 +16,7 @@ public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     IRequestBuilder WithPath(params IStringMatcher[] matchers);
 
     /// <summary>
-    /// WithPath: add path matching based on IStringMatchers.
+    /// WithPath: add path matching based on MatchOperator and IStringMatchers.
     /// </summary>
     /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
     /// <param name="matchers">The matchers.</param>
@@ -29,23 +29,6 @@ public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     /// <param name="paths">The paths.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
     IRequestBuilder WithPath(params string[] paths);
-
-    ///// <summary>
-    ///// WithPath: add path matching based on paths and matchBehaviour.
-    ///// </summary>
-    ///// <param name="matchBehaviour">The match behaviour.</param>
-    ///// <param name="paths">The paths.</param>
-    ///// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    //IRequestBuilder WithPath(MatchBehaviour matchBehaviour, params string[] paths);
-
-    ///// <summary>
-    ///// WithPath: add path matching based on paths , matchBehaviour and MatchOperator.
-    ///// </summary>
-    ///// <param name="matchBehaviour">The match behaviour.</param>
-    ///// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
-    ///// <param name="paths">The paths.</param>
-    ///// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    //IRequestBuilder WithPath(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params string[] paths);
 
     /// <summary>
     /// WithPath: add path matching based on paths , matchBehaviour and MatchOperator.
@@ -70,6 +53,14 @@ public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     IRequestBuilder WithUrl(params IStringMatcher[] matchers);
 
     /// <summary>
+    /// WithUrl: add url matching based on MatchOperator and IStringMatchers.
+    /// </summary>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
+    /// <param name="matchers">The matchers.</param>
+    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+    IRequestBuilder WithUrl(MatchOperator matchOperator, params IStringMatcher[] matchers);
+
+    /// <summary>
     /// WithUrl: add url matching based on urls.
     /// </summary>
     /// <param name="urls">The urls.</param>
@@ -79,10 +70,10 @@ public interface IUrlAndPathRequestBuilder : IMethodRequestBuilder
     /// <summary>
     /// WithUrl: add url matching based on urls.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
     /// <param name="urls">The urls.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithUrl(MatchBehaviour matchBehaviour, params string[] urls);
+    IRequestBuilder WithUrl(MatchOperator matchOperator, params string[] urls);
 
     /// <summary>
     /// WithUrl: add url matching based on functions.

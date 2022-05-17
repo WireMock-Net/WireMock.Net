@@ -59,6 +59,8 @@ public class RequestMessagePathMatcher : IRequestMatcher
     public RequestMessagePathMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params IStringMatcher[] matchers)
     {
         Matchers = Guard.NotNull(matchers);
+        Behaviour = matchBehaviour;
+        MatchOperator = matchOperator;
     }
 
     /// <summary>
