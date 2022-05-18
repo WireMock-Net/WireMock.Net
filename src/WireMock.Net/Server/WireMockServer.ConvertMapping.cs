@@ -154,7 +154,9 @@ public partial class WireMockServer
 
         if (requestModel.Methods != null)
         {
-            requestBuilder = requestBuilder.UsingMethod(requestModel.Methods);
+            var matchBehaviour = requestModel.MethodsRejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+            var matchOperator = StringUtils.ParseMatchOperator(requestModel.MethodsMatchOperator);
+            requestBuilder = requestBuilder.UsingMethod(matchBehaviour, matchOperator, requestModel.Methods);
         }
 
         if (requestModel.Headers != null)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -26,7 +27,7 @@ internal class MappingConverter
         var request = (Request)mapping.RequestMatcher;
         var response = (Response)mapping.Provider;
 
-        var clientIPMatchers = request.GetRequestMessageMatchers<RequestMessageClientIPMatcher>().Where(m => m.Matchers != null).SelectMany(m => m.Matchers).ToList();
+        var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
         var urlMatcher = request.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
         var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
@@ -47,13 +48,6 @@ internal class MappingConverter
             SetStateTo = mapping.NextState,
             Request = new RequestModel
             {
-                ClientIP = clientIPMatchers.Any() ? new ClientIPModel
-                {
-                    Matchers = _mapper.Map(clientIPMatchers)
-                } : null,
-
-                Methods = methodMatcher?.Methods,
-
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
                 {
                     Name = hm.Name,
@@ -75,6 +69,23 @@ internal class MappingConverter
             },
             Response = new ResponseModel()
         };
+
+        if (methodMatcher is { Methods: { } })
+        {
+            mappingModel.Request.Methods = methodMatcher.Methods;
+            mappingModel.Request.MethodsRejectOnMatch = methodMatcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null;
+            mappingModel.Request.MethodsMatchOperator = methodMatcher.Methods.Length > 1 ? methodMatcher.MatchOperator.ToString() : null;
+        }
+
+        if (clientIPMatcher is { Matchers: { } })
+        {
+            var clientIPMatchers = _mapper.Map(clientIPMatcher.Matchers);
+            mappingModel.Request.Path = new ClientIPModel
+            {
+                Matchers = clientIPMatchers,
+                MatchOperator = clientIPMatchers?.Length > 1 ? clientIPMatcher.MatchOperator.ToString() : null
+            };
+        }
 
         if (pathMatcher is { Matchers: { } })
         {
