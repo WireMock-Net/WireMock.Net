@@ -32,7 +32,7 @@ public partial class WireMockServerTests
         var server = WireMockServer.Start();
 
         // Act
-        await server.CreateClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+        await server.CreateClient().GetAsync("/foo").ConfigureAwait(false);
         server.ResetLogEntries();
 
         // Assert
