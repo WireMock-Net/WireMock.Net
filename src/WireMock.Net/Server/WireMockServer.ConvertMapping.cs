@@ -161,10 +161,12 @@ public partial class WireMockServer
         {
             foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))
             {
+                var matchOperator = StringUtils.ParseMatchOperator(headerModel.MatchOperator);
                 requestBuilder = requestBuilder.WithHeader(
                     headerModel.Name,
                     headerModel.IgnoreCase == true,
                     headerModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                    matchOperator,
                     headerModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray()
                 );
             }
