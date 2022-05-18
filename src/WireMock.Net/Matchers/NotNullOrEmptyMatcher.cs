@@ -66,5 +66,5 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; } = MatchOperator.Or;
+    public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 }

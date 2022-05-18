@@ -68,7 +68,7 @@ public class SimMetricsMatcher : IStringMatcher
     /// <param name="patterns">The patterns.</param>
     /// <param name="simMetricType">The SimMetric Type</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public SimMetricsMatcher(
         MatchBehaviour matchBehaviour,
         AnyOf<string, StringPattern>[] patterns,
@@ -80,7 +80,7 @@ public class SimMetricsMatcher : IStringMatcher
         _simMetricType = simMetricType;
         MatchBehaviour = matchBehaviour;
         ThrowException = throwException;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -88,7 +88,7 @@ public class SimMetricsMatcher : IStringMatcher
     {
         IStringMetric stringMetricType = GetStringMetricType();
 
-        var score = MatchScores.ToScore(_patterns.Select(p => stringMetricType.GetSimilarity(p.GetPattern(), input)), Operator);
+        var score = MatchScores.ToScore(_patterns.Select(p => stringMetricType.GetSimilarity(p.GetPattern(), input)), MatchOperator);
         return MatchBehaviourHelper.Convert(MatchBehaviour, score);
     }
 
@@ -142,7 +142,7 @@ public class SimMetricsMatcher : IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; } = MatchOperator.Average;
+    public MatchOperator MatchOperator { get; } = MatchOperator.Average;
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => $"SimMetricsMatcher.{_simMetricType}";

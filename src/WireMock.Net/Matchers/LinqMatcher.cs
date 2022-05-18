@@ -53,7 +53,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="patterns">The patterns.</param>
     public LinqMatcher(
         MatchBehaviour matchBehaviour,
@@ -64,7 +64,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         ThrowException = throwException;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -78,7 +78,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         try
         {
             // Use the Any(...) method to check if the result matches
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())), Operator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())), MatchOperator);
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
@@ -122,7 +122,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
             var queryable2 = queryable1.Select(dynamicSelect);
 
             // Use the Any(...) method to check if the result matches.
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)), Operator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)), MatchOperator);
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
@@ -144,7 +144,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => "LinqMatcher";

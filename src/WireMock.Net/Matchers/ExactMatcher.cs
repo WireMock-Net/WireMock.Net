@@ -33,7 +33,7 @@ public class ExactMatcher : IStringMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="values">The values.</param>
     public ExactMatcher(
         MatchBehaviour matchBehaviour,
@@ -45,13 +45,13 @@ public class ExactMatcher : IStringMatcher
 
         MatchBehaviour = matchBehaviour;
         ThrowException = throwException;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
     public double IsMatch(string input)
     {
-        double score = MatchScores.ToScore(_values.Select(v => v.GetPattern() == input), Operator);
+        double score = MatchScores.ToScore(_values.Select(v => v.GetPattern() == input), MatchOperator);
         return MatchBehaviourHelper.Convert(MatchBehaviour, score);
     }
 
@@ -62,7 +62,7 @@ public class ExactMatcher : IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => "ExactMatcher";

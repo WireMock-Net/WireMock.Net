@@ -44,7 +44,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="patterns">The patterns.</param>
     public JsonPathMatcher(
         MatchBehaviour matchBehaviour,
@@ -55,7 +55,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         ThrowException = throwException;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -114,13 +114,13 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => "JsonPathMatcher";
 
     private double IsMatch(JToken jToken)
     {
-        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null), Operator);
+        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null), MatchOperator);
     }
 }

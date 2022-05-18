@@ -3,96 +3,95 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace WireMock.Matchers
+namespace WireMock.Matchers;
+
+/// <summary>
+/// MatchScores
+/// </summary>
+public static class MatchScores
 {
     /// <summary>
-    /// MatchScores
+    /// The tolerance
     /// </summary>
-    public static class MatchScores
+    public const double Tolerance = 0.000001;
+
+    /// <summary>
+    /// The default mismatch score
+    /// </summary>
+    public const double Mismatch = 0.0;
+
+    /// <summary>
+    /// The default perfect match score
+    /// </summary>
+    public const double Perfect = 1.0;
+
+    /// <summary>
+    /// The almost perfect match score
+    /// </summary>
+    public const double AlmostPerfect = 0.99;
+
+    /// <summary>
+    /// Is the value a perfect match?
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>true/false</returns>
+    public static bool IsPerfect(double value)
     {
-        /// <summary>
-        /// The tolerance
-        /// </summary>
-        public const double Tolerance = 0.000001;
+        return Math.Abs(value - Perfect) < Tolerance;
+    }
 
-        /// <summary>
-        /// The default mismatch score
-        /// </summary>
-        public const double Mismatch = 0.0;
+    /// <summary>
+    /// Convert a bool to the score.
+    /// </summary>
+    /// <param name="value">if set to <c>true</c> [value].</param>
+    /// <returns>score</returns>
+    public static double ToScore(bool value)
+    {
+        return value ? Perfect : Mismatch;
+    }
 
-        /// <summary>
-        /// The default perfect match score
-        /// </summary>
-        public const double Perfect = 1.0;
+    /// <summary>
+    /// Calculates the score from multiple values.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/>.</param>
+    /// <returns>average score</returns>
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    public static double ToScore(IEnumerable<bool> values, MatchOperator matchOperator)
+    {
+        return ToScore(values.Select(ToScore), matchOperator);
+        //if (!values.Any())
+        //{
+        //    return Mismatch;
+        //}
 
-        /// <summary>
-        /// The almost perfect match score
-        /// </summary>
-        public const double AlmostPerfect = 0.99;
+        //return matchOperator switch
+        //{
+        //    MatchOperator.Or => ToScore(values.Any(v => v)),
+        //    MatchOperator.And => ToScore(values.All(v => v)),
+        //    _ => values.Select(ToScore).Average()
+        //};
+    }
 
-        /// <summary>
-        /// Is the value a perfect match?
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>true/false</returns>
-        public static bool IsPerfect(double value)
+    /// <summary>
+    /// Calculates the score from multiple values.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="matchOperator"></param>
+    /// <returns>average score</returns>
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    public static double ToScore(IEnumerable<double> values, MatchOperator matchOperator)
+    {
+        if (!values.Any())
         {
-            return Math.Abs(value - Perfect) < Tolerance;
+            return Mismatch;
         }
 
-        /// <summary>
-        /// Convert a bool to the score.
-        /// </summary>
-        /// <param name="value">if set to <c>true</c> [value].</param>
-        /// <returns>score</returns>
-        public static double ToScore(bool value)
+        return matchOperator switch
         {
-            return value ? Perfect : Mismatch;
-        }
-
-        /// <summary>
-        /// Calculates the score from multiple values.
-        /// </summary>
-        /// <param name="values">The values.</param>
-        /// <param name="matchOperator">The <see cref="MatchOperator"/>.</param>
-        /// <returns>average score</returns>
-        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public static double ToScore(IEnumerable<bool> values, MatchOperator matchOperator)
-        {
-            return ToScore(values.Select(ToScore), matchOperator);
-            //if (!values.Any())
-            //{
-            //    return Mismatch;
-            //}
-
-            //return matchOperator switch
-            //{
-            //    MatchOperator.Or => ToScore(values.Any(v => v)),
-            //    MatchOperator.And => ToScore(values.All(v => v)),
-            //    _ => values.Select(ToScore).Average()
-            //};
-        }
-
-        /// <summary>
-        /// Calculates the score from multiple values.
-        /// </summary>
-        /// <param name="values">The values.</param>
-        /// <param name="matchOperator"></param>
-        /// <returns>average score</returns>
-        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public static double ToScore(IEnumerable<double> values, MatchOperator matchOperator)
-        {
-            if (!values.Any())
-            {
-                return Mismatch;
-            }
-
-            return matchOperator switch
-            {
-                MatchOperator.Or => ToScore(values.Any(IsPerfect)),
-                MatchOperator.And => ToScore(values.All(IsPerfect)),
-                _ => values.Average()
-            };
-        }
+            MatchOperator.Or => ToScore(values.Any(IsPerfect)),
+            MatchOperator.And => ToScore(values.All(IsPerfect)),
+            _ => values.Average()
+        };
     }
 }

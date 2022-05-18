@@ -49,14 +49,14 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     /// Initializes a new instance of the <see cref="CSharpCodeMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="patterns">The patterns.</param>
     public CSharpCodeMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator = MatchOperator.Or, params AnyOf<string, StringPattern>[] patterns)
     {
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         ThrowException = false;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     public double IsMatch(string input)
@@ -75,7 +75,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
 
         if (input != null)
         {
-            match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())), Operator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())), MatchOperator);
         }
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
@@ -218,7 +218,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => "CSharpCodeMatcher";

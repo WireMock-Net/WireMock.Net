@@ -39,7 +39,7 @@ namespace WireMock.Authentication
             return new AnyOf<string, StringPattern>[0];
         }
 
-        public MatchOperator Operator { get; } = MatchOperator.Or;
+        public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 
         public double IsMatch(string input)
         {

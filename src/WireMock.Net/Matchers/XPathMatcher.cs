@@ -38,7 +38,7 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-        /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+        /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
         /// <param name="patterns">The patterns.</param>
         public XPathMatcher(
             MatchBehaviour matchBehaviour,
@@ -49,7 +49,7 @@ namespace WireMock.Matchers
             _patterns = Guard.NotNull(patterns);
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;
-            Operator = matchOperator;
+            MatchOperator = matchOperator;
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
@@ -62,9 +62,9 @@ namespace WireMock.Matchers
                 {
                     var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
 #if NETSTANDARD1_3
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))), Operator);
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))), MatchOperator);
 #else
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))), Operator);
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))), MatchOperator);
 #endif
                 }
                 catch (Exception)
@@ -86,7 +86,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc />
-        public MatchOperator Operator { get; }
+        public MatchOperator MatchOperator { get; }
 
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "XPathMatcher";

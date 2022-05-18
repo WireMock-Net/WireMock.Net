@@ -38,7 +38,7 @@ public class CustomPathParamMatcher : IStringMatcher
         _path = path;
         _pathParts = GetPathParts(path);
         _pathParams = pathParams.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
     }
 
     public double IsMatch(string input)
@@ -95,7 +95,7 @@ public class CustomPathParamMatcher : IStringMatcher
         return new[] { new AnyOf<string, StringPattern>(JsonConvert.SerializeObject(new CustomPathParamMatcherModel(_path, _pathParams))) };
     }
 
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
     private static string[] GetPathParts(string path)
     {

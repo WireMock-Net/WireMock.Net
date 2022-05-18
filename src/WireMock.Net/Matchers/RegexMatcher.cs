@@ -33,7 +33,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public RegexMatcher(
         [RegexPattern] AnyOf<string, StringPattern> pattern,
         bool ignoreCase = false,
@@ -52,7 +52,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public RegexMatcher(
         MatchBehaviour matchBehaviour,
         [RegexPattern] AnyOf<string, StringPattern> pattern,
@@ -72,7 +72,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="useRegexExtended">Use RegexExtended (default = true).</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public RegexMatcher(
         MatchBehaviour matchBehaviour,
         [RegexPattern] AnyOf<string, StringPattern>[] patterns,
@@ -85,7 +85,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
         IgnoreCase = ignoreCase;
         MatchBehaviour = matchBehaviour;
         ThrowException = throwException;
-        Operator = matchOperator;
+        MatchOperator = matchOperator;
 
         RegexOptions options = RegexOptions.Compiled | RegexOptions.Multiline;
 
@@ -105,7 +105,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
         {
             try
             {
-                match = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)), Operator);
+                match = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)), MatchOperator);
             }
             catch (Exception)
             {
@@ -132,6 +132,6 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     public bool IgnoreCase { get; }
 
     /// <inheritdoc />
-    public MatchOperator Operator { get; }
+    public MatchOperator MatchOperator { get; }
 
 }

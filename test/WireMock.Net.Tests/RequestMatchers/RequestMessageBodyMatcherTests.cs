@@ -27,7 +27,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.String
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
-            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
+            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(1d);
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
@@ -38,15 +38,19 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.5d);
+            Check.That(score).IsEqualTo(1d);
 
             // Verify
             stringMatcherMock.Verify(m => m.GetPatterns(), Times.Never);
             stringMatcherMock.Verify(m => m.IsMatch("b"), Times.Once);
         }
 
-        [Fact]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers()
+        [Theory]
+        [InlineData(1d, 1d, 1d, false)]
+        [InlineData(0d, 1d, 1d, true)]
+        [InlineData(1d, 0d, 1d, false)]
+        [InlineData(0d, 0d, 0d, true)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_Or(double one, double two, double expected, bool twoIsCalled)
         {
             // Assign
             var body = new BodyData
@@ -55,25 +59,122 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.String
             };
             var stringMatcherMock1 = new Mock<IStringMatcher>();
-            stringMatcherMock1.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.2d);
+            stringMatcherMock1.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(one);
+
             var stringMatcherMock2 = new Mock<IStringMatcher>();
-            stringMatcherMock2.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.8d);
+            stringMatcherMock2.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(two);
+
             var matchers = new[] { stringMatcherMock1.Object, stringMatcherMock2.Object };
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
-            var matcher = new RequestMessageBodyMatcher(matchers.Cast<IMatcher>().ToArray());
+            var matcher = new RequestMessageBodyMatcher(MatchOperator.Or, matchers.Cast<IMatcher>().ToArray());
 
             // Act
             var result = new RequestMatchResult();
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.8d);
+            Check.That(score).IsEqualTo(expected);
 
             // Verify
             stringMatcherMock1.Verify(m => m.GetPatterns(), Times.Never);
             stringMatcherMock1.Verify(m => m.IsMatch("b"), Times.Once);
+
+            stringMatcherMock2.Verify(m => m.GetPatterns(), Times.Never);
+            if (twoIsCalled)
+            {
+                stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
+            }
+            else
+            {
+                stringMatcherMock2.VerifyNoOtherCalls();
+            }
+        }
+
+        [Theory]
+        [InlineData(1d, 1d, 1d, true)]
+        [InlineData(0d, 1d, 0d, false)]
+        [InlineData(1d, 0d, 0d, true)]
+        [InlineData(0d, 0d, 0d, false)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_And(double one, double two, double expected, bool twoIsCalled)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "b",
+                DetectedBodyType = BodyType.String
+            };
+            var stringMatcherMock1 = new Mock<IStringMatcher>();
+            stringMatcherMock1.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(one);
+
+            var stringMatcherMock2 = new Mock<IStringMatcher>();
+            stringMatcherMock2.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(two);
+
+            var matchers = new[] { stringMatcherMock1.Object, stringMatcherMock2.Object };
+
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(MatchOperator.And, matchers.Cast<IMatcher>().ToArray());
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(expected);
+
+            // Verify
+            stringMatcherMock1.Verify(m => m.GetPatterns(), Times.Never);
+            stringMatcherMock1.Verify(m => m.IsMatch("b"), Times.Once);
+
+            stringMatcherMock2.Verify(m => m.GetPatterns(), Times.Never);
+            if (twoIsCalled)
+            {
+                stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
+            }
+            else
+            {
+                stringMatcherMock2.VerifyNoOtherCalls();
+            }
+        }
+
+        [Theory]
+        [InlineData(1d, 1d, 1d)]
+        [InlineData(0d, 1d, 0.5d)]
+        [InlineData(1d, 0d, 0.5d)]
+        [InlineData(0d, 0d, 0d)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_Average(double one, double two, double expected)
+        {
+            // Assign
+            var body = new BodyData
+            {
+                BodyAsString = "b",
+                DetectedBodyType = BodyType.String
+            };
+            var stringMatcherMock1 = new Mock<IStringMatcher>();
+            stringMatcherMock1.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(one);
+
+            var stringMatcherMock2 = new Mock<IStringMatcher>();
+            stringMatcherMock2.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(two);
+
+            var matchers = new[] { stringMatcherMock1.Object, stringMatcherMock2.Object };
+
+            var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+            var matcher = new RequestMessageBodyMatcher(MatchOperator.Average, matchers.Cast<IMatcher>().ToArray());
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            Check.That(score).IsEqualTo(expected);
+
+            // Verify
+            stringMatcherMock1.Verify(m => m.GetPatterns(), Times.Never);
+            stringMatcherMock1.Verify(m => m.IsMatch("b"), Times.Once);
+
             stringMatcherMock2.Verify(m => m.GetPatterns(), Times.Never);
             stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
         }
@@ -116,7 +217,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.Json
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
-            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
+            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(1.0d);
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
@@ -127,7 +228,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.5d);
+            Check.That(score).IsEqualTo(1.0d);
 
             // Verify
             stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Once);
@@ -144,7 +245,8 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.Json
             };
             var stringMatcherMock = new Mock<IStringMatcher>();
-            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(0.5d);
+            stringMatcherMock.Setup(m => m.IsMatch(It.IsAny<string>())).Returns(1d);
+            stringMatcherMock.SetupGet(m => m.MatchOperator).Returns(MatchOperator.Or);
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
@@ -155,7 +257,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.5d);
+            Check.That(score).IsEqualTo(1d);
 
             // Verify
             stringMatcherMock.Verify(m => m.IsMatch(It.IsAny<string>()), Times.Once);
@@ -171,7 +273,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.Json
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();
-            objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);
+            objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(1d);
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
@@ -182,7 +284,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.5d);
+            Check.That(score).IsEqualTo(1d);
 
             // Verify
             objectMatcherMock.Verify(m => m.IsMatch(42), Times.Once);
@@ -270,7 +372,7 @@ namespace WireMock.Net.Tests.RequestMatchers
                 DetectedBodyType = BodyType.Bytes
             };
             var objectMatcherMock = new Mock<IObjectMatcher>();
-            objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(0.5d);
+            objectMatcherMock.Setup(m => m.IsMatch(It.IsAny<object>())).Returns(1.0d);
 
             var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
@@ -281,7 +383,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             double score = matcher.GetMatchingScore(requestMessage, result);
 
             // Assert
-            Check.That(score).IsEqualTo(0.5d);
+            Check.That(score).IsEqualTo(1.0d);
 
             // Verify
             objectMatcherMock.Verify(m => m.IsMatch(It.IsAny<byte[]>()), Times.Once);

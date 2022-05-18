@@ -166,7 +166,7 @@ internal class MatcherMapper
                 else
                 {
                     model.Patterns = stringPatterns.Select(p => p.GetPattern()).Cast<object>().ToArray();
-                    model.MatchOperator = stringMatcher.Operator.ToString();
+                    model.MatchOperator = stringMatcher.MatchOperator.ToString();
                 }
                 break;
 

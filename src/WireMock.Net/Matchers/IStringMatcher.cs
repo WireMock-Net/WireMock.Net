@@ -23,7 +23,7 @@ public interface IStringMatcher : IMatcher
     AnyOf<string, StringPattern>[] GetPatterns();
 
     /// <summary>
-    /// The <see cref="MatchOperator"/>.
+    /// The <see cref="Matchers.MatchOperator"/>.
     /// </summary>
-    MatchOperator Operator { get; }
+    MatchOperator MatchOperator { get; }
 }
