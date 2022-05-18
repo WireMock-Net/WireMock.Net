@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ using WireMock.Admin.Mappings;
 using WireMock.Authentication;
 using WireMock.Exceptions;
 using WireMock.Handlers;
+using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.Owin;
@@ -98,6 +100,43 @@ public partial class WireMockServer : IWireMockServer
     {
         DisposeEnhancedFileSystemWatcher();
         _httpServer?.StopAsync();
+    }
+    #endregion
+
+    #region HttpClient
+    /// <summary>
+    /// Create a <see cref="HttpClient"/> which can be used to call this instance.
+    /// </summary>
+    [PublicAPI]
+    public HttpClient CreateClient()
+    {
+        if (!IsStarted)
+        {
+            throw new InvalidOperationException("Unable to create HttpClient because the service is not started.");
+        }
+
+        var client = HttpClientFactory2.Create();
+        client.BaseAddress = new Uri(Url!);
+        return client;
+    }
+
+    /// <summary>
+    /// Create <see cref="HttpClient"/>s (one for each URL) which can be used to call this instance.
+    /// </summary>
+    [PublicAPI]
+    public HttpClient[] CreateClients()
+    {
+        if (!IsStarted)
+        {
+            throw new InvalidOperationException("Unable to create HttpClients because the service is not started.");
+        }
+
+        return Urls.Select(url =>
+        {
+            var client = HttpClientFactory2.Create();
+            client.BaseAddress = new Uri(url);
+            return client;
+        }).ToArray();
     }
     #endregion
 
