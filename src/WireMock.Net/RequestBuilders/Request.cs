@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using WireMock.Matchers;
-using WireMock.Matchers.Request;
 using Stef.Validation;
+using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders;
 
@@ -64,37 +63,5 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         return _requestMatchers.OfType<T>().FirstOrDefault(func);
     }
-
-    /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(IStringMatcher[])"/>
-    public IRequestBuilder WithClientIP(params IStringMatcher[] matchers)
-    {
-        Guard.NotNullOrEmpty(matchers);
-
-        _requestMatchers.Add(new RequestMessageClientIPMatcher(matchers));
-        return this;
-    }
-
-    /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(string[])"/>
-    public IRequestBuilder WithClientIP(params string[] clientIPs)
-    {
-        return WithClientIP(MatchBehaviour.AcceptOnMatch, clientIPs);
-    }
-
-    /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(string[])"/>
-    public IRequestBuilder WithClientIP(MatchBehaviour matchBehaviour, params string[] clientIPs)
-    {
-        Guard.NotNullOrEmpty(clientIPs);
-
-        _requestMatchers.Add(new RequestMessageClientIPMatcher(matchBehaviour, clientIPs));
-        return this;
-    }
-
-    /// <inheritdoc cref="IClientIPRequestBuilder.WithClientIP(Func{string, bool}[])"/>
-    public IRequestBuilder WithClientIP(params Func<string, bool>[] funcs)
-    {
-        Guard.NotNullOrEmpty(funcs);
-
-        _requestMatchers.Add(new RequestMessageClientIPMatcher(funcs));
-        return this;
-    }
+  
 }

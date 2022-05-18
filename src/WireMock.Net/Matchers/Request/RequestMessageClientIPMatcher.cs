@@ -1,41 +1,66 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Models;
 
 namespace WireMock.Matchers.Request;
 
 /// <summary>
-/// The request ClientIP matcher.
+/// The request clientIP matcher.
 /// </summary>
 public class RequestMessageClientIPMatcher : IRequestMatcher
 {
     /// <summary>
-    /// The matchers.
+    /// The matchers
     /// </summary>
     public IReadOnlyList<IStringMatcher>? Matchers { get; }
 
     /// <summary>
-    /// The ClientIP functions.
+    /// The clientIP functions
     /// </summary>
     public Func<string, bool>[]? Funcs { get; }
 
     /// <summary>
+    /// The <see cref="MatchBehaviour"/>
+    /// </summary>
+    public MatchBehaviour Behaviour { get; }
+
+    /// <summary>
+    /// The <see cref="MatchOperator"/>
+    /// </summary>
+    public MatchOperator MatchOperator { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
     /// </summary>
-    /// <param name="clientIPs">The clientIPs.</param>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    public RequestMessageClientIPMatcher(MatchBehaviour matchBehaviour, params string[] clientIPs) : this(clientIPs.Select(ip => new WildcardMatcher(matchBehaviour, ip)).Cast<IStringMatcher>().ToArray())
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
+    /// <param name="clientIPs">The clientIPs.</param>
+    public RequestMessageClientIPMatcher(
+        MatchBehaviour matchBehaviour,
+        MatchOperator matchOperator,
+        params string[] clientIPs) :
+        this(matchBehaviour, matchOperator, clientIPs
+            .Select(clientIP => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { clientIP }, false, false, matchOperator))
+            .Cast<IStringMatcher>().ToArray())
     {
+        Behaviour = matchBehaviour;
+        MatchOperator = matchOperator;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageClientIPMatcher"/> class.
     /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
     /// <param name="matchers">The matchers.</param>
-    public RequestMessageClientIPMatcher(params IStringMatcher[] matchers)
+    public RequestMessageClientIPMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params IStringMatcher[] matchers)
     {
         Matchers = Guard.NotNull(matchers);
+        Behaviour = matchBehaviour;
+        MatchOperator = matchOperator;
     }
 
     /// <summary>
@@ -58,12 +83,14 @@ public class RequestMessageClientIPMatcher : IRequestMatcher
     {
         if (Matchers != null)
         {
-            return Matchers.Max(matcher => matcher.IsMatch(requestMessage.ClientIP));
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.ClientIP));
+            return MatchScores.ToScore(results, MatchOperator);
         }
 
         if (Funcs != null)
         {
-            return MatchScores.ToScore(requestMessage.ClientIP != null && Funcs.Any(func => func(requestMessage.ClientIP)));
+            var results = Funcs.Select(func => func(requestMessage.ClientIP));
+            return MatchScores.ToScore(results, MatchOperator);
         }
 
         return MatchScores.Mismatch;
