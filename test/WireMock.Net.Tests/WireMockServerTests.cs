@@ -13,6 +13,7 @@ using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Net.Tests.Serialization;
+using WireMock.Net.Xunit;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -20,11 +21,19 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WireMock.Net.Tests
 {
     public partial class WireMockServerTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public WireMockServerTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public async Task WireMockServer_Should_reset_requestlogs()
         {
@@ -72,7 +81,10 @@ namespace WireMock.Net.Tests
             string path = $"/foo_{Guid.NewGuid()}";
             string pathToRedirect = $"/bar_{Guid.NewGuid()}";
 
-            var server = WireMockServer.Start();
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                Logger = new TestOutputHelperWireMockLogger(_testOutputHelper)
+            });
 
             server
                 .Given(Request.Create()
