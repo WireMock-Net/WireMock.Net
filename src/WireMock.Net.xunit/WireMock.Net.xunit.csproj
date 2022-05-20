@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Description>xunit</Description>
+        <AssemblyTitle>WireMock.Net.xunit</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFrameworks>net45;net451;netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.xunit</AssemblyName>
+        <PackageId>WireMock.Net.xunit</PackageId>
+        <PackageTags>tdd;mock;http;wiremock;test;server;unittest</PackageTags>
+        <RootNamespace>WireMock.Net.xunit</RootNamespace>
+        <ProjectGuid>{0DE0954F-8C00-4E8D-B94A-4361FC1CB7DD}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <!--<CodeAnalysisRuleSet>WireMock.Net.xunit.ruleset</CodeAnalysisRuleSet>-->
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Stef.Validation" Version="0.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+    </ItemGroup>
+</Project>
