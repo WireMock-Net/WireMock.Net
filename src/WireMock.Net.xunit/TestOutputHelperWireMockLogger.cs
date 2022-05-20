@@ -5,7 +5,7 @@ using WireMock.Admin.Requests;
 using WireMock.Logging;
 using Xunit.Abstractions;
 
-namespace WireMock.Net.xunit;
+namespace WireMock.Net.Xunit;
 
 /// <summary>
 /// When using xUnit, this class enables to log the output from WireMock.Net to the <see cref="ITestOutputHelper"/>.
