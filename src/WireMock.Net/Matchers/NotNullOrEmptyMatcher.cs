@@ -29,7 +29,7 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object input)
+    public double IsMatch(object? input)
     {
         bool match;
 
@@ -40,7 +40,7 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
                 break;
 
             case byte[] bytes:
-                match = bytes != null && bytes.Any();
+                match = bytes.Any();
                 break;
 
             default:
@@ -52,7 +52,7 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         var match = !string.IsNullOrEmpty(input);
 

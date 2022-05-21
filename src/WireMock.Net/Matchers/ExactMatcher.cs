@@ -49,7 +49,7 @@ public class ExactMatcher : IStringMatcher
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         double score = MatchScores.ToScore(_values.Select(v => v.GetPattern() == input).ToArray(), MatchOperator);
         return MatchBehaviourHelper.Convert(MatchBehaviour, score);

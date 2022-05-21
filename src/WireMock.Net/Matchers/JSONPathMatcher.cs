@@ -59,7 +59,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         double match = MatchScores.Mismatch;
         if (input != null)
@@ -82,7 +82,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     }
 
     /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object input)
+    public double IsMatch(object? input)
     {
         double match = MatchScores.Mismatch;
 
@@ -92,7 +92,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
             try
             {
                 // Check if JToken or object
-                JToken jToken = input is JToken token ? token : JObject.FromObject(input);
+                JToken jToken = input as JToken ?? JObject.FromObject(input);
                 match = IsMatch(jToken);
             }
             catch (JsonException)

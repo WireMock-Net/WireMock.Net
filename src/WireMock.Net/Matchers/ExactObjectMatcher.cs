@@ -21,10 +21,10 @@ public class ExactObjectMatcher : IObjectMatcher
 
     /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
     public MatchBehaviour MatchBehaviour { get; }
-        
+
     /// <inheritdoc cref="IMatcher.ThrowException"/>
     public bool ThrowException { get; }
-        
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
     /// </summary>
@@ -66,9 +66,18 @@ public class ExactObjectMatcher : IObjectMatcher
     }
 
     /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object input)
+    public double IsMatch(object? input)
     {
-        bool equals = ValueAsObject != null ? Equals(ValueAsObject, input) : ValueAsBytes?.SequenceEqual((byte[])input) ?? false;
+        bool equals = false;
+        if (ValueAsObject != null)
+        {
+            equals = Equals(ValueAsObject, input);
+        }
+        else if (input != null)
+        {
+            equals = ValueAsBytes?.SequenceEqual((byte[])input) == true;
+        }
+
         return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(equals));
     }
 
