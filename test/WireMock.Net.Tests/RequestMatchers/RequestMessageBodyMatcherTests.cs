@@ -46,11 +46,11 @@ namespace WireMock.Net.Tests.RequestMatchers
         }
 
         [Theory]
-        [InlineData(1d, 1d, 1d, false)]
-        [InlineData(0d, 1d, 1d, true)]
-        [InlineData(1d, 0d, 1d, false)]
-        [InlineData(0d, 0d, 0d, true)]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_Or(double one, double two, double expected, bool twoIsCalled)
+        [InlineData(1d, 1d, 1d)]
+        [InlineData(0d, 1d, 1d)]
+        [InlineData(1d, 0d, 1d)]
+        [InlineData(0d, 0d, 0d)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_Or(double one, double two, double expected)
         {
             // Assign
             var body = new BodyData
@@ -82,22 +82,16 @@ namespace WireMock.Net.Tests.RequestMatchers
             stringMatcherMock1.Verify(m => m.IsMatch("b"), Times.Once);
 
             stringMatcherMock2.Verify(m => m.GetPatterns(), Times.Never);
-            if (twoIsCalled)
-            {
-                stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
-            }
-            else
-            {
-                stringMatcherMock2.VerifyNoOtherCalls();
-            }
+            stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
+            stringMatcherMock2.VerifyNoOtherCalls();
         }
 
         [Theory]
-        [InlineData(1d, 1d, 1d, true)]
-        [InlineData(0d, 1d, 0d, false)]
-        [InlineData(1d, 0d, 0d, true)]
-        [InlineData(0d, 0d, 0d, false)]
-        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_And(double one, double two, double expected, bool twoIsCalled)
+        [InlineData(1d, 1d, 1d)]
+        [InlineData(0d, 1d, 0d)]
+        [InlineData(1d, 0d, 0d)]
+        [InlineData(0d, 0d, 0d)]
+        public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatchers_And(double one, double two, double expected)
         {
             // Assign
             var body = new BodyData
@@ -129,14 +123,8 @@ namespace WireMock.Net.Tests.RequestMatchers
             stringMatcherMock1.Verify(m => m.IsMatch("b"), Times.Once);
 
             stringMatcherMock2.Verify(m => m.GetPatterns(), Times.Never);
-            if (twoIsCalled)
-            {
-                stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
-            }
-            else
-            {
-                stringMatcherMock2.VerifyNoOtherCalls();
-            }
+            stringMatcherMock2.Verify(m => m.IsMatch("b"), Times.Once);
+            stringMatcherMock2.VerifyNoOtherCalls();
         }
 
         [Theory]

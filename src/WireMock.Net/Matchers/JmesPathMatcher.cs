@@ -75,7 +75,8 @@ namespace WireMock.Matchers
             {
                 try
                 {
-                    match = MatchScores.ToScore(_patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))), MatchOperator);
+                    var results = _patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))).ToArray();
+                    match = MatchScores.ToScore(results, MatchOperator);
                 }
                 catch (JsonException)
                 {

@@ -83,13 +83,13 @@ public class RequestMessageUrlMatcher : IRequestMatcher
     {
         if (Matchers != null)
         {
-            var results = Matchers.Select(m => m.IsMatch(requestMessage.Url));
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.Url)).ToArray();
             return MatchScores.ToScore(results, MatchOperator);
         }
 
         if (Funcs != null)
         {
-            var results = Funcs.Select(func => func(requestMessage.Url));
+            var results = Funcs.Select(func => func(requestMessage.Url)).ToArray();
             return MatchScores.ToScore(results, MatchOperator);
         }
 

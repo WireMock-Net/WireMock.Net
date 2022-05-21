@@ -83,13 +83,13 @@ public class RequestMessageClientIPMatcher : IRequestMatcher
     {
         if (Matchers != null)
         {
-            var results = Matchers.Select(m => m.IsMatch(requestMessage.ClientIP));
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.ClientIP)).ToArray();
             return MatchScores.ToScore(results, MatchOperator);
         }
 
         if (Funcs != null)
         {
-            var results = Funcs.Select(func => func(requestMessage.ClientIP));
+            var results = Funcs.Select(func => func(requestMessage.ClientIP)).ToArray();
             return MatchScores.ToScore(results, MatchOperator);
         }
 

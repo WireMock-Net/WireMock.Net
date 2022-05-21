@@ -115,7 +115,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
 
         if (Funcs != null)
         {
-            var funcResults = Funcs.Select(f => f(headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray())));
+            var funcResults = Funcs.Select(f => f(headers.ToDictionary(entry => entry.Key, entry => entry.Value.ToArray()))).ToArray();
             return MatchScores.ToScore(funcResults, MatchOperator);
         }
 
@@ -129,7 +129,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
             var results = new List<double>();
             foreach (var matcher in Matchers)
             {
-                var resultsPerMatcher = headers[Name!].Select(v => matcher.IsMatch(v));
+                var resultsPerMatcher = headers[Name!].Select(v => matcher.IsMatch(v)).ToArray();
 
                 results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
             }

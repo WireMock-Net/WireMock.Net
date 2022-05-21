@@ -78,7 +78,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         try
         {
             // Use the Any(...) method to check if the result matches
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())), MatchOperator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
@@ -122,7 +122,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
             var queryable2 = queryable1.Select(dynamicSelect);
 
             // Use the Any(...) method to check if the result matches.
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)), MatchOperator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => queryable2.Any(pattern)).ToArray(), MatchOperator);
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }

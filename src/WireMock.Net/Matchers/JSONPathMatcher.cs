@@ -121,6 +121,6 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 
     private double IsMatch(JToken jToken)
     {
-        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null), MatchOperator);
+        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectToken(pattern.GetPattern()) != null).ToArray(), MatchOperator);
     }
 }

@@ -197,7 +197,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     {
         if (Matchers != null)
         {
-            var matchersResult = Matchers.Select(matcher => CalculateMatchScore(requestMessage, matcher));
+            var matchersResult = Matchers.Select(matcher => CalculateMatchScore(requestMessage, matcher)).ToArray();
             return MatchScores.ToScore(matchersResult, MatchOperator);
         }
 

@@ -62,9 +62,9 @@ namespace WireMock.Matchers
                 {
                     var nav = new XmlDocument { InnerXml = input }.CreateNavigator();
 #if NETSTANDARD1_3
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))), MatchOperator);
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.Evaluate($"boolean({p.GetPattern()})"))).ToArray(), MatchOperator);
 #else
-                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))), MatchOperator);
+                    match = MatchScores.ToScore(_patterns.Select(p => true.Equals(nav.XPath2Evaluate($"boolean({p.GetPattern()})"))).ToArray(), MatchOperator);
 #endif
                 }
                 catch (Exception)

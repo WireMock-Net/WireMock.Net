@@ -121,7 +121,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
                 return tokenValue;
 
             case string stringValue:
-                return JsonUtils.Parse(stringValue);
+                return JsonUtils.Parse(stringValue)!;
 
             case IEnumerable enumerableValue:
                 return JArray.FromObject(enumerableValue);
@@ -144,11 +144,11 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
             JToken propertyValue = property.Value;
             if (propertyValue.Type == JTokenType.String)
             {
-                string stringValue = propertyValue.Value<string>();
+                string stringValue = propertyValue.Value<string>()!;
                 propertyValue = ToUpper(stringValue);
             }
 
-            return new JProperty(ToUpper(property.Name), Rename(propertyValue));
+            return new JProperty(ToUpper(property.Name)!, Rename(propertyValue));
         }
 
         if (json is JArray array)

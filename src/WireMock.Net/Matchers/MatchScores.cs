@@ -56,21 +56,9 @@ public static class MatchScores
     /// <param name="values">The values.</param>
     /// <param name="matchOperator">The <see cref="MatchOperator"/>.</param>
     /// <returns>average score</returns>
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    public static double ToScore(IEnumerable<bool> values, MatchOperator matchOperator)
+    public static double ToScore(IReadOnlyCollection<bool> values, MatchOperator matchOperator)
     {
-        return ToScore(values.Select(ToScore), matchOperator);
-        //if (!values.Any())
-        //{
-        //    return Mismatch;
-        //}
-
-        //return matchOperator switch
-        //{
-        //    MatchOperator.Or => ToScore(values.Any(v => v)),
-        //    MatchOperator.And => ToScore(values.All(v => v)),
-        //    _ => values.Select(ToScore).Average()
-        //};
+        return ToScore(values.Select(ToScore).ToArray(), matchOperator);
     }
 
     /// <summary>
@@ -79,8 +67,7 @@ public static class MatchScores
     /// <param name="values">The values.</param>
     /// <param name="matchOperator"></param>
     /// <returns>average score</returns>
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    public static double ToScore(IEnumerable<double> values, MatchOperator matchOperator)
+    public static double ToScore(IReadOnlyCollection<double> values, MatchOperator matchOperator)
     {
         if (!values.Any())
         {

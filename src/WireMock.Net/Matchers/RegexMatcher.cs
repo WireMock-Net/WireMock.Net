@@ -98,14 +98,14 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public virtual double IsMatch(string input)
+    public virtual double IsMatch(string? input)
     {
         double match = MatchScores.Mismatch;
         if (input != null)
         {
             try
             {
-                match = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)), MatchOperator);
+                match = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)).ToArray(), MatchOperator);
             }
             catch (Exception)
             {

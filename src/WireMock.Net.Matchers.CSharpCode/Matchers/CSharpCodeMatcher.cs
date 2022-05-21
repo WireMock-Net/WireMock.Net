@@ -64,18 +64,18 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         return IsMatchInternal(input);
     }
 
-    public double IsMatch(object input)
+    public double IsMatch(object? input)
     {
         return IsMatchInternal(input);
     }
 
-    public double IsMatchInternal(object input)
+    public double IsMatchInternal(object? input)
     {
         double match = MatchScores.Mismatch;
 
         if (input != null)
         {
-            match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())), MatchOperator);
+            match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())).ToArray(), MatchOperator);
         }
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
@@ -87,7 +87,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         var inputValue = isMatchWithString ? input : JObject.FromObject(input);
         string source = GetSourceForIsMatchWithString(pattern, isMatchWithString);
 
-        object? result = null;
+        object? result;
 
 #if (NET451 || NET452)
         var compilerParams = new System.CodeDom.Compiler.CompilerParameters
