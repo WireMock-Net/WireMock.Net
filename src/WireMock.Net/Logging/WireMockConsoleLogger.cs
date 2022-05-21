@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using WireMock.Admin.Requests;
 
@@ -51,7 +51,7 @@ namespace WireMock.Logging
             {
                 ae.Handle(ex =>
                 {
-                    Console.WriteLine(Format("Error", "Exception {0}", exception.Message));
+                    Console.WriteLine(Format("Error", "Exception {0}", ex.Message));
                     return true;
                 });
             }

@@ -1,3 +1,9 @@
+# 1.4.43 (21 May 2022)
+- [#757](https://github.com/WireMock-Net/WireMock.Net/pull/757) - Log correct exception message when handling aggregate exceptions contributed by [siewers](https://github.com/siewers)
+- [#759](https://github.com/WireMock-Net/WireMock.Net/pull/759) - Add WireMock.Net.xUnit project [feature] contributed by [StefH](https://github.com/StefH)
+- [#756](https://github.com/WireMock-Net/WireMock.Net/issues/756) - WireMockConsoleLogger aggregate exception handling bug? [bug]
+- [#758](https://github.com/WireMock-Net/WireMock.Net/issues/758) - Add support for logging to an xUnit ITestOutputHelper [feature]
+
 # 1.4.42 (13 May 2022)
 - [#748](https://github.com/WireMock-Net/WireMock.Net/pull/748) - Initial support for converting the mappings to a Pact(flow) json file [feature] contributed by [StefH](https://github.com/StefH)
 - [#749](https://github.com/WireMock-Net/WireMock.Net/pull/749) - Swagger support [feature] contributed by [StefH](https://github.com/StefH)

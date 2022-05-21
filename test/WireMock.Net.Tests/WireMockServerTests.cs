@@ -13,6 +13,7 @@ using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Net.Tests.Serialization;
+using WireMock.Net.Xunit;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -20,11 +21,19 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WireMock.Net.Tests;
 
 public partial class WireMockServerTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public WireMockServerTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     public async Task WireMockServer_Should_Reset_LogEntries()
     {
@@ -72,7 +81,10 @@ public partial class WireMockServerTests
         string path = $"/foo_{Guid.NewGuid()}";
         string pathToRedirect = $"/bar_{Guid.NewGuid()}";
 
-        var server = WireMockServer.Start();
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            Logger = new TestOutputHelperWireMockLogger(_testOutputHelper)
+        });
 
         server
             .Given(Request.Create()
@@ -99,26 +111,26 @@ public partial class WireMockServerTests
     }
 
 #if NETCOREAPP3_1 || NET5_0 || NET6_0
-    [Fact]
-    public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
+[Fact]
+public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
+{
+    // Arrange
+    var settings = new WireMockServerSettings
     {
-        // Arrange
-        var settings = new WireMockServerSettings
-        {
-            CorsPolicyOptions = CorsPolicyOptions.AllowAll
-        };
-        var server = WireMockServer.Start(settings);
+        CorsPolicyOptions = CorsPolicyOptions.AllowAll
+    };
+    var server = WireMockServer.Start(settings);
 
-        server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+    server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
 
-        // Act
-        var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+    // Act
+    var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
 
-        // Asser.
-        response.Should().Be("x");
+    // Asser.
+    response.Should().Be("x");
 
-        server.Stop();
-    }
+    server.Stop();
+}
 #endif
 
     [Fact]
@@ -239,34 +251,34 @@ public partial class WireMockServerTests
     }
 
 #if !NET452 && !NET461
-    [Theory]
-    [InlineData("TRACE")]
-    [InlineData("GET")]
-    public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
-    {
-        // Assign
-        string content = "hello";
-        var server = WireMockServer.Start();
+[Theory]
+[InlineData("TRACE")]
+[InlineData("GET")]
+public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
+{
+    // Assign
+    string content = "hello";
+    var server = WireMockServer.Start();
 
-        server
-            .Given(Request.Create().WithBody((byte[] bodyBytes) => bodyBytes != null))
-            .AtPriority(0)
-            .RespondWith(Response.Create().WithStatusCode(400));
-        server
-            .Given(Request.Create())
-            .AtPriority(1)
-            .RespondWith(Response.Create().WithStatusCode(200));
+    server
+        .Given(Request.Create().WithBody((byte[] bodyBytes) => bodyBytes != null))
+        .AtPriority(0)
+        .RespondWith(Response.Create().WithStatusCode(400));
+    server
+        .Given(Request.Create())
+        .AtPriority(1)
+        .RespondWith(Response.Create().WithStatusCode(200));
 
-        // Act
-        var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
-        request.Content = new StringContent(content);
-        var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+    // Act
+    var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
+    request.Content = new StringContent(content);
+    var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
 
-        // Assert
-        Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+    // Assert
+    Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
 
-        server.Stop();
-    }
+    server.Stop();
+}
 #endif
 
     [Theory]
@@ -451,7 +463,7 @@ public partial class WireMockServerTests
         },
         ""Body"": ""OK""
     }
-}");
+    }");
 
         // Act
         var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/customer/132/document/pic.jpg", new StringContent("{ Hi = \"Hello World\" }")).ConfigureAwait(false);
@@ -499,7 +511,7 @@ public partial class WireMockServerTests
         },
         ""Body"": ""OK""
     }
-}");
+    }");
 
         // Act
         var response = await new HttpClient().PostAsync("http://localhost:" + server.Ports[0] + "/customer/132/document/pic", new StringContent("{ Hi = \"Hello World\" }")).ConfigureAwait(false);
