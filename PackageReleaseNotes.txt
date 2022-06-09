@@ -1,7 +1,4 @@
-# 1.4.43 (21 May 2022)
-- #757 Log correct exception message when handling aggregate exceptions
-- #759 Add WireMock.Net.xUnit project [feature]
-- #756 WireMockConsoleLogger aggregate exception handling bug? [bug]
-- #758 Add support for logging to an xUnit ITestOutputHelper [feature]
+# 1.5.0 (09 June 2022)
+- #755 Add MatchOperator &quot;Or&quot;, &quot;And&quot; and &quot;Average&quot; for patterns [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
