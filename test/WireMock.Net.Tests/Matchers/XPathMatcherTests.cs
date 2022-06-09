@@ -2,68 +2,67 @@ using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
-namespace WireMock.Net.Tests.Matchers
+namespace WireMock.Net.Tests.Matchers;
+
+public class XPathMatcherTests
 {
-    public class XPathMatcherTests
+    [Fact]
+    public void XPathMatcher_GetName()
     {
-        [Fact]
-        public void XPathMatcher_GetName()
-        {
-            // Assign
-            var matcher = new XPathMatcher("X");
+        // Assign
+        var matcher = new XPathMatcher("X");
 
-            // Act
-            string name = matcher.Name;
+        // Act
+        string name = matcher.Name;
 
-            // Assert
-            Check.That(name).Equals("XPathMatcher");
-        }
+        // Assert
+        Check.That(name).Equals("XPathMatcher");
+    }
 
-        [Fact]
-        public void XPathMatcher_GetPatterns()
-        {
-            // Assign
-            var matcher = new XPathMatcher("X");
+    [Fact]
+    public void XPathMatcher_GetPatterns()
+    {
+        // Assign
+        var matcher = new XPathMatcher("X");
 
-            // Act
-            var patterns = matcher.GetPatterns();
+        // Act
+        var patterns = matcher.GetPatterns();
 
-            // Assert
-            Check.That(patterns).ContainsExactly("X");
-        }
+        // Assert
+        Check.That(patterns).ContainsExactly("X");
+    }
 
-        [Fact]
-        public void XPathMatcher_IsMatch_AcceptOnMatch()
-        {
-            // Assign
-            string xml = @"
+    [Fact]
+    public void XPathMatcher_IsMatch_AcceptOnMatch()
+    {
+        // Assign
+        string xml = @"
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                     </todo-list>";
-            var matcher = new XPathMatcher("/todo-list[count(todo-item) = 1]");
+        var matcher = new XPathMatcher("/todo-list[count(todo-item) = 1]");
 
-            // Act
-            double result = matcher.IsMatch(xml);
+        // Act
+        double result = matcher.IsMatch(xml);
 
-            // Assert
-            Check.That(result).IsEqualTo(1.0);
-        }
+        // Assert
+        Check.That(result).IsEqualTo(1.0);
+    }
 
-        [Fact]
-        public void XPathMatcher_IsMatch_RejectOnMatch()
-        {
-            // Assign
-            string xml = @"
+    [Fact]
+    public void XPathMatcher_IsMatch_RejectOnMatch()
+    {
+        // Assign
+        string xml = @"
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                     </todo-list>";
-            var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, false, "/todo-list[count(todo-item) = 1]");
+        var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "/todo-list[count(todo-item) = 1]");
 
-            // Act
-            double result = matcher.IsMatch(xml);
+        // Act
+        double result = matcher.IsMatch(xml);
 
-            // Assert
-            Check.That(result).IsEqualTo(0.0);
-        }
+        // Assert
+        Check.That(result).IsEqualTo(0.0);
     }
 }

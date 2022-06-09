@@ -10,7 +10,7 @@ namespace WireMock.Net.Tests.Matchers
     public class WildcardMatcherTest
     {
         [Fact]
-        public void WildcardMatcher_IsMatch_With_StringMatcher_And_StringPattern()
+        public void WildcardMatcher_IsMatch_With_StringPattern()
         {
             // Arrange
             var pattern = new StringPattern
@@ -21,6 +21,26 @@ namespace WireMock.Net.Tests.Matchers
 
             // Act
             var matcher = new WildcardMatcher(pattern);
+
+            // Assert
+            matcher.IsMatch("a").Should().Be(1.0d);
+        }
+
+        [Fact]
+        public void WildcardMatcher_IsMatch_With_StringPatterns()
+        {
+            // Arrange
+            AnyOf<string, StringPattern> pattern1 = new StringPattern
+            {
+                Pattern = "a"
+            };
+            AnyOf<string, StringPattern> pattern2 = new StringPattern
+            {
+                Pattern = "b"
+            };
+
+            // Act
+            var matcher = new WildcardMatcher(new [] { pattern1, pattern2 });
 
             // Assert
             matcher.IsMatch("a").Should().Be(1.0d);

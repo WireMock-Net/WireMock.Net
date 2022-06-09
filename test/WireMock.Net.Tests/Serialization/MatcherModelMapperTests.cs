@@ -180,42 +180,50 @@ namespace WireMock.Net.Tests.Serialization
             Check.ThatCode(() => _sut.Map(model)).Throws<ArgumentException>();
         }
 
-        [Fact]
-        public void MatcherModelMapper_Map_RegexMatcher()
+        [Theory]
+        [InlineData(MatchOperator.Or, 1.0d)]
+        [InlineData(MatchOperator.And, 0.0d)]
+        [InlineData(MatchOperator.Average, 0.5d)]
+        public void MatcherModelMapper_Map_RegexMatcher(MatchOperator matchOperator, double expected)
         {
             // Assign
             var model = new MatcherModel
             {
                 Name = "RegexMatcher",
                 Patterns = new[] { "x", "y" },
-                IgnoreCase = true
+                IgnoreCase = true,
+                MatchOperator = matchOperator.ToString()
             };
 
             // Act
-            var matcher = (RegexMatcher)_sut.Map(model);
+            var matcher = (RegexMatcher)_sut.Map(model)!;
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-            Check.That(matcher.IsMatch("X")).IsEqualTo(0.5d);
+            Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
         }
 
-        [Fact]
-        public void MatcherModelMapper_Map_WildcardMatcher_IgnoreCase()
+        [Theory]
+        [InlineData(MatchOperator.Or, 1.0d)]
+        [InlineData(MatchOperator.And, 0.0d)]
+        [InlineData(MatchOperator.Average, 0.5d)]
+        public void MatcherModelMapper_Map_WildcardMatcher_IgnoreCase(MatchOperator matchOperator, double expected)
         {
             // Assign
             var model = new MatcherModel
             {
                 Name = "WildcardMatcher",
                 Patterns = new[] { "x", "y" },
-                IgnoreCase = true
+                IgnoreCase = true,
+                MatchOperator = matchOperator.ToString()
             };
 
             // Act
-            var matcher = (WildcardMatcher)_sut.Map(model);
+            var matcher = (WildcardMatcher)_sut.Map(model)!;
 
             // Assert
             Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-            Check.That(matcher.IsMatch("X")).IsEqualTo(0.5d);
+            Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
         }
 
         [Fact]

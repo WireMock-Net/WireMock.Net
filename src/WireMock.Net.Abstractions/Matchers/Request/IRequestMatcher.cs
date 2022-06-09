@@ -15,6 +15,6 @@ namespace WireMock.Matchers.Request
         /// <returns>
         /// A value between 0.0 - 1.0 of the similarity.
         /// </returns>
-        double GetMatchingScore([NotNull] IRequestMessage requestMessage, [NotNull] IRequestMatchResult requestMatchResult);
+        double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult);
     }
 }

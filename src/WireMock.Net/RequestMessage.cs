@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using JetBrains.Annotations;
 using System;
@@ -48,19 +48,19 @@ namespace WireMock
         public string Method { get; }
 
         /// <inheritdoc cref="IRequestMessage.Headers" />
-        public IDictionary<string, WireMockList<string>> Headers { get; }
+        public IDictionary<string, WireMockList<string>>? Headers { get; }
 
         /// <inheritdoc cref="IRequestMessage.Cookies" />
-        public IDictionary<string, string> Cookies { get; }
+        public IDictionary<string, string>? Cookies { get; }
 
         /// <inheritdoc cref="IRequestMessage.Query" />
-        public IDictionary<string, WireMockList<string>> Query { get; }
+        public IDictionary<string, WireMockList<string>>? Query { get; }
 
         /// <inheritdoc cref="IRequestMessage.RawQuery" />
         public string RawQuery { get; }
 
         /// <inheritdoc cref="IRequestMessage.BodyData" />
-        public IBodyData BodyData { get; }
+        public IBodyData? BodyData { get; }
 
         /// <inheritdoc cref="IRequestMessage.Body" />
         public string Body { get; }
@@ -101,7 +101,7 @@ namespace WireMock
         /// <param name="bodyData">The BodyData.</param>
         /// <param name="headers">The headers.</param>
         /// <param name="cookies">The cookies.</param>
-        public RequestMessage([NotNull] UrlDetails urlDetails, [NotNull] string method, [NotNull] string clientIP, [CanBeNull] IBodyData bodyData = null, [CanBeNull] IDictionary<string, string[]> headers = null, [CanBeNull] IDictionary<string, string> cookies = null)
+        public RequestMessage(UrlDetails urlDetails, string method, string clientIP, IBodyData? bodyData = null, IDictionary<string, string[]>? headers = null, IDictionary<string, string>? cookies = null)
         {
             Guard.NotNull(urlDetails, nameof(urlDetails));
             Guard.NotNull(method, nameof(method));
@@ -144,7 +144,7 @@ namespace WireMock
         /// <param name="key">The key.</param>
         /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
         /// <returns>The query parameter.</returns>
-        public WireMockList<string> GetParameter(string key, bool ignoreCase = false)
+        public WireMockList<string>? GetParameter(string? key, bool ignoreCase = false)
         {
             if (Query == null)
             {

@@ -1,4 +1,4 @@
-﻿namespace WireMock.Matchers
+namespace WireMock.Matchers
 {
     /// <summary>
     /// IObjectMatcher
@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-        double IsMatch(object input);
+        double IsMatch(object? input);
     }
 }

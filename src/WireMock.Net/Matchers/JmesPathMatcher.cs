@@ -1,11 +1,10 @@
+using System.Linq;
 using AnyOfTypes;
 using DevLab.JmesPath;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
-using System.Linq;
+using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
-using Stef.Validation;
 
 namespace WireMock.Matchers
 {
@@ -26,7 +25,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher([NotNull] params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns.ToAnyOfPatterns())
+        public JmesPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns.ToAnyOfPatterns())
         {
         }
 
@@ -34,7 +33,7 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher([NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, patterns)
+        public JmesPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
         {
         }
 
@@ -42,8 +41,10 @@ namespace WireMock.Matchers
         /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
         /// </summary>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher(bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, throwException, patterns)
+        public JmesPathMatcher(bool throwException = false, MatchOperator matchOperator = MatchOperator.Or, params AnyOf<string, StringPattern>[] patterns) :
+            this(MatchBehaviour.AcceptOnMatch, throwException, matchOperator, patterns)
         {
         }
 
@@ -52,25 +53,30 @@ namespace WireMock.Matchers
         /// </summary>
         /// <param name="matchBehaviour">The match behaviour.</param>
         /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
+        /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
         /// <param name="patterns">The patterns.</param>
-        public JmesPathMatcher(MatchBehaviour matchBehaviour, bool throwException = false, [NotNull] params AnyOf<string, StringPattern>[] patterns)
+        public JmesPathMatcher(
+            MatchBehaviour matchBehaviour,
+            bool throwException = false,
+            MatchOperator matchOperator = MatchOperator.Or,
+            params AnyOf<string, StringPattern>[] patterns)
         {
-            Guard.NotNull(patterns, nameof(patterns));
-
+            _patterns = Guard.NotNull(patterns);
             MatchBehaviour = matchBehaviour;
             ThrowException = throwException;
-            _patterns = patterns;
+            MatchOperator = matchOperator;
         }
 
         /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-        public double IsMatch(string input)
+        public double IsMatch(string? input)
         {
             double match = MatchScores.Mismatch;
             if (input != null)
             {
                 try
                 {
-                    match = MatchScores.ToScore(_patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))));
+                    var results = _patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))).ToArray();
+                    match = MatchScores.ToScore(results, MatchOperator);
                 }
                 catch (JsonException)
                 {
@@ -85,7 +91,7 @@ namespace WireMock.Matchers
         }
 
         /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-        public double IsMatch(object input)
+        public double IsMatch(object? input)
         {
             double match = MatchScores.Mismatch;
 
@@ -104,6 +110,9 @@ namespace WireMock.Matchers
         {
             return _patterns;
         }
+
+        /// <inheritdoc />
+        public MatchOperator MatchOperator { get; }
 
         /// <inheritdoc cref="IMatcher.Name"/>
         public string Name => "JmesPathMatcher";

@@ -1,152 +1,146 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireMock.Types;
 using Stef.Validation;
+using WireMock.Types;
 
-namespace WireMock.Matchers.Request
+namespace WireMock.Matchers.Request;
+
+/// <summary>
+/// The request parameters matcher.
+/// </summary>
+public class RequestMessageParamMatcher : IRequestMatcher
 {
+    private readonly MatchBehaviour _matchBehaviour;
+
     /// <summary>
-    /// The request parameters matcher.
+    /// The funcs
     /// </summary>
-    public class RequestMessageParamMatcher : IRequestMatcher
+    public Func<IDictionary<string, WireMockList<string>>, bool>[]? Funcs { get; }
+
+    /// <summary>
+    /// The key
+    /// </summary>
+    public string? Key { get; }
+
+    /// <summary>
+    /// Defines if the key should be matched using case-ignore.
+    /// </summary>
+    public bool? IgnoreCase { get; }
+
+    /// <summary>
+    /// The matchers.
+    /// </summary>
+    public IReadOnlyList<IStringMatcher>? Matchers { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
+    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase) : this(matchBehaviour, key, ignoreCase, (IStringMatcher[]?)null)
     {
-        private readonly MatchBehaviour _matchBehaviour;
+    }
 
-        /// <summary>
-        /// The funcs
-        /// </summary>
-        public Func<IDictionary<string, WireMockList<string>>, bool>[] Funcs { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
+    /// <param name="values">The values.</param>
+    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, string[]? values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
+    {
+    }
 
-        /// <summary>
-        /// The key
-        /// </summary>
-        public string Key { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
+    /// <param name="matchers">The matchers.</param>
+    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, IStringMatcher[]? matchers)
+    {
+        _matchBehaviour = matchBehaviour;
+        Key = Guard.NotNull(key);
+        IgnoreCase = ignoreCase;
+        Matchers = matchers;
+    }
 
-        /// <summary>
-        /// Defines if the key should be matched using case-ignore.
-        /// </summary>
-        public bool? IgnoreCase { get; private set; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
+    /// </summary>
+    /// <param name="funcs">The funcs.</param>
+    public RequestMessageParamMatcher(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
+    {
+        Funcs = Guard.NotNull(funcs);
+    }
 
-        /// <summary>
-        /// The matchers.
-        /// </summary>
-        public IReadOnlyList<IStringMatcher> Matchers { get; }
+    /// <inheritdoc />
+    public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
+    {
+        double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
+        return requestMatchResult.AddScore(GetType(), score);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase) : this(matchBehaviour, key, ignoreCase, (IStringMatcher[])null)
+    private double IsMatch(IRequestMessage requestMessage)
+    {
+        if (Funcs != null)
         {
+            return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
-        /// <param name="values">The values.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] string[] values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, value)).Cast<IStringMatcher>().ToArray())
+        WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase ?? false);
+        if (valuesPresentInRequestMessage == null)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
-        /// <param name="matchers">The matchers.</param>
-        public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, [NotNull] string key, bool ignoreCase, [CanBeNull] IStringMatcher[] matchers)
-        {
-            Guard.NotNull(key, nameof(key));
-
-            _matchBehaviour = matchBehaviour;
-            Key = key;
-            IgnoreCase = ignoreCase;
-            Matchers = matchers;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageParamMatcher"/> class.
-        /// </summary>
-        /// <param name="funcs">The funcs.</param>
-        public RequestMessageParamMatcher([NotNull] params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
-        {
-            Guard.NotNull(funcs, nameof(funcs));
-
-            Funcs = funcs;
-        }
-
-        /// <inheritdoc />
-        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
-        {
-            double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
-            return requestMatchResult.AddScore(GetType(), score);
-        }
-
-        private double IsMatch(IRequestMessage requestMessage)
-        {
-            if (Funcs != null)
-            {
-                return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
-            }
-
-            WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage) requestMessage).GetParameter(Key, IgnoreCase ?? false);
-            if (valuesPresentInRequestMessage == null)
-            {
-                // Key is not present at all, just return Mismatch
-                return MatchScores.Mismatch;
-            }
-
-            if (Matchers != null && Matchers.Any())
-            {
-                // Return the score based on Matchers and valuesPresentInRequestMessage
-                return CalculateScore(valuesPresentInRequestMessage);
-            }
-
-            if (Matchers == null || !Matchers.Any())
-            {
-                // Matchers are null or not defined, and Key is present, just return Perfect.
-                return MatchScores.Perfect;
-            }
-
+            // Key is not present at all, just return Mismatch
             return MatchScores.Mismatch;
         }
 
-        private double CalculateScore(WireMockList<string> valuesPresentInRequestMessage)
+        if (Matchers != null && Matchers.Any())
         {
-            var total = new List<double>();
+            // Return the score based on Matchers and valuesPresentInRequestMessage
+            return CalculateScore(valuesPresentInRequestMessage);
+        }
 
-            // If the total patterns in all matchers > values in message, use the matcher as base
-            if (Matchers.Sum(m => m.GetPatterns().Length) > valuesPresentInRequestMessage.Count)
-            {
-                foreach (var matcher in Matchers)
-                {
-                    double score = 0d;
-                    foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
-                    {
-                        score += matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
-                    }
+        if (Matchers == null || !Matchers.Any())
+        {
+            // Matchers are null or not defined, and Key is present, just return Perfect.
+            return MatchScores.Perfect;
+        }
 
-                    total.Add(score);
-                }
-            }
-            else
+        return MatchScores.Mismatch;
+    }
+
+    private double CalculateScore(WireMockList<string> valuesPresentInRequestMessage)
+    {
+        var total = new List<double>();
+
+        // If the total patterns in all matchers > values in message, use the matcher as base
+        if (Matchers.Sum(m => m.GetPatterns().Length) > valuesPresentInRequestMessage.Count)
+        {
+            foreach (var matcher in Matchers)
             {
+                double score = 0d;
                 foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
                 {
-                    double score = Matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
-                    total.Add(score);
+                    score += matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
                 }
-            }
 
-            return total.Any() ? MatchScores.ToScore(total) : MatchScores.Mismatch;
+                total.Add(score);
+            }
         }
+        else
+        {
+            foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
+            {
+                double score = Matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
+                total.Add(score);
+            }
+        }
+
+        return total.Any() ? MatchScores.ToScore(total, MatchOperator.Average) : MatchScores.Mismatch;
     }
 }

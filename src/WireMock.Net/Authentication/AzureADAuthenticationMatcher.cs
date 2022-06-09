@@ -39,6 +39,8 @@ namespace WireMock.Authentication
             return new AnyOf<string, StringPattern>[0];
         }
 
+        public MatchOperator MatchOperator { get; } = MatchOperator.Or;
+
         public double IsMatch(string input)
         {
             var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase);

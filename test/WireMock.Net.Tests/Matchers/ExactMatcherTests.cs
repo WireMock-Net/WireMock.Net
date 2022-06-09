@@ -59,7 +59,7 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void ExactMatcher_IsMatch_WithMultiplePatterns_ReturnsMatch0_5()
+        public void ExactMatcher_IsMatch_WithMultiplePatterns_Or_ReturnsMatch_1_0()
         {
             // Assign
             var matcher = new ExactMatcher("x", "y");
@@ -69,6 +69,35 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert
             Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void ExactMatcher_IsMatch_WithMultiplePatterns_And_ReturnsMatch_0_0()
+        {
+            // Assign
+            var matcher = new ExactMatcher("x", "y");
+
+            // Act
+            double result = matcher.IsMatch("x");
+
+            // Assert
+            Check.That(result).IsEqualTo(1.0);
+        }
+
+        [Theory]
+        [InlineData(MatchOperator.Or, 1.0d)]
+        [InlineData(MatchOperator.And, 0.0d)]
+        [InlineData(MatchOperator.Average, 0.5d)]
+        public void ExactMatcher_IsMatch_WithMultiplePatterns_Average_ReturnsMatch(MatchOperator matchOperator, double score)
+        {
+            // Assign
+            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, matchOperator, "x", "y");
+
+            // Act
+            double result = matcher.IsMatch("x");
+
+            // Assert
+            Check.That(result).IsEqualTo(score);
         }
 
         [Fact]
@@ -88,7 +117,7 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactMatcher_IsMatch_SinglePattern_AcceptOnMatch()
         {
             // Assign
-            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, "cat");
+            var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, "cat");
 
             // Act
             double result = matcher.IsMatch("cat");
@@ -101,7 +130,7 @@ namespace WireMock.Net.Tests.Matchers
         public void ExactMatcher_IsMatch_SinglePattern_RejectOnMatch()
         {
             // Assign
-            var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, false, "cat");
+            var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "cat");
 
             // Act
             double result = matcher.IsMatch("cat");

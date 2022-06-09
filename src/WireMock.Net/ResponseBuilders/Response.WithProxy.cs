@@ -3,40 +3,39 @@ using WireMock.Http;
 using WireMock.Settings;
 using Stef.Validation;
 
-namespace WireMock.ResponseBuilders
+namespace WireMock.ResponseBuilders;
+
+public partial class Response
 {
-    public partial class Response
+    private HttpClient _httpClientForProxy;
+
+    /// <summary>
+    /// The WebProxy settings.
+    /// </summary>
+    public ProxyAndRecordSettings? ProxyAndRecordSettings { get; private set; }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithProxy(string proxyUrl, string? clientX509Certificate2ThumbprintOrSubjectName = null)
     {
-        private HttpClient _httpClientForProxy;
+        Guard.NotNullOrEmpty(proxyUrl);
 
-        /// <summary>
-        /// The WebProxy settings.
-        /// </summary>
-        public ProxyAndRecordSettings ProxyAndRecordSettings { get; private set; }
-
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(string, string)"/>
-        public IResponseBuilder WithProxy(string proxyUrl, string clientX509Certificate2ThumbprintOrSubjectName = null)
+        var settings = new ProxyAndRecordSettings
         {
-            Guard.NotNullOrEmpty(proxyUrl, nameof(proxyUrl));
+            Url = proxyUrl,
+            ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName
+        };
 
-            var settings = new ProxyAndRecordSettings
-            {
-                Url = proxyUrl,
-                ClientX509Certificate2ThumbprintOrSubjectName = clientX509Certificate2ThumbprintOrSubjectName
-            };
+        return WithProxy(settings);
+    }
 
-            return WithProxy(settings);
-        }
+    /// <inheritdoc />
+    public IResponseBuilder WithProxy(ProxyAndRecordSettings settings)
+    {
+        Guard.NotNull(settings);
 
-        /// <inheritdoc cref="IProxyResponseBuilder.WithProxy(ProxyAndRecordSettings)"/>
-        public IResponseBuilder WithProxy(ProxyAndRecordSettings settings)
-        {
-            Guard.NotNull(settings, nameof(settings));
+        ProxyAndRecordSettings = settings;
 
-            ProxyAndRecordSettings = settings;
-
-            _httpClientForProxy = HttpClientBuilder.Build(settings);
-            return this;
-        }
+        _httpClientForProxy = HttpClientBuilder.Build(settings);
+        return this;
     }
 }

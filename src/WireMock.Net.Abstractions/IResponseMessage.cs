@@ -38,7 +38,7 @@ namespace WireMock
         /// <summary>
         /// Gets the headers.
         /// </summary>
-        IDictionary<string, WireMockList<string>> Headers { get; }
+        IDictionary<string, WireMockList<string>>? Headers { get; }
 
         /// <summary>
         /// Gets or sets the status code.

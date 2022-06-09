@@ -1,45 +1,52 @@
 using System;
 using System.Linq;
-using JetBrains.Annotations;
 using Stef.Validation;
 
-namespace WireMock.Matchers.Request
+namespace WireMock.Matchers.Request;
+
+/// <summary>
+/// The request method matcher.
+/// </summary>
+internal class RequestMessageMethodMatcher : IRequestMatcher
 {
     /// <summary>
-    /// The request verb matcher.
+    /// The <see cref="Matchers.MatchBehaviour"/>
     /// </summary>
-    internal class RequestMessageMethodMatcher : IRequestMatcher
+    public MatchBehaviour MatchBehaviour { get; }
+
+    /// <summary>
+    /// The <see cref="Matchers.MatchOperator"/>
+    /// </summary>
+    public MatchOperator MatchOperator { get; }
+
+    /// <summary>
+    /// The methods
+    /// </summary>
+    public string[] Methods { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
+    /// <param name="methods">The methods.</param>
+    public RequestMessageMethodMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params string[] methods)
     {
-        private readonly MatchBehaviour _matchBehaviour;
+        Methods = Guard.NotNull(methods);
+        MatchBehaviour = matchBehaviour;
+        MatchOperator = matchOperator;
+    }
 
-        /// <summary>
-        /// The methods
-        /// </summary>
-        public string[] Methods { get; }
+    /// <inheritdoc />
+    public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
+    {
+        double score = MatchBehaviourHelper.Convert(MatchBehaviour, IsMatch(requestMessage));
+        return requestMatchResult.AddScore(GetType(), score);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="methods">The methods.</param>
-        public RequestMessageMethodMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] methods)
-        {
-            Guard.NotNull(methods, nameof(methods));
-            _matchBehaviour = matchBehaviour;
-
-            Methods = methods;
-        }
-
-        /// <inheritdoc />
-        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
-        {
-            double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
-            return requestMatchResult.AddScore(GetType(), score);
-        }
-
-        private double IsMatch(IRequestMessage requestMessage)
-        {
-            return MatchScores.ToScore(Methods.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase));
-        }
+    private double IsMatch(IRequestMessage requestMessage)
+    {
+        var scores = Methods.Select(m => string.Equals(m, requestMessage.Method, StringComparison.OrdinalIgnoreCase)).ToArray();
+        return MatchScores.ToScore(scores, MatchOperator);
     }
 }

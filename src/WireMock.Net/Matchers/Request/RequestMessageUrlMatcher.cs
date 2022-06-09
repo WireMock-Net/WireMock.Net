@@ -1,75 +1,98 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Models;
 
-namespace WireMock.Matchers.Request
+namespace WireMock.Matchers.Request;
+
+/// <summary>
+/// The request url matcher.
+/// </summary>
+public class RequestMessageUrlMatcher : IRequestMatcher
 {
     /// <summary>
-    /// The request url matcher.
+    /// The matchers
     /// </summary>
-    public class RequestMessageUrlMatcher : IRequestMatcher
+    public IReadOnlyList<IStringMatcher>? Matchers { get; }
+
+    /// <summary>
+    /// The url functions
+    /// </summary>
+    public Func<string, bool>[]? Funcs { get; }
+
+    /// <summary>
+    /// The <see cref="MatchBehaviour"/>
+    /// </summary>
+    public MatchBehaviour Behaviour { get; }
+
+    /// <summary>
+    /// The <see cref="MatchOperator"/>
+    /// </summary>
+    public MatchOperator MatchOperator { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use.</param>
+    /// <param name="urls">The urls.</param>
+    public RequestMessageUrlMatcher(
+        MatchBehaviour matchBehaviour,
+        MatchOperator matchOperator,
+        params string[] urls) :
+        this(matchBehaviour, matchOperator, urls
+            .Select(url => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { url }, false, false, matchOperator))
+            .Cast<IStringMatcher>().ToArray())
     {
-        /// <summary>
-        /// The matchers.
-        /// </summary>
-        public IReadOnlyList<IStringMatcher> Matchers { get; }
+        Behaviour = matchBehaviour;
+        MatchOperator = matchOperator;
+    }
 
-        /// <summary>
-        /// The url functions.
-        /// </summary>
-        public Func<string, bool>[] Funcs { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
+    /// <param name="matchers">The matchers.</param>
+    public RequestMessageUrlMatcher(MatchBehaviour matchBehaviour, MatchOperator matchOperator, params IStringMatcher[] matchers)
+    {
+        Matchers = Guard.NotNull(matchers);
+        Behaviour = matchBehaviour;
+        MatchOperator = matchOperator;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
-        /// </summary>
-        /// <param name="matchBehaviour">The match behaviour.</param>
-        /// <param name="urls">The urls.</param>
-        public RequestMessageUrlMatcher(MatchBehaviour matchBehaviour, [NotNull] params string[] urls) : this(urls.Select(url => new WildcardMatcher(matchBehaviour, url)).Cast<IStringMatcher>().ToArray())
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
+    /// </summary>
+    /// <param name="funcs">The url functions.</param>
+    public RequestMessageUrlMatcher(params Func<string, bool>[] funcs)
+    {
+        Funcs = Guard.NotNull(funcs);
+    }
+
+    /// <inheritdoc />
+    public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
+    {
+        double score = IsMatch(requestMessage);
+        return requestMatchResult.AddScore(GetType(), score);
+    }
+
+    private double IsMatch(IRequestMessage requestMessage)
+    {
+        if (Matchers != null)
         {
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.Url)).ToArray();
+            return MatchScores.ToScore(results, MatchOperator);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
-        /// </summary>
-        /// <param name="matchers">The matchers.</param>
-        public RequestMessageUrlMatcher([NotNull] params IStringMatcher[] matchers)
+        if (Funcs != null)
         {
-            Guard.NotNull(matchers, nameof(matchers));
-            Matchers = matchers;
+            var results = Funcs.Select(func => func(requestMessage.Url)).ToArray();
+            return MatchScores.ToScore(results, MatchOperator);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessageUrlMatcher"/> class.
-        /// </summary>
-        /// <param name="funcs">The url functions.</param>
-        public RequestMessageUrlMatcher([NotNull] params Func<string, bool>[] funcs)
-        {
-            Guard.NotNull(funcs, nameof(funcs));
-            Funcs = funcs;
-        }
-
-        /// <inheritdoc />
-        public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
-        {
-            double score = IsMatch(requestMessage);
-            return requestMatchResult.AddScore(GetType(), score);
-        }
-
-        private double IsMatch(IRequestMessage requestMessage)
-        {
-            if (Matchers != null)
-            {
-                return Matchers.Max(matcher => matcher.IsMatch(requestMessage.Url));
-            }
-
-            if (Funcs != null)
-            {
-                return MatchScores.ToScore(requestMessage.Url != null && Funcs.Any(func => func(requestMessage.Url)));
-            }
-
-            return MatchScores.Mismatch;
-        }
+        return MatchScores.Mismatch;
     }
 }

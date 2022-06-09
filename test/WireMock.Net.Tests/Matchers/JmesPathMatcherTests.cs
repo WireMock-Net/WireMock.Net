@@ -51,7 +51,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JmesPathMatcher_IsMatch_NullString()
         {
             // Assign
-            string s = null;
+            string? s = null;
             var matcher = new JmesPathMatcher("");
 
             // Act 
@@ -65,7 +65,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JmesPathMatcher_IsMatch_NullObject()
         {
             // Assign
-            object o = null;
+            object? o = null;
             var matcher = new JmesPathMatcher("");
 
             // Act 
@@ -154,7 +154,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JmesPathMatcher_IsMatch_RejectOnMatch()
         {
             // Assign
-            var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, false, "things.x == 'RequiredThing'");
+            var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "things.x == 'RequiredThing'");
 
             // Act
             double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }"));

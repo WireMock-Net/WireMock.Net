@@ -29,6 +29,20 @@ public class RequestModel
     public string[]? Methods { get; set; }
 
     /// <summary>
+    /// Reject on match for Methods.
+    /// </summary>
+    public bool? MethodsRejectOnMatch { get; set; }
+
+    /// <summary>
+    /// The Operator to use when Methods are defined. [Optional]
+    /// - null      = Same as "or".
+    /// - "or"      = Only one method should match.
+    /// - "and"     = All methods should match.
+    /// - "average" = The average value from all methods.
+    /// </summary>
+    public string? MethodsMatchOperator { get; set; }
+
+    /// <summary>
     /// Gets or sets the Headers.
     /// </summary>
     public IList<HeaderModel>? Headers { get; set; }

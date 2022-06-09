@@ -1,4 +1,4 @@
-﻿// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
+// This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, bool, string[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, bool ignoreCase = false, params string[] values)
         {
-            Guard.NotNull(key, nameof(key));
+            Guard.NotNull(key);
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase, values));
             return this;
@@ -74,7 +74,7 @@ namespace WireMock.RequestBuilders
         /// <inheritdoc cref="IParamsRequestBuilder.WithParam(string, MatchBehaviour, bool, IStringMatcher[])"/>
         public IRequestBuilder WithParam(string key, MatchBehaviour matchBehaviour, bool ignoreCase, params IStringMatcher[] matchers)
         {
-            Guard.NotNull(key, nameof(key));
+            Guard.NotNull(key);
 
             _requestMatchers.Add(new RequestMessageParamMatcher(matchBehaviour, key, ignoreCase, matchers));
             return this;

@@ -87,7 +87,7 @@ internal static class JsonUtils
     /// </summary>
     /// <param name="json">A System.String that contains JSON.</param>
     /// <returns>A Newtonsoft.Json.Linq.JToken populated from the string that contains JSON.</returns>
-    public static JToken Parse(string json)
+    public static JToken? Parse(string json)
     {
         return JsonConvert.DeserializeObject<JToken>(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
     }
@@ -98,7 +98,7 @@ internal static class JsonUtils
     /// </summary>
     /// <param name="json">A System.String that contains JSON.</param>
     /// <returns>The deserialized object from the JSON string.</returns>
-    public static object DeserializeObject(string json)
+    public static object? DeserializeObject(string json)
     {
         return JsonConvert.DeserializeObject(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
     }
@@ -109,21 +109,18 @@ internal static class JsonUtils
     /// </summary>
     /// <param name="json">A System.String that contains JSON.</param>
     /// <returns>The deserialized object from the JSON string.</returns>
-    public static T DeserializeObject<T>(string json)
+    public static T? DeserializeObject<T>(string json)
     {
         return JsonConvert.DeserializeObject<T>(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone);
     }
 
-    public static T ParseJTokenToObject<T>(object value)
+    public static T? ParseJTokenToObject<T>(object value)
     {
-        switch (value)
+        return value switch
         {
-            case JToken tokenValue:
-                return tokenValue.ToObject<T>();
-
-            default:
-                return default(T);
-        }
+            JToken tokenValue => tokenValue.ToObject<T>(),
+            _ => default
+        };
     }
 
     public static string GenerateDynamicLinqStatement(JToken jsonObject)

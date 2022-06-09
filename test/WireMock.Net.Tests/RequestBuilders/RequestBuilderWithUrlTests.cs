@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -25,7 +25,7 @@ namespace WireMock.Net.Tests.RequestBuilders
         public void RequestBuilder_WithUrl_MatchBehaviour_Strings()
         {
             // Act
-            var requestBuilder = (Request)Request.Create().WithUrl(MatchBehaviour.AcceptOnMatch, "http://a", "http://b");
+            var requestBuilder = (Request)Request.Create().WithUrl(MatchOperator.Or, "http://a", "http://b");
 
             // Assert
             var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");

@@ -16,10 +16,10 @@ namespace WireMock.Models
         public string Method { get; set; }
 
         /// <inheritdoc cref="IWebhookRequest.Headers"/>
-        public IDictionary<string, WireMockList<string>> Headers { get; set; }
+        public IDictionary<string, WireMockList<string>>? Headers { get; set; }
 
         /// <inheritdoc cref="IWebhookRequest.BodyData"/>
-        public IBodyData BodyData { get; set; }
+        public IBodyData? BodyData { get; set; }
 
         /// <inheritdoc cref="IWebhookRequest.UseTransformer"/>
         public bool? UseTransformer { get; set; }
