@@ -18,12 +18,12 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Map of response headers to send
         /// </summary>
-        public MappingsResponseHeaders Headers { get; set; }
+        public object Headers { get; set; }
 
         /// <summary>
         /// Extra request headers to send when proxying to another host.
         /// </summary>
-        public MappingsResponseAdditionalProxyRequestHeaders AdditionalProxyRequestHeaders { get; set; }
+        public object AdditionalProxyRequestHeaders { get; set; }
 
         /// <summary>
         /// The response body as a string. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
@@ -38,7 +38,7 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// The response body as a JSON object. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
         /// </summary>
-        public MappingsResponseJsonBody JsonBody { get; set; }
+        public object JsonBody { get; set; }
 
         /// <summary>
         /// The path to the file containing the response body, relative to the configured file root. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
@@ -58,7 +58,7 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// The delay distribution. Valid property configuration is either median/sigma/type or lower/type/upper.
         /// </summary>
-        public MappingsResponseDelayDistribution DelayDistribution { get; set; }
+        public object DelayDistribution { get; set; }
 
         /// <summary>
         /// Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.
@@ -73,7 +73,7 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Parameters to apply to response transformers.
         /// </summary>
-        public MappingsResponseTransformerParameters TransformerParameters { get; set; }
+        public object TransformerParameters { get; set; }
 
         /// <summary>
         /// List of names of transformers to apply to this response.

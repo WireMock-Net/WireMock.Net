@@ -33,12 +33,12 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Query parameter patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestQueryParameters QueryParameters { get; set; }
+        public object QueryParameters { get; set; }
 
         /// <summary>
         /// Header patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestHeaders Headers { get; set; }
+        public object Headers { get; set; }
 
         /// <summary>
         /// Pre-emptive basic auth credentials to match against
@@ -48,11 +48,11 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Cookie patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestCookies Cookies { get; set; }
+        public object Cookies { get; set; }
 
         /// <summary>
         /// Request body patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestBodyPatterns BodyPatterns { get; set; }
+        public object[] BodyPatterns { get; set; }
     }
 }

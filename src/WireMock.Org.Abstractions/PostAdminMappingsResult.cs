@@ -52,11 +52,11 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// A map of the names of post serve action extensions to trigger and their parameters.
         /// </summary>
-        public PostServeActions PostServeActions { get; set; }
+        public object PostServeActions { get; set; }
 
         /// <summary>
         /// Arbitrary metadata to be used for e.g. tagging, documentation. Can also be used to find and remove stubs.
         /// </summary>
-        public Metadata Metadata { get; set; }
+        public object Metadata { get; set; }
     }
 }

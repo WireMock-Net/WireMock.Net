@@ -12,7 +12,8 @@ namespace WireMock.Org.RestClient
 {
     /// <summary>
     /// Summary: WireMockOrg
-    /// Title: WireMock
+    ///
+    /// Title  : WireMock
     /// Version: 2.33.2
     /// </summary>
     public interface IWireMockOrgApi

@@ -23,12 +23,12 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Header patterns to match against in the : { "": "" } form
         /// </summary>
-        public NearMissesHeaders Headers { get; set; }
+        public object Headers { get; set; }
 
         /// <summary>
         /// Cookie patterns to match against in the : { "": "" } form
         /// </summary>
-        public NearMissesCookies Cookies { get; set; }
+        public object Cookies { get; set; }
 
         /// <summary>
         /// Body string to match against
