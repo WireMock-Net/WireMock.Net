@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Meta
+    public class MappingsRequestBodyPatterns
     {
-        public int Total { get; set; }
     }
 }

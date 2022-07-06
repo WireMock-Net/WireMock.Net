@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestEase" Version="1.5.6" />
+    <PackageReference Include="RestEase" Version="1.5.7" />
   </ItemGroup>
 
   <ItemGroup>

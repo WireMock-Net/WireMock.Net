@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
+
 namespace WireMock.Org.Abstractions
 {
     /// <summary>
     /// Pre-emptive basic auth credentials to match against
     /// </summary>
-    public class BasicAuthCredentials
+    public class RequestBasicAuthCredentials
     {
         public string Password { get; set; }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Meta
+    public class PostAdminRequestsCountResult
     {
-        public int Total { get; set; }
+        public int Count { get; set; }
     }
 }

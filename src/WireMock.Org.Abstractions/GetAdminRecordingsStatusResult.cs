@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Meta
+    public class GetAdminRecordingsStatusResult
     {
-        public int Total { get; set; }
+        public string Status { get; set; }
     }
 }

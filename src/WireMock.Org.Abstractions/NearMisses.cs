@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
+
 namespace WireMock.Org.Abstractions
 {
-    public class NearMiss
+    public class NearMisses
     {
         /// <summary>
         /// The HTTP request method
@@ -18,14 +21,14 @@ namespace WireMock.Org.Abstractions
         public string AbsoluteUrl { get; set; }
 
         /// <summary>
-        /// Header patterns to match against in the &lt;key&gt;: { "&lt;predicate&gt;": "&lt;value&gt;" } form
+        /// Header patterns to match against in the : { "": "" } form
         /// </summary>
-        public object Headers { get; set; }
+        public NearMissesHeaders Headers { get; set; }
 
         /// <summary>
-        /// Cookie patterns to match against in the &lt;key&gt;: { "&lt;predicate&gt;": "&lt;value&gt;" } form
+        /// Cookie patterns to match against in the : { "": "" } form
         /// </summary>
-        public object Cookies { get; set; }
+        public NearMissesCookies Cookies { get; set; }
 
         /// <summary>
         /// Body string to match against

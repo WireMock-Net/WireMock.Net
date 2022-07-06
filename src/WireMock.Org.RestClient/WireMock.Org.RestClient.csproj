@@ -30,8 +30,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AnyOf" Version="0.3.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-        <PackageReference Include="RestEase" Version="1.5.6" />
+        <PackageReference Include="RestEase" Version="1.5.7" />
     </ItemGroup>
 
     <ItemGroup>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Org.Abstractions
 {
-    public class Request
+    public class MappingsRequest
     {
         /// <summary>
         /// The HTTP request method e.g. GET
@@ -33,26 +33,26 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Query parameter patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestQueryParameters QueryParameters { get; set; }
+        public MappingsRequestQueryParameters QueryParameters { get; set; }
 
         /// <summary>
         /// Header patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestHeaders Headers { get; set; }
+        public MappingsRequestHeaders Headers { get; set; }
 
         /// <summary>
         /// Pre-emptive basic auth credentials to match against
         /// </summary>
-        public RequestBasicAuthCredentials BasicAuthCredentials { get; set; }
+        public MappingsRequestBasicAuthCredentials BasicAuthCredentials { get; set; }
 
         /// <summary>
         /// Cookie patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestCookies Cookies { get; set; }
+        public MappingsRequestCookies Cookies { get; set; }
 
         /// <summary>
         /// Request body patterns to match against in the : { "": "" } form
         /// </summary>
-        public RequestBodyPatterns BodyPatterns { get; set; }
+        public MappingsRequestBodyPatterns BodyPatterns { get; set; }
     }
 }
