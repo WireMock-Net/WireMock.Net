@@ -1,6 +1,6 @@
 namespace WireMock.Org.Abstractions
 {
-    public class Scenario
+    public class Scenarios
     {
         /// <summary>
         /// The scenario ID
@@ -12,7 +12,10 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        public string PossibleStates { get; set; }
+        /// <summary>
+        /// All the states this scenario can be in
+        /// </summary>
+        public string[] PossibleStates { get; set; }
 
         /// <summary>
         /// The current state of this scenario

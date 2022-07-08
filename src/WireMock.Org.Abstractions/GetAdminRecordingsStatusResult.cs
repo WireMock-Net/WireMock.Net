@@ -1,6 +1,6 @@
 namespace WireMock.Org.Abstractions
 {
-    public class GetAdminRecordingsStatusResponse
+    public class GetAdminRecordingsStatusResult
     {
         public string Status { get; set; }
     }

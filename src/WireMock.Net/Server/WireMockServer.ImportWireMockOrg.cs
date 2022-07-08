@@ -10,299 +10,302 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Util;
 using Stef.Validation;
-using OrgMapping = WireMock.Org.Abstractions.Mapping;
+using OrgMappings = WireMock.Org.Abstractions.Mappings;
 
-namespace WireMock.Server
+namespace WireMock.Server;
+
+public partial class WireMockServer
 {
-    public partial class WireMockServer
+    /// <summary>
+    /// Read WireMock.org mapping json file.
+    /// </summary>
+    /// <param name="path">The path to the WireMock.org mapping json file.</param>
+    [PublicAPI]
+    public void ReadStaticWireMockOrgMappingAndAddOrUpdate(string path)
     {
-        /// <summary>
-        /// Read WireMock.org mapping json file.
-        /// </summary>
-        /// <param name="path">The path to the WireMock.org mapping json file.</param>
-        [PublicAPI]
-        public void ReadStaticWireMockOrgMappingAndAddOrUpdate(string path)
+        Guard.NotNull(path, nameof(path));
+
+        string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+
+        if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
         {
-            Guard.NotNull(path, nameof(path));
-
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
-
-            if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
+            var mappings = DeserializeJsonToArray<OrgMappings>(value);
+            foreach (var mapping in mappings)
             {
-                var mappings = DeserializeJsonToArray<OrgMapping>(value);
-                foreach (var mapping in mappings)
+                if (mappings.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
                 {
-                    if (mappings.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
-                    {
-                        ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, guidFromFilename, path);
-                    }
-                    else
-                    {
-                        ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, null, path);
-                    }
+                    ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, guidFromFilename, path);
+                }
+                else
+                {
+                    ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mapping, null, path);
                 }
             }
         }
+    }
 
-        private IResponseMessage MappingsPostWireMockOrg(IRequestMessage requestMessage)
+    private IResponseMessage MappingsPostWireMockOrg(IRequestMessage requestMessage)
+    {
+        try
         {
-            try
+            var mappingModels = DeserializeRequestMessageToArray<OrgMappings>(requestMessage);
+            if (mappingModels.Length == 1)
             {
-                var mappingModels = DeserializeRequestMessageToArray<OrgMapping>(requestMessage);
-                if (mappingModels.Length == 1)
-                {
-                    Guid? guid = ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModels[0]);
-                    return ResponseMessageBuilder.Create("Mapping added", 201, guid);
-                }
-
-                foreach (var mappingModel in mappingModels)
-                {
-                    ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModel);
-                }
-
-                return ResponseMessageBuilder.Create("Mappings added", 201);
+                Guid? guid = ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModels[0]);
+                return ResponseMessageBuilder.Create("Mapping added", 201, guid);
             }
-            catch (ArgumentException a)
+
+            foreach (var mappingModel in mappingModels)
             {
-                _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
-                return ResponseMessageBuilder.Create(a.Message, 400);
+                ConvertWireMockOrgMappingAndRegisterAsRespondProvider(mappingModel);
             }
-            catch (Exception e)
+
+            return ResponseMessageBuilder.Create("Mappings added", 201);
+        }
+        catch (ArgumentException a)
+        {
+            _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
+            return ResponseMessageBuilder.Create(a.Message, 400);
+        }
+        catch (Exception e)
+        {
+            _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
+            return ResponseMessageBuilder.Create(e.ToString(), 500);
+        }
+    }
+
+    private Guid? ConvertWireMockOrgMappingAndRegisterAsRespondProvider(OrgMappings mapping, Guid? guid = null, string? path = null)
+    {
+        var requestBuilder = Request.Create();
+
+        var request = mapping.Request;
+        if (request != null)
+        {
+            if (request.Url != null)
             {
-                _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
-                return ResponseMessageBuilder.Create(e.ToString(), 500);
+                requestBuilder = requestBuilder.WithUrl(request.Url);
+            }
+            else if (request.UrlPattern != null)
+            {
+                requestBuilder = requestBuilder.WithUrl(new RegexMatcher(request.UrlPattern));
+            }
+            else if (request.UrlPath != null)
+            {
+                requestBuilder = requestBuilder.WithPath(request.UrlPath);
+            }
+            else if (request.UrlPathPattern != null)
+            {
+                requestBuilder = requestBuilder.WithPath(new RegexMatcher(request.UrlPathPattern));
+            }
+
+            if (request.Method != null)
+            {
+                requestBuilder = requestBuilder.UsingMethod(request.Method);
+            }
+
+            /*
+            "headers" : {
+              "Accept" : {
+                "contains" : "xml"
+              }
+            }
+            */
+            if (request.Headers is JObject headers)
+            {
+                ProcessWireMockOrgJObjectAndUseStringMatcher(headers, (key, match) =>
+                {
+                    requestBuilder = requestBuilder.WithHeader(key, match);
+                });
+            }
+
+            if (request.Cookies is JObject cookies)
+            {
+                ProcessWireMockOrgJObjectAndUseStringMatcher(cookies, (key, match) =>
+                {
+                    requestBuilder = requestBuilder.WithCookie(key, match);
+                });
+            }
+
+            /*
+            "queryParameters" : {
+              "search_term" : {
+                "equalTo" : "WireMock"
+              }
+            }
+            */
+            if (request.QueryParameters is JObject queryParameters)
+            {
+                ProcessWireMockOrgJObjectAndUseStringMatcher(queryParameters, (key, match) =>
+                {
+                    requestBuilder = requestBuilder.WithParam(key, match);
+                });
+            }
+
+            /*
+             "bodyPatterns" : [ {
+              "equalToJson" : "{ "cityName": "São Paulo", "cityCode": 5001 },
+              "ignoreArrayOrder" : true,
+              "ignoreExtraElements" : true
+            } ]
+            */
+            if (request.BodyPatterns?.Any() == true)
+            {
+                var jObjectArray = request.BodyPatterns.Cast<JObject>();
+                var bodyPattern = jObjectArray.First();
+                ProcessWireMockOrgJObjectAndUseIMatcher(bodyPattern, match =>
+                {
+                    requestBuilder = requestBuilder.WithBody(match);
+                });
             }
         }
 
-        private Guid? ConvertWireMockOrgMappingAndRegisterAsRespondProvider(OrgMapping mapping, Guid? guid = null, string path = null)
+        IResponseBuilder responseBuilder = Response.Create();
+
+        var response = mapping.Response;
+        if (response != null)
         {
-            var requestBuilder = Request.Create();
+            responseBuilder = responseBuilder.WithStatusCode(response.Status);
 
-            var request = mapping.Request;
-            if (request != null)
+            if (response.Headers is JObject responseHeaders)
             {
-                if (request.Url != null)
+                var rb = responseBuilder;
+                ProcessWireMockOrgJObjectAndConvertToIDictionary(responseHeaders, headers =>
                 {
-                    requestBuilder = requestBuilder.WithUrl(request.Url);
-                }
-                else if (request.UrlPattern != null)
-                {
-                    requestBuilder = requestBuilder.WithUrl(new RegexMatcher(request.UrlPattern));
-                }
-                else if (request.UrlPath != null)
-                {
-                    requestBuilder = requestBuilder.WithPath(request.Url);
-                }
-                else if (request.UrlPathPattern != null)
-                {
-                    requestBuilder = requestBuilder.WithPath(new RegexMatcher(request.UrlPathPattern));
-                }
-
-                if (request.Method != null)
-                {
-                    requestBuilder = requestBuilder.UsingMethod(request.Method);
-                }
-
-                /*
-                "headers" : {
-                  "Accept" : {
-                    "contains" : "xml"
-                  }
-                }
-                */
-                if (request.Headers is JObject headers)
-                {
-                    ProcessWireMockOrgJObjectAndUseStringMatcher(headers, (key, match) =>
-                    {
-                        requestBuilder = requestBuilder.WithHeader(key, match);
-                    });
-                }
-
-                if (request.Cookies is JObject cookies)
-                {
-                    ProcessWireMockOrgJObjectAndUseStringMatcher(cookies, (key, match) =>
-                    {
-                        requestBuilder = requestBuilder.WithCookie(key, match);
-                    });
-                }
-
-                /*
-                "queryParameters" : {
-                  "search_term" : {
-                    "equalTo" : "WireMock"
-                  }
-                }
-                */
-                if (request.QueryParameters is JObject queryParameters)
-                {
-                    ProcessWireMockOrgJObjectAndUseStringMatcher(queryParameters, (key, match) =>
-                    {
-                        requestBuilder = requestBuilder.WithParam(key, match);
-                    });
-                }
-
-                /*
-                 "bodyPatterns" : [ {
-                  "equalToJson" : "{ "cityName": "São Paulo", "cityCode": 5001 },
-                  "ignoreArrayOrder" : true,
-                  "ignoreExtraElements" : true
-                } ]
-                */
-                if (request.BodyPatterns?.Any() == true)
-                {
-                    var jObjectArray = request.BodyPatterns.Cast<JObject>();
-                    var bodyPattern = jObjectArray.First();
-                    ProcessWireMockOrgJObjectAndUseIMatcher(bodyPattern, (match) =>
-                    {
-                        requestBuilder = requestBuilder.WithBody(match);
-                    });
-                }
+                    rb = rb.WithHeaders(headers);
+                });
             }
 
-            IResponseBuilder responseBuilder = Response.Create();
-
-            var response = mapping.Response;
-            if (response != null)
+            if (response.Transformers != null)
             {
-                responseBuilder = responseBuilder.WithStatusCode(response.Status);
-
-                if (response.Headers is JObject responseHeaders)
-                {
-                    ProcessWireMockOrgJObjectAndConvertToIDictionary(responseHeaders, (headers) =>
-                    {
-                        responseBuilder = responseBuilder.WithHeaders(headers);
-                    });
-                }
-
-                if (response.Transformers != null)
-                {
-                    responseBuilder = responseBuilder.WithTransformer();
-                }
-
-                if (response.Body != null)
-                {
-                    responseBuilder = responseBuilder.WithBody(response.Body);
-                }
-
-                if (response.JsonBody != null)
-                {
-                    responseBuilder = responseBuilder.WithBodyAsJson(response.JsonBody);
-                }
-
-                if (response.Base64Body != null)
-                {
-                    responseBuilder = responseBuilder.WithBody(Encoding.UTF8.GetString(Convert.FromBase64String(response.Base64Body)));
-                }
-
-                if (response.BodyFileName != null)
-                {
-                    responseBuilder = responseBuilder.WithBodyFromFile(response.BodyFileName);
-                }
+                responseBuilder = responseBuilder.WithTransformer();
             }
 
-            var respondProvider = Given(requestBuilder);
-            if (guid != null)
+            if (response.Body != null)
             {
-                respondProvider = respondProvider.WithGuid(guid.Value);
-            }
-            else if (!string.IsNullOrEmpty(mapping.Uuid))
-            {
-                respondProvider = respondProvider.WithGuid(new Guid(mapping.Uuid));
+                responseBuilder = responseBuilder.WithBody(response.Body);
             }
 
-            if (mapping.Name != null)
+            if (response.JsonBody != null)
             {
-                respondProvider = respondProvider.WithTitle(mapping.Name);
+                responseBuilder = responseBuilder.WithBodyAsJson(response.JsonBody);
             }
 
-            if (path != null)
+            if (response.Base64Body != null)
             {
-                respondProvider = respondProvider.WithPath(path);
+                responseBuilder = responseBuilder.WithBody(Encoding.UTF8.GetString(Convert.FromBase64String(response.Base64Body)));
             }
 
-            respondProvider.RespondWith(responseBuilder);
-
-            return respondProvider.Guid;
-        }
-
-        private void ProcessWireMockOrgJObjectAndConvertToIDictionary(JObject items, Action<IDictionary<string, string>> action)
-        {
-            var dict = new Dictionary<string, string>();
-            foreach (var item in items)
+            if (response.BodyFileName != null)
             {
-                var key = item.Key;
-                var valueAsString = item.Value.Value<string>();
-                dict.Add(key, valueAsString);
-            }
-
-            action(dict);
-        }
-
-        private void ProcessWireMockOrgJObjectAndUseStringMatcher(JObject items, Action<string, IStringMatcher> action)
-        {
-            foreach (var item in items)
-            {
-                var key = item.Key;
-                var match = item.Value.First as JProperty;
-                var valueAsString = match?.Value.Value<string>();
-                if (string.IsNullOrEmpty(valueAsString))
-                {
-                    continue;
-                }
-
-                var matcher = ProcessAsStringMatcher(match, valueAsString);
-                if (matcher != null)
-                {
-                    action(key, matcher);
-                }
+                responseBuilder = responseBuilder.WithBodyFromFile(response.BodyFileName);
             }
         }
 
-        private void ProcessWireMockOrgJObjectAndUseIMatcher(JObject items, Action<IMatcher> action)
+        var respondProvider = Given(requestBuilder);
+        if (guid != null)
         {
-            if (!(items.First is JProperty firstItem))
+            respondProvider = respondProvider.WithGuid(guid.Value);
+        }
+        else if (!string.IsNullOrEmpty(mapping.Uuid))
+        {
+            respondProvider = respondProvider.WithGuid(new Guid(mapping.Uuid));
+        }
+
+        if (mapping.Name != null)
+        {
+            respondProvider = respondProvider.WithTitle(mapping.Name);
+        }
+
+        if (path != null)
+        {
+            respondProvider = respondProvider.WithPath(path);
+        }
+
+        respondProvider.RespondWith(responseBuilder);
+
+        return respondProvider.Guid;
+    }
+
+    private void ProcessWireMockOrgJObjectAndConvertToIDictionary(JObject items, Action<IDictionary<string, string>> action)
+    {
+        var dict = new Dictionary<string, string>();
+        foreach (var item in items)
+        {
+            var key = item.Key;
+            var valueAsString = item.Value?.Value<string>();
+            if (valueAsString == null)
+            {
+                // Skip if the item.Value is null or when the string value is null
+                continue;
+            }
+
+            dict.Add(key, valueAsString);
+        }
+
+        action(dict);
+    }
+
+    private void ProcessWireMockOrgJObjectAndUseStringMatcher(JObject items, Action<string, IStringMatcher> action)
+    {
+        foreach (var item in items)
+        {
+            var key = item.Key;
+            var match = item.Value?.First as JProperty;
+            if (match == null)
+            {
+                continue;
+            }
+
+            var valueAsString = match.Value.Value<string>();
+            if (string.IsNullOrEmpty(valueAsString))
+            {
+                continue;
+            }
+
+            var matcher = ProcessAsStringMatcher(match, valueAsString!);
+            if (matcher != null)
+            {
+                action(key, matcher);
+            }
+        }
+    }
+
+    private static void ProcessWireMockOrgJObjectAndUseIMatcher(JObject items, Action<IMatcher> action)
+    {
+        if (items.First is not JProperty firstItem)
+        {
+            return;
+        }
+
+        IMatcher? matcher;
+        if (firstItem.Name == "equalToJson")
+        {
+            matcher = new JsonMatcher(firstItem.Value);
+        }
+        else
+        {
+            if ((firstItem.Value as JValue)?.Value is not string valueAsString)
             {
                 return;
             }
 
-            IMatcher matcher;
-            if (firstItem.Name == "equalToJson")
-            {
-                matcher = new JsonMatcher(firstItem.Value);
-            }
-            else
-            {
-                var valueAsString = (firstItem.Value as JValue)?.Value as string;
-                if (valueAsString == null)
-                {
-                    return;
-                }
-
-                matcher = ProcessAsStringMatcher(firstItem, valueAsString);
-            }
-
-            if (matcher != null)
-            {
-                action(matcher);
-            }
+            matcher = ProcessAsStringMatcher(firstItem, valueAsString);
         }
 
-        private static IStringMatcher ProcessAsStringMatcher(JProperty match, string valueAsString)
+        if (matcher != null)
         {
-            switch (match?.Name)
-            {
-                case "contains":
-                    return new WildcardMatcher(valueAsString);
-
-                case "matches":
-                    return new RegexMatcher(valueAsString);
-
-                case "equalTo":
-                    return new ExactMatcher(valueAsString);
-
-                default:
-                    return null;
-            }
+            action(matcher);
         }
+    }
+
+    private static IStringMatcher? ProcessAsStringMatcher(JProperty match, string valueAsString)
+    {
+        return match.Name switch
+        {
+            "contains" => new WildcardMatcher(valueAsString),
+            "matches" => new RegexMatcher(valueAsString),
+            "equalTo" => new ExactMatcher(valueAsString),
+            _ => null,
+        };
     }
 }

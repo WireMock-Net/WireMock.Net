@@ -1,6 +1,6 @@
 namespace WireMock.Org.Abstractions
 {
-    public class PostAdminRequestsCountResponse
+    public class PostAdminRequestsCountResult
     {
         public int Count { get; set; }
     }

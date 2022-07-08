@@ -1,6 +1,6 @@
 namespace WireMock.Org.Abstractions
 {
-    public class Mapping
+    public class Mappings
     {
         /// <summary>
         /// This stub mapping's unique identifier
@@ -17,9 +17,9 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        public Request Request { get; set; }
+        public MappingsRequest Request { get; set; }
 
-        public Response Response { get; set; }
+        public MappingsResponse Response { get; set; }
 
         /// <summary>
         /// Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.

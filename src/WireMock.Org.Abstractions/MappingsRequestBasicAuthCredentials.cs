@@ -3,7 +3,7 @@ namespace WireMock.Org.Abstractions
     /// <summary>
     /// Pre-emptive basic auth credentials to match against
     /// </summary>
-    public class BasicAuthCredentials
+    public class MappingsRequestBasicAuthCredentials
     {
         public string Password { get; set; }
 

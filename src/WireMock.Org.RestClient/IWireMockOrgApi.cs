@@ -1,232 +1,299 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AnyOfTypes;
 using RestEase;
 using WireMock.Org.Abstractions;
 
 namespace WireMock.Org.RestClient
 {
     /// <summary>
-    /// WireMockOrg
+    /// Summary: WireMockOrg
+    ///
+    /// Title  : WireMock
+    /// Version: 2.33.2
     /// </summary>
     public interface IWireMockOrgApi
     {
         /// <summary>
         /// Get all stub mappings
+        ///
+        /// GetAdminMappings (/__admin/mappings)
         /// </summary>
         /// <param name="limit">The maximum number of results to return</param>
         /// <param name="offset">The start index of the results to return</param>
         [Get("/__admin/mappings")]
-        Task<GetAdminMappingsResponse> GetAdminMappingsAsync([Query] int? limit, [Query] int? offset);
+        Task<GetAdminMappingsResult> GetAdminMappingsAsync([Query] int? limit, [Query] int? offset);
 
         /// <summary>
         /// Create a new stub mapping
+        ///
+        /// PostAdminMappings (/__admin/mappings)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/mappings")]
         [Header("Content-Type", "application/json")]
-        Task<Mapping> PostAdminMappingsAsync([Body] Mapping request);
+        Task<PostAdminMappingsResult> PostAdminMappingsAsync();
 
         /// <summary>
         /// Delete all stub mappings
+        ///
+        /// DeleteAdminMappings (/__admin/mappings)
         /// </summary>
         [Delete("/__admin/mappings")]
-        Task DeleteAdminMappingsAsync();
+        Task<object> DeleteAdminMappingsAsync();
 
         /// <summary>
         /// Reset stub mappings
+        ///
+        /// PostAdminMappingsReset (/__admin/mappings/reset)
         /// </summary>
         [Post("/__admin/mappings/reset")]
-        Task PostAdminMappingsResetAsync();
+        Task<object> PostAdminMappingsResetAsync();
 
         /// <summary>
         /// Persist stub mappings
+        ///
+        /// PostAdminMappingsSave (/__admin/mappings/save)
         /// </summary>
         [Post("/__admin/mappings/save")]
-        Task PostAdminMappingsSaveAsync();
+        Task<object> PostAdminMappingsSaveAsync();
 
         /// <summary>
         /// Get stub mapping by ID
+        ///
+        /// GetAdminMappingsByStubMappingId (/__admin/mappings/{stubMappingId})
         /// </summary>
+        /// <param name="stubMappingId">The UUID of stub mapping</param>
         [Get("/__admin/mappings/{stubMappingId}")]
-        Task<Mapping> GetAdminMappingsByStubMappingIdAsync();
+        Task<Response<AnyOf<GetAdminMappingsByStubMappingIdResult, object>>> GetAdminMappingsByStubMappingIdAsync([Path] string stubMappingId);
 
         /// <summary>
         /// Update a stub mapping
+        ///
+        /// PutAdminMappingsByStubMappingId (/__admin/mappings/{stubMappingId})
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="stubMappingId">The UUID of stub mapping</param>
         [Put("/__admin/mappings/{stubMappingId}")]
         [Header("Content-Type", "application/json")]
-        Task<Mapping> PutAdminMappingsByStubMappingIdAsync([Body] Mapping request);
+        Task<Response<AnyOf<PutAdminMappingsByStubMappingIdResult, object>>> PutAdminMappingsByStubMappingIdAsync([Path] string stubMappingId);
 
         /// <summary>
         /// Delete a stub mapping
+        ///
+        /// DeleteAdminMappingsByStubMappingId (/__admin/mappings/{stubMappingId})
         /// </summary>
+        /// <param name="stubMappingId">The UUID of stub mapping</param>
         [Delete("/__admin/mappings/{stubMappingId}")]
-        Task DeleteAdminMappingsByStubMappingIdAsync();
+        Task<object> DeleteAdminMappingsByStubMappingIdAsync([Path] string stubMappingId);
 
         /// <summary>
+        /// Find stubs by matching on their metadata
+        ///
         /// PostAdminMappingsFindByMetadata (/__admin/mappings/find-by-metadata)
         /// </summary>
         [Post("/__admin/mappings/find-by-metadata")]
         [Header("Content-Type", "application/json")]
-        Task<GetAdminMappingsResponse> PostAdminMappingsFindByMetadataAsync();
+        Task<PostAdminMappingsFindByMetadataResult> PostAdminMappingsFindByMetadataAsync();
 
         /// <summary>
         /// Delete stub mappings matching metadata
+        ///
+        /// PostAdminMappingsRemoveByMetadata (/__admin/mappings/remove-by-metadata)
         /// </summary>
         [Post("/__admin/mappings/remove-by-metadata")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminMappingsRemoveByMetadataAsync();
+        Task<object> PostAdminMappingsRemoveByMetadataAsync();
 
         /// <summary>
         /// Get all requests in journal
+        ///
+        /// GetAdminRequests (/__admin/requests)
         /// </summary>
         /// <param name="limit">The maximum number of results to return</param>
         /// <param name="since">Only return logged requests after this date</param>
         [Get("/__admin/requests")]
-        Task GetAdminRequestsAsync([Query] string limit, [Query] string since);
+        Task<object> GetAdminRequestsAsync([Query] string limit, [Query] string since);
 
         /// <summary>
         /// Delete all requests in journal
+        ///
+        /// DeleteAdminRequests (/__admin/requests)
         /// </summary>
         [Delete("/__admin/requests")]
-        Task DeleteAdminRequestsAsync();
+        Task<object> DeleteAdminRequestsAsync();
 
         /// <summary>
         /// Get request by ID
+        ///
+        /// GetAdminRequestsByRequestId (/__admin/requests/{requestId})
         /// </summary>
         /// <param name="requestId">The UUID of the logged request</param>
         [Get("/__admin/requests/{requestId}")]
-        Task GetAdminRequestsByRequestIdAsync([Path] string requestId);
+        Task<object> GetAdminRequestsByRequestIdAsync([Path] string requestId);
 
         /// <summary>
         /// Delete request by ID
+        ///
+        /// DeleteAdminRequestsByRequestId (/__admin/requests/{requestId})
         /// </summary>
         /// <param name="requestId">The UUID of the logged request</param>
         [Delete("/__admin/requests/{requestId}")]
-        Task DeleteAdminRequestsByRequestIdAsync([Path] string requestId);
+        Task<object> DeleteAdminRequestsByRequestIdAsync([Path] string requestId);
 
         /// <summary>
         /// Empty the request journal
+        ///
+        /// PostAdminRequestsReset (/__admin/requests/reset)
         /// </summary>
         [Post("/__admin/requests/reset")]
-        Task PostAdminRequestsResetAsync();
+        Task<object> PostAdminRequestsResetAsync();
 
         /// <summary>
         /// Count requests by criteria
+        ///
+        /// PostAdminRequestsCount (/__admin/requests/count)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/requests/count")]
         [Header("Content-Type", "application/json")]
-        Task<PostAdminRequestsCountResponse> PostAdminRequestsCountAsync([Body] Request request);
+        Task<PostAdminRequestsCountResult> PostAdminRequestsCountAsync();
 
         /// <summary>
         /// Remove requests by criteria
+        ///
+        /// PostAdminRequestsRemove (/__admin/requests/remove)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/requests/remove")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRequestsRemoveAsync([Body] Request request);
+        Task<object> PostAdminRequestsRemoveAsync();
 
         /// <summary>
         /// Delete requests mappings matching metadata
+        ///
+        /// PostAdminRequestsRemoveByMetadata (/__admin/requests/remove-by-metadata)
         /// </summary>
         [Post("/__admin/requests/remove-by-metadata")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRequestsRemoveByMetadataAsync();
+        Task<object> PostAdminRequestsRemoveByMetadataAsync();
 
         /// <summary>
         /// Find requests by criteria
+        ///
+        /// PostAdminRequestsFind (/__admin/requests/find)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/requests/find")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRequestsFindAsync([Body] Request request);
+        Task<object> PostAdminRequestsFindAsync();
 
         /// <summary>
         /// Find unmatched requests
+        ///
+        /// GetAdminRequestsUnmatched (/__admin/requests/unmatched)
         /// </summary>
         [Get("/__admin/requests/unmatched")]
-        Task GetAdminRequestsUnmatchedAsync();
+        Task<object> GetAdminRequestsUnmatchedAsync();
 
         /// <summary>
+        /// Retrieve near-misses for all unmatched requests
+        ///
         /// GetAdminRequestsUnmatchedNearMisses (/__admin/requests/unmatched/near-misses)
         /// </summary>
         [Get("/__admin/requests/unmatched/near-misses")]
-        Task<GetAdminRequestsUnmatchedNearMissesResponse> GetAdminRequestsUnmatchedNearMissesAsync();
+        Task<GetAdminRequestsUnmatchedNearMissesResult> GetAdminRequestsUnmatchedNearMissesAsync();
 
         /// <summary>
         /// Find near misses matching specific request
+        ///
+        /// PostAdminNearMissesRequest (/__admin/near-misses/request)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/near-misses/request")]
         [Header("Content-Type", "application/json")]
-        Task<GetAdminRequestsUnmatchedNearMissesResponse> PostAdminNearMissesRequestAsync([Body] NearMiss request);
+        Task<PostAdminNearMissesRequestResult> PostAdminNearMissesRequestAsync();
 
         /// <summary>
         /// Find near misses matching request pattern
+        ///
+        /// PostAdminNearMissesRequestPattern (/__admin/near-misses/request-pattern)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/near-misses/request-pattern")]
         [Header("Content-Type", "application/json")]
-        Task<GetAdminRequestsUnmatchedNearMissesResponse> PostAdminNearMissesRequestPatternAsync([Body] Request request);
+        Task<PostAdminNearMissesRequestPatternResult> PostAdminNearMissesRequestPatternAsync();
 
         /// <summary>
         /// Start recording
+        ///
+        /// PostAdminRecordingsStart (/__admin/recordings/start)
         /// </summary>
         [Post("/__admin/recordings/start")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminRecordingsStartAsync();
+        Task<object> PostAdminRecordingsStartAsync();
 
         /// <summary>
         /// Stop recording
+        ///
+        /// PostAdminRecordingsStop (/__admin/recordings/stop)
         /// </summary>
         [Post("/__admin/recordings/stop")]
-        Task<GetAdminMappingsResponse> PostAdminRecordingsStopAsync();
+        Task<PostAdminRecordingsStopResult> PostAdminRecordingsStopAsync();
 
         /// <summary>
         /// Get recording status
+        ///
+        /// GetAdminRecordingsStatus (/__admin/recordings/status)
         /// </summary>
         [Get("/__admin/recordings/status")]
-        Task<GetAdminRecordingsStatusResponse> GetAdminRecordingsStatusAsync();
+        Task<GetAdminRecordingsStatusResult> GetAdminRecordingsStatusAsync();
 
         /// <summary>
         /// Take a snapshot recording
+        ///
+        /// PostAdminRecordingsSnapshot (/__admin/recordings/snapshot)
         /// </summary>
-        /// <param name="request"></param>
         [Post("/__admin/recordings/snapshot")]
         [Header("Content-Type", "application/json")]
-        Task<GetAdminMappingsResponse> PostAdminRecordingsSnapshotAsync([Body] object request);
+        Task<PostAdminRecordingsSnapshotResult> PostAdminRecordingsSnapshotAsync();
 
         /// <summary>
         /// Get all scenarios
+        ///
+        /// GetAdminScenarios (/__admin/scenarios)
         /// </summary>
         [Get("/__admin/scenarios")]
-        Task<GetAdminScenariosResponse> GetAdminScenariosAsync();
+        Task<GetAdminScenariosResult> GetAdminScenariosAsync();
 
         /// <summary>
         /// Reset the state of all scenarios
+        ///
+        /// PostAdminScenariosReset (/__admin/scenarios/reset)
         /// </summary>
         [Post("/__admin/scenarios/reset")]
-        Task PostAdminScenariosResetAsync();
+        Task<object> PostAdminScenariosResetAsync();
 
         /// <summary>
         /// Update global settings
+        ///
+        /// PostAdminSettings (/__admin/settings)
         /// </summary>
         [Post("/__admin/settings")]
         [Header("Content-Type", "application/json")]
-        Task PostAdminSettingsAsync();
+        Task<object> PostAdminSettingsAsync();
 
         /// <summary>
         /// Reset mappings and request journal
+        ///
+        /// PostAdminReset (/__admin/reset)
         /// </summary>
         [Post("/__admin/reset")]
-        Task PostAdminResetAsync();
+        Task<object> PostAdminResetAsync();
 
         /// <summary>
+        /// Shutdown the WireMock server
+        ///
         /// PostAdminShutdown (/__admin/shutdown)
         /// </summary>
         [Post("/__admin/shutdown")]
-        Task PostAdminShutdownAsync();
+        Task<object> PostAdminShutdownAsync();
     }
 }

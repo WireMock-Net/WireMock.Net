@@ -1,6 +1,6 @@
 namespace WireMock.Org.Abstractions
 {
-    public class WireMockOrgResponse
+    public class MappingsResponse
     {
         /// <summary>
         /// The HTTP status code to be returned
