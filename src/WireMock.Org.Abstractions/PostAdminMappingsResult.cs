@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace WireMock.Org.Abstractions
 {
     public class PostAdminMappingsResult
@@ -20,9 +17,9 @@ namespace WireMock.Org.Abstractions
         /// </summary>
         public string Name { get; set; }
 
-        public Request Request { get; set; }
+        public WireMockOrgRequest Request { get; set; }
 
-        public Response Response { get; set; }
+        public WireMockOrgResponse Response { get; set; }
 
         /// <summary>
         /// Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.

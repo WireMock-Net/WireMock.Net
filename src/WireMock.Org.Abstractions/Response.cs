@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace WireMock.Org.Abstractions
 {
-    public class Response
+    public class WireMockOrgResponse
     {
         /// <summary>
         /// The HTTP status code to be returned

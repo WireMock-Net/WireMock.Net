@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace WireMock.Org.Abstractions
 {
-    public class Request
+    public class WireMockOrgRequest
     {
         /// <summary>
         /// The HTTP request method e.g. GET
