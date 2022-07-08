@@ -53,9 +53,9 @@ internal static class PactMapper
         return (filename, JsonUtils.SerializeAsPactFile(pact));
     }
 
-    private static Request MapRequest(RequestModel request, string path)
+    private static PactRequest MapRequest(RequestModel request, string path)
     {
-        return new Request
+        return new PactRequest
         {
             Method = request.Methods?.FirstOrDefault() ?? DefaultMethod,
             Path = path,
@@ -65,14 +65,14 @@ internal static class PactMapper
         };
     }
 
-    private static Response MapResponse(ResponseModel? response)
+    private static PactResponse MapResponse(ResponseModel? response)
     {
         if (response == null)
         {
-            return new Response();
+            return new PactResponse();
         }
 
-        return new Response
+        return new PactResponse
         {
             Status = MapStatusCode(response.StatusCode),
             Headers = MapResponseHeaders(response.Headers),

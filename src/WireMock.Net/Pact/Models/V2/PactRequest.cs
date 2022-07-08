@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Pact.Models.V2;
 
-public class Request
+public class PactRequest
 {
     public IDictionary<string, string>? Headers { get; set; }
 

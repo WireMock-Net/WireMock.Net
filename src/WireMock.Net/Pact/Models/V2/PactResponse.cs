@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace WireMock.Pact.Models.V2;
 
-public class Response
+public class PactResponse
 {
     public object? Body { get; set; }
 
