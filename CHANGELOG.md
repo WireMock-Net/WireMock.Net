@@ -1,3 +1,11 @@
+# 1.5.1 (08 July 2022)
+- [#762](https://github.com/WireMock-Net/WireMock.Net/pull/762) - Bump Newtonsoft.Json from 11.0.2 to 13.0.1 in /examples/WireMock.Net.WebApplication.NETCore2 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#763](https://github.com/WireMock-Net/WireMock.Net/pull/763) - Bump Newtonsoft.Json from 6.0.1 to 13.0.1 in /examples/WireMock.Net.Client.Net472 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#765](https://github.com/WireMock-Net/WireMock.Net/pull/765) - Update WireMock.Org.Abstractions and WireMock.Org.RestClient [feature] contributed by [StefH](https://github.com/StefH)
+- [#766](https://github.com/WireMock-Net/WireMock.Net/pull/766) - Bump Microsoft.AspNetCore.Http from 2.1.1 to 2.1.22 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#767](https://github.com/WireMock-Net/WireMock.Net/pull/767) - Rename (WireMock.Pact.Models.V2)-Request to PactRequest and -Response to PactResponse [feature] contributed by [StefH](https://github.com/StefH)
+- [#764](https://github.com/WireMock-Net/WireMock.Net/issues/764) - Wrong mapping of method GetAdminMappingsAsync from IWireMockOrgApi [bug]
+
 # 1.5.0 (09 June 2022)
 - [#755](https://github.com/WireMock-Net/WireMock.Net/pull/755) - Add MatchOperator &quot;Or&quot;, &quot;And&quot; and &quot;Average&quot; for patterns [feature] contributed by [StefH](https://github.com/StefH)
 

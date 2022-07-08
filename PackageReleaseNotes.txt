@@ -1,4 +1,9 @@
-# 1.5.0 (09 June 2022)
-- #755 Add MatchOperator &quot;Or&quot;, &quot;And&quot; and &quot;Average&quot; for patterns [feature]
+# 1.5.1 (08 July 2022)
+- #762 Bump Newtonsoft.Json from 11.0.2 to 13.0.1 in /examples/WireMock.Net.WebApplication.NETCore2 [dependencies]
+- #763 Bump Newtonsoft.Json from 6.0.1 to 13.0.1 in /examples/WireMock.Net.Client.Net472 [dependencies]
+- #765 Update WireMock.Org.Abstractions and WireMock.Org.RestClient [feature]
+- #766 Bump Microsoft.AspNetCore.Http from 2.1.1 to 2.1.22 in /examples/WireMock.Net.StandAlone.Net461 [dependencies]
+- #767 Rename (WireMock.Pact.Models.V2)-Request to PactRequest and -Response to PactResponse [feature]
+- #764 Wrong mapping of method GetAdminMappingsAsync from IWireMockOrgApi [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
