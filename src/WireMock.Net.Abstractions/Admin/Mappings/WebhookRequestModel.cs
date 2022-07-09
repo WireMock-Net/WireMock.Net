@@ -15,24 +15,24 @@ namespace WireMock.Admin.Mappings
         public string Url { get; set; }
 
         /// <summary>
-        /// The methods
+        /// The method
         /// </summary>
         public string Method { get; set; }
 
         /// <summary>
         /// Gets or sets the headers.
         /// </summary>
-        public IDictionary<string, string> Headers { get; set; }
+        public IDictionary<string, string>? Headers { get; set; }
 
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
         /// <summary>
         /// Gets or sets the body (as JSON object).
         /// </summary>
-        public object BodyAsJson { get; set; }
+        public object? BodyAsJson { get; set; }
 
         /// <summary>
         /// Use ResponseMessage Transformer.

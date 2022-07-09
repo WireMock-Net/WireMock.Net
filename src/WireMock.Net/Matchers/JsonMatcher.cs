@@ -68,9 +68,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
 
         Value = value;
         _valueAsJToken = ConvertValueToJToken(value);
-        _jTokenConverter = ignoreCase
-            ? (Func<JToken, JToken>)Rename
-            : jToken => jToken;
+        _jTokenConverter = ignoreCase ? Rename : jToken => jToken;
     }
 
     /// <inheritdoc cref="IObjectMatcher.IsMatch"/>

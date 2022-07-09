@@ -1,17 +1,16 @@
-﻿using System.IO;
+using System.IO;
 
-namespace WireMock.Util
+namespace WireMock.Util;
+
+internal class BodyParserSettings
 {
-    internal class BodyParserSettings
-    {
-        public Stream Stream { get; set; }
+    public Stream Stream { get; set; } = null!;
 
-        public string ContentType { get; set; }
+    public string? ContentType { get; set; }
 
-        public string ContentEncoding { get; set; }
+    public string? ContentEncoding { get; set; }
 
-        public bool DecompressGZipAndDeflate { get; set; } = true;
+    public bool DecompressGZipAndDeflate { get; set; } = true;
 
-        public bool DeserializeJson { get; set; } = true;
-    }
+    public bool DeserializeJson { get; set; } = true;
 }

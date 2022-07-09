@@ -27,8 +27,8 @@ namespace WireMock.Owin.Mappers
 
             string method = request.Method;
 
-            Dictionary<string, string[]> headers = null;
-            IEnumerable<string> contentEncodingHeader = null;
+            Dictionary<string, string[]>? headers = null;
+            IEnumerable<string>? contentEncodingHeader = null;
             if (request.Headers.Any())
             {
                 headers = new Dictionary<string, string[]>();
@@ -43,7 +43,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-            IDictionary<string, string> cookies = null;
+            IDictionary<string, string>? cookies = null;
             if (request.Cookies.Any())
             {
                 cookies = new Dictionary<string, string>();
@@ -53,7 +53,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-            IBodyData body = null;
+            IBodyData? body = null;
             if (request.Body != null && BodyParser.ShouldParseBody(method, options.AllowBodyForAllHttpMethods == true))
             {
                 var bodyParserSettings = new BodyParserSettings
