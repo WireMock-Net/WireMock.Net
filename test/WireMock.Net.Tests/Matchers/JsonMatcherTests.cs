@@ -1,299 +1,356 @@
-﻿using System;
+using System;
 using System.IO;
 using FluentAssertions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
-namespace WireMock.Net.Tests.Matchers
+namespace WireMock.Net.Tests.Matchers;
+
+public class JsonMatcherTests
 {
-    public class JsonMatcherTests
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum EnumWithJsonConverter
     {
-        [Fact]
-        public void JsonMatcher_GetName()
+        Type1
+    }
+
+    public enum NormalEnum
+    {
+        Abc
+    }
+
+    public class Test1
+    {
+        public NormalEnum NormalEnum { get; set; }
+    }
+
+    public class Test2
+    {
+        public EnumWithJsonConverter EnumWithJsonConverter { get; set; }
+    }
+
+    [Fact]
+    public void JsonMatcher_GetName()
+    {
+        // Assign
+        var matcher = new JsonMatcher("{}");
+
+        // Act
+        string name = matcher.Name;
+
+        // Assert
+        Check.That(name).Equals("JsonMatcher");
+    }
+
+    [Fact]
+    public void JsonMatcher_GetValue()
+    {
+        // Assign
+        var matcher = new JsonMatcher("{}");
+
+        // Act
+        object value = matcher.Value;
+
+        // Assert
+        Check.That(value).Equals("{}");
+    }
+
+    [Fact]
+    public void JsonMatcher_WithInvalidStringValue_Should_ThrowException()
+    {
+        // Act
+        // ReSharper disable once ObjectCreationAsStatement
+        Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, "{ \"Id\"");
+
+        // Assert
+        action.Should().Throw<JsonException>();
+    }
+
+    [Fact]
+    public void JsonMatcher_WithInvalidObjectValue_Should_ThrowException()
+    {
+        // Act
+        // ReSharper disable once ObjectCreationAsStatement
+        Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, new MemoryStream());
+
+        // Assert
+        action.Should().Throw<JsonException>();
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsFalse_Should_ReturnMismatch()
+    {
+        // Assign
+        var matcher = new JsonMatcher("");
+
+        // Act
+        double match = matcher.IsMatch(new MemoryStream());
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsTrue_Should_ReturnMismatch()
+    {
+        // Assign
+        var matcher = new JsonMatcher("", false, true);
+
+        // Act
+        Action action = () => matcher.IsMatch(new MemoryStream());
+
+        // Assert 
+        action.Should().Throw<JsonException>();
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_ByteArray()
+    {
+        // Assign
+        var bytes = new byte[0];
+        var matcher = new JsonMatcher("");
+
+        // Act 
+        double match = matcher.IsMatch(bytes);
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_NullString()
+    {
+        // Assign
+        string? s = null;
+        var matcher = new JsonMatcher("");
+
+        // Act 
+        double match = matcher.IsMatch(s);
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_NullObject()
+    {
+        // Assign
+        object? o = null;
+        var matcher = new JsonMatcher("");
+
+        // Act 
+        double match = matcher.IsMatch(o);
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_JArray()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new[] { "x", "y" });
+
+        // Act 
+        var jArray = new JArray
         {
-            // Assign
-            var matcher = new JsonMatcher("{}");
+            "x",
+            "y"
+        };
+        double match = matcher.IsMatch(jArray);
 
-            // Act
-            string name = matcher.Name;
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-            // Assert
-            Check.That(name).Equals("JsonMatcher");
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_JObject()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
 
-        [Fact]
-        public void JsonMatcher_GetValue()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            var matcher = new JsonMatcher("{}");
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act
-            object value = matcher.Value;
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-            // Assert
-            Check.That(value).Equals("{}");
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObject()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new { id = 1, Name = "test" }, true);
 
-        [Fact]
-        public void JsonMatcher_WithInvalidStringValue_Should_ThrowException()
+        // Act 
+        var jObject = new JObject
         {
-            // Act
-            Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, "{ \"Id\"");
+            { "Id", new JValue(1) },
+            { "NaMe", new JValue("Test") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Assert
-            action.Should().Throw<JsonException>();
-        }
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-        [Fact]
-        public void JsonMatcher_WithInvalidObjectValue_Should_ThrowException()
+    [Fact]
+    public void JsonMatcher_IsMatch_JObjectParsed()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
+
+        // Act 
+        var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+        double match = matcher.IsMatch(jObject);
+
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectParsed()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new { Id = 1, Name = "TESt" }, true);
+
+        // Act 
+        var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+        double match = matcher.IsMatch(jObject);
+
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_JArrayAsString()
+    {
+        // Assign 
+        var matcher = new JsonMatcher("[ \"x\", \"y\" ]");
+
+        // Act 
+        var jArray = new JArray
         {
-            // Act
-            Action action = () => new JsonMatcher(MatchBehaviour.AcceptOnMatch, new MemoryStream());
+            "x",
+            "y"
+        };
+        double match = matcher.IsMatch(jArray);
 
-            // Assert
-            action.Should().Throw<JsonException>();
-        }
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-        [Fact]
-        public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsFalse_Should_ReturnMismatch()
+    [Fact]
+    public void JsonMatcher_IsMatch_JObjectAsString()
+    {
+        // Assign 
+        var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            var matcher = new JsonMatcher("");
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act
-            double match = matcher.IsMatch(new MemoryStream());
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-            // Assert 
-            Check.That(match).IsEqualTo(0);
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectAsString()
+    {
+        // Assign 
+        var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"test\" }", true);
 
-        [Fact]
-        public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsTrue_Should_ReturnMismatch()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            var matcher = new JsonMatcher("", false, true);
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act
-            Action action = () => matcher.IsMatch(new MemoryStream());
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-            // Assert 
-            action.Should().Throw<JsonException>();
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_JObjectAsString_RejectOnMatch()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(MatchBehaviour.RejectOnMatch, "{ \"Id\" : 1, \"Name\" : \"Test\" }");
 
-        [Fact]
-        public void JsonMatcher_IsMatch_ByteArray()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            var bytes = new byte[0];
-            var matcher = new JsonMatcher("");
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act 
-            double match = matcher.IsMatch(bytes);
+        // Assert 
+        Assert.Equal(0.0, match);
+    }
 
-            // Assert 
-            Check.That(match).IsEqualTo(0);
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_JObjectWithDateTimeOffsetAsString()
+    {
+        // Assign 
+        var matcher = new JsonMatcher("{ \"preferredAt\" : \"2019-11-21T10:32:53.2210009+00:00\" }");
 
-        [Fact]
-        public void JsonMatcher_IsMatch_NullString()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            string s = null;
-            var matcher = new JsonMatcher("");
+            { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act 
-            double match = matcher.IsMatch(s);
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 
-            // Assert 
-            Check.That(match).IsEqualTo(0);
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_NormalEnum()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new Test1 { NormalEnum = NormalEnum.Abc});
 
-        [Fact]
-        public void JsonMatcher_IsMatch_NullObject()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign
-            object o = null;
-            var matcher = new JsonMatcher("");
+            { "NormalEnum", new JValue(0) }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act 
-            double match = matcher.IsMatch(o);
+        // Assert 
+        match.Should().Be(1.0);
+    }
 
-            // Assert 
-            Check.That(match).IsEqualTo(0);
-        }
+    [Fact]
+    public void JsonMatcher_IsMatch_EnumWithJsonConverter()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new Test2 { EnumWithJsonConverter = EnumWithJsonConverter.Type1 });
 
-        [Fact]
-        public void JsonMatcher_IsMatch_JArray()
+        // Act 
+        var jObject = new JObject
         {
-            // Assign 
-            var matcher = new JsonMatcher(new[] { "x", "y" });
+            { "EnumWithJsonConverter", new JValue("Type1") }
+        };
+        double match = matcher.IsMatch(jObject);
 
-            // Act 
-            var jArray = new JArray
-            {
-                "x",
-                "y"
-            };
-            double match = matcher.IsMatch(jArray);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JObject()
-        {
-            // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "Id", new JValue(1) },
-                { "Name", new JValue("Test") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObject()
-        {
-            // Assign 
-            var matcher = new JsonMatcher(new { id = 1, Name = "test" }, true);
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "Id", new JValue(1) },
-                { "NaMe", new JValue("Test") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JObjectParsed()
-        {
-            // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
-
-            // Act 
-            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectParsed()
-        {
-            // Assign 
-            var matcher = new JsonMatcher(new { Id = 1, Name = "TESt" }, true);
-
-            // Act 
-            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JArrayAsString()
-        {
-            // Assign 
-            var matcher = new JsonMatcher("[ \"x\", \"y\" ]");
-
-            // Act 
-            var jArray = new JArray
-            {
-                "x",
-                "y"
-            };
-            double match = matcher.IsMatch(jArray);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JObjectAsString()
-        {
-            // Assign 
-            var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "Id", new JValue(1) },
-                { "Name", new JValue("Test") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_WithIgnoreCaseTrue_JObjectAsString()
-        {
-            // Assign 
-            var matcher = new JsonMatcher("{ \"Id\" : 1, \"Name\" : \"test\" }", true);
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "Id", new JValue(1) },
-                { "Name", new JValue("Test") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JObjectAsString_RejectOnMatch()
-        {
-            // Assign 
-            var matcher = new JsonMatcher(MatchBehaviour.RejectOnMatch, "{ \"Id\" : 1, \"Name\" : \"Test\" }");
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "Id", new JValue(1) },
-                { "Name", new JValue("Test") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(0.0, match);
-        }
-
-        [Fact]
-        public void JsonMatcher_IsMatch_JObjectWithDateTimeOffsetAsString()
-        {
-            // Assign 
-            var matcher = new JsonMatcher("{ \"preferredAt\" : \"2019-11-21T10:32:53.2210009+00:00\" }");
-
-            // Act 
-            var jobject = new JObject
-            {
-                { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
-            };
-            double match = matcher.IsMatch(jobject);
-
-            // Assert 
-            Assert.Equal(1.0, match);
-        }
+        // Assert 
+        match.Should().Be(1.0);
     }
 }
