@@ -167,7 +167,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPartialMatcher_IsMatch_WithRegex_JObject()
         {
             // Assign 
-            var matcher = new JsonPartialMatcher(new { Id = "^\\d+$", Name = "Test" });
+            var matcher = new JsonPartialMatcher(new { Id = "WireMockRegex:^\\d+$", Name = "Test" });
 
             // Act 
             var jObject = new JObject

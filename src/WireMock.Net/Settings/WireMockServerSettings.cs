@@ -11,6 +11,7 @@ using WireMock.Matchers;
 using WireMock.RegularExpressions;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.Types;
 #endif
 
 namespace WireMock.Settings
