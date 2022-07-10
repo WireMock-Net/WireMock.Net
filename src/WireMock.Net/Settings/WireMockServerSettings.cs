@@ -9,7 +9,6 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RegularExpressions;
-using WireMock.Types;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif

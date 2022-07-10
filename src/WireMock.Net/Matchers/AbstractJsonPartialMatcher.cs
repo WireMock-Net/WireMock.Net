@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Fare;
 using Newtonsoft.Json.Linq;
 
 namespace WireMock.Matchers;
@@ -49,6 +51,11 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
         if (value == null || value == input)
         {
             return true;
+        }
+
+        if (value.Type == JTokenType.String && new Regex(""))
+        {
+
         }
 
         if (input == null || value.Type != input.Type)

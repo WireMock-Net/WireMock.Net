@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -42,6 +41,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPartialMatcher_WithInvalidStringValue_Should_ThrowException()
         {
             // Act
+            // ReSharper disable once ObjectCreationAsStatement
             Action action = () => new JsonPartialMatcher(MatchBehaviour.AcceptOnMatch, "{ \"Id\"");
 
             // Assert
@@ -52,6 +52,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPartialMatcher_WithInvalidObjectValue_Should_ThrowException()
         {
             // Act
+            // ReSharper disable once ObjectCreationAsStatement
             Action action = () => new JsonPartialMatcher(MatchBehaviour.AcceptOnMatch, new MemoryStream());
 
             // Assert
@@ -102,7 +103,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPartialMatcher_IsMatch_NullString()
         {
             // Assign
-            string s = null;
+            string? s = null;
             var matcher = new JsonPartialMatcher("");
 
             // Act 
@@ -116,7 +117,7 @@ namespace WireMock.Net.Tests.Matchers
         public void JsonPartialMatcher_IsMatch_NullObject()
         {
             // Assign
-            object o = null;
+            object? o = null;
             var matcher = new JsonPartialMatcher("");
 
             // Act 
@@ -151,12 +152,30 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher(new { Id = 1, Name = "Test" });
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "Id", new JValue(1) },
                 { "Name", new JValue("Test") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
+
+            // Assert 
+            Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonPartialMatcher_IsMatch_WithRegex_JObject()
+        {
+            // Assign 
+            var matcher = new JsonPartialMatcher(new { Id = "^\\d+$", Name = "Test" });
+
+            // Act 
+            var jObject = new JObject
+            {
+                { "Id", new JValue(1) },
+                { "Name", new JValue("Test") }
+            };
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -169,12 +188,12 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher(new { id = 1, Name = "test" }, true);
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "Id", new JValue(1) },
                 { "NaMe", new JValue("Test") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -187,8 +206,8 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher(new { Id = 1, Name = "Test" });
 
             // Act 
-            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-            double match = matcher.IsMatch(jobject);
+            var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -201,8 +220,8 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher(new { Id = 1, Name = "TESt" }, true);
 
             // Act 
-            var jobject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-            double match = matcher.IsMatch(jobject);
+            var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -233,12 +252,12 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher("{ \"Id\" : 1, \"Name\" : \"Test\" }");
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "Id", new JValue(1) },
                 { "Name", new JValue("Test") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -251,12 +270,12 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher("{ \"Id\" : 1, \"Name\" : \"test\" }", true);
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "Id", new JValue(1) },
                 { "Name", new JValue("Test") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);
@@ -269,12 +288,12 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher(MatchBehaviour.RejectOnMatch, "{ \"Id\" : 1, \"Name\" : \"Test\" }");
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "Id", new JValue(1) },
                 { "Name", new JValue("Test") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(0.0, match);
@@ -287,11 +306,11 @@ namespace WireMock.Net.Tests.Matchers
             var matcher = new JsonPartialMatcher("{ \"preferredAt\" : \"2019-11-21T10:32:53.2210009+00:00\" }");
 
             // Act 
-            var jobject = new JObject
+            var jObject = new JObject
             {
                 { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
             };
-            double match = matcher.IsMatch(jobject);
+            double match = matcher.IsMatch(jObject);
 
             // Assert 
             Assert.Equal(1.0, match);

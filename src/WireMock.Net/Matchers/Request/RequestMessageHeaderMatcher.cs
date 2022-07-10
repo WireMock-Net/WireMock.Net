@@ -23,7 +23,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
     /// <summary>
     /// The name
     /// </summary>
-    public string? Name { get; }
+    public string Name { get; }
 
     /// <value>
     /// The matchers.
@@ -94,6 +94,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
     public RequestMessageHeaderMatcher(params Func<IDictionary<string, string[]>, bool>[] funcs)
     {
         Funcs = Guard.NotNull(funcs);
+        Name = string.Empty; // Not used when Func, but set to a non-null valid value.
     }
 
     /// <inheritdoc />
@@ -121,7 +122,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
 
         if (Matchers != null)
         {
-            if (!headers.ContainsKey(Name!))
+            if (!headers.ContainsKey(Name))
             {
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
@@ -129,7 +130,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
             var results = new List<double>();
             foreach (var matcher in Matchers)
             {
-                var resultsPerMatcher = headers[Name!].Select(v => matcher.IsMatch(v)).ToArray();
+                var resultsPerMatcher = headers[Name].Select(v => matcher.IsMatch(v)).ToArray();
 
                 results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
             }
