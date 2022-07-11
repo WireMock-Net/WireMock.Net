@@ -164,10 +164,10 @@ namespace WireMock.Net.Tests.Matchers
         }
 
         [Fact]
-        public void JsonPartialMatcher_IsMatch_WithRegex_JObject()
+        public void JsonPartialMatcher_IsMatch_WithRegexTrue()
         {
             // Assign 
-            var matcher = new JsonPartialMatcher(new { Id = "WireMockRegex:^\\d+$", Name = "Test" });
+            var matcher = new JsonPartialMatcher(new { Id = "^\\d+$", Name = "Test" }, false, false, true);
 
             // Act 
             var jObject = new JObject
@@ -179,6 +179,24 @@ namespace WireMock.Net.Tests.Matchers
 
             // Assert 
             Assert.Equal(1.0, match);
+        }
+
+        [Fact]
+        public void JsonPartialMatcher_IsMatch_WithRegexFalse()
+        {
+            // Assign 
+            var matcher = new JsonPartialMatcher(new { Id = "^\\d+$", Name = "Test" });
+
+            // Act 
+            var jObject = new JObject
+            {
+                { "Id", new JValue(1) },
+                { "Name", new JValue("Test") }
+            };
+            double match = matcher.IsMatch(jObject);
+
+            // Assert 
+            Assert.Equal(0.0, match);
         }
 
         [Fact]

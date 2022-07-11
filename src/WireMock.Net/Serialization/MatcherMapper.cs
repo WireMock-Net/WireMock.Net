@@ -47,6 +47,7 @@ internal class MatcherMapper
         bool ignoreCase = matcher.IgnoreCase == true;
         bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
         bool useRegexExtended = _settings.UseRegexExtended == true;
+        bool useRegex = matcher.Regex == true;
 
         switch (matcherName)
         {
@@ -79,11 +80,11 @@ internal class MatcherMapper
 
             case nameof(JsonPartialMatcher):
                 var valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
-                return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
+                return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, throwExceptionWhenMatcherFails, useRegex);
 
             case nameof(JsonPartialWildcardMatcher):
                 var valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
-                return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
+                return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, throwExceptionWhenMatcherFails, useRegex);
 
             case nameof(JsonPathMatcher):
                 return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
@@ -145,6 +146,17 @@ internal class MatcherMapper
             IgnoreCase = ignoreCase,
             Name = matcher.Name
         };
+
+        switch (matcher)
+        {
+            case JsonPartialMatcher jsonPartialMatcher:
+                model.Regex = jsonPartialMatcher.Regex;
+                break;
+
+            case JsonPartialWildcardMatcher jsonPartialWildcardMatcher:
+                model.Regex = jsonPartialWildcardMatcher.Regex;
+                break;
+        }
 
         switch (matcher)
         {

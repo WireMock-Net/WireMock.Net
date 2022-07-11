@@ -10,12 +10,10 @@ namespace WireMock.Matchers;
 /// </summary>
 public abstract class AbstractJsonPartialMatcher : JsonMatcher
 {
-    private const string Prefix = "WireMockRegex:";
-
     /// <summary>
     /// Support Regex
     /// </summary>
-    public bool Regex { get; set; } = true;
+    public bool Regex { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AbstractJsonPartialMatcher"/> class.
@@ -23,9 +21,11 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// <param name="value">The string value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    protected AbstractJsonPartialMatcher(string value, bool ignoreCase = false, bool throwException = false)
+    /// <param name="regex">Support Regex.</param>
+    protected AbstractJsonPartialMatcher(string value, bool ignoreCase = false, bool throwException = false, bool regex = false)
         : base(value, ignoreCase, throwException)
     {
+        Regex = regex;
     }
 
     /// <summary>
@@ -34,9 +34,11 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// <param name="value">The object value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    protected AbstractJsonPartialMatcher(object value, bool ignoreCase = false, bool throwException = false)
+    /// <param name="regex">Support Regex.</param>
+    protected AbstractJsonPartialMatcher(object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
         : base(value, ignoreCase, throwException)
     {
+        Regex = regex;
     }
 
     /// <summary>
@@ -46,9 +48,11 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// <param name="value">The value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false)
+    /// <param name="regex">Support Regex.</param>
+    protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
         : base(matchBehaviour, value, ignoreCase, throwException)
     {
+        Regex = regex;
     }
 
     /// <inheritdoc />
@@ -62,13 +66,11 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
         if (Regex && value.Type == JTokenType.String && input != null)
         {
             var valueAsString = value.ToString();
-            if (valueAsString.StartsWith(Prefix))
+            
+            var (valid, result) = RegexUtils.MatchRegex(valueAsString, input.ToString());
+            if (valid)
             {
-                var (valid, result) = RegexUtils.MatchRegex(valueAsString.Substring(Prefix.Length), input.ToString());
-                if (valid)
-                {
-                    return result;
-                }
+                return result;
             }
         }
 

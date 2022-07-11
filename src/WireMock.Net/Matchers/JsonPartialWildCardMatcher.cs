@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace WireMock.Matchers;
 
 /// <summary>
@@ -11,20 +9,20 @@ public class JsonPartialWildcardMatcher : AbstractJsonPartialMatcher
     public override string Name => nameof(JsonPartialWildcardMatcher);
 
     /// <inheritdoc />
-    public JsonPartialWildcardMatcher(string value, bool ignoreCase = false, bool throwException = false)
-        : base(value, ignoreCase, throwException)
+    public JsonPartialWildcardMatcher(string value, bool ignoreCase = false, bool throwException = false, bool regex = false)
+        : base(value, ignoreCase, throwException, regex)
     {
     }
 
     /// <inheritdoc />
-    public JsonPartialWildcardMatcher(object value, bool ignoreCase = false, bool throwException = false)
-        : base(value, ignoreCase, throwException)
+    public JsonPartialWildcardMatcher(object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
+        : base(value, ignoreCase, throwException, regex)
     {
     }
 
     /// <inheritdoc />
-    public JsonPartialWildcardMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false)
-        : base(matchBehaviour, value, ignoreCase, throwException)
+    public JsonPartialWildcardMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
+        : base(matchBehaviour, value, ignoreCase, throwException, regex)
     {
     }
 
