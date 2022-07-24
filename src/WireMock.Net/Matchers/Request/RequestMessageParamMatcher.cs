@@ -92,7 +92,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
         }
 
-        WireMockList<string> valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase ?? false);
+        var valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key!, IgnoreCase ?? false);
         if (valuesPresentInRequestMessage == null)
         {
             // Key is not present at all, just return Mismatch
@@ -102,7 +102,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
         if (Matchers != null && Matchers.Any())
         {
             // Return the score based on Matchers and valuesPresentInRequestMessage
-            return CalculateScore(valuesPresentInRequestMessage);
+            return CalculateScore(Matchers, valuesPresentInRequestMessage);
         }
 
         if (Matchers == null || !Matchers.Any())
@@ -114,14 +114,14 @@ public class RequestMessageParamMatcher : IRequestMatcher
         return MatchScores.Mismatch;
     }
 
-    private double CalculateScore(WireMockList<string> valuesPresentInRequestMessage)
+    private double CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
     {
         var total = new List<double>();
 
         // If the total patterns in all matchers > values in message, use the matcher as base
-        if (Matchers.Sum(m => m.GetPatterns().Length) > valuesPresentInRequestMessage.Count)
+        if (matchers.Sum(m => m.GetPatterns().Length) > valuesPresentInRequestMessage.Count)
         {
-            foreach (var matcher in Matchers)
+            foreach (var matcher in matchers)
             {
                 double score = 0d;
                 foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
@@ -136,7 +136,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
         {
             foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
             {
-                double score = Matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
+                double score = matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
                 total.Add(score);
             }
         }

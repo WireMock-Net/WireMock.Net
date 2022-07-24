@@ -13,12 +13,12 @@ namespace WireMock.Matchers;
 /// </summary>
 public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
 {
-    /// <inheritdoc cref="IValueMatcher.Value"/>
-    public object Value { get; }
-
     /// <inheritdoc cref="IMatcher.Name"/>
     public virtual string Name => "JsonMatcher";
 
+    /// <inheritdoc cref="IValueMatcher.Value"/>
+    public object Value { get; }
+    
     /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
     public MatchBehaviour MatchBehaviour { get; }
 

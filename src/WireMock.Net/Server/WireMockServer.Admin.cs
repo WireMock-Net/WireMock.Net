@@ -293,7 +293,7 @@ public partial class WireMockServer
 
     private IResponseMessage SettingsUpdate(IRequestMessage requestMessage)
     {
-        var settings = DeserializeObject<SettingsModel>(requestMessage);
+        var settings = DeserializeObject<SettingsModel>(requestMessage)!;
 
         // _settings
         _settings.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;

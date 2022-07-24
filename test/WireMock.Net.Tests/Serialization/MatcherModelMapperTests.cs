@@ -14,378 +14,427 @@ using WireMock.Serialization;
 using WireMock.Settings;
 using Xunit;
 
-namespace WireMock.Net.Tests.Serialization
+namespace WireMock.Net.Tests.Serialization;
+
+public class MatcherModelMapperTests
 {
-    public class MatcherModelMapperTests
+    private readonly WireMockServerSettings _settings = new();
+
+    private readonly MatcherMapper _sut;
+
+    public MatcherModelMapperTests()
     {
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+        _sut = new MatcherMapper(_settings);
+    }
 
-        private readonly MatcherMapper _sut;
-
-        public MatcherModelMapperTests()
+    [Fact]
+    public void MatcherModelMapper_Map_CSharpCodeMatcher()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            _sut = new MatcherMapper(_settings);
-        }
+            Name = "CSharpCodeMatcher",
+            Patterns = new[] { "return it == \"x\";" }
+        };
+        var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
 
-        [Fact]
-        public void MatcherModelMapper_Map_CSharpCodeMatcher()
+        // Act 1
+        var matcher1 = (ICSharpCodeMatcher)sut.Map(model)!;
+
+        // Assert 1
+        matcher1.Should().NotBeNull();
+        matcher1.IsMatch("x").Should().Be(1.0d);
+
+        // Act 2
+        var matcher2 = (ICSharpCodeMatcher)sut.Map(model)!;
+
+        // Assert 2
+        matcher2.Should().NotBeNull();
+        matcher2.IsMatch("x").Should().Be(1.0d);
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_CSharpCodeMatcher_NotAllowed_ThrowsException()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "CSharpCodeMatcher",
-                Patterns = new[] { "return it == \"x\";" }
-            };
-            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
+            Name = "CSharpCodeMatcher",
+            Patterns = new[] { "x" }
+        };
+        var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = false });
 
-            // Act 1
-            var matcher1 = (ICSharpCodeMatcher)sut.Map(model);
+        // Act
+        Action action = () => sut.Map(model);
 
-            // Assert 1
-            matcher1.Should().NotBeNull();
-            matcher1.IsMatch("x").Should().Be(1.0d);
+        // Assert
+        action.Should().Throw<NotSupportedException>();
+    }
 
-            // Act 2
-            var matcher2 = (ICSharpCodeMatcher)sut.Map(model);
+    [Fact]
+    public void MatcherModelMapper_Map_Null()
+    {
+        // Act
+        IMatcher matcher = _sut.Map((MatcherModel?)null)!;
 
-            // Assert 2
-            matcher2.Should().NotBeNull();
-            matcher2.IsMatch("x").Should().Be(1.0d);
-        }
+        // Assert
+        Check.That(matcher).IsNull();
+    }
 
-        [Fact]
-        public void MatcherModelMapper_Map_CSharpCodeMatcher_NotAllowed_ThrowsException()
+    [Fact]
+    public void MatcherModelMapper_Map_ExactMatcher_Pattern()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "CSharpCodeMatcher",
-                Patterns = new[] { "x" }
-            };
-            var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = false });
+            Name = "ExactMatcher",
+            Patterns = new[] { "x" }
+        };
 
-            // Act
-            Action action = () => sut.Map(model);
+        // Act
+        var matcher = (ExactMatcher)_sut.Map(model)!;
 
-            // Assert
-            action.Should().Throw<NotSupportedException>();
-        }
+        // Assert
+        matcher.GetPatterns().Should().ContainSingle("x");
+        matcher.ThrowException.Should().BeFalse();
+    }
 
-        [Fact]
-        public void MatcherModelMapper_Map_Null()
+    [Fact]
+    public void MatcherModelMapper_Map_ExactMatcher_Patterns()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Act
-            IMatcher matcher = _sut.Map((MatcherModel)null);
+            Name = "ExactMatcher",
+            Patterns = new[] { "x", "y" }
+        };
 
-            // Assert
-            Check.That(matcher).IsNull();
-        }
+        // Act
+        var matcher = (ExactMatcher)_sut.Map(model)!;
 
-        [Fact]
-        public void MatcherModelMapper_Map_ExactMatcher_Pattern()
+        // Assert
+        Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_JsonPartialMatcher_RegexFalse()
+    {
+        // Assign
+        var pattern = "{ \"x\": 1 }";
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "ExactMatcher",
-                Patterns = new[] { "x" }
-            };
+            Name = "JsonPartialMatcher",
+            Regex = false,
+            Pattern = pattern
+        };
 
-            // Act
-            var matcher = (ExactMatcher)_sut.Map(model);
+        // Act
+        var matcher = (JsonPartialMatcher)_sut.Map(model)!;
 
-            // Assert
-            matcher.GetPatterns().Should().ContainSingle("x");
-            matcher.ThrowException.Should().BeFalse();
-        }
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.IgnoreCase.Should().BeFalse();
+        matcher.Value.Should().Be(pattern);
+        matcher.Regex.Should().BeFalse();
+        matcher.ThrowException.Should().BeFalse();
+    }
 
-        [Fact]
-        public void MatcherModelMapper_Map_ExactMatcher_Patterns()
+    [Fact]
+    public void MatcherModelMapper_Map_JsonPartialMatcher_RegexTrue()
+    {
+        // Assign
+        var pattern = "{ \"x\": 1 }";
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "ExactMatcher",
-                Patterns = new[] { "x", "y" }
-            };
+            Name = "JsonPartialMatcher",
+            Regex = true,
+            Pattern = pattern
+        };
 
-            // Act
-            var matcher = (ExactMatcher)_sut.Map(model);
+        // Act
+        var matcher = (JsonPartialMatcher)_sut.Map(model)!;
 
-            // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-        }
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.IgnoreCase.Should().BeFalse();
+        matcher.Value.Should().Be(pattern);
+        matcher.Regex.Should().BeTrue();
+        matcher.ThrowException.Should().BeFalse();
+    }
 
-        [Theory]
-        [InlineData(nameof(LinqMatcher))]
-        [InlineData(nameof(ExactMatcher))]
-        [InlineData(nameof(ExactObjectMatcher))]
-        [InlineData(nameof(RegexMatcher))]
-        [InlineData(nameof(JsonMatcher))]
-        [InlineData(nameof(JsonPathMatcher))]
-        [InlineData(nameof(JmesPathMatcher))]
-        [InlineData(nameof(XPathMatcher))]
-        [InlineData(nameof(WildcardMatcher))]
-        [InlineData(nameof(ContentTypeMatcher))]
-        [InlineData(nameof(SimMetricsMatcher))]
-        public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
+    [Theory]
+    [InlineData(nameof(LinqMatcher))]
+    [InlineData(nameof(ExactMatcher))]
+    [InlineData(nameof(ExactObjectMatcher))]
+    [InlineData(nameof(RegexMatcher))]
+    [InlineData(nameof(JsonMatcher))]
+    [InlineData(nameof(JsonPartialMatcher))]
+    [InlineData(nameof(JsonPartialWildcardMatcher))]
+    [InlineData(nameof(JsonPathMatcher))]
+    [InlineData(nameof(JmesPathMatcher))]
+    [InlineData(nameof(XPathMatcher))]
+    [InlineData(nameof(WildcardMatcher))]
+    [InlineData(nameof(ContentTypeMatcher))]
+    [InlineData(nameof(SimMetricsMatcher))]
+    public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
+    {
+        // Assign
+        var settings = new WireMockServerSettings
         {
-            // Assign
-            var settings = new WireMockServerSettings
-            {
-                ThrowExceptionWhenMatcherFails = true
-            };
-            var sut = new MatcherMapper(settings);
-            var model = new MatcherModel
-            {
-                Name = name,
-                Patterns = new[] { "" }
-            };
-
-            // Act
-            var matcher = sut.Map(model);
-
-            // Assert
-            matcher.ThrowException.Should().BeTrue();
-        }
-
-        [Fact]
-        public void MatcherModelMapper_Map_ExactObjectMatcher_ValidBase64StringPattern()
+            ThrowExceptionWhenMatcherFails = true
+        };
+        var sut = new MatcherMapper(settings);
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "ExactObjectMatcher",
-                Patterns = new object[] { "c3RlZg==" }
-            };
+            Name = name,
+            Patterns = new[] { "" }
+        };
 
-            // Act
-            var matcher = (ExactObjectMatcher)_sut.Map(model);
+        // Act
+        var matcher = sut.Map(model)!;
 
-            // Assert
-            Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
-        }
+        // Assert
+        matcher.Should().NotBeNull();
+        matcher.ThrowException.Should().BeTrue();
+    }
 
-        [Fact]
-        public void MatcherModelMapper_Map_ExactObjectMatcher_InvalidBase64StringPattern()
+    [Fact]
+    public void MatcherModelMapper_Map_ExactObjectMatcher_ValidBase64StringPattern()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "ExactObjectMatcher",
-                Patterns = new object[] { "_" }
-            };
+            Name = "ExactObjectMatcher",
+            Patterns = new object[] { "c3RlZg==" }
+        };
 
-            // Act & Assert
-            Check.ThatCode(() => _sut.Map(model)).Throws<ArgumentException>();
-        }
+        // Act
+        var matcher = (ExactObjectMatcher)_sut.Map(model)!;
 
-        [Theory]
-        [InlineData(MatchOperator.Or, 1.0d)]
-        [InlineData(MatchOperator.And, 0.0d)]
-        [InlineData(MatchOperator.Average, 0.5d)]
-        public void MatcherModelMapper_Map_RegexMatcher(MatchOperator matchOperator, double expected)
+        // Assert
+        Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_ExactObjectMatcher_InvalidBase64StringPattern()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "RegexMatcher",
-                Patterns = new[] { "x", "y" },
-                IgnoreCase = true,
-                MatchOperator = matchOperator.ToString()
-            };
+            Name = "ExactObjectMatcher",
+            Patterns = new object[] { "_" }
+        };
 
-            // Act
-            var matcher = (RegexMatcher)_sut.Map(model)!;
+        // Act & Assert
+        Check.ThatCode(() => _sut.Map(model)).Throws<ArgumentException>();
+    }
 
-            // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-            Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
-        }
-
-        [Theory]
-        [InlineData(MatchOperator.Or, 1.0d)]
-        [InlineData(MatchOperator.And, 0.0d)]
-        [InlineData(MatchOperator.Average, 0.5d)]
-        public void MatcherModelMapper_Map_WildcardMatcher_IgnoreCase(MatchOperator matchOperator, double expected)
+    [Theory]
+    [InlineData(MatchOperator.Or, 1.0d)]
+    [InlineData(MatchOperator.And, 0.0d)]
+    [InlineData(MatchOperator.Average, 0.5d)]
+    public void MatcherModelMapper_Map_RegexMatcher(MatchOperator matchOperator, double expected)
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "WildcardMatcher",
-                Patterns = new[] { "x", "y" },
-                IgnoreCase = true,
-                MatchOperator = matchOperator.ToString()
-            };
+            Name = "RegexMatcher",
+            Patterns = new[] { "x", "y" },
+            IgnoreCase = true,
+            MatchOperator = matchOperator.ToString()
+        };
 
-            // Act
-            var matcher = (WildcardMatcher)_sut.Map(model)!;
+        // Act
+        var matcher = (RegexMatcher)_sut.Map(model)!;
 
-            // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-            Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
-        }
+        // Assert
+        Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
+        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+    }
 
-        [Fact]
-        public void MatcherModelMapper_Map_WildcardMatcher_With_PatternAsFile()
+    [Theory]
+    [InlineData(MatchOperator.Or, 1.0d)]
+    [InlineData(MatchOperator.And, 0.0d)]
+    [InlineData(MatchOperator.Average, 0.5d)]
+    public void MatcherModelMapper_Map_WildcardMatcher_IgnoreCase(MatchOperator matchOperator, double expected)
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Arrange
-            var file = "c:\\test.txt";
-            var fileContent = "c";
-            var stringPattern = new StringPattern
-            {
-                Pattern = fileContent,
-                PatternAsFile = file
-            };
-            var fileSystemHandleMock = new Mock<IFileSystemHandler>();
-            fileSystemHandleMock.Setup(f => f.ReadFileAsString(file)).Returns(fileContent);
+            Name = "WildcardMatcher",
+            Patterns = new[] { "x", "y" },
+            IgnoreCase = true,
+            MatchOperator = matchOperator.ToString()
+        };
 
-            var model = new MatcherModel
-            {
-                Name = "WildcardMatcher",
-                PatternAsFile = file
-            };
+        // Act
+        var matcher = (WildcardMatcher)_sut.Map(model)!;
 
-            var settings = new WireMockServerSettings
-            {
-                FileSystemHandler = fileSystemHandleMock.Object
-            };
-            var sut = new MatcherMapper(settings);
+        // Assert
+        Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
+        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+    }
 
-            // Act
-            var matcher = (WildcardMatcher)sut.Map(model);
-
-            // Assert
-            matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
-            matcher.IsMatch("c").Should().Be(1.0d);
-        }
-
-        [Fact]
-        public void MatcherModelMapper_Map_SimMetricsMatcher()
+    [Fact]
+    public void MatcherModelMapper_Map_WildcardMatcher_With_PatternAsFile()
+    {
+        // Arrange
+        var file = "c:\\test.txt";
+        var fileContent = "c";
+        var stringPattern = new StringPattern
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "SimMetricsMatcher",
-                Pattern = "x"
-            };
+            Pattern = fileContent,
+            PatternAsFile = file
+        };
+        var fileSystemHandleMock = new Mock<IFileSystemHandler>();
+        fileSystemHandleMock.Setup(f => f.ReadFileAsString(file)).Returns(fileContent);
 
-            // Act
-            var matcher = (SimMetricsMatcher)_sut.Map(model);
-
-            // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x");
-        }
-
-        [Fact]
-        public void MatcherModelMapper_Map_SimMetricsMatcher_BlockDistance()
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "SimMetricsMatcher.BlockDistance",
-                Pattern = "x"
-            };
+            Name = "WildcardMatcher",
+            PatternAsFile = file
+        };
 
-            // Act
-            var matcher = (SimMetricsMatcher)_sut.Map(model);
-
-            // Assert
-            Check.That(matcher.GetPatterns()).ContainsExactly("x");
-        }
-
-        [Fact]
-        public void MatcherModelMapper_Map_SimMetricsMatcher_Throws1()
+        var settings = new WireMockServerSettings
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "error",
-                Pattern = "x"
-            };
+            FileSystemHandler = fileSystemHandleMock.Object
+        };
+        var sut = new MatcherMapper(settings);
 
-            // Act
-            Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
-        }
+        // Act
+        var matcher = (WildcardMatcher)sut.Map(model)!;
 
-        [Fact]
-        public void MatcherModelMapper_Map_SimMetricsMatcher_Throws2()
+        // Assert
+        matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
+        matcher.IsMatch("c").Should().Be(1.0d);
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_SimMetricsMatcher()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Assign
-            var model = new MatcherModel
-            {
-                Name = "SimMetricsMatcher.error",
-                Pattern = "x"
-            };
+            Name = "SimMetricsMatcher",
+            Pattern = "x"
+        };
 
-            // Act
-            Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
-        }
+        // Act
+        var matcher = (SimMetricsMatcher)_sut.Map(model)!;
 
-        [Fact]
-        public void MatcherModelMapper_Map_MatcherModelToCustomMatcher()
+        // Assert
+        Check.That(matcher.GetPatterns()).ContainsExactly("x");
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_SimMetricsMatcher_BlockDistance()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Arrange
-            var patternModel = new CustomPathParamMatcherModel("/customer/{customerId}/document/{documentId}",
-                new Dictionary<string, string>(2)
-                {
-                    { "customerId", @"^[0-9]+$" },
-                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
-                });
-            var model = new MatcherModel
-            {
-                Name = nameof(CustomPathParamMatcher),
-                Pattern = JsonConvert.SerializeObject(patternModel)
-            };
+            Name = "SimMetricsMatcher.BlockDistance",
+            Pattern = "x"
+        };
 
-            var settings = new WireMockServerSettings();
-            settings.CustomMatcherMappings = settings.CustomMatcherMappings ?? new Dictionary<string, Func<MatcherModel, IMatcher>>();
-            settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
-            {
-                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
-                return new CustomPathParamMatcher(
-                    matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    matcherParams.Path, matcherParams.PathParams,
-                    settings.ThrowExceptionWhenMatcherFails == true
-                );
-            };
-            var sut = new MatcherMapper(settings);
+        // Act
+        var matcher = (SimMetricsMatcher)_sut.Map(model)!;
 
-            // Act
-            var matcher = sut.Map(model) as CustomPathParamMatcher;
+        // Assert
+        Check.That(matcher.GetPatterns()).ContainsExactly("x");
+    }
 
-            // Assert
-            matcher.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void MatcherModelMapper_Map_CustomMatcherToMatcherModel()
+    [Fact]
+    public void MatcherModelMapper_Map_SimMetricsMatcher_Throws1()
+    {
+        // Assign
+        var model = new MatcherModel
         {
-            // Arrange
-            var matcher = new CustomPathParamMatcher("/customer/{customerId}/document/{documentId}",
-                new Dictionary<string, string>(2)
-                {
-                    { "customerId", @"^[0-9]+$" },
-                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
-                });
+            Name = "error",
+            Pattern = "x"
+        };
 
-            // Act
-            var model = _sut.Map(matcher);
+        // Act
+        Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
+    }
 
-            // Assert
-            using (new AssertionScope())
+    [Fact]
+    public void MatcherModelMapper_Map_SimMetricsMatcher_Throws2()
+    {
+        // Assign
+        var model = new MatcherModel
+        {
+            Name = "SimMetricsMatcher.error",
+            Pattern = "x"
+        };
+
+        // Act
+        Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_MatcherModelToCustomMatcher()
+    {
+        // Arrange
+        var patternModel = new CustomPathParamMatcherModel("/customer/{customerId}/document/{documentId}",
+            new Dictionary<string, string>(2)
             {
-                model.Should().NotBeNull();
-                model.Name.Should().Be(nameof(CustomPathParamMatcher));
+                { "customerId", @"^[0-9]+$" },
+                { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+            });
+        var model = new MatcherModel
+        {
+            Name = nameof(CustomPathParamMatcher),
+            Pattern = JsonConvert.SerializeObject(patternModel)
+        };
 
-                var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)model.Pattern);
-                matcherParams.Path.Should().Be("/customer/{customerId}/document/{documentId}");
-                matcherParams.PathParams.Should().BeEquivalentTo(new Dictionary<string, string>(2)
-                {
-                    { "customerId", @"^[0-9]+$" },
-                    { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
-                });
-            }
+        var settings = new WireMockServerSettings();
+        settings.CustomMatcherMappings = settings.CustomMatcherMappings ?? new Dictionary<string, Func<MatcherModel, IMatcher>>();
+        settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
+        {
+            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern!)!;
+            return new CustomPathParamMatcher(
+                matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                matcherParams.Path,
+                matcherParams.PathParams,
+                settings.ThrowExceptionWhenMatcherFails == true
+            );
+        };
+        var sut = new MatcherMapper(settings);
+
+        // Act
+        var matcher = sut.Map(model) as CustomPathParamMatcher;
+
+        // Assert
+        matcher.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void MatcherModelMapper_Map_CustomMatcherToMatcherModel()
+    {
+        // Arrange
+        var matcher = new CustomPathParamMatcher("/customer/{customerId}/document/{documentId}",
+            new Dictionary<string, string>(2)
+            {
+                { "customerId", @"^[0-9]+$" },
+                { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+            });
+
+        // Act
+        var model = _sut.Map(matcher)!;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            model.Should().NotBeNull();
+            model.Name.Should().Be(nameof(CustomPathParamMatcher));
+
+            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)model.Pattern!)!;
+            matcherParams.Path.Should().Be("/customer/{customerId}/document/{documentId}");
+            matcherParams.PathParams.Should().BeEquivalentTo(new Dictionary<string, string>(2)
+            {
+                { "customerId", @"^[0-9]+$" },
+                { "documentId", @"^[0-9a-zA-Z\-\_]+\.[a-zA-Z]+$" }
+            });
         }
     }
 }
