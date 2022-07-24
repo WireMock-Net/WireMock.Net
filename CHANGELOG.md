@@ -1,3 +1,8 @@
+# 1.5.2 (24 July 2022)
+- [#769](https://github.com/WireMock-Net/WireMock.Net/pull/769) - Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.3 to 2.1.7 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#770](https://github.com/WireMock-Net/WireMock.Net/pull/770) - Added some more tests for JsonMatcher + refactored some code to use nullable [test] contributed by [StefH](https://github.com/StefH)
+- [#771](https://github.com/WireMock-Net/WireMock.Net/pull/771) - JsonPartialMatcher - support Regex [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.1 (08 July 2022)
 - [#762](https://github.com/WireMock-Net/WireMock.Net/pull/762) - Bump Newtonsoft.Json from 11.0.2 to 13.0.1 in /examples/WireMock.Net.WebApplication.NETCore2 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#763](https://github.com/WireMock-Net/WireMock.Net/pull/763) - Bump Newtonsoft.Json from 6.0.1 to 13.0.1 in /examples/WireMock.Net.Client.Net472 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
