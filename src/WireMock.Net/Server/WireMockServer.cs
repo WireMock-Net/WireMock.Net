@@ -80,7 +80,7 @@ public partial class WireMockServer : IWireMockServer
     /// Gets the scenarios.
     /// </summary>
     [PublicAPI]
-    public ConcurrentDictionary<string, ScenarioState> Scenarios => new ConcurrentDictionary<string, ScenarioState>(_options.Scenarios);
+    public ConcurrentDictionary<string, ScenarioState> Scenarios => new(_options.Scenarios);
 
     #region IDisposable Members
     /// <summary>
@@ -414,10 +414,10 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc cref="IWireMockServer.SetAzureADAuthentication(string, string)" />
     [PublicAPI]
-    public void SetAzureADAuthentication([NotNull] string tenant, [NotNull] string audience)
+    public void SetAzureADAuthentication(string tenant, string audience)
     {
-        Guard.NotNull(tenant, nameof(tenant));
-        Guard.NotNull(audience, nameof(audience));
+        Guard.NotNull(tenant);
+        Guard.NotNull(audience);
 
 #if NETSTANDARD1_3
         throw new NotSupportedException("AzureADAuthentication is not supported for NETStandard 1.3");
@@ -445,14 +445,14 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc cref="IWireMockServer.SetMaxRequestLogCount" />
     [PublicAPI]
-    public void SetMaxRequestLogCount([CanBeNull] int? maxRequestLogCount)
+    public void SetMaxRequestLogCount(int? maxRequestLogCount)
     {
         _options.MaxRequestLogCount = maxRequestLogCount;
     }
 
     /// <inheritdoc cref="IWireMockServer.SetRequestLogExpirationDuration" />
     [PublicAPI]
-    public void SetRequestLogExpirationDuration([CanBeNull] int? requestLogExpirationDuration)
+    public void SetRequestLogExpirationDuration(int? requestLogExpirationDuration)
     {
         _options.RequestLogExpirationDuration = requestLogExpirationDuration;
     }
@@ -542,12 +542,12 @@ public partial class WireMockServer : IWireMockServer
         {
             if (!string.IsNullOrEmpty(settings.AdminUsername) && !string.IsNullOrEmpty(settings.AdminPassword))
             {
-                SetBasicAuthentication(settings.AdminUsername, settings.AdminPassword);
+                SetBasicAuthentication(settings.AdminUsername!, settings.AdminPassword!);
             }
 
             if (!string.IsNullOrEmpty(settings.AdminAzureADTenant) && !string.IsNullOrEmpty(settings.AdminAzureADAudience))
             {
-                SetAzureADAuthentication(settings.AdminAzureADTenant, settings.AdminAzureADAudience);
+                SetAzureADAuthentication(settings.AdminAzureADTenant!, settings.AdminAzureADAudience!);
             }
 
             InitAdmin();

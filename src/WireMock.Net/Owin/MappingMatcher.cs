@@ -25,7 +25,7 @@ namespace WireMock.Owin
             {
                 try
                 {
-                    string nextState = GetNextState(mapping);
+                    var nextState = GetNextState(mapping);
 
                     mappings.Add(new MappingMatcherResult
                     {
@@ -59,7 +59,7 @@ namespace WireMock.Owin
             return (match, partialMatch);
         }
 
-        private string GetNextState(IMapping mapping)
+        private string? GetNextState(IMapping mapping)
         {
             // If the mapping does not have a scenario or _options.Scenarios does not contain this scenario from the mapping,
             // just return null to indicate that there is no next state.

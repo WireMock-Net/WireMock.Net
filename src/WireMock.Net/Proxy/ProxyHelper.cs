@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Stef.Validation;
+using WireMock.Constants;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -85,7 +86,7 @@ internal class ProxyHelper
             }
         });
 
-        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
+        var throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Json:
@@ -103,6 +104,22 @@ internal class ProxyHelper
 
         var response = Response.Create(responseMessage);
 
-        return new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
+        return new Mapping
+        (
+            guid: Guid.NewGuid(),
+            title: $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}",
+            description: string.Empty,
+            path: null,
+            settings: _settings,
+            request,
+            response,
+            priority: WireMockConstants.ProxyPriority, // was 0
+            scenario: null,
+            executionConditionState: null,
+            nextState: null,
+            stateTimes: null,
+            webhooks: null,
+            timeSettings: null
+        );
     }
 }
