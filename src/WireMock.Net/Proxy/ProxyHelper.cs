@@ -30,9 +30,9 @@ internal class ProxyHelper
         IRequestMessage requestMessage,
         string url)
     {
-        Guard.NotNull(client, nameof(client));
-        Guard.NotNull(requestMessage, nameof(requestMessage));
-        Guard.NotNull(url, nameof(url));
+        Guard.NotNull(client);
+        Guard.NotNull(requestMessage);
+        Guard.NotNull(url);
 
         var originalUri = new Uri(requestMessage.Url);
         var requiredUri = new Uri(url);
@@ -86,7 +86,7 @@ internal class ProxyHelper
             }
         });
 
-        var throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
+        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Json:
@@ -113,7 +113,7 @@ internal class ProxyHelper
             settings: _settings,
             request,
             response,
-            priority: WireMockConstants.ProxyPriority, // was 0
+            priority: WireMockConstants.ProxyPriority, // This was 0
             scenario: null,
             executionConditionState: null,
             nextState: null,
