@@ -1,19 +1,15 @@
-﻿using Scriban;
+using Scriban;
 using Scriban.Runtime;
 using WireMock.Types;
 
-namespace WireMock.Transformers.Scriban
-{
-    internal class WireMockTemplateContext: TemplateContext
-    {
-        protected override IObjectAccessor GetMemberAccessorImpl(object target)
-        {
-            if (target?.GetType().GetGenericTypeDefinition() == typeof(WireMockList<>))
-            {
-                return new WireMockListAccessor();
-            }
+namespace WireMock.Transformers.Scriban;
 
-            return base.GetMemberAccessorImpl(target);
-        }
+internal class WireMockTemplateContext : TemplateContext
+{
+    protected override IObjectAccessor GetMemberAccessorImpl(object target)
+    {
+        return target?.GetType().GetGenericTypeDefinition() == typeof(WireMockList<>) ?
+            new WireMockListAccessor() :
+            base.GetMemberAccessorImpl(target);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Scriban;
 using Scriban.Parsing;
@@ -50,6 +50,20 @@ namespace WireMock.Transformers.Scriban
         {
             throw new NotImplementedException();
         }
+
+        public bool TryGetItem(TemplateContext context, SourceSpan span, object target, object index, out object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TrySetItem(TemplateContext context, SourceSpan span, object target, object index, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasIndexer => throw new NotImplementedException();
+
+        public Type IndexType => throw new NotImplementedException();
         #endregion
     }
 }
