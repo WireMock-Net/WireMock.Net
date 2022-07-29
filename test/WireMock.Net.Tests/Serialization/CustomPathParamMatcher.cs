@@ -41,7 +41,7 @@ public class CustomPathParamMatcher : IStringMatcher
         MatchOperator = matchOperator;
     }
 
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         var inputParts = GetPathParts(input);
         if (inputParts.Length != _pathParts.Length)
@@ -97,8 +97,13 @@ public class CustomPathParamMatcher : IStringMatcher
 
     public MatchOperator MatchOperator { get; }
 
-    private static string[] GetPathParts(string path)
+    private static string[] GetPathParts(string? path)
     {
+        if (path is null)
+        {
+            return new string[0];
+        }
+
         var hashMarkIndex = path.IndexOf('#');
         if (hashMarkIndex != -1)
         {
