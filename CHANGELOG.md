@@ -1,3 +1,7 @@
+# 1.5.3 (29 July 2022)
+- [#777](https://github.com/WireMock-Net/WireMock.Net/pull/777) - Update Scriban.Signed to version 5.5.0 [feature] contributed by [StefH](https://github.com/StefH)
+- [#776](https://github.com/WireMock-Net/WireMock.Net/issues/776) - Update Scriban.Signed to support more functions, e.g math.random [feature]
+
 # 1.5.2 (24 July 2022)
 - [#769](https://github.com/WireMock-Net/WireMock.Net/pull/769) - Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.3 to 2.1.7 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#770](https://github.com/WireMock-Net/WireMock.Net/pull/770) - Added some more tests for JsonMatcher + refactored some code to use nullable [test] contributed by [StefH](https://github.com/StefH)
