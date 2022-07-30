@@ -3,45 +3,44 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.Types;
 
-namespace WireMock.Owin
+namespace WireMock.Owin;
+
+internal partial class AspNetCoreSelfHost
 {
-    internal partial class AspNetCoreSelfHost
+    public void AddCors(IServiceCollection services)
     {
-        public void AddCors(IServiceCollection services)
+        if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
         {
-            if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
-            {
-                /* https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core */
-                /* Enable Cors */
-                services.AddCors(corsOptions => corsOptions
-                    .AddPolicy(CorsPolicyName,
-                        corsPolicyBuilder =>
+            /* https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core */
+            /* Enable Cors */
+            services.AddCors(corsOptions => corsOptions
+                .AddPolicy(CorsPolicyName,
+                    corsPolicyBuilder =>
+                    {
+                        if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyHeader))
                         {
-                            if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyHeader))
-                            {
-                                corsPolicyBuilder.AllowAnyHeader();
-                            }
+                            corsPolicyBuilder.AllowAnyHeader();
+                        }
 
-                            if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyMethod))
-                            {
-                                corsPolicyBuilder.AllowAnyMethod();
-                            }
+                        if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyMethod))
+                        {
+                            corsPolicyBuilder.AllowAnyMethod();
+                        }
 
-                            if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyOrigin))
-                            {
-                                corsPolicyBuilder.AllowAnyOrigin();
-                            }
-                        }));
-            }
+                        if (_wireMockMiddlewareOptions.CorsPolicyOptions.Value.HasFlag(CorsPolicyOptions.AllowAnyOrigin))
+                        {
+                            corsPolicyBuilder.AllowAnyOrigin();
+                        }
+                    }));
         }
+    }
 
-        public void UseCors(IApplicationBuilder appBuilder)
+    public void UseCors(IApplicationBuilder appBuilder)
+    {
+        if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
         {
-            if (_wireMockMiddlewareOptions.CorsPolicyOptions > CorsPolicyOptions.None)
-            {
-                /* Use Cors */
-                appBuilder.UseCors(CorsPolicyName);
-            }
+            /* Use Cors */
+            appBuilder.UseCors(CorsPolicyName);
         }
     }
 }

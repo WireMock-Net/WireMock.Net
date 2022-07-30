@@ -63,12 +63,12 @@ public interface IRequestMessage
     /// <summary>
     /// Gets the headers.
     /// </summary>
-    IDictionary<string, WireMockList<string>>? Headers { get; }
+    IDictionary<string, WireMockList<string>> Headers { get; }
 
     /// <summary>
     /// Gets the cookies.
     /// </summary>
-    IDictionary<string, string>? Cookies { get; }
+    IDictionary<string, string> Cookies { get; }
 
     /// <summary>
     /// Gets the query.

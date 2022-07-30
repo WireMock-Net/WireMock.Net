@@ -63,7 +63,8 @@ public class WireMockServerProxyTests
             {
                 Url = "http://www.google.com",
                 SaveMapping = true,
-                SaveMappingToFile = false
+                SaveMappingToFile = false,
+                ExcludedHeaders = new[] { "Connection" } // Needed for .NET 4.5.x and 4.6.x
             }
         };
         var server = WireMockServer.Start(settings);
@@ -82,7 +83,7 @@ public class WireMockServerProxyTests
         }
 
         // Assert
-        server.Mappings.Should().HaveCountGreaterOrEqualTo(2); // For .NET 4.5.2 and 4.6.x this is 3?
+        server.Mappings.Should().HaveCount(2);
     }
 
     [Fact]
@@ -95,7 +96,8 @@ public class WireMockServerProxyTests
             {
                 Url = "http://www.google.com",
                 SaveMapping = true,
-                SaveMappingToFile = false
+                SaveMappingToFile = false,
+                ExcludedHeaders = new[] { "Connection" } // Needed for .NET 4.5.x and 4.6.x
             },
             StartAdminInterface = true
         };
@@ -114,7 +116,7 @@ public class WireMockServerProxyTests
         }
 
         // Assert
-        server.Mappings.Should().HaveCountGreaterOrEqualTo(28); // For .NET 4.5.2 and 4.6.x this is 29?
+        server.Mappings.Should().HaveCount(28);
     }
 
     [Fact]

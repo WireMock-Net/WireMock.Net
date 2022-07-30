@@ -47,10 +47,10 @@ public class RequestMessage : IRequestMessage
     public string Method { get; }
 
     /// <inheritdoc cref="IRequestMessage.Headers" />
-    public IDictionary<string, WireMockList<string>>? Headers { get; }
+    public IDictionary<string, WireMockList<string>> Headers { get; }
 
     /// <inheritdoc cref="IRequestMessage.Cookies" />
-    public IDictionary<string, string>? Cookies { get; }
+    public IDictionary<string, string> Cookies { get; }
 
     /// <inheritdoc cref="IRequestMessage.Query" />
     public IDictionary<string, WireMockList<string>>? Query { get; }
