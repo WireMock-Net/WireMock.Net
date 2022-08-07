@@ -43,7 +43,7 @@
       <HintPath>..\..\packages\AnyOf.0.3.0\lib\net45\AnyOf.dll</HintPath>
     </Reference>
     <Reference Include="Fare, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fare.2.2.0\lib\net35\Fare.dll</HintPath>
+      <HintPath>..\..\packages\Fare.2.2.1\lib\net35\Fare.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Handlebars.Net.2.1.2\lib\net46\Handlebars.dll</HintPath>
@@ -262,7 +262,7 @@
       <HintPath>..\..\packages\NSwag.Core.13.15.10\lib\net45\NSwag.Core.dll</HintPath>
     </Reference>
     <Reference Include="RandomDataGenerator, Version=1.0.15.0, Culture=neutral, PublicKeyToken=ae5c571d29a3b8d9, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RandomDataGenerator.Net.1.0.15\lib\net45\RandomDataGenerator.dll</HintPath>
+      <HintPath>..\..\packages\RandomDataGenerator.Net.1.0.16\lib\net45\RandomDataGenerator.dll</HintPath>
     </Reference>
     <Reference Include="Scriban.Signed, Version=2.1.4.0, Culture=neutral, PublicKeyToken=5675fb69b15f2433, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Scriban.Signed.2.1.4\lib\net45\Scriban.Signed.dll</HintPath>
@@ -342,14 +342,14 @@
     <Reference Include="TinyMapper, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\TinyMapper.3.0.3\lib\net40\TinyMapper.dll</HintPath>
     </Reference>
-    <Reference Include="WireMock.Net, Version=1.5.1.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.1.5.1\lib\net461\WireMock.Net.dll</HintPath>
+    <Reference Include="WireMock.Net, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Net.1.5.3\lib\net461\WireMock.Net.dll</HintPath>
     </Reference>
-    <Reference Include="WireMock.Net.Abstractions, Version=1.5.1.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.Abstractions.1.5.1\lib\net451\WireMock.Net.Abstractions.dll</HintPath>
+    <Reference Include="WireMock.Net.Abstractions, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Net.Abstractions.1.5.3\lib\net451\WireMock.Net.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="WireMock.Org.Abstractions, Version=1.5.1.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Org.Abstractions.1.5.1\lib\net45\WireMock.Org.Abstractions.dll</HintPath>
+    <Reference Include="WireMock.Org.Abstractions, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WireMock.Org.Abstractions.1.5.3\lib\net45\WireMock.Org.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="XPath2, Version=1.1.3.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\XPath2.1.1.3\lib\net452\XPath2.dll</HintPath>
