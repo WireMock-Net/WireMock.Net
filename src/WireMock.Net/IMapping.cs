@@ -20,22 +20,22 @@ public interface IMapping
     /// <summary>
     /// Gets the TimeSettings (Start, End and TTL).
     /// </summary>
-    ITimeSettings TimeSettings { get; }
+    ITimeSettings? TimeSettings { get; }
 
     /// <summary>
     /// Gets the unique title.
     /// </summary>
-    string Title { get; }
+    string? Title { get; }
 
     /// <summary>
     /// Gets the description.
     /// </summary>
-    string Description { get; }
+    string? Description { get; }
 
     /// <summary>
     /// The full filename path for this mapping (only defined for static mappings).
     /// </summary>
-    string Path { get; set; }
+    string? Path { get; set; }
 
     /// <summary>
     /// Gets the priority.  (A low value means higher priority.)

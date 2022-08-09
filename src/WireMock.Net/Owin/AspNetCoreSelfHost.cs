@@ -36,10 +36,10 @@ namespace WireMock.Owin
 
         public Exception RunningException => _runningException;
 
-        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions wireMockMiddlewareOptions, [NotNull] HostUrlOptions urlOptions)
+        public AspNetCoreSelfHost(IWireMockMiddlewareOptions wireMockMiddlewareOptions, HostUrlOptions urlOptions)
         {
-            Guard.NotNull(wireMockMiddlewareOptions, nameof(wireMockMiddlewareOptions));
-            Guard.NotNull(urlOptions, nameof(urlOptions));
+            Guard.NotNull(wireMockMiddlewareOptions);
+            Guard.NotNull(urlOptions);
 
             _logger = wireMockMiddlewareOptions.Logger ?? new WireMockConsoleLogger();
 
@@ -119,7 +119,7 @@ namespace WireMock.Owin
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
 
-                        PortUtils.TryExtract(address, out bool isHttps, out string protocol, out string host, out int port);
+                        PortUtils.TryExtract(address, out _, out _, out _, out int port);
                         Ports.Add(port);
                     }
 

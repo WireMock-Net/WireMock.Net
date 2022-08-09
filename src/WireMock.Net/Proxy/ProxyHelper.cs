@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Stef.Validation;
+using WireMock.Constants;
 using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -29,9 +30,9 @@ internal class ProxyHelper
         IRequestMessage requestMessage,
         string url)
     {
-        Guard.NotNull(client, nameof(client));
-        Guard.NotNull(requestMessage, nameof(requestMessage));
-        Guard.NotNull(url, nameof(url));
+        Guard.NotNull(client);
+        Guard.NotNull(requestMessage);
+        Guard.NotNull(url);
 
         var originalUri = new Uri(requestMessage.Url);
         var requiredUri = new Uri(url);
@@ -103,6 +104,22 @@ internal class ProxyHelper
 
         var response = Response.Create(responseMessage);
 
-        return new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, null, null);
+        return new Mapping
+        (
+            guid: Guid.NewGuid(),
+            title: $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}",
+            description: string.Empty,
+            path: null,
+            settings: _settings,
+            request,
+            response,
+            priority: WireMockConstants.ProxyPriority, // This was 0
+            scenario: null,
+            executionConditionState: null,
+            nextState: null,
+            stateTimes: null,
+            webhooks: null,
+            timeSettings: null
+        );
     }
 }

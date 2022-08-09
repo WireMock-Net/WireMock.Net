@@ -27,7 +27,7 @@ public partial class WireMockServer
 
         string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-        if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
+        if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out var value))
         {
             var mappings = DeserializeJsonToArray<OrgMappings>(value);
             foreach (var mapping in mappings)

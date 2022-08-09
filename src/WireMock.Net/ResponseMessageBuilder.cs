@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
 using WireMock.Http;
@@ -14,6 +15,11 @@ internal static class ResponseMessageBuilder
     {
         { HttpKnownHeaderNames.ContentType, new WireMockList<string> { WireMockConstants.ContentTypeJson } }
     };
+
+    internal static ResponseMessage Create(string? message, HttpStatusCode statusCode, Guid? guid = null)
+    {
+        return Create(message, (int)statusCode, guid);
+    }
 
     internal static ResponseMessage Create(string? message, int statusCode = 200, Guid? guid = null)
     {
