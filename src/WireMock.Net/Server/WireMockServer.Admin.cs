@@ -20,7 +20,6 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
@@ -186,7 +185,7 @@ public partial class WireMockServer
 
         string filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-        if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out string value))
+        if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out var value))
         {
             var mappingModels = DeserializeJsonToArray<MappingModel>(value);
             foreach (var mappingModel in mappingModels)
@@ -293,7 +292,7 @@ public partial class WireMockServer
 
     private IResponseMessage SettingsUpdate(IRequestMessage requestMessage)
     {
-        var settings = DeserializeObject<SettingsModel>(requestMessage)!;
+        var settings = DeserializeObject<SettingsModel>(requestMessage);
 
         // _settings
         _settings.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
@@ -572,7 +571,7 @@ public partial class WireMockServer
     {
         var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
-        var request = (Request)InitRequestBuilder(requestModel, false);
+        var request = (Request)InitRequestBuilder(requestModel, false)!;
 
         var dict = new Dictionary<ILogEntry, RequestMatchResult>();
         foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
@@ -715,31 +714,28 @@ public partial class WireMockServer
         };
     }
 
-    private static T? DeserializeObject<T>(IRequestMessage requestMessage)
+    private static T DeserializeObject<T>(IRequestMessage requestMessage) where T : new()
     {
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
+        return requestMessage.BodyData?.DetectedBodyType switch
         {
-            return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
-        }
+            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString),
 
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
-        {
-            return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
-        }
+            BodyType.Json when requestMessage.BodyData?.BodyAsJson != null => ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!,
 
-        return default(T);
+            _ => throw new NotSupportedException()
+        };
     }
 
     private static T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
     {
-        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
+        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json && requestMessage.BodyData.BodyAsJson != null)
         {
             var bodyAsJson = requestMessage.BodyData.BodyAsJson;
 
             return DeserializeObjectToArray<T>(bodyAsJson);
         }
 
-        return default(T[]);
+        throw new NotSupportedException();
     }
 
     private static T[] DeserializeJsonToArray<T>(string value)
@@ -755,6 +751,6 @@ public partial class WireMockServer
         }
 
         var singleResult = ((JObject)value).ToObject<T>();
-        return new[] { singleResult };
+        return new[] { singleResult! };
     }
 }

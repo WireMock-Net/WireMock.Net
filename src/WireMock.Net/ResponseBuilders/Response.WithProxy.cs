@@ -7,7 +7,7 @@ namespace WireMock.ResponseBuilders;
 
 public partial class Response
 {
-    private HttpClient _httpClientForProxy;
+    private HttpClient? _httpClientForProxy;
 
     /// <summary>
     /// The WebProxy settings.

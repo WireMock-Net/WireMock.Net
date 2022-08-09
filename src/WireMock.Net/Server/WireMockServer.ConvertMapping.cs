@@ -275,7 +275,7 @@ public partial class WireMockServer
                 }
                 else
                 {
-                    var headers = JsonUtils.ParseJTokenToObject<string[]>(entry.Value) ?? new string[0];
+                    var headers = JsonUtils.ParseJTokenToObject<string[]>(entry.Value);
                     responseBuilder.WithHeader(entry.Key, headers);
                 }
             }
