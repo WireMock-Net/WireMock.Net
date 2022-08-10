@@ -1,57 +1,56 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace WireMock.Plugin
+namespace WireMock.Plugin;
+
+internal static class PluginLoader
 {
-    internal static class PluginLoader
+    private static readonly ConcurrentDictionary<Type, Type> Assemblies = new();
+
+    public static T Load<T>(params object[] args) where T : class
     {
-        private static readonly ConcurrentDictionary<Type, Type> Assemblies = new ConcurrentDictionary<Type, Type>();
-
-        public static T Load<T>(params object[] args) where T : class
+        var foundType = Assemblies.GetOrAdd(typeof(T), (type) =>
         {
-            var foundType = Assemblies.GetOrAdd(typeof(T), (type) =>
+            var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
+
+            Type? pluginType = null;
+            foreach (var file in files)
             {
-                var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
-
-                Type pluginType = null;
-                foreach (var file in files)
+                try
                 {
-                    try
+                    var assembly = Assembly.Load(new AssemblyName
                     {
-                        var assembly = Assembly.Load(new AssemblyName
-                        {
-                            Name = Path.GetFileNameWithoutExtension(file)
-                        });
+                        Name = Path.GetFileNameWithoutExtension(file)
+                    });
 
-                        pluginType = GetImplementationTypeByInterface<T>(assembly);
-                        if (pluginType != null)
-                        {
-                            break;
-                        }
-                    }
-                    catch
+                    pluginType = GetImplementationTypeByInterface<T>(assembly);
+                    if (pluginType != null)
                     {
-                        // no-op: just try next .dll
+                        break;
                     }
                 }
-
-                if (pluginType != null)
+                catch
                 {
-                    return pluginType;
+                    // no-op: just try next .dll
                 }
+            }
 
-                throw new DllNotFoundException($"No dll found which implements type '{type}'");
-            });
+            if (pluginType != null)
+            {
+                return pluginType;
+            }
 
-            return (T)Activator.CreateInstance(foundType, args);
-        }
+            throw new DllNotFoundException($"No dll found which implements type '{type}'");
+        });
 
-        private static Type GetImplementationTypeByInterface<T>(Assembly assembly)
-        {
-            return assembly.GetTypes().FirstOrDefault(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface);
-        }
+        return (T)Activator.CreateInstance(foundType, args);
+    }
+
+    private static Type? GetImplementationTypeByInterface<T>(Assembly assembly)
+    {
+        return assembly.GetTypes().FirstOrDefault(t => typeof(T).IsAssignableFrom(t) && !t.GetTypeInfo().IsInterface);
     }
 }

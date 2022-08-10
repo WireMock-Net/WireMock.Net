@@ -77,7 +77,7 @@ internal class RegexExtended : Regex
     /// <param name="pattern">Pattern to replace token for.</param>
     private static string ReplaceGuidPattern(string pattern)
     {
-        Guard.NotNull(pattern, nameof(pattern));
+        Guard.NotNull(pattern);
 
         foreach (var tokenPattern in GuidTokenPatterns)
         {
