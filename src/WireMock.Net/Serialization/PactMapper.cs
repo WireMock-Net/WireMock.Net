@@ -41,8 +41,8 @@ internal static class PactMapper
 
             var interaction = new Interaction
             {
-                Description = mapping.Description ?? string.Empty,
-                ProviderState = mapping.Title ?? string.Empty,
+                Description = mapping.Description,
+                ProviderState = mapping.Title,
                 Request = MapRequest(mapping.Request, path),
                 Response = MapResponse(mapping.Response)
             };

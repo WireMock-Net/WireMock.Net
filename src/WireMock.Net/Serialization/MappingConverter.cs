@@ -6,6 +6,7 @@ using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -116,7 +117,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray()!;
+        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? new IWebhook[0];
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
