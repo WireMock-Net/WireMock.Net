@@ -88,7 +88,7 @@ internal static class PactMapper
             return response.BodyAsJson;
         }
 
-        if (!string.IsNullOrEmpty(response?.Body)) // In case the body is a string, try to deserialize into object, else just return the string
+        if (response?.Body != null) // In case the body is a string, try to deserialize into object, else just return the string
         {
             return JsonUtils.TryDeserializeObject<object?>(response.Body) ?? response.Body;
         }

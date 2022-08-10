@@ -118,7 +118,7 @@ internal static class JsonUtils
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json!);
         }
         catch
         {
@@ -130,7 +130,7 @@ internal static class JsonUtils
     {
         if (value != null && value.GetType() == typeof(T))
         {
-            return (T) value;
+            return (T)value;
         }
 
         return value switch
