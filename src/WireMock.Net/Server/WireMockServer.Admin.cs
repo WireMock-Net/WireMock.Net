@@ -626,6 +626,23 @@ public partial class WireMockServer
     }
 
     /// <summary>
+    /// Save the mappings as a Pact Json file V2.
+    /// </summary>
+    /// <param name="stream">The (file) stream.</param>
+    [PublicAPI]
+    public void SavePact(Stream stream)
+    {
+        var (_, bytes) = PactMapper.ToPact(this);
+        using var writer = new BinaryWriter(stream);
+        writer.Write(bytes);
+
+        if (stream.CanSeek)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+        }
+    }
+
+    /// <summary>
     /// This stores details about the consumer of the interaction.
     /// </summary>
     /// <param name="consumer">the consumer</param>

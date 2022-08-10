@@ -114,6 +114,18 @@ internal static class JsonUtils
         return JsonConvert.DeserializeObject<T>(json, JsonSerializationConstants.JsonDeserializerSettingsWithDateParsingNone)!;
     }
 
+    public static T? TryDeserializeObject<T>(string json)
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
     public static T ParseJTokenToObject<T>(object? value)
     {
         if (value != null && value.GetType() == typeof(T))

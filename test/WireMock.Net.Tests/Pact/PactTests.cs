@@ -1,5 +1,9 @@
 using System.IO;
 using System.Net;
+using System.Text;
+using FluentAssertions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -11,7 +15,7 @@ namespace WireMock.Net.Tests.Pact;
 public class PactTests
 {
     [Fact]
-    public void SavePact_Get_Request()
+    public void SavePact_Get_Request_And_Response_WithBodyAsJson()
     {
         var server = WireMockServer.Start();
         server
@@ -39,6 +43,62 @@ public class PactTests
             );
 
         server.SavePact(Path.Combine("../../../", "Pact", "files"), "pact-get.json");
+    }
+
+    [Fact]
+    public void SavePact_Get_Request_And_Response_WithBody_StringIsJson()
+    {
+        // Act
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/tester")
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBody(@"{ foo: ""bar"" }")
+            );
+
+        var memoryStream = new MemoryStream();
+        server.SavePact(memoryStream);
+
+        var json = Encoding.UTF8.GetString(memoryStream.ToArray());
+        var pact = JsonConvert.DeserializeObject<WireMock.Pact.Models.V2.Pact>(json)!;
+
+        // Assert
+        pact.Interactions.Should().HaveCount(1);
+
+        var expectedBody = new JObject { { "foo", "bar" } };
+        pact.Interactions[0].Response.Body.Should().BeEquivalentTo(expectedBody);
+    }
+
+    [Fact]
+    public void SavePact_Get_Request_And_Response_WithBody_StringIsString()
+    {
+        // Act
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/tester")
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBody("test")
+            );
+
+        var memoryStream = new MemoryStream();
+        server.SavePact(memoryStream);
+
+        var json = Encoding.UTF8.GetString(memoryStream.ToArray());
+        var pact = JsonConvert.DeserializeObject<WireMock.Pact.Models.V2.Pact>(json)!;
+
+        // Assert
+        pact.Interactions.Should().HaveCount(1);
+        pact.Interactions[0].Response.Body.Should().Be("test");
     }
 
     [Fact]

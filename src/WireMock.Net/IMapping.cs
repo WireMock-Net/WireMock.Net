@@ -25,17 +25,17 @@ public interface IMapping
     /// <summary>
     /// Gets the unique title.
     /// </summary>
-    string Title { get; }
+    string? Title { get; }
 
     /// <summary>
     /// Gets the description.
     /// </summary>
-    string Description { get; }
+    string? Description { get; }
 
     /// <summary>
     /// The full filename path for this mapping (only defined for static mappings).
     /// </summary>
-    string Path { get; set; }
+    string? Path { get; set; }
 
     /// <summary>
     /// Gets the priority.  (A low value means higher priority.)
@@ -117,7 +117,7 @@ public interface IMapping
     /// </summary>
     /// <param name="requestMessage">The request message.</param>
     /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-    Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage);
+    Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage);
 
     /// <summary>
     /// Gets the RequestMatchResult based on the RequestMessage.

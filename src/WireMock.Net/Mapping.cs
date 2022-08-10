@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.ResponseProviders;
@@ -17,25 +16,25 @@ namespace WireMock
         public Guid Guid { get; }
 
         /// <inheritdoc />
-        public string Title { get; }
+        public string? Title { get; }
 
         /// <inheritdoc />
-        public string Description { get; }
+        public string? Description { get; }
 
         /// <inheritdoc />
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
         /// <inheritdoc />
         public int Priority { get; }
 
         /// <inheritdoc />
-        public string Scenario { get; }
+        public string? Scenario { get; }
 
         /// <inheritdoc />
-        public string ExecutionConditionState { get; }
+        public string? ExecutionConditionState { get; }
 
         /// <inheritdoc />
-        public string NextState { get; }
+        public string? NextState { get; }
 
         /// <inheritdoc />
         public int? StateTimes { get; }
@@ -62,10 +61,10 @@ namespace WireMock
         public bool LogMapping => !(Provider is DynamicResponseProvider || Provider is DynamicAsyncResponseProvider);
 
         /// <inheritdoc />
-        public IWebhook[] Webhooks { get; }
+        public IWebhook[]? Webhooks { get; }
 
         /// <inheritdoc />
-        public ITimeSettings TimeSettings { get; }
+        public ITimeSettings? TimeSettings { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -117,13 +116,13 @@ namespace WireMock
         }
 
         /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-        public Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
+        public Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
         {
             return Provider.ProvideResponseAsync(requestMessage, Settings);
         }
 
         /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-        public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string nextState)
+        public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState)
         {
             var result = new RequestMatchResult();
 
