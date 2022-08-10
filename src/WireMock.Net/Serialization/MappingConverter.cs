@@ -116,9 +116,10 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        if (mapping.Webhooks?.Length == 1)
+        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray()!;
+        if (nonNullableWebHooks.Length == 1)
         {
-            mappingModel.Webhook = WebhookMapper.Map(mapping.Webhooks[0]);
+            mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
         }
         else if (mapping.Webhooks?.Length > 1)
         {

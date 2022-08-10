@@ -4,9 +4,9 @@ public class Interaction
 {
     public string Description { get; set; } = string.Empty;
 
-    public string ProviderState { get; set; }
+    public string ProviderState { get; set; } = string.Empty;
 
-    public PactRequest Request { get; set; } = new PactRequest();
+    public PactRequest Request { get; set; } = new();
 
-    public PactResponse Response { get; set; } = new PactResponse();
+    public PactResponse Response { get; set; } = new();
 }

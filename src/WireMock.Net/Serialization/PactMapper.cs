@@ -41,8 +41,8 @@ internal static class PactMapper
 
             var interaction = new Interaction
             {
-                Description = mapping.Description,
-                ProviderState = mapping.Title,
+                Description = mapping.Description ?? string.Empty,
+                ProviderState = mapping.Title ?? string.Empty,
                 Request = MapRequest(mapping.Request, path),
                 Response = MapResponse(mapping.Response)
             };
@@ -138,13 +138,13 @@ internal static class PactMapper
         return jsonMatcher?.Pattern;
     }
 
-    private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
-    {
-        if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
-        {
-            return patternAsString;
-        }
+    //private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
+    //{
+    //    if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
+    //    {
+    //        return patternAsString;
+    //    }
 
-        return defaultValue;
-    }
+    //    return defaultValue;
+    //}
 }
