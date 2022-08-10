@@ -209,7 +209,7 @@ internal class MappingConverter
                         break;
                 }
 
-                if (response.ResponseMessage.BodyData.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+                if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
                 {
                     mappingModel.Response.BodyEncoding = new EncodingModel
                     {

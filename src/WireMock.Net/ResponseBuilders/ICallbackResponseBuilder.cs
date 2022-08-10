@@ -3,25 +3,24 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using WireMock.ResponseProviders;
 
-namespace WireMock.ResponseBuilders
+namespace WireMock.ResponseBuilders;
+
+/// <summary>
+/// The CallbackResponseBuilder interface.
+/// </summary>
+public interface ICallbackResponseBuilder : IResponseProvider
 {
     /// <summary>
-    /// The CallbackResponseBuilder interface.
+    /// The callback builder
     /// </summary>
-    public interface ICallbackResponseBuilder : IResponseProvider
-    {
-        /// <summary>
-        /// The callback builder
-        /// </summary>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        [PublicAPI]
-        IResponseBuilder WithCallback([NotNull] Func<IRequestMessage, ResponseMessage> callbackHandler);
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    [PublicAPI]
+    IResponseBuilder WithCallback(Func<IRequestMessage, ResponseMessage> callbackHandler);
 
-        /// <summary>
-        /// The async callback builder
-        /// </summary>
-        /// <returns>The <see cref="IResponseBuilder"/>.</returns>
-        [PublicAPI]
-        IResponseBuilder WithCallback([NotNull] Func<IRequestMessage, Task<ResponseMessage>> callbackHandler);
-    }
+    /// <summary>
+    /// The async callback builder
+    /// </summary>
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    [PublicAPI]
+    IResponseBuilder WithCallback(Func<IRequestMessage, Task<ResponseMessage>> callbackHandler);
 }

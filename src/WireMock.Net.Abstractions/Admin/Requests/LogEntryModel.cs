@@ -35,7 +35,7 @@ public class LogEntryModel
     /// <summary>
     /// The request match result.
     /// </summary>
-    public LogRequestMatchModel RequestMatchResult { get; set; }
+    public LogRequestMatchModel? RequestMatchResult { get; set; }
 
     /// <summary>
     /// The partial mapping unique identifier.
@@ -50,5 +50,5 @@ public class LogEntryModel
     /// <summary>
     /// The partial request match result.
     /// </summary>
-    public LogRequestMatchModel PartialRequestMatchResult { get; set; }
+    public LogRequestMatchModel? PartialRequestMatchResult { get; set; }
 }

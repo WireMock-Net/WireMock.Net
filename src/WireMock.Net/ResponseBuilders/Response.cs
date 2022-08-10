@@ -163,7 +163,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
     public IResponseBuilder WithHeader(string name, params string[] values)
     {
-        Guard.NotNull(name, nameof(name));
+        Guard.NotNull(name);
 
         ResponseMessage.AddHeader(name, values);
         return this;
@@ -172,7 +172,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
     public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
     {
-        Guard.NotNull(headers, nameof(headers));
+        Guard.NotNull(headers);
 
         ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
         return this;
@@ -181,7 +181,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
     public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
     {
-        Guard.NotNull(headers, nameof(headers));
+        Guard.NotNull(headers);
 
         ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
         return this;
@@ -190,6 +190,8 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, WireMockList{string}})"/>
     public IResponseBuilder WithHeaders(IDictionary<string, WireMockList<string>> headers)
     {
+        Guard.NotNull(headers);
+
         ResponseMessage.Headers = headers;
         return this;
     }
@@ -229,7 +231,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc />
     public IResponseBuilder WithBody(byte[] body, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
     {
-        Guard.NotNull(body, nameof(body));
+        Guard.NotNull(body);
 
         ResponseMessage.BodyDestination = destination;
         ResponseMessage.BodyData = new BodyData();
@@ -255,7 +257,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromFile"/>
     public IResponseBuilder WithBodyFromFile(string filename, bool cache = true)
     {
-        Guard.NotNull(filename, nameof(filename));
+        Guard.NotNull(filename);
 
         ResponseMessage.BodyData = new BodyData
         {
@@ -278,12 +280,11 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc />
     public IResponseBuilder WithBody(string body, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
     {
-        Guard.NotNull(body, nameof(body));
+        Guard.NotNull(body);
 
         encoding ??= Encoding.UTF8;
 
         ResponseMessage.BodyDestination = destination;
-
         ResponseMessage.BodyData = new BodyData
         {
             Encoding = encoding
@@ -313,7 +314,7 @@ public partial class Response : IResponseBuilder
     /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool?)"/>
     public IResponseBuilder WithBodyAsJson(object body, Encoding? encoding = null, bool? indented = null)
     {
-        Guard.NotNull(body, nameof(body));
+        Guard.NotNull(body);
 
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
