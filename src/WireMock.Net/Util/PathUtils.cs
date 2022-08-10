@@ -10,20 +10,18 @@ internal static class PathUtils
     /// Also supports Unix and Windows platforms
     /// </summary>
     /// <param name="path">The path to clean</param>
-    public static string CleanPath(string path)
+    public static string? CleanPath(string? path)
     {
-        Guard.NotNull(path);
-        return path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        return path?.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
     }
 
     /// <summary>
     /// Removes leading directory separator chars from the filepath, which could break Path.Combine
     /// </summary>
     /// <param name="path">The path to remove the loading DirectorySeparatorChars</param>
-    public static string RemoveLeadingDirectorySeparators(string path)
+    public static string? RemoveLeadingDirectorySeparators(string? path)
     {
-        Guard.NotNull(path);
-        return path.TrimStart(new[] { Path.DirectorySeparatorChar });
+        return path?.TrimStart(new[] { Path.DirectorySeparatorChar });
     }
 
     /// <summary>
@@ -31,10 +29,11 @@ internal static class PathUtils
     /// </summary>
     /// <param name="root">The root path</param>
     /// <param name="path">The path</param>
-    public static string Combine(string root, string path)
+    public static string Combine(string root, string? path)
     {
         Guard.NotNull(root);
-        Guard.NotNull(path);
-        return Path.Combine(root, RemoveLeadingDirectorySeparators(path));
+
+        var result = RemoveLeadingDirectorySeparators(path);
+        return result == null ? root : Path.Combine(root, result);
     }
 }

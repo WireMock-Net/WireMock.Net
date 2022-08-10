@@ -119,7 +119,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
                 return tokenValue;
 
             case string stringValue:
-                return JsonUtils.Parse(stringValue)!;
+                return JsonUtils.Parse(stringValue);
 
             case IEnumerable enumerableValue:
                 return JArray.FromObject(enumerableValue);

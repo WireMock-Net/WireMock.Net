@@ -118,7 +118,7 @@ internal static class JsonUtils
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(json!);
+            return JsonConvert.DeserializeObject<T>(json);
         }
         catch
         {

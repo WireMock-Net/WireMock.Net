@@ -82,7 +82,7 @@ namespace WireMock.Owin.Mappers
             switch (statusCodeType)
             {
                 case Type typeAsIntOrEnum when typeAsIntOrEnum == typeof(int) || typeAsIntOrEnum == typeof(int?) || typeAsIntOrEnum.GetTypeInfo().IsEnum:
-                    response.StatusCode = MapStatusCode((int)responseMessage.StatusCode);
+                    response.StatusCode = MapStatusCode((int)responseMessage.StatusCode!);
                     break;
 
                 case Type typeAsString when typeAsString == typeof(string):

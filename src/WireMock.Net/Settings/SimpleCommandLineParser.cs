@@ -75,7 +75,7 @@ internal class SimpleCommandLineParser
     {
         return GetValue(name, values =>
         {
-            string? value = values.FirstOrDefault();
+            var value = values.FirstOrDefault();
             return !string.IsNullOrEmpty(value) ? bool.Parse(value) : defaultValue;
         }, defaultValue);
     }
@@ -89,7 +89,7 @@ internal class SimpleCommandLineParser
     {
         return GetValue(name, values =>
         {
-            string? value = values.FirstOrDefault();
+            var value = values.FirstOrDefault();
             return !string.IsNullOrEmpty(value) ? int.Parse(value) : defaultValue;
         }, defaultValue);
     }

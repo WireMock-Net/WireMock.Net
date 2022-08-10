@@ -59,7 +59,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         MatchOperator = matchOperator;
     }
 
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         return IsMatchInternal(input);
     }
