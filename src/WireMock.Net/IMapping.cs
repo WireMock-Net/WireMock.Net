@@ -20,7 +20,7 @@ public interface IMapping
     /// <summary>
     /// Gets the TimeSettings (Start, End and TTL).
     /// </summary>
-    ITimeSettings TimeSettings { get; }
+    ITimeSettings? TimeSettings { get; }
 
     /// <summary>
     /// Gets the unique title.

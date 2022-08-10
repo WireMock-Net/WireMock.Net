@@ -71,7 +71,6 @@ namespace WireMock.Owin.Mappers
                     {
                         bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();
                     }
-
                     break;
 
                 default:
@@ -80,7 +79,6 @@ namespace WireMock.Owin.Mappers
             }
 
             var statusCodeType = responseMessage.StatusCode?.GetType();
-
             switch (statusCodeType)
             {
                 case Type typeAsIntOrEnum when typeAsIntOrEnum == typeof(int) || typeAsIntOrEnum == typeof(int?) || typeAsIntOrEnum.GetTypeInfo().IsEnum:
@@ -138,7 +136,7 @@ namespace WireMock.Owin.Mappers
                     return responseMessage.BodyData.BodyAsBytes;
 
                 case BodyType.File:
-                    return _options.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
+                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
             }
 
             return null;

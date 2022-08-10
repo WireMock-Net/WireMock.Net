@@ -76,8 +76,13 @@ namespace WireMock.Owin
             (MappingMatcherResult? Match, MappingMatcherResult? Partial) result = (null, null);
             try
             {
-                foreach (var mapping in _options.Mappings.Values.Where(m => m?.Scenario != null))
+                foreach (var mapping in _options.Mappings.Values)
                 {
+                    if (mapping.Scenario == null)
+                    {
+                        continue;
+                    }
+
                     // Set scenario start
                     if (!_options.Scenarios.ContainsKey(mapping.Scenario) && mapping.IsStartState)
                     {
