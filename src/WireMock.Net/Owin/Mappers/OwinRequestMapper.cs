@@ -27,7 +27,7 @@ namespace WireMock.Owin.Mappers
 
             string method = request.Method;
 
-            Dictionary<string, string[]>? headers = null;
+            var headers = new Dictionary<string, string[]>();
             IEnumerable<string>? contentEncodingHeader = null;
             if (request.Headers.Any())
             {
@@ -43,7 +43,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-            IDictionary<string, string>? cookies = null;
+            var cookies = new Dictionary<string, string>();
             if (request.Cookies.Any())
             {
                 cookies = new Dictionary<string, string>();
@@ -75,13 +75,24 @@ namespace WireMock.Owin.Mappers
         {
 #if !USE_ASPNETCORE
             var urlDetails = UrlUtils.Parse(request.Uri, request.PathBase);
-            string clientIP = request.RemoteIpAddress;
+            var clientIP = request.RemoteIpAddress;
 #else
             var urlDetails = UrlUtils.Parse(new Uri(request.GetEncodedUrl()), request.PathBase);
+
             var connection = request.HttpContext.Connection;
-            string clientIP = connection.RemoteIpAddress.IsIPv4MappedToIPv6
-                ? connection.RemoteIpAddress.MapToIPv4().ToString()
-                : connection.RemoteIpAddress.ToString();
+            string clientIP;
+            if (connection.RemoteIpAddress is null)
+            {
+                clientIP = string.Empty;
+            }
+            else if (connection.RemoteIpAddress.IsIPv4MappedToIPv6)
+            {
+                clientIP = connection.RemoteIpAddress.MapToIPv4().ToString();
+            }
+            else
+            {
+                clientIP = connection.RemoteIpAddress.ToString();
+            }
 #endif
             return (urlDetails, clientIP);
         }

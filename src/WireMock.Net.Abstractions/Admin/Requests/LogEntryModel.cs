@@ -30,7 +30,7 @@ public class LogEntryModel
     /// <summary>
     /// The mapping unique title.
     /// </summary>
-    public string MappingTitle { get; set; }
+    public string? MappingTitle { get; set; }
 
     /// <summary>
     /// The request match result.
@@ -45,7 +45,7 @@ public class LogEntryModel
     /// <summary>
     /// The partial mapping unique title.
     /// </summary>
-    public string PartialMappingTitle { get; set; }
+    public string? PartialMappingTitle { get; set; }
 
     /// <summary>
     /// The partial request match result.

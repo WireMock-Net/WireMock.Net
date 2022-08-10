@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Net;
 using Stef.Validation;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -74,11 +75,12 @@ namespace WireMock.Owin
             var logRequest = false;
             IResponseMessage? response = null;
             (MappingMatcherResult? Match, MappingMatcherResult? Partial) result = (null, null);
+
             try
             {
                 foreach (var mapping in _options.Mappings.Values)
                 {
-                    if (mapping.Scenario == null)
+                    if (mapping.Scenario is null)
                     {
                         continue;
                     }
@@ -112,7 +114,7 @@ namespace WireMock.Owin
                     if (!present || _options.AuthenticationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
-                        response = ResponseMessageBuilder.Create(null, 401);
+                        response = ResponseMessageBuilder.Create(null, HttpStatusCode.Unauthorized);
                         return;
                     }
                 }
@@ -199,7 +201,7 @@ namespace WireMock.Owin
 
         private async Task SendToWebhooksAsync(IMapping mapping, IRequestMessage request, IResponseMessage response)
         {
-            for (int index = 0; index < mapping.Webhooks.Length; index++)
+            for (int index = 0; index < mapping.Webhooks?.Length; index++)
             {
                 var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
                 var webhookSender = new WebhookSender(mapping.Settings);
@@ -217,7 +219,7 @@ namespace WireMock.Owin
 
         private void UpdateScenarioState(IMapping mapping)
         {
-            var scenario = _options.Scenarios[mapping.Scenario];
+            var scenario = _options.Scenarios[mapping.Scenario!];
 
             // Increase the number of times this state has been executed
             scenario.Counter++;

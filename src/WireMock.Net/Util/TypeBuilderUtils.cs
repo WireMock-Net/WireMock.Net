@@ -14,8 +14,8 @@ internal static class TypeBuilderUtils
 {
     private static readonly ConcurrentDictionary<IDictionary<string, Type>, Type> Types = new();
 
-    private static readonly ModuleBuilder ModuleBuilder =
-        AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("WireMock.Net.Reflection"), AssemblyBuilderAccess.Run)
+    private static readonly ModuleBuilder ModuleBuilder = AssemblyBuilder
+            .DefineDynamicAssembly(new AssemblyName("WireMock.Net.Reflection"), AssemblyBuilderAccess.Run)
             .DefineDynamicModule("WireMock.Net.Reflection.Module");
 
     public static Type BuildType(IDictionary<string, Type> properties, string? name = null)
