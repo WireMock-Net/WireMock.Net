@@ -83,7 +83,7 @@ internal static class CertificateLoader
 
                 return cert;
 #else                
-                throw new InvalidOperationException("Loading a PEM CertificateFilePath is only supported for .NETCOREAPP3.1, .NET 5.0 and higher.");
+                throw new InvalidOperationException("Loading a PEM Certificate is only supported for .NET Core App 3.1, .NET 5.0 and higher.");
 #endif
             }
 
