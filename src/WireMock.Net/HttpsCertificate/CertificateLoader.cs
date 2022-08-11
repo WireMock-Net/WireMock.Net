@@ -1,13 +1,12 @@
 using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace WireMock.HttpsCertificate;
 
 internal static class CertificateLoader
 {
+    private const string DefaultPasswordPem = "WireMock.Net";
     private const string ExtensionPem = ".PEM";
 
     /// <summary>
@@ -18,7 +17,7 @@ internal static class CertificateLoader
         string? storeLocation,
         string? thumbprintOrSubjectName,
         string? filePath,
-        string? password,
+        string? passwordOrKey,
         string host)
     {
         if (!string.IsNullOrEmpty(storeName) && !string.IsNullOrEmpty(storeLocation))
@@ -60,41 +59,31 @@ internal static class CertificateLoader
         {
             if (filePath!.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
             {
+                // PEM logic based on: https://www.scottbrady91.com/c-sharp/pem-loading-in-dotnet-core-and-dotnet
 #if NET5_0_OR_GREATER
-                if (!string.IsNullOrEmpty(password))
+                if (!string.IsNullOrEmpty(passwordOrKey))
                 {
                     var certPem = File.ReadAllText(filePath);
-                    var cert = X509Certificate2.CreateFromPem(certPem, password);
-                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, password), password);
+                    var cert = X509Certificate2.CreateFromPem(certPem, passwordOrKey);
+                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, DefaultPasswordPem), DefaultPasswordPem);
                 }
-
                 return X509Certificate2.CreateFromPemFile(filePath);
+
 #elif NETCOREAPP3_1
                 var cert = new X509Certificate2(filePath);
-                if (!string.IsNullOrEmpty(password))
+                if (!string.IsNullOrEmpty(passwordOrKey))
                 {
-                    byte[] passwordAsBytes;
-                    try
-                    {
-                        passwordAsBytes = Convert.FromBase64String(password);
-                    }
-                    catch
-                    {
-                        passwordAsBytes = Encoding.UTF8.GetBytes(password);
-                    }
-
-                    var key = ECDsa.Create()!;
-                    key.ImportECPrivateKey(passwordAsBytes, out _);
+                    var key = System.Security.Cryptography.ECDsa.Create()!;
+                    key.ImportECPrivateKey(System.Text.Encoding.UTF8.GetBytes(passwordOrKey), out _);
                     return cert.CopyWithPrivateKey(key);
                 }
-
                 return cert;
 #else                
                 throw new InvalidOperationException("Loading a PEM Certificate is only supported for .NET Core App 3.1, .NET 5.0 and higher.");
 #endif
             }
 
-            return !string.IsNullOrEmpty(password) ? new X509Certificate2(filePath, password) : new X509Certificate2(filePath);
+            return !string.IsNullOrEmpty(passwordOrKey) ? new X509Certificate2(filePath, passwordOrKey) : new X509Certificate2(filePath);
         }
 
         throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
