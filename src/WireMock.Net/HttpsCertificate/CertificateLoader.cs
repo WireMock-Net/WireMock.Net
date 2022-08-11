@@ -6,7 +6,7 @@ namespace WireMock.HttpsCertificate;
 
 internal static class CertificateLoader
 {
-    private const string ExtensionPEM = ".PEM";
+    private const string ExtensionPem = ".PEM";
 
     /// <summary>
     /// Used by the WireMock.Net server
@@ -56,23 +56,16 @@ internal static class CertificateLoader
 
         if (!string.IsNullOrEmpty(filePath))
         {
-            if (filePath!.EndsWith(ExtensionPEM, StringComparison.OrdinalIgnoreCase))
+            if (filePath!.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
             {
-                if (!string.IsNullOrEmpty(password))
-                {
-                    throw new NotSupportedException();
-                }
+#if NET5_0_OR_GREATER
+                return !string.IsNullOrEmpty(password) ? X509Certificate2.CreateFromPemFile(filePath, password) : X509Certificate2.CreateFromPemFile(filePath);
+#else
+                throw new InvalidOperationException("Loading a PEM CertificateFilePath is only support for .NET 5.0 and higher.");
+#endif
             }
 
-            if (!string.IsNullOrEmpty(password))
-            {
-                return new X509Certificate2(filePath, password);
-            }
-
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                return new X509Certificate2(filePath);
-            }
+            return !string.IsNullOrEmpty(password) ? new X509Certificate2(filePath, password) : new X509Certificate2(filePath);
         }
 
         throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
