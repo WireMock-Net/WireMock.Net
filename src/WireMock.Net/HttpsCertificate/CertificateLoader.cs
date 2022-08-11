@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace WireMock.HttpsCertificate;
 
@@ -60,8 +62,28 @@ internal static class CertificateLoader
             {
 #if NET5_0_OR_GREATER
                 return !string.IsNullOrEmpty(password) ? X509Certificate2.CreateFromPemFile(filePath, password) : X509Certificate2.CreateFromPemFile(filePath);
-#else
-                throw new InvalidOperationException("Loading a PEM CertificateFilePath is only support for .NET 5.0 and higher.");
+#elif NETCOREAPP3_1
+                var cert = new X509Certificate2(filePath);
+                if (!string.IsNullOrEmpty(password))
+                {
+                    byte[] passwordAsBytes;
+                    try
+                    {
+                        passwordAsBytes = Convert.FromBase64String(password);
+                    }
+                    catch
+                    {
+                        passwordAsBytes = Encoding.UTF8.GetBytes(password);
+                    }
+
+                    var key = ECDsa.Create()!;
+                    key.ImportECPrivateKey(passwordAsBytes, out _);
+                    return cert.CopyWithPrivateKey(key);
+                }
+
+                return cert;
+#else                
+                throw new InvalidOperationException("Loading a PEM CertificateFilePath is only supported for .NETCOREAPP3.1, .NET 5.0 and higher.");
 #endif
             }
 
