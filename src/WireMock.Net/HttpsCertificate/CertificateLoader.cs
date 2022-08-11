@@ -6,15 +6,17 @@ namespace WireMock.HttpsCertificate;
 
 internal static class CertificateLoader
 {
+    private const string ExtensionPEM = ".PEM";
+
     /// <summary>
     /// Used by the WireMock.Net server
     /// </summary>
     public static X509Certificate2 LoadCertificate(
-        string storeName,
-        string storeLocation,
-        string thumbprintOrSubjectName,
-        string filePath,
-        string password,
+        string? storeName,
+        string? storeLocation,
+        string? thumbprintOrSubjectName,
+        string? filePath,
+        string? password,
         string host)
     {
         if (!string.IsNullOrEmpty(storeName) && !string.IsNullOrEmpty(storeLocation))
@@ -47,19 +49,30 @@ internal static class CertificateLoader
 #if NETSTANDARD || NET46
                 certStore.Dispose();
 #else
-                    certStore.Close();
+                certStore.Close();
 #endif
             }
         }
 
-        if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(password))
-        {
-            return new X509Certificate2(filePath, password);
-        }
-
         if (!string.IsNullOrEmpty(filePath))
         {
-            return new X509Certificate2(filePath);
+            if (filePath!.EndsWith(ExtensionPEM, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(password))
+                {
+                    throw new NotSupportedException();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                return new X509Certificate2(filePath, password);
+            }
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                return new X509Certificate2(filePath);
+            }
         }
 
         throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
@@ -97,7 +110,7 @@ internal static class CertificateLoader
 #if NETSTANDARD || NET46
             certStore.Dispose();
 #else
-                certStore.Close();
+            certStore.Close();
 #endif
         }
     }
