@@ -15,14 +15,14 @@ public class Mapping : IMapping
     /// <inheritdoc />
     public Guid Guid { get; }
 
-    /// <inheritdoc />
-    public string? Title { get; }
+        /// <inheritdoc />
+        public string? Title { get; }
 
-    /// <inheritdoc />
-    public string? Description { get; }
+        /// <inheritdoc />
+        public string? Description { get; }
 
-    /// <inheritdoc />
-    public string? Path { get; set; }
+        /// <inheritdoc />
+        public string? Path { get; set; }
 
     /// <inheritdoc />
     public int Priority { get; }
@@ -115,16 +115,16 @@ public class Mapping : IMapping
         TimeSettings = timeSettings;
     }
 
-    /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
-    public Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
-    {
-        return Provider.ProvideResponseAsync(requestMessage, Settings);
-    }
+        /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
+        public Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
+        {
+            return Provider.ProvideResponseAsync(requestMessage, Settings);
+        }
 
-    /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
-    public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState)
-    {
-        var result = new RequestMatchResult();
+        /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
+        public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState)
+        {
+            var result = new RequestMatchResult();
 
         RequestMatcher.GetMatchingScore(requestMessage, result);
 

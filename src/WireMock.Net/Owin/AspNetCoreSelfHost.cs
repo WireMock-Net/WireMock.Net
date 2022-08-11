@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,9 +29,9 @@ namespace WireMock.Owin
 
         public bool IsStarted { get; private set; }
 
-        public List<string> Urls { get; } = new List<string>();
+        public List<string> Urls { get; } = new();
 
-        public List<int> Ports { get; } = new List<int>();
+        public List<int> Ports { get; } = new();
 
         public Exception RunningException => _runningException;
 

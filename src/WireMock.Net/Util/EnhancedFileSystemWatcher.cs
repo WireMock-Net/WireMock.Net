@@ -17,7 +17,7 @@ namespace WireMock.Util
         private const int DefaultWatchInterval = 100;
 
         // This Dictionary keeps the track of when an event occurred last for a particular file
-        private ConcurrentDictionary<string, DateTime> _lastFileEvent;
+        private ConcurrentDictionary<string, DateTime> _lastFileEvent = new();
 
         // Watch Interval in Milliseconds
         private int _interval;
@@ -58,7 +58,7 @@ namespace WireMock.Util
         /// <param name="interval">The interval.</param>
         public EnhancedFileSystemWatcher(int interval = DefaultWatchInterval)
         {
-            Guard.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.Condition(interval, i => i >= 0);
 
             InitializeMembers(interval);
         }
@@ -68,10 +68,10 @@ namespace WireMock.Util
         /// </summary>
         /// <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
         /// <param name="interval">The interval.</param>
-        public EnhancedFileSystemWatcher([NotNull] string path, int interval = DefaultWatchInterval) : base(path)
+        public EnhancedFileSystemWatcher(string path, int interval = DefaultWatchInterval) : base(path)
         {
-            Guard.NotNullOrEmpty(path, nameof(path));
-            Guard.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.NotNullOrEmpty(path);
+            Guard.Condition(interval, i => i >= 0);
 
             InitializeMembers(interval);
         }
@@ -82,11 +82,11 @@ namespace WireMock.Util
         /// <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
         /// <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
         /// <param name="interval">The interval.</param>
-        public EnhancedFileSystemWatcher([NotNull] string path, [NotNull] string filter, int interval = DefaultWatchInterval) : base(path, filter)
+        public EnhancedFileSystemWatcher(string path, string filter, int interval = DefaultWatchInterval) : base(path, filter)
         {
-            Guard.NotNullOrEmpty(path, nameof(path));
-            Guard.NotNullOrEmpty(filter, nameof(filter));
-            Guard.Condition(interval, i => i >= 0, nameof(interval));
+            Guard.NotNullOrEmpty(path);
+            Guard.NotNullOrEmpty(filter);
+            Guard.Condition(interval, i => i >= 0);
 
             InitializeMembers(interval);
         }
@@ -100,22 +100,22 @@ namespace WireMock.Util
         /// <summary>
         /// Occurs when a file or directory in the specified <see cref="P:System.IO.FileSystemWatcher.Path" /> is changed.
         /// </summary>
-        public new event FileSystemEventHandler Changed;
+        public new event FileSystemEventHandler? Changed;
 
         /// <summary>
         /// Occurs when a file or directory in the specified <see cref="P:System.IO.FileSystemWatcher.Path" /> is created.
         /// </summary>
-        public new event FileSystemEventHandler Created;
+        public new event FileSystemEventHandler? Created;
 
         /// <summary>
         /// Occurs when a file or directory in the specified <see cref="P:System.IO.FileSystemWatcher.Path" /> is deleted.
         /// </summary>
-        public new event FileSystemEventHandler Deleted;
+        public new event FileSystemEventHandler? Deleted;
 
         /// <summary>
         /// Occurs when a file or directory in the specified <see cref="P:System.IO.FileSystemWatcher.Path" /> is renamed.
         /// </summary>
-        public new event RenamedEventHandler Renamed;
+        public new event RenamedEventHandler? Renamed;
         #endregion
 
         #region Protected Methods to raise the Events for this class        

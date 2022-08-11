@@ -1,9 +1,8 @@
-﻿namespace WireMock.ResponseBuilders
+namespace WireMock.ResponseBuilders;
+
+/// <summary>
+/// The ResponseBuilder interface.
+/// </summary>
+public interface IResponseBuilder : IProxyResponseBuilder
 {
-    /// <summary>
-    /// The ResponseBuilder interface.
-    /// </summary>
-    public interface IResponseBuilder : IProxyResponseBuilder
-    {
-    }
 }

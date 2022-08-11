@@ -1,4 +1,5 @@
 #if !NETSTANDARD1_3
+using System;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
@@ -6,67 +7,72 @@ using AnyOfTypes;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Stef.Validation;
 using WireMock.Matchers;
 using WireMock.Models;
 
-namespace WireMock.Authentication
+namespace WireMock.Authentication;
+
+/// <summary>
+/// https://www.c-sharpcorner.com/article/how-to-validate-azure-ad-token-using-console-application/
+/// https://stackoverflow.com/questions/38684865/validation-of-an-azure-ad-bearer-token-in-a-console-application
+/// </summary>
+internal class AzureADAuthenticationMatcher : IStringMatcher
 {
-    /// <summary>
-    /// https://www.c-sharpcorner.com/article/how-to-validate-azure-ad-token-using-console-application/
-    /// https://stackoverflow.com/questions/38684865/validation-of-an-azure-ad-bearer-token-in-a-console-application
-    /// </summary>
-    internal class AzureADAuthenticationMatcher : IStringMatcher
+    private const string BearerPrefix = "Bearer ";
+
+    private readonly string _audience;
+    private readonly string _stsDiscoveryEndpoint;
+
+    public AzureADAuthenticationMatcher(string tenant, string audience)
     {
-        private const string BearerPrefix = "Bearer ";
+        _audience = Guard.NotNullOrEmpty(audience);
+        _stsDiscoveryEndpoint = string.Format(CultureInfo.InvariantCulture, "https://login.microsoftonline.com/{0}/.well-known/openid-configuration", Guard.NotNullOrEmpty(tenant));
+    }
 
-        private readonly string _audience;
-        private readonly string _stsDiscoveryEndpoint;
+    public string Name => nameof(AzureADAuthenticationMatcher);
 
-        public AzureADAuthenticationMatcher(string tenant, string audience)
+    public MatchBehaviour MatchBehaviour => MatchBehaviour.AcceptOnMatch;
+
+    public bool ThrowException => false;
+
+    public AnyOf<string, StringPattern>[] GetPatterns()
+    {
+        return EmptyArray<AnyOf<string, StringPattern>>.Value;
+    }
+
+    public MatchOperator MatchOperator { get; } = MatchOperator.Or;
+
+    public double IsMatch(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
         {
-            _audience = audience;
-            _stsDiscoveryEndpoint = string.Format(CultureInfo.InvariantCulture, "https://login.microsoftonline.com/{0}/.well-known/openid-configuration", tenant);
+            return MatchScores.Mismatch;
         }
 
-        public string Name => nameof(AzureADAuthenticationMatcher);
+        var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase);
 
-        public MatchBehaviour MatchBehaviour => MatchBehaviour.AcceptOnMatch;
-
-        public bool ThrowException => false;
-
-        public AnyOf<string, StringPattern>[] GetPatterns()
+        try
         {
-            return new AnyOf<string, StringPattern>[0];
+            var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(_stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
+            var config = configManager.GetConfigurationAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidAudience = _audience,
+                ValidIssuer = config.Issuer,
+                IssuerSigningKeys = config.SigningKeys,
+                ValidateLifetime = true
+            };
+
+            // Throws an Exception as the token is invalid (expired, invalid-formatted, etc.)
+            new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out var _);
+
+            return MatchScores.Perfect;
         }
-
-        public MatchOperator MatchOperator { get; } = MatchOperator.Or;
-
-        public double IsMatch(string input)
+        catch
         {
-            var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase);
-
-            try
-            {
-                var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(_stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
-                var config = configManager.GetConfigurationAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-
-                var validationParameters = new TokenValidationParameters
-                {
-                    ValidAudience = _audience,
-                    ValidIssuer = config.Issuer,
-                    IssuerSigningKeys = config.SigningKeys,
-                    ValidateLifetime = true
-                };
-
-                // Throws an Exception as the token is invalid (expired, invalid-formatted, etc.)
-                new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out var _);
-
-                return MatchScores.Perfect;
-            }
-            catch
-            {
-                return MatchScores.Mismatch;
-            }
+            return MatchScores.Mismatch;
         }
     }
 }

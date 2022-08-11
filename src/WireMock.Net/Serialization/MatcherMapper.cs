@@ -208,7 +208,7 @@ internal class MatcherMapper
             return patternAsStringArray.ToAnyOfPatterns();
         }
 
-        if (matcher.Patterns?.OfType<string>() is IEnumerable<string> patternsAsStringArray)
+        if (matcher.Patterns?.OfType<string>() is { } patternsAsStringArray)
         {
             return patternsAsStringArray.ToAnyOfPatterns();
         }

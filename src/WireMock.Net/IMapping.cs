@@ -117,7 +117,7 @@ public interface IMapping
     /// </summary>
     /// <param name="requestMessage">The request message.</param>
     /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-    Task<(IResponseMessage Message, IMapping Mapping)> ProvideResponseAsync(IRequestMessage requestMessage);
+    Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage);
 
     /// <summary>
     /// Gets the RequestMatchResult based on the RequestMessage.

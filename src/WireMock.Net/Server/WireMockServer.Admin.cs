@@ -292,7 +292,7 @@ public partial class WireMockServer
 
     private IResponseMessage SettingsUpdate(IRequestMessage requestMessage)
     {
-        var settings = DeserializeObject<SettingsModel>(requestMessage)!;
+        var settings = DeserializeObject<SettingsModel>(requestMessage);
 
         // _settings
         _settings.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
@@ -571,7 +571,7 @@ public partial class WireMockServer
     {
         var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
-        var request = (Request)InitRequestBuilder(requestModel, false);
+        var request = (Request)InitRequestBuilder(requestModel, false)!;
 
         var dict = new Dictionary<ILogEntry, RequestMatchResult>();
         foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
@@ -623,6 +623,23 @@ public partial class WireMockServer
     {
         var (filenameUpdated, bytes) = PactMapper.ToPact(this, filename);
         _settings.FileSystemHandler.WriteFile(folder, filenameUpdated, bytes);
+    }
+
+    /// <summary>
+    /// Save the mappings as a Pact Json file V2.
+    /// </summary>
+    /// <param name="stream">The (file) stream.</param>
+    [PublicAPI]
+    public void SavePact(Stream stream)
+    {
+        var (_, bytes) = PactMapper.ToPact(this);
+        using var writer = new BinaryWriter(stream);
+        writer.Write(bytes);
+
+        if (stream.CanSeek)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+        }
     }
 
     /// <summary>
@@ -714,31 +731,28 @@ public partial class WireMockServer
         };
     }
 
-    private static T? DeserializeObject<T>(IRequestMessage requestMessage)
+    private static T DeserializeObject<T>(IRequestMessage requestMessage) where T : new()
     {
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
+        return requestMessage.BodyData?.DetectedBodyType switch
         {
-            return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString);
-        }
+            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString),
 
-        if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json)
-        {
-            return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>();
-        }
+            BodyType.Json when requestMessage.BodyData?.BodyAsJson != null => ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!,
 
-        return default(T);
+            _ => throw new NotSupportedException()
+        };
     }
 
     private static T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
     {
-        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json)
+        if (requestMessage.BodyData?.DetectedBodyType == BodyType.Json && requestMessage.BodyData.BodyAsJson != null)
         {
             var bodyAsJson = requestMessage.BodyData.BodyAsJson;
 
             return DeserializeObjectToArray<T>(bodyAsJson);
         }
 
-        return default(T[]);
+        throw new NotSupportedException();
     }
 
     private static T[] DeserializeJsonToArray<T>(string value)
@@ -754,6 +768,6 @@ public partial class WireMockServer
         }
 
         var singleResult = ((JObject)value).ToObject<T>();
-        return new[] { singleResult };
+        return new[] { singleResult! };
     }
 }

@@ -1,18 +1,17 @@
-﻿namespace WireMock.Matchers
+namespace WireMock.Matchers;
+
+/// <summary>
+/// MatchBehaviour
+/// </summary>
+public enum MatchBehaviour
 {
     /// <summary>
-    /// MatchBehaviour
+    /// Accept on match (default)
     /// </summary>
-    public enum MatchBehaviour
-    {
-        /// <summary>
-        /// Accept on match (default)
-        /// </summary>
-        AcceptOnMatch,
+    AcceptOnMatch,
 
-        /// <summary>
-        /// Reject on match
-        /// </summary>
-        RejectOnMatch
-    }
+    /// <summary>
+    /// Reject on match
+    /// </summary>
+    RejectOnMatch
 }

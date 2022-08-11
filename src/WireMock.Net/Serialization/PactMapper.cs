@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevLab.JmesPath.Interop;
 using WireMock.Admin.Mappings;
 using WireMock.Extensions;
 using WireMock.Matchers;
@@ -76,8 +77,23 @@ internal static class PactMapper
         {
             Status = MapStatusCode(response.StatusCode),
             Headers = MapResponseHeaders(response.Headers),
-            Body = response.BodyAsJson
+            Body = MapBody(response)
         };
+    }
+
+    private static object? MapBody(ResponseModel? response)
+    {
+        if (response?.BodyAsJson != null)
+        {
+            return response.BodyAsJson;
+        }
+
+        if (response?.Body != null) // In case the body is a string, try to deserialize into object, else just return the string
+        {
+            return JsonUtils.TryDeserializeObject<object?>(response.Body) ?? response.Body;
+        }
+
+        return null;
     }
 
     private static int MapStatusCode(object? statusCode)
@@ -138,13 +154,13 @@ internal static class PactMapper
         return jsonMatcher?.Pattern;
     }
 
-    private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
-    {
-        if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
-        {
-            return patternAsString;
-        }
+    //private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
+    //{
+    //    if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
+    //    {
+    //        return patternAsString;
+    //    }
 
-        return defaultValue;
-    }
+    //    return defaultValue;
+    //}
 }

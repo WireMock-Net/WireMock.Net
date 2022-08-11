@@ -18,7 +18,7 @@ public class ContentTypeMatcher : WildcardMatcher
     /// </summary>
     /// <param name="pattern">The pattern.</param>
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
-    public ContentTypeMatcher([NotNull] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
+    public ContentTypeMatcher(AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
     {
     }
 
@@ -28,7 +28,7 @@ public class ContentTypeMatcher : WildcardMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="pattern">The pattern.</param>
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
-    public ContentTypeMatcher(MatchBehaviour matchBehaviour, [NotNull] AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
+    public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
     {
     }
 
@@ -57,7 +57,7 @@ public class ContentTypeMatcher : WildcardMatcher
     /// <inheritdoc cref="RegexMatcher.IsMatch"/>
     public override double IsMatch(string? input)
     {
-        if (string.IsNullOrEmpty(input) || !MediaTypeHeaderValue.TryParse(input, out MediaTypeHeaderValue contentType))
+        if (string.IsNullOrEmpty(input) || !MediaTypeHeaderValue.TryParse(input, out var contentType))
         {
             return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
         }

@@ -13,7 +13,7 @@ namespace WireMock.Net.Tests.Util;
 public class JsonUtilsTests
 {
     [Fact]
-    public void JsonUtils_ParseJTokenToObject()
+    public void JsonUtils_ParseJTokenToObject_For_String()
     {
         // Assign
         object value = "test";
@@ -22,7 +22,33 @@ public class JsonUtilsTests
         string result = JsonUtils.ParseJTokenToObject<string>(value);
 
         // Assert
-        Check.That(result).IsEqualTo(default(string));
+        result.Should().Be("test");
+    }
+
+    [Fact]
+    public void JsonUtils_ParseJTokenToObject_For_Int()
+    {
+        // Assign
+        object value = 123;
+
+        // Act
+        var result = JsonUtils.ParseJTokenToObject<int>(value);
+
+        // Assert
+        result.Should().Be(123);
+    }
+
+    [Fact]
+    public void JsonUtils_ParseJTokenToObject_For_Invalid_Throws()
+    {
+        // Assign
+        object value = "{ }";
+
+        // Act
+        Action action = () => JsonUtils.ParseJTokenToObject<int>(value);
+
+        // Assert
+        action.Should().Throw<NotSupportedException>();
     }
 
     [Fact]

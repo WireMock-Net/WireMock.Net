@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using AnyOfTypes;
@@ -68,7 +69,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string input)
+    public double IsMatch(string? input)
     {
         double match = MatchScores.Mismatch;
 
@@ -94,7 +95,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object input)
+    public double IsMatch(object? input)
     {
         double match = MatchScores.Mismatch;
 
@@ -105,9 +106,12 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
                 value = valueAsJObject;
                 break;
 
-            default:
-                value = JObject.FromObject(input);
+            case { } valueAsObject:
+                value = JObject.FromObject(valueAsObject);
                 break;
+
+            default:
+                return MatchScores.Mismatch;
         }
 
         // Convert a single object to a Queryable JObject-list with 1 entry.

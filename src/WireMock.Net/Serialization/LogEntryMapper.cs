@@ -140,7 +140,7 @@ internal static class LogEntryMapper
             MatchDetails = matchResult.MatchDetails.Select(md => new
             {
                 Name = md.MatcherType.Name.Replace("RequestMessage", string.Empty),
-                Score = md.Score
+                md.Score
             } as object).ToList()
         };
     }
