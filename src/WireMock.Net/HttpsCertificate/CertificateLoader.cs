@@ -64,7 +64,8 @@ internal static class CertificateLoader
                 if (!string.IsNullOrEmpty(password))
                 {
                     var certPem = File.ReadAllText(filePath);
-                    return X509Certificate2.CreateFromPem(certPem, password);
+                    var cert = X509Certificate2.CreateFromPem(certPem, password);
+                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, password), password);
                 }
 
                 return X509Certificate2.CreateFromPemFile(filePath);
