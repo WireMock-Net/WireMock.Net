@@ -1,4 +1,5 @@
 #if !NETSTANDARD1_3
+using System;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
@@ -37,7 +38,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
-        return new AnyOf<string, StringPattern>[0];
+        return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
     public MatchOperator MatchOperator { get; } = MatchOperator.Or;
