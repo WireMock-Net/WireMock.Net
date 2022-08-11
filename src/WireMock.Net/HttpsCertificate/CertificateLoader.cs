@@ -61,7 +61,13 @@ internal static class CertificateLoader
             if (filePath!.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
             {
 #if NET5_0_OR_GREATER
-                return !string.IsNullOrEmpty(password) ? X509Certificate2.CreateFromPemFile(filePath, password) : X509Certificate2.CreateFromPemFile(filePath);
+                if (!string.IsNullOrEmpty(password))
+                {
+                    var certPem = File.ReadAllText(filePath);
+                    return X509Certificate2.CreateFromPem(certPem, password);
+                }
+
+                return X509Certificate2.CreateFromPemFile(filePath);
 #elif NETCOREAPP3_1
                 var cert = new X509Certificate2(filePath);
                 if (!string.IsNullOrEmpty(password))
