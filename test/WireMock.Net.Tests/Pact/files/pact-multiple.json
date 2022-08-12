@@ -32,7 +32,11 @@
           "Accept": "application/json"
         },
         "method": "POST",
-        "path": "/add"
+        "path": "/add",
+        "body": {
+          "Id": "1",
+          "FirstName": "Totally"
+        }
       },
       "response": {
         "body": {
