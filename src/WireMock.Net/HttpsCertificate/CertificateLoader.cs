@@ -6,7 +6,6 @@ namespace WireMock.HttpsCertificate;
 
 internal static class CertificateLoader
 {
-    private const string DefaultPasswordPem = "WireMock.Net";
     private const string ExtensionPem = ".PEM";
 
     /// <summary>
@@ -65,7 +64,8 @@ internal static class CertificateLoader
                 {
                     var certPem = File.ReadAllText(filePath);
                     var cert = X509Certificate2.CreateFromPem(certPem, passwordOrKey);
-                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, DefaultPasswordPem), DefaultPasswordPem);
+                    const string defaultPasswordPem = "WireMock.Net";
+                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, defaultPasswordPem), defaultPasswordPem);
                 }
                 return X509Certificate2.CreateFromPemFile(filePath);
 
