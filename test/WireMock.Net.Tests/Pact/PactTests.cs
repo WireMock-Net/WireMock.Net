@@ -102,6 +102,32 @@ public class PactTests
     }
 
     [Fact]
+    public void SavePact_Get_Request_And_Response_WithNullBody()
+    {
+        // Act
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/tester")
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+            );
+
+        var memoryStream = new MemoryStream();
+        server.SavePact(memoryStream);
+
+        var json = Encoding.UTF8.GetString(memoryStream.ToArray());
+        var pact = JsonConvert.DeserializeObject<WireMock.Pact.Models.V2.Pact>(json)!;
+
+        // Assert
+        pact.Interactions.Should().HaveCount(1);
+        pact.Interactions[0].Response.Body.Should().BeNull();
+    }
+
+    [Fact]
     public void SavePact_Post_Request_WithBody_JsonPartialMatcher()
     {
         // Act

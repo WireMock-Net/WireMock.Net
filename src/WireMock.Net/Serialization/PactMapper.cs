@@ -15,7 +15,6 @@ internal static class PactMapper
     private const int DefaultStatusCode = 200;
     private const string DefaultConsumer = "Default Consumer";
     private const string DefaultProvider = "Default Provider";
-    //private static readonly string[] SupportedBodyMatchers = new[] { nameof(JsonMatcher), nameof(JsonMatcher), };
 
     public static (string FileName, byte[] Bytes) ToPact(WireMockServer server, string? filename = null)
     {
