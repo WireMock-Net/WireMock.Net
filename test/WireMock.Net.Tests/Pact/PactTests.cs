@@ -102,6 +102,58 @@ public class PactTests
     }
 
     [Fact]
+    public void SavePact_Get_Request_And_Response_WithNullBody()
+    {
+        // Act
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/tester")
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+            );
+
+        var memoryStream = new MemoryStream();
+        server.SavePact(memoryStream);
+
+        var json = Encoding.UTF8.GetString(memoryStream.ToArray());
+        var pact = JsonConvert.DeserializeObject<WireMock.Pact.Models.V2.Pact>(json)!;
+
+        // Assert
+        pact.Interactions.Should().HaveCount(1);
+        pact.Interactions[0].Response.Body.Should().BeNull();
+    }
+
+    [Fact]
+    public void SavePact_Post_Request_WithBody_JsonPartialMatcher()
+    {
+        // Act
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithBody(new JsonPartialMatcher(@"{ ""name"": ""stef"" }"))
+                .WithPath("/tester")
+            )
+            .RespondWith(Response.Create());
+
+        var memoryStream = new MemoryStream();
+        server.SavePact(memoryStream);
+
+        var json = Encoding.UTF8.GetString(memoryStream.ToArray());
+        var pact = JsonConvert.DeserializeObject<WireMock.Pact.Models.V2.Pact>(json)!;
+
+        // Assert
+        pact.Interactions.Should().HaveCount(1);
+
+        var expectedBody = new JObject { { "name", "stef" } };
+        pact.Interactions[0].Request.Body.Should().BeEquivalentTo(expectedBody);
+    }
+
+    [Fact]
     public void SavePact_Multiple_Requests()
     {
         var server = WireMockServer.Start();
