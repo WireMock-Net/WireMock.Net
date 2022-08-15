@@ -158,6 +158,7 @@ public partial class Response
     public IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, IJsonConverterOptions? options = null)
     {
         Guard.NotNull(body);
+        Guard.NotNull(converter);
 
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
