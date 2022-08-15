@@ -331,12 +331,12 @@ public class ResponseWithBodyTests
     public async Task Response_ProvideResponse_WithBody_IJsonConverter_SystemTextJson()
     {
         // Arrange
-        var body = new BodyData
+        var requestBody = new BodyData
         {
             DetectedBodyType = BodyType.String,
             BodyAsString = "abc"
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, requestBody);
 
         var responseBuilder = Response.Create().WithBody(new { foo = "bar", n = 42 }, new JsonConverter.System.Text.Json.JsonConverter());
 
