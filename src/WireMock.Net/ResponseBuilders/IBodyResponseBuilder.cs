@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using JsonConverter.Abstractions;
 
 namespace WireMock.ResponseBuilders;
 
@@ -69,4 +70,23 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="cache">Defines if this file is cached in memory or retrieved from disk every time the response is created.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBodyFromFile(string filename, bool cache = true);
+
+    /// <summary>
+    /// WithBody : Create a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
+    /// </summary>
+    /// <param name="body">The body.</param>
+    /// <param name="converter">The JsonConverter.</param>
+    /// <param name="options">The IJsonConverterOption [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBody(object body, IJsonConverter converter, IJsonConverterOptions? options = null);
+
+    /// <summary>
+    /// WithBody : Create a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
+    /// </summary>
+    /// <param name="body">The body.</param>
+    /// <param name="encoding">The body encoding, can be <c>null</c>.</param>
+    /// <param name="converter">The JsonConverter.</param>
+    /// <param name="options">The IJsonConverterOption [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, IJsonConverterOptions? options = null);
 }
