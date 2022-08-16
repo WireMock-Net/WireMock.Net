@@ -6,15 +6,17 @@ namespace WireMock.HttpsCertificate;
 
 internal static class CertificateLoader
 {
+    private const string ExtensionPem = ".PEM";
+
     /// <summary>
     /// Used by the WireMock.Net server
     /// </summary>
     public static X509Certificate2 LoadCertificate(
-        string storeName,
-        string storeLocation,
-        string thumbprintOrSubjectName,
-        string filePath,
-        string password,
+        string? storeName,
+        string? storeLocation,
+        string? thumbprintOrSubjectName,
+        string? filePath,
+        string? passwordOrKey,
         string host)
     {
         if (!string.IsNullOrEmpty(storeName) && !string.IsNullOrEmpty(storeLocation))
@@ -47,19 +49,41 @@ internal static class CertificateLoader
 #if NETSTANDARD || NET46
                 certStore.Dispose();
 #else
-                    certStore.Close();
+                certStore.Close();
 #endif
             }
         }
 
-        if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(password))
-        {
-            return new X509Certificate2(filePath, password);
-        }
-
         if (!string.IsNullOrEmpty(filePath))
         {
-            return new X509Certificate2(filePath);
+            if (filePath!.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
+            {
+                // PEM logic based on: https://www.scottbrady91.com/c-sharp/pem-loading-in-dotnet-core-and-dotnet
+#if NET5_0_OR_GREATER
+                if (!string.IsNullOrEmpty(passwordOrKey))
+                {
+                    var certPem = File.ReadAllText(filePath);
+                    var cert = X509Certificate2.CreateFromPem(certPem, passwordOrKey);
+                    const string defaultPasswordPem = "WireMock.Net";
+                    return new X509Certificate2(cert.Export(X509ContentType.Pfx, defaultPasswordPem), defaultPasswordPem);
+                }
+                return X509Certificate2.CreateFromPemFile(filePath);
+
+#elif NETCOREAPP3_1
+                var cert = new X509Certificate2(filePath);
+                if (!string.IsNullOrEmpty(passwordOrKey))
+                {
+                    var key = System.Security.Cryptography.ECDsa.Create()!;
+                    key.ImportECPrivateKey(System.Text.Encoding.UTF8.GetBytes(passwordOrKey), out _);
+                    return cert.CopyWithPrivateKey(key);
+                }
+                return cert;
+#else                
+                throw new InvalidOperationException("Loading a PEM Certificate is only supported for .NET Core App 3.1, .NET 5.0 and higher.");
+#endif
+            }
+
+            return !string.IsNullOrEmpty(passwordOrKey) ? new X509Certificate2(filePath, passwordOrKey) : new X509Certificate2(filePath);
         }
 
         throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
@@ -97,7 +121,7 @@ internal static class CertificateLoader
 #if NETSTANDARD || NET46
             certStore.Dispose();
 #else
-                certStore.Close();
+            certStore.Close();
 #endif
         }
     }
