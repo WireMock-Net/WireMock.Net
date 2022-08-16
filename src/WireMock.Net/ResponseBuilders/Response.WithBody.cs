@@ -149,13 +149,13 @@ public partial class Response
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithBody(object body, IJsonConverter converter, IJsonConverterOptions? options = null)
+    public IResponseBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null)
     {
         return WithBody(body, null, converter, options);
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, IJsonConverterOptions? options = null)
+    public IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, JsonConverterOptions? options = null)
     {
         Guard.NotNull(body);
         Guard.NotNull(converter);

@@ -78,7 +78,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="converter">The JsonConverter.</param>
     /// <param name="options">The IJsonConverterOption [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithBody(object body, IJsonConverter converter, IJsonConverterOptions? options = null);
+    IResponseBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null);
 
     /// <summary>
     /// WithBody : Create a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
@@ -88,5 +88,5 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="converter">The JsonConverter.</param>
     /// <param name="options">The IJsonConverterOption [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, IJsonConverterOptions? options = null);
+    IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, JsonConverterOptions? options = null);
 }

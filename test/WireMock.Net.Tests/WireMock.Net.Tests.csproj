@@ -78,6 +78,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.1.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -104,30 +105,6 @@
 
     <ItemGroup>
       <Folder Include="Pact\files\" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-      <PackageReference Include="JsonConverter.System.Text.Json">
-        <Version>0.0.3</Version>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-      <PackageReference Include="JsonConverter.System.Text.Json">
-        <Version>0.0.3</Version>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-      <PackageReference Include="JsonConverter.System.Text.Json">
-        <Version>0.0.3</Version>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-      <PackageReference Include="JsonConverter.System.Text.Json">
-        <Version>0.0.3</Version>
-      </PackageReference>
     </ItemGroup>
 
 </Project>

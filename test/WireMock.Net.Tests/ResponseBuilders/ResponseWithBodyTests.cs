@@ -338,7 +338,7 @@ public class ResponseWithBodyTests
         };
         var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, requestBody);
 
-        var responseBuilder = Response.Create().WithBody(new { foo = "bar", n = 42 }, new JsonConverter.System.Text.Json.JsonConverter());
+        var responseBuilder = Response.Create().WithBody(new { foo = "bar", n = 42 }, new JsonConverter.System.Text.Json.SystemTextJsonConverter());
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
