@@ -132,7 +132,7 @@ namespace WireMock.Owin
 #elif NETSTANDARD2_1
                 _logger.Info("Server using netstandard2.1");
 #elif NETCOREAPP3_1
-                _logger.Info("Server using .NET Core 3.1");
+                _logger.Info("Server using .NET Core App 3.1");
 #elif NET5_0
                 _logger.Info("Server using .NET 5.0");
 #elif NET6_0
