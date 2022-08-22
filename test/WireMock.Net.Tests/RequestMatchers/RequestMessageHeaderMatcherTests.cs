@@ -86,13 +86,29 @@ public class RequestMessageHeaderMatcherTests
         Check.That(score).IsEqualTo(1.0d);
     }
 
-    [Fact(Skip = "does not work anymore since 'and'/'or'/'average'")]
+    [Fact]
     public void RequestMessageHeaderMatcher_GetMatchingScore_RejectOnMatch()
     {
         // Assign
         var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
         var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
         var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.RejectOnMatch, "h", "x", true);
+
+        // Act
+        var result = new RequestMatchResult();
+        double score = matcher.GetMatchingScore(requestMessage, result);
+
+        // Assert
+        Check.That(score).IsEqualTo(0.0d);
+    }
+
+    [Fact]
+    public void RequestMessageHeaderMatcher_GetMatchingScore_RejectOnMatch_Wildcard()
+    {
+        // Assign
+        var headers = new Dictionary<string, string[]> { { "h", new[] { "x" } } };
+        var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", null, headers);
+        var matcher = new RequestMessageHeaderMatcher(MatchBehaviour.RejectOnMatch, "h", "*", true);
 
         // Act
         var result = new RequestMatchResult();
