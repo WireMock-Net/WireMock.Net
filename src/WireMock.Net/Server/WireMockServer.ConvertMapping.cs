@@ -24,7 +24,7 @@ public partial class WireMockServer
             .ToArray();
         if (duplicateGuids.Any())
         {
-            throw new ArgumentException($"The following Guids are duplicate : {string.Join(",", duplicateGuids)}", nameof(MappingModel.Guid));
+            throw new ArgumentException($"The following Guids are duplicate : {string.Join(",", duplicateGuids)}", nameof(mappingModels));
         }
 
         foreach (var mappingModel in mappingModels)
