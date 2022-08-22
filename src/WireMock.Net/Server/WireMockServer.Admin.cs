@@ -188,16 +188,13 @@ public partial class WireMockServer
         if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out var value))
         {
             var mappingModels = DeserializeJsonToArray<MappingModel>(value);
-            foreach (var mappingModel in mappingModels)
+            if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
             {
-                if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
-                {
-                    ConvertMappingAndRegisterAsRespondProvider(mappingModel, guidFromFilename, path);
-                }
-                else
-                {
-                    ConvertMappingAndRegisterAsRespondProvider(mappingModel, null, path);
-                }
+                ConvertMappingAndRegisterAsRespondProvider(mappingModels[0], guidFromFilename, path);
+            }
+            else
+            {
+                ConvertMappingsAndRegisterAsRespondProvider(mappingModels, path);
             }
 
             return true;
@@ -422,10 +419,7 @@ public partial class WireMockServer
                 return ResponseMessageBuilder.Create("Mapping added", 201, guid);
             }
 
-            foreach (var mappingModel in mappingModels)
-            {
-                ConvertMappingAndRegisterAsRespondProvider(mappingModel);
-            }
+            ConvertMappingsAndRegisterAsRespondProvider(mappingModels);
 
             return ResponseMessageBuilder.Create("Mappings added", 201);
         }

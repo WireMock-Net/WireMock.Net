@@ -14,6 +14,25 @@ namespace WireMock.Server;
 
 public partial class WireMockServer
 {
+    private void ConvertMappingsAndRegisterAsRespondProvider(MappingModel[] mappingModels, string? path = null)
+    {
+        var duplicateGuids = mappingModels
+            .Where(m => m.Guid != null)
+            .GroupBy(m => m.Guid)
+            .Where(g => g.Count() > 1)
+            .Select(g => $"'{g.Key}'")
+            .ToArray();
+        if (duplicateGuids.Any())
+        {
+            throw new ArgumentException($"The following Guids are duplicate : {string.Join(",", duplicateGuids)}", nameof(mappingModels));
+        }
+
+        foreach (var mappingModel in mappingModels)
+        {
+            ConvertMappingAndRegisterAsRespondProvider(mappingModel, null, path);
+        }
+    }
+
     private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
     {
         Guard.NotNull(mappingModel);
@@ -37,9 +56,10 @@ public partial class WireMockServer
             respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
         }
 
-        if (mappingModel.TimeSettings != null)
+        var timeSettings = TimeSettingsMapper.Map(mappingModel.TimeSettings);
+        if (timeSettings != null)
         {
-            respondProvider = respondProvider.WithTimeSettings(TimeSettingsMapper.Map(mappingModel.TimeSettings));
+            respondProvider = respondProvider.WithTimeSettings(timeSettings);
         }
 
         if (path != null)
@@ -101,7 +121,7 @@ public partial class WireMockServer
             else
             {
                 var clientIPModel = JsonUtils.ParseJTokenToObject<ClientIPModel>(requestModel.ClientIP);
-                if (clientIPModel?.Matchers != null)
+                if (clientIPModel.Matchers != null)
                 {
                     requestBuilder = requestBuilder.WithPath(clientIPModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
                 }
@@ -119,7 +139,7 @@ public partial class WireMockServer
             else
             {
                 var pathModel = JsonUtils.ParseJTokenToObject<PathModel>(requestModel.Path);
-                if (pathModel?.Matchers != null)
+                if (pathModel.Matchers != null)
                 {
                     var matchOperator = StringUtils.ParseMatchOperator(pathModel.MatchOperator);
                     requestBuilder = requestBuilder.WithPath(matchOperator, pathModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
@@ -137,7 +157,7 @@ public partial class WireMockServer
             else
             {
                 var urlModel = JsonUtils.ParseJTokenToObject<UrlModel>(requestModel.Url);
-                if (urlModel?.Matchers != null)
+                if (urlModel.Matchers != null)
                 {
                     var matchOperator = StringUtils.ParseMatchOperator(urlModel.MatchOperator);
                     requestBuilder = requestBuilder.WithUrl(matchOperator, urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
