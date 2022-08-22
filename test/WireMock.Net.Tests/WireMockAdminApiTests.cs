@@ -160,6 +160,57 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public async Task IWireMockAdminApi_PostMappingsAsync_WithDuplicateGuids_Should_Return_400()
+        {
+            // Arrange
+            var guid = Guid.Parse("1b731398-4a5b-457f-a6e3-d65e541c428f");
+            var server = WireMockServer.StartWithAdminInterface();
+            var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+            // Act
+            var model1WithGuid = new MappingModel
+            {
+                Guid = guid,
+                Request = new RequestModel { Path = "/1g" },
+                Response = new ResponseModel { Body = "txt 1g" },
+                Title = "test 1g"
+            };
+            var model2WithGuid = new MappingModel
+            {
+                Guid = guid,
+                Request = new RequestModel { Path = "/2g" },
+                Response = new ResponseModel { Body = "txt 2g" },
+                Title = "test 2g"
+            };
+            var model1 = new MappingModel
+            {
+                Request = new RequestModel { Path = "/1" },
+                Response = new ResponseModel { Body = "txt 1" },
+                Title = "test 1"
+            };
+            var model2 = new MappingModel
+            {
+                Request = new RequestModel { Path = "/2" },
+                Response = new ResponseModel { Body = "txt 2" },
+                Title = "test 2"
+            };
+
+            var models = new[]
+            {
+                model1WithGuid,
+                model2WithGuid,
+                model1,
+                model2
+            };
+
+            var sutMethod = async () => await api.PostMappingsAsync(models);
+            var exceptionAssertions = await sutMethod.Should().ThrowAsync<ApiException>();
+            exceptionAssertions.Which.Content.Should().Be(@"{""Status"":""The following Guids are duplicate : '1b731398-4a5b-457f-a6e3-d65e541c428f' (Parameter 'Guid')""}");
+
+            server.Stop();
+        }
+
+        [Fact]
         public async Task IWireMockAdminApi_FindRequestsAsync()
         {
             // Arrange
