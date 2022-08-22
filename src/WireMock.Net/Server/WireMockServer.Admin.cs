@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -420,6 +421,12 @@ public partial class WireMockServer
             {
                 Guid? guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
                 return ResponseMessageBuilder.Create("Mapping added", 201, guid);
+            }
+
+            var mappingModelsWithDuplicateGuid = mappingModels.Where(m => m.Guid != null).GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToArray();
+            if (mappingModelsWithDuplicateGuid.Any())
+            {
+                throw new ArgumentException(nameof(MappingModel.Guid), $"The following Guids are duplicate : {string.Join(",", mappingModelsWithDuplicateGuid.Select(m => m.Guid))}");
             }
 
             foreach (var mappingModel in mappingModels)
