@@ -135,7 +135,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
                 results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
             }
 
-            return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.ToScore(results, MatchOperator));
+            return MatchScores.ToScore(results, MatchOperator);
         }
 
         return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);

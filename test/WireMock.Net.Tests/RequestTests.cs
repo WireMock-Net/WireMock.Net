@@ -85,6 +85,82 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void Should_specify_requests_matching_given_wildcard_header()
+        {
+            // given
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
+
+            // when
+            var body = new BodyData
+            {
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Should_specify_requests_not_matching_given_wildcard_header2()
+        {
+            // given
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
+
+            // when
+            var body = new BodyData
+            {
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
+        }
+
+        [Fact]
+        public void Should_specify_requests_matching_given_wildcard_header_rejectonmatch()
+        {
+            // given
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
+
+            // when
+            var body = new BodyData
+            {
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Should_specify_requests_not_matching_given_wildcard_header_rejectonmatch()
+        {
+            // given
+            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
+
+            // when
+            var body = new BodyData
+            {
+                BodyAsString = "whatever",
+                DetectedBodyType = BodyType.String
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+
+            // then
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
+        }
+
+        [Fact]
         public void Should_specify_requests_matching_given_body()
         {
             // given
