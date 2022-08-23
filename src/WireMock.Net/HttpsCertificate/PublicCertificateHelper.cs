@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace WireMock.HttpsCertificate
+namespace WireMock.HttpsCertificate;
+
+/// <summary>
+/// Only used for NetStandard 1.3
+/// </summary>
+internal static class PublicCertificateHelper
 {
-    /// <summary>
-    /// Only used for NetStandard 1.3
-    /// </summary>
-    internal static class PublicCertificateHelper
-    {
-        // 1] Generate using https://www.pluralsight.com/blog/software-development/selfcert-create-a-self-signed-certificate-interactively-gui-or-programmatically-in-net
-        // 2] Converted to Base64
-        private const string Data = @"MIIQMgIBAzCCD+4GCSqGSIb3DQEHAaCCD98Egg/bMIIP1zCCCogGCSqGSIb3DQEHAaCCCnkEggp1
+    // 1] Generate using https://www.pluralsight.com/blog/software-development/selfcert-create-a-self-signed-certificate-interactively-gui-or-programmatically-in-net
+    // 2] Converted to Base64
+    private const string Data = @"MIIQMgIBAzCCD+4GCSqGSIb3DQEHAaCCD98Egg/bMIIP1zCCCogGCSqGSIb3DQEHAaCCCnkEggp1
 MIIKcTCCCm0GCyqGSIb3DQEMCgECoIIJfjCCCXowHAYKKoZIhvcNAQwBAzAOBAi1j9x1jTfUewIC
 B9AEgglYa48lP16+isiGEVT7zwN3XwaPwPOHZcQ7tRA/DA8LZnZbwU7XhtPObF5bZcHn4engX2An
 ISFpe2S5XJ7BfHmsGOO7Bxj6C2IcZIPTefvAd9vWE0WUAGN11SLhJ3fB/ZRt3Nys7JCJzywQCkYK
@@ -85,10 +85,9 @@ TLNGa+UmMnPsnBjlAJ6l9VPsa4uJM2DIQKtZXWq4DkhSAYKF6joIP7nKMDswHzAHBgUrDgMCGgQU
 wTM1Z+CJZG9xAcf1zAVGl4ggYyYEFGBFyJ8VBwijS2zy1qwN1WYGtcWoAgIH0A==
 ";
 
-        public static X509Certificate2 GetX509Certificate2()
-        {
-            byte[] data = Convert.FromBase64String(Data);
-            return new X509Certificate2(data);
-        }
+    public static X509Certificate2 GetX509Certificate2()
+    {
+        byte[] data = Convert.FromBase64String(Data);
+        return new X509Certificate2(data);
     }
 }

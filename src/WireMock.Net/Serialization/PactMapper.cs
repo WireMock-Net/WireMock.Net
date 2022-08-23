@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WireMock.Admin.Mappings;
 using WireMock.Extensions;
-using WireMock.Matchers;
 using WireMock.Pact.Models.V2;
 using WireMock.Server;
 using WireMock.Util;
@@ -76,8 +75,23 @@ internal static class PactMapper
         {
             Status = MapStatusCode(response.StatusCode),
             Headers = MapResponseHeaders(response.Headers),
-            Body = response.BodyAsJson
+            Body = MapBody(response)
         };
+    }
+
+    private static object? MapBody(ResponseModel? response)
+    {
+        if (response?.BodyAsJson != null)
+        {
+            return response.BodyAsJson;
+        }
+
+        if (response?.Body != null)
+        {
+            return TryDeserializeJsonStringAsObject(response.Body);
+        }
+
+        return null;
     }
 
     private static int MapStatusCode(object? statusCode)
@@ -124,27 +138,35 @@ internal static class PactMapper
 
     private static object? MapBody(BodyModel? body)
     {
-        if (body?.Matcher == null || body.Matchers == null)
-        {
-            return null;
-        }
-
-        if (body.Matcher is { Name: nameof(JsonMatcher) })
-        {
-            return body.Matcher.Pattern;
-        }
-
-        var jsonMatcher = body.Matchers.FirstOrDefault(m => m.Name == nameof(JsonMatcher));
-        return jsonMatcher?.Pattern;
+        return MapMatcherPattern(body?.Matcher ?? body?.Matchers?.FirstOrDefault());
     }
 
-    private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
+    private static object? MapMatcherPattern(MatcherModel? matcher)
     {
-        if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
+        var pattern = matcher?.Pattern ?? matcher?.Patterns?.FirstOrDefault();
+        if (pattern is string patternAsString)
         {
-            return patternAsString;
+            return TryDeserializeJsonStringAsObject(patternAsString);
         }
 
-        return defaultValue;
+        return pattern;
     }
+
+    /// <summary>
+    /// In case it's a string, try to deserialize into object, else just return the string
+    /// </summary>
+    private static object? TryDeserializeJsonStringAsObject(string? value)
+    {
+        return value != null ? JsonUtils.TryDeserializeObject<object?>(value) ?? value : null;
+    }
+
+    //private static string GetPatternAsStringFromMatchers(MatcherModel[]? matchers, string defaultValue)
+    //{
+    //    if (matchers != null && matchers.Any() && matchers[0].Pattern is string patternAsString)
+    //    {
+    //        return patternAsString;
+    //    }
+
+    //    return defaultValue;
+    //}
 }

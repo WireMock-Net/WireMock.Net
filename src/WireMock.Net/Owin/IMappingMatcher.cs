@@ -1,7 +1,6 @@
-﻿namespace WireMock.Owin
+namespace WireMock.Owin;
+
+internal interface IMappingMatcher
 {
-    internal interface IMappingMatcher
-    {
-        (MappingMatcherResult Match, MappingMatcherResult Partial) FindBestMatch(RequestMessage request);
-    }
+    (MappingMatcherResult? Match, MappingMatcherResult? Partial) FindBestMatch(RequestMessage request);
 }

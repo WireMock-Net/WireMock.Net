@@ -6,6 +6,7 @@ using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -116,9 +117,10 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        if (mapping.Webhooks?.Length == 1)
+        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? new IWebhook[0];
+        if (nonNullableWebHooks.Length == 1)
         {
-            mappingModel.Webhook = WebhookMapper.Map(mapping.Webhooks[0]);
+            mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
         }
         else if (mapping.Webhooks?.Length > 1)
         {
@@ -209,7 +211,7 @@ internal class MappingConverter
                         break;
                 }
 
-                if (response.ResponseMessage.BodyData.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+                if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
                 {
                     mappingModel.Response.BodyEncoding = new EncodingModel
                     {

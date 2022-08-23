@@ -251,5 +251,11 @@ namespace WireMock.Settings
         /// </summary>
         [PublicAPI, JsonIgnore]
         public IDictionary<string, Func<MatcherModel, IMatcher>>? CustomMatcherMappings { get; set; }
+
+        /// <summary>
+        /// The <see cref="JsonSerializerSettings"/> used when the a JSON response is generated.
+        /// </summary>
+        [PublicAPI, JsonIgnore]
+        public JsonSerializerSettings? JsonSerializerSettings { get; set; }
     }
 }

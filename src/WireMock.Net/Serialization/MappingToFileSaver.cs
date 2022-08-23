@@ -22,10 +22,7 @@ internal class MappingToFileSaver
 
     public void SaveMappingToFile(IMapping mapping, string? folder = null)
     {
-        if (folder == null)
-        {
-            folder = _settings.FileSystemHandler.GetMappingFolder();
-        }
+        folder ??= _settings.FileSystemHandler.GetMappingFolder();
 
         if (!_settings.FileSystemHandler.FolderExists(folder))
         {

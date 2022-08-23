@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,16 +29,16 @@ namespace WireMock.Owin
 
         public bool IsStarted { get; private set; }
 
-        public List<string> Urls { get; } = new List<string>();
+        public List<string> Urls { get; } = new();
 
-        public List<int> Ports { get; } = new List<int>();
+        public List<int> Ports { get; } = new();
 
         public Exception RunningException => _runningException;
 
-        public AspNetCoreSelfHost([NotNull] IWireMockMiddlewareOptions wireMockMiddlewareOptions, [NotNull] HostUrlOptions urlOptions)
+        public AspNetCoreSelfHost(IWireMockMiddlewareOptions wireMockMiddlewareOptions, HostUrlOptions urlOptions)
         {
-            Guard.NotNull(wireMockMiddlewareOptions, nameof(wireMockMiddlewareOptions));
-            Guard.NotNull(urlOptions, nameof(urlOptions));
+            Guard.NotNull(wireMockMiddlewareOptions);
+            Guard.NotNull(urlOptions);
 
             _logger = wireMockMiddlewareOptions.Logger ?? new WireMockConsoleLogger();
 
@@ -119,7 +118,7 @@ namespace WireMock.Owin
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
 
-                        PortUtils.TryExtract(address, out bool isHttps, out string protocol, out string host, out int port);
+                        PortUtils.TryExtract(address, out _, out _, out _, out int port);
                         Ports.Add(port);
                     }
 
@@ -133,7 +132,7 @@ namespace WireMock.Owin
 #elif NETSTANDARD2_1
                 _logger.Info("Server using netstandard2.1");
 #elif NETCOREAPP3_1
-                _logger.Info("Server using .NET Core 3.1");
+                _logger.Info("Server using .NET Core App 3.1");
 #elif NET5_0
                 _logger.Info("Server using .NET 5.0");
 #elif NET6_0

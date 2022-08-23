@@ -1,11 +1,10 @@
 using WireMock.Matchers.Request;
 
-namespace WireMock.Owin
-{
-    internal class MappingMatcherResult
-    {
-        public IMapping Mapping { get; set; }
+namespace WireMock.Owin;
 
-        public IRequestMatchResult RequestMatchResult { get; set; }
-    }
+internal class MappingMatcherResult
+{
+    public IMapping Mapping { get; set; }
+
+    public IRequestMatchResult RequestMatchResult { get; set; }
 }

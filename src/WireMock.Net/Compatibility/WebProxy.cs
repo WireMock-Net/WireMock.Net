@@ -1,28 +1,26 @@
-﻿#if NETSTANDARD1_3
-using System;
-using System.Net;
+#if NETSTANDARD1_3
 
-namespace System.Net
+// ReSharper disable once CheckNamespace
+namespace System.Net;
+
+internal class WebProxy : IWebProxy
 {
-    internal class WebProxy : IWebProxy
+    private readonly string _proxy;
+    public ICredentials? Credentials { get; set; }
+
+    public WebProxy(string proxy)
     {
-        private readonly string _proxy;
-        public ICredentials Credentials { get; set; }
+        _proxy = proxy;
+    }
 
-        public WebProxy(string proxy)
-        {
-            _proxy = proxy;
-        }
+    public Uri GetProxy(Uri destination)
+    {
+        return new Uri(_proxy);
+    }
 
-        public Uri GetProxy(Uri destination)
-        {
-            return new Uri(_proxy);
-        }
-
-        public bool IsBypassed(Uri host)
-        {
-            return true;
-        }
+    public bool IsBypassed(Uri host)
+    {
+        return true;
     }
 }
 #endif

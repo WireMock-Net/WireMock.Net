@@ -1,23 +1,22 @@
-﻿namespace WireMock.Matchers
+namespace WireMock.Matchers;
+
+/// <summary>
+/// IMatcher
+/// </summary>
+public interface IMatcher
 {
     /// <summary>
-    /// IMatcher
+    /// Gets the name.
     /// </summary>
-    public interface IMatcher
-    {
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        string Name { get; }
+    string Name { get; }
 
-        /// <summary>
-        /// Gets the match behaviour.
-        /// </summary>
-        MatchBehaviour MatchBehaviour { get; }
+    /// <summary>
+    /// Gets the match behaviour.
+    /// </summary>
+    MatchBehaviour MatchBehaviour { get; }
 
-        /// <summary>
-        /// Should this matcher throw an exception?
-        /// </summary>
-        bool ThrowException { get; }
-    }
+    /// <summary>
+    /// Should this matcher throw an exception?
+    /// </summary>
+    bool ThrowException { get; }
 }

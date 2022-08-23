@@ -1,34 +1,33 @@
 using WireMock.Types;
 
-namespace WireMock.ResponseBuilders
+namespace WireMock.ResponseBuilders;
+
+/// <summary>
+/// The TransformResponseBuilder interface.
+/// </summary>
+public interface ITransformResponseBuilder : IDelayResponseBuilder
 {
     /// <summary>
-    /// The TransformResponseBuilder interface.
+    /// Use the Handlebars.Net ResponseMessage transformer.
     /// </summary>
-    public interface ITransformResponseBuilder : IDelayResponseBuilder
-    {
-        /// <summary>
-        /// Use the Handlebars.Net ResponseMessage transformer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile);
+    /// <returns>
+    /// The <see cref="IResponseBuilder"/>.
+    /// </returns>
+    IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile);
 
-        /// <summary>
-        /// Use the Handlebars.Net ResponseMessage transformer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        IResponseBuilder WithTransformer(ReplaceNodeOptions options);
+    /// <summary>
+    /// Use the Handlebars.Net ResponseMessage transformer.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="IResponseBuilder"/>.
+    /// </returns>
+    IResponseBuilder WithTransformer(ReplaceNodeOptions options);
 
-        /// <summary>
-        /// Use a specific ResponseMessage transformer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="IResponseBuilder"/>.
-        /// </returns>
-        IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None);
-    }
+    /// <summary>
+    /// Use a specific ResponseMessage transformer.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="IResponseBuilder"/>.
+    /// </returns>
+    IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.None);
 }

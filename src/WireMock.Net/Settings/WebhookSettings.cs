@@ -1,9 +1,8 @@
-namespace WireMock.Settings
+namespace WireMock.Settings;
+
+/// <summary>
+/// WebhookSettings
+/// </summary>
+public class WebhookSettings : HttpClientSettings
 {
-    /// <summary>
-    /// WebhookSettings
-    /// </summary>
-    public class WebhookSettings : HttpClientSettings
-    {
-    }
 }

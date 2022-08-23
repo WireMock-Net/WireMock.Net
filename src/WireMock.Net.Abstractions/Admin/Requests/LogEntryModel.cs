@@ -30,12 +30,12 @@ public class LogEntryModel
     /// <summary>
     /// The mapping unique title.
     /// </summary>
-    public string MappingTitle { get; set; }
+    public string? MappingTitle { get; set; }
 
     /// <summary>
     /// The request match result.
     /// </summary>
-    public LogRequestMatchModel RequestMatchResult { get; set; }
+    public LogRequestMatchModel? RequestMatchResult { get; set; }
 
     /// <summary>
     /// The partial mapping unique identifier.
@@ -45,10 +45,10 @@ public class LogEntryModel
     /// <summary>
     /// The partial mapping unique title.
     /// </summary>
-    public string PartialMappingTitle { get; set; }
+    public string? PartialMappingTitle { get; set; }
 
     /// <summary>
     /// The partial request match result.
     /// </summary>
-    public LogRequestMatchModel PartialRequestMatchResult { get; set; }
+    public LogRequestMatchModel? PartialRequestMatchResult { get; set; }
 }
