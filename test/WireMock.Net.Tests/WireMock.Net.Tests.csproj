@@ -60,7 +60,7 @@
         <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
         <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
         <!--<PackageReference Include="StrongNamer" Version="0.2.5" />-->
         <PackageReference Include="AnyOf" Version="0.3.0" />
         <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
