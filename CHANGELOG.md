@@ -1,3 +1,18 @@
+# 1.5.4 (24 August 2022)
+- [#778](https://github.com/WireMock-Net/WireMock.Net/pull/778) - Fix Proxying when StartAdminInterface=true [bug] contributed by [StefH](https://github.com/StefH)
+- [#781](https://github.com/WireMock-Net/WireMock.Net/pull/781) - Update some NuGet packages [feature] contributed by [StefH](https://github.com/StefH)
+- [#783](https://github.com/WireMock-Net/WireMock.Net/pull/783) - Fix WithBody when using Pact and added more nullable annotations [feature] contributed by [StefH](https://github.com/StefH)
+- [#787](https://github.com/WireMock-Net/WireMock.Net/pull/787) - Add support for PEM certificates contributed by [StefH](https://github.com/StefH)
+- [#789](https://github.com/WireMock-Net/WireMock.Net/pull/789) - Add support for Matcher.Pattern in Pact Body mapping [feature] contributed by [StefH](https://github.com/StefH)
+- [#790](https://github.com/WireMock-Net/WireMock.Net/pull/790) - Add Response.WithBody with IJsonConverter [feature] contributed by [StefH](https://github.com/StefH)
+- [#795](https://github.com/WireMock-Net/WireMock.Net/pull/795) - Add check for duplicate Guids when posting multiple mappings in one request contributed by [StefH](https://github.com/StefH)
+- [#797](https://github.com/WireMock-Net/WireMock.Net/pull/797) - Fix WithHeader when using RejectOnMatch [bug] contributed by [flts](https://github.com/flts)
+- [#775](https://github.com/WireMock-Net/WireMock.Net/issues/775) - When &quot;StartAdminInterface&quot; is true then each time is generated new mapping from the proxy [bug]
+- [#784](https://github.com/WireMock-Net/WireMock.Net/issues/784) - Response body is missing in generated pact file when IBodyResponseBuilder.WithBody is used [bug]
+- [#785](https://github.com/WireMock-Net/WireMock.Net/issues/785) - Support for PEM certificates when using ssl [feature]
+- [#788](https://github.com/WireMock-Net/WireMock.Net/issues/788) - Request body is missing in generated pact file for requests that include matching on request body [bug]
+- [#796](https://github.com/WireMock-Net/WireMock.Net/issues/796) - RequestMessageHeaderMatcher with MatchBehaviour.RejectOnMatch reverses match results twice [bug]
+
 # 1.5.3 (29 July 2022)
 - [#777](https://github.com/WireMock-Net/WireMock.Net/pull/777) - Update Scriban.Signed to version 5.5.0 [feature] contributed by [StefH](https://github.com/StefH)
 - [#776](https://github.com/WireMock-Net/WireMock.Net/issues/776) - Update Scriban.Signed to support more functions, e.g math.random [feature]
