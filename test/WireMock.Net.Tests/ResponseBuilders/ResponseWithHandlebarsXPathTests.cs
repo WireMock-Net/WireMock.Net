@@ -14,117 +14,119 @@ using FluentAssertions;
 using Wmhelp.XPath2;
 #endif
 
-namespace WireMock.Net.Tests.ResponseBuilders
+namespace WireMock.Net.Tests.ResponseBuilders;
+
+public class ResponseWithHandlebarsXPathTests
 {
-    public class ResponseWithHandlebarsXPathTests
+    private const string ClientIp = "::1";
+    private readonly WireMockServerSettings _settings = new();
+
+    private readonly Mock<IMapping> _mappingMock;
+
+    public ResponseWithHandlebarsXPathTests()
     {
-        private const string ClientIp = "::1";
+        _mappingMock = new Mock<IMapping>();
 
-        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+        var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        public ResponseWithHandlebarsXPathTests()
+        _settings.FileSystemHandler = filesystemHandlerMock.Object;
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_BodyAsString()
+    {
+        // Assign
+        var body = new BodyData
         {
-            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
-
-            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
-        }
-
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_BodyAsString()
-        {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = @"<todo-list>
+            BodyAsString = @"<todo-list>
                                    <todo-item id='a1'>abc</todo-item>
                                    <todo-item id='a2'>def</todo-item>
                                    <todo-item id='a3'>xyz</todo-item>
                                  </todo-list>",
-                DetectedBodyType = BodyType.String
-            };
+            DetectedBodyType = BodyType.String
+        };
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("<response>{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]\"}}</response>")
-                .WithTransformer();
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("<response>{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]\"}}</response>")
+            .WithTransformer();
 
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            // Assert
-            var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
-            var node = nav.XPath2SelectSingleNode("/response/todo-item");
-            Check.That(node.Value).Equals("abc");
-            Check.That(node.GetAttribute("id", "")).Equals("a1");
-        }
+        // Assert
+        var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
+        var node = nav.XPath2SelectSingleNode("/response/todo-item");
+        Check.That(node.Value).Equals("abc");
+        Check.That(node.GetAttribute("id", "")).Equals("a1");
+    }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Text_Request_BodyAsString()
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Text_Request_BodyAsString()
+    {
+        // Assign
+        var body = new BodyData
         {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = @"<todo-list>
+            BodyAsString = @"<todo-list>
                                    <todo-item id='a1'>abc</todo-item>
                                    <todo-item id='a2'>def</todo-item>
                                    <todo-item id='a3'>xyz</todo-item>
                                  </todo-list>",
-                DetectedBodyType = BodyType.String
-            };
+            DetectedBodyType = BodyType.String
+        };
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]/text()\"}}")
-                .WithTransformer();
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("{{XPath.SelectSingleNode request.body \"/todo-list/todo-item[1]/text()\"}}")
+            .WithTransformer();
 
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            // Assert
-            Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("abc");
-        }
+        // Assert
+        Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("abc");
+    }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_SelectNodes_Request_BodyAsString()
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_SelectNodes_Request_BodyAsString()
+    {
+        // Assign
+        var body = new BodyData
         {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = @"<todo-list>
+            BodyAsString = @"<todo-list>
                                    <todo-item id='a1'>abc</todo-item>
                                    <todo-item id='a2'>def</todo-item>
                                    <todo-item id='a3'>xyz</todo-item>
                                  </todo-list>",
-                DetectedBodyType = BodyType.String
-            };
+            DetectedBodyType = BodyType.String
+        };
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("<response>{{XPath.SelectNodes request.body \"/todo-list/todo-item\"}}</response>")
-                .WithTransformer();
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("<response>{{XPath.SelectNodes request.body \"/todo-list/todo-item\"}}</response>")
+            .WithTransformer();
 
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            // Assert
-            var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
-            var nodes = nav.XPath2SelectNodes("/response/todo-item");
-            Check.That(nodes.Count + 1).IsEqualTo(3);
-        }
+        // Assert
+        var nav = new XmlDocument { InnerXml = response.Message.BodyData.BodyAsString }.CreateNavigator();
+        var nodes = nav.XPath2SelectNodes("/response/todo-item");
+        Check.That(nodes.Count + 1).IsEqualTo(3);
+    }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_SoapXML_BodyAsString()
-        {
-            // Assign
-            string soap = @"
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_SelectSingleNode_Request_SoapXML_BodyAsString()
+    {
+        // Assign
+        string soap = @"
 <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:ns=""http://www.Test.nl/XMLHeader/10"" xmlns:req=""http://www.Test.nl/Betalen/COU/Services/RdplDbTknLystByOvkLyst/8/Req"">
    <soapenv:Header>
       <ns:TestHeader>
@@ -156,80 +158,79 @@ namespace WireMock.Net.Tests.ResponseBuilders
       </req:RdplDbTknLystByOvkLyst_REQ>
    </soapenv:Body>
 </soapenv:Envelope>";
-            var body = new BodyData
-            {
-                BodyAsString = soap,
-                DetectedBodyType = BodyType.String
-            };
-
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
-
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("<response>{{XPath.SelectSingleNode request.body \"//*[local-name()='TokenIdLijst']\"}}</response>")
-                .WithTransformer();
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
-
-            // Assert
-            response.Message.BodyData.BodyAsString.Should().Contain("TokenIdLijst").And.Contain("0000083256").And.Contain("0000083259");
-        }
-
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_Evaluate_Request_BodyAsString()
+        var body = new BodyData
         {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = @"<todo-list>
+            BodyAsString = soap,
+            DetectedBodyType = BodyType.String
+        };
+
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("<response>{{XPath.SelectSingleNode request.body \"//*[local-name()='TokenIdLijst']\"}}</response>")
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData.BodyAsString.Should().Contain("TokenIdLijst").And.Contain("0000083256").And.Contain("0000083259");
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_Evaluate_Request_BodyAsString()
+    {
+        // Assign
+        var body = new BodyData
+        {
+            BodyAsString = @"<todo-list>
                                    <todo-item id='a1'>abc</todo-item>
                                    <todo-item id='a2'>def</todo-item>
                                    <todo-item id='a3'>xyz</todo-item>
                                  </todo-list>",
-                DetectedBodyType = BodyType.String
-            };
+            DetectedBodyType = BodyType.String
+        };
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("{{XPath.Evaluate request.body \"boolean(/todo-list[count(todo-item) = 3])\"}}")
-                .WithTransformer();
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("{{XPath.Evaluate request.body \"boolean(/todo-list[count(todo-item) = 3])\"}}")
+            .WithTransformer();
 
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            // Assert
-            Check.That(response.Message.BodyData.BodyAsString).IsEqualIgnoringCase("True");
-        }
+        // Assert
+        Check.That(response.Message.BodyData.BodyAsString).IsEqualIgnoringCase("True");
+    }
 
-        [Fact]
-        public async Task Response_ProvideResponse_Handlebars_XPath_Evaluate_Attribute_Request_BodyAsString()
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_XPath_Evaluate_Attribute_Request_BodyAsString()
+    {
+        // Assign
+        var body = new BodyData
         {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = @"<todo-list>
+            BodyAsString = @"<todo-list>
                                    <todo-item id='a1'>abc</todo-item>
                                    <todo-item id='a2'>def</todo-item>
                                    <todo-item id='a3'>xyz</todo-item>
                                  </todo-list>",
-                DetectedBodyType = BodyType.String
-            };
+            DetectedBodyType = BodyType.String
+        };
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-            var responseBuilder = Response.Create()
-                .WithHeader("Content-Type", "application/xml")
-                .WithBody("{{XPath.Evaluate request.body \"string(/todo-list/todo-item[1]/@id)\"}}")
-                .WithTransformer();
+        var responseBuilder = Response.Create()
+            .WithHeader("Content-Type", "application/xml")
+            .WithBody("{{XPath.Evaluate request.body \"string(/todo-list/todo-item[1]/@id)\"}}")
+            .WithTransformer();
 
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            // Assert
-            Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("a1");
-        }
+        // Assert
+        Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("a1");
     }
 }

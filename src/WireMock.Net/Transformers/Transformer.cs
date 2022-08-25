@@ -19,6 +19,7 @@ internal class Transformer : ITransformer
     }
 
     public (IBodyData? BodyData, IDictionary<string, WireMockList<string>>? Headers) Transform(
+        IMapping mapping,
         IRequestMessage originalRequestMessage,
         IResponseMessage originalResponseMessage,
         IBodyData? bodyData,
@@ -29,6 +30,7 @@ internal class Transformer : ITransformer
 
         var model = new
         {
+            mapping,
             request = originalRequestMessage,
             response = originalResponseMessage
         };
@@ -42,7 +44,7 @@ internal class Transformer : ITransformer
         return (newBodyData, TransformHeaders(transformerContext, model, headers));
     }
 
-    public ResponseMessage Transform(IRequestMessage requestMessage, IResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
+    public ResponseMessage Transform(IMapping mapping, IRequestMessage requestMessage, IResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
     {
         var transformerContext = _factory.Create();
 
@@ -50,6 +52,7 @@ internal class Transformer : ITransformer
 
         var model = new
         {
+            mapping,
             request = requestMessage
         };
 
@@ -82,22 +85,15 @@ internal class Transformer : ITransformer
         return responseMessage;
     }
 
-    private static IBodyData TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original, bool useTransformerForBodyAsFile)
+    private static IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original, bool useTransformerForBodyAsFile)
     {
-        switch (original?.DetectedBodyType)
+        return original.DetectedBodyType switch
         {
-            case BodyType.Json:
-                return TransformBodyAsJson(transformerContext, options, model, original);
-
-            case BodyType.File:
-                return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
-
-            case BodyType.String:
-                return TransformBodyAsString(transformerContext, model, original);
-
-            default:
-                return null;
-        }
+            BodyType.Json => TransformBodyAsJson(transformerContext, options, model, original),
+            BodyType.File => TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile),
+            BodyType.String => TransformBodyAsString(transformerContext, model, original),
+            _ => null
+        };
     }
 
     private static IDictionary<string, WireMockList<string>> TransformHeaders(ITransformerContext transformerContext, object model, IDictionary<string, WireMockList<string>>? original)
@@ -166,11 +162,17 @@ internal class Transformer : ITransformer
         {
             const string property = "_";
             JObject dummy = JObject.Parse($"{{ \"{property}\": null }}");
-            JToken node = dummy[property];
+            if (dummy[property] == null)
+            {
+                // TODO: check if just returning null is fine
+                return string.Empty;
+            }
+
+            JToken node = dummy[property]!;
 
             ReplaceNodeValue(options, node, transformedString);
 
-            return dummy[property];
+            return dummy[property]!;
         }
 
         return stringValue;

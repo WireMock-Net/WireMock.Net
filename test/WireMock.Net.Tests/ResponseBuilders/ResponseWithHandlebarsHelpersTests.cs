@@ -9,40 +9,38 @@ using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests.ResponseBuilders
+namespace WireMock.Net.Tests.ResponseBuilders;
+
+public class ResponseWithHandlebarsHelpersTests
 {
-    public class ResponseWithHandlebarsHelpersTests
+    private const string ClientIp = "::1";
+
+    private readonly WireMockServerSettings _settings = new();
+
+    public ResponseWithHandlebarsHelpersTests()
     {
-        private const string ClientIp = "::1";
+        var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+        _settings.FileSystemHandler = filesystemHandlerMock.Object;
+    }
 
-        public ResponseWithHandlebarsHelpersTests()
-        {
-            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+    [Fact]
+    public async Task Response_ProvideResponseAsync_HandlebarsHelpers_String_Uppercase()
+    {
+        // Assign
+        var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
 
-            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
-        }
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
 
-        [Fact]
-        public async Task Response_ProvideResponseAsync_HandlebarsHelpers_String_Uppercase()
-        {
-            // Assign
-            var body = new BodyData { BodyAsString = "abc", DetectedBodyType = BodyType.String };
+        var responseBuilder = Response.Create()
+            .WithBody("{{String.Uppercase request.body}}")
+            .WithTransformer();
 
-            var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", ClientIp, body);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(new Mock<IMapping>().Object, request, _settings).ConfigureAwait(false);
 
-            var responseBuilder = Response.Create()
-                .WithBody("{{String.Uppercase request.body}}")
-                .WithTransformer();
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
-
-            // assert
-            Check.That(response.Message.BodyData.BodyAsString).Equals("ABC");
-        }
+        // assert
+        Check.That(response.Message.BodyData.BodyAsString).Equals("ABC");
     }
 }

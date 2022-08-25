@@ -13,7 +13,7 @@ internal class DynamicAsyncResponseProvider : IResponseProvider
         _responseMessageFunc = responseMessageFunc;
     }
 
-    public async Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
+    public async Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IMapping mapping, IRequestMessage requestMessage, WireMockServerSettings settings)
     {
         return (await _responseMessageFunc(requestMessage).ConfigureAwait(false), null);
     }
