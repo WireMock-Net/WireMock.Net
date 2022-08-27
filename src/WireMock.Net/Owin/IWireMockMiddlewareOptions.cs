@@ -4,12 +4,12 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Util;
-using WireMock.Types;
 #if !USE_ASPNETCORE
 using Owin;
 #else
 using IAppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Microsoft.Extensions.DependencyInjection;
+using WireMock.Types;
 #endif
 
 namespace WireMock.Owin;

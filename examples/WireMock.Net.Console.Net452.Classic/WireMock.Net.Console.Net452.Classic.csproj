@@ -80,7 +80,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="libman.json" />
     <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
