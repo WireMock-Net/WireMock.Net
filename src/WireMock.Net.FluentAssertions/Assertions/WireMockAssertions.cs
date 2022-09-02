@@ -129,4 +129,59 @@ public class WireMockAssertions
 
         return new AndConstraint<WireMockAssertions>(this);
     }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingConnect(string because = "", params object[] becauseArgs)
+        => UsingMethod("CONNECT", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingDelete(string because = "", params object[] becauseArgs)
+        => UsingMethod("DELETE", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingGet(string because = "", params object[] becauseArgs)
+        => UsingMethod("GET", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingHead(string because = "", params object[] becauseArgs)
+        => UsingMethod("HEAD", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingOptions(string because = "", params object[] becauseArgs)
+        => UsingMethod("OPTIONS", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPost(string because = "", params object[] becauseArgs)
+        => UsingMethod("POST", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPatch(string because = "", params object[] becauseArgs)
+        => UsingMethod("PATCH", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPut(string because = "", params object[] becauseArgs)
+        => UsingMethod("PUT", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingTrace(string because = "", params object[] becauseArgs)
+        => UsingMethod("TRACE", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingMethod(string method, string because = "", params object[] becauseArgs)
+    {
+        Execute.Assertion
+            .BecauseOf(because, becauseArgs)
+            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .ForCondition(requests => requests.Any())
+            .FailWith(
+                "Expected {context:wiremockserver} to have been called using method {0}{reason}, but no calls were made.",
+                method)
+            .Then
+            .ForCondition(x => _callsCount == null && x.Any(y => y.Method == method) || _callsCount == x.Count(y => y.Method == method))
+            .FailWith(
+                "Expected {context:wiremockserver} to have been called using method {0}{reason}, but didn't find it among the methods {1}.",
+                _ => method, requests => requests.Select(request => request.Method));
+
+        return new AndConstraint<WireMockAssertions>(this);
+    }
 }

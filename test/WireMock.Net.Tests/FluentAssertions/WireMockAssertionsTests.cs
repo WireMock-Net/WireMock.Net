@@ -320,6 +320,148 @@ public class WireMockAssertionsTests : IDisposable
                 $"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
     }
 
+    [Fact]
+    public async Task HaveReceivedNoCalls_UsingPost_WhenACallWasNotMadeUsingPost_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedNoCalls()
+            .UsingPost();
+    }
+
+    [Fact]
+    public async Task HaveReceived2Calls_UsingDelete_WhenACallWasMadeUsingDelete_Should_BeOK()
+    {
+        await _httpClient.DeleteAsync("anyurl").ConfigureAwait(false);
+
+        await _httpClient.DeleteAsync("anyurl").ConfigureAwait(false);
+
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceived(2).Calls()
+            .UsingDelete();
+    }
+
+    [Fact]
+    public void HaveReceivedACall_UsingPatch_Should_ThrowWhenNoCallsWereMade()
+    {
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .UsingPatch();
+
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called using method \"PATCH\", but no calls were made.");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingOptions_Should_ThrowWhenCallsWereNotMadeUsingOptions()
+    {
+        await _httpClient.PostAsync("anyurl", new StringContent("anycontent")).ConfigureAwait(false);
+
+        Action act = () => _server.Should()
+            .HaveReceivedACall()
+            .UsingOptions();
+
+        act.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be(
+                "Expected _server to have been called using method \"OPTIONS\", but didn't find it among the methods {\"POST\"}.");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingConnect_WhenACallWasMadeUsingConnect_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("CONNECT"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingConnect();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingDelete_WhenACallWasMadeUsingDelete_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("DELETE"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingDelete();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingGet_WhenACallWasMadeUsingGet_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("GET"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingGet();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingHead_WhenACallWasMadeUsingHead_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingHead();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingOptions_WhenACallWasMadeUsingOptions_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("OPTIONS"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingOptions();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingPost_WhenACallWasMadeUsingPost_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("POST"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingPost();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingPatch_WhenACallWasMadeUsingPatch_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingPatch();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingPut_WhenACallWasMadeUsingPut_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PUT"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingPut();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_UsingTrace_WhenACallWasMadeUsingTrace_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("TRACE"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingTrace();
+    }
+
     public void Dispose()
     {
         _server?.Stop();
