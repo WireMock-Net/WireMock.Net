@@ -381,7 +381,6 @@ public class WireMockAssertionsTests : IDisposable
         _server.Given(Request.Create().UsingAnyMethod())
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Found));
 
-        _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("Host", new Uri(_server.Urls[0]).Authority);
 
         await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("CONNECT"), "anyurl")).ConfigureAwait(false);
