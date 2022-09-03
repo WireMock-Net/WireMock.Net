@@ -25,9 +25,10 @@ internal class WebhookSender
         _settings = Guard.NotNull(settings);
     }
 
-    public Task<HttpResponseMessage> SendAsync(HttpClient client, IWebhookRequest request, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage)
+    public Task<HttpResponseMessage> SendAsync(HttpClient client, IMapping mapping, IWebhookRequest request, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage)
     {
         Guard.NotNull(client);
+        Guard.NotNull(mapping);
         Guard.NotNull(request);
         Guard.NotNull(originalRequestMessage);
         Guard.NotNull(originalResponseMessage);
@@ -54,7 +55,7 @@ internal class WebhookSender
                     throw new NotImplementedException($"TransformerType '{request.TransformerType}' is not supported.");
             }
 
-            (bodyData, headers) = responseMessageTransformer.Transform(originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers, request.TransformerReplaceNodeOptions);
+            (bodyData, headers) = responseMessageTransformer.Transform(mapping, originalRequestMessage, originalResponseMessage, request.BodyData, request.Headers, request.TransformerReplaceNodeOptions);
         }
         else
         {

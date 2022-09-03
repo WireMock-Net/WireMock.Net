@@ -21,7 +21,7 @@ public static class WireMockServerSettingsParser
     [PublicAPI]
     public static bool TryParseArguments(string[] args, [NotNullWhen(true)] out WireMockServerSettings? settings, IWireMockLogger? logger = null)
     {
-        Guard.HasNoNulls(args, nameof(args));
+        Guard.HasNoNulls(args);
 
         var parser = new SimpleCommandLineParser();
         parser.Parse(args);
@@ -68,8 +68,7 @@ public static class WireMockServerSettingsParser
         {
             settings.Logger = logger;
         }
-
-        if (parser.GetStringValue("WireMockLogger") == "WireMockConsoleLogger")
+        else if (parser.GetStringValue("WireMockLogger") == "WireMockConsoleLogger")
         {
             settings.Logger = new WireMockConsoleLogger();
         }

@@ -16,59 +16,60 @@ using Microsoft.Owin;
 using Microsoft.AspNetCore.Http;
 #endif
 
-namespace WireMock.Net.Tests.ResponseBuilders
+namespace WireMock.Net.Tests.ResponseBuilders;
+
+public class ResponseWithScribanTests
 {
-    public class ResponseWithScribanTests
+    private const string ClientIp = "::1";
+    private readonly WireMockServerSettings _settings = new();
+
+    private readonly Mock<IMapping> _mappingMock;
+
+    public ResponseWithScribanTests()
     {
-        private const string ClientIp = "::1";
+        _mappingMock = new Mock<IMapping>();
 
-        private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-        private readonly WireMockServerSettings _settings = new WireMockServerSettings();
+        var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        public ResponseWithScribanTests()
+        _settings.FileSystemHandler = filesystemHandlerMock.Object;
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_DotLiquid_WithNullBody_ShouldNotThrowException()
+    {
+        // Assign
+        var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
+        var request = new RequestMessage(urlDetails, "GET", ClientIp);
+
+        var responseBuilder = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_DotLiquid_UrlPathVerb()
+    {
+        // Assign
+        var body = new BodyData
         {
-            _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-            _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
 
-            _settings.FileSystemHandler = _filesystemHandlerMock.Object;
-        }
+        var responseBuilder = Response.Create()
+            .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
+            .WithTransformer(TransformerType.Scriban);
 
-        [Fact]
-        public async Task Response_ProvideResponse_DotLiquid_WithNullBody_ShouldNotThrowException()
-        {
-            // Assign
-            var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
-            var request = new RequestMessage(urlDetails, "GET", ClientIp);
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
-            var responseBuilder = Response.Create().WithTransformer(TransformerType.ScribanDotLiquid);
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
-
-            // Assert
-            response.Message.BodyData.Should().BeNull();
-        }
-
-        [Fact]
-        public async Task Response_ProvideResponse_DotLiquid_UrlPathVerb()
-        {
-            // Assign
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POSt", ClientIp, body);
-
-            var responseBuilder = Response.Create()
-                .WithBody("test {{request.Url}} {{request.Path}} {{request.Method}}")
-                .WithTransformer(TransformerType.Scriban);
-
-            // Act
-            var response = await responseBuilder.ProvideResponseAsync(request, _settings).ConfigureAwait(false);
-
-            // Assert
-            Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
-        }
+        // Assert
+        Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
     }
 }

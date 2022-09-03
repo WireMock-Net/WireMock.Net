@@ -244,7 +244,7 @@ public partial class Response : IResponseBuilder
     }
 
     /// <inheritdoc />
-    public async Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage, WireMockServerSettings settings)
+    public async Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IMapping mapping, IRequestMessage requestMessage, WireMockServerSettings settings)
     {
         Guard.NotNull(requestMessage);
         Guard.NotNull(settings);
@@ -327,7 +327,7 @@ public partial class Response : IResponseBuilder
                     throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
             }
 
-            return (responseMessageTransformer.Transform(requestMessage, responseMessage, UseTransformerForBodyAsFile, TransformerReplaceNodeOptions), null);
+            return (responseMessageTransformer.Transform(mapping, requestMessage, responseMessage, UseTransformerForBodyAsFile, TransformerReplaceNodeOptions), null);
         }
 
         if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)

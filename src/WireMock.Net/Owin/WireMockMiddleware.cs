@@ -26,7 +26,7 @@ namespace WireMock.Owin
 {
     internal class WireMockMiddleware : OwinMiddleware
     {
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
         private static readonly Task CompletedTask = Task.FromResult(false);
         private readonly IWireMockMiddlewareOptions _options;
         private readonly IOwinRequestMapper _requestMapper;
@@ -108,10 +108,10 @@ namespace WireMock.Owin
 
                 logRequest = targetMapping.LogMapping;
 
-                if (targetMapping.IsAdminInterface && _options.AuthenticationMatcher != null)
+                if (targetMapping.IsAdminInterface && _options.AuthenticationMatcher != null && request.Headers != null)
                 {
                     bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string> authorization);
-                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization.ToString()) < MatchScores.Perfect)
+                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization!.ToString()) < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
                         response = ResponseMessageBuilder.Create(null, HttpStatusCode.Unauthorized);
@@ -208,7 +208,7 @@ namespace WireMock.Owin
 
                 try
                 {
-                    await webhookSender.SendAsync(httpClientForWebhook, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
+                    await webhookSender.SendAsync(httpClientForWebhook, mapping, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

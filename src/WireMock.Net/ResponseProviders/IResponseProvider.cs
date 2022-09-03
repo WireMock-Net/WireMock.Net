@@ -13,8 +13,9 @@ public interface IResponseProvider
     /// <summary>
     /// The provide response.
     /// </summary>
+    /// <param name="mapping">The used mapping.</param>
     /// <param name="requestMessage">The request.</param>
     /// <param name="settings">The WireMockServerSettings.</param>
     /// <returns>The <see cref="ResponseMessage"/> including a new (optional) <see cref="IMapping"/>.</returns>
-    Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage, WireMockServerSettings settings);
+    Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IMapping mapping, IRequestMessage requestMessage, WireMockServerSettings settings);
 }
