@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -372,15 +373,24 @@ public class WireMockAssertionsTests : IDisposable
                 "Expected _server to have been called using method \"OPTIONS\", but didn't find it among the methods {\"POST\"}.");
     }
 
+#if !NET452
     [Fact]
     public async Task HaveReceivedACall_UsingConnect_WhenACallWasMadeUsingConnect_Should_BeOK()
     {
+        _server.ResetMappings();
+        _server.Given(Request.Create().UsingAnyMethod())
+            .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Found));
+
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("Host", new Uri(_server.Urls[0]).Authority);
+
         await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("CONNECT"), "anyurl")).ConfigureAwait(false);
 
         _server.Should()
             .HaveReceivedACall()
             .UsingConnect();
     }
+#endif
 
     [Fact]
     public async Task HaveReceivedACall_UsingDelete_WhenACallWasMadeUsingDelete_Should_BeOK()
