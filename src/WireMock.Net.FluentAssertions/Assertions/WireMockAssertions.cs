@@ -29,7 +29,7 @@ public class WireMockAssertions
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but no calls were made.",
                 absoluteUrl)
             .Then
-            .ForCondition(x => _callsCount == null && x.Any(y => y.AbsoluteUrl == absoluteUrl) || _callsCount == x.Count(y => y.AbsoluteUrl == absoluteUrl))
+            .ForCondition(x => (_callsCount == null && x.Any(y => y.AbsoluteUrl == absoluteUrl)) || (_callsCount == x.Count(y => y.AbsoluteUrl == absoluteUrl)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but didn't find it among the calls to {1}.",
                 _ => absoluteUrl, requests => requests.Select(request => request.AbsoluteUrl));
@@ -48,7 +48,7 @@ public class WireMockAssertions
                 "Expected {context:wiremockserver} to have been called at address matching the url {0}{reason}, but no calls were made.",
                 url)
             .Then
-            .ForCondition(x => _callsCount == null && x.Any(y => y.Url == url) || _callsCount == x.Count(y => y.Url == url))
+            .ForCondition(x => (_callsCount == null && x.Any(y => y.Url == url)) || (_callsCount == x.Count(y => y.Url == url)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the url {0}{reason}, but didn't find it among the calls to {1}.",
                 _ => url, requests => requests.Select(request => request.Url));
@@ -67,7 +67,7 @@ public class WireMockAssertions
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but no calls were made.",
                 proxyUrl)
             .Then
-            .ForCondition(x => _callsCount == null && x.Any(y => y.ProxyUrl == proxyUrl) || _callsCount == x.Count(y => y.ProxyUrl == proxyUrl))
+            .ForCondition(x => (_callsCount == null && x.Any(y => y.ProxyUrl == proxyUrl)) || (_callsCount == x.Count(y => y.ProxyUrl == proxyUrl)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but didn't find it among the calls with {1}.",
                 _ => proxyUrl, requests => requests.Select(request => request.ProxyUrl));
@@ -86,7 +86,7 @@ public class WireMockAssertions
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but no calls were made.",
                 clientIP)
             .Then
-            .ForCondition(x => _callsCount == null && x.Any(y => y.ClientIP == clientIP) || _callsCount == x.Count(y => y.ClientIP == clientIP))
+            .ForCondition(x => (_callsCount == null && x.Any(y => y.ClientIP == clientIP)) || (_callsCount == x.Count(y => y.ClientIP == clientIP)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but didn't find it among the calls from IP(s) {1}.",
                 _ => clientIP, requests => requests.Select(request => request.ClientIP));
@@ -126,6 +126,61 @@ public class WireMockAssertions
                 }
             }
         }
+
+        return new AndConstraint<WireMockAssertions>(this);
+    }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingConnect(string because = "", params object[] becauseArgs)
+        => UsingMethod("CONNECT", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingDelete(string because = "", params object[] becauseArgs)
+        => UsingMethod("DELETE", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingGet(string because = "", params object[] becauseArgs)
+        => UsingMethod("GET", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingHead(string because = "", params object[] becauseArgs)
+        => UsingMethod("HEAD", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingOptions(string because = "", params object[] becauseArgs)
+        => UsingMethod("OPTIONS", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPost(string because = "", params object[] becauseArgs)
+        => UsingMethod("POST", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPatch(string because = "", params object[] becauseArgs)
+        => UsingMethod("PATCH", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingPut(string because = "", params object[] becauseArgs)
+        => UsingMethod("PUT", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingTrace(string because = "", params object[] becauseArgs)
+        => UsingMethod("TRACE", because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingMethod(string method, string because = "", params object[] becauseArgs)
+    {
+        Execute.Assertion
+            .BecauseOf(because, becauseArgs)
+            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .ForCondition(requests => requests.Any())
+            .FailWith(
+                "Expected {context:wiremockserver} to have been called using method {0}{reason}, but no calls were made.",
+                method)
+            .Then
+            .ForCondition(x => (_callsCount == null && x.Any(y => y.Method == method)) || (_callsCount == x.Count(y => y.Method == method)))
+            .FailWith(
+                "Expected {context:wiremockserver} to have been called using method {0}{reason}, but didn't find it among the methods {1}.",
+                _ => method, requests => requests.Select(request => request.Method));
 
         return new AndConstraint<WireMockAssertions>(this);
     }
