@@ -1,3 +1,9 @@
+# 1.5.5 (03 September 2022)
+- [#798](https://github.com/WireMock-Net/WireMock.Net/pull/798) - Add support to use 'mapping' object in in reponse templating [feature] contributed by [StefH](https://github.com/StefH)
+- [#800](https://github.com/WireMock-Net/WireMock.Net/pull/800) - Bump Microsoft.Owin from 4.1.1 to 4.2.2 in /src/WireMock.Net (net46) [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#802](https://github.com/WireMock-Net/WireMock.Net/pull/802) - Add assertions for request methods contributed by [rafaelmfonseca](https://github.com/rafaelmfonseca)
+- [#772](https://github.com/WireMock-Net/WireMock.Net/issues/772) - How to get matched mapping by HttpRequest or HttpRequestMessage [feature]
+
 # 1.5.4 (24 August 2022)
 - [#778](https://github.com/WireMock-Net/WireMock.Net/pull/778) - Fix Proxying when StartAdminInterface=true [bug] contributed by [StefH](https://github.com/StefH)
 - [#781](https://github.com/WireMock-Net/WireMock.Net/pull/781) - Update some NuGet packages [feature] contributed by [StefH](https://github.com/StefH)

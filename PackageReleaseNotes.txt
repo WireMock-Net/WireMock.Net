@@ -1,16 +1,7 @@
-# 1.5.4 (24 August 2022)
-- #778 Fix Proxying when StartAdminInterface=true [bug]
-- #781 Update some NuGet packages [feature]
-- #783 Fix WithBody when using Pact and added more nullable annotations [feature]
-- #787 Add support for PEM certificates
-- #789 Add support for Matcher.Pattern in Pact Body mapping [feature]
-- #790 Add Response.WithBody with IJsonConverter [feature]
-- #795 Add check for duplicate Guids when posting multiple mappings in one request
-- #797 Fix WithHeader when using RejectOnMatch [bug]
-- #775 When &quot;StartAdminInterface&quot; is true then each time is generated new mapping from the proxy [bug]
-- #784 Response body is missing in generated pact file when IBodyResponseBuilder.WithBody is used [bug]
-- #785 Support for PEM certificates when using ssl [feature]
-- #788 Request body is missing in generated pact file for requests that include matching on request body [bug]
-- #796 RequestMessageHeaderMatcher with MatchBehaviour.RejectOnMatch reverses match results twice [bug]
+# 1.5.5 (03 September 2022)
+- #798 Add support to use 'mapping' object in in reponse templating [feature]
+- #800 Bump Microsoft.Owin from 4.1.1 to 4.2.2 in /src/WireMock.Net (net46) [dependencies]
+- #802 Add assertions for request methods
+- #772 How to get matched mapping by HttpRequest or HttpRequestMessage [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
