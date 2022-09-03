@@ -22,7 +22,6 @@ public class ResponseWithHandlebarsJsonPathTests
 
     private readonly Mock<IMapping> _mappingMock;
 
-
     public ResponseWithHandlebarsJsonPathTests()
     {
         _mappingMock = new Mock<IMapping>();
