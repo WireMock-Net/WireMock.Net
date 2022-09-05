@@ -11,12 +11,12 @@ public class WebhookRequestModel
     /// <summary>
     /// Gets or sets the Url.
     /// </summary>
-    public string Url { get; set; }
+    public string Url { get; set; } = null!;
 
     /// <summary>
     /// The method
     /// </summary>
-    public string Method { get; set; }
+    public string Method { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the headers.
@@ -47,4 +47,9 @@ public class WebhookRequestModel
     /// The ReplaceNodeOptions to use when transforming a JSON node.
     /// </summary>
     public string? TransformerReplaceNodeOptions { get; set; }
+
+    /// <summary>
+    /// Use Fire and Forget (do not wait on result). Default value is false.
+    /// </summary>
+    public bool? UseFireAndForget { get; set; }
 }

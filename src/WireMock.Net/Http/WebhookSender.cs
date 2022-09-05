@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Stef.Validation;
@@ -17,6 +18,11 @@ namespace WireMock.Http;
 internal class WebhookSender
 {
     private const string ClientIp = "::1";
+    private static readonly HttpResponseMessage HttpResponseMessageOk = new()
+    {
+        StatusCode = HttpStatusCode.OK,
+        Content = new StringContent("WebHook sent as Fire & Forget")
+    };
 
     private readonly WireMockServerSettings _settings;
 
@@ -25,7 +31,13 @@ internal class WebhookSender
         _settings = Guard.NotNull(settings);
     }
 
-    public Task<HttpResponseMessage> SendAsync(HttpClient client, IMapping mapping, IWebhookRequest request, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage)
+    public Task<HttpResponseMessage> SendAsync(
+        HttpClient client,
+        IMapping mapping,
+        IWebhookRequest request,
+        IRequestMessage originalRequestMessage,
+        IResponseMessage originalResponseMessage
+    )
     {
         Guard.NotNull(client);
         Guard.NotNull(mapping);
@@ -79,6 +91,7 @@ internal class WebhookSender
         var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, request.Url);
 
         // Call the URL
-        return client.SendAsync(httpRequestMessage);
+        var sendResult = client.SendAsync(httpRequestMessage);
+        return request.UseFireAndForget == true ? Task.FromResult(HttpResponseMessageOk) : sendResult;
     }
 }

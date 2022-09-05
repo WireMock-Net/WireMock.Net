@@ -82,7 +82,8 @@ internal static class WebhookMapper
                 Headers = webhook.Request.Headers?.ToDictionary(x => x.Key, x => x.Value.ToString()),
                 UseTransformer = webhook.Request.UseTransformer,
                 TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null,
-                TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString()
+                TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString(),
+                UseFireAndForget = webhook.Request.UseFireAndForget
             }
         };
 

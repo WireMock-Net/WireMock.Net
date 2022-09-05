@@ -21,7 +21,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <summary>
     /// The key
     /// </summary>
-    public string? Key { get; }
+    public string Key { get; } = string.Empty;
 
     /// <summary>
     /// Defines if the key should be matched using case-ignore.

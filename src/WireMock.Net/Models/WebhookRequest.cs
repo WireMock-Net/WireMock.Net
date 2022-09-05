@@ -2,32 +2,34 @@ using System.Collections.Generic;
 using WireMock.Types;
 using WireMock.Util;
 
-namespace WireMock.Models
+namespace WireMock.Models;
+
+/// <summary>
+/// WebhookRequest
+/// </summary>
+public class WebhookRequest : IWebhookRequest
 {
-    /// <summary>
-    /// WebhookRequest
-    /// </summary>
-    public class WebhookRequest : IWebhookRequest
-    {
-        /// <inheritdoc cref="IWebhookRequest.Url"/>
-        public string Url { get; set; }
+    /// <inheritdoc />
+    public string Url { get; set; } = null!;
 
-        /// <inheritdoc cref="IWebhookRequest.Method"/>
-        public string Method { get; set; }
+    /// <inheritdoc />
+    public string Method { get; set; } = null!;
 
-        /// <inheritdoc cref="IWebhookRequest.Headers"/>
-        public IDictionary<string, WireMockList<string>>? Headers { get; set; }
+    /// <inheritdoc />
+    public IDictionary<string, WireMockList<string>>? Headers { get; set; }
 
-        /// <inheritdoc cref="IWebhookRequest.BodyData"/>
-        public IBodyData? BodyData { get; set; }
+    /// <inheritdoc />
+    public IBodyData? BodyData { get; set; }
 
-        /// <inheritdoc cref="IWebhookRequest.UseTransformer"/>
-        public bool? UseTransformer { get; set; }
+    /// <inheritdoc />
+    public bool? UseTransformer { get; set; }
 
-        /// <inheritdoc cref="IWebhookRequest.TransformerType"/>
-        public TransformerType TransformerType { get; set; }
+    /// <inheritdoc />
+    public TransformerType TransformerType { get; set; }
 
-        /// <inheritdoc cref="IWebhookRequest.TransformerReplaceNodeOptions"/>
-        public ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
-    }
+    /// <inheritdoc />
+    public ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
+
+    /// <inheritdoc />
+    public bool? UseFireAndForget { get; set; }
 }
