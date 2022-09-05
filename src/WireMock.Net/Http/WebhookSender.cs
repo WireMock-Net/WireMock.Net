@@ -93,15 +93,38 @@ internal class WebhookSender
         var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, webhookRequest.Url);
 
         // Delay (if required)
-        var delay = GetDelay(webhookRequest);
-        if (delay is not null)
-        {
-            await Task.Delay(delay.Value);
-        }
+        var delay = GetDelay(webhookRequest) ?? 0;
+        var delayTask = Task.Delay(delay);
 
         // Call the URL
-        var sendResult = client.SendAsync(httpRequestMessage);
-        return webhookRequest.UseFireAndForget == true ? HttpResponseMessageOk : await sendResult;
+        var sendTask = client.SendAsync(httpRequestMessage);
+
+        if (webhookRequest.UseFireAndForget == true)
+        {
+            FireAndForget(sendTask, delayTask);
+            return HttpResponseMessageOk;
+        }
+
+        return await SendAsync(sendTask, delayTask);
+    }
+
+    private static async void FireAndForget(Task sendTask, Task delayTask)
+    {
+        try
+        {
+            await delayTask;
+            await sendTask;
+        }
+        catch
+        {
+            // Ignore
+        }
+    }
+
+    private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> sendTask, Task delayTask)
+    {
+        await delayTask;
+        return await sendTask;
     }
 
     private static int? GetDelay(IWebhookRequest webhookRequest)
