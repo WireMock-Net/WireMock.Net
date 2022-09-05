@@ -32,4 +32,13 @@ public class WebhookRequest : IWebhookRequest
 
     /// <inheritdoc />
     public bool? UseFireAndForget { get; set; }
+
+    /// <inheritdoc />
+    public int? Delay { get; set; }
+
+    /// <inheritdoc />
+    public int? MinimumRandomDelay { get; set; }
+
+    /// <inheritdoc />
+    public int? MaximumRandomDelay { get; set; }
 }

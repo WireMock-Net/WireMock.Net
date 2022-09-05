@@ -12,7 +12,6 @@ using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 #if !USE_ASPNETCORE
-using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
 using Next = Microsoft.Owin.OwinMiddleware;
@@ -161,6 +160,7 @@ namespace WireMock.Owin
                 _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
                 response = ResponseMessageBuilder.Create(ex.Message, 500);
             }
+
             finally
             {
                 var log = new LogEntry
@@ -205,10 +205,11 @@ namespace WireMock.Owin
             {
                 var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
                 var webhookSender = new WebhookSender(mapping.Settings);
+                var webhookRequest = mapping.Webhooks[index].Request;
 
                 try
                 {
-                    await webhookSender.SendAsync(httpClientForWebhook, mapping, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
+                    await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

@@ -48,4 +48,19 @@ public interface IWebhookRequest
     /// Use Fire and Forget (do not wait on result). Default value is false.
     /// </summary>
     bool? UseFireAndForget { get; set; }
+
+    /// <summary>
+    /// Gets or sets the delay in milliseconds.
+    /// </summary>
+    int? Delay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the minimum random delay in milliseconds.
+    /// </summary>
+    int? MinimumRandomDelay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum random delay in milliseconds.
+    /// </summary>
+    int? MaximumRandomDelay { get; set; }
 }

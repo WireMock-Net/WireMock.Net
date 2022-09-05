@@ -21,6 +21,9 @@ internal static class WebhookMapper
                 Url = model.Request.Url,
                 Method = model.Request.Method,
                 UseFireAndForget = model.Request.UseFireAndForget,
+                Delay = model.Request.Delay,
+                MinimumRandomDelay = model.Request.MinimumRandomDelay,
+                MaximumRandomDelay = model.Request.MaximumRandomDelay,
                 Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) ?? new Dictionary<string, WireMockList<string>>()
             }
         };
@@ -73,7 +76,7 @@ internal static class WebhookMapper
     public static WebhookModel Map(IWebhook webhook)
     {
         Guard.NotNull(webhook);
-        
+
         var model = new WebhookModel
         {
             Request = new WebhookRequestModel
@@ -84,7 +87,10 @@ internal static class WebhookMapper
                 UseTransformer = webhook.Request.UseTransformer,
                 TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null,
                 TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString(),
-                UseFireAndForget = webhook.Request.UseFireAndForget
+                UseFireAndForget = webhook.Request.UseFireAndForget,
+                Delay = webhook.Request.Delay,
+                MinimumRandomDelay = webhook.Request.MinimumRandomDelay,
+                MaximumRandomDelay = webhook.Request.MaximumRandomDelay,
             }
         };
 

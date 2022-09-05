@@ -52,4 +52,19 @@ public class WebhookRequestModel
     /// Use Fire and Forget (do not wait on result). Default value is false.
     /// </summary>
     public bool? UseFireAndForget { get; set; }
+
+    /// <summary>
+    /// Gets or sets the delay in milliseconds.
+    /// </summary>
+    public int? Delay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the minimum random delay in milliseconds.
+    /// </summary>
+    public int? MinimumRandomDelay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum random delay in milliseconds.
+    /// </summary>
+    public int? MaximumRandomDelay { get; set; }
 }
