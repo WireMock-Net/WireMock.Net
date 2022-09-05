@@ -20,6 +20,7 @@ internal static class WebhookMapper
             {
                 Url = model.Request.Url,
                 Method = model.Request.Method,
+                UseFireAndForget = model.Request.UseFireAndForget,
                 Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) ?? new Dictionary<string, WireMockList<string>>()
             }
         };
@@ -27,6 +28,7 @@ internal static class WebhookMapper
         if (model.Request.UseTransformer == true)
         {
             webhook.Request.UseTransformer = true;
+
             if (!Enum.TryParse<TransformerType>(model.Request.TransformerType, out var transformerType))
             {
                 transformerType = TransformerType.Handlebars;
@@ -37,7 +39,6 @@ internal static class WebhookMapper
             {
                 option = ReplaceNodeOptions.None;
             }
-
             webhook.Request.TransformerReplaceNodeOptions = option;
         }
 
