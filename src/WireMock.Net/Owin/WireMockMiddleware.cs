@@ -11,6 +11,7 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using System.Collections.Generic;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -201,21 +202,28 @@ namespace WireMock.Owin
 
         private async Task SendToWebhooksAsync(IMapping mapping, IRequestMessage request, IResponseMessage response)
         {
+            var tasks = new List<Func<Task>>();
             for (int index = 0; index < mapping.Webhooks?.Length; index++)
             {
                 var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
                 var webhookSender = new WebhookSender(mapping.Settings);
                 var webhookRequest = mapping.Webhooks[index].Request;
 
-                try
+                var webHookIndex = index;
+                tasks.Add(async () =>
                 {
-                    await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _options.Logger.Error($"Sending message to Webhook [{index}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
-                }
+                    try
+                    {
+                        await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response);
+                    }
+                    catch (Exception ex)
+                    {
+                        _options.Logger.Error($"Sending message to Webhook [{webHookIndex}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                    }
+                });
             }
+
+            await Task.WhenAll(tasks.Select(async task => await task.Invoke()));
         }
 
         private void UpdateScenarioState(IMapping mapping)

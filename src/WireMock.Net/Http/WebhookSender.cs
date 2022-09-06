@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -93,26 +94,34 @@ internal class WebhookSender
         var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, webhookRequest.Url);
 
         // Delay (if required)
-        var delay = GetDelay(webhookRequest) ?? 0;
-        var delayTask = Task.Delay(delay);
+        if (TryGetDelay(webhookRequest, out var delay))
+        {
+            await Task.Delay(delay.Value).ConfigureAwait(false);
+        }
 
         // Call the URL
         var sendTask = client.SendAsync(httpRequestMessage);
 
         if (webhookRequest.UseFireAndForget == true)
         {
-            FireAndForget(sendTask, delayTask);
+            try
+            {
+                FireAndForget(sendTask);
+            }
+            catch
+            {
+                // Ignore
+            }
             return HttpResponseMessageOk;
         }
 
-        return await SendAsync(sendTask, delayTask);
+        return await SendAsync(sendTask);
     }
 
-    private static async void FireAndForget(Task sendTask, Task delayTask)
+    private static async void FireAndForget(Task sendTask)
     {
         try
         {
-            await delayTask;
             await sendTask;
         }
         catch
@@ -121,23 +130,23 @@ internal class WebhookSender
         }
     }
 
-    private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> sendTask, Task delayTask)
+    private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> sendTask)
     {
-        await delayTask;
         return await sendTask;
     }
 
-    private static int? GetDelay(IWebhookRequest webhookRequest)
+    private static bool TryGetDelay(IWebhookRequest webhookRequest, [NotNullWhen(true)] out int? delay)
     {
-        var delay = webhookRequest.Delay;
+        delay = webhookRequest.Delay;
         var minimumDelay = webhookRequest.MinimumRandomDelay;
         var maximumDelay = webhookRequest.MaximumRandomDelay;
 
         if (minimumDelay is not null && maximumDelay is not null && maximumDelay >= minimumDelay)
         {
-            return Random.Value!.Next(minimumDelay.Value, maximumDelay.Value);
+            delay = Random.Value!.Next(minimumDelay.Value, maximumDelay.Value);
+            return true;
         }
 
-        return delay;
+        return delay is not null;
     }
 }
