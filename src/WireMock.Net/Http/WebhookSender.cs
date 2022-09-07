@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,11 +19,6 @@ namespace WireMock.Http;
 internal class WebhookSender
 {
     private const string ClientIp = "::1";
-    private static readonly HttpResponseMessage HttpResponseMessageOk = new()
-    {
-        StatusCode = HttpStatusCode.OK,
-        Content = new StringContent("WebHook sent as Fire & Forget")
-    };
     private static readonly ThreadLocal<Random> Random = new(() => new Random(DateTime.UtcNow.Millisecond));
 
     private readonly WireMockServerSettings _settings;
@@ -100,14 +94,7 @@ internal class WebhookSender
         }
 
         // Call the URL
-        var sendTask = client.SendAsync(httpRequestMessage);
-
-        return await SendAsync(sendTask);
-    }
-
-    private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> sendTask)
-    {
-        return await sendTask;
+        return await client.SendAsync(httpRequestMessage);
     }
 
     private static bool TryGetDelay(IWebhookRequest webhookRequest, [NotNullWhen(true)] out int? delay)

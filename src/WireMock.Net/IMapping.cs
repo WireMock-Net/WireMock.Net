@@ -113,7 +113,7 @@ public interface IMapping
     IWebhook[]? Webhooks { get; }
 
     /// <summary>
-    /// 
+    /// Use Fire and Forget for the defined webhook(s). [Optional]
     /// </summary>
     public bool? UseWebhooksFireAndForget { get; set; }
 

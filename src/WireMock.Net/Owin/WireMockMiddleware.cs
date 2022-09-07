@@ -12,9 +12,6 @@ using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using System.Collections.Generic;
-using System.Net.Http;
-using WireMock.Models;
-using WireMock.Org.Abstractions;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -211,8 +208,8 @@ namespace WireMock.Owin
                 var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
                 var webhookSender = new WebhookSender(mapping.Settings);
                 var webhookRequest = mapping.Webhooks[index].Request;
-
                 var webHookIndex = index;
+
                 tasks.Add(async () =>
                 {
                     try
@@ -226,17 +223,12 @@ namespace WireMock.Owin
                 });
             }
 
-            await FireWebhooks(tasks, mapping.UseWebhooksFireAndForget ?? false);
-        }
-
-        private async Task FireWebhooks(List<Func<Task>> sendTasks, bool fireAndForget = false)
-        {
-            if (fireAndForget == true)
+            if (mapping.UseWebhooksFireAndForget == true)
             {
                 try
                 {
                     // Do not await
-                    await Task.WhenAll(sendTasks.Select(async task => task.Invoke()));
+                    await Task.WhenAll(tasks.Select(async task => task.Invoke()));
                 }
                 catch
                 {
@@ -245,7 +237,7 @@ namespace WireMock.Owin
             }
             else
             {
-                await Task.WhenAll(sendTasks.Select(async task => await task.Invoke()));
+                await Task.WhenAll(tasks.Select(async task => await task.Invoke()));
             }
         }
 
