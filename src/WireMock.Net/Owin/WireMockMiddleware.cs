@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using WireMock.Models;
 using WireMock.Org.Abstractions;
+using static Humanizer.In;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -235,8 +236,11 @@ namespace WireMock.Owin
             {
                 try
                 {
-                    // Do not await
-                    await Task.WhenAll(sendTasks.Select(async task => task.Invoke()));
+                    // Do not wait
+                    await Task.Run(() =>
+                    {
+                        Task.WhenAll(sendTasks.Select(async task => await task.Invoke()));
+                    });
                 }
                 catch
                 {
