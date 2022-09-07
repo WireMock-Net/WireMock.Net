@@ -113,6 +113,11 @@ public interface IMapping
     IWebhook[]? Webhooks { get; }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public bool? UseWebhooksFireAndForget { get; set; }
+
+    /// <summary>
     /// ProvideResponseAsync
     /// </summary>
     /// <param name="requestMessage">The request message.</param>

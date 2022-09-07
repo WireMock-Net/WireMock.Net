@@ -87,7 +87,6 @@ public class WebhookMapperTests
                     { "x", "y" }
                 },
                 BodyAsJson = new { n = 12345 },
-                UseFireAndForget = true,
                 Delay = 4,
                 MinimumRandomDelay = 5,
                 MaximumRandomDelay = 6
@@ -102,7 +101,6 @@ public class WebhookMapperTests
         result.Request.BodyData!.BodyAsString.Should().BeNull();
         result.Request.BodyData.BodyAsJson.Should().NotBeNull();
         result.Request.BodyData.DetectedBodyType.Should().Be(BodyType.Json);
-        result.Request.UseFireAndForget.Should().BeTrue();
         result.Request.Delay.Should().Be(4);
         result.Request.MinimumRandomDelay.Should().Be(5);
         result.Request.MaximumRandomDelay.Should().Be(6);
@@ -128,7 +126,6 @@ public class WebhookMapperTests
                     DetectedBodyType = BodyType.Json,
                     DetectedBodyTypeFromContentType = BodyType.Json
                 },
-                UseFireAndForget = true,
                 Delay = 4,
                 MinimumRandomDelay = 5,
                 MaximumRandomDelay = 6
@@ -141,7 +138,6 @@ public class WebhookMapperTests
         result.Request.Method.Should().Be("get");
         result.Request.Headers.Should().HaveCount(1);
         result.Request.BodyAsJson.Should().NotBeNull();
-        result.Request.UseFireAndForget.Should().BeTrue();
         result.Request.Delay.Should().Be(4);
         result.Request.MinimumRandomDelay.Should().Be(5);
         result.Request.MaximumRandomDelay.Should().Be(6);

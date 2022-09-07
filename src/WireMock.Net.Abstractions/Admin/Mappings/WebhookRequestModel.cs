@@ -49,11 +49,6 @@ public class WebhookRequestModel
     public string? TransformerReplaceNodeOptions { get; set; }
 
     /// <summary>
-    /// Use Fire and Forget (do not wait on result). Default value is false.
-    /// </summary>
-    public bool? UseFireAndForget { get; set; }
-
-    /// <summary>
     /// Gets or sets the delay in milliseconds.
     /// </summary>
     public int? Delay { get; set; }

@@ -43,6 +43,7 @@ internal class MappingConverter
             TimeSettings = TimeSettingsMapper.Map(mapping.TimeSettings),
             Title = mapping.Title,
             Description = mapping.Description,
+            UseWebhooksFireAndForget = mapping.UseWebhooksFireAndForget,
             Priority = mapping.Priority != 0 ? mapping.Priority : null,
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,

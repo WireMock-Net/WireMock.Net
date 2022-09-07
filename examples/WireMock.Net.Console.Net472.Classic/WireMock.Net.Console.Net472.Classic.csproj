@@ -342,15 +342,6 @@
     <Reference Include="TinyMapper, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\TinyMapper.3.0.3\lib\net40\TinyMapper.dll</HintPath>
     </Reference>
-    <Reference Include="WireMock.Net, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.1.5.3\lib\net461\WireMock.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="WireMock.Net.Abstractions, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Net.Abstractions.1.5.3\lib\net451\WireMock.Net.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="WireMock.Org.Abstractions, Version=1.5.3.0, Culture=neutral, PublicKeyToken=c8d65537854e1f03, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WireMock.Org.Abstractions.1.5.3\lib\net45\WireMock.Org.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="XPath2, Version=1.1.3.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\XPath2.1.1.3\lib\net452\XPath2.dll</HintPath>
     </Reference>
@@ -387,6 +378,16 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj">
+      <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
+      <Name>WireMock.Net.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
+      <Project>{d3804228-91f4-4502-9595-39584e5a01ad}</Project>
+      <Name>WireMock.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

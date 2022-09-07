@@ -31,9 +31,6 @@ public class WebhookRequest : IWebhookRequest
     public ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
 
     /// <inheritdoc />
-    public bool? UseFireAndForget { get; set; }
-
-    /// <inheritdoc />
     public int? Delay { get; set; }
 
     /// <inheritdoc />

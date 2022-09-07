@@ -45,11 +45,6 @@ public interface IWebhookRequest
     ReplaceNodeOptions TransformerReplaceNodeOptions { get; set; }
 
     /// <summary>
-    /// Use Fire and Forget (do not wait on result). Default value is false.
-    /// </summary>
-    bool? UseFireAndForget { get; set; }
-
-    /// <summary>
     /// Gets or sets the delay in milliseconds.
     /// </summary>
     int? Delay { get; set; }

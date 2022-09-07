@@ -12,6 +12,9 @@ using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using System.Collections.Generic;
+using System.Net.Http;
+using WireMock.Models;
+using WireMock.Org.Abstractions;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -223,7 +226,27 @@ namespace WireMock.Owin
                 });
             }
 
-            await Task.WhenAll(tasks.Select(async task => await task.Invoke()));
+            await FireWebhooks(tasks, mapping.UseWebhooksFireAndForget ?? false);
+        }
+
+        private async Task FireWebhooks(List<Func<Task>> sendTasks, bool fireAndForget = false)
+        {
+            if (fireAndForget == true)
+            {
+                try
+                {
+                    // Do not await
+                    await Task.WhenAll(sendTasks.Select(async task => task.Invoke()));
+                }
+                catch
+                {
+                    // Ignore
+                }
+            }
+            else
+            {
+                await Task.WhenAll(sendTasks.Select(async task => await task.Invoke()));
+            }
         }
 
         private void UpdateScenarioState(IMapping mapping)
