@@ -102,32 +102,7 @@ internal class WebhookSender
         // Call the URL
         var sendTask = client.SendAsync(httpRequestMessage);
 
-        if (webhookRequest.UseFireAndForget == true)
-        {
-            try
-            {
-                FireAndForget(sendTask);
-            }
-            catch
-            {
-                // Ignore
-            }
-            return HttpResponseMessageOk;
-        }
-
         return await SendAsync(sendTask);
-    }
-
-    private static async void FireAndForget(Task sendTask)
-    {
-        try
-        {
-            await sendTask;
-        }
-        catch
-        {
-            // Ignore
-        }
     }
 
     private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> sendTask)

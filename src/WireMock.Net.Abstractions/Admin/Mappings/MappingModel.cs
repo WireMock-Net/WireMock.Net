@@ -74,4 +74,9 @@ public class MappingModel
     /// The Webhooks.
     /// </summary>
     public WebhookModel[]? Webhooks { get; set; }
+
+    /// <summary>
+    /// Fire and forget for webhooks.
+    /// </summary>
+    public bool? UseWebhooksFireAndForget { get; set; }
 }

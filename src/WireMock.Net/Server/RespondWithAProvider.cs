@@ -30,6 +30,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private readonly WireMockServerSettings _settings;
     private readonly bool _saveToFile;
 
+    private bool _useWebhookFireAndForget = false;
+
     public Guid Guid { get; private set; } = Guid.NewGuid();
 
     public IWebhook[]? Webhooks { get; private set; }
@@ -57,7 +59,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <param name="provider">The provider.</param>
     public void RespondWith(IResponseProvider provider)
     {
-        _registrationCallback(new Mapping(Guid, _title, _description, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, TimeSettings), _saveToFile);
+        _registrationCallback(new Mapping(Guid, _title, _description, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, _useWebhookFireAndForget, TimeSettings), _saveToFile);
     }
 
     /// <inheritdoc />
@@ -229,6 +231,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
                 DetectedBodyTypeFromContentType = BodyType.Json
             };
         }
+
+        return this;
+    }
+
+    public IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget)
+    {
+        _useWebhookFireAndForget = useWebhooksFireAndForget;
 
         return this;
     }

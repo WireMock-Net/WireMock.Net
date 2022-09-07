@@ -119,6 +119,7 @@ internal class ProxyHelper
             nextState: null,
             stateTimes: null,
             webhooks: null,
+            useWebhooksFireAndForget: null,
             timeSettings: null
         );
     }
