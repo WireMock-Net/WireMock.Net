@@ -227,8 +227,11 @@ namespace WireMock.Owin
             {
                 try
                 {
-                    // Do not await
-                    await Task.WhenAll(tasks.Select(async task => task.Invoke()));
+                    // Do not wait
+                    await Task.Run(() =>
+                    {
+                        Task.WhenAll(tasks.Select(async task => await task.Invoke()));
+                    });
                 }
                 catch
                 {
