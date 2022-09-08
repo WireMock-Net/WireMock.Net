@@ -214,7 +214,7 @@ namespace WireMock.Owin
                 {
                     try
                     {
-                        await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response);
+                        await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -230,7 +230,7 @@ namespace WireMock.Owin
                     // Do not wait
                     await Task.Run(() =>
                     {
-                        Task.WhenAll(tasks.Select(async task => await task.Invoke()));
+                        Task.WhenAll(tasks.Select(async task => await task.Invoke())).ConfigureAwait(false);
                     });
                 }
                 catch
@@ -240,7 +240,7 @@ namespace WireMock.Owin
             }
             else
             {
-                await Task.WhenAll(tasks.Select(async task => await task.Invoke()));
+                await Task.WhenAll(tasks.Select(async task => await task.Invoke())).ConfigureAwait(false);
             }
         }
 

@@ -94,7 +94,7 @@ internal class WebhookSender
         }
 
         // Call the URL
-        return await client.SendAsync(httpRequestMessage);
+        return await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
     }
 
     private static bool TryGetDelay(IWebhookRequest webhookRequest, [NotNullWhen(true)] out int? delay)
