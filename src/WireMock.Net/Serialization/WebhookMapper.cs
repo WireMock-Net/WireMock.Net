@@ -20,6 +20,9 @@ internal static class WebhookMapper
             {
                 Url = model.Request.Url,
                 Method = model.Request.Method,
+                Delay = model.Request.Delay,
+                MinimumRandomDelay = model.Request.MinimumRandomDelay,
+                MaximumRandomDelay = model.Request.MaximumRandomDelay,
                 Headers = model.Request.Headers?.ToDictionary(x => x.Key, x => new WireMockList<string>(x.Value)) ?? new Dictionary<string, WireMockList<string>>()
             }
         };
@@ -27,6 +30,7 @@ internal static class WebhookMapper
         if (model.Request.UseTransformer == true)
         {
             webhook.Request.UseTransformer = true;
+
             if (!Enum.TryParse<TransformerType>(model.Request.TransformerType, out var transformerType))
             {
                 transformerType = TransformerType.Handlebars;
@@ -37,7 +41,6 @@ internal static class WebhookMapper
             {
                 option = ReplaceNodeOptions.None;
             }
-
             webhook.Request.TransformerReplaceNodeOptions = option;
         }
 
@@ -72,7 +75,7 @@ internal static class WebhookMapper
     public static WebhookModel Map(IWebhook webhook)
     {
         Guard.NotNull(webhook);
-        
+
         var model = new WebhookModel
         {
             Request = new WebhookRequestModel
@@ -82,7 +85,10 @@ internal static class WebhookMapper
                 Headers = webhook.Request.Headers?.ToDictionary(x => x.Key, x => x.Value.ToString()),
                 UseTransformer = webhook.Request.UseTransformer,
                 TransformerType = webhook.Request.UseTransformer == true ? webhook.Request.TransformerType.ToString() : null,
-                TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString()
+                TransformerReplaceNodeOptions = webhook.Request.TransformerReplaceNodeOptions.ToString(),
+                Delay = webhook.Request.Delay,
+                MinimumRandomDelay = webhook.Request.MinimumRandomDelay,
+                MaximumRandomDelay = webhook.Request.MaximumRandomDelay,
             }
         };
 

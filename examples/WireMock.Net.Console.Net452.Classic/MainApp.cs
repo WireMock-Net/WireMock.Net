@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -575,6 +576,40 @@ namespace WireMock.Net.ConsoleApplication
                         StatusCode = code
                     };
                 }));
+
+            server.Given(Request.Create().WithPath(new WildcardMatcher("/multi-webhook", true)).UsingPost())
+                .WithWebhook(new[] {
+                    new Webhook()
+                    {
+                        Request = new WebhookRequest
+                        {
+                            Url = "http://localhost:12345/foo1",
+                            Method = "post",
+                            BodyData = new BodyData
+                            {
+                                BodyAsString = "OK 1!", DetectedBodyType = BodyType.String
+                            },
+                            Delay = 1000
+                        }
+                    },
+                    new Webhook()
+                    {
+                        Request = new WebhookRequest
+                        {
+                            Url = "http://localhost:12345/foo2",
+                            Method = "post",
+                            BodyData = new BodyData
+                            {
+                                BodyAsString = "OK 2!",
+                                DetectedBodyType = BodyType.String
+                            },
+                            MinimumRandomDelay = 3000,
+                            MaximumRandomDelay = 7000
+                        }
+                    }
+                })
+                .WithWebhookFireAndForget(true)
+                .RespondWith(Response.Create().WithBody("a-response"));
 
             System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));
 

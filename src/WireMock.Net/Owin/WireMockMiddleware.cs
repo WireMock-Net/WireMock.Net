@@ -11,8 +11,8 @@ using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using System.Collections.Generic;
 #if !USE_ASPNETCORE
-using Microsoft.Owin;
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
 using Next = Microsoft.Owin.OwinMiddleware;
@@ -161,6 +161,7 @@ namespace WireMock.Owin
                 _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
                 response = ResponseMessageBuilder.Create(ex.Message, 500);
             }
+
             finally
             {
                 var log = new LogEntry
@@ -201,19 +202,45 @@ namespace WireMock.Owin
 
         private async Task SendToWebhooksAsync(IMapping mapping, IRequestMessage request, IResponseMessage response)
         {
+            var tasks = new List<Func<Task>>();
             for (int index = 0; index < mapping.Webhooks?.Length; index++)
             {
                 var httpClientForWebhook = HttpClientBuilder.Build(mapping.Settings.WebhookSettings ?? new WebhookSettings());
                 var webhookSender = new WebhookSender(mapping.Settings);
+                var webhookRequest = mapping.Webhooks[index].Request;
+                var webHookIndex = index;
 
+                tasks.Add(async () =>
+                {
+                    try
+                    {
+                        await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _options.Logger.Error($"Sending message to Webhook [{webHookIndex}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                    }
+                });
+            }
+
+            if (mapping.UseWebhooksFireAndForget == true)
+            {
                 try
                 {
-                    await webhookSender.SendAsync(httpClientForWebhook, mapping, mapping.Webhooks[index].Request, request, response).ConfigureAwait(false);
+                    // Do not wait
+                    await Task.Run(() =>
+                    {
+                        Task.WhenAll(tasks.Select(async task => await task.Invoke())).ConfigureAwait(false);
+                    });
                 }
-                catch (Exception ex)
+                catch
                 {
-                    _options.Logger.Error($"Sending message to Webhook [{index}] from Mapping '{mapping.Guid}' failed. Exception: {ex}");
+                    // Ignore
                 }
+            }
+            else
+            {
+                await Task.WhenAll(tasks.Select(async task => await task.Invoke())).ConfigureAwait(false);
             }
         }
 

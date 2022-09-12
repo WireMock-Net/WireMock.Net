@@ -43,6 +43,7 @@ internal class MappingConverter
             TimeSettings = TimeSettingsMapper.Map(mapping.TimeSettings),
             Title = mapping.Title,
             Description = mapping.Description,
+            UseWebhooksFireAndForget = mapping.UseWebhooksFireAndForget,
             Priority = mapping.Priority != 0 ? mapping.Priority : null,
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,
@@ -168,7 +169,7 @@ internal class MappingConverter
             mappingModel.Response.BodyDestination = response.ResponseMessage.BodyDestination;
             mappingModel.Response.StatusCode = response.ResponseMessage.StatusCode;
 
-            if (response.ResponseMessage.Headers != null && response.ResponseMessage.Headers.Count > 0)
+            if (response.ResponseMessage.Headers is { Count: > 0 })
             {
                 mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
             }

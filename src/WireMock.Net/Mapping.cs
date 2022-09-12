@@ -64,6 +64,9 @@ public class Mapping : IMapping
     public IWebhook[]? Webhooks { get; }
 
     /// <inheritdoc />
+    public bool? UseWebhooksFireAndForget { get; set; }
+
+    /// <inheritdoc />
     public ITimeSettings? TimeSettings { get; }
 
     /// <summary>
@@ -82,6 +85,7 @@ public class Mapping : IMapping
     /// <param name="nextState">The next state which will occur after the current mapping execution. [Optional]</param>
     /// <param name="stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]</param>
     /// <param name="webhooks">The Webhooks. [Optional]</param>
+    /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
     public Mapping(
         Guid guid,
@@ -97,6 +101,7 @@ public class Mapping : IMapping
         string? nextState,
         int? stateTimes,
         IWebhook[]? webhooks,
+        bool? useWebhooksFireAndForget,
         ITimeSettings? timeSettings)
     {
         Guid = guid;
@@ -112,6 +117,7 @@ public class Mapping : IMapping
         NextState = nextState;
         StateTimes = stateTimes;
         Webhooks = webhooks;
+        UseWebhooksFireAndForget = useWebhooksFireAndForget;
         TimeSettings = timeSettings;
     }
 

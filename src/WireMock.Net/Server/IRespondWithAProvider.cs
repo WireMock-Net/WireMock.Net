@@ -124,6 +124,13 @@ namespace WireMock.Server
         IRespondWithAProvider WithWebhook(params IWebhook[] webhooks);
 
         /// <summary>
+        /// Support FireAndForget for any configured Webhooks
+        /// </summary>
+        /// <param name="UseWebhooksFireAndForget"></param>
+        /// <returns></returns>
+        IRespondWithAProvider WithWebhookFireAndForget(bool UseWebhooksFireAndForget);
+
+        /// <summary>
         /// Add a Webhook to call after the response has been generated.
         /// </summary>
         /// <param name="url">The Webhook Url</param>

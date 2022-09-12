@@ -1,11 +1,10 @@
-﻿namespace WireMock.Models
+namespace WireMock.Models;
+
+/// <summary>
+/// Webhook
+/// </summary>
+public class Webhook : IWebhook
 {
-    /// <summary>
-    /// Webhook
-    /// </summary>
-    public class Webhook : IWebhook
-    {
-        /// <inheritdoc cref="IWebhook.Request"/>
-        public IWebhookRequest Request { get; set; }
-    }
+    /// <inheritdoc />
+    public IWebhookRequest Request { get; set; } = null!;
 }
