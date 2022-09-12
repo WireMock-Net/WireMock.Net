@@ -1,6 +1,7 @@
 # 1.5.6 (12 September 2022)
 - #803 WebHook : UseFireAndForget + Delay [feature]
-- #804 Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230;
-- #806 Tweak middleware and fix bug in example
+- #804 Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230; [feature]
+- #806 Tweak middleware and fix bug in example [feature]
+- #801 Webhook Delays [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

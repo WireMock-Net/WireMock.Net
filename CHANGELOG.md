@@ -2,6 +2,7 @@
 - [#803](https://github.com/WireMock-Net/WireMock.Net/pull/803) - WebHook : UseFireAndForget + Delay [feature] contributed by [StefH](https://github.com/StefH)
 - [#804](https://github.com/WireMock-Net/WireMock.Net/pull/804) - Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230; [feature] contributed by [mattisking](https://github.com/mattisking)
 - [#806](https://github.com/WireMock-Net/WireMock.Net/pull/806) - Tweak middleware and fix bug in example [feature] contributed by [mattisking](https://github.com/mattisking)
+- [#801](https://github.com/WireMock-Net/WireMock.Net/issues/801) - Webhook Delays [feature]
 
 # 1.5.5 (03 September 2022)
 - [#798](https://github.com/WireMock-Net/WireMock.Net/pull/798) - Add support to use 'mapping' object in in reponse templating [feature] contributed by [StefH](https://github.com/StefH)
