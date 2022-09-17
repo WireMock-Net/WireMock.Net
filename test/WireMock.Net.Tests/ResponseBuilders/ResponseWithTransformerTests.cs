@@ -80,7 +80,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost/foo /foo POSt");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test http://localhost/foo /foo POSt");
     }
 
     [Theory]
@@ -104,7 +104,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("url=http://localhost/a/b absoluteurl=http://localhost/wiremock/a/b path=/a/b absolutepath=/wiremock/a/b");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("url=http://localhost/a/b absoluteurl=http://localhost/wiremock/a/b path=/a/b absolutepath=/wiremock/a/b");
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("a wiremock");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("a wiremock");
     }
 
     [Theory(Skip = "Invalid token `OpenBracket`")]
@@ -142,7 +142,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("a wiremock");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("a wiremock");
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test keya=1,2 idx=1 idx=2 keyb=5");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test keya=1,2 idx=1 idx=2 keyb=5");
     }
 
     [Theory(Skip = "Invalid token `OpenBracket`")]
@@ -188,7 +188,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test keya=1 idx=1 idx=2 keyb=5");
     }
 
     [Fact]
@@ -211,7 +211,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.StatusCode).Equals("400");
     }
 
@@ -237,7 +237,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.StatusCode).Equals("400");
     }
 
@@ -263,7 +263,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.StatusCode).Equals(null);
     }
 
@@ -331,7 +331,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
         Check.That(response.Message.Headers["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
@@ -356,7 +356,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
         Check.That(response.Message.Headers["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
@@ -384,7 +384,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("test http://localhost:1234 1234 http localhost");
     }
 
     [Theory]
@@ -644,7 +644,7 @@ public class ResponseWithTransformerTests
         // Assert
         Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
         Check.That(response.Message.BodyData.DetectedBodyType).Equals(BodyType.String);
-        Check.That(response.Message.BodyData.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
+        Check.That(response.Message.BodyData!.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
     }
 
     [Theory]

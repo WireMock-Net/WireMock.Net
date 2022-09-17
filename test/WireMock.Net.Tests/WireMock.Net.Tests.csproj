@@ -10,9 +10,6 @@
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <ProjectGuid>{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}</ProjectGuid>
 
-        <!--<SonarQubeTestProject>True</SonarQubeTestProject>
-		<SonarQubeExclude>True</SonarQubeExclude>-->
-
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <!--<DelaySign>true</DelaySign>-->
@@ -38,7 +35,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <!--<PackageReference Include="Mapster" Version="7.2.0" />-->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -53,17 +49,11 @@
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
-        <!--<PackageReference Include="RandomDataGenerator.Net" Version="1.0.14" />-->
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="NFluent" Version="2.8.0" />
-        <!--<PackageReference Include="OpenCover" Version="4.7.922" />-->
-        <!--<PackageReference Include="ReportGenerator" Version="4.8.1" />-->
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
-        <!--<PackageReference Include="StrongNamer" Version="0.2.5" />-->
         <PackageReference Include="AnyOf" Version="0.3.0" />
-        <!--<PackageReference Include="TinyMapper" Version="3.0.3" />-->
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">
@@ -104,7 +94,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pact\files\" />
+        <Folder Include="Pact\files\" />
     </ItemGroup>
 
 </Project>
