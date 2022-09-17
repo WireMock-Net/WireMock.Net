@@ -107,7 +107,7 @@ namespace WireMock.Owin
         {
             try
             {
-                var appLifetime = (IApplicationLifetime)_host.Services.GetService(typeof(IApplicationLifetime));
+                var appLifetime = _host.Services.GetRequiredService<IApplicationLifetime>();
                 appLifetime.ApplicationStarted.Register(() =>
                 {
                     var addresses = _host.ServerFeatures

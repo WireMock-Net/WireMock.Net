@@ -31,6 +31,15 @@ public class ExactMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
     /// </summary>
+    /// <param name="ignoreCase">Ignore the case from the pattern(s).</param>
+    /// <param name="values">The values.</param>
+    public ExactMatcher(bool ignoreCase, params AnyOf<string, StringPattern>[] values) : this(MatchBehaviour.AcceptOnMatch, ignoreCase, false, MatchOperator.Or, values)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+    /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="ignoreCase">Ignore the case from the pattern(s).</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>

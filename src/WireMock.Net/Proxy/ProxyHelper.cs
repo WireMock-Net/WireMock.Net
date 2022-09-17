@@ -94,7 +94,7 @@ internal class ProxyHelper
                 break;
 
             case BodyType.String:
-                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
+                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
                 break;
 
             case BodyType.Bytes:
