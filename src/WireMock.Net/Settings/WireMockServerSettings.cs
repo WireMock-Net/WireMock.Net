@@ -9,6 +9,7 @@ using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.RegularExpressions;
+using WireMock.Types;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.Types;
@@ -22,7 +23,7 @@ namespace WireMock.Settings
     public class WireMockServerSettings
     {
         /// <summary>
-        /// Gets or sets the port.
+        /// Gets or sets the http port.
         /// </summary>
         [PublicAPI]
         public int? Port { get; set; }
@@ -33,6 +34,12 @@ namespace WireMock.Settings
         // ReSharper disable once InconsistentNaming
         [PublicAPI]
         public bool? UseSSL { get; set; }
+
+        /// <summary>
+        /// Defines on which type (http/https) to host. (This overrides the <c>UseSSL</c> value).
+        /// </summary>
+        [PublicAPI]
+        public HostingProtocol? HostingProtocol { get; set; }
 
         /// <summary>
         /// Gets or sets whether to start admin interface.

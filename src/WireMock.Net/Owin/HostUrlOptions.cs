@@ -1,32 +1,47 @@
 using System.Collections.Generic;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Owin;
 
 internal class HostUrlOptions
 {
-    private const string LOCALHOST = "localhost";
+    private const string Localhost = "localhost";
 
     public ICollection<string>? Urls { get; set; }
 
     public int? Port { get; set; }
 
-    public bool UseSSL { get; set; }
+    public int? HttpsPort { get; set; }
 
-    public ICollection<HostUrlDetails> GetDetails()
+    public HostingProtocol HostingProtocol { get; set; }
+
+    public IReadOnlyList<HostUrlDetails> GetDetails()
     {
         var list = new List<HostUrlDetails>();
         if (Urls == null)
         {
-            int port = Port > 0 ? Port.Value : FindFreeTcpPort();
-            string protocol = UseSSL ? "https" : "http";
-            list.Add(new HostUrlDetails { IsHttps = UseSSL, Url = $"{protocol}://{LOCALHOST}:{port}", Protocol = protocol, Host = LOCALHOST, Port = port });
+            if (HostingProtocol is HostingProtocol.Http or HostingProtocol.Https)
+            {
+                var port = Port > 0 ? Port.Value : FindFreeTcpPort();
+                var protocol = HostingProtocol == HostingProtocol.Https ? "https" : "http";
+                list.Add(new HostUrlDetails { IsHttps = HostingProtocol == HostingProtocol.Https, Url = $"{protocol}://{Localhost}:{port}", Protocol = protocol, Host = Localhost, Port = port });
+            }
+
+            if (HostingProtocol == HostingProtocol.HttpAndHttps)
+            {
+                var httpPort = Port > 0 ? Port.Value : FindFreeTcpPort();
+                list.Add(new HostUrlDetails { IsHttps = false, Url = $"http://{Localhost}:{httpPort}", Protocol = "http", Host = Localhost, Port = httpPort });
+
+                var httpsPort = FindFreeTcpPort(); // In this scenario, always get a free port for https.
+                list.Add(new HostUrlDetails { IsHttps = true, Url = $"https://{Localhost}:{httpsPort}", Protocol = "https", Host = Localhost, Port = httpsPort });
+            }
         }
         else
         {
             foreach (string url in Urls)
             {
-                if (PortUtils.TryExtract(url, out bool isHttps, out var protocol, out var host, out int port))
+                if (PortUtils.TryExtract(url, out var isHttps, out var protocol, out var host, out var port))
                 {
                     list.Add(new HostUrlDetails { IsHttps = isHttps, Url = url, Protocol = protocol, Host = host, Port = port });
                 }
