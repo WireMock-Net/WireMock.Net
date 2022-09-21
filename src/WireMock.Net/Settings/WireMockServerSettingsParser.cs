@@ -54,14 +54,11 @@ public static class WireMockServerSettingsParser
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
             WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
+            HostingProtocol = parser.GetEnumValue<HostingProtocol>(nameof(WireMockServerSettings.HostingProtocol))
         };
 
 #if USE_ASPNETCORE
-        settings.CorsPolicyOptions = parser.GetValue(nameof(WireMockServerSettings.CorsPolicyOptions), values =>
-        {
-            var value = string.Join(string.Empty, values);
-            return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
-        });
+        settings.CorsPolicyOptions = parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
 #endif
 
         if (logger != null)
@@ -77,7 +74,7 @@ public static class WireMockServerSettingsParser
         {
             settings.Port = parser.GetIntValue(nameof(WireMockServerSettings.Port));
         }
-        else
+        else if (settings.HostingProtocol is null)
         {
             settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
         }

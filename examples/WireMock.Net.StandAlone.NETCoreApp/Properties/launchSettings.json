@@ -1,8 +1,16 @@
 {
-  "profiles": {
-    "WireMock.Net.StandAlone.NETCoreApp": {
-        "commandName": "Project",
-        "commandLineArgs": "--Urls http://localhost:9091 --CorsPolicyOptions AllowAll --WireMockLogger WireMockConsoleLogger"
+    "profiles": {
+        "WireMock.Net.StandAlone.NETCoreApp": {
+            "commandName": "Project",
+            "commandLineArgs": "--Urls http://localhost:9091 --CorsPolicyOptions AllowAll --WireMockLogger WireMockConsoleLogger"
+        },
+        "WireMock.Net.StandAlone.NETCoreAppNoPort": {
+            "commandName": "Project",
+            "commandLineArgs": "--CorsPolicyOptions AllowAll --WireMockLogger WireMockConsoleLogger"
+        },
+        "WireMock.Net.StandAlone.NETCoreAppWithHostingProtocol": {
+            "commandName": "Project",
+            "commandLineArgs": "--HostingProtocol HttpAndHttps --CorsPolicyOptions AllowAll --WireMockLogger WireMockConsoleLogger"
+        }
     }
-  }
 }
