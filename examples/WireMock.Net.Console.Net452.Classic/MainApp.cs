@@ -49,7 +49,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var httpAndHttpsFree = WireMockServer.Start(new WireMockServerSettings
             {
-                HostingProtocol = HostingProtocol.HttpAndHttps,
+                HostingProtocol = HostingProtocol.HttpAndHttps
             });
             httpAndHttpsFree.Stop();
 
