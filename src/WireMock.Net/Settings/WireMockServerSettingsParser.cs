@@ -95,7 +95,7 @@ public static class WireMockServerSettingsParser
                 SaveMapping = parser.GetBoolValue("SaveMapping"),
                 SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
-                Url = proxyUrl
+                Url = proxyUrl!
             };
 
             string? proxyAddress = parser.GetStringValue("WebProxyAddress");
@@ -103,7 +103,7 @@ public static class WireMockServerSettingsParser
             {
                 settings.ProxyAndRecordSettings.WebProxySettings = new WebProxySettings
                 {
-                    Address = proxyAddress,
+                    Address = proxyAddress!,
                     UserName = parser.GetStringValue("WebProxyUserName"),
                     Password = parser.GetStringValue("WebProxyPassword")
                 };
