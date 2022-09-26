@@ -5,26 +5,28 @@ using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Server;
+using WireMock.Types;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions;
 
 public class WireMockAssertions
 {
-    private readonly IWireMockServer _subject;
     private readonly int? _callsCount;
     private IReadOnlyList<IRequestMessage> _requestMessages;
 
     public WireMockAssertions(IWireMockServer subject, int? callsCount)
     {
-        _subject = subject;
         _callsCount = callsCount;
-        _requestMessages = _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList();
+        _requestMessages = subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList();
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> AtAbsoluteUrl(string absoluteUrl, string because = "", params object[] becauseArgs)
+    public AndWhichConstraint<WireMockAssertions, string> AtAbsoluteUrl(string absoluteUrl, string because = "", params object[] becauseArgs)
     {
+        Func<IRequestMessage, bool> predicate = request => string.Equals(request.AbsoluteUrl, absoluteUrl, StringComparison.OrdinalIgnoreCase);
+        var (filter, condition) = BuildFilterAndCondition(predicate);
+
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
             .Given(() => _requestMessages)
@@ -34,22 +36,21 @@ public class WireMockAssertions
                 absoluteUrl
             )
             .Then
-            .ForCondition(requests =>
-                (_callsCount == null && requests.Any(req => req.AbsoluteUrl == absoluteUrl)) ||
-                (_callsCount == requests.Count(req => req.AbsoluteUrl == absoluteUrl))
-            )
+            .ForCondition(condition)
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but didn't find it among the calls to {1}.",
                 _ => absoluteUrl, requests => requests.Select(request => request.AbsoluteUrl)
             );
 
-        return new AndConstraint<WireMockAssertions>(this);
+        _requestMessages = filter(_requestMessages).ToList();
+
+        return new AndWhichConstraint<WireMockAssertions, string>(this, absoluteUrl);
     }
 
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> AtUrl(string url, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => request.Url == url;
+        Func<IRequestMessage, bool> predicate = request => string.Equals(request.Url, url, StringComparison.OrdinalIgnoreCase);
         var (filter, condition) = BuildFilterAndCondition(predicate);
 
         Execute.Assertion
@@ -73,21 +74,21 @@ public class WireMockAssertions
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithProxyUrl(string proxyUrl, string because = "", params object[] becauseArgs)
+    public AndWhichConstraint<WireMockAssertions, string> WithProxyUrl(string proxyUrl, string because = "", params object[] becauseArgs)
     {
+        Func<IRequestMessage, bool> predicate = request => string.Equals(request.ProxyUrl, proxyUrl, StringComparison.OrdinalIgnoreCase);
+        var (filter, condition) = BuildFilterAndCondition(predicate);
+
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
+            .Given(() => _requestMessages)
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but no calls were made.",
                 proxyUrl
             )
             .Then
-            .ForCondition(requests =>
-                (_callsCount == null && requests.Any(req => req.ProxyUrl == proxyUrl)) ||
-                (_callsCount == requests.Count(req => req.ProxyUrl == proxyUrl))
-            )
+            .ForCondition(condition)
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but didn't find it among the calls with {1}.",
                 _ => proxyUrl,
@@ -95,15 +96,20 @@ public class WireMockAssertions
                 .Select(request => request.ProxyUrl)
             );
 
-        return new AndConstraint<WireMockAssertions>(this);
+        _requestMessages = filter(_requestMessages).ToList();
+
+        return new AndWhichConstraint<WireMockAssertions, string>(this, proxyUrl);
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> FromClientIP(string clientIP, string because = "", params object[] becauseArgs)
+    public AndWhichConstraint<WireMockAssertions, string> FromClientIP(string clientIP, string because = "", params object[] becauseArgs)
     {
+        Func<IRequestMessage, bool> predicate = request => string.Equals(request.ClientIP, clientIP, StringComparison.OrdinalIgnoreCase);
+        var (filter, condition) = BuildFilterAndCondition(predicate);
+
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
+            .Given(() => _requestMessages)
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but no calls were made.",
@@ -117,7 +123,9 @@ public class WireMockAssertions
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but didn't find it among the calls from IP(s) {1}.",
                 _ => clientIP, requests => requests.Select(request => request.ClientIP));
 
-        return new AndConstraint<WireMockAssertions>(this);
+        _requestMessages = filter(_requestMessages).ToList();
+
+        return new AndWhichConstraint<WireMockAssertions, string>(this, clientIP);
     }
 
     [CustomAssertion]
@@ -127,8 +135,7 @@ public class WireMockAssertions
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
     {
-        var headersDictionary = _subject.LogEntries.SelectMany(logEntry => logEntry.RequestMessage.Headers)
-            .ToDictionary(x => x.Key, x => x.Value);
+        var headersDictionary = _requestMessages.SelectMany(req => req.Headers).ToDictionary(x => x.Key, x => x.Value);
 
         using (new AssertionScope("headers from requests sent"))
         {
@@ -195,6 +202,9 @@ public class WireMockAssertions
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingMethod(string method, string because = "", params object[] becauseArgs)
     {
+        Func<IRequestMessage, bool> predicate = request => string.Equals(request.Method, method, StringComparison.OrdinalIgnoreCase);
+        var (filter, condition) = BuildFilterAndCondition(predicate);
+
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
             .Given(() => _requestMessages)
@@ -204,15 +214,14 @@ public class WireMockAssertions
                 method
             )
             .Then
-            .ForCondition(request =>
-                (_callsCount == null && request.Any(req => string.Equals(req.Method, method, StringComparison.OrdinalIgnoreCase))) ||
-                (_callsCount == request.Count(req => string.Equals(req.Method, method, StringComparison.OrdinalIgnoreCase)))
-            )
+            .ForCondition(condition)
             .FailWith(
                 "Expected {context:wiremockserver} to have been called using method {0}{reason}, but didn't find it among the methods {1}.",
                 _ => method,
                 requests => requests.Select(request => request.Method)
             );
+
+        _requestMessages = filter(_requestMessages).ToList();
 
         return new AndConstraint<WireMockAssertions>(this);
     }
