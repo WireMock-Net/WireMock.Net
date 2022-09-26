@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+using System;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -27,12 +28,14 @@ public class WireMockAssertions
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but no calls were made.",
-                absoluteUrl)
+                absoluteUrl
+            )
             .Then
             .ForCondition(x => (_callsCount == null && x.Any(y => y.AbsoluteUrl == absoluteUrl)) || (_callsCount == x.Count(y => y.AbsoluteUrl == absoluteUrl)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but didn't find it among the calls to {1}.",
-                _ => absoluteUrl, requests => requests.Select(request => request.AbsoluteUrl));
+                _ => absoluteUrl, requests => requests.Select(request => request.AbsoluteUrl)
+            );
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -51,7 +54,9 @@ public class WireMockAssertions
             .ForCondition(x => (_callsCount == null && x.Any(y => y.Url == url)) || (_callsCount == x.Count(y => y.Url == url)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the url {0}{reason}, but didn't find it among the calls to {1}.",
-                _ => url, requests => requests.Select(request => request.Url));
+                _ => url,
+                requests => requests.Select(request => request.Url)
+            );
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -65,12 +70,15 @@ public class WireMockAssertions
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but no calls were made.",
-                proxyUrl)
+                proxyUrl
+            )
             .Then
             .ForCondition(x => (_callsCount == null && x.Any(y => y.ProxyUrl == proxyUrl)) || (_callsCount == x.Count(y => y.ProxyUrl == proxyUrl)))
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but didn't find it among the calls with {1}.",
-                _ => proxyUrl, requests => requests.Select(request => request.ProxyUrl));
+                _ => proxyUrl,
+                requests => requests.Select(request => request.ProxyUrl)
+            );
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -171,16 +179,22 @@ public class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called using method {0}{reason}, but no calls were made.",
-                method)
+                method
+            )
             .Then
-            .ForCondition(x => (_callsCount == null && x.Any(y => y.Method == method)) || (_callsCount == x.Count(y => y.Method == method)))
+            .ForCondition(request =>
+                (_callsCount == null && request.Any(req => string.Equals(req.Method, method, StringComparison.OrdinalIgnoreCase))) ||
+                (_callsCount == request.Count(req => string.Equals(req.Method, method, StringComparison.OrdinalIgnoreCase)))
+            )
             .FailWith(
                 "Expected {context:wiremockserver} to have been called using method {0}{reason}, but didn't find it among the methods {1}.",
-                _ => method, requests => requests.Select(request => request.Method));
+                _ => method,
+                requests => requests.Select(request => request.Method)
+            );
 
         return new AndConstraint<WireMockAssertions>(this);
     }

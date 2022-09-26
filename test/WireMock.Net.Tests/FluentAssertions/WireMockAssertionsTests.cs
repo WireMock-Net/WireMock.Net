@@ -28,7 +28,7 @@ public class WireMockAssertionsTests : IDisposable
             .RespondWith(Response.Create().WithSuccess());
         _portUsed = _server.Ports.First();
 
-        _httpClient = new HttpClient { BaseAddress = new Uri(_server.Urls[0]) };
+        _httpClient = new HttpClient { BaseAddress = new Uri(_server.Url!) };
     }
 
     [Fact]
@@ -59,6 +59,18 @@ public class WireMockAssertionsTests : IDisposable
         _server.Should()
             .HaveReceived(1).Calls()
             .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
+
+    [Fact]
+    public async Task HaveReceived1Calls_AtAbsoluteUrlUsingPost_WhenAPostCallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.PostAsync("anyurl", new StringContent("")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceived(1).Calls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl")
+            .And
+            .UsingPost();
     }
 
     [Fact]
@@ -431,10 +443,12 @@ public class WireMockAssertionsTests : IDisposable
             .UsingOptions();
     }
 
-    [Fact]
-    public async Task HaveReceivedACall_UsingPost_WhenACallWasMadeUsingPost_Should_BeOK()
+    [Theory]
+    [InlineData("POST")]
+    [InlineData("Post")]
+    public async Task HaveReceivedACall_UsingPost_WhenACallWasMadeUsingPost_Should_BeOK(string method)
     {
-        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("POST"), "anyurl")).ConfigureAwait(false);
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), "anyurl")).ConfigureAwait(false);
 
         _server.Should()
             .HaveReceivedACall()
