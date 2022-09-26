@@ -24,8 +24,8 @@ public class WireMockAssertionsTests : IDisposable
     public WireMockAssertionsTests()
     {
         _server = WireMockServer.Start();
-        _server.Given(Request.Create().UsingAnyMethod())
-            .RespondWith(Response.Create().WithSuccess());
+        _server.Given(Request.Create().UsingAnyMethod()).RespondWith(Response.Create().WithSuccess());
+
         _portUsed = _server.Ports.First();
 
         _httpClient = new HttpClient { BaseAddress = new Uri(_server.Url!) };
@@ -453,6 +453,46 @@ public class WireMockAssertionsTests : IDisposable
         _server.Should()
             .HaveReceivedACall()
             .UsingPost();
+    }
+
+    [Fact]
+    public async Task X()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingGet())
+            .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
+
+        server
+            .Given(Request.Create().WithPath("/b").UsingPost())
+            .RespondWith(Response.Create().WithBody("B response").WithStatusCode(HttpStatusCode.OK));
+
+        server
+            .Given(Request.Create().WithPath("/c").UsingPost())
+            .RespondWith(Response.Create().WithBody("C response").WithStatusCode(HttpStatusCode.OK));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.GetAsync($"{server.Url}/a");
+
+        await httpClient.PostAsync($"{server.Url}/b", new StringContent("B"));
+
+        await httpClient.PostAsync($"{server.Url}/c", new StringContent("C"));
+
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .AtUrl($"{server.Url}/c")
+            .And
+            
+            .UsingPost();
+
+        server.Stop();
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 #pragma warning disable CS1591
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -12,11 +13,13 @@ public class WireMockAssertions
 {
     private readonly IWireMockServer _subject;
     private readonly int? _callsCount;
+    private readonly IReadOnlyList<Func<List<IRequestMessage>, bool>> _andConditions;
 
     public WireMockAssertions(IWireMockServer subject, int? callsCount)
     {
         _subject = subject;
         _callsCount = callsCount;
+        _andConditions = new List<Func<List<IRequestMessage>, bool>>();
     }
 
     [CustomAssertion]
@@ -24,14 +27,17 @@ public class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but no calls were made.",
                 absoluteUrl
             )
             .Then
-            .ForCondition(x => (_callsCount == null && x.Any(y => y.AbsoluteUrl == absoluteUrl)) || (_callsCount == x.Count(y => y.AbsoluteUrl == absoluteUrl)))
+            .ForCondition(requests =>
+                (_callsCount == null && requests.Any(req => req.AbsoluteUrl == absoluteUrl)) ||
+                (_callsCount == requests.Count(req => req.AbsoluteUrl == absoluteUrl))
+            )
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the absolute url {0}{reason}, but didn't find it among the calls to {1}.",
                 _ => absoluteUrl, requests => requests.Select(request => request.AbsoluteUrl)
@@ -45,13 +51,16 @@ public class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the url {0}{reason}, but no calls were made.",
                 url)
             .Then
-            .ForCondition(x => (_callsCount == null && x.Any(y => y.Url == url)) || (_callsCount == x.Count(y => y.Url == url)))
+            .ForCondition(request =>
+                (_callsCount == null && request.Any(req => req.Url == url)) ||
+                (_callsCount == request.Count(req => req.Url == url))
+            )
             .FailWith(
                 "Expected {context:wiremockserver} to have been called at address matching the url {0}{reason}, but didn't find it among the calls to {1}.",
                 _ => url,
@@ -66,18 +75,22 @@ public class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but no calls were made.",
                 proxyUrl
             )
             .Then
-            .ForCondition(x => (_callsCount == null && x.Any(y => y.ProxyUrl == proxyUrl)) || (_callsCount == x.Count(y => y.ProxyUrl == proxyUrl)))
+            .ForCondition(requests =>
+                (_callsCount == null && requests.Any(req => req.ProxyUrl == proxyUrl)) ||
+                (_callsCount == requests.Count(req => req.ProxyUrl == proxyUrl))
+            )
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with proxy url {0}{reason}, but didn't find it among the calls with {1}.",
                 _ => proxyUrl,
-                requests => requests.Select(request => request.ProxyUrl)
+                requests => requests
+                .Select(request => request.ProxyUrl)
             );
 
         return new AndConstraint<WireMockAssertions>(this);
@@ -88,13 +101,16 @@ public class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _subject.LogEntries.Select(x => x.RequestMessage).ToList())
+            .Given(() => _subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList())
             .ForCondition(requests => requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but no calls were made.",
                 clientIP)
             .Then
-            .ForCondition(x => (_callsCount == null && x.Any(y => y.ClientIP == clientIP)) || (_callsCount == x.Count(y => y.ClientIP == clientIP)))
+            .ForCondition(requests =>
+                (_callsCount == null && requests.Any(req => req.ClientIP == clientIP)) ||
+                (_callsCount == requests.Count(req => req.ClientIP == clientIP))
+            )
             .FailWith(
                 "Expected {context:wiremockserver} to have been called from client IP {0}{reason}, but didn't find it among the calls from IP(s) {1}.",
                 _ => clientIP, requests => requests.Select(request => request.ClientIP));
@@ -109,7 +125,7 @@ public class WireMockAssertions
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
     {
-        var headersDictionary = _subject.LogEntries.SelectMany(x => x.RequestMessage.Headers)
+        var headersDictionary = _subject.LogEntries.SelectMany(logEntry => logEntry.RequestMessage.Headers)
             .ToDictionary(x => x.Key, x => x.Value);
 
         using (new AssertionScope("headers from requests sent"))
