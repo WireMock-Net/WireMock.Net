@@ -456,7 +456,7 @@ public class WireMockAssertionsTests : IDisposable
     }
 
     [Fact]
-    public async Task X()
+    public async Task HaveReceived1Calls_AtAbsoluteUrlUsingPost_ShouldChain()
     {
         // Arrange
         var server = WireMockServer.Start();
@@ -487,9 +487,41 @@ public class WireMockAssertionsTests : IDisposable
             .Should()
             .HaveReceived(1)
             .Calls()
+            .AtUrl($"{server.Url}/a")
+            .And
+            .UsingGet();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .AtUrl($"{server.Url}/b")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
             .AtUrl($"{server.Url}/c")
             .And
-            
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(3)
+            .Calls();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .UsingGet();
+
+        server
+            .Should()
+            .HaveReceived(2)
+            .Calls()
             .UsingPost();
 
         server.Stop();
