@@ -21,6 +21,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 
 namespace WireMock.Server;
 
@@ -48,7 +49,7 @@ public partial class WireMockServer : IWireMockServer
 
     /// <inheritdoc />
     [PublicAPI]
-    public int Port => Ports?.FirstOrDefault() ?? default(int);
+    public int Port => Ports?.FirstOrDefault() ?? default;
 
     /// <inheritdoc />
     [PublicAPI]
@@ -269,11 +270,22 @@ public partial class WireMockServer : IWireMockServer
         }
         else
         {
-            urlOptions = new HostUrlOptions
+            if (settings.HostingScheme is not null)
             {
-                UseSSL = settings.UseSSL == true,
-                Port = settings.Port
-            };
+                urlOptions = new HostUrlOptions
+                {
+                    HostingScheme = settings.HostingScheme.Value,
+                    Port = settings.Port
+                };
+            }
+            else
+            {
+                urlOptions = new HostUrlOptions
+                {
+                    HostingScheme = settings.UseSSL == true ? HostingScheme.Https : HostingScheme.Http,
+                    Port = settings.Port
+                };
+            }
         }
 
         _options.FileSystemHandler = _settings.FileSystemHandler;
