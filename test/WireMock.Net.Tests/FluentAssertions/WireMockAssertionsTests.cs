@@ -135,15 +135,20 @@ public class WireMockAssertionsTests : IDisposable
     }
 
     [Fact]
-    public async Task HaveReceivedACall_WithHeader_WhenACallWasMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
+    public async Task HaveReceivedACall_WithHeader_WhenMultipleCallsWereMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        await _httpClient.GetAsync("").ConfigureAwait(false);
+        await _httpClient.GetAsync("1").ConfigureAwait(false);
+
+        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("EN"));
+        await _httpClient.GetAsync("2").ConfigureAwait(false);
 
         _server.Should()
             .HaveReceivedACall()
-            .WithHeader("Accept", new[] { "application/xml", "application/json" });
+            .WithHeader("Accept", new[] { "application/xml", "application/json" })
+            .And
+            .WithHeader("Accept-Language", new[] { "EN" });
     }
 
     [Fact]
@@ -157,7 +162,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should().Throw<Exception>()
             .And.Message.Should()
-            .Contain("to contain key \"Authorization\".");
+            .Contain("to contain \"Authorization\".");
     }
 
     [Fact]

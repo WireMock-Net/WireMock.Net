@@ -14,11 +14,13 @@ public class WireMockAssertions
 {
     private readonly int? _callsCount;
     private IReadOnlyList<IRequestMessage> _requestMessages;
+    private IReadOnlyList<KeyValuePair<string, WireMockList<string>>> _headers;
 
     public WireMockAssertions(IWireMockServer subject, int? callsCount)
     {
         _callsCount = callsCount;
         _requestMessages = subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList();
+        _headers = _requestMessages.SelectMany(req => req.Headers).ToList();
     }
 
     [CustomAssertion]
@@ -135,27 +137,25 @@ public class WireMockAssertions
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
     {
-        var headersDictionary = _requestMessages.SelectMany(req => req.Headers).ToDictionary(x => x.Key, x => x.Value);
-
         using (new AssertionScope("headers from requests sent"))
         {
-            headersDictionary.Should().ContainKey(expectedKey, because, becauseArgs);
+            _headers.Select(h => h.Key).Should().Contain(expectedKey, because, becauseArgs);
         }
 
         using (new AssertionScope($"header \"{expectedKey}\" from requests sent with value(s)"))
         {
+            var headerValues = _headers.First(h => h.Key == expectedKey).Value;
+
             if (expectedValues.Length == 1)
             {
-                headersDictionary[expectedKey].Should().Contain(expectedValues.First());
+                headerValues.Should().Contain(expectedValues.First(), because, becauseArgs);
             }
             else
             {
-                var trimmedHeaderValues = string.Join(",", headersDictionary[expectedKey].Select(x => x)).Split(',')
-                    .Select(x => x.Trim())
-                    .ToList();
+                var trimmedHeaderValues = string.Join(",", headerValues.Select(x => x)).Split(',').Select(x => x.Trim()).ToList();
                 foreach (var expectedValue in expectedValues)
                 {
-                    trimmedHeaderValues.Should().Contain(expectedValue);
+                    trimmedHeaderValues.Should().Contain(expectedValue, because, becauseArgs);
                 }
             }
         }
