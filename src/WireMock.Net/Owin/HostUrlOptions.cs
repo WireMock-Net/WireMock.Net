@@ -14,27 +14,27 @@ internal class HostUrlOptions
 
     public int? HttpsPort { get; set; }
 
-    public HostingProtocol HostingProtocol { get; set; }
+    public HostingScheme HostingScheme { get; set; }
 
     public IReadOnlyList<HostUrlDetails> GetDetails()
     {
         var list = new List<HostUrlDetails>();
         if (Urls == null)
         {
-            if (HostingProtocol is HostingProtocol.Http or HostingProtocol.Https)
+            if (HostingScheme is HostingScheme.Http or HostingScheme.Https)
             {
                 var port = Port > 0 ? Port.Value : FindFreeTcpPort();
-                var protocol = HostingProtocol == HostingProtocol.Https ? "https" : "http";
-                list.Add(new HostUrlDetails { IsHttps = HostingProtocol == HostingProtocol.Https, Url = $"{protocol}://{Localhost}:{port}", Protocol = protocol, Host = Localhost, Port = port });
+                var scheme = HostingScheme == HostingScheme.Https ? "https" : "http";
+                list.Add(new HostUrlDetails { IsHttps = HostingScheme == HostingScheme.Https, Url = $"{scheme}://{Localhost}:{port}", Scheme = scheme, Host = Localhost, Port = port });
             }
 
-            if (HostingProtocol == HostingProtocol.HttpAndHttps)
+            if (HostingScheme == HostingScheme.HttpAndHttps)
             {
                 var httpPort = Port > 0 ? Port.Value : FindFreeTcpPort();
-                list.Add(new HostUrlDetails { IsHttps = false, Url = $"http://{Localhost}:{httpPort}", Protocol = "http", Host = Localhost, Port = httpPort });
+                list.Add(new HostUrlDetails { IsHttps = false, Url = $"http://{Localhost}:{httpPort}", Scheme = "http", Host = Localhost, Port = httpPort });
 
                 var httpsPort = FindFreeTcpPort(); // In this scenario, always get a free port for https.
-                list.Add(new HostUrlDetails { IsHttps = true, Url = $"https://{Localhost}:{httpsPort}", Protocol = "https", Host = Localhost, Port = httpsPort });
+                list.Add(new HostUrlDetails { IsHttps = true, Url = $"https://{Localhost}:{httpsPort}", Scheme = "https", Host = Localhost, Port = httpsPort });
             }
         }
         else
@@ -43,7 +43,7 @@ internal class HostUrlOptions
             {
                 if (PortUtils.TryExtract(url, out var isHttps, out var protocol, out var host, out var port))
                 {
-                    list.Add(new HostUrlDetails { IsHttps = isHttps, Url = url, Protocol = protocol, Host = host, Port = port });
+                    list.Add(new HostUrlDetails { IsHttps = isHttps, Url = url, Scheme = protocol, Host = host, Port = port });
                 }
             }
         }

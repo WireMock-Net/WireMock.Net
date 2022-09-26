@@ -42,14 +42,14 @@ namespace WireMock.Net.ConsoleApplication
 
             var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
-                HostingProtocol = HostingProtocol.HttpAndHttps,
+                HostingScheme = HostingScheme.HttpAndHttps,
                 Port = 12399
             });
             httpAndHttpsWithPort.Stop();
 
             var httpAndHttpsFree = WireMockServer.Start(new WireMockServerSettings
             {
-                HostingProtocol = HostingProtocol.HttpAndHttps
+                HostingScheme = HostingScheme.HttpAndHttps
             });
             httpAndHttpsFree.Stop();
 

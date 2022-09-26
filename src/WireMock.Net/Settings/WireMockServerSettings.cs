@@ -36,10 +36,10 @@ namespace WireMock.Settings
         public bool? UseSSL { get; set; }
 
         /// <summary>
-        /// Defines on which type (http/https) to host. (This overrides the <c>UseSSL</c> value).
+        /// Defines on which scheme (http/https) to host. (This overrides the <c>UseSSL</c> value).
         /// </summary>
         [PublicAPI]
-        public HostingProtocol? HostingProtocol { get; set; }
+        public HostingScheme? HostingScheme { get; set; }
 
         /// <summary>
         /// Gets or sets whether to start admin interface.

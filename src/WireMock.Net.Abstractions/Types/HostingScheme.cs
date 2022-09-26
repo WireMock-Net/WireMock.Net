@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace WireMock.Types;
 
 [Flags]
-public enum HostingProtocol
+public enum HostingScheme
 {
     None = 0x0,
 

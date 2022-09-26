@@ -270,11 +270,11 @@ public partial class WireMockServer : IWireMockServer
         }
         else
         {
-            if (settings.HostingProtocol is not null)
+            if (settings.HostingScheme is not null)
             {
                 urlOptions = new HostUrlOptions
                 {
-                    HostingProtocol = settings.HostingProtocol.Value,
+                    HostingScheme = settings.HostingScheme.Value,
                     Port = settings.Port
                 };
             }
@@ -282,7 +282,7 @@ public partial class WireMockServer : IWireMockServer
             {
                 urlOptions = new HostUrlOptions
                 {
-                    HostingProtocol = settings.UseSSL == true ? HostingProtocol.Https : HostingProtocol.Http,
+                    HostingScheme = settings.UseSSL == true ? HostingScheme.Https : HostingScheme.Http,
                     Port = settings.Port
                 };
             }
