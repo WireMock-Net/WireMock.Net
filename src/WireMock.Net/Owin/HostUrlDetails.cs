@@ -1,12 +1,15 @@
 namespace WireMock.Owin;
 
+/// <summary>
+/// https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
+/// </summary>
 internal struct HostUrlDetails
 {
     public bool IsHttps { get; set; }
 
     public string Url { get; set; }
         
-    public string Protocol { get; set; }
+    public string Scheme { get; set; }
 
     public string Host { get; set; }
 

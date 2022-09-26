@@ -40,6 +40,19 @@ namespace WireMock.Net.ConsoleApplication
             var s = WireMockServer.Start();
             s.Stop();
 
+            var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
+            {
+                HostingScheme = HostingScheme.HttpAndHttps,
+                Port = 12399
+            });
+            httpAndHttpsWithPort.Stop();
+
+            var httpAndHttpsFree = WireMockServer.Start(new WireMockServerSettings
+            {
+                HostingScheme = HostingScheme.HttpAndHttps
+            });
+            httpAndHttpsFree.Stop();
+
             string url1 = "http://localhost:9091/";
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
