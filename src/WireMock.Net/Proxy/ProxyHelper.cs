@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using System;
 using System.Collections.Generic;
@@ -80,6 +79,16 @@ internal class ProxyHelper
 
         var newRequest = Request.Create();
 
+        // ClientIP
+        if (useDefinedRequestMatchers && clientIPMatcher?.Matchers is not null)
+        {
+            newRequest.WithClientIP(clientIPMatcher.MatchOperator, clientIPMatcher.Matchers.ToArray());
+        }
+        else
+        {
+            // newRequest.WithClientIP(requestMessage.ClientIP);
+        }
+
         // Path
         if (useDefinedRequestMatchers && pathMatcher?.Matchers is not null)
         {
@@ -105,7 +114,7 @@ internal class ProxyHelper
         {
             foreach (var paramMatcher in paramMatchers)
             {
-                newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers.ToArray());
+                newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers!.ToArray());
             }
         }
         else
