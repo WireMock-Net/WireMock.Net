@@ -49,4 +49,13 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// </summary>
     //[PublicAPI]
     //public bool PreferProxyMapping { get; set; }
+
+    /// <summary>
+    /// When SaveMapping is set to <c>true</c>, this setting can be used to control the behavior of the generated request matchers for the new mapping.
+    /// - <c>false</c>, the default matchers will be used.
+    /// - <c>true</c>, the defined mappings in the request wil be used for the new mapping.
+    ///
+    /// Default value is false.
+    /// </summary>
+    public bool UseDefinedRequestMatchers { get; set; }
 }

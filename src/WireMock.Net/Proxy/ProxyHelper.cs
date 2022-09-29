@@ -1,12 +1,13 @@
+using Stef.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Stef.Validation;
 using WireMock.Constants;
 using WireMock.Http;
 using WireMock.Matchers;
+using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
@@ -25,6 +26,7 @@ internal class ProxyHelper
     }
 
     public async Task<(IResponseMessage Message, IMapping? Mapping)> SendAsync(
+        IMapping? mapping,
         ProxyAndRecordSettings proxyAndRecordSettings,
         HttpClient client,
         IRequestMessage requestMessage,
@@ -49,31 +51,61 @@ internal class ProxyHelper
 
         var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
 
-        IMapping? mapping = null;
+        IMapping? newMapping = null;
         if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
             (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
         {
-            mapping = ToMapping(proxyAndRecordSettings, requestMessage, responseMessage);
+            newMapping = ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
         }
 
-        return (responseMessage, mapping);
+        return (responseMessage, newMapping);
     }
 
-    private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
+    private IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
+        var request = (Request?)mapping?.RequestMatcher;
+        var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
+        var pathMatcher = request?.GetRequestMessageMatcher<RequestMessagePathMatcher>();
+        var urlMatcher = request?.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
+        var headerMatchers = request?.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
+        var cookieMatchers = request?.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
+        var paramsMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
+        var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+        var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+
+        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
+
         var excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
         var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
-        var request = Request.Create();
-        request.WithPath(requestMessage.Path);
-        request.UsingMethod(requestMessage.Method);
+        var newRequest = Request.Create();
 
-        requestMessage.Query?.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
+        // Path
+        if (useDefinedRequestMatchers && pathMatcher?.Matchers is not null)
+        {
+            newRequest.WithPath(pathMatcher.Matchers.ToArray());
+        }
+        else
+        {
+            newRequest.WithPath(requestMessage.Path);
+        }
+
+        // Method
+        if (useDefinedRequestMatchers && methodMatcher is not null)
+        {
+            newRequest.UsingMethod(methodMatcher.Methods);
+        }
+        else
+        {
+            newRequest.UsingMethod(requestMessage.Method);
+        }
+
+        requestMessage.Query?.Loop((key, value) => newRequest.WithParam(key, false, value.ToArray()));
         requestMessage.Cookies?.Loop((key, value) =>
         {
             if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
-                request.WithCookie(key, value);
+                newRequest.WithCookie(key, value);
             }
         });
 
@@ -82,7 +114,7 @@ internal class ProxyHelper
         {
             if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
-                request.WithHeader(key, value.ToArray());
+                newRequest.WithHeader(key, value.ToArray());
             }
         });
 
@@ -90,15 +122,15 @@ internal class ProxyHelper
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Json:
-                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
+                newRequest.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
                 break;
 
             case BodyType.String:
-                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
+                newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
                 break;
 
             case BodyType.Bytes:
-                request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
+                newRequest.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
                 break;
         }
 
@@ -111,7 +143,7 @@ internal class ProxyHelper
             description: string.Empty,
             path: null,
             settings: _settings,
-            request,
+            newRequest,
             response,
             priority: WireMockConstants.ProxyPriority, // This was 0
             scenario: null,
