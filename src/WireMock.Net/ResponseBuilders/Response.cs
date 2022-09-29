@@ -274,7 +274,8 @@ public partial class Response : IResponseBuilder
                 ProxyAndRecordSettings,
                 _httpClientForProxy,
                 requestMessage,
-                requestMessage.ProxyUrl
+                requestMessage.ProxyUrl,
+                mapping
             ).ConfigureAwait(false);
         }
 

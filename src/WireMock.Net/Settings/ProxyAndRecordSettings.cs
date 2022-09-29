@@ -49,4 +49,10 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// </summary>
     //[PublicAPI]
     //public bool PreferProxyMapping { get; set; }
+
+    /// <summary>
+    /// Use the Mapping from the request over the proxy generated Mapping (in case SaveMapping is set to <c>true</c>).
+    /// </summary>
+    [PublicAPI]
+    public bool UseDefinedRequestMatchers { get; set; }
 }

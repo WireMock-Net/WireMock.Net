@@ -54,5 +54,10 @@ namespace WireMock.Admin.Settings
         /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
         /// </summary>
         // public bool PreferProxyMapping { get; set; }
+
+        /// <summary>
+        /// Use the Mapping from the request over the proxy generated Mapping (in case SaveMapping is set to <c>true</c>).
+        /// </summary>
+        public bool UseDefinedRequestMatchers { get; set; }
     }
 }

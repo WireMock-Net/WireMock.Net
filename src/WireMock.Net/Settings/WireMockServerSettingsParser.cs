@@ -89,6 +89,7 @@ public static class WireMockServerSettingsParser
                 ExcludedCookies = parser.GetValues("ExcludedCookies"),
                 ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
                 // PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
+                UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 SaveMapping = parser.GetBoolValue("SaveMapping"),
                 SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),

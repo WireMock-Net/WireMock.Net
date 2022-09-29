@@ -28,7 +28,8 @@ internal class ProxyHelper
         ProxyAndRecordSettings proxyAndRecordSettings,
         HttpClient client,
         IRequestMessage requestMessage,
-        string url)
+        string url,
+        IMapping? mapping = null)
     {
         Guard.NotNull(client);
         Guard.NotNull(requestMessage);
@@ -49,14 +50,43 @@ internal class ProxyHelper
 
         var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
 
-        IMapping? mapping = null;
         if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
             (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
         {
-            mapping = ToMapping(proxyAndRecordSettings, requestMessage, responseMessage);
+            if (proxyAndRecordSettings.UseDefinedRequestMatchers && mapping != null)
+            {
+                mapping = UpdateMappingWithResponse(proxyAndRecordSettings, mapping, responseMessage);
+            }
+            else
+            {
+                mapping = ToMapping(proxyAndRecordSettings, requestMessage, responseMessage);
+            }
         }
 
         return (responseMessage, mapping);
+    }
+
+    private IMapping UpdateMappingWithResponse(ProxyAndRecordSettings proxyAndRecordSettings, IMapping sourceMapping, ResponseMessage responseMessage)
+    {
+        var response = Response.Create(responseMessage);
+        return new Mapping
+        (
+            guid: sourceMapping.Guid,
+            title: sourceMapping.Title,
+            description: sourceMapping.Description,
+            path: sourceMapping.Path,
+            settings: _settings,
+            sourceMapping.RequestMatcher,
+            response,
+            priority: sourceMapping.Priority,
+            scenario: sourceMapping.Scenario,
+            executionConditionState: sourceMapping.ExecutionConditionState,
+            nextState: sourceMapping.NextState,
+            stateTimes: sourceMapping.StateTimes,
+            webhooks: sourceMapping.Webhooks,
+            useWebhooksFireAndForget: sourceMapping.UseWebhooksFireAndForget,
+            timeSettings: sourceMapping.TimeSettings
+        );
     }
 
     private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
