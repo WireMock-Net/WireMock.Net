@@ -1,3 +1,4 @@
+using System;
 using Moq;
 using Newtonsoft.Json;
 using System.IO;
@@ -5,6 +6,7 @@ using FluentAssertions;
 using WireMock.RequestBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests.Serialization;
@@ -19,8 +21,12 @@ public class ProxyMappingConverterTests
 
     public ProxyMappingConverterTests()
     {
-        _sut = new ProxyMappingConverter(_settings);
+        var guidUtilsMock = new Mock<IGuidUtils>();
+        guidUtilsMock.Setup(g => g.NewGuid()).Returns(Guid.Parse("ff55ac0a-fea9-4d7b-be74-5e483a2c1305"));
+
         _mappingConverter = new MappingConverter(new MatcherMapper(_settings));
+
+        _sut = new ProxyMappingConverter(_settings, guidUtilsMock.Object);
     }
 
     [Fact]

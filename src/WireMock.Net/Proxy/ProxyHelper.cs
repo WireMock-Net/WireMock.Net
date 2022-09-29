@@ -17,7 +17,7 @@ internal class ProxyHelper
     public ProxyHelper(WireMockServerSettings settings)
     {
         _settings = Guard.NotNull(settings);
-        _proxyMappingConverter = new ProxyMappingConverter(settings);
+        _proxyMappingConverter = new ProxyMappingConverter(settings, new GuidUtils());
     }
 
     public async Task<(IResponseMessage Message, IMapping? Mapping)> SendAsync(

@@ -16,10 +16,12 @@ namespace WireMock.Serialization;
 internal class ProxyMappingConverter
 {
     private readonly WireMockServerSettings _settings;
+    private readonly IGuidUtils _guidUtils;
 
-    public ProxyMappingConverter(WireMockServerSettings settings)
+    public ProxyMappingConverter(WireMockServerSettings settings, IGuidUtils guidUtils)
     {
         _settings = Guard.NotNull(settings);
+        _guidUtils = Guard.NotNull(guidUtils);
     }
 
     public IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
@@ -159,7 +161,7 @@ internal class ProxyMappingConverter
 
         return new Mapping
         (
-            guid: Guid.NewGuid(),
+            guid: _guidUtils.NewGuid(),
             title: title,
             description: description,
             path: null,
