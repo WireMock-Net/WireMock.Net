@@ -9,7 +9,9 @@ using FluentAssertions;
 using Moq;
 using NFluent;
 using WireMock.Admin.Mappings;
+using WireMock.Constants;
 using WireMock.Handlers;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -117,6 +119,61 @@ public class WireMockServerProxyTests
 
         // Assert
         server.Mappings.Should().HaveCount(28);
+    }
+
+    [Fact]
+    public async Task WireMockServer_Proxy_With_SaveMappingToFile_Is_True_ShouldSaveMappingToFile()
+    {
+        // Assign
+        string path = $"/prx_{Guid.NewGuid()}";
+        var title = "IndexFile";
+        var description = "IndexFile_Test";
+        var stringBody = "<pretendXml>value</pretendXml>";
+        var serverForProxyForwarding = WireMockServer.Start();
+        var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+        fileSystemHandlerMock.Setup(f => f.GetMappingFolder()).Returns("m");
+
+        var settings = new WireMockServerSettings
+        {
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
+            {
+                Url = serverForProxyForwarding.Urls[0],
+                SaveMapping = false,
+                SaveMappingToFile = true
+            },
+            FileSystemHandler = fileSystemHandlerMock.Object
+        };
+
+        var server = WireMockServer.Start(settings);
+        server.Given(Request.Create()
+                .WithPath("/*")
+                .WithBody(new RegexMatcher(stringBody)))
+            .WithTitle(title)
+            .WithDescription(description)
+            .AtPriority(WireMockConstants.ProxyPriority)
+            .RespondWith(Response.Create().WithProxy(new ProxyAndRecordSettings
+            {
+                Url = serverForProxyForwarding.Urls[0],
+                SaveMapping = false,
+                SaveMappingToFile = true,
+                UseDefinedRequestMatchers = true,
+            }));
+
+        // Act
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri($"{server.Urls[0]}{path}"),
+            Content = new StringContent(stringBody)
+        };
+        var httpClientHandler = new HttpClientHandler { AllowAutoRedirect = false };
+        await new HttpClient(httpClientHandler).SendAsync(requestMessage).ConfigureAwait(false);
+
+        // Assert
+        server.Mappings.Should().HaveCount(2);
+
+        // Verify
+        fileSystemHandlerMock.Verify(f => f.WriteMappingFile($"m{System.IO.Path.DirectorySeparatorChar}{title}.json", It.IsRegex(stringBody)), Times.Once);
     }
 
     [Fact]
@@ -739,4 +796,6 @@ public class WireMockServerProxyTests
 
         server.Stop();
     }
+
+
 }

@@ -104,6 +104,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Proxy\" />
       <Folder Include="Pact\files\" />
     </ItemGroup>
 

@@ -11,7 +11,10 @@ namespace WireMock.Matchers.Request;
 /// </summary>
 public class RequestMessageParamMatcher : IRequestMatcher
 {
-    private readonly MatchBehaviour _matchBehaviour;
+    /// <summary>
+    /// MatchBehaviour
+    /// </summary>
+    public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
     /// The funcs
@@ -63,7 +66,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <param name="matchers">The matchers.</param>
     public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, IStringMatcher[]? matchers)
     {
-        _matchBehaviour = matchBehaviour;
+        MatchBehaviour = matchBehaviour;
         Key = Guard.NotNull(key);
         IgnoreCase = ignoreCase;
         Matchers = matchers;
@@ -81,7 +84,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = MatchBehaviourHelper.Convert(_matchBehaviour, IsMatch(requestMessage));
+        double score = MatchBehaviourHelper.Convert(MatchBehaviour, IsMatch(requestMessage));
         return requestMatchResult.AddScore(GetType(), score);
     }
 

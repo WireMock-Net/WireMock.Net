@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using System;
 using System.Collections.Generic;
@@ -69,13 +70,13 @@ internal class ProxyHelper
         var urlMatcher = request?.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
         var headerMatchers = request?.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
         var cookieMatchers = request?.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
-        var paramsMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
+        var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
 
         var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
 
-        var excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
+        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
         var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
         var newRequest = Request.Create();
@@ -83,7 +84,7 @@ internal class ProxyHelper
         // Path
         if (useDefinedRequestMatchers && pathMatcher?.Matchers is not null)
         {
-            newRequest.WithPath(pathMatcher.Matchers.ToArray());
+            newRequest.WithPath(pathMatcher.MatchOperator, pathMatcher.Matchers.ToArray());
         }
         else
         {
@@ -100,51 +101,106 @@ internal class ProxyHelper
             newRequest.UsingMethod(requestMessage.Method);
         }
 
-        requestMessage.Query?.Loop((key, value) => newRequest.WithParam(key, false, value.ToArray()));
-        requestMessage.Cookies?.Loop((key, value) =>
+        // QueryParams
+        if (useDefinedRequestMatchers && paramMatchers is not null)
         {
-            if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
+            foreach (var paramMatcher in paramMatchers)
             {
-                newRequest.WithCookie(key, value);
+                newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers.ToArray());
             }
-        });
-
-        var allExcludedHeaders = new List<string>(excludedHeaders) { "Cookie" };
-        requestMessage.Headers?.Loop((key, value) =>
+        }
+        else
         {
-            if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
-            {
-                newRequest.WithHeader(key, value.ToArray());
-            }
-        });
-
-        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
-        switch (requestMessage.BodyData?.DetectedBodyType)
-        {
-            case BodyType.Json:
-                newRequest.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
-                break;
-
-            case BodyType.String:
-                newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
-                break;
-
-            case BodyType.Bytes:
-                newRequest.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
-                break;
+            requestMessage.Query?.Loop((key, value) => newRequest.WithParam(key, false, value.ToArray()));
         }
 
-        var response = Response.Create(responseMessage);
+        // Cookies
+        if (useDefinedRequestMatchers && cookieMatchers is not null)
+        {
+            foreach (var cookieMatcher in cookieMatchers)
+            {
+                if (!excludedCookies.Contains(cookieMatcher.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithCookie(cookieMatcher.Name, cookieMatcher.Matchers);
+                }
+            }
+        }
+        else
+        {
+            requestMessage.Cookies?.Loop((key, value) =>
+            {
+                if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithCookie(key, value);
+                }
+            });
+        }
+
+        // Headers
+        if (useDefinedRequestMatchers && headerMatchers is not null)
+        {
+            foreach (var headerMatcher in headerMatchers.Where(hm => hm.Matchers is not null))
+            {
+                if (!excludedHeaders.Contains(headerMatcher.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithHeader(headerMatcher.Name, headerMatcher.Matchers!);
+                }
+            }
+        }
+        else
+        {
+            requestMessage.Headers?.Loop((key, value) =>
+            {
+                if (!excludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithHeader(key, value.ToArray());
+                }
+            });
+        }
+
+        // Body
+        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
+        if (useDefinedRequestMatchers && bodyMatcher?.Matchers is not null)
+        {
+            newRequest.WithBody(bodyMatcher.Matchers);
+        }
+        else
+        {
+            switch (requestMessage.BodyData?.DetectedBodyType)
+            {
+                case BodyType.Json:
+                    newRequest.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
+                    break;
+
+                case BodyType.String:
+                    newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
+                    break;
+
+                case BodyType.Bytes:
+                    newRequest.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
+                    break;
+            }
+        }
+
+        // Title
+        var title = useDefinedRequestMatchers && !string.IsNullOrEmpty(mapping?.Title) ?
+            mapping!.Title :
+            $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}";
+
+        // Description
+        var description = useDefinedRequestMatchers && !string.IsNullOrEmpty(mapping?.Description) ?
+            mapping!.Description :
+            $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}";
 
         return new Mapping
         (
             guid: Guid.NewGuid(),
-            title: $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}",
-            description: string.Empty,
+            title: title,
+            description: description,
             path: null,
             settings: _settings,
             newRequest,
-            response,
+            Response.Create(responseMessage),
             priority: WireMockConstants.ProxyPriority, // This was 0
             scenario: null,
             executionConditionState: null,
