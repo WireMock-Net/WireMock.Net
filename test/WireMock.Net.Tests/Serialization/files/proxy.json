@@ -1,0 +1,21 @@
+{
+  "Guid": "ff55ac0a-fea9-4d7b-be74-5e483a2c1305",
+  "Title": "Proxy Mapping for  ",
+  "Description": "Proxy Mapping for  ",
+  "Priority": -2000000,
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "x",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      null
+    ]
+  },
+  "Response": {}
+}
