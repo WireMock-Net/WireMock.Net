@@ -67,7 +67,6 @@ internal class ProxyHelper
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request?.GetRequestMessageMatcher<RequestMessagePathMatcher>();
-        var urlMatcher = request?.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
         var headerMatchers = request?.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
         var cookieMatchers = request?.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
