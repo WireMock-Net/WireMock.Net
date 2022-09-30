@@ -198,7 +198,7 @@ public partial class WireMockServer
         {
             foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
             {
-                requestBuilder = requestBuilder.WithCookie(
+               requestBuilder = requestBuilder.WithCookie(
                     cookieModel.Name,
                     cookieModel.IgnoreCase == true,
                     cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,

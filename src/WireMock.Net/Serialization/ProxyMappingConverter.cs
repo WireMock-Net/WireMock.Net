@@ -84,11 +84,11 @@ internal class ProxyMappingConverter
         // Cookies
         if (useDefinedRequestMatchers && cookieMatchers is not null)
         {
-            foreach (var cookieMatcher in cookieMatchers)
+            foreach (var cookieMatcher in cookieMatchers.Where(hm => hm.Matchers is not null))
             {
                 if (!excludedCookies.Contains(cookieMatcher.Name, StringComparer.OrdinalIgnoreCase))
                 {
-                    newRequest.WithCookie(cookieMatcher.Name, cookieMatcher.Matchers);
+                    newRequest.WithCookie(cookieMatcher.Name, cookieMatcher.Matchers!);
                 }
             }
         }

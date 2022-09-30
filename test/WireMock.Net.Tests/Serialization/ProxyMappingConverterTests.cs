@@ -3,6 +3,7 @@ using Moq;
 using Newtonsoft.Json;
 using System.IO;
 using FluentAssertions;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
@@ -13,7 +14,7 @@ namespace WireMock.Net.Tests.Serialization;
 
 public class ProxyMappingConverterTests
 {
-    private readonly WireMockServerSettings _settings = new ();
+    private readonly WireMockServerSettings _settings = new();
 
     private readonly MappingConverter _mappingConverter;
 
@@ -38,10 +39,19 @@ public class ProxyMappingConverterTests
             UseDefinedRequestMatchers = true
         };
 
-        var request = Request.Create().WithPath("x");
+        var request = Request.Create()
+            .UsingPost()
+            .WithPath("x")
+            .WithParam("p1", "p1-v")
+            .WithParam("p2", "p2-v")
+            .WithHeader("Content-Type", new ContentTypeMatcher("text/plain"))
+            .WithCookie("c", "x")
+            .WithBody(new RegexMatcher("<RequestType>Auth</RequestType"));
 
         var mappingMock = new Mock<IMapping>();
         mappingMock.SetupGet(m => m.RequestMatcher).Returns(request);
+        mappingMock.SetupGet(m => m.Title).Returns("my title");
+        mappingMock.SetupGet(m => m.Description).Returns("my description");
 
         var requestMessageMock = new Mock<IRequestMessage>();
 
@@ -49,7 +59,6 @@ public class ProxyMappingConverterTests
 
         // Act
         var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage);
-
 
         // Assert
         var model = _mappingConverter.ToMappingModel(proxyMapping);
