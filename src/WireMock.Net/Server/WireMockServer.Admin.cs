@@ -236,6 +236,7 @@ public partial class WireMockServer
         var proxyHelper = new ProxyHelper(settings);
 
         var (responseMessage, mapping) = await proxyHelper.SendAsync(
+            null,
             _settings.ProxyAndRecordSettings!,
             _httpClientForProxy!,
             requestMessage,
