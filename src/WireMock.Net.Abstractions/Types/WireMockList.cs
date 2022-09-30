@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace WireMock.Types;
 
@@ -50,16 +49,21 @@ public class WireMockList<T> : List<T>
     /// </summary>
     public override string ToString()
     {
-        if (Count == 1)
+        switch (Count)
         {
-            if (this[0] is string strValue)
-            {
-                return strValue;
-            }
+            case 0:
+                return string.Empty;
 
-            return this[0]?.ToString();
+            case 1:
+                if (this[0] is string strValue)
+                {
+                    return strValue;
+                }
+
+                return this[0]?.ToString();
+
+            default:
+                return base.ToString();
         }
-
-        return base.ToString();
     }
 }
