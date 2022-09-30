@@ -1,16 +1,10 @@
+using Stef.Validation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Stef.Validation;
-using WireMock.Constants;
 using WireMock.Http;
-using WireMock.Matchers;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
+using WireMock.Serialization;
 using WireMock.Settings;
-using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Proxy;
@@ -18,13 +12,16 @@ namespace WireMock.Proxy;
 internal class ProxyHelper
 {
     private readonly WireMockServerSettings _settings;
+    private readonly ProxyMappingConverter _proxyMappingConverter;
 
     public ProxyHelper(WireMockServerSettings settings)
     {
         _settings = Guard.NotNull(settings);
+        _proxyMappingConverter = new ProxyMappingConverter(settings, new GuidUtils());
     }
 
     public async Task<(IResponseMessage Message, IMapping? Mapping)> SendAsync(
+        IMapping? mapping,
         ProxyAndRecordSettings proxyAndRecordSettings,
         HttpClient client,
         IRequestMessage requestMessage,
@@ -49,11 +46,11 @@ internal class ProxyHelper
 
         var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
 
-        IMapping? mapping = null;
+        IMapping? newMapping = null;
         if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
             (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
         {
-            mapping = ToMapping(proxyAndRecordSettings, requestMessage, responseMessage);
+            newMapping = _proxyMappingConverter.ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
         }
 
         return (responseMessage, mapping);

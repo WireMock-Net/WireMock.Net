@@ -94,6 +94,26 @@ internal class SimpleCommandLineParser
         }, defaultValue);
     }
 
+    public TEnum? GetEnumValue<TEnum>(string name)
+        where TEnum : struct
+    {
+        return GetValue(name, values =>
+        {
+            var value = values.FirstOrDefault();
+            return Enum.TryParse<TEnum>(value, true, out var enumValue) ? enumValue : (TEnum?)null;
+        });
+    }
+
+    public TEnum GetEnumValue<TEnum>(string name, TEnum defaultValue)
+        where TEnum : struct
+    {
+        return GetValue(name, values =>
+        {
+            var value = values.FirstOrDefault();
+            return Enum.TryParse<TEnum>(value, true, out var enumValue) ? enumValue : defaultValue;
+        }, defaultValue);
+    }
+
     public string GetStringValue(string name, string defaultValue)
     {
         return GetValue(name, values => values.FirstOrDefault() ?? defaultValue, defaultValue);

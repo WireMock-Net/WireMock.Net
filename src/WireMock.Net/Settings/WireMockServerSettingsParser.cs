@@ -54,14 +54,11 @@ public static class WireMockServerSettingsParser
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
             WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
+            HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme))
         };
 
 #if USE_ASPNETCORE
-        settings.CorsPolicyOptions = parser.GetValue(nameof(WireMockServerSettings.CorsPolicyOptions), values =>
-        {
-            var value = string.Join(string.Empty, values);
-            return Enum.TryParse<CorsPolicyOptions>(value, true, out var corsPolicyOptions) ? corsPolicyOptions : CorsPolicyOptions.None;
-        });
+        settings.CorsPolicyOptions = parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
 #endif
 
         if (logger != null)
@@ -77,7 +74,7 @@ public static class WireMockServerSettingsParser
         {
             settings.Port = parser.GetIntValue(nameof(WireMockServerSettings.Port));
         }
-        else
+        else if (settings.HostingScheme is null)
         {
             settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
         }
@@ -95,7 +92,8 @@ public static class WireMockServerSettingsParser
                 SaveMapping = parser.GetBoolValue("SaveMapping"),
                 SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
-                Url = proxyUrl
+                UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
+                Url = proxyUrl!
             };
 
             string? proxyAddress = parser.GetStringValue("WebProxyAddress");
@@ -103,7 +101,7 @@ public static class WireMockServerSettingsParser
             {
                 settings.ProxyAndRecordSettings.WebProxySettings = new WebProxySettings
                 {
-                    Address = proxyAddress,
+                    Address = proxyAddress!,
                     UserName = parser.GetStringValue("WebProxyUserName"),
                     Password = parser.GetStringValue("WebProxyPassword")
                 };
