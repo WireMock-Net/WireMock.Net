@@ -792,10 +792,6 @@ public class WireMockServerProxyTests
         content.Should().NotBeEmpty();
 
         server.LogEntries.Should().HaveCount(1);
-        var status = ((StatusModel)server.LogEntries.First().ResponseMessage.BodyData.BodyAsJson).Status;
-
         server.Stop();
     }
-
-
 }
