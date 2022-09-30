@@ -1,10 +1,17 @@
 using Stef.Validation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WireMock.Constants;
 using WireMock.Http;
+using WireMock.Matchers;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Proxy;
@@ -53,7 +60,7 @@ internal class ProxyHelper
             newMapping = _proxyMappingConverter.ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
         }
 
-        return (responseMessage, mapping);
+        return (responseMessage, newMapping);
     }
 
     private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
