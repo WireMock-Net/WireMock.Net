@@ -20,7 +20,7 @@ internal class MappingConverter
 
     public MappingConverter(MatcherMapper mapper)
     {
-        _mapper = Guard.NotNull(mapper, nameof(mapper));
+        _mapper = Guard.NotNull(mapper);
     }
 
     public MappingModel ToMappingModel(IMapping mapping)

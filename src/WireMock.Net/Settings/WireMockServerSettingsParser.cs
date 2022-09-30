@@ -92,6 +92,7 @@ public static class WireMockServerSettingsParser
                 SaveMapping = parser.GetBoolValue("SaveMapping"),
                 SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
+                UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 Url = proxyUrl!
             };
 

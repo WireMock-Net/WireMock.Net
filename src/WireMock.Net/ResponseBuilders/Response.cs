@@ -271,6 +271,7 @@ public partial class Response : IResponseBuilder
             var proxyHelper = new ProxyHelper(settings);
 
             return await proxyHelper.SendAsync(
+                mapping,
                 ProxyAndRecordSettings,
                 _httpClientForProxy,
                 requestMessage,
