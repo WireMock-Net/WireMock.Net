@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -18,22 +18,14 @@ internal class Transformer : ITransformer
         _factory = Guard.NotNull(factory);
     }
 
-    public (IBodyData? BodyData, IDictionary<string, WireMockList<string>>? Headers) Transform(
+    public IBodyData? TransformBody(
         IMapping mapping,
         IRequestMessage originalRequestMessage,
         IResponseMessage originalResponseMessage,
         IBodyData? bodyData,
-        IDictionary<string, WireMockList<string>>? headers,
         ReplaceNodeOptions options)
     {
-        var transformerContext = _factory.Create();
-
-        var model = new
-        {
-            mapping,
-            request = originalRequestMessage,
-            response = originalResponseMessage
-        };
+        var (transformerContext, model) = Create(mapping, originalRequestMessage, originalResponseMessage);
 
         IBodyData? newBodyData = null;
         if (bodyData?.DetectedBodyType != null)
@@ -41,20 +33,42 @@ internal class Transformer : ITransformer
             newBodyData = TransformBodyData(transformerContext, options, model, bodyData, false);
         }
 
-        return (newBodyData, TransformHeaders(transformerContext, model, headers));
+        return newBodyData;
+    }
+
+    public IDictionary<string, WireMockList<string>>? TransformHeaders(
+        IMapping mapping,
+        IRequestMessage originalRequestMessage,
+        IResponseMessage originalResponseMessage,
+        IDictionary<string, WireMockList<string>>? headers
+    )
+    {
+        var (transformerContext, model) = Create(mapping, originalRequestMessage, originalResponseMessage);
+
+        return TransformHeaders(transformerContext, model, headers);
+    }
+
+    public string TransformString(
+        IMapping mapping,
+        IRequestMessage originalRequestMessage,
+        IResponseMessage originalResponseMessage,
+        string? value
+    )
+    {
+        if (value is null)
+        {
+            return string.Empty;
+        }
+
+        var (transformerContext, model) = Create(mapping, originalRequestMessage, originalResponseMessage);
+        return transformerContext.ParseAndRender(value, model);
     }
 
     public ResponseMessage Transform(IMapping mapping, IRequestMessage requestMessage, IResponseMessage original, bool useTransformerForBodyAsFile, ReplaceNodeOptions options)
     {
-        var transformerContext = _factory.Create();
-
         var responseMessage = new ResponseMessage();
 
-        var model = new
-        {
-            mapping,
-            request = requestMessage
-        };
+        var (transformerContext, model) = Create(mapping, requestMessage, null);
 
         if (original.BodyData?.DetectedBodyType != null)
         {
@@ -85,7 +99,17 @@ internal class Transformer : ITransformer
         return responseMessage;
     }
 
-    private static IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original, bool useTransformerForBodyAsFile)
+    private (ITransformerContext TransformerContext, TransformModel Model) Create(IMapping mapping, IRequestMessage request, IResponseMessage? response)
+    {
+        return (_factory.Create(), new TransformModel
+        {
+            mapping = mapping,
+            request = request,
+            response = response
+        });
+    }
+
+    private static IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, TransformModel model, IBodyData original, bool useTransformerForBodyAsFile)
     {
         return original.DetectedBodyType switch
         {
@@ -96,7 +120,7 @@ internal class Transformer : ITransformer
         };
     }
 
-    private static IDictionary<string, WireMockList<string>> TransformHeaders(ITransformerContext transformerContext, object model, IDictionary<string, WireMockList<string>>? original)
+    private static IDictionary<string, WireMockList<string>> TransformHeaders(ITransformerContext transformerContext, TransformModel model, IDictionary<string, WireMockList<string>>? original)
     {
         if (original == null)
         {

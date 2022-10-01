@@ -89,7 +89,7 @@ namespace WireMock.Net.Tests
         {
             // Assign
             var serverReceivingTheWebhook = WireMockServer.Start();
-            serverReceivingTheWebhook.Given(Request.Create().UsingPost()).RespondWith(Response.Create().WithStatusCode(200));
+            serverReceivingTheWebhook.Given(Request.Create().WithPath("x").UsingPost()).RespondWith(Response.Create().WithStatusCode(200));
 
             // Act
             var server = WireMockServer.Start();
@@ -98,22 +98,24 @@ namespace WireMock.Net.Tests
                 {
                     Request = new WebhookRequest
                     {
-                        Url = serverReceivingTheWebhook.Urls[0],
+                        Url = serverReceivingTheWebhook.Url! + "/{{request.Query.q}}",
                         Method = "post",
                         BodyData = new BodyData
                         {
                             BodyAsString = "abc",
                             DetectedBodyType = BodyType.String,
                             DetectedBodyTypeFromContentType = BodyType.String
-                        }
+                        },
+                        UseTransformer = true
                     }
+
                 })
                 .RespondWith(Response.Create().WithBody("a-response"));
 
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"{server.Urls[0]}/TST"),
+                RequestUri = new Uri($"{server.Urls[0]}/TST?q=x"),
                 Content = new StringContent("test")
             };
 
