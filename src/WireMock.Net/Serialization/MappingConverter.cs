@@ -251,8 +251,15 @@ internal class MappingConverter
         var newDictionary = new Dictionary<string, object>();
         foreach (var entry in dictionary)
         {
-            object value = entry.Value.Count == 1 ? entry.Value.ToString() : entry.Value;
-            newDictionary.Add(entry.Key, value);
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            if (entry.Value.Count == 1)
+            {
+                newDictionary.Add(entry.Key, entry.Value.ToString());
+            }
+            else
+            {
+                newDictionary.Add(entry.Key, entry.Value);
+            }
         }
 
         return newDictionary;
