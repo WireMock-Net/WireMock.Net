@@ -39,7 +39,7 @@ public class ResponseMessage : IResponseMessage
     public void AddHeader(string name, string value)
     {
         Headers ??= new Dictionary<string, WireMockList<string>>();
-        Headers.Add(name, new WireMockList<string>(value));
+        Headers.Add(name, value);
     }
 
     /// <inheritdoc cref="IResponseMessage.AddHeader(string, string[])" />
@@ -52,6 +52,6 @@ public class ResponseMessage : IResponseMessage
             ? values.Union(existingValues).ToArray()
             : values;
 
-        Headers[name] = new WireMockList<string>(newHeaderValues);
+        Headers[name] = newHeaderValues;
     }
 }

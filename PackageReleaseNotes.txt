@@ -1,7 +1,7 @@
-# 1.5.6 (12 September 2022)
-- #803 WebHook : UseFireAndForget + Delay [feature]
-- #804 Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230; [feature]
-- #806 Tweak middleware and fix bug in example [feature]
-- #801 Webhook Delays [feature]
+# 1.5.7 (11 October 2022)
+- #818 Add option to run the server on http &amp; https [feature]
+- #821 Add UseDefinedRequestMatchers to ProxyAndRecordSettings [feature]
+- #823 Add implicit operators to WireMockList
+- #819 Can I preserve Mapping title and matchers for proxy response? [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
