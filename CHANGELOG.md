@@ -1,3 +1,9 @@
+# 1.5.7 (11 October 2022)
+- [#818](https://github.com/WireMock-Net/WireMock.Net/pull/818) - Add option to run the server on http &amp; https [feature] contributed by [StefH](https://github.com/StefH)
+- [#821](https://github.com/WireMock-Net/WireMock.Net/pull/821) - Add UseDefinedRequestMatchers to ProxyAndRecordSettings [feature] contributed by [StefH](https://github.com/StefH)
+- [#823](https://github.com/WireMock-Net/WireMock.Net/pull/823) - Add implicit operators to WireMockList contributed by [StefH](https://github.com/StefH)
+- [#819](https://github.com/WireMock-Net/WireMock.Net/issues/819) - Can I preserve Mapping title and matchers for proxy response? [feature]
+
 # 1.5.6 (12 September 2022)
 - [#803](https://github.com/WireMock-Net/WireMock.Net/pull/803) - WebHook : UseFireAndForget + Delay [feature] contributed by [StefH](https://github.com/StefH)
 - [#804](https://github.com/WireMock-Net/WireMock.Net/pull/804) - Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230; [feature] contributed by [mattisking](https://github.com/mattisking)
