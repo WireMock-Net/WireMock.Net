@@ -21,12 +21,12 @@ public class ResponseWithBodyTests
 
     private readonly Mock<IMapping> _mappingMock;
     private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-    private readonly WireMockServerSettings _settings = new ();
+    private readonly WireMockServerSettings _settings = new();
 
     public ResponseWithBodyTests()
     {
         _mappingMock = new Mock<IMapping>();
-        
+
         _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
         _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
@@ -219,6 +219,31 @@ public class ResponseWithBodyTests
         Check.That(response.Message.StatusCode).IsEqualTo(500);
         Check.That(response.Message.Headers["H1"].ToString()).IsEqualTo("X1");
         Check.That(response.Message.Headers["H2"].ToString()).IsEqualTo("X2");
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_WithBody_Func_DynamicCode_Should_Not_Be_Cached()
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("http://localhost/test"), "GET", ClientIp);
+
+        var data = new[] { "x", "y" };
+        var i = 0;
+        var responseBuilder = Response.Create()
+            .WithBody(_ =>
+            {
+                var value = data[i];
+                i++;
+                return value;
+            });
+
+        // Act (2x)
+        var response1 = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+        var response2 = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response1.Message.BodyData!.BodyAsString.Should().Be("x");
+        response2.Message.BodyData!.BodyAsString.Should().Be("y");
     }
 
     [Fact]
