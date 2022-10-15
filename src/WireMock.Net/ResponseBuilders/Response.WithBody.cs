@@ -21,7 +21,8 @@ public partial class Response
             {
                 DetectedBodyType = BodyType.String,
                 BodyAsString = bodyFactory(req),
-                Encoding = encoding ?? Encoding.UTF8
+                Encoding = encoding ?? Encoding.UTF8,
+                IsFuncUsed = "Func<IRequestMessage, string>"
             }
         });
     }
@@ -37,7 +38,8 @@ public partial class Response
             {
                 DetectedBodyType = BodyType.String,
                 BodyAsString = await bodyFactory(req).ConfigureAwait(false),
-                Encoding = encoding ?? Encoding.UTF8
+                Encoding = encoding ?? Encoding.UTF8,
+                IsFuncUsed = "Func<IRequestMessage, Task<string>>"
             }
         });
     }

@@ -325,15 +325,15 @@ public partial class Response : IResponseBuilder
                     break;
 
                 default:
-                    throw new NotImplementedException($"TransformerType '{TransformerType}' is not supported.");
+                    throw new NotSupportedException($"TransformerType '{TransformerType}' is not supported.");
             }
 
             return (responseMessageTransformer.Transform(mapping, requestMessage, responseMessage, UseTransformerForBodyAsFile, TransformerReplaceNodeOptions), null);
         }
 
-        if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true)
+        if (!UseTransformer && ResponseMessage.BodyData?.BodyAsFileIsCached == true && responseMessage.BodyData?.BodyAsFile is not null)
         {
-            ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData!.BodyAsFile);
+            ResponseMessage.BodyData.BodyAsBytes = settings.FileSystemHandler.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
         }
 
         return (responseMessage, null);

@@ -254,6 +254,12 @@ namespace WireMock.Settings
         public bool? SaveUnmatchedRequests { get; set; }
 
         /// <summary>
+        /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to false).
+        /// </summary>
+        [PublicAPI]
+        public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
+
+        /// <summary>
         /// Custom matcher mappings for static mappings
         /// </summary>
         [PublicAPI, JsonIgnore]
