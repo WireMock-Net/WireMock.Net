@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Moq;
 using NFluent;
 using WireMock.Owin;
@@ -18,7 +18,6 @@ namespace WireMock.Net.Tests.Owin
     {
         private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
         private readonly Mock<IOwinResponseMapper> _responseMapperMock;
-        private readonly Mock<IContext> _contextMock;
 
         private readonly GlobalExceptionMiddleware _sut;
 
@@ -35,10 +34,10 @@ namespace WireMock.Net.Tests.Owin
         }
 
         [Fact]
-        public void GlobalExceptionMiddleware_Invoke_NullAsNext_Throws()
+        public void GlobalExceptionMiddleware_Invoke_NullAsNext_DoesNotInvokeNextAndDoesNotThrow()
         {
             // Act
-            Check.ThatAsyncCode(() => _sut.Invoke(_contextMock.Object)).ThrowsAny();
+            Check.ThatAsyncCode(() => _sut.Invoke(null)).DoesNotThrow();
         }
     }
 }

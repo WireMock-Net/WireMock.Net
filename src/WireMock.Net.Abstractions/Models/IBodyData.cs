@@ -13,12 +13,12 @@ public interface IBodyData
     /// <summary>
     /// The body (as bytearray).
     /// </summary>
-    byte[] BodyAsBytes { get; set; }
+    byte[]? BodyAsBytes { get; set; }
 
     /// <summary>
     /// Gets or sets the body as a file.
     /// </summary>
-    string BodyAsFile { get; set; }
+    string? BodyAsFile { get; set; }
 
     /// <summary>
     /// Is the body as file cached?
@@ -38,7 +38,7 @@ public interface IBodyData
     /// <summary>
     /// The body as string, this is defined when BodyAsString or BodyAsJson are not null.
     /// </summary>
-    string BodyAsString { get; set; }
+    string? BodyAsString { get; set; }
 
     /// <summary>
     /// The detected body type (detection based on body content).

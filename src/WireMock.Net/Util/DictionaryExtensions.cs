@@ -17,6 +17,7 @@ public static class DictionaryExtensions
     /// <param name="dictionary">The dictionary to loop (can be null).</param>
     /// <param name="action">The action.</param>
     public static void Loop<TKey, TValue>(this IDictionary<TKey, TValue>? dictionary, Action<TKey, TValue> action)
+        where TKey : notnull
     {
         Guard.NotNull(action);
 

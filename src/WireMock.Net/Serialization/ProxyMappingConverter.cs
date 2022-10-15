@@ -140,11 +140,11 @@ internal class ProxyMappingConverter
                     break;
 
                 case BodyType.String:
-                    newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
+                    newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, true, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString!));
                     break;
 
                 case BodyType.Bytes:
-                    newRequest.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
+                    newRequest.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes!, throwExceptionWhenMatcherFails));
                     break;
             }
         }
