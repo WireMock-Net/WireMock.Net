@@ -44,37 +44,41 @@ internal class WebhookSender
 
         IBodyData? bodyData;
         IDictionary<string, WireMockList<string>>? headers;
+        string webhookRequestUrl;
         if (webhookRequest.UseTransformer == true)
         {
-            ITransformer responseMessageTransformer;
+            ITransformer transformer;
             switch (webhookRequest.TransformerType)
             {
                 case TransformerType.Handlebars:
                     var factoryHandlebars = new HandlebarsContextFactory(_settings.FileSystemHandler, _settings.HandlebarsRegistrationCallback);
-                    responseMessageTransformer = new Transformer(factoryHandlebars);
+                    transformer = new Transformer(factoryHandlebars);
                     break;
 
                 case TransformerType.Scriban:
                 case TransformerType.ScribanDotLiquid:
                     var factoryDotLiquid = new ScribanContextFactory(_settings.FileSystemHandler, webhookRequest.TransformerType);
-                    responseMessageTransformer = new Transformer(factoryDotLiquid);
+                    transformer = new Transformer(factoryDotLiquid);
                     break;
 
                 default:
                     throw new NotImplementedException($"TransformerType '{webhookRequest.TransformerType}' is not supported.");
             }
 
-            (bodyData, headers) = responseMessageTransformer.Transform(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.BodyData, webhookRequest.Headers, webhookRequest.TransformerReplaceNodeOptions);
+            bodyData = transformer.TransformBody(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.BodyData, webhookRequest.TransformerReplaceNodeOptions);
+            headers = transformer.TransformHeaders(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Headers);
+            webhookRequestUrl = transformer.TransformString(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Url);
         }
         else
         {
             bodyData = webhookRequest.BodyData;
             headers = webhookRequest.Headers;
+            webhookRequestUrl = webhookRequest.Url;
         }
 
         // Create RequestMessage
         var requestMessage = new RequestMessage(
-            new UrlDetails(webhookRequest.Url),
+            new UrlDetails(webhookRequestUrl),
             webhookRequest.Method,
             ClientIp,
             bodyData,
