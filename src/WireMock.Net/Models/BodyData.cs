@@ -11,7 +11,7 @@ namespace WireMock.Util
         /// <inheritdoc cref="IBodyData.Encoding" />
         public Encoding? Encoding { get; set; }
 
-        /// <inheritdoc cref="IBodyData.BodyAsBytes" />
+        /// <inheritdoc />
         public string? BodyAsString { get; set; }
 
         /// <inheritdoc cref="IBodyData.BodyAsJson" />

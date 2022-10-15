@@ -16,22 +16,22 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// <summary>
     /// The body function
     /// </summary>
-    public Func<string, bool>? Func { get; }
+    public Func<string?, bool>? Func { get; }
 
     /// <summary>
     /// The body data function for byte[]
     /// </summary>
-    public Func<byte[], bool>? DataFunc { get; }
+    public Func<byte[]?, bool>? DataFunc { get; }
 
     /// <summary>
     /// The body data function for json
     /// </summary>
-    public Func<object, bool>? JsonFunc { get; }
+    public Func<object?, bool>? JsonFunc { get; }
 
     /// <summary>
     /// The body data function for BodyData
     /// </summary>
-    public Func<IBodyData, bool>? BodyDataFunc { get; }
+    public Func<IBodyData?, bool>? BodyDataFunc { get; }
 
     /// <summary>
     /// The matchers.
@@ -77,7 +77,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
     /// </summary>
     /// <param name="func">The function.</param>
-    public RequestMessageBodyMatcher(Func<string, bool> func)
+    public RequestMessageBodyMatcher(Func<string?, bool> func)
     {
         Func = Guard.NotNull(func);
     }
@@ -86,7 +86,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
     /// </summary>
     /// <param name="func">The function.</param>
-    public RequestMessageBodyMatcher(Func<byte[], bool> func)
+    public RequestMessageBodyMatcher(Func<byte[]?, bool> func)
     {
         DataFunc = Guard.NotNull(func);
     }
@@ -95,7 +95,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
     /// </summary>
     /// <param name="func">The function.</param>
-    public RequestMessageBodyMatcher(Func<object, bool> func)
+    public RequestMessageBodyMatcher(Func<object?, bool> func)
     {
         JsonFunc = Guard.NotNull(func);
     }
@@ -158,9 +158,9 @@ public class RequestMessageBodyMatcher : IRequestMatcher
         {
             // If the body is a byte array, try to match.
             var detectedBodyType = requestMessage.BodyData?.DetectedBodyType;
-            if (detectedBodyType == BodyType.Bytes || detectedBodyType == BodyType.String)
+            if (detectedBodyType is BodyType.Bytes or BodyType.String)
             {
-                return exactObjectMatcher.IsMatch(requestMessage.BodyData.BodyAsBytes);
+                return exactObjectMatcher.IsMatch(requestMessage.BodyData?.BodyAsBytes);
             }
         }
 

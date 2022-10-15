@@ -32,7 +32,7 @@ internal static class TypeBuilderUtils
             CreateGetSetMethods(typeBuilder, property.Key, property.Value);
         }
 
-        var type = typeBuilder.CreateTypeInfo().AsType();
+        var type = typeBuilder.CreateTypeInfo()!.AsType();
 
         Types.TryAdd(properties, type);
 
@@ -43,6 +43,7 @@ internal static class TypeBuilderUtils
     /// https://stackoverflow.com/questions/3804367/testing-for-equality-between-dictionaries-in-c-sharp
     /// </summary>
     private static bool Compare<TKey, TValue>(IDictionary<TKey, TValue> dict1, IDictionary<TKey, TValue> dict2)
+        where TKey : notnull
     {
         if (dict1 == dict2)
         {

@@ -18,5 +18,5 @@ public enum MatchOperator
     /// <summary>
     /// The average value from all patterns.
     /// </summary>
-    Average,
+    Average
 }

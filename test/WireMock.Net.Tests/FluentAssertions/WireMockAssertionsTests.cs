@@ -24,11 +24,11 @@ public class WireMockAssertionsTests : IDisposable
     public WireMockAssertionsTests()
     {
         _server = WireMockServer.Start();
-        _server.Given(Request.Create().UsingAnyMethod())
-            .RespondWith(Response.Create().WithSuccess());
+        _server.Given(Request.Create().UsingAnyMethod()).RespondWith(Response.Create().WithSuccess());
+
         _portUsed = _server.Ports.First();
 
-        _httpClient = new HttpClient { BaseAddress = new Uri(_server.Urls[0]) };
+        _httpClient = new HttpClient { BaseAddress = new Uri(_server.Url!) };
     }
 
     [Fact]
@@ -59,6 +59,18 @@ public class WireMockAssertionsTests : IDisposable
         _server.Should()
             .HaveReceived(1).Calls()
             .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
+    }
+
+    [Fact]
+    public async Task HaveReceived1Calls_AtAbsoluteUrlUsingPost_WhenAPostCallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.PostAsync("anyurl", new StringContent("")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceived(1).Calls()
+            .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl")
+            .And
+            .UsingPost();
     }
 
     [Fact]
@@ -123,15 +135,20 @@ public class WireMockAssertionsTests : IDisposable
     }
 
     [Fact]
-    public async Task HaveReceivedACall_WithHeader_WhenACallWasMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
+    public async Task HaveReceivedACall_WithHeader_WhenMultipleCallsWereMadeWithExpectedHeaderAmongMultipleHeaderValues_Should_BeOK()
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        await _httpClient.GetAsync("").ConfigureAwait(false);
+        await _httpClient.GetAsync("1").ConfigureAwait(false);
+
+        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("EN"));
+        await _httpClient.GetAsync("2").ConfigureAwait(false);
 
         _server.Should()
             .HaveReceivedACall()
-            .WithHeader("Accept", new[] { "application/xml", "application/json" });
+            .WithHeader("Accept", new[] { "application/xml", "application/json" })
+            .And
+            .WithHeader("Accept-Language", new[] { "EN" });
     }
 
     [Fact]
@@ -145,7 +162,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should().Throw<Exception>()
             .And.Message.Should()
-            .Contain("to contain key \"Authorization\".");
+            .Contain("to contain \"Authorization\".");
     }
 
     [Fact]
@@ -431,14 +448,88 @@ public class WireMockAssertionsTests : IDisposable
             .UsingOptions();
     }
 
-    [Fact]
-    public async Task HaveReceivedACall_UsingPost_WhenACallWasMadeUsingPost_Should_BeOK()
+    [Theory]
+    [InlineData("POST")]
+    [InlineData("Post")]
+    public async Task HaveReceivedACall_UsingPost_WhenACallWasMadeUsingPost_Should_BeOK(string method)
     {
-        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("POST"), "anyurl")).ConfigureAwait(false);
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), "anyurl")).ConfigureAwait(false);
 
         _server.Should()
             .HaveReceivedACall()
             .UsingPost();
+    }
+
+    [Fact]
+    public async Task HaveReceived1Calls_AtAbsoluteUrlUsingPost_ShouldChain()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingGet())
+            .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
+
+        server
+            .Given(Request.Create().WithPath("/b").UsingPost())
+            .RespondWith(Response.Create().WithBody("B response").WithStatusCode(HttpStatusCode.OK));
+
+        server
+            .Given(Request.Create().WithPath("/c").UsingPost())
+            .RespondWith(Response.Create().WithBody("C response").WithStatusCode(HttpStatusCode.OK));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.GetAsync($"{server.Url}/a");
+
+        await httpClient.PostAsync($"{server.Url}/b", new StringContent("B"));
+
+        await httpClient.PostAsync($"{server.Url}/c", new StringContent("C"));
+
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .AtUrl($"{server.Url}/a")
+            .And
+            .UsingGet();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .AtUrl($"{server.Url}/b")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .AtUrl($"{server.Url}/c")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(3)
+            .Calls();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .UsingGet();
+
+        server
+            .Should()
+            .HaveReceived(2)
+            .Calls()
+            .UsingPost();
+
+        server.Stop();
     }
 
     [Fact]
