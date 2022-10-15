@@ -53,7 +53,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <param name="key">The key.</param>
     /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
     /// <param name="values">The values.</param>
-    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, string[]? values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, false, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
+    public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, string[]? values) : this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, ignoreCase, false, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
     {
     }
 

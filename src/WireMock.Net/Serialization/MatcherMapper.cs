@@ -66,7 +66,7 @@ internal class MatcherMapper
                 return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
 
             case nameof(ExactMatcher):
-                return new ExactMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new ExactMatcher(matchBehaviour, ignoreCase, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
 
             case nameof(ExactObjectMatcher):
                 return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);

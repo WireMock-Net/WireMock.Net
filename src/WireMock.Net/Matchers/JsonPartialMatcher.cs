@@ -29,7 +29,7 @@ public class JsonPartialMatcher : AbstractJsonPartialMatcher
     /// <inheritdoc />
     protected override bool IsMatch(string value, string input)
     {
-        var exactStringMatcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, ThrowException, MatchOperator.Or, value);
+        var exactStringMatcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, IgnoreCase, ThrowException, MatchOperator.Or, value);
         return MatchScores.IsPerfect(exactStringMatcher.IsMatch(input));
     }
 }

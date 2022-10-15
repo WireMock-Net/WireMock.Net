@@ -408,4 +408,24 @@ public class MatcherMapperTests
         matcher.Value.Should().BeEquivalentTo(pattern);
         matcher.Regex.Should().BeFalse();
     }
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_ExactMatcher_Pattern()
+    {
+        // Assign
+        var model = new MatcherModel
+        {
+            Name = "ExactMatcher",
+            Pattern = "p",
+            IgnoreCase = true
+        };
+
+        // Act
+        var matcher = (ExactMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.GetPatterns().Should().Contain("p");
+        matcher.IgnoreCase.Should().BeTrue();
+    }
 }

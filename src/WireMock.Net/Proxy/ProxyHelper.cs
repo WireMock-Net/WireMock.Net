@@ -1,10 +1,17 @@
 using Stef.Validation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WireMock.Constants;
 using WireMock.Http;
+using WireMock.Matchers;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock.Proxy;
@@ -54,5 +61,70 @@ internal class ProxyHelper
         }
 
         return (responseMessage, newMapping);
+    }
+
+    private IMapping ToMapping(ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
+    {
+        var excludedHeaders = proxyAndRecordSettings.ExcludedHeaders ?? new string[] { };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
+
+        var request = Request.Create();
+        request.WithPath(requestMessage.Path);
+        request.UsingMethod(requestMessage.Method);
+
+        requestMessage.Query?.Loop((key, value) => request.WithParam(key, false, value.ToArray()));
+        requestMessage.Cookies?.Loop((key, value) =>
+        {
+            if (!excludedCookies.Contains(key, StringComparer.OrdinalIgnoreCase))
+            {
+                request.WithCookie(key, value);
+            }
+        });
+
+        var allExcludedHeaders = new List<string>(excludedHeaders) { "Cookie" };
+        requestMessage.Headers?.Loop((key, value) =>
+        {
+            if (!allExcludedHeaders.Contains(key, StringComparer.OrdinalIgnoreCase))
+            {
+                request.WithHeader(key, value.ToArray());
+            }
+        });
+
+        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
+        switch (requestMessage.BodyData?.DetectedBodyType)
+        {
+            case BodyType.Json:
+                request.WithBody(new JsonMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsJson!, true, throwExceptionWhenMatcherFails));
+                break;
+
+            case BodyType.String:
+                request.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString));
+                break;
+
+            case BodyType.Bytes:
+                request.WithBody(new ExactObjectMatcher(MatchBehaviour.AcceptOnMatch, requestMessage.BodyData.BodyAsBytes, throwExceptionWhenMatcherFails));
+                break;
+        }
+
+        var response = Response.Create(responseMessage);
+
+        return new Mapping
+        (
+            guid: Guid.NewGuid(),
+            title: $"Proxy Mapping for {requestMessage.Method} {requestMessage.Path}",
+            description: string.Empty,
+            path: null,
+            settings: _settings,
+            request,
+            response,
+            priority: WireMockConstants.ProxyPriority, // This was 0
+            scenario: null,
+            executionConditionState: null,
+            nextState: null,
+            stateTimes: null,
+            webhooks: null,
+            useWebhooksFireAndForget: null,
+            timeSettings: null
+        );
     }
 }
