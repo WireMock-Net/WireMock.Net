@@ -1,7 +1,9 @@
-# 1.5.7 (11 October 2022)
-- #818 Add option to run the server on http &amp; https [feature]
-- #821 Add UseDefinedRequestMatchers to ProxyAndRecordSettings [feature]
-- #823 Add implicit operators to WireMockList
-- #819 Can I preserve Mapping title and matchers for proxy response? [feature]
+# 1.5.8 (16 October 2022)
+- #816 Some fixes to WireMock.Net.Assertions [feature]
+- #817 ExactMatcher : IgnoreCase [feature]
+- #824 WebHook - Transform Url [feature]
+- #814 WithHeader cannot handle multiple requests with the same header key values [bug]
+- #815 Why does UsingMethod check _callscount? [bug]
+- #822 Webhook with generic url, body and custom header values [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

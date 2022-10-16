@@ -1,3 +1,11 @@
+# 1.5.8 (16 October 2022)
+- [#816](https://github.com/WireMock-Net/WireMock.Net/pull/816) - Some fixes to WireMock.Net.Assertions [feature] contributed by [StefH](https://github.com/StefH)
+- [#817](https://github.com/WireMock-Net/WireMock.Net/pull/817) - ExactMatcher : IgnoreCase [feature] contributed by [StefH](https://github.com/StefH)
+- [#824](https://github.com/WireMock-Net/WireMock.Net/pull/824) - WebHook - Transform Url [feature] contributed by [StefH](https://github.com/StefH)
+- [#814](https://github.com/WireMock-Net/WireMock.Net/issues/814) - WithHeader cannot handle multiple requests with the same header key values [bug]
+- [#815](https://github.com/WireMock-Net/WireMock.Net/issues/815) - Why does UsingMethod check _callscount? [bug]
+- [#822](https://github.com/WireMock-Net/WireMock.Net/issues/822) - Webhook with generic url, body and custom header values [feature]
+
 # 1.5.7 (11 October 2022)
 - [#818](https://github.com/WireMock-Net/WireMock.Net/pull/818) - Add option to run the server on http &amp; https [feature] contributed by [StefH](https://github.com/StefH)
 - [#821](https://github.com/WireMock-Net/WireMock.Net/pull/821) - Add UseDefinedRequestMatchers to ProxyAndRecordSettings [feature] contributed by [StefH](https://github.com/StefH)
