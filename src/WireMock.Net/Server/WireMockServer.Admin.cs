@@ -278,7 +278,7 @@ public partial class WireMockServer
             WatchStaticMappings = _settings.WatchStaticMappings,
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
             HostingScheme = _settings.HostingScheme,
-            DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry
+            DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
 
 #if USE_ASPNETCORE
             CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
