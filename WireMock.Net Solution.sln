@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		CHANGELOG.md = CHANGELOG.md
 		Directory.Build.props = Directory.Build.props
+		.github\FUNDING.yml = .github\FUNDING.yml
 		Generate-ReleaseNotes.cmd = Generate-ReleaseNotes.cmd
 		nuget.config = nuget.config
 		PackageReleaseNotes.template = PackageReleaseNotes.template
