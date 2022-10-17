@@ -562,6 +562,54 @@ public class WireMockAssertionsTests : IDisposable
             .UsingTrace();
     }
 
+    [Fact]
+    public async Task HaveReceivedACall_UsingAnyMethod_WhenACallWasMadeUsingGet_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("GET"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingAnyMethod();
+    }
+
+    [Fact]
+    public void HaveReceivedNoCalls_UsingAnyMethod_WhenNoCallsWereMade_Should_BeOK()
+    {
+        Action act1 = () => _server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .UsingAnyMethod();
+
+        act1.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be("Expected _server to have been called using method \"*\", but no calls were made.");
+
+        Action act2 = () => _server
+            .Should()
+            .HaveReceivedNoCalls()
+            .UsingAnyMethod();
+
+        act2.Should().Throw<Exception>()
+            .And.Message.Should()
+            .Be("Expected _server to have been called using method \"*\", but no calls were made.");
+    }
+
+    //[Fact]
+    //public void X()
+    //{
+    //    // Should not fail?
+    //    _server.Should()
+    //        .HaveReceived(0)
+    //        .Calls()
+    //        .AtUrl(_server.Url ?? string.Empty);
+
+    //    // Should not fail?
+    //    //_server.Should()
+    //    //    .HaveReceivedNoCalls()
+    //    //    .AtUrl(_server.Url ?? string.Empty);
+    //}
+
     public void Dispose()
     {
         _server?.Stop();

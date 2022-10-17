@@ -12,9 +12,10 @@ namespace WireMock.FluentAssertions;
 
 public class WireMockAssertions
 {
+    private const string Any = "*";
     private readonly int? _callsCount;
     private IReadOnlyList<IRequestMessage> _requestMessages;
-    private IReadOnlyList<KeyValuePair<string, WireMockList<string>>> _headers;
+    private readonly IReadOnlyList<KeyValuePair<string, WireMockList<string>>> _headers;
 
     public WireMockAssertions(IWireMockServer subject, int? callsCount)
     {
@@ -200,9 +201,16 @@ public class WireMockAssertions
         => UsingMethod("TRACE", because, becauseArgs);
 
     [CustomAssertion]
+    public AndConstraint<WireMockAssertions> UsingAnyMethod(string because = "", params object[] becauseArgs)
+        => UsingMethod(Any, because, becauseArgs);
+
+    [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingMethod(string method, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => string.Equals(request.Method, method, StringComparison.OrdinalIgnoreCase);
+        var any = method == Any;
+        Func<IRequestMessage, bool> predicate = request => (any && !string.IsNullOrEmpty(request.Method)) ||
+                                                           string.Equals(request.Method, method, StringComparison.OrdinalIgnoreCase);
+
         var (filter, condition) = BuildFilterAndCondition(predicate);
 
         Execute.Assertion
