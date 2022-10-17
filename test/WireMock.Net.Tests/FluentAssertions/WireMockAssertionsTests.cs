@@ -575,40 +575,30 @@ public class WireMockAssertionsTests : IDisposable
     [Fact]
     public void HaveReceivedNoCalls_UsingAnyMethod_WhenNoCallsWereMade_Should_BeOK()
     {
-        Action act1 = () => _server
+        _server
             .Should()
             .HaveReceived(0)
             .Calls()
             .UsingAnyMethod();
 
-        act1.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be("Expected _server to have been called using method \"*\", but no calls were made.");
-
-        Action act2 = () => _server
+        _server
             .Should()
             .HaveReceivedNoCalls()
             .UsingAnyMethod();
-
-        act2.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be("Expected _server to have been called using method \"*\", but no calls were made.");
     }
 
-    //[Fact]
-    //public void X()
-    //{
-    //    // Should not fail?
-    //    _server.Should()
-    //        .HaveReceived(0)
-    //        .Calls()
-    //        .AtUrl(_server.Url ?? string.Empty);
+    [Fact]
+    public void HaveReceivedNoCalls_AtUrl_WhenNoCallsWereMade_Should_BeOK()
+    {
+        _server.Should()
+            .HaveReceived(0)
+            .Calls()
+            .AtUrl(_server.Url ?? string.Empty);
 
-    //    // Should not fail?
-    //    //_server.Should()
-    //    //    .HaveReceivedNoCalls()
-    //    //    .AtUrl(_server.Url ?? string.Empty);
-    //}
+        _server.Should()
+            .HaveReceivedNoCalls()
+            .AtUrl(_server.Url ?? string.Empty);
+    }
 
     public void Dispose()
     {
