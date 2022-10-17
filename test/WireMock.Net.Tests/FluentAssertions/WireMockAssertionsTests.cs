@@ -562,6 +562,44 @@ public class WireMockAssertionsTests : IDisposable
             .UsingTrace();
     }
 
+    [Fact]
+    public async Task HaveReceivedACall_UsingAnyMethod_WhenACallWasMadeUsingGet_Should_BeOK()
+    {
+        await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("GET"), "anyurl")).ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .UsingAnyMethod();
+    }
+
+    [Fact]
+    public void HaveReceivedNoCalls_UsingAnyMethod_WhenNoCallsWereMade_Should_BeOK()
+    {
+        _server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .UsingAnyMethod();
+
+        _server
+            .Should()
+            .HaveReceivedNoCalls()
+            .UsingAnyMethod();
+    }
+
+    [Fact]
+    public void HaveReceivedNoCalls_AtUrl_WhenNoCallsWereMade_Should_BeOK()
+    {
+        _server.Should()
+            .HaveReceived(0)
+            .Calls()
+            .AtUrl(_server.Url ?? string.Empty);
+
+        _server.Should()
+            .HaveReceivedNoCalls()
+            .AtUrl(_server.Url ?? string.Empty);
+    }
+
     public void Dispose()
     {
         _server?.Stop();
