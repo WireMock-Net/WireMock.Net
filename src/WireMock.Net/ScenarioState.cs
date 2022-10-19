@@ -8,7 +8,7 @@ public class ScenarioState
     /// <summary>
     /// Gets or sets the Name (from the Scenario).
     /// </summary>
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the NextState.
