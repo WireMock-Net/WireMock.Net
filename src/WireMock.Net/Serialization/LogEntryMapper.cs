@@ -1,16 +1,25 @@
 using System.Linq;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
+using WireMock.Owin;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 
 namespace WireMock.Serialization;
 
-internal static class LogEntryMapper
+internal class LogEntryMapper
 {
-    public static LogEntryModel Map(ILogEntry logEntry)
+    private readonly IWireMockMiddlewareOptions _options;
+
+    public LogEntryMapper(IWireMockMiddlewareOptions options)
+    {
+        _options = Guard.NotNull(options);
+    }
+
+    public LogEntryModel Map(ILogEntry logEntry)
     {
         var logRequestModel = new LogRequestModel
         {
@@ -78,25 +87,7 @@ internal static class LogEntryMapper
             logResponseModel.DetectedBodyType = logEntry.ResponseMessage.BodyData.DetectedBodyType;
             logResponseModel.DetectedBodyTypeFromContentType = logEntry.ResponseMessage.BodyData.DetectedBodyTypeFromContentType;
 
-            switch (logEntry.ResponseMessage.BodyData.DetectedBodyType)
-            {
-                case BodyType.String:
-                    logResponseModel.Body = logEntry.ResponseMessage.BodyData.BodyAsString;
-                    break;
-
-                case BodyType.Json:
-                    logResponseModel.BodyAsJson = logEntry.ResponseMessage.BodyData.BodyAsJson;
-                    break;
-
-                case BodyType.Bytes:
-                    logResponseModel.BodyAsBytes = logEntry.ResponseMessage.BodyData.BodyAsBytes;
-                    break;
-
-                case BodyType.File:
-                    logResponseModel.BodyAsFile = logEntry.ResponseMessage.BodyData.BodyAsFile;
-                    logResponseModel.BodyAsFileIsCached = logEntry.ResponseMessage.BodyData.BodyAsFileIsCached;
-                    break;
-            }
+            MapBody(logEntry, logResponseModel);
 
             logResponseModel.BodyEncoding = logEntry.ResponseMessage.BodyData.Encoding != null
                 ? new EncodingModel
@@ -122,6 +113,36 @@ internal static class LogEntryMapper
             PartialMappingTitle = logEntry.PartialMappingTitle,
             PartialRequestMatchResult = Map(logEntry.PartialMatchResult)
         };
+    }
+
+    private void MapBody(ILogEntry logEntry, LogResponseModel logResponseModel)
+    {
+        switch (logEntry.ResponseMessage.BodyData!.DetectedBodyType)
+        {
+            case BodyType.String:
+                if (!string.IsNullOrEmpty(logEntry.ResponseMessage.BodyData.IsFuncUsed) && _options.DoNotSaveDynamicResponseInLogEntry == true)
+                {
+                    logResponseModel.Body = logEntry.ResponseMessage.BodyData.IsFuncUsed;
+                }
+                else
+                {
+                    logResponseModel.Body = logEntry.ResponseMessage.BodyData.BodyAsString;
+                }
+                break;
+
+            case BodyType.Json:
+                logResponseModel.BodyAsJson = logEntry.ResponseMessage.BodyData.BodyAsJson;
+                break;
+
+            case BodyType.Bytes:
+                logResponseModel.BodyAsBytes = logEntry.ResponseMessage.BodyData.BodyAsBytes;
+                break;
+
+            case BodyType.File:
+                logResponseModel.BodyAsFile = logEntry.ResponseMessage.BodyData.BodyAsFile;
+                logResponseModel.BodyAsFileIsCached = logEntry.ResponseMessage.BodyData.BodyAsFileIsCached;
+                break;
+        }
     }
 
     private static LogRequestMatchModel? Map(IRequestMatchResult? matchResult)

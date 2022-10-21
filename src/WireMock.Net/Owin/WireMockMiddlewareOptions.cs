@@ -84,4 +84,7 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.SaveUnmatchedRequests"/>
     public bool? SaveUnmatchedRequests { get; set; }
+
+    /// <inheritdoc />
+    public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
 }

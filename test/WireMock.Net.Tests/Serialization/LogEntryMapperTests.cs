@@ -2,6 +2,7 @@ using FluentAssertions;
 using NFluent;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.Owin;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Types;
@@ -12,6 +13,15 @@ namespace WireMock.Net.Tests.Serialization;
 
 public class LogEntryMapperTests
 {
+    private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
+
+    private readonly LogEntryMapper _sut;
+
+    public LogEntryMapperTests()
+    {
+        _sut = new LogEntryMapper(_options);
+    }
+
     [Fact]
     public void LogEntryMapper_Map_LogEntry_Check_BodyTypeBytes()
     {
@@ -39,7 +49,7 @@ public class LogEntryMapperTests
         };
 
         // Act
-        var result = LogEntryMapper.Map(logEntry);
+        var result = _sut.Map(logEntry);
 
         // Assert
         Check.That(result.Request.DetectedBodyType).IsEqualTo("Bytes");
@@ -74,7 +84,7 @@ public class LogEntryMapperTests
         };
 
         // Act
-        var result = LogEntryMapper.Map(logEntry);
+        var result = _sut.Map(logEntry);
 
         // Assert
         Check.That(result.Request.DetectedBodyType).IsNull();
@@ -111,10 +121,49 @@ public class LogEntryMapperTests
         };
 
         // Act
-        var result = LogEntryMapper.Map(logEntry);
+        var result = _sut.Map(logEntry);
 
         // Assert
         result.Response.FaultType.Should().Be("EMPTY_RESPONSE");
         result.Response.FaultPercentage.Should().Be(0.5);
+    }
+
+    [Fact]
+    public void LogEntryMapper_Map_LogEntry_WhenFuncIsUsed_And_DoNotSaveDynamicResponseInLogEntry_Is_True_Should_NotSave_StringResponse()
+    {
+        // Assign
+        var options = new WireMockMiddlewareOptions
+        {
+            DoNotSaveDynamicResponseInLogEntry = true
+        };
+        var isFuncUsed = "Func<IRequestMessage, string>";
+        var logEntry = new LogEntry
+        {
+            RequestMessage = new RequestMessage(
+                new UrlDetails("http://localhost"),
+                "post",
+                "::1",
+                new BodyData
+                {
+                    DetectedBodyType = BodyType.Bytes,
+                    BodyAsBytes = new byte[] { 0 }
+                }
+            ),
+            ResponseMessage = new ResponseMessage
+            {
+                BodyData = new BodyData
+                {
+                    DetectedBodyType = BodyType.String,
+                    BodyAsString = "test",
+                    IsFuncUsed = isFuncUsed
+                }
+            }
+        };
+
+        // Act
+        var result = new LogEntryMapper(options).Map(logEntry);
+
+        // Assert
+        result.Response.Body.Should().Be(isFuncUsed);
     }
 }

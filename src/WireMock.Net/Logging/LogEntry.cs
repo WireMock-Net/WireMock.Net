@@ -12,13 +12,13 @@ public class LogEntry : ILogEntry
     public Guid Guid { get; set; }
 
     /// <inheritdoc cref="ILogEntry.RequestMessage" />
-    public IRequestMessage RequestMessage { get; set; }
+    public IRequestMessage RequestMessage { get; set; } = null!;
 
     /// <inheritdoc cref="ILogEntry.ResponseMessage" />
-    public IResponseMessage ResponseMessage { get; set; }
+    public IResponseMessage ResponseMessage { get; set; } = null!;
 
     /// <inheritdoc cref="ILogEntry.RequestMatchResult" />
-    public IRequestMatchResult RequestMatchResult { get; set; }
+    public IRequestMatchResult RequestMatchResult { get; set; } = null!;
 
     /// <inheritdoc cref="ILogEntry.MappingGuid" />
     public Guid? MappingGuid { get; set; }
@@ -33,5 +33,5 @@ public class LogEntry : ILogEntry
     public string? PartialMappingTitle { get; set; }
 
     /// <inheritdoc cref="ILogEntry.PartialMatchResult" />
-    public IRequestMatchResult PartialMatchResult { get; set; }
+    public IRequestMatchResult PartialMatchResult { get; set; } = null!;
 }

@@ -21,6 +21,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 
     /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
     public MatchBehaviour MatchBehaviour { get; }
+
     /// <inheritdoc cref="IMatcher.ThrowException"/>
     public bool ThrowException { get; }
 

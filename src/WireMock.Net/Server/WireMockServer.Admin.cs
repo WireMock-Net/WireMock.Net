@@ -277,6 +277,8 @@ public partial class WireMockServer
             UseRegexExtended = _settings.UseRegexExtended,
             WatchStaticMappings = _settings.WatchStaticMappings,
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
+            HostingScheme = _settings.HostingScheme,
+            DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
 
 #if USE_ASPNETCORE
             CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
@@ -305,6 +307,7 @@ public partial class WireMockServer
         _settings.UseRegexExtended = settings.UseRegexExtended;
         _settings.WatchStaticMappings = settings.WatchStaticMappings;
         _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;
+        _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
 
         InitSettings(_settings);
 
@@ -525,7 +528,7 @@ public partial class WireMockServer
             return ResponseMessageBuilder.Create("Request not found", 404);
         }
 
-        var model = LogEntryMapper.Map(entry);
+        var model = new LogEntryMapper(_options).Map(entry);
 
         return ToJson(model);
     }
@@ -546,9 +549,10 @@ public partial class WireMockServer
     #region Requests
     private IResponseMessage RequestsGet(IRequestMessage requestMessage)
     {
+        var logEntryMapper = new LogEntryMapper(_options);
         var result = LogEntries
             .Where(r => !r.RequestMessage.Path.StartsWith("/__admin/"))
-            .Select(LogEntryMapper.Map);
+            .Select(logEntryMapper.Map);
 
         return ToJson(result);
     }
@@ -578,7 +582,8 @@ public partial class WireMockServer
             }
         }
 
-        var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(LogEntryMapper.Map);
+        var logEntryMapper = new LogEntryMapper(_options);
+        var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(logEntryMapper.Map);
 
         return ToJson(result);
     }
