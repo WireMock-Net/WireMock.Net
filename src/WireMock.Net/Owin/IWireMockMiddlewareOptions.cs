@@ -69,4 +69,6 @@ internal interface IWireMockMiddlewareOptions
     bool CustomCertificateDefined { get; }
 
     bool? SaveUnmatchedRequests { get; set; }
+
+    public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
 }

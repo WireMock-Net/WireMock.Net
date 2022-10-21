@@ -21,12 +21,12 @@ public class ResponseWithBodyTests
 
     private readonly Mock<IMapping> _mappingMock;
     private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
-    private readonly WireMockServerSettings _settings = new ();
+    private readonly WireMockServerSettings _settings = new();
 
     public ResponseWithBodyTests()
     {
         _mappingMock = new Mock<IMapping>();
-        
+
         _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
         _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
@@ -197,61 +197,7 @@ public class ResponseWithBodyTests
     }
 
     [Fact]
-    public async Task Response_ProvideResponse_WithBody_Func()
-    {
-        // Assign
-        var request = new RequestMessage(new UrlDetails("http://localhost/test"), "GET", ClientIp);
-
-        var responseBuilder = Response.Create()
-            .WithStatusCode(500)
-            .WithHeader("H1", "X1")
-            .WithHeader("H2", "X2")
-            .WithBody(req => $"path: {req.Path}");
-
-        // Act
-        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
-
-        // Assert
-        Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("path: /test");
-        Check.That(response.Message.BodyData.BodyAsBytes).IsNull();
-        Check.That(response.Message.BodyData.BodyAsJson).IsNull();
-        Check.That(response.Message.BodyData.Encoding.CodePage).Equals(Encoding.UTF8.CodePage);
-        Check.That(response.Message.StatusCode).IsEqualTo(500);
-        Check.That(response.Message.Headers["H1"].ToString()).IsEqualTo("X1");
-        Check.That(response.Message.Headers["H2"].ToString()).IsEqualTo("X2");
-    }
-
-    [Fact]
-    public async Task Response_ProvideResponse_WithBody_FuncAsync()
-    {
-        // Assign
-        var request = new RequestMessage(new UrlDetails("http://localhost/test"), "GET", ClientIp);
-
-        var responseBuilder = Response.Create()
-            .WithStatusCode(500)
-            .WithHeader("H1", "X1")
-            .WithHeader("H2", "X2")
-            .WithBody(async req =>
-            {
-                await Task.Delay(1).ConfigureAwait(false);
-                return $"path: {req.Path}";
-            });
-
-        // Act
-        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
-
-        // Assert
-        Check.That(response.Message.BodyData.BodyAsString).IsEqualTo("path: /test");
-        Check.That(response.Message.BodyData.BodyAsBytes).IsNull();
-        Check.That(response.Message.BodyData.BodyAsJson).IsNull();
-        Check.That(response.Message.BodyData.Encoding.CodePage).Equals(Encoding.UTF8.CodePage);
-        Check.That(response.Message.StatusCode).IsEqualTo(500);
-        Check.That(response.Message.Headers["H1"].ToString()).IsEqualTo("X1");
-        Check.That(response.Message.Headers["H2"].ToString()).IsEqualTo("X2");
-    }
-
-    [Fact]
-    public async Task Response_ProvideResponse_WithJsonBodyAndTransform_Func()
+    public async Task Response_ProvideResponse_WithJsonBodyAndTransform()
     {
         // Assign
         const int request1Id = 1;

@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using JetBrains.Annotations;
 using WireMock.Types;
 
 namespace WireMock.Util;
@@ -59,4 +57,9 @@ public interface IBodyData
     /// The body encoding.
     /// </summary>
     Encoding? Encoding { get; set; }
+
+    /// <summary>
+    /// Defines if this BodyData is the result of a dynamically created response-string. (
+    /// </summary>
+    public string? IsFuncUsed { get; set; }
 }

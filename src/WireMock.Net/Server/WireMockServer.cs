@@ -295,6 +295,7 @@ public partial class WireMockServer : IWireMockServer
         _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
         _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _options.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
+        _options.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
 
         if (settings.CustomCertificateDefined)
         {

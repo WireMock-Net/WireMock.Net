@@ -32,22 +32,25 @@ namespace WireMock.Owin
         private readonly IOwinRequestMapper _requestMapper;
         private readonly IOwinResponseMapper _responseMapper;
         private readonly IMappingMatcher _mappingMatcher;
+        private readonly LogEntryMapper _logEntryMapper;
 
 #if !USE_ASPNETCORE
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
         {
-            _options = Guard.NotNull(options, nameof(options));
-            _requestMapper = Guard.NotNull(requestMapper, nameof(requestMapper));
-            _responseMapper = Guard.NotNull(responseMapper, nameof(responseMapper));
-            _mappingMatcher = Guard.NotNull(mappingMatcher, nameof(mappingMatcher));
+            _options = Guard.NotNull(options);
+            _requestMapper = Guard.NotNull(requestMapper);
+            _responseMapper = Guard.NotNull(responseMapper);
+            _mappingMatcher = Guard.NotNull(mappingMatcher);
+            _logEntryMapper = new LogEntryMapper(options);
         }
 #else
         public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
         {
-            _options = Guard.NotNull(options, nameof(options));
-            _requestMapper = Guard.NotNull(requestMapper, nameof(requestMapper));
-            _responseMapper = Guard.NotNull(responseMapper, nameof(responseMapper));
-            _mappingMatcher = Guard.NotNull(mappingMatcher, nameof(mappingMatcher));
+            _options = Guard.NotNull(options);
+            _requestMapper = Guard.NotNull(requestMapper);
+            _responseMapper = Guard.NotNull(responseMapper);
+            _mappingMatcher = Guard.NotNull(mappingMatcher);
+            _logEntryMapper = new LogEntryMapper(options);
         }
 #endif
 
@@ -264,7 +267,7 @@ namespace WireMock.Owin
 
         private void LogRequest(LogEntry entry, bool addRequest)
         {
-            _options.Logger.DebugRequestResponse(LogEntryMapper.Map(entry), entry.RequestMessage.Path.StartsWith("/__admin/"));
+            _options.Logger.DebugRequestResponse(_logEntryMapper.Map(entry), entry.RequestMessage.Path.StartsWith("/__admin/"));
 
             if (addRequest)
             {
