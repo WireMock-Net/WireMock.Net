@@ -10,7 +10,7 @@ interface ITransformer
 
     IBodyData? TransformBody(IMapping mapping, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, IBodyData? bodyData, ReplaceNodeOptions options);
 
-    IDictionary<string, WireMockList<string>>? TransformHeaders(IMapping mapping, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, IDictionary<string, WireMockList<string>>? headers);
+    IDictionary<string, WireMockList<string>> TransformHeaders(IMapping mapping, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, IDictionary<string, WireMockList<string>>? headers);
 
     string TransformString(IMapping mapping, IRequestMessage originalRequestMessage, IResponseMessage originalResponseMessage, string? value);
 }

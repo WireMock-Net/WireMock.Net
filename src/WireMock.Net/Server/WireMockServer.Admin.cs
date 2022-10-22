@@ -617,7 +617,7 @@ public partial class WireMockServer
 
     private IResponseMessage ScenarioReset(IRequestMessage requestMessage)
     {
-        var name = string.Equals("DELETE", requestMessage.Method, StringComparison.OrdinalIgnoreCase) ?
+        var name = string.Equals(HttpRequestMethod.DELETE, requestMessage.Method, StringComparison.OrdinalIgnoreCase) ?
             requestMessage.Path.Substring(AdminScenarios.Length + 1) :
             requestMessage.Path.Split('/').Reverse().Skip(1).First();
 

@@ -1,10 +1,10 @@
 // This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System.Linq;
-using WireMock.Http;
+using Stef.Validation;
+using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using Stef.Validation;
 
 namespace WireMock.RequestBuilders;
 
@@ -13,63 +13,63 @@ public partial class Request
     /// <inheritdoc />
     public IRequestBuilder UsingConnect(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.CONNECT));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.CONNECT));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingDelete(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.DELETE));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.DELETE));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.GET));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.GET));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingHead(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.HEAD));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.HEAD));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingOptions(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.OPTIONS));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.OPTIONS));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingPost(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.POST));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.POST));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.PATCH));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.PATCH));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.PUT));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.PUT));
         return this;
     }
 
     /// <inheritdoc />
     public IRequestBuilder UsingTrace(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethods.TRACE));
+        _requestMatchers.Add(new RequestMessageMethodMatcher(matchBehaviour, MatchOperator.Or, HttpRequestMethod.TRACE));
         return this;
     }
 
