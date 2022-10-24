@@ -1,243 +1,261 @@
-﻿using NFluent;
+using NFluent;
 using System.Collections.Generic;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests;
+
+public class RequestTests
 {
-    public class RequestTests
+    private const string ClientIp = "::1";
+
+    [Fact]
+    public void Should_exclude_requests_matching_given_http_method_but_not_url()
     {
-        private const string ClientIp = "::1";
+        // given
+        var spec = Request.Create().WithPath("/bar").UsingPut();
 
-        [Fact]
-        public void Should_exclude_requests_matching_given_http_method_but_not_url()
+        // when
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
+
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+    }
+
+    [Fact]
+    public void Should_exclude_requests_not_matching_given_headers()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tatata");
+
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().WithPath("/bar").UsingPut();
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
-            // when
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_exclude_requests_not_matching_given_headers_ignorecase()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "abc", false);
 
-        [Fact]
-        public void Should_exclude_requests_not_matching_given_headers()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tatata");
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_matching_given_header_prefix()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tata*");
 
-        [Fact]
-        public void Should_exclude_requests_not_matching_given_headers_ignorecase()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "abc", false);
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "ABC" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_matching_given_wildcard_header()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
 
-        [Fact]
-        public void Should_specify_requests_matching_given_header_prefix()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "tata*");
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_not_matching_given_wildcard_header2()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
 
-        [Fact]
-        public void Should_specify_requests_matching_given_wildcard_header()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_matching_given_wildcard_header_rejectonmatch()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
 
-        [Fact]
-        public void Should_specify_requests_not_matching_given_wildcard_header2()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*");
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
-        }
+    [Fact]
+    public void Should_specify_requests_not_matching_given_wildcard_header_rejectonmatch()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
 
-        [Fact]
-        public void Should_specify_requests_matching_given_wildcard_header_rejectonmatch()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
+            BodyAsString = "whatever",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-tata", new[] { "ToTo" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_matching_given_body()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithBody("Hello world!");
 
-        [Fact]
-        public void Should_specify_requests_not_matching_given_wildcard_header_rejectonmatch()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithHeader("X-toto", "*", WireMock.Matchers.MatchBehaviour.RejectOnMatch);
+            BodyAsString = "Hello world!",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "whatever",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "TaTa" } } });
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(0.0);
-        }
+    [Fact]
+    public void Should_exclude_requests_not_matching_given_body()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithBody("      Hello world!   ");
 
-        [Fact]
-        public void Should_specify_requests_matching_given_body()
+        // when
+        var body = new BodyData
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithBody("Hello world!");
+            BodyAsString = "xxx",
+            DetectedBodyType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "Hello world!",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body);
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
+    }
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
+    [Fact]
+    public void Should_specify_requests_matching_given_param()
+    {
+        // given
+        var spec = Request.Create().WithParam("bar", "1", "2");
 
-        [Fact]
-        public void Should_exclude_requests_not_matching_given_body()
+        // when
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
+
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
+
+    [Fact]
+    public void Should_specify_requests_matching_given_param_WithComma()
+    {
+        // given
+        var options = new WireMockMiddlewareOptions
         {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithBody("      Hello world!   ");
+            QueryParameterMultipleValueSupport = QueryParameterMultipleValueSupport.NoComma
+        };
+        var spec = Request.Create().WithParam("$filter", "startswith(name,'testName')");
 
-            // when
-            var body = new BodyData
-            {
-                BodyAsString = "xxx",
-                DetectedBodyType = BodyType.String
-            };
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
+        // when
+        var request = new RequestMessage(options, new UrlDetails("http://localhost/?$filter=startswith(name,'testName')"), "PUT", ClientIp);
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
-        }
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-        [Fact]
-        public void Should_specify_requests_matching_given_param()
-        {
-            // given
-            var spec = Request.Create().WithParam("bar", "1", "2");
+    [Fact]
+    public void Should_specify_requests_matching_given_param_func()
+    {
+        // given
+        var spec = Request.Create().UsingAnyMethod().WithParam(p => p.ContainsKey("bar"));
 
-            // when
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
+        // when
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+    }
 
-        [Fact]
-        public void Should_specify_requests_matching_given_param_func()
-        {
-            // given
-            var spec = Request.Create().UsingAnyMethod().WithParam(p => p.ContainsKey("bar"));
+    [Fact]
+    public void Should_exclude_requests_not_matching_given_params()
+    {
+        // given
+        var spec = Request.Create().WithParam("bar", "1");
 
-            // when
-            var request = new RequestMessage(new UrlDetails("http://localhost/foo?bar=1&bar=2"), "PUT", ClientIp);
+        // when
+        var request = new RequestMessage(new UrlDetails("http://localhost/test=7"), "PUT", ClientIp);
 
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-        }
-
-        [Fact]
-        public void Should_exclude_requests_not_matching_given_params()
-        {
-            // given
-            var spec = Request.Create().WithParam("bar", "1");
-
-            // when
-            var request = new RequestMessage(new UrlDetails("http://localhost/test=7"), "PUT", ClientIp);
-
-            // then
-            var requestMatchResult = new RequestMatchResult();
-            Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
-        }
+        // then
+        var requestMatchResult = new RequestMatchResult();
+        Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
     }
 }

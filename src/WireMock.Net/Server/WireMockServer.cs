@@ -296,6 +296,7 @@ public partial class WireMockServer : IWireMockServer
         _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _options.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
         _options.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
+        _options.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
 
         if (settings.CustomCertificateDefined)
         {
