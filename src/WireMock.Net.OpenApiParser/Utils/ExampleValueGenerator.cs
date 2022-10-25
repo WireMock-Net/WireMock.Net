@@ -15,7 +15,7 @@ internal class ExampleValueGenerator
 
     public ExampleValueGenerator(WireMockOpenApiParserSettings settings)
     {
-        _settings = Guard.NotNull(settings, nameof(settings));
+        _settings = Guard.NotNull(settings);
 
         // Check if user provided an own implementation
         if (settings.ExampleValues is null)
@@ -31,7 +31,7 @@ internal class ExampleValueGenerator
         }
     }
 
-    public object GetExampleValue(OpenApiSchema schema)
+    public object GetExampleValue(OpenApiSchema? schema)
     {
         var schemaExample = schema?.Example;
         var schemaEnum = GetRandomEnumValue(schema?.Enum);
@@ -112,7 +112,7 @@ internal class ExampleValueGenerator
         }
     }
 
-    private static IOpenApiAny? GetRandomEnumValue(IList<IOpenApiAny> schemaEnum)
+    private static IOpenApiAny? GetRandomEnumValue(IList<IOpenApiAny>? schemaEnum)
     {
         if (schemaEnum?.Count > 0)
         {
