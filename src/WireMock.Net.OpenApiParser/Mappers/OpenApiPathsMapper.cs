@@ -15,371 +15,371 @@ using WireMock.Net.OpenApiParser.Settings;
 using WireMock.Net.OpenApiParser.Types;
 using WireMock.Net.OpenApiParser.Utils;
 
-namespace WireMock.Net.OpenApiParser.Mappers
+namespace WireMock.Net.OpenApiParser.Mappers;
+
+internal class OpenApiPathsMapper
 {
-    internal class OpenApiPathsMapper
+    private const string HeaderContentType = "Content-Type";
+
+    private readonly WireMockOpenApiParserSettings _settings;
+    private readonly ExampleValueGenerator _exampleValueGenerator;
+
+    public OpenApiPathsMapper(WireMockOpenApiParserSettings settings)
     {
-        private const string HeaderContentType = "Content-Type";
+        _settings = Guard.NotNull(settings, nameof(settings));
+        _exampleValueGenerator = new ExampleValueGenerator(settings);
+    }
 
-        private readonly WireMockOpenApiParserSettings _settings;
-        private readonly ExampleValueGenerator _exampleValueGenerator;
+    public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
+    {
+        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+    }
 
-        public OpenApiPathsMapper(WireMockOpenApiParserSettings settings)
+    private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
+    {
+        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+    }
+
+    private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
+    {
+        return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers));
+    }
+
+    private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation, IList<OpenApiServer> servers)
+    {
+        var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
+        var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
+        var headers = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
+
+        var response = operation.Responses.FirstOrDefault();
+
+        TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
+        var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
+        var responseExample = responseContent?.Example;
+        var responseSchemaExample = responseContent?.Schema?.Example;
+
+        var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) :
+            responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
+            MapSchemaToObject(responseSchema);
+
+        var requestBodyModel = new BodyModel();
+        if (operation.RequestBody != null && operation.RequestBody.Content != null && operation.RequestBody.Required)
         {
-            _settings = Guard.NotNull(settings, nameof(settings));
-            _exampleValueGenerator = new ExampleValueGenerator(settings);
+            var request = operation.RequestBody.Content;
+            TryGetContent(request, out OpenApiMediaType requestContent, out string requestContentType);
+
+            var requestBodySchema = operation.RequestBody.Content.First().Value?.Schema;
+            var requestBodyExample = requestContent.Example;
+            var requestBodySchemaExample = requestContent.Schema?.Example;
+
+            var requestBodyMapped = requestBodyExample != null ? MapOpenApiAnyToJToken(requestBodyExample) :
+                requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
+                MapSchemaToObject(requestBodySchema);
+
+            requestBodyModel = MapRequestBody(requestBodyMapped);
         }
 
-        public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
+        if (!int.TryParse(response.Key, out var httpStatusCode))
         {
-            return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+            httpStatusCode = 200;
         }
 
-        private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
+        return new MappingModel
         {
-            return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
-        }
-
-        private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
-        {
-            return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers));
-        }
-
-        private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation, IList<OpenApiServer> servers)
-        {
-            var queryParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Query);
-            var pathParameters = operation.Parameters.Where(p => p.In == ParameterLocation.Path);
-            var headers = operation.Parameters.Where(p => p.In == ParameterLocation.Header);
-
-            var response = operation.Responses.FirstOrDefault();
-
-            TryGetContent(response.Value?.Content, out OpenApiMediaType responseContent, out string responseContentType);
-            var responseSchema = response.Value?.Content?.FirstOrDefault().Value?.Schema;
-            var responseExample = responseContent?.Example;
-            var responseSchemaExample = responseContent?.Schema?.Example;
-
-            var body = responseExample != null ? MapOpenApiAnyToJToken(responseExample) :
-                                   responseSchemaExample != null ? MapOpenApiAnyToJToken(responseSchemaExample) :
-                                   MapSchemaToObject(responseSchema);
-
-            var requestBodyModel = new BodyModel();
-            if (operation.RequestBody != null && operation.RequestBody.Content != null && operation.RequestBody.Required)
+            Guid = Guid.NewGuid(),
+            Request = new RequestModel
             {
-                var request = operation.RequestBody.Content;
-                TryGetContent(request, out OpenApiMediaType requestContent, out string requestContentType);
-
-                var requestBodySchema = operation.RequestBody.Content.First().Value?.Schema;
-                var requestBodyExample = requestContent.Example;
-                var requestBodySchemaExample = requestContent.Schema?.Example;
-
-                var requestBodyMapped = requestBodyExample != null ? MapOpenApiAnyToJToken(requestBodyExample) :
-                                   requestBodySchemaExample != null ? MapOpenApiAnyToJToken(requestBodySchemaExample) :
-                                   MapSchemaToObject(requestBodySchema);
-
-                requestBodyModel = MapRequestBody(requestBodyMapped);
+                Methods = new[] { httpMethod },
+                Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
+                Params = MapQueryParameters(queryParameters),
+                Headers = MapRequestHeaders(headers),
+                Body = requestBodyModel
+            },
+            Response = new ResponseModel
+            {
+                StatusCode = httpStatusCode,
+                Headers = MapHeaders(responseContentType, response.Value?.Headers),
+                BodyAsJson = body
             }
+        };
+    }
 
-            if (!int.TryParse(response.Key, out var httpStatusCode))
+    private BodyModel? MapRequestBody(object? requestBody)
+    {
+        if (requestBody == null)
+        {
+            return null;
+        }
+
+        return new BodyModel
+        {
+            Matcher = new MatcherModel
             {
-                httpStatusCode = 200;
+                Name = "JsonMatcher",
+                Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented),
+                IgnoreCase = _settings.RequestBodyIgnoreCase
             }
+        };
+    }
 
-            return new MappingModel
-            {
-                Guid = Guid.NewGuid(),
-                Request = new RequestModel
+    private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
+    {
+        openApiMediaType = null;
+        contentType = null;
+
+        if (contents == null || contents.Values.Count == 0)
+        {
+            return false;
+        }
+
+        if (contents.TryGetValue("application/json", out var content))
+        {
+            openApiMediaType = content;
+            contentType = "application/json";
+        }
+        else
+        {
+            var first = contents.FirstOrDefault();
+            openApiMediaType = first.Value;
+            contentType = first.Key;
+        }
+
+        return true;
+    }
+
+    private object? MapSchemaToObject(OpenApiSchema schema, string? name = null)
+    {
+        if (schema == null)
+        {
+            return null;
+        }
+
+        switch (schema.GetSchemaType())
+        {
+            case SchemaType.Array:
+                var jArray = new JArray();
+                for (int i = 0; i < _settings.NumberOfArrayItems; i++)
                 {
-                    Methods = new[] { httpMethod },
-                    Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
-                    Params = MapQueryParameters(queryParameters),
-                    Headers = MapRequestHeaders(headers),
-                    Body = requestBodyModel
-                },
-                Response = new ResponseModel
-                {
-                    StatusCode = httpStatusCode,
-                    Headers = MapHeaders(responseContentType, response.Value?.Headers),
-                    BodyAsJson = body
+                    if (schema.Items.Properties.Count > 0)
+                    {
+                        var arrayItem = new JObject();
+                        foreach (var property in schema.Items.Properties)
+                        {
+                            var objectValue = MapSchemaToObject(property.Value, property.Key);
+                            if (objectValue is JProperty jp)
+                            {
+                                arrayItem.Add(jp);
+                            }
+                            else
+                            {
+                                arrayItem.Add(new JProperty(property.Key, objectValue));
+                            }
+                        }
+
+                        jArray.Add(arrayItem);
+                    }
+                    else
+                    {
+                        jArray.Add(MapSchemaToObject(schema.Items, name));
+                    }
                 }
-            };
-        }
 
-        private BodyModel MapRequestBody(object requestBody)
-        {
-            if (requestBody == null)
-            {
+                if (schema.AllOf.Count > 0)
+                {
+                    jArray.Add(MapSchemaAllOfToObject(schema));
+                }
+
+                return jArray;
+
+            case SchemaType.Boolean:
+            case SchemaType.Integer:
+            case SchemaType.Number:
+            case SchemaType.String:
+                return _exampleValueGenerator.GetExampleValue(schema);
+
+            case SchemaType.Object:
+                var propertyAsJObject = new JObject();
+                foreach (var schemaProperty in schema.Properties)
+                {
+                    propertyAsJObject.Add(MapPropertyAsJObject(schemaProperty.Value, schemaProperty.Key));
+                }
+
+                if (schema.AllOf.Count > 0)
+                {
+                    foreach (var property in schema.AllOf)
+                    {
+                        foreach (var item in property.Properties)
+                        {
+                            propertyAsJObject.Add(MapPropertyAsJObject(item.Value, item.Key));
+                        }
+                    }
+                }
+
+                return name != null ? new JProperty(name, propertyAsJObject) : (JToken)propertyAsJObject;
+
+            default:
                 return null;
-            }
-
-            return new BodyModel
-            {
-                Matcher = new MatcherModel
-                {
-                    Name = "JsonMatcher",
-                    Pattern = JsonConvert.SerializeObject(requestBody, Formatting.Indented),
-                    IgnoreCase = _settings.RequestBodyIgnoreCase
-                }
-            };
         }
+    }
 
-        private bool TryGetContent(IDictionary<string, OpenApiMediaType> contents, out OpenApiMediaType openApiMediaType, out string contentType)
+    private JObject MapSchemaAllOfToObject(OpenApiSchema schema)
+    {
+        var arrayItem = new JObject();
+        foreach (var property in schema.AllOf)
         {
-            openApiMediaType = null;
-            contentType = null;
-
-            if (contents == null || contents.Values.Count == 0)
+            foreach (var item in property.Properties)
             {
-                return false;
+                arrayItem.Add(MapPropertyAsJObject(item.Value, item.Key));
             }
+        }
+        return arrayItem;
+    }
 
-            if (contents.TryGetValue("application/json", out var content))
+    private object MapPropertyAsJObject(OpenApiSchema openApiSchema, string key)
+    {
+        if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
+        {
+            var mapped = MapSchemaToObject(openApiSchema, key);
+            if (mapped is JProperty jp)
             {
-                openApiMediaType = content;
-                contentType = "application/json";
+                return jp;
             }
             else
             {
-                var first = contents.FirstOrDefault();
-                openApiMediaType = first.Value;
-                contentType = first.Key;
-            }
-
-            return true;
-        }
-
-        private object MapSchemaToObject(OpenApiSchema schema, string name = null)
-        {
-            if (schema == null)
-            {
-                return null;
-            }
-
-            switch (schema.GetSchemaType())
-            {
-                case SchemaType.Array:
-                    var jArray = new JArray();
-                    for (int i = 0; i < _settings.NumberOfArrayItems; i++)
-                    {
-                        if (schema.Items.Properties.Count > 0)
-                        {
-                            var arrayItem = new JObject();
-                            foreach (var property in schema.Items.Properties)
-                            {
-                                var objectValue = MapSchemaToObject(property.Value, property.Key);
-                                if (objectValue is JProperty jp)
-                                {
-                                    arrayItem.Add(jp);
-                                }
-                                else
-                                {
-                                    arrayItem.Add(new JProperty(property.Key, objectValue));
-                                }
-                            }
-
-                            jArray.Add(arrayItem);
-                        }
-                        else
-                        {
-                            jArray.Add(MapSchemaToObject(schema.Items, name));
-                        }
-                    }
-
-                    if (schema.AllOf.Count > 0)
-                    {
-                        jArray.Add(MapSchemaAllOfToObject(schema));
-                    }
-
-                    return jArray;
-
-                case SchemaType.Boolean:
-                case SchemaType.Integer:
-                case SchemaType.Number:
-                case SchemaType.String:
-                    return _exampleValueGenerator.GetExampleValue(schema);
-
-                case SchemaType.Object:
-                    var propertyAsJObject = new JObject();
-                    foreach (var schemaProperty in schema.Properties)
-                    {
-                        propertyAsJObject.Add(MapPropertyAsJObject(schemaProperty.Value, schemaProperty.Key));
-                    }
-                    if (schema.AllOf.Count > 0)
-                    {
-                        foreach (var property in schema.AllOf)
-                        {
-                            foreach (var item in property.Properties)
-                            {
-                                propertyAsJObject.Add(MapPropertyAsJObject(item.Value, item.Key));
-                            }
-                        }
-                    }
-
-                    return name != null ? new JProperty(name, propertyAsJObject) : (JToken)propertyAsJObject;
-
-                default:
-                    return null;
+                return new JProperty(key, mapped);
             }
         }
-
-        private JObject MapSchemaAllOfToObject(OpenApiSchema schema)
+        else
         {
-            var arrayItem = new JObject();
-            foreach (var property in schema.AllOf)
-            {
-                foreach (var item in property.Properties)
-                {
-                    arrayItem.Add(MapPropertyAsJObject(item.Value, item.Key));
-                }
-            }
-            return arrayItem;
+            // bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
+            return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
+        }
+    }
+
+    private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
+    {
+        if (parameters == null)
+        {
+            return path;
         }
 
-        private object MapPropertyAsJObject(OpenApiSchema openApiSchema, string key)
+        string newPath = path;
+        foreach (var parameter in parameters)
         {
-            if (openApiSchema.GetSchemaType() == SchemaType.Object || openApiSchema.GetSchemaType() == SchemaType.Array)
-            {
-                var mapped = MapSchemaToObject(openApiSchema, key);
-                if (mapped is JProperty jp)
-                {
-                    return jp;
-                }
-                else
-                {
-                    return new JProperty(key, mapped);
-                }
-            }
-            else
-            {
-                // bool propertyIsNullable = openApiSchema.Nullable || (openApiSchema.TryGetXNullable(out bool x) && x);
-                return new JProperty(key, _exampleValueGenerator.GetExampleValue(openApiSchema));
-            }
+            var exampleMatcherModel = GetExampleMatcherModel(parameter.Schema, _settings.PathPatternToUse);
+            newPath = newPath.Replace($"{{{parameter.Name}}}", exampleMatcherModel.Pattern as string);
         }
 
-        private string MapPathWithParameters(string path, IEnumerable<OpenApiParameter> parameters)
+        return newPath;
+    }
+
+    private string MapBasePath(IList<OpenApiServer> servers)
+    {
+        if (servers == null || servers.Count == 0)
         {
-            if (parameters == null)
-            {
-                return path;
-            }
-
-            string newPath = path;
-            foreach (var parameter in parameters)
-            {
-                var exampleMatcherModel = GetExampleMatcherModel(parameter.Schema, _settings.PathPatternToUse);
-                newPath = newPath.Replace($"{{{parameter.Name}}}", exampleMatcherModel.Pattern as string);
-            }
-
-            return newPath;
-        }
-
-        private string MapBasePath(IList<OpenApiServer> servers)
-        {
-            if (servers == null || servers.Count == 0)
-            {
-                return string.Empty;
-            }
-
-            OpenApiServer server = servers.First();
-            if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out Uri uriResult))
-            {
-                return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
-            }
-
             return string.Empty;
         }
 
-        private JToken MapOpenApiAnyToJToken(IOpenApiAny any)
+        OpenApiServer server = servers.First();
+        if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out Uri uriResult))
         {
-            if (any == null)
-            {
-                return null;
-            }
-
-            using var outputString = new StringWriter();
-            var writer = new OpenApiJsonWriter(outputString);
-            any.Write(writer, OpenApiSpecVersion.OpenApi3_0);
-
-            if (any.AnyType == AnyType.Array)
-            {
-                return JArray.Parse(outputString.ToString());
-            }
-            else
-            {
-                return JObject.Parse(outputString.ToString());
-            }
+            return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
         }
 
-        private IDictionary<string, object> MapHeaders(string responseContentType, IDictionary<string, OpenApiHeader> headers)
+        return string.Empty;
+    }
+
+    private JToken MapOpenApiAnyToJToken(IOpenApiAny any)
+    {
+        if (any == null)
         {
-            var mappedHeaders = headers.ToDictionary(
-                item => item.Key,
-                item => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern
-            );
-
-            if (!string.IsNullOrEmpty(responseContentType))
-            {
-                mappedHeaders.TryAdd(HeaderContentType, responseContentType);
-            }
-
-            return mappedHeaders.Keys.Any() ? mappedHeaders : null;
+            return null;
         }
 
-        private IList<ParamModel> MapQueryParameters(IEnumerable<OpenApiParameter> queryParameters)
+        using var outputString = new StringWriter();
+        var writer = new OpenApiJsonWriter(outputString);
+        any.Write(writer, OpenApiSpecVersion.OpenApi3_0);
+
+        if (any.AnyType == AnyType.Array)
         {
-            var list = queryParameters
-                .Where(req => req.Required)
-                .Select(qp => new ParamModel
+            return JArray.Parse(outputString.ToString());
+        }
+        else
+        {
+            return JObject.Parse(outputString.ToString());
+        }
+    }
+
+    private IDictionary<string, object> MapHeaders(string responseContentType, IDictionary<string, OpenApiHeader> headers)
+    {
+        var mappedHeaders = headers.ToDictionary(
+            item => item.Key,
+            item => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern
+        );
+
+        if (!string.IsNullOrEmpty(responseContentType))
+        {
+            mappedHeaders.TryAdd(HeaderContentType, responseContentType);
+        }
+
+        return mappedHeaders.Keys.Any() ? mappedHeaders : null;
+    }
+
+    private IList<ParamModel> MapQueryParameters(IEnumerable<OpenApiParameter> queryParameters)
+    {
+        var list = queryParameters
+            .Where(req => req.Required)
+            .Select(qp => new ParamModel
+            {
+                Name = qp.Name,
+                IgnoreCase = _settings.QueryParameterPatternIgnoreCase,
+                Matchers = new[]
                 {
-                    Name = qp.Name,
-                    IgnoreCase = _settings.QueryParameterPatternIgnoreCase,
-                    Matchers = new[]
-                    {
-                        GetExampleMatcherModel(qp.Schema, _settings.QueryParameterPatternToUse)
-                    }
-                })
-                .ToList();
+                    GetExampleMatcherModel(qp.Schema, _settings.QueryParameterPatternToUse)
+                }
+            })
+            .ToList();
 
-            return list.Any() ? list : null;
-        }
+        return list.Any() ? list : null;
+    }
 
-        private IList<HeaderModel> MapRequestHeaders(IEnumerable<OpenApiParameter> headers)
-        {
-            var list = headers
-                .Where(req => req.Required)
-                .Select(qp => new HeaderModel
+    private IList<HeaderModel> MapRequestHeaders(IEnumerable<OpenApiParameter> headers)
+    {
+        var list = headers
+            .Where(req => req.Required)
+            .Select(qp => new HeaderModel
+            {
+                Name = qp.Name,
+                IgnoreCase = _settings.HeaderPatternIgnoreCase,
+                Matchers = new[]
                 {
-                    Name = qp.Name,
-                    IgnoreCase = _settings.HeaderPatternIgnoreCase,
-                    Matchers = new[]
-                    {
-                        GetExampleMatcherModel(qp.Schema, _settings.HeaderPatternToUse)
-                    }
-                })
-                .ToList();
+                    GetExampleMatcherModel(qp.Schema, _settings.HeaderPatternToUse)
+                }
+            })
+            .ToList();
 
-            return list.Any() ? list : null;
-        }
+        return list.Any() ? list : null;
+    }
 
-        private MatcherModel GetExampleMatcherModel(OpenApiSchema schema, ExampleValueType type)
+    private MatcherModel GetExampleMatcherModel(OpenApiSchema schema, ExampleValueType type)
+    {
+        return type switch
         {
-            return type switch
-            {
-                ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema), IgnoreCase = _settings.IgnoreCaseExampleValues },
+            ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema), IgnoreCase = _settings.IgnoreCaseExampleValues },
 
-                _ => new MatcherModel { Name = "WildcardMatcher", Pattern = "*" }
-            };
-        }
+            _ => new MatcherModel { Name = "WildcardMatcher", Pattern = "*" }
+        };
+    }
 
-        private string GetExampleValueAsStringForSchemaType(OpenApiSchema schema)
+    private string GetExampleValueAsStringForSchemaType(OpenApiSchema schema)
+    {
+        var value = _exampleValueGenerator.GetExampleValue(schema);
+
+        return value switch
         {
-            var value = _exampleValueGenerator.GetExampleValue(schema);
+            string valueAsString => valueAsString,
 
-            return value switch
-            {
-                string valueAsString => valueAsString,
-
-                _ => value.ToString(),
-            };
-        }
+            _ => value.ToString(),
+        };
     }
 }
