@@ -10,7 +10,6 @@ using Owin;
 #else
 using IAppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Microsoft.Extensions.DependencyInjection;
-using WireMock.Types;
 #endif
 
 namespace WireMock.Owin;

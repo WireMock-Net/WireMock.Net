@@ -10,7 +10,7 @@ namespace WireMock.Net
     public class Program
     {
         private static readonly int SleepTime = 30000;
-        private static readonly ILogger xLogger = LoggerFactory.Create(o =>
+        private static readonly ILogger MicrosoftLogger = LoggerFactory.Create(o =>
         {
             o.SetMinimumLevel(LogLevel.Debug);
             o.AddSimpleConsole(options =>
@@ -20,13 +20,13 @@ namespace WireMock.Net
                 options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss ";
             });
         }).CreateLogger("WireMock.Net");
-        private static readonly IWireMockLogger Logger = new WireMockLogger(xLogger);
+        private static readonly IWireMockLogger Logger = new WireMockLogger(MicrosoftLogger);
 
-        private static WireMockServer Server;
+        private static WireMockServer? _server;
 
         static async Task Main(string[] args)
         {
-            if (!StandAloneApp.TryStart(args, out Server, Logger))
+            if (!StandAloneApp.TryStart(args, out _server, Logger))
             {
                 return;
             }
@@ -45,7 +45,7 @@ namespace WireMock.Net
 
             while (true)
             {
-                Logger.Info("Server running : {IsStarted}", Server.IsStarted);
+                Logger.Info("Server running : {IsStarted}", _server.IsStarted);
                 await Task.Delay(SleepTime).ConfigureAwait(false);
             }
         }
@@ -53,7 +53,7 @@ namespace WireMock.Net
         private static void Stop(string why)
         {
             Logger.Info("Server stopping because '{why}'", why);
-            Server.Stop();
+            _server.Stop();
             Logger.Info("Server stopped");
         }
     }

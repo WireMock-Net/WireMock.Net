@@ -34,7 +34,7 @@ namespace WireMock.Net.OpenApiParser.Settings
         /// - <see cref="WireMockOpenApiParserExampleValues"/>
         /// - <see cref="WireMockOpenApiParserDynamicExampleValues"/>
         /// </summary>
-        public IWireMockOpenApiParserExampleValues ExampleValues { get; set; }
+        public IWireMockOpenApiParserExampleValues? ExampleValues { get; set; }
 
         /// <summary>
         /// Is a Header match case insensitive? (default is true).

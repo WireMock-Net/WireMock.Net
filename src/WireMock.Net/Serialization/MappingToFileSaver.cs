@@ -30,7 +30,7 @@ internal class MappingToFileSaver
         }
 
         var model = _mappingConverter.ToMappingModel(mapping);
-        string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title) : mapping.Guid.ToString()) + ".json";
+        string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title!) : mapping.Guid.ToString()) + ".json";
 
         string path = Path.Combine(folder, filename);
 

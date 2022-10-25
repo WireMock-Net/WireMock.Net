@@ -27,7 +27,7 @@ public class RequestMessage : IRequestMessage
     public string AbsoluteUrl { get; }
 
     /// <inheritdoc cref="IRequestMessage.ProxyUrl" />
-    public string ProxyUrl { get; set; }
+    public string? ProxyUrl { get; set; }
 
     /// <inheritdoc cref="IRequestMessage.DateTime" />
     public DateTime DateTime { get; set; }

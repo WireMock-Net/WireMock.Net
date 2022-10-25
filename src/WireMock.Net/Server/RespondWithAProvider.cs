@@ -30,7 +30,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private readonly WireMockServerSettings _settings;
     private readonly bool _saveToFile;
 
-    private bool _useWebhookFireAndForget = false;
+    private bool _useWebhookFireAndForget;
 
     public Guid Guid { get; private set; } = Guid.NewGuid();
 
