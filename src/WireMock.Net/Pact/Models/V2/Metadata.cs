@@ -1,9 +1,9 @@
-namespace WireMock.Pact.Models.V2
-{
-    public class Metadata
-    {
-        public string PactSpecificationVersion { get; set; }
+#pragma warning disable CS1591
+namespace WireMock.Pact.Models.V2;
 
-        public PactSpecification PactSpecification { get; set; } = new PactSpecification();
-    }
+public class Metadata
+{
+    public string PactSpecificationVersion { get; set; }
+
+    public PactSpecification PactSpecification { get; set; } = new PactSpecification();
 }

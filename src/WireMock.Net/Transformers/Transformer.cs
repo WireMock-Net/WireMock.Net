@@ -36,7 +36,7 @@ internal class Transformer : ITransformer
         return newBodyData;
     }
 
-    public IDictionary<string, WireMockList<string>>? TransformHeaders(
+    public IDictionary<string, WireMockList<string>> TransformHeaders(
         IMapping mapping,
         IRequestMessage originalRequestMessage,
         IResponseMessage originalResponseMessage,
@@ -239,6 +239,7 @@ internal class Transformer : ITransformer
         }
     }
 
+    // ReSharper disable once UnusedParameter.Local
     private static void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, string transformedString)
     {
         StringUtils.TryParseQuotedString(transformedString, out var result, out _);
@@ -270,13 +271,13 @@ internal class Transformer : ITransformer
             Encoding = original.Encoding,
             DetectedBodyType = original.DetectedBodyType,
             DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
-            BodyAsString = handlebarsContext.ParseAndRender(original.BodyAsString, model)
+            BodyAsString = handlebarsContext.ParseAndRender(original.BodyAsString!, model)
         };
     }
 
     private static IBodyData TransformBodyAsFile(ITransformerContext handlebarsContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
     {
-        string transformedBodyAsFilename = handlebarsContext.ParseAndRender(original.BodyAsFile, model);
+        string transformedBodyAsFilename = handlebarsContext.ParseAndRender(original.BodyAsFile!, model);
 
         if (!useTransformerForBodyAsFile)
         {

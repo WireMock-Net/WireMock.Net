@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using WireMock.Constants;
 using WireMock.Server;
 using WireMock.Types;
 
@@ -169,39 +170,39 @@ public class WireMockAssertions
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingConnect(string because = "", params object[] becauseArgs)
-        => UsingMethod("CONNECT", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.CONNECT, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingDelete(string because = "", params object[] becauseArgs)
-        => UsingMethod("DELETE", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.DELETE, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingGet(string because = "", params object[] becauseArgs)
-        => UsingMethod("GET", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.GET, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingHead(string because = "", params object[] becauseArgs)
-        => UsingMethod("HEAD", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.HEAD, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingOptions(string because = "", params object[] becauseArgs)
-        => UsingMethod("OPTIONS", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.OPTIONS, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingPost(string because = "", params object[] becauseArgs)
-        => UsingMethod("POST", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.POST, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingPatch(string because = "", params object[] becauseArgs)
-        => UsingMethod("PATCH", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.PATCH, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingPut(string because = "", params object[] becauseArgs)
-        => UsingMethod("PUT", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.PUT, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingTrace(string because = "", params object[] becauseArgs)
-        => UsingMethod("TRACE", because, becauseArgs);
+        => UsingMethod(HttpRequestMethod.TRACE, because, becauseArgs);
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> UsingAnyMethod(string because = "", params object[] becauseArgs)

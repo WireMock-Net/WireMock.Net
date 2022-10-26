@@ -1,9 +1,9 @@
-namespace WireMock.Http;
+namespace WireMock.Constants;
 
 /// <summary>
 /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 /// </summary>
-internal static class HttpRequestMethods
+public static class HttpRequestMethod
 {
     public const string CONNECT = "CONNECT";
     public const string DELETE = "DELETE";

@@ -46,6 +46,8 @@ public partial class WireMockServer
     private static readonly RegexMatcher AdminRequestContentTypeJson = new ContentTypeMatcher(WireMockConstants.ContentTypeJson, true);
     private static readonly RegexMatcher AdminMappingsGuidPathMatcher = new(@"^\/__admin\/mappings\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
     private static readonly RegexMatcher AdminRequestsGuidPathMatcher = new(@"^\/__admin\/requests\/([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$");
+    private static readonly RegexMatcher AdminScenariosNameMatcher = new(@"^\/__admin\/scenarios\/.+$");
+    private static readonly RegexMatcher AdminScenariosNameWithResetMatcher = new(@"^\/__admin\/scenarios\/.+\/reset$");
 
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
@@ -93,9 +95,11 @@ public partial class WireMockServer
         // __admin/scenarios
         Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
         Given(Request.Create().WithPath(AdminScenarios).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
+        Given(Request.Create().WithPath(AdminScenariosNameMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenarioReset));
 
         // __admin/scenarios/reset
         Given(Request.Create().WithPath(AdminScenarios + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
+        Given(Request.Create().WithPath(AdminScenariosNameWithResetMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenarioReset));
 
         // __admin/files/{filename}
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
@@ -609,6 +613,17 @@ public partial class WireMockServer
         ResetScenarios();
 
         return ResponseMessageBuilder.Create("Scenarios reset");
+    }
+
+    private IResponseMessage ScenarioReset(IRequestMessage requestMessage)
+    {
+        var name = string.Equals(HttpRequestMethod.DELETE, requestMessage.Method, StringComparison.OrdinalIgnoreCase) ?
+            requestMessage.Path.Substring(AdminScenarios.Length + 1) :
+            requestMessage.Path.Split('/').Reverse().Skip(1).First();
+
+        return ResetScenario(name) ?
+            ResponseMessageBuilder.Create("Scenario reset") :
+            ResponseMessageBuilder.Create($"No scenario found by name '{name}'.", 404);
     }
     #endregion
 

@@ -1,4 +1,4 @@
-﻿using RestEase;
+using RestEase;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
@@ -178,6 +178,20 @@ namespace WireMock.Client
         /// </summary>
         [Post("scenarios")]
         Task<StatusModel> ResetScenariosAsync();
+
+        /// <summary>
+        /// Delete (reset) a specific scenario
+        /// </summary>
+        [Delete("scenarios/{name}")]
+        [AllowAnyStatusCode]
+        Task<StatusModel> DeleteScenarioAsync([Path] string name);
+
+        /// <summary>
+        /// Delete (reset) all scenarios
+        /// </summary>
+        [Post("scenarios/{name}/reset")]
+        [AllowAnyStatusCode]
+        Task<StatusModel> ResetScenarioAsync([Path] string name);
 
         /// <summary>
         /// Create a new File
