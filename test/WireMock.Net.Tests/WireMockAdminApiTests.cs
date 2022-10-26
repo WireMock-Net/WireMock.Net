@@ -603,5 +603,31 @@ public class WireMockAdminApiTests
 
         server.Stop();
     }
+
+    [Fact]
+    public async Task IWireMockAdminApi_DeleteScenarioUsingDeleteAsync()
+    {
+        // Arrange
+        var name = "x";
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        var status = await api.DeleteScenarioAsync(name).ConfigureAwait(false);
+        status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_DeleteScenarioUsingPostAsync()
+    {
+        // Arrange
+        var name = "x";
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        var status = await api.ResetScenarioAsync(name).ConfigureAwait(false);
+        status.Status.Should().Be("No scenario found by name 'x'.");
+    }
 }
 #endif

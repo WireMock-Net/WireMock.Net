@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Stef.Validation;
-using WireMock.Http;
+using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.Types;
 
@@ -29,15 +29,15 @@ internal static class BodyParser
     */
     private static readonly IDictionary<string, bool> BodyAllowedForMethods = new Dictionary<string, bool>
     {
-        { HttpRequestMethods.HEAD, false },
-        { HttpRequestMethods.GET, false },
-        { HttpRequestMethods.PUT, true },
-        { HttpRequestMethods.POST, true },
-        { HttpRequestMethods.DELETE, true },
-        { HttpRequestMethods.TRACE, false },
-        { HttpRequestMethods.OPTIONS, true },
-        { HttpRequestMethods.CONNECT, false },
-        { HttpRequestMethods.PATCH, true }
+        { HttpRequestMethod.HEAD, false },
+        { HttpRequestMethod.GET, false },
+        { HttpRequestMethod.PUT, true },
+        { HttpRequestMethod.POST, true },
+        { HttpRequestMethod.DELETE, true },
+        { HttpRequestMethod.TRACE, false },
+        { HttpRequestMethod.OPTIONS, true },
+        { HttpRequestMethod.CONNECT, false },
+        { HttpRequestMethod.PATCH, true }
     };
 
     private static readonly IStringMatcher[] MultipartContentTypesMatchers = {
@@ -122,7 +122,7 @@ internal static class BodyParser
         // In case of MultiPart: check if the BodyAsBytes is a valid UTF8 or ASCII string, in that case read as String else keep as-is
         if (data.DetectedBodyTypeFromContentType == BodyType.MultiPart)
         {
-            if (BytesEncodingUtils.TryGetEncoding(data.BodyAsBytes, out Encoding encoding) &&
+            if (BytesEncodingUtils.TryGetEncoding(data.BodyAsBytes, out var encoding) &&
                 SupportedBodyAsStringEncodingForMultipart.Select(x => x.Equals(encoding)).Any())
             {
                 data.BodyAsString = encoding.GetString(data.BodyAsBytes);

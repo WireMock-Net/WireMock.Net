@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using JetBrains.Annotations;
 using WireMock.Admin.Mappings;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
 
 namespace WireMock.Server
 {
@@ -143,6 +141,11 @@ namespace WireMock.Server
         /// Resets all Scenarios.
         /// </summary>
         void ResetScenarios();
+
+        /// <summary>
+        /// Resets a specific Scenario by the name.
+        /// </summary>
+        bool ResetScenario(string name);
 
         /// <summary>
         /// Resets the LogEntries.

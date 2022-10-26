@@ -1,11 +1,11 @@
+#pragma warning disable CS1591
 using System.Collections.Generic;
 
-namespace WireMock.Pact.Models.V2
-{
-    public class ProviderState
-    {
-        public string Name { get; set; }
+namespace WireMock.Pact.Models.V2;
 
-        public IDictionary<string, string> Params { get; set; }
-    }
+public class ProviderState
+{
+    public string Name { get; set; }
+
+    public IDictionary<string, string> Params { get; set; }
 }
