@@ -30,7 +30,6 @@
     },
     "Response": {
         "StatusCode": 204,
-        "Body": "",
         "Headers": {
             "Server": "Azurite-Queue/3.19.0",
             "x-ms-client-request-id": "{{request.headers.x-ms-client-request-id}}",
