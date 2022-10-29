@@ -58,4 +58,9 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Default value is false.
     /// </summary>
     public bool UseDefinedRequestMatchers { get; set; }
+
+    /// <summary>
+    /// Append an unique GUID to the filename from the saved mapping file.
+    /// </summary>
+    public bool AppendGuidToSavedMappingFile { get; set; }
 }

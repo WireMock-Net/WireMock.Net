@@ -1,0 +1,46 @@
+{
+    "Guid": "17c7a389-98e1-4383-975d-54c82d1e3860",
+    "Title": "Proxy Mapping for HEAD /devstoreaccount1/myqueue-items",
+    "Description": "Proxy Mapping for HEAD /devstoreaccount1/myqueue-items",
+    "Request": {
+        "Path": {
+            "Matchers": [
+                {
+                    "Name": "WildcardMatcher",
+                    "Pattern": "/devstoreaccount1/myqueue-items",
+                    "IgnoreCase": false
+                }
+            ]
+        },
+        "Methods": [
+            "HEAD"
+        ],
+        "Params": [
+            {
+                "Name": "comp",
+                "Matchers": [
+                    {
+                        "Name": "ExactMatcher",
+                        "Pattern": "metadata",
+                        "IgnoreCase": false
+                    }
+                ]
+            }
+        ]
+    },
+    "Response": {
+        "StatusCode": 200,
+        "Body": "",
+        "Headers": {
+            "Server": "Azurite-Queue/3.19.0",
+            "x-ms-client-request-id": "{{request.headers.x-ms-client-request-id}}",
+            "x-ms-approximate-messages-count": "0",
+            "x-ms-request-id": "{{Random Type=\"Guid\"}}",
+            "x-ms-version": "2021-10-04",
+            "Date": "{{DateTime.Now \"ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’\"}}",
+            "Connection": "keep-alive",
+            "Keep-Alive": "timeout=5"
+        },
+        "UseTransformer": true
+    }
+}

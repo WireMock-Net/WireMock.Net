@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WireMock.Util;
@@ -35,15 +36,18 @@ internal static class HttpResponseMessageHelper
                 contentEncodingHeader = headers.First(header => string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase)).Value;
             }
 
-            var bodyParserSettings = new BodyParserSettings
+            if (httpResponseMessage.StatusCode != HttpStatusCode.NoContent) // A body is not allowed for 204.
             {
-                Stream = stream,
-                ContentType = contentTypeHeader?.FirstOrDefault(),
-                DeserializeJson = deserializeJson,
-                ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
-                DecompressGZipAndDeflate = decompressGzipAndDeflate
-            };
-            responseMessage.BodyData = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
+                var bodyParserSettings = new BodyParserSettings
+                {
+                    Stream = stream,
+                    ContentType = contentTypeHeader?.FirstOrDefault(),
+                    DeserializeJson = deserializeJson,
+                    ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
+                    DecompressGZipAndDeflate = decompressGzipAndDeflate
+                };
+                responseMessage.BodyData = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
+            }
         }
 
         foreach (var header in headers)
