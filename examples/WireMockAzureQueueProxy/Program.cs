@@ -26,16 +26,6 @@ static class Program
             //}
         });
 
-        //server
-        //    .Given(Request.Create().UsingGet())
-        //    .RespondWith(Response.Create()
-        //       .WithProxy(new ProxyAndRecordSettings
-        //       {
-        //           Url = "http://postman-echo.com/post",
-        //           SaveMapping = true,
-        //           SaveMappingToFile = true
-        //       }));
-
         System.Console.WriteLine("Press any key to stop the server");
         System.Console.ReadKey();
         server.Stop();
