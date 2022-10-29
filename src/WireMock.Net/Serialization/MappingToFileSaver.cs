@@ -13,11 +13,8 @@ internal class MappingToFileSaver
 
     public MappingToFileSaver(WireMockServerSettings settings, MappingConverter mappingConverter)
     {
-        Guard.NotNull(settings);
-        Guard.NotNull(mappingConverter);
-
-        _settings = settings;
-        _mappingConverter = mappingConverter;
+        _settings = Guard.NotNull(settings);
+        _mappingConverter = Guard.NotNull(mappingConverter);
     }
 
     public void SaveMappingToFile(IMapping mapping, string? folder = null)
@@ -30,17 +27,31 @@ internal class MappingToFileSaver
         }
 
         var model = _mappingConverter.ToMappingModel(mapping);
-        string filename = (!string.IsNullOrEmpty(mapping.Title) ? SanitizeFileName(mapping.Title!) : mapping.Guid.ToString()) + ".json";
 
-        string path = Path.Combine(folder, filename);
+        var filename = BuildSanitizedFileName(mapping);
+        var path = Path.Combine(folder, filename);
 
-        _settings.Logger.Info("Saving Mapping file {0}", filename);
+        _settings.Logger.Info("Saving Mapping file {0}", path);
 
         _settings.FileSystemHandler.WriteMappingFile(path, JsonConvert.SerializeObject(model, JsonSerializationConstants.JsonSerializerSettingsDefault));
     }
 
-    private static string SanitizeFileName(string name, char replaceChar = '_')
+    private string BuildSanitizedFileName(IMapping mapping, char replaceChar = '_')
     {
-        return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar));
+        string name;
+        if (!string.IsNullOrEmpty(mapping.Title))
+        {
+            name = mapping.Title!;
+            if (_settings.ProxyAndRecordSettings?.AppendGuidToSavedMappingFile == true)
+            {
+                name += $"{replaceChar}{mapping.Guid}";
+            }
+        }
+        else
+        {
+            name = mapping.Guid.ToString();
+        }
+
+        return $"{Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, replaceChar))}.json";
     }
 }

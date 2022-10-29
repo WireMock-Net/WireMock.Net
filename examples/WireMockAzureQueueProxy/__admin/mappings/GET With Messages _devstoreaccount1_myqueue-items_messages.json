@@ -1,0 +1,59 @@
+{
+    "Scenario": "AzureQueue Get Messages",
+    "SetStateTo": "No more messages",
+    "Guid": "da9c6799-fbf8-41b6-8933-0df50f821ebb",
+    "Title": "Proxy Mapping for GET /devstoreaccount1/myqueue-items/messages",
+    "Description": "Proxy Mapping for GET /devstoreaccount1/myqueue-items/messages",
+    "Request": {
+        "Path": {
+            "Matchers": [
+                {
+                    "Name": "WildcardMatcher",
+                    "Pattern": "/devstoreaccount1/myqueue-items/messages",
+                    "IgnoreCase": false
+                }
+            ]
+        },
+        "Methods": [
+            "GET"
+        ],
+        "Params": [
+            {
+                "Name": "numofmessages",
+                "Matchers": [
+                    {
+                        "Name": "WildcardMatcher",
+                        "Pattern": "*",
+                        "IgnoreCase": true
+                    }
+                ]
+            },
+            {
+                "Name": "visibilitytimeout",
+                "Matchers": [
+                    {
+                        "Name": "WildcardMatcher",
+                        "Pattern": "*",
+                        "IgnoreCase": false
+                    }
+                ]
+            }
+        ]
+    },
+    "Response": {
+        "StatusCode": 200,
+        "Body": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><QueueMessagesList><QueueMessage><MessageId>41b2aadc-d6ea-4c3c-ae20-2ae72eb08d88</MessageId><InsertionTime>Sat, 29 Oct 2022 07:11:40 GMT</InsertionTime><ExpirationTime>Sat, 31 Dec 2022 07:11:40 GMT</ExpirationTime><PopReceipt>MjlPY3QyMDIyMDc6MTE6NDAyMjU2</PopReceipt><TimeNextVisible>Sat, 29 Oct 2022 07:21:40 GMT</TimeNextVisible><DequeueCount>1</DequeueCount><MessageText>c3RlZg==</MessageText></QueueMessage></QueueMessagesList>",
+        "Headers": {
+            "Content-Type": "application/xml",
+            "Server": "Azurite-Queue/3.19.0",
+            "x-ms-client-request-id": "{{request.headers.x-ms-client-request-id}}",
+            "x-ms-request-id": "{{Random Type=\"Guid\"}}",
+            "x-ms-version": "2021-10-04",
+            "Date": "{{DateTime.Now \"ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’\"}}",
+            "Connection": "keep-alive",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked"
+        },
+        "UseTransformer": true
+    }
+}

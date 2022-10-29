@@ -1,0 +1,60 @@
+{
+    "Scenario": "AzureQueue Get Messages",
+    "WhenStateIs": "No more messages",
+    "SetStateTo": "No more messages",
+    "Guid": "4c871968-29ee-472b-a548-170444d4cc3e",
+    "Title": "Proxy Mapping for GET NO MSG /devstoreaccount1/myqueue-items/messages",
+    "Description": "Proxy Mapping for GET NO MSG /devstoreaccount1/myqueue-items/messages",
+    "Request": {
+        "Path": {
+            "Matchers": [
+                {
+                    "Name": "WildcardMatcher",
+                    "Pattern": "/devstoreaccount1/myqueue-items/messages",
+                    "IgnoreCase": false
+                }
+            ]
+        },
+        "Methods": [
+            "GET"
+        ],
+        "Params": [
+            {
+                "Name": "numofmessages",
+                "Matchers": [
+                    {
+                        "Name": "ExactMatcher",
+                        "Pattern": "16",
+                        "IgnoreCase": false
+                    }
+                ]
+            },
+            {
+                "Name": "visibilitytimeout",
+                "Matchers": [
+                    {
+                        "Name": "ExactMatcher",
+                        "Pattern": "600",
+                        "IgnoreCase": false
+                    }
+                ]
+            }
+        ]
+    },
+    "Response": {
+        "StatusCode": 200,
+        "Body": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><QueueMessagesList/>",
+        "Headers": {
+            "Content-Type": "application/xml",
+            "Server": "Azurite-Queue/3.19.0",
+            "x-ms-client-request-id": "{{request.headers.x-ms-client-request-id}}",
+            "x-ms-request-id": "{{Random Type=\"Guid\"}}",
+            "x-ms-version": "2021-10-04",
+            "Date": "{{DateTime.Now \"ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’\"}}",
+            "Connection": "keep-alive",
+            "Keep-Alive": "timeout=5",
+            "Transfer-Encoding": "chunked"
+        },
+        "UseTransformer": true
+    }
+}

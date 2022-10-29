@@ -99,7 +99,14 @@ namespace WireMock.Owin.Mappers
 
             if (bytes != null)
             {
-                await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                try
+                {
+                    await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Warn("Error writing response body. Exception : {0}", ex);
+                }
             }
         }
 

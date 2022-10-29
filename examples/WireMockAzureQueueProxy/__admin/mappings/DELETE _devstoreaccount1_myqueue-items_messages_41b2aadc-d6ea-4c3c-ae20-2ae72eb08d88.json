@@ -1,0 +1,44 @@
+{
+    "Guid": "b4a2ff02-fb7f-4496-8c04-9aafc4f5f8f7",
+    "Title": "Proxy Mapping for DELETE /devstoreaccount1/myqueue-items/messages/41b2aadc-d6ea-4c3c-ae20-2ae72eb08d88",
+    "Description": "Proxy Mapping for DELETE /devstoreaccount1/myqueue-items/messages/41b2aadc-d6ea-4c3c-ae20-2ae72eb08d88",
+    "Request": {
+        "Path": {
+            "Matchers": [
+                {
+                    "Name": "WildcardMatcher",
+                    "Pattern": "/devstoreaccount1/myqueue-items/messages/41b2aadc-d6ea-4c3c-ae20-2ae72eb08d88",
+                    "IgnoreCase": false
+                }
+            ]
+        },
+        "Methods": [
+            "DELETE"
+        ],
+        "Params": [
+            {
+                "Name": "popreceipt",
+                "Matchers": [
+                    {
+                        "Name": "WildcardMatcher",
+                        "Pattern": "*",
+                        "IgnoreCase": false
+                    }
+                ]
+            }
+        ]
+    },
+    "Response": {
+        "StatusCode": 204,
+        "Headers": {
+            "Server": "Azurite-Queue/3.19.0",
+            "x-ms-client-request-id": "{{request.headers.x-ms-client-request-id}}",
+            "x-ms-request-id": "{{Random Type=\"Guid\"}}",
+            "x-ms-version": "2021-10-04",
+            "Date": "{{DateTime.Now \"ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’\"}}",
+            "Connection": "keep-alive",
+            "Keep-Alive": "timeout=5"
+        },
+        "UseTransformer": true
+    }
+}
