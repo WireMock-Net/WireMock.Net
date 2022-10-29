@@ -1,9 +1,9 @@
-# 1.5.8 (16 October 2022)
-- #816 Some fixes to WireMock.Net.Assertions [feature]
-- #817 ExactMatcher : IgnoreCase [feature]
-- #824 WebHook - Transform Url [feature]
-- #814 WithHeader cannot handle multiple requests with the same header key values [bug]
-- #815 Why does UsingMethod check _callscount? [bug]
-- #822 Webhook with generic url, body and custom header values [feature]
+# 1.5.9 (29 October 2022)
+- #828 Add setting to skip saving the string-response in the logging when using WithBody(Func...) [feature]
+- #832 Fixes for WireMock.Net.FluentAssertions (callcount behaviour) [feature]
+- #834 Support deleting / resetting a single scenario [feature]
+- #837 Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.7 to 2.1.25 in /examples/WireMock.Net.StandAlone.Net461 [dependencies]
+- #838 Add option to ProxySettings to append guid to mapping file
+- #826 Dynamic Body not to be cached when a Func is used to created the body [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

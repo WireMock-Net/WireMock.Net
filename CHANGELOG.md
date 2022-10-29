@@ -1,3 +1,11 @@
+# 1.5.9 (29 October 2022)
+- [#828](https://github.com/WireMock-Net/WireMock.Net/pull/828) - Add setting to skip saving the string-response in the logging when using WithBody(Func...) [feature] contributed by [StefH](https://github.com/StefH)
+- [#832](https://github.com/WireMock-Net/WireMock.Net/pull/832) - Fixes for WireMock.Net.FluentAssertions (callcount behaviour) [feature] contributed by [StefH](https://github.com/StefH)
+- [#834](https://github.com/WireMock-Net/WireMock.Net/pull/834) - Support deleting / resetting a single scenario [feature] contributed by [StefH](https://github.com/StefH)
+- [#837](https://github.com/WireMock-Net/WireMock.Net/pull/837) - Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.7 to 2.1.25 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#838](https://github.com/WireMock-Net/WireMock.Net/pull/838) - Add option to ProxySettings to append guid to mapping file contributed by [StefH](https://github.com/StefH)
+- [#826](https://github.com/WireMock-Net/WireMock.Net/issues/826) - Dynamic Body not to be cached when a Func is used to created the body [feature]
+
 # 1.5.8 (16 October 2022)
 - [#816](https://github.com/WireMock-Net/WireMock.Net/pull/816) - Some fixes to WireMock.Net.Assertions [feature] contributed by [StefH](https://github.com/StefH)
 - [#817](https://github.com/WireMock-Net/WireMock.Net/pull/817) - ExactMatcher : IgnoreCase [feature] contributed by [StefH](https://github.com/StefH)
