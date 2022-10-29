@@ -97,7 +97,7 @@ namespace WireMock.Owin.Mappers
 
             SetResponseHeaders(responseMessage, response);
 
-            if (bytes != null)
+            if (bytes != null && response.StatusCode != (int) HttpStatusCode.NoContent) // A body is not allowed for 204.
             {
                 await response.Body.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
