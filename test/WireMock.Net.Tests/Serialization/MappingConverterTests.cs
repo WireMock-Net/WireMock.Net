@@ -6,6 +6,7 @@ using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
+using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
@@ -293,5 +294,28 @@ public class MappingConverterTests
         model.Response.Delay.Should().BeNull();
         model.Response.MinimumRandomDelay.Should().Be(minimumDelay);
         model.Response.MaximumRandomDelay.Should().Be(maximumDelay);
+    }
+
+    [Fact]
+    public void ToCSharpCode_Returns_Correct_Code()
+    {
+        // Assign
+        var request = Request.Create().WithPath("test_path");
+        var response = Response.Create();
+        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+
+        // Act
+        var code = _sut.ToCSharpCode(mapping);
+
+        // Assert
+        code.Should().Be("ss");
+
+            var server = WireMockServer.Start();
+            server
+                .Given(Request.Create()
+                    .UsingMethod("GET")
+                    .WithPath(WireMock.Matchers.MatchOperator.Or, "test_path")
+                )
+                ;
     }
 }

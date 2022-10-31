@@ -46,16 +46,15 @@ internal class MappingConverter
         var server = WireMockServer.Start();
         server
             .Given(Request.Create()
-                .UsingMethod("")
-                .UsingGet()
+                .UsingMethod("GET")
                 .WithPath("/proxy-test-keep-alive")
-                .WithParam()
-                .WithClientIP("")
+                .WithParam("a")
+                .WithClientIP("112")
                 .WithHeader("a", "a")
-                .WithCookie()
-                .WithBody("")
+                .WithCookie("c", "c")
+                .WithBody("b")
             )
-            .WithGuid("")
+            //.WithGuid("")
             .RespondWith(Response.Create()
                 .WithHeader("Keep-Alive", "timeout=1, max=1")
             );
@@ -63,7 +62,7 @@ internal class MappingConverter
         var sb = new StringBuilder();
 
         sb.AppendLine(@"    .Given(Request.Create()");
-        sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)});");
+        sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
 
         if (pathMatcher is { Matchers: { } })
         {
@@ -98,6 +97,8 @@ internal class MappingConverter
         {
             sb.AppendLine($"        .WithBody(\"?\")");
         }
+
+        sb.AppendLine(@"    );");
 
         return sb.ToString();
     }
@@ -317,7 +318,7 @@ internal class MappingConverter
 
     private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
     {
-        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
+        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => $"\"{p.GetPattern()}\"").ToArray();
     }
 
     private static string To1Or2Or3Arguments(MatchBehaviour? matchBehaviour, MatchOperator? matchOperator, string[]? values, string defaultValue)
@@ -351,7 +352,7 @@ internal class MappingConverter
 
     private static string ToValueArguments(string[]? values, string defaultValue)
     {
-        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : defaultValue;
+        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : $"\"{defaultValue}\"";
     }
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
