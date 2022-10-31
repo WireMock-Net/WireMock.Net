@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Constants;
+using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Types;
 
@@ -16,11 +20,86 @@ namespace WireMock.Serialization;
 
 internal class MappingConverter
 {
+    private static readonly string AcceptOnMatch = MatchBehaviour.AcceptOnMatch.GetFullyQualifiedEnumValue();
+
     private readonly MatcherMapper _mapper;
 
     public MappingConverter(MatcherMapper mapper)
     {
         _mapper = Guard.NotNull(mapper);
+    }
+
+    public string ToCSharpCode(IMapping mapping)
+    {
+        var request = (Request)mapping.RequestMatcher;
+        var response = (Response)mapping.Provider;
+
+        var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
+        var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
+        var urlMatcher = request.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
+        var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
+        var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
+        var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
+        var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+        var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+
+        var server = WireMockServer.Start();
+        server
+            .Given(Request.Create()
+                .UsingMethod("")
+                .UsingGet()
+                .WithPath("/proxy-test-keep-alive")
+                .WithParam()
+                .WithClientIP("")
+                .WithHeader("a", "a")
+                .WithCookie()
+                .WithBody("")
+            )
+            .WithGuid("")
+            .RespondWith(Response.Create()
+                .WithHeader("Keep-Alive", "timeout=1, max=1")
+            );
+
+        var sb = new StringBuilder();
+
+        sb.AppendLine(@"    .Given(Request.Create()");
+        sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)});");
+
+        if (pathMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithPath({To1Or2Arguments(pathMatcher.MatchOperator, pathMatcher.Matchers)})");
+        }
+        else if (urlMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithUrl({To1Or2Arguments(urlMatcher.MatchOperator, urlMatcher.Matchers)})");
+        }
+
+        foreach (var paramsMatcher in paramsMatchers)
+        {
+            sb.AppendLine($"        .WithParam({paramsMatcher.Key}, {paramsMatcher.MatchBehaviour.GetFullyQualifiedEnumValue()}, {GetStringArray(paramsMatcher.Matchers!)})");
+        }
+
+        if (clientIPMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithClientIP({GetStringArray(clientIPMatcher.Matchers)})");
+        }
+
+        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
+        {
+            sb.AppendLine($"        .WithHeader({headerMatcher.Name}, {GetStringArray(headerMatcher.Matchers!)}, true, {AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()})");
+        }
+
+        foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
+        {
+            sb.AppendLine($"        .WithCookie({cookieMatcher.Name}, {GetStringArray(cookieMatcher.Matchers!)}, true, {AcceptOnMatch})");
+        }
+
+        if (bodyMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithBody(\"?\")");
+        }
+
+        return sb.ToString();
     }
 
     public MappingModel ToMappingModel(IMapping mapping)
@@ -234,6 +313,45 @@ internal class MappingConverter
         }
 
         return mappingModel;
+    }
+
+    private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
+    {
+        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
+    }
+
+    private static string To1Or2Or3Arguments(MatchBehaviour? matchBehaviour, MatchOperator? matchOperator, string[]? values, string defaultValue)
+    {
+        var sb = new StringBuilder();
+
+        if (matchBehaviour.HasValue)
+        {
+            sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
+        }
+
+        return To1Or2Arguments(matchOperator, values, defaultValue);
+    }
+
+    private static string To1Or2Arguments(MatchOperator? matchOperator, IReadOnlyList<IStringMatcher> matchers)
+    {
+        return To1Or2Arguments(matchOperator, GetStringArray(matchers), string.Empty);
+    }
+
+    private static string To1Or2Arguments(MatchOperator? matchOperator, string[]? values, string defaultValue)
+    {
+        var sb = new StringBuilder();
+
+        if (matchOperator.HasValue)
+        {
+            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
+        }
+
+        return sb.Append(ToValueArguments(values, defaultValue)).ToString();
+    }
+
+    private static string ToValueArguments(string[]? values, string defaultValue)
+    {
+        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : defaultValue;
     }
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
