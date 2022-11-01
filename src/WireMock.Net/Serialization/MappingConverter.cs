@@ -61,6 +61,8 @@ internal class MappingConverter
 
         var sb = new StringBuilder();
 
+        sb.AppendLine("var server = WireMockServer.Start();");
+        sb.AppendLine("server");
         sb.AppendLine(@"    .Given(Request.Create()");
         sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
 
@@ -95,7 +97,7 @@ internal class MappingConverter
 
         if (bodyMatcher is { Matchers: { } })
         {
-            sb.AppendLine($"        .WithBody(\"?\")");
+            sb.AppendLine(@"        .WithBody(""?"")");
         }
 
         sb.AppendLine(@"    );");
