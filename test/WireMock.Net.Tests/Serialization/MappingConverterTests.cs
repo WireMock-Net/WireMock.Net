@@ -300,7 +300,14 @@ public class MappingConverterTests
     public void ToCSharpCode_Returns_Correct_Code()
     {
         // Assign
-        var request = Request.Create().WithPath("test_path");
+        var request = Request.Create()
+            .UsingGet()
+            .WithPath("test_path")
+            .WithParam("q", "42")
+            .WithClientIP("112.123.100.99")
+            .WithHeader("h-key", "h-value")
+            .WithCookie("c-key", "c-value")
+            .WithBody("b");
         var response = Response.Create();
         var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
@@ -309,13 +316,5 @@ public class MappingConverterTests
 
         // Assert
         code.Should().NotBeEmpty();
-
-            var server = WireMockServer.Start();
-            server
-                .Given(Request.Create()
-                    .UsingMethod("GET")
-                    .WithPath(WireMock.Matchers.MatchOperator.Or, "test_path")
-                )
-                ;
     }
 }
