@@ -62,13 +62,23 @@ public static class WireMockServerSettingsParser
         settings.CorsPolicyOptions = parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
 #endif
 
-        if (logger != null)
+        var loggerType = parser.GetStringValue("WireMockLogger");
+        switch (loggerType)
         {
-            settings.Logger = logger;
-        }
-        else if (parser.GetStringValue("WireMockLogger") == "WireMockConsoleLogger")
-        {
-            settings.Logger = new WireMockConsoleLogger();
+            case nameof(WireMockConsoleLogger):
+                settings.Logger = new WireMockConsoleLogger();
+                break;
+
+            case nameof(WireMockNullLogger):
+                settings.Logger = new WireMockNullLogger();
+                break;
+
+            default:
+                if (logger != null)
+                {
+                    settings.Logger = logger;
+                }
+                break;
         }
 
         if (parser.Contains(nameof(WireMockServerSettings.Port)))

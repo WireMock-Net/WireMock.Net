@@ -89,7 +89,7 @@ internal class WebhookSender
         };
 
         // Create HttpRequestMessage
-        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, webhookRequest.Url);
+        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, webhookRequestUrl);
 
         // Delay (if required)
         if (TryGetDelay(webhookRequest, out var delay))

@@ -1,3 +1,7 @@
+# 1.5.10 (06 November 2022)
+- [#843](https://github.com/WireMock-Net/WireMock.Net/pull/843) - Webhook Templating: Use the transformed URL to create the HttpRequestMessage contributed by [ggradnig](https://github.com/ggradnig)
+- [#845](https://github.com/WireMock-Net/WireMock.Net/pull/845) - Add WireMockNullLogger as valid commandline logger option [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.9 (29 October 2022)
 - [#828](https://github.com/WireMock-Net/WireMock.Net/pull/828) - Add setting to skip saving the string-response in the logging when using WithBody(Func...) [feature] contributed by [StefH](https://github.com/StefH)
 - [#832](https://github.com/WireMock-Net/WireMock.Net/pull/832) - Fixes for WireMock.Net.FluentAssertions (callcount behaviour) [feature] contributed by [StefH](https://github.com/StefH)

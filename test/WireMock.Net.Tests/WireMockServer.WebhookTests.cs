@@ -89,7 +89,7 @@ public class WireMockServerWebhookTests
     {
         // Assign
         var serverReceivingTheWebhook = WireMockServer.Start();
-        serverReceivingTheWebhook.Given(Request.Create().WithPath("x").UsingPost()).RespondWith(Response.Create().WithStatusCode(200));
+        serverReceivingTheWebhook.Given(Request.Create().WithPath("/x").UsingPost()).RespondWith(Response.Create().WithStatusCode(200));
 
         // Act
         var server = WireMockServer.Start();
@@ -126,6 +126,7 @@ public class WireMockServerWebhookTests
         content.Should().Be("a-response");
 
         serverReceivingTheWebhook.LogEntries.Should().HaveCount(1);
+        serverReceivingTheWebhook.LogEntries.First().MappingGuid.Should().NotBeNull();
 
         server.Dispose();
         serverReceivingTheWebhook.Dispose();
