@@ -48,7 +48,7 @@ internal class MappingConverter
             .Given(Request.Create()
                 .UsingMethod("GET")
                 .WithPath("/proxy-test-keep-alive")
-                .WithParam("a")
+                .WithParam("q", "x")
                 .WithClientIP("112")
                 .WithHeader("a", "a")
                 .WithCookie("c", "c")
@@ -77,22 +77,22 @@ internal class MappingConverter
 
         foreach (var paramsMatcher in paramsMatchers)
         {
-            sb.AppendLine($"        .WithParam({paramsMatcher.Key}, {paramsMatcher.MatchBehaviour.GetFullyQualifiedEnumValue()}, {GetStringArray(paramsMatcher.Matchers!)})");
+            sb.AppendLine($"        .WithParam({To1Or2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
         }
 
         if (clientIPMatcher is { Matchers: { } })
         {
-            sb.AppendLine($"        .WithClientIP({GetStringArray(clientIPMatcher.Matchers)})");
+            sb.AppendLine($"        .WithClientIP({ToValueArguments(GetStringArray(clientIPMatcher.Matchers))})");
         }
 
         foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
         {
-            sb.AppendLine($"        .WithHeader({headerMatcher.Name}, {GetStringArray(headerMatcher.Matchers!)}, true, {AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()})");
+            sb.AppendLine($"        .WithHeader(\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true, {AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()})");
         }
 
         foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
         {
-            sb.AppendLine($"        .WithCookie({cookieMatcher.Name}, {GetStringArray(cookieMatcher.Matchers!)}, true, {AcceptOnMatch})");
+            sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true, {AcceptOnMatch})");
         }
 
         if (bodyMatcher is { Matchers: { } })
@@ -323,11 +323,25 @@ internal class MappingConverter
         return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => $"\"{p.GetPattern()}\"").ToArray();
     }
 
+    private static string To1Or2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
+    {
+        var sb = new StringBuilder($"\"{key}\", ");
+
+        if (matchBehaviour.HasValue && matchBehaviour != MatchBehaviour.AcceptOnMatch)
+        {
+            sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
+        }
+
+        sb.AppendFormat("{0}", ToValueArguments(GetStringArray(matchers), string.Empty));
+
+        return sb.ToString();
+    }
+
     private static string To1Or2Or3Arguments(MatchBehaviour? matchBehaviour, MatchOperator? matchOperator, string[]? values, string defaultValue)
     {
         var sb = new StringBuilder();
 
-        if (matchBehaviour.HasValue)
+        if (matchBehaviour.HasValue && matchBehaviour != MatchBehaviour.AcceptOnMatch)
         {
             sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
         }
@@ -344,7 +358,7 @@ internal class MappingConverter
     {
         var sb = new StringBuilder();
 
-        if (matchOperator.HasValue)
+        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
         {
             sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
         }
@@ -352,7 +366,7 @@ internal class MappingConverter
         return sb.Append(ToValueArguments(values, defaultValue)).ToString();
     }
 
-    private static string ToValueArguments(string[]? values, string defaultValue)
+    private static string ToValueArguments(string[]? values, string defaultValue = "")
     {
         return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : $"\"{defaultValue}\"";
     }
