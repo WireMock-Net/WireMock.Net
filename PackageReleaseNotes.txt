@@ -1,9 +1,5 @@
-# 1.5.9 (29 October 2022)
-- #828 Add setting to skip saving the string-response in the logging when using WithBody(Func...) [feature]
-- #832 Fixes for WireMock.Net.FluentAssertions (callcount behaviour) [feature]
-- #834 Support deleting / resetting a single scenario [feature]
-- #837 Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.7 to 2.1.25 in /examples/WireMock.Net.StandAlone.Net461 [dependencies]
-- #838 Add option to ProxySettings to append guid to mapping file
-- #826 Dynamic Body not to be cached when a Func is used to created the body [feature]
+# 1.5.10 (06 November 2022)
+- #843 Webhook Templating: Use the transformed URL to create the HttpRequestMessage
+- #845 Add WireMockNullLogger as valid commandline logger option [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
