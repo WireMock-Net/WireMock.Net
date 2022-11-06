@@ -65,11 +65,11 @@ public static class WireMockServerSettingsParser
         var loggerType = parser.GetStringValue("WireMockLogger");
         switch (loggerType)
         {
-            case "WireMockConsoleLogger":
+            case nameof(WireMockConsoleLogger):
                 settings.Logger = new WireMockConsoleLogger();
                 break;
 
-            case "WireMockNullLogger":
+            case nameof(WireMockNullLogger):
                 settings.Logger = new WireMockNullLogger();
                 break;
 
