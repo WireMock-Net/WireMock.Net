@@ -4,58 +4,57 @@ using Microsoft.Extensions.Logging;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
 
-namespace WireMock.Net
+namespace WireMock.Net;
+
+public class WireMockLogger : IWireMockLogger
 {
-    public class WireMockLogger : IWireMockLogger
+    private readonly JsonSerializerOptions _options = new()
     {
-        private readonly JsonSerializerOptions options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
+        WriteIndented = true
+    };
 
-        private readonly ILogger _logger;
+    private readonly ILogger _logger;
 
-        public WireMockLogger(ILogger logger)
-        {
-            _logger = logger;
-        }
+    public WireMockLogger(ILogger logger)
+    {
+        _logger = logger;
+    }
 
-        /// <see cref="IWireMockLogger.Debug"/>
-        public void Debug(string formatString, params object[] args)
-        {
-            _logger.LogDebug(formatString, args);
-        }
+    /// <see cref="IWireMockLogger.Debug"/>
+    public void Debug(string formatString, params object[] args)
+    {
+        _logger.LogDebug(formatString, args);
+    }
 
-        /// <see cref="IWireMockLogger.Info"/>
-        public void Info(string formatString, params object[] args)
-        {
-            _logger.LogInformation(formatString, args);
-        }
+    /// <see cref="IWireMockLogger.Info"/>
+    public void Info(string formatString, params object[] args)
+    {
+        _logger.LogInformation(formatString, args);
+    }
 
-        /// <see cref="IWireMockLogger.Warn"/>
-        public void Warn(string formatString, params object[] args)
-        {
-            _logger.LogWarning(formatString, args);
-        }
+    /// <see cref="IWireMockLogger.Warn"/>
+    public void Warn(string formatString, params object[] args)
+    {
+        _logger.LogWarning(formatString, args);
+    }
 
-        /// <see cref="IWireMockLogger.Error(string, object[])"/>
-        public void Error(string formatString, params object[] args)
-        {
-            _logger.LogError(formatString, args);
-        }
+    /// <see cref="IWireMockLogger.Error(string, object[])"/>
+    public void Error(string formatString, params object[] args)
+    {
+        _logger.LogError(formatString, args);
+    }
 
-        /// <see cref="IWireMockLogger.Error(string, Exception)"/>
-        public void Error(string formatString, Exception exception)
-        {
-            _logger.LogError(formatString, exception);
-        }
+    /// <see cref="IWireMockLogger.Error(string, Exception)"/>
+    public void Error(string formatString, Exception exception)
+    {
+        _logger.LogError(formatString, exception);
+    }
 
-        /// <see cref="IWireMockLogger.DebugRequestResponse"/>
-        public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
-        {
-            string message = JsonSerializer.Serialize(logEntryModel, options);
+    /// <see cref="IWireMockLogger.DebugRequestResponse"/>
+    public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
+    {
+        string message = JsonSerializer.Serialize(logEntryModel, _options);
 
-            _logger.LogDebug("Admin[{IsAdmin}] {Message}", isAdminRequest, message);
-        }
+        _logger.LogDebug("Admin[{IsAdmin}] {Message}", isAdminRequest, message);
     }
 }
