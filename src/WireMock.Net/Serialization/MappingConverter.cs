@@ -87,17 +87,26 @@ internal class MappingConverter
 
         foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
         {
-            sb.AppendLine($"        .WithHeader(\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true, {AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()})");
+            var headerBuilder = new StringBuilder($"\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true");
+            if (headerMatcher.MatchOperator != MatchOperator.Or)
+            {
+                headerBuilder.Append($"{AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()}");
+            }
+            sb.AppendLine($"        .WithHeader({headerBuilder})");
         }
 
         foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
         {
-            sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true, {AcceptOnMatch})");
+            sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
 
         if (bodyMatcher is { Matchers: { } })
         {
-            sb.AppendLine(@"        .WithBody(""?"")");
+            var wildcardMatcher = bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault();
+            if (wildcardMatcher is { } && wildcardMatcher.GetPatterns().Any())
+            {
+                sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
+            }
         }
 
         sb.AppendLine(@"    );");
@@ -316,6 +325,11 @@ internal class MappingConverter
         }
 
         return mappingModel;
+    }
+
+    private static string GetString(IStringMatcher stringMatcher)
+    {
+        return stringMatcher.GetPatterns().Select(p => $"\"{p.GetPattern()}\"").First();
     }
 
     private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
