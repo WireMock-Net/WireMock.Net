@@ -307,7 +307,12 @@ public class MappingConverterTests
             .WithHeader("h-key", "h-value")
             .WithCookie("c-key", "c-value")
             .WithBody("b");
-        var response = Response.Create();
+        var response = Response.Create()
+            .WithHeader("Keep-Alive", "test")
+            .WithBody("bbb")
+            .WithDelay(12345)
+            .WithTransformer()
+        ;
         var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act

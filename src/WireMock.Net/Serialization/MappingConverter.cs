@@ -54,16 +54,20 @@ internal class MappingConverter
                 .WithCookie("c", "c")
                 .WithBody("b")
             )
-            //.WithGuid("")
             .RespondWith(Response.Create()
                 .WithHeader("Keep-Alive", "timeout=1, max=1")
+                .WithDelay(1111)
+                //.WithBody()
+                .WithTransformer()
             );
 
         var sb = new StringBuilder();
 
         sb.AppendLine("var server = WireMockServer.Start();");
         sb.AppendLine("server");
-        sb.AppendLine(@"    .Given(Request.Create()");
+
+        // Request
+        sb.AppendLine("    .Given(Request.Create()");
         sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
 
         if (pathMatcher is { Matchers: { } })
@@ -109,6 +113,46 @@ internal class MappingConverter
             }
         }
 
+        sb.AppendLine(@"    )");
+
+        // Guid
+        sb.AppendLine($"    .WithGuid(\"{mapping.Guid}\")");
+
+        // Response
+        sb.AppendLine("    .RespondWith(Response.Create()");
+
+        if (response.ResponseMessage.Headers is { })
+        {
+            foreach (var header in response.ResponseMessage.Headers)
+            {
+                sb.AppendLine($"        .WithHeader(\"{header.Key})\", {ToValueArguments(header.Value.ToArray())})");
+            }
+        }
+
+        if (response.ResponseMessage.BodyData is { })
+        {
+            switch (response.ResponseMessage.BodyData.DetectedBodyType)
+            {
+                case BodyType.String:
+                    sb.AppendLine($"        .WithBody(\"{response.ResponseMessage.BodyData.BodyAsString}\")");
+                    break;
+            }
+        }
+
+        if (response.Delay is { })
+        {
+            sb.AppendLine($"        .WithDelay({response.Delay.Value.TotalMilliseconds})");
+        }
+        else if (response.MinimumDelayMilliseconds > 0 && response.MaximumDelayMilliseconds > 0)
+        {
+            sb.AppendLine($"        .WithRandomDelay({response.MinimumDelayMilliseconds}, {response.MaximumDelayMilliseconds})");
+        }
+
+        if (response.UseTransformer)
+        {
+            var transformerArgs = response.TransformerType != TransformerType.Handlebars ? response.TransformerType.GetFullyQualifiedEnumValue() : string.Empty;
+            sb.AppendLine($"        .WithTransformer({transformerArgs})");
+        }
         sb.AppendLine(@"    );");
 
         return sb.ToString();
