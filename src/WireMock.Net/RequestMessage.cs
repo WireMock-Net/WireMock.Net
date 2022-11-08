@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using Stef.Validation;
 using WireMock.Models;
+using WireMock.Owin;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -26,7 +27,7 @@ public class RequestMessage : IRequestMessage
     public string AbsoluteUrl { get; }
 
     /// <inheritdoc cref="IRequestMessage.ProxyUrl" />
-    public string ProxyUrl { get; set; }
+    public string? ProxyUrl { get; set; }
 
     /// <inheritdoc cref="IRequestMessage.DateTime" />
     public DateTime DateTime { get; set; }
@@ -92,15 +93,35 @@ public class RequestMessage : IRequestMessage
     public string Origin { get; }
 
     /// <summary>
+    /// Used for Unit Testing
+    /// </summary>
+    public RequestMessage(
+        UrlDetails urlDetails,
+        string method,
+        string clientIP,
+        IBodyData? bodyData = null,
+        IDictionary<string, string[]>? headers = null,
+        IDictionary<string, string>? cookies = null) : this(null, urlDetails, method, clientIP, bodyData, headers, cookies)
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessage"/> class.
     /// </summary>
+    /// <param name="options">The<seealso cref="IWireMockMiddlewareOptions"/>.</param>
     /// <param name="urlDetails">The original url details.</param>
     /// <param name="method">The HTTP method.</param>
     /// <param name="clientIP">The client IP Address.</param>
     /// <param name="bodyData">The BodyData.</param>
     /// <param name="headers">The headers.</param>
     /// <param name="cookies">The cookies.</param>
-    public RequestMessage(UrlDetails urlDetails, string method, string clientIP, IBodyData? bodyData = null, IDictionary<string, string[]>? headers = null, IDictionary<string, string>? cookies = null)
+    internal RequestMessage(
+        IWireMockMiddlewareOptions? options,
+        UrlDetails urlDetails, string method,
+        string clientIP,
+        IBodyData? bodyData = null,
+        IDictionary<string, string[]>? headers = null,
+        IDictionary<string, string>? cookies = null)
     {
         Guard.NotNull(urlDetails, nameof(urlDetails));
         Guard.NotNull(method, nameof(method));
@@ -134,7 +155,7 @@ public class RequestMessage : IRequestMessage
         Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
         Cookies = cookies;
         RawQuery = urlDetails.Url.Query;
-        Query = QueryStringParser.Parse(RawQuery);
+        Query = QueryStringParser.Parse(RawQuery, options?.QueryParameterMultipleValueSupport);
     }
 
     /// <summary>

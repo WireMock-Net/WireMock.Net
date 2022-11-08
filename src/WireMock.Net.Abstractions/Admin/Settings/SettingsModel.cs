@@ -89,4 +89,11 @@ public class SettingsModel
     /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to false).
     /// </summary>
     public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
+
+    /// <summary>
+    /// See <seealso cref="QueryParameterMultipleValueSupport"/>.
+    ///
+    /// Default value = "All".
+    /// </summary>
+    public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
 }

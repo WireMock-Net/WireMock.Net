@@ -1,25 +1,24 @@
-﻿namespace WireMock.Net.OpenApiParser.Types
+namespace WireMock.Net.OpenApiParser.Types;
+
+internal enum SchemaFormat
 {
-    internal enum SchemaFormat
-    {
-        Float,
+    Float,
 
-        Double,
+    Double,
 
-        Int32,
+    Int32,
 
-        Int64,
+    Int64,
 
-        Date,
+    Date,
 
-        DateTime,
+    DateTime,
 
-        Password,
+    Password,
 
-        Byte,
+    Byte,
 
-        Binary,
+    Binary,
 
-        Undefined
-    }
+    Undefined
 }

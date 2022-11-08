@@ -87,4 +87,7 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
 
     /// <inheritdoc />
     public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
+
+    /// <inheritdoc />
+    public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
 }

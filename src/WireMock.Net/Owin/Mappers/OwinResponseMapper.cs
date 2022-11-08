@@ -81,11 +81,11 @@ namespace WireMock.Owin.Mappers
             var statusCodeType = responseMessage.StatusCode?.GetType();
             switch (statusCodeType)
             {
-                case Type typeAsIntOrEnum when typeAsIntOrEnum == typeof(int) || typeAsIntOrEnum == typeof(int?) || typeAsIntOrEnum.GetTypeInfo().IsEnum:
+                case { } typeAsIntOrEnum when typeAsIntOrEnum == typeof(int) || typeAsIntOrEnum == typeof(int?) || typeAsIntOrEnum.GetTypeInfo().IsEnum:
                     response.StatusCode = MapStatusCode((int)responseMessage.StatusCode!);
                     break;
 
-                case Type typeAsString when typeAsString == typeof(string):
+                case { } typeAsString when typeAsString == typeof(string):
                     // Note: this case will also match on null 
                     int.TryParse(responseMessage.StatusCode as string, out int result);
                     response.StatusCode = MapStatusCode(result);
@@ -130,7 +130,7 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.String:
-                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString);
+                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString!);
 
                 case BodyType.Json:
                     var formatting = responseMessage.BodyData.BodyAsJsonIndented == true
@@ -143,7 +143,7 @@ namespace WireMock.Owin.Mappers
                     return responseMessage.BodyData.BodyAsBytes;
 
                 case BodyType.File:
-                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile);
+                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile!);
             }
 
             return null;
@@ -161,7 +161,7 @@ namespace WireMock.Owin.Mappers
                 });
 
             // Set other headers
-            foreach (var item in responseMessage.Headers)
+            foreach (var item in responseMessage.Headers!)
             {
                 var headerName = item.Key;
                 var value = item.Value;

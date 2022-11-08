@@ -125,9 +125,9 @@ public interface IRespondWithAProvider
     /// <summary>
     /// Support FireAndForget for any configured Webhooks
     /// </summary>
-    /// <param name="UseWebhooksFireAndForget"></param>
+    /// <param name="useWebhooksFireAndForget"></param>
     /// <returns></returns>
-    IRespondWithAProvider WithWebhookFireAndForget(bool UseWebhooksFireAndForget);
+    IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget);
 
     /// <summary>
     /// Add a Webhook to call after the response has been generated.
@@ -141,7 +141,7 @@ public interface IRespondWithAProvider
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithWebhook(
         string url,
-        string? method = "post",
+        string method = "post",
         IDictionary<string, WireMockList<string>>? headers = null,
         string? body = null,
         bool useTransformer = true,
@@ -160,7 +160,7 @@ public interface IRespondWithAProvider
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithWebhook(
         string url,
-        string? method = "post",
+        string method = "post",
         IDictionary<string, WireMockList<string>>? headers = null,
         object? body = null,
         bool useTransformer = true,

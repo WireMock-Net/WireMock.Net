@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
@@ -35,7 +35,7 @@ namespace WireMock.Net.OpenApiParser
         /// <param name="document">The source OpenApiDocument</param>
         /// <param name="settings">Additional settings [optional]</param>
         /// <returns>MappingModel</returns>
-        IEnumerable<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings settings = null);
+        IEnumerable<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null);
 
         /// <summary>
         /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="Stream"/>.

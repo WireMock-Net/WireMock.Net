@@ -223,6 +223,7 @@ public partial class WireMockServer
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
             HostingScheme = _settings.HostingScheme,
             DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
+            QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
 
 #if USE_ASPNETCORE
             CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
@@ -252,6 +253,7 @@ public partial class WireMockServer
         _settings.WatchStaticMappings = settings.WatchStaticMappings;
         _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;
         _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
+        _settings.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
 
         InitSettings(_settings);
 
