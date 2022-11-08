@@ -28,7 +28,7 @@ public interface IRequestMessage
     /// <summary>
     /// The ProxyUrl (if a proxy is used).
     /// </summary>
-    string ProxyUrl { get; set; }
+    string? ProxyUrl { get; set; }
 
     /// <summary>
     /// Gets the DateTime.

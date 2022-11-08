@@ -259,6 +259,14 @@ namespace WireMock.Settings
         public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
 
         /// <summary>
+        /// See <seealso cref="QueryParameterMultipleValueSupport"/>.
+        ///
+        /// Default value = "All".
+        /// </summary>
+        [PublicAPI]
+        public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
+
+        /// <summary>
         /// Custom matcher mappings for static mappings
         /// </summary>
         [PublicAPI, JsonIgnore]

@@ -3,13 +3,13 @@ using System.Collections.Concurrent;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
+using WireMock.Types;
 using WireMock.Util;
 #if !USE_ASPNETCORE
 using Owin;
 #else
 using IAppBuilder = Microsoft.AspNetCore.Builder.IApplicationBuilder;
 using Microsoft.Extensions.DependencyInjection;
-using WireMock.Types;
 #endif
 
 namespace WireMock.Owin;
@@ -70,5 +70,7 @@ internal interface IWireMockMiddlewareOptions
 
     bool? SaveUnmatchedRequests { get; set; }
 
-    public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
+    bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
+
+    QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
 }

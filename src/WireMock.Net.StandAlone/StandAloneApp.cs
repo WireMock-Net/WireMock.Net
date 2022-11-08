@@ -15,7 +15,7 @@ namespace WireMock.Net.StandAlone;
 /// </summary>
 public static class StandAloneApp
 {
-    private static readonly string Version = typeof(StandAloneApp).GetTypeInfo().Assembly.GetName().Version.ToString();
+    private static readonly string Version = typeof(StandAloneApp).GetTypeInfo().Assembly.GetName().Version!.ToString();
 
     /// <summary>
     /// Start WireMock.Net standalone Server based on the WireMockServerSettings.
