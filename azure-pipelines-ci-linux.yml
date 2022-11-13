@@ -5,8 +5,16 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET 7'
+  inputs:
+    packageType: sdk
+    version: 7.0.x
+
 - script: |
     dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net7.0 --logger trx
+  displayName: 'Test'
+
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
