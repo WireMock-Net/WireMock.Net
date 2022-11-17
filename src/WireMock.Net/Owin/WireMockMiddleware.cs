@@ -279,7 +279,7 @@ namespace WireMock.Owin
                 var logEntries = _options.LogEntries.ToList();
                 foreach (var logEntry in logEntries.OrderBy(le => le.RequestMessage.DateTime).Take(logEntries.Count - _options.MaxRequestLogCount.Value))
                 {
-                    _options.LogEntries.Remove(logEntry);
+                    TryRemoveLogEntry(logEntry);
                 }
             }
 
@@ -289,8 +289,20 @@ namespace WireMock.Owin
 
                 foreach (var logEntry in _options.LogEntries.ToList().Where(le => le.RequestMessage.DateTime < checkTime))
                 {
-                    _options.LogEntries.Remove(logEntry);
+                    TryRemoveLogEntry(logEntry);
                 }
+            }
+        }
+
+        private void TryRemoveLogEntry(LogEntry logEntry)
+        {
+            try
+            {
+                _options.LogEntries.Remove(logEntry);
+            }
+            catch
+            {
+                // Ignore exception (can happen during stress-testing)
             }
         }
     }
