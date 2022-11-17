@@ -302,7 +302,7 @@ namespace WireMock.Owin
             }
             catch
             {
-                // Ignore exception (can happen during stress-testing)
+                // Ignore exception (can happen during stress testing)
             }
         }
     }
