@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using NFluent;
 using WireMock.Matchers;
-using Xunit;
-using WireMock.RequestBuilders;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.RequestBuilders;
 using WireMock.Util;
+using Xunit;
 
 namespace WireMock.Net.Tests
 {
@@ -19,11 +19,11 @@ namespace WireMock.Net.Tests
             // Assign
             var spec = Request.Create().WithPath("/path/a b").UsingAnyMethod();
 
-            // when
+            // Act
             var body = new BodyData();
             var request = new RequestMessage(new UrlDetails("http://localhost/path/a b"), "GET", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -31,17 +31,17 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithPath_WithHeader_Match()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithHeader("X-toto", "tata");
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "abc"
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, body, new Dictionary<string, string[]> { { "X-toto", new[] { "tata" } } });
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -49,13 +49,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithPath()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo");
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -76,13 +76,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithPathFunc()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath(url => url.EndsWith("/foo"));
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "blabla", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -90,13 +90,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithPathRegexMatcher_HasMatch()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath(new RegexMatcher("^/foo"));
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo/bar"), "blabla", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -104,13 +104,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Request_WithPathRegexMatcher_HasNoMatch()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo");
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/bar"), "blabla", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
@@ -126,10 +126,10 @@ namespace WireMock.Net.Tests
             };
             var spec = Request.Create().WithPath(new RegexMatcher(pattern));
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo/bar"), "blabla", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -137,17 +137,17 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_delete()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingDelete();
 
-            // when
+            // Act
             var body = new BodyData
             {
                 BodyAsString = "whatever"
             };
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "Delete", ClientIp, body);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -155,13 +155,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_get()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingGet();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -169,13 +169,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_head()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingHead();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "HEAD", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -183,13 +183,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_post()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingPost();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -197,13 +197,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_put()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -211,13 +211,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_specify_requests_matching_given_path_and_method_patch()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingPatch();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PATCH", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
         }
@@ -225,13 +225,13 @@ namespace WireMock.Net.Tests
         [Fact]
         public void Should_exclude_requests_matching_given_path_but_not_http_method()
         {
-            // given
+            // Arrange
             var spec = Request.Create().WithPath("/foo").UsingPut();
 
-            // when
+            // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "HEAD", ClientIp);
 
-            // then
+            // Assert
             var requestMatchResult = new RequestMatchResult();
             Check.That(spec.GetMatchingScore(request, requestMatchResult)).IsNotEqualTo(1.0);
         }
