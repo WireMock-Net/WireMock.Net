@@ -269,11 +269,13 @@ namespace WireMock.Owin
         {
             _options.Logger.DebugRequestResponse(_logEntryMapper.Map(entry), entry.RequestMessage.Path.StartsWith("/__admin/"));
 
+            // If addRequest is set to true, try to add a new request log.
             if (addRequest)
             {
-                _options.LogEntries.Add(entry);
+                TryAddLogEntry(entry);
             }
 
+            // In case MaxRequestLogCount has a value, try to delete existing request logs based on the count.
             if (_options.MaxRequestLogCount != null)
             {
                 var logEntries = _options.LogEntries.ToList();
@@ -283,14 +285,26 @@ namespace WireMock.Owin
                 }
             }
 
+            // In case RequestLogExpirationDuration is defined, try to delete existing request logs based on the date.
             if (_options.RequestLogExpirationDuration != null)
             {
                 var checkTime = DateTime.UtcNow.AddHours(-_options.RequestLogExpirationDuration.Value);
-
                 foreach (var logEntry in _options.LogEntries.ToList().Where(le => le.RequestMessage.DateTime < checkTime))
                 {
                     TryRemoveLogEntry(logEntry);
                 }
+            }
+        }
+
+        private void TryAddLogEntry(LogEntry logEntry)
+        {
+            try
+            {
+                _options.LogEntries.Add(logEntry);
+            }
+            catch
+            {
+                // Ignore exception (can happen during stress testing)
             }
         }
 
