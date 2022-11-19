@@ -269,8 +269,8 @@ namespace WireMock.Owin
         {
             _options.Logger.DebugRequestResponse(_logEntryMapper.Map(entry), entry.RequestMessage.Path.StartsWith("/__admin/"));
 
-            // If addRequest is set to true, try to add a new request log.
-            if (addRequest)
+            // If addRequest is set to true and MaxRequestLogCount is null or does have a value greater than 0, try to add a new request log.
+            if (addRequest && _options.MaxRequestLogCount is null or > 0)
             {
                 TryAddLogEntry(entry);
             }
