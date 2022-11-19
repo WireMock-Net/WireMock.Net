@@ -275,8 +275,8 @@ namespace WireMock.Owin
                 TryAddLogEntry(entry);
             }
 
-            // In case MaxRequestLogCount has a value, try to delete existing request logs based on the count.
-            if (_options.MaxRequestLogCount != null)
+            // In case MaxRequestLogCount has a value greater than 0, try to delete existing request logs based on the count.
+            if (_options.MaxRequestLogCount is > 0)
             {
                 var logEntries = _options.LogEntries.ToList();
                 foreach (var logEntry in logEntries.OrderBy(le => le.RequestMessage.DateTime).Take(logEntries.Count - _options.MaxRequestLogCount.Value))
@@ -285,8 +285,8 @@ namespace WireMock.Owin
                 }
             }
 
-            // In case RequestLogExpirationDuration is defined, try to delete existing request logs based on the date.
-            if (_options.RequestLogExpirationDuration != null)
+            // In case RequestLogExpirationDuration has a value greater than 0, try to delete existing request logs based on the date.
+            if (_options.RequestLogExpirationDuration is > 0)
             {
                 var checkTime = DateTime.UtcNow.AddHours(-_options.RequestLogExpirationDuration.Value);
                 foreach (var logEntry in _options.LogEntries.ToList().Where(le => le.RequestMessage.DateTime < checkTime))
