@@ -1,3 +1,8 @@
+# 1.5.11 (24 November 2022)
+- [#836](https://github.com/WireMock-Net/WireMock.Net/pull/836) - Add Settings.QueryParameterMultipleValueSupport [feature] contributed by [StefH](https://github.com/StefH)
+- [#848](https://github.com/WireMock-Net/WireMock.Net/pull/848) - Use try-catch when adding or removing logEntry [bug] contributed by [StefH](https://github.com/StefH)
+- [#846](https://github.com/WireMock-Net/WireMock.Net/issues/846) - Exception ArgumentOutOfRangeException [bug]
+
 # 1.5.10 (06 November 2022)
 - [#843](https://github.com/WireMock-Net/WireMock.Net/pull/843) - Webhook Templating: Use the transformed URL to create the HttpRequestMessage contributed by [ggradnig](https://github.com/ggradnig)
 - [#845](https://github.com/WireMock-Net/WireMock.Net/pull/845) - Add WireMockNullLogger as valid commandline logger option [feature] contributed by [StefH](https://github.com/StefH)
