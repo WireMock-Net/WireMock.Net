@@ -48,6 +48,7 @@ jobs:
     displayName: 'Execute Unit tests'
     inputs:
       command: 'test'
+      publishTestResults: true
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
       arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
   
