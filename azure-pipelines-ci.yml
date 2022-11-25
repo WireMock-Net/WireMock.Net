@@ -46,12 +46,13 @@ jobs:
 
   - task: CmdLine@2
     inputs:
-      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutput=./test/WireMock.Net.Tests/WireMock.Net.Tests /p:CoverletOutputFormat=opencover'
-    displayName: 'Execute Unit tests 1'
+      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net6.0'
+    displayName: 'Execute Unit Tests'
   
   - script: |
       dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    displayName: 'Execute Unit tests 2'
+    failOnStderr: false
+    displayName: 'Execute Unit Tests with Coverage'
   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
