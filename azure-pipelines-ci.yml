@@ -37,24 +37,10 @@ jobs:
       extraProperties: |
         sonar.cs.opencover.reportsPaths=**/coverage.net6.0.opencover.xml
   
-  - task: DotNetCoreCLI@2
-    displayName: 'Build Unit tests'
+  - task: CmdLine@2
     inputs:
-      command: 'build'
-      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net6.0'
-  
-  - task: DotNetCoreCLI@2
-    displayName: 'Execute Unit tests'
-    inputs:
-      command: 'test'
-      publishTestResults: true
-      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-
-  - script: |
-      dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./test/WireMock.Net.Tests/WireMock.Net.Tests ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj
-    displayName: 'Execute Unit tests 2'
+      script: 'dotnet test --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./test/WireMock.Net.Tests/WireMock.Net.Tests ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+    displayName: 'Build & Execute Unit tests'
   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
