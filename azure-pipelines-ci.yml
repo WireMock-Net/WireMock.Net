@@ -35,7 +35,7 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.net6.0.json
+        sonar.cs.opencover.reportsPaths=**/coverage.net6.0.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
@@ -47,14 +47,8 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net6.0'
-    displayName: 'Execute Unit Tests'
-  
-  - script: |
-      dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-      echo 0
-    failOnStderr: false
     displayName: 'Execute Unit Tests with Coverage'
-  
+   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
@@ -68,7 +62,7 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.net6.0.json
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.net6.0.opencover.xml
     displayName: 'codecov'
   
   - task: PublishTestResults@2
@@ -80,7 +74,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish coverage file
     inputs:
-      PathtoPublish: './test/WireMock.Net.Tests/coverage.net6.0.json'
+      PathtoPublish: './test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
 
 - job: Windows_Build_Test
 
