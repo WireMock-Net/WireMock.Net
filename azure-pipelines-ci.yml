@@ -51,6 +51,7 @@ jobs:
   
   - script: |
       dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      echo 0
     failOnStderr: false
     displayName: 'Execute Unit Tests with Coverage'
   
