@@ -35,7 +35,7 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.net6.0.opencover.xml
+        sonar.cs.opencover.reportsPaths=**/coverage.net6.0.json
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
