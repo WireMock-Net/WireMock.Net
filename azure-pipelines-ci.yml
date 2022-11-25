@@ -46,7 +46,7 @@ jobs:
 
   - task: CmdLine@2
     inputs:
-      script: 'dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./test/WireMock.Net.Tests/WireMock.Net.Tests ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+      script: 'dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
     displayName: 'Execute Unit tests'
   
   - script: |
