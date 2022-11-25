@@ -50,7 +50,7 @@ jobs:
     displayName: 'Execute Unit tests 1'
   
   - script: |
-      dotnet test --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj
+      dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     displayName: 'Execute Unit tests 2'
   
   - task: SonarCloudAnalyze@1
