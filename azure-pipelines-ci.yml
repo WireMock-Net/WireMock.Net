@@ -80,7 +80,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish coverage file
     inputs:
-      PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
+      PathtoPublish: './test/WireMock.Net.Tests/coverage.net6.0.json'
 
 - job: Windows_Build_Test
 
