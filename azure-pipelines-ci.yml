@@ -68,7 +68,7 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.net6.0.opencover.xml
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.net6.0.json
     displayName: 'codecov'
   
   - task: PublishTestResults@2
