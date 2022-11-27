@@ -20,6 +20,13 @@
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
+    <!-- https://github.com/coverlet-coverage/coverlet/issues/1391 -->
+    <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Tests'))">
+        <CollectCoverage>true</CollectCoverage>
+        <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+        <CoverletOutputFormat>opencover</CoverletOutputFormat>
+    </PropertyGroup>
+
     <ItemGroup>
         <None Include="../../resources/WireMock.Net-Logo.png" Pack="true" PackagePath="" />
         <!--<None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>-->
