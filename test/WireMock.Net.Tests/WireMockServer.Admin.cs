@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
@@ -370,6 +371,26 @@ public class WireMockServerAdminTests
 
         var requestLoggedB = server.LogEntries.Last();
         Check.That(requestLoggedB.RequestMessage.Path).EndsWith("/foo3");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_Admin_Logging_SetMaxRequestLogCount_To_0_Should_Not_AddLogging()
+    {
+        // Assign
+        var client = new HttpClient();
+
+        // Act
+        var server = WireMockServer.Start();
+        server.SetMaxRequestLogCount(0);
+
+        await client.GetAsync("http://localhost:" + server.Port + "/foo1").ConfigureAwait(false);
+        await client.GetAsync("http://localhost:" + server.Port + "/foo2").ConfigureAwait(false);
+        await client.GetAsync("http://localhost:" + server.Port + "/foo3").ConfigureAwait(false);
+
+        // Assert
+        server.LogEntries.Should().BeEmpty();
 
         server.Stop();
     }
