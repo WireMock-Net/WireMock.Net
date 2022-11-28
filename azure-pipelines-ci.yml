@@ -14,6 +14,12 @@ jobs:
       echo "BuildId = $(buildId)"
     displayName: 'Print buildId'
 
+  - task: UseDotNet@2
+    displayName: Use .NET 7.0
+    inputs:
+      packageType: 'sdk'
+      version: '7.0.x'    
+
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
     inputs:
@@ -83,10 +89,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: Use .NET 6.0
+    displayName: Use .NET 7.0
     inputs:
       packageType: 'sdk'
-      version: '6.0.x'
+      version: '7.0.x'
 
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
@@ -96,11 +102,11 @@ jobs:
       arguments: '--configuration Debug --framework net6.0'
   
   - task: DotNetCoreCLI@2
-    displayName: 'Execute Unit tests'
+    displayName: 'Execute Unit Tests with Coverage'
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx'
   
 - job: Windows_Release_to_MyGet
   dependsOn: Windows_Build_Test
@@ -110,10 +116,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: Use .NET 6.0
+    displayName: Use .NET 7.0
     inputs:
       packageType: 'sdk'
-      version: '6.0.x'
+      version: '7.0.x'
 
   - task: DotNetCoreCLI@2
     displayName: Build Release
