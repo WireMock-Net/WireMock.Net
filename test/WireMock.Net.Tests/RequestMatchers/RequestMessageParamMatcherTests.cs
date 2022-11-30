@@ -1,7 +1,9 @@
+using FluentAssertions;
 using NFluent;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.Owin;
 using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers
@@ -171,6 +173,26 @@ namespace WireMock.Net.Tests.RequestMatchers
 
             // Assert
             Check.That(score).IsEqualTo(1.0d);
+        }
+
+        // Issue #849
+        [Fact]
+        public void RequestMessageParamMatcher_With1ParamContainingComma_Using_QueryParameterMultipleValueSupport_NoComma()
+        {
+            // Assign
+            var options = new WireMockMiddlewareOptions
+            {
+                QueryParameterMultipleValueSupport = QueryParameterMultipleValueSupport.NoComma
+            };
+            var requestMessage = new RequestMessage(options, new UrlDetails("http://localhostquery=SELECT id, value FROM table WHERE id = 1&test=42"), "GET", "127.0.0.1");
+            var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "query", false, "SELECT id, value FROM table WHERE id = 1");
+
+            // Act
+            var result = new RequestMatchResult();
+            double score = matcher.GetMatchingScore(requestMessage, result);
+
+            // Assert
+            score.Should().Be(1.0);
         }
     }
 }
