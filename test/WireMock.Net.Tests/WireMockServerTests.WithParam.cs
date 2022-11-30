@@ -13,11 +13,12 @@ namespace WireMock.Net.Tests;
 
 public partial class WireMockServerTests
 {
-    [Fact]
-    public async Task WireMockServer_WithParam_QueryParameterMultipleValueSupport_NoComma_Should_Ignore_Comma()
+    [Theory]
+    [InlineData("SELECT id, value FROM table WHERE id = 1")]
+    [InlineData("select id, name, value from table where id in (1, 2, 3, 4, 5)")]
+    public async Task WireMockServer_WithParam_QueryParameterMultipleValueSupport_NoComma_Should_Ignore_Comma(string queryValue)
     {
         // Arrange
-        var queryValue = "SELECT id, value FROM table WHERE id = 1";
         var settings = new WireMockServerSettings
         {
             QueryParameterMultipleValueSupport = QueryParameterMultipleValueSupport.NoComma
