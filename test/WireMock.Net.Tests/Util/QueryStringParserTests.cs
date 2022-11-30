@@ -287,7 +287,6 @@ public class QueryStringParserTests
         result["q"].Should().Equal(new WireMockList<string>("SELECT Id from User where username='user@gmail.com'"));
     }
 
-
     // Issue #849
     [Fact]
     public void Parse_With1ParamContainingComma_Using_QueryParameterMultipleValueSupport_NoComma()
