@@ -1,5 +1,6 @@
-# 1.5.10 (06 November 2022)
-- #843 Webhook Templating: Use the transformed URL to create the HttpRequestMessage
-- #845 Add WireMockNullLogger as valid commandline logger option [feature]
+# 1.5.11 (24 November 2022)
+- #836 Add Settings.QueryParameterMultipleValueSupport [feature]
+- #848 Use try-catch when adding or removing logEntry [bug]
+- #846 Exception ArgumentOutOfRangeException [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

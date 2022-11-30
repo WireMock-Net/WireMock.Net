@@ -43,14 +43,12 @@ jobs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
       arguments: '--configuration Debug --framework net6.0'
-  
-  - task: DotNetCoreCLI@2
-    displayName: 'Execute Unit tests'
+
+  - task: CmdLine@2
     inputs:
-      command: 'test'
-      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework net6.0 --collect:"XPlat Code Coverage" --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-  
+      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net6.0'
+    displayName: 'Execute Unit Tests with Coverage'
+   
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
@@ -76,7 +74,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish coverage file
     inputs:
-      PathtoPublish: '/home/vsts/work/1/s/test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
+      PathtoPublish: './test/WireMock.Net.Tests/coverage.net6.0.opencover.xml'
 
 - job: Windows_Build_Test
 

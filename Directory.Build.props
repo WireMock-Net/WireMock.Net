@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.5.10</VersionPrefix>
+        <VersionPrefix>1.5.11</VersionPrefix>
         <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
         <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -18,6 +18,13 @@
 
     <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <!-- https://github.com/coverlet-coverage/coverlet/issues/1391 -->
+    <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Tests'))">
+        <CollectCoverage>true</CollectCoverage>
+        <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+        <CoverletOutputFormat>opencover</CoverletOutputFormat>
     </PropertyGroup>
 
     <ItemGroup>
