@@ -13,8 +13,6 @@ namespace WireMock.Net.Tests;
 
 public partial class WireMockServerTests
 {
-
-
     [Fact]
     public async Task WireMockServer_WithParam_QueryParameterMultipleValueSupport_NoComma_Should_Ignore_Comma()
     {
