@@ -4,6 +4,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.Owin;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers
@@ -184,7 +185,7 @@ namespace WireMock.Net.Tests.RequestMatchers
             {
                 QueryParameterMultipleValueSupport = QueryParameterMultipleValueSupport.NoComma
             };
-            var requestMessage = new RequestMessage(options, new UrlDetails("http://localhostquery=SELECT id, value FROM table WHERE id = 1&test=42"), "GET", "127.0.0.1");
+            var requestMessage = new RequestMessage(options, new UrlDetails("http://localhost?query=SELECT id, value FROM table WHERE id = 1&test=42"), "GET", "127.0.0.1");
             var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "query", false, "SELECT id, value FROM table WHERE id = 1");
 
             // Act
