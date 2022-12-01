@@ -33,10 +33,10 @@
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="Handlebars.Net.Helpers" Version="2.*" />
     <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.*" />
-    <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.*" />
+    <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.10" />
     <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.*" />
-    <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.*" />
-    <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.*" />
+    <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.10" />
+    <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.10" />
     <PackageReference Include="log4net" Version="2.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>

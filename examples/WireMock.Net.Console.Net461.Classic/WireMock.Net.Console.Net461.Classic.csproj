@@ -41,11 +41,11 @@
     <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Handlebars.Net.2.1.2\lib\net46\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars.Net.Helpers, Version=2.3.5.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.5\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.10\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.5.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.5\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
@@ -58,6 +58,9 @@
     </Reference>
     <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Stef.Validation, Version=0.1.1.0, Culture=neutral, PublicKeyToken=8f3400880c321038, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Stef.Validation.0.1.1\lib\net40\Stef.Validation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
