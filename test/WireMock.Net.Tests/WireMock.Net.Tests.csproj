@@ -68,7 +68,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
-        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.2.0" />
+        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.3.0" />
     </ItemGroup>
 
     <ItemGroup>
