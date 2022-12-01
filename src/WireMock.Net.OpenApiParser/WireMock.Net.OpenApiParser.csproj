@@ -29,7 +29,7 @@
         <PackageReference Include="RamlToOpenApiConverter" Version="0.6.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-        <PackageReference Include="RandomDataGenerator.Net" Version="1.0.16" />
+        <PackageReference Include="RandomDataGenerator.Net" Version="1.0.17" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
     </ItemGroup>
 
