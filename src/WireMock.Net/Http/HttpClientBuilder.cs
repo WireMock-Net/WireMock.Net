@@ -9,7 +9,7 @@ internal static class HttpClientBuilder
 {
     public static HttpClient Build(HttpClientSettings settings)
     {
-#if NETSTANDARD || NETCOREAPP3_1 || NET5_0 || NET6_0
+#if NETSTANDARD || NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
         var handler = new HttpClientHandler
         {
             CheckCertificateRevocationList = false,

@@ -110,8 +110,8 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
-#if NETCOREAPP3_1 || NET5_0 || NET6_0
-[Fact]
+#if NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
+    [Fact]
 public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
 {
     // Arrange

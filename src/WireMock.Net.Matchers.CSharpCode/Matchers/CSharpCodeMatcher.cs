@@ -154,8 +154,8 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
                 throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
             }
 
-#elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0 || NET6_0)
-            Assembly assembly;
+#elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0)
+        Assembly assembly;
             try
             {
                 assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
