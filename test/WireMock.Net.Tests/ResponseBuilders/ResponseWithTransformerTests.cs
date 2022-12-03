@@ -333,7 +333,7 @@ public class ResponseWithTransformerTests
         // Assert
         Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
-        Check.That(response.Message.Headers["x"]).Contains("text/plain");
+        Check.That(response.Message.Headers!["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
     }
 
@@ -358,7 +358,7 @@ public class ResponseWithTransformerTests
         // Assert
         Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
-        Check.That(response.Message.Headers["x"]).Contains("text/plain");
+        Check.That(response.Message.Headers!["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
     }
 
@@ -394,7 +394,7 @@ public class ResponseWithTransformerTests
     public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_ResultAsObject(TransformerType transformerType)
     {
         // Assign
-        string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"WireMock\" } ] }";
+        string jsonString = "{ \"id\": 42, \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"WireMock\" } ] }";
         var bodyData = new BodyData
         {
             BodyAsJson = JsonConvert.DeserializeObject(jsonString),
@@ -411,7 +411,34 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+    }
+
+    [Theory]
+    [InlineData(TransformerType.Handlebars)]
+    [InlineData(TransformerType.Scriban)]
+    [InlineData(TransformerType.ScribanDotLiquid)]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_KeepType(TransformerType transformerType)
+    {
+        // Assign
+        var jsonString = "{ \"id\": 42 }";
+        var bodyData = new BodyData
+        {
+            BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+            DetectedBodyType = BodyType.Json,
+            Encoding = Encoding.UTF8
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new { x = "test {{request.BodyAsJson.id}}", y = "{{request.BodyAsJson.id}}" })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("{\"x\":\"test 42\",\"y\":42}");
     }
 
     [Theory]
@@ -431,7 +458,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
     }
 
     [Theory]
@@ -452,7 +479,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
     }
 
     //[Theory]
@@ -517,7 +544,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
     }
 
     [Theory]
@@ -554,7 +581,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
     }
 
     [Theory]
@@ -581,7 +608,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
     }
 
     [Fact]
@@ -598,7 +625,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
     }
 
     [Theory(Skip = @"Does not work in Scriban --> c:\\[""1""]\\test.xml")]
@@ -617,7 +644,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
     }
 
     [Theory]
@@ -642,7 +669,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
         Check.That(response.Message.BodyData.DetectedBodyType).Equals(BodyType.String);
         Check.That(response.Message.BodyData!.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
     }
@@ -671,7 +698,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("\"test\"");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("\"test\"");
     }
 
     [Fact(Skip = "todo...")]
@@ -696,7 +723,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
     }
 
     [Theory(Skip = "{{{ }}} Does not work in Scriban")]
@@ -722,7 +749,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
     }
 
     [Theory]
@@ -750,7 +777,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        response.Message.BodyData.BodyAsString.Should().Be(text);
+        response.Message.BodyData!.BodyAsString.Should().Be(text);
         response.Message.BodyData.Encoding.Should().Be(enc);
     }
 }
