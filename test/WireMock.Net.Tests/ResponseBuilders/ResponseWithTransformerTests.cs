@@ -675,10 +675,11 @@ public class ResponseWithTransformerTests
     }
 
     [Fact(Skip = "todo...")]
+    //[Fact]
     public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsTemplatedString()
     {
         // Assign
-        string jsonString = "{ \"name\": \"WireMock\" }";
+        string jsonString = "{ \"name\": \"WireMock\", \"id\": 12345 }";
         var bodyData = new BodyData
         {
             BodyAsJson = JsonConvert.DeserializeObject(jsonString),
@@ -688,7 +689,7 @@ public class ResponseWithTransformerTests
         var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
         var responseBuilder = Response.Create()
-            .WithBodyAsJson("{{{request.BodyAsJson}}}")
+            .WithBodyAsJson("{{{request.BodyAsJson.name}}}")
             .WithTransformer();
 
         // Act
