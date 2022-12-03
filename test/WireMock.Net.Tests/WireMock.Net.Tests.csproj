@@ -52,7 +52,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.23" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
     </ItemGroup>
 
@@ -68,7 +68,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
-        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.2.0" />
+        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.3.0" />
     </ItemGroup>
 
     <ItemGroup>
