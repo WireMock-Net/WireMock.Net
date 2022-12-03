@@ -12,6 +12,12 @@ steps:
     echo "BuildId = $(buildId)"
   displayName: 'Print buildId'
 
+- task: UseDotNet@2
+  displayName: 'Use .NET 7'
+  inputs:
+    packageType: sdk
+    version: 7.0.x
+
 # Based on https://whereslou.com/2018/09/versioning-and-publishing-nuget-packages-automatically-using-azure-devops-pipelines/
 - task: DotNetCoreCLI@2
   displayName: Build Release

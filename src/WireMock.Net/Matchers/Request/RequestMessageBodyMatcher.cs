@@ -104,7 +104,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
     /// </summary>
     /// <param name="func">The function.</param>
-    public RequestMessageBodyMatcher(Func<IBodyData, bool> func)
+    public RequestMessageBodyMatcher(Func<IBodyData?, bool> func)
     {
         BodyDataFunc = Guard.NotNull(func);
     }
