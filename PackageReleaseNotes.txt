@@ -1,6 +1,7 @@
-# 1.5.11 (24 November 2022)
-- #836 Add Settings.QueryParameterMultipleValueSupport [feature]
-- #848 Use try-catch when adding or removing logEntry [bug]
-- #846 Exception ArgumentOutOfRangeException [bug]
+# 1.5.12 (03 December 2022)
+- #851 Fix Linux CI build + Fix opencover [feature]
+- #853 Add .Net 7 [feature]
+- #854 Fix logic for QueryParameterMultipleValueSupport [bug]
+- #857 Update some dependencies [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
