@@ -1,3 +1,9 @@
+# 1.5.12 (03 December 2022)
+- [#851](https://github.com/WireMock-Net/WireMock.Net/pull/851) - Fix Linux CI build + Fix opencover [feature] contributed by [StefH](https://github.com/StefH)
+- [#853](https://github.com/WireMock-Net/WireMock.Net/pull/853) - Add .Net 7 [feature] contributed by [StefH](https://github.com/StefH)
+- [#854](https://github.com/WireMock-Net/WireMock.Net/pull/854) - Fix logic for QueryParameterMultipleValueSupport [bug] contributed by [StefH](https://github.com/StefH)
+- [#857](https://github.com/WireMock-Net/WireMock.Net/pull/857) - Update some dependencies [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.11 (24 November 2022)
 - [#836](https://github.com/WireMock-Net/WireMock.Net/pull/836) - Add Settings.QueryParameterMultipleValueSupport [feature] contributed by [StefH](https://github.com/StefH)
 - [#848](https://github.com/WireMock-Net/WireMock.Net/pull/848) - Use try-catch when adding or removing logEntry [bug] contributed by [StefH](https://github.com/StefH)
