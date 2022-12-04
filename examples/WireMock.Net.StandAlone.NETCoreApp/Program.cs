@@ -94,7 +94,7 @@ static class Program
                     Response.Create()
                         .WithStatusCode(200)
                         .WithHeader("Content-Type", "text/plain")
-                        .WithBody("Hello world!")
+                        .WithBody("Hello world! : " + i)
                 );
 
             server
@@ -105,7 +105,7 @@ static class Program
                     Response.Create()
                         .WithStatusCode(200)
                         .WithHeader("Content-Type", "text/plain")
-                        .WithBody("Hello world duplicate!")
+                        .WithBody("Hello world duplicate! : " + i)
                 );
 
             var client = server.CreateClient();
