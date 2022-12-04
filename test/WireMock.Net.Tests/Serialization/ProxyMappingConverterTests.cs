@@ -25,9 +25,12 @@ public class ProxyMappingConverterTests
         var guidUtilsMock = new Mock<IGuidUtils>();
         guidUtilsMock.Setup(g => g.NewGuid()).Returns(Guid.Parse("ff55ac0a-fea9-4d7b-be74-5e483a2c1305"));
 
+        var dateTimeUtilsMock = new Mock<IDateTimeUtils>();
+        dateTimeUtilsMock.SetupGet(d => d.UtcNow).Returns(new DateTime(2022, 12, 4));
+
         _mappingConverter = new MappingConverter(new MatcherMapper(_settings));
 
-        _sut = new ProxyMappingConverter(_settings, guidUtilsMock.Object);
+        _sut = new ProxyMappingConverter(_settings, guidUtilsMock.Object, dateTimeUtilsMock.Object);
     }
 
     [Fact]

@@ -524,9 +524,10 @@ public partial class WireMockServer : IWireMockServer
 
     private void RegisterMapping(IMapping mapping, bool saveToFile)
     {
-        // Check a mapping exists with the same Guid, if so, replace it.
+        // Check a mapping exists with the same Guid. If so, update the datetime and replace it.
         if (_options.Mappings.ContainsKey(mapping.Guid))
         {
+            mapping.UpdatedAt = DateTime.UtcNow;
             _options.Mappings[mapping.Guid] = mapping;
         }
         else

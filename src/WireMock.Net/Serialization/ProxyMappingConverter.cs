@@ -1,7 +1,7 @@
-using Stef.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stef.Validation;
 using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -17,11 +17,13 @@ internal class ProxyMappingConverter
 {
     private readonly WireMockServerSettings _settings;
     private readonly IGuidUtils _guidUtils;
+    private readonly IDateTimeUtils _dateTimeUtils;
 
-    public ProxyMappingConverter(WireMockServerSettings settings, IGuidUtils guidUtils)
+    public ProxyMappingConverter(WireMockServerSettings settings, IGuidUtils guidUtils, IDateTimeUtils dateTimeUtils)
     {
         _settings = Guard.NotNull(settings);
         _guidUtils = Guard.NotNull(guidUtils);
+        _dateTimeUtils = Guard.NotNull(dateTimeUtils);
     }
 
     public IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
@@ -162,6 +164,7 @@ internal class ProxyMappingConverter
         return new Mapping
         (
             guid: _guidUtils.NewGuid(),
+            updatedAt: _dateTimeUtils.UtcNow,
             title: title,
             description: description,
             path: null,

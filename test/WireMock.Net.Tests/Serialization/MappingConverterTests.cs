@@ -15,6 +15,7 @@ namespace WireMock.Net.Tests.Serialization;
 
 public class MappingConverterTests
 {
+    private readonly DateTime _updatedAt = new(2022, 12, 4);
     private readonly WireMockServerSettings _settings = new();
 
     private readonly MappingConverter _sut;
@@ -52,7 +53,7 @@ public class MappingConverterTests
                 }
             }
         };
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -122,7 +123,7 @@ public class MappingConverterTests
                 }
             }
         };
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, true, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, true, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -157,7 +158,7 @@ public class MappingConverterTests
         var description = "my-description";
         var request = Request.Create();
         var response = Response.Create();
-        var mapping = new Mapping(Guid.NewGuid(), title, description, null, _settings, request, response, 0, null, null, null, null, null, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, title, description, null, _settings, request, response, 0, null, null, null, null, null, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -174,7 +175,7 @@ public class MappingConverterTests
         // Assign
         var request = Request.Create();
         var response = Response.Create().WithBodyAsJson(new { x = "x" }).WithTransformer();
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -200,7 +201,7 @@ public class MappingConverterTests
             End = end,
             TTL = ttl
         };
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, timeSettings);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, timeSettings);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -228,7 +229,7 @@ public class MappingConverterTests
         {
             var request = Request.Create();
             var response = Response.Create().WithDelay(test.Delay);
-            var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, string.Empty, _settings, request, response, 42, null, null, null, null, null, false, null);
+            var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, string.Empty, _settings, request, response, 42, null, null, null, null, null, false, null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -246,7 +247,7 @@ public class MappingConverterTests
         var delay = 1000;
         var request = Request.Create();
         var response = Response.Create().WithDelay(delay);
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -263,7 +264,7 @@ public class MappingConverterTests
         int minimumDelay = 1000;
         var request = Request.Create();
         var response = Response.Create().WithRandomDelay(minimumDelay);
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -283,7 +284,7 @@ public class MappingConverterTests
         int maximumDelay = 2000;
         var request = Request.Create();
         var response = Response.Create().WithRandomDelay(minimumDelay, maximumDelay);
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+        var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);

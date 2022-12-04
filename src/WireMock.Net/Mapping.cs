@@ -16,6 +16,9 @@ public class Mapping : IMapping
     public Guid Guid { get; }
 
     /// <inheritdoc />
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <inheritdoc />
     public string? Title { get; }
 
     /// <inheritdoc />
@@ -73,6 +76,7 @@ public class Mapping : IMapping
     /// Initializes a new instance of the <see cref="Mapping"/> class.
     /// </summary>
     /// <param name="guid">The unique identifier.</param>
+    /// <param name="updatedAt">The datetime when this mapping was created.</param>
     /// <param name="title">The unique title (can be null).</param>
     /// <param name="description">The description (can be null).</param>
     /// <param name="path">The full file path from this mapping title (can be null).</param>
@@ -89,6 +93,7 @@ public class Mapping : IMapping
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
     public Mapping(
         Guid guid,
+        DateTime updatedAt,
         string? title,
         string? description,
         string? path,
@@ -105,6 +110,7 @@ public class Mapping : IMapping
         ITimeSettings? timeSettings)
     {
         Guid = guid;
+        UpdatedAt = updatedAt;
         Title = title;
         Description = description;
         Path = path;
