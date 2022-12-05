@@ -314,14 +314,14 @@ public partial class Response : IResponseBuilder
             switch (TransformerType)
             {
                 case TransformerType.Handlebars:
-                    var factoryHandlebars = new HandlebarsContextFactory(settings.FileSystemHandler, settings.HandlebarsRegistrationCallback);
-                    responseMessageTransformer = new Transformer(factoryHandlebars);
+                    var factoryHandlebars = new HandlebarsContextFactory(settings);
+                    responseMessageTransformer = new Transformer(settings, factoryHandlebars);
                     break;
 
                 case TransformerType.Scriban:
                 case TransformerType.ScribanDotLiquid:
                     var factoryDotLiquid = new ScribanContextFactory(settings.FileSystemHandler, TransformerType);
-                    responseMessageTransformer = new Transformer(factoryDotLiquid);
+                    responseMessageTransformer = new Transformer(settings, factoryDotLiquid);
                     break;
 
                 default:

@@ -14,6 +14,7 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
+using System.Globalization;
 #if NET452
 using Microsoft.Owin;
 #else
@@ -24,6 +25,7 @@ namespace WireMock.Net.Tests.ResponseBuilders;
 
 public class ResponseWithTransformerTests
 {
+    private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
     private readonly WireMockServerSettings _settings = new();
     private const string ClientIp = "::1";
 
@@ -33,10 +35,10 @@ public class ResponseWithTransformerTests
     {
         _mappingMock = new Mock<IMapping>();
 
-        var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+        _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+        _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        _settings.FileSystemHandler = filesystemHandlerMock.Object;
+        _settings.FileSystemHandler = _filesystemHandlerMock.Object;
     }
 
     [Theory]
@@ -415,16 +417,31 @@ public class ResponseWithTransformerTests
     }
 
     [Theory]
-    [InlineData(TransformerType.Handlebars)]
-    [InlineData(TransformerType.Scriban)]
-    [InlineData(TransformerType.ScribanDotLiquid)]
-    public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_KeepType(TransformerType transformerType)
+    [InlineData(TransformerType.Handlebars, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.Handlebars, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.Handlebars, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_KeepType(TransformerType transformerType, string jsonString, string expected)
     {
         // Assign
-        var jsonString = "{ \"id\": 42 }";
+        var culture = CultureInfo.CreateSpecificCulture("en-US");
+        var settings = new WireMockServerSettings
+        {
+            FileSystemHandler = _filesystemHandlerMock.Object,
+            Culture = culture
+        };
+        var jsonSettings = new JsonSerializerSettings
+        {
+            Culture = culture
+        };
         var bodyData = new BodyData
         {
-            BodyAsJson = JsonConvert.DeserializeObject(jsonString),
+            BodyAsJson = JsonConvert.DeserializeObject(jsonString, jsonSettings),
             DetectedBodyType = BodyType.Json,
             Encoding = Encoding.UTF8
         };
@@ -432,13 +449,13 @@ public class ResponseWithTransformerTests
 
         var responseBuilder = Response.Create()
             .WithBodyAsJson(new { x = "test {{request.BodyAsJson.id}}", y = "{{request.BodyAsJson.id}}" })
-            .WithTransformer();
+            .WithTransformer(transformerType);
 
         // Act
-        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("{\"x\":\"test 42\",\"y\":42}");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be(expected);
     }
 
     [Theory]

@@ -4,6 +4,7 @@ using Stef.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -11,11 +12,19 @@ namespace WireMock.Transformers;
 
 internal class Transformer : ITransformer
 {
+    private readonly JsonSerializer _jsonSerializer;
+    private readonly WireMockServerSettings _settings;
     private readonly ITransformerContextFactory _factory;
 
-    public Transformer(ITransformerContextFactory factory)
+    public Transformer(WireMockServerSettings settings, ITransformerContextFactory factory)
     {
+        _settings = Guard.NotNull(settings);
         _factory = Guard.NotNull(factory);
+
+        _jsonSerializer = new JsonSerializer
+        {
+            Culture = _settings.Culture
+        };
     }
 
     public IBodyData? TransformBody(
@@ -109,7 +118,7 @@ internal class Transformer : ITransformer
         });
     }
 
-    private static IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, TransformModel model, IBodyData original, bool useTransformerForBodyAsFile)
+    private IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, TransformModel model, IBodyData original, bool useTransformerForBodyAsFile)
     {
         return original.DetectedBodyType switch
         {
@@ -139,7 +148,7 @@ internal class Transformer : ITransformer
         return newHeaders;
     }
 
-    private static IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOptions options, object model, IBodyData original)
+    private IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOptions options, object model, IBodyData original)
     {
         JToken? jToken = null;
         switch (original.BodyAsJson)
@@ -155,7 +164,7 @@ internal class Transformer : ITransformer
                 break;
 
             case Array bodyAsArray:
-                jToken = JArray.FromObject(bodyAsArray);
+                jToken = JArray.FromObject(bodyAsArray, _jsonSerializer);
                 WalkNode(handlebarsContext, options, jToken, model);
                 break;
 
@@ -164,7 +173,7 @@ internal class Transformer : ITransformer
                 break;
 
             case not null:
-                jToken = JObject.FromObject(original.BodyAsJson);
+                jToken = JObject.FromObject(original.BodyAsJson, _jsonSerializer);
                 WalkNode(handlebarsContext, options, jToken, model);
                 break;
         }
@@ -178,7 +187,7 @@ internal class Transformer : ITransformer
         };
     }
 
-    private static JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, string stringValue, object model)
+    private JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, string stringValue, object model)
     {
         string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
 
@@ -202,7 +211,7 @@ internal class Transformer : ITransformer
         return stringValue;
     }
 
-    private static void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, JToken node, object model)
+    private void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, JToken node, object model)
     {
         switch (node.Type)
         {
@@ -230,8 +239,8 @@ internal class Transformer : ITransformer
                     return;
                 }
 
-                string transformed = handlebarsContext.ParseAndRender(stringValue!, model);
-                if (!string.Equals(stringValue, transformed))
+                var transformed = handlebarsContext.ParseAndEvaluate(stringValue!, model);
+                if (!Equals(stringValue, transformed))
                 {
                     ReplaceNodeValue(options, node, transformed);
                 }
@@ -240,28 +249,53 @@ internal class Transformer : ITransformer
     }
 
     // ReSharper disable once UnusedParameter.Local
-    private static void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, string transformedString)
+    private void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, object? transformedValue)
     {
-        StringUtils.TryParseQuotedString(transformedString, out var result, out _);
-        if (bool.TryParse(result, out var valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
+        if (transformedValue is string transformedString)
         {
-            node.Replace(valueAsBoolean);
-            return;
+            StringUtils.TryParseQuotedString(transformedString, out var result, out _);
+            if (bool.TryParse(result, out var valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
+            {
+                node.Replace(valueAsBoolean);
+                return;
+            }
         }
 
-        JToken value;
-        try
+        if (transformedValue is { })
         {
-            // Try to convert this string into a JsonObject
-            value = JToken.Parse(transformedString);
+            try
+            {
+                // Try to convert this string into a JsonObject
+                //value = JToken.Parse(transformedValue);
+
+                var value = JToken.FromObject(transformedValue, _jsonSerializer);
+                node.Replace(value);
+            }
+            catch (JsonException)
+            {
+                // Ignore JsonException and just keep string value and convert to JToken
+                //value = transformedString;
+            }
         }
-        catch (JsonException)
+        else
         {
-            // Ignore JsonException and just keep string value and convert to JToken
-            value = transformedString;
+            //node.Remove(); // TODO
         }
 
-        node.Replace(value);
+        //try
+        //{
+        //    // Try to convert this string into a JsonObject
+        //    //value = JToken.Parse(transformedValue);
+        //    var value = JToken.FromObject(transformedValue);
+        //    node.Replace(value);
+        //}
+        //catch (JsonException)
+        //{
+        //    // Ignore JsonException and just keep string value and convert to JToken
+        //    //value = transformedString;
+        //}
+
+        //node.Replace(value);
     }
 
     private static IBodyData TransformBodyAsString(ITransformerContext handlebarsContext, object model, IBodyData original)
