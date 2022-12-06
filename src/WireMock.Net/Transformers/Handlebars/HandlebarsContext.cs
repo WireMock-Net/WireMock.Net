@@ -25,17 +25,24 @@ internal class HandlebarsContext : IHandlebarsContext
         return template(model);
     }
 
-    public object ParseAndEvaluate(string text, object model)
+    public object? ParseAndEvaluate(string text, object model)
     {
-        object? result = null;
-        try
+        if (Handlebars.TryEvaluate(text, model, out var result))
         {
-            result = Handlebars.Evaluate(text, model);
+            return result;
         }
-        catch
-        {
-            // Ignore exception, and set keep the result on null.
-        }
+
+        return ParseAndRender(text, model);
+
+        //object? result = null;
+        //try
+        //{
+        //    result = Handlebars.Evaluate(text, model);
+        //}
+        //catch
+        //{
+        //    // Ignore exception, and set keep the result on null.
+        //}
 
         // In case Evaluate
         // - throws exception

@@ -24,7 +24,7 @@ internal class ScribanContext : ITransformerContext
         return template.Render(model, member => member.Name);
     }
 
-    public object ParseAndEvaluate(string text, object model)
+    public object? ParseAndEvaluate(string text, object model)
     {
         // In case of Scriban, call ParseAndRender.
         return ParseAndRender(text, model);

@@ -8,5 +8,5 @@ internal interface ITransformerContext
 
     string ParseAndRender(string text, object model);
 
-    object ParseAndEvaluate(string text, object model);
+    object? ParseAndEvaluate(string text, object model);
 }
