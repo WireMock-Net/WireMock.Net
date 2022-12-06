@@ -27,7 +27,7 @@ internal class HandlebarsContext : IHandlebarsContext
 
     public object? ParseAndEvaluate(string text, object model)
     {
-        if (Handlebars.TryEvaluate(text, model, out var result))
+        if (Handlebars.TryEvaluate(text, model, out var result) && result is not UndefinedBindingResult)
         {
             return result;
         }

@@ -1,9 +1,9 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Stef.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Stef.Validation;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
@@ -12,6 +12,8 @@ namespace WireMock.Transformers;
 
 internal class Transformer : ITransformer
 {
+    private static readonly Type[] SupportedTypes = { typeof(bool), typeof(long), typeof(int), typeof(double), typeof(Guid), typeof(DateTime), typeof(TimeSpan), typeof(Uri) };
+
     private readonly JsonSerializer _jsonSerializer;
     private readonly WireMockServerSettings _settings;
     private readonly ITransformerContextFactory _factory;
@@ -259,43 +261,58 @@ internal class Transformer : ITransformer
                 node.Replace(valueAsBoolean);
                 return;
             }
-        }
 
-        if (transformedValue is { })
-        {
+            JToken value;
             try
             {
                 // Try to convert this string into a JsonObject
-                //value = JToken.Parse(transformedValue);
-
-                var value = JToken.FromObject(transformedValue, _jsonSerializer);
-                node.Replace(value);
+                value = JToken.Parse(transformedString);
             }
             catch (JsonException)
             {
                 // Ignore JsonException and just keep string value and convert to JToken
-                //value = transformedString;
+                value = transformedString;
+            }
+
+            node.Replace(value);
+
+            //try
+            //{
+            //    var jToken = JToken.Parse(transformedString);
+            //    node.Replace(jToken);
+            //}
+            //catch (JsonException)
+            //{
+            //    // Ignore JsonException and just keep string value and convert to JToken
+            //}
+        }
+
+        if (transformedValue is JValue jValue)
+        {
+            node.Replace(jValue);
+            return;
+        }
+
+        if (transformedValue is { })
+        {
+            foreach (var supportedType in SupportedTypes)
+            {
+                try
+                {
+                    var value = Convert.ChangeType(transformedValue, supportedType);
+                    node.Replace(JToken.FromObject(value, _jsonSerializer));
+                    return;
+                }
+                catch
+                {
+                    // Ignore
+                }
             }
         }
         else
         {
             //node.Remove(); // TODO
         }
-
-        //try
-        //{
-        //    // Try to convert this string into a JsonObject
-        //    //value = JToken.Parse(transformedValue);
-        //    var value = JToken.FromObject(transformedValue);
-        //    node.Replace(value);
-        //}
-        //catch (JsonException)
-        //{
-        //    // Ignore JsonException and just keep string value and convert to JToken
-        //    //value = transformedString;
-        //}
-
-        //node.Replace(value);
     }
 
     private static IBodyData TransformBodyAsString(ITransformerContext handlebarsContext, object model, IBodyData original)
