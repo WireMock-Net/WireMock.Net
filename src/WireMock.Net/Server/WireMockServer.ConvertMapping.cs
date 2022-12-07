@@ -250,7 +250,7 @@ public partial class WireMockServer
 
             if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
             {
-                option = ReplaceNodeOptions.None;
+                option = ReplaceNodeOptions.Evaluate;
             }
             responseBuilder = responseBuilder.WithTransformer(
                 transformerType,

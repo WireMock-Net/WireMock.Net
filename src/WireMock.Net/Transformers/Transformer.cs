@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -253,66 +254,70 @@ internal class Transformer : ITransformer
     // ReSharper disable once UnusedParameter.Local
     private void ReplaceNodeValue(ReplaceNodeOptions options, JToken node, object? transformedValue)
     {
-        if (transformedValue is string transformedString)
+        switch (transformedValue)
         {
-            StringUtils.TryParseQuotedString(transformedString, out var result, out _);
-            if (bool.TryParse(result, out var valueAsBoolean) || bool.TryParse(transformedString, out valueAsBoolean))
-            {
-                node.Replace(valueAsBoolean);
+            case JValue jValue:
+                node.Replace(jValue);
                 return;
-            }
 
-            JToken value;
+            case string transformedString:
+                if (TryConvert(transformedString, out var convertedFromStringValue))
+                {
+                    node.Replace(JToken.FromObject(convertedFromStringValue, _jsonSerializer));
+                }
+                else
+                {
+                    node.Replace(ParseAsJObject(transformedString));
+                }
+                break;
+
+            case WireMockList<string> strings:
+                switch (strings.Count)
+                {
+                    case 1:
+                        node.Replace(ParseAsJObject(strings[0]));
+                        return;
+
+                    case > 1:
+                        node.Replace(JToken.FromObject(strings.ToArray(), _jsonSerializer));
+                        return;
+                }
+                break;
+
+            case { }:
+                if (TryConvert(transformedValue, out var convertedValue))
+                {
+                    node.Replace(JToken.FromObject(convertedValue, _jsonSerializer));
+                }
+                return;
+
+            default: // It's null, skip it.
+                return;
+        }
+    }
+
+    private static JToken ParseAsJObject(string stringValue)
+    {
+        return JsonUtils.TryParseAsJObject(stringValue, out var parsedAsjObject) ? parsedAsjObject : stringValue;
+    }
+
+    private static bool TryConvert(object? transformedValue, [NotNullWhen(true)] out object? convertedValue)
+    {
+        foreach (var supportedType in SupportedTypes)
+        {
             try
             {
-                // Try to convert this string into a JsonObject
-                value = JToken.Parse(transformedString);
+                convertedValue = Convert.ChangeType(transformedValue, supportedType);
+                return true;
             }
-            catch (JsonException)
+            catch
             {
-                // Ignore JsonException and just keep string value and convert to JToken
-                value = transformedString;
-            }
-
-            node.Replace(value);
-
-            //try
-            //{
-            //    var jToken = JToken.Parse(transformedString);
-            //    node.Replace(jToken);
-            //}
-            //catch (JsonException)
-            //{
-            //    // Ignore JsonException and just keep string value and convert to JToken
-            //}
-        }
-
-        if (transformedValue is JValue jValue)
-        {
-            node.Replace(jValue);
-            return;
-        }
-
-        if (transformedValue is { })
-        {
-            foreach (var supportedType in SupportedTypes)
-            {
-                try
-                {
-                    var value = Convert.ChangeType(transformedValue, supportedType);
-                    node.Replace(JToken.FromObject(value, _jsonSerializer));
-                    return;
-                }
-                catch
-                {
-                    // Ignore
-                }
+                // Ignore
             }
         }
-        else
-        {
-            //node.Remove(); // TODO
-        }
+
+        convertedValue = null;
+        return false;
     }
 
     private static IBodyData TransformBodyAsString(ITransformerContext handlebarsContext, object model, IBodyData original)

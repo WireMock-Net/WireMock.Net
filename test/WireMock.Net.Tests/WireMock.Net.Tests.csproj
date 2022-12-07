@@ -20,6 +20,10 @@
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">
+        <DefineConstants>NETFRAMEWORK</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
@@ -37,6 +41,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.core" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
