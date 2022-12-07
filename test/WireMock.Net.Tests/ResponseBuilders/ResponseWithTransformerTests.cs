@@ -15,6 +15,7 @@ using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 using System.Globalization;
+using CultureAwareTesting.xUnit;
 #if NET452
 using Microsoft.Owin;
 #else
