@@ -151,33 +151,33 @@ internal class Transformer : ITransformer
         return newHeaders;
     }
 
-    private IBodyData TransformBodyAsJson(ITransformerContext handlebarsContext, ReplaceNodeOptions options, object model, IBodyData original)
+    private IBodyData TransformBodyAsJson(ITransformerContext transformerContext, ReplaceNodeOptions options, object model, IBodyData original)
     {
         JToken? jToken = null;
         switch (original.BodyAsJson)
         {
             case JObject bodyAsJObject:
                 jToken = bodyAsJObject.DeepClone();
-                WalkNode(handlebarsContext, options, jToken, model);
+                WalkNode(transformerContext, options, jToken, model);
                 break;
 
             case JArray bodyAsJArray:
                 jToken = bodyAsJArray.DeepClone();
-                WalkNode(handlebarsContext, options, jToken, model);
+                WalkNode(transformerContext, options, jToken, model);
                 break;
 
             case Array bodyAsArray:
                 jToken = JArray.FromObject(bodyAsArray, _jsonSerializer);
-                WalkNode(handlebarsContext, options, jToken, model);
+                WalkNode(transformerContext, options, jToken, model);
                 break;
 
             case string bodyAsString:
-                jToken = ReplaceSingleNode(handlebarsContext, options, bodyAsString, model);
+                jToken = ReplaceSingleNode(transformerContext, options, bodyAsString, model);
                 break;
 
             case not null:
                 jToken = JObject.FromObject(original.BodyAsJson, _jsonSerializer);
-                WalkNode(handlebarsContext, options, jToken, model);
+                WalkNode(transformerContext, options, jToken, model);
                 break;
         }
 
@@ -190,9 +190,9 @@ internal class Transformer : ITransformer
         };
     }
 
-    private JToken ReplaceSingleNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, string stringValue, object model)
+    private JToken ReplaceSingleNode(ITransformerContext transformerContext, ReplaceNodeOptions options, string stringValue, object model)
     {
-        string transformedString = handlebarsContext.ParseAndRender(stringValue, model);
+        string transformedString = transformerContext.ParseAndRender(stringValue, model);
 
         if (!string.Equals(stringValue, transformedString))
         {
@@ -214,7 +214,7 @@ internal class Transformer : ITransformer
         return stringValue;
     }
 
-    private void WalkNode(ITransformerContext handlebarsContext, ReplaceNodeOptions options, JToken node, object model)
+    private void WalkNode(ITransformerContext transformerContext, ReplaceNodeOptions options, JToken node, object model)
     {
         switch (node.Type)
         {
@@ -222,7 +222,7 @@ internal class Transformer : ITransformer
                 // In case of Object, loop all children. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (var child in node.Children<JProperty>().ToArray())
                 {
-                    WalkNode(handlebarsContext, options, child.Value, model);
+                    WalkNode(transformerContext, options, child.Value, model);
                 }
                 break;
 
@@ -230,7 +230,7 @@ internal class Transformer : ITransformer
                 // In case of Array, loop all items. Do a ToArray() to avoid `Collection was modified` exceptions.
                 foreach (var child in node.Children().ToArray())
                 {
-                    WalkNode(handlebarsContext, options, child, model);
+                    WalkNode(transformerContext, options, child, model);
                 }
                 break;
 
@@ -242,7 +242,7 @@ internal class Transformer : ITransformer
                     return;
                 }
 
-                var transformed = handlebarsContext.ParseAndEvaluate(stringValue!, model);
+                var transformed = transformerContext.ParseAndEvaluate(stringValue!, model);
                 if (!Equals(stringValue, transformed))
                 {
                     ReplaceNodeValue(options, node, transformed);
@@ -320,20 +320,20 @@ internal class Transformer : ITransformer
         return false;
     }
 
-    private static IBodyData TransformBodyAsString(ITransformerContext handlebarsContext, object model, IBodyData original)
+    private static IBodyData TransformBodyAsString(ITransformerContext transformerContext, object model, IBodyData original)
     {
         return new BodyData
         {
             Encoding = original.Encoding,
             DetectedBodyType = original.DetectedBodyType,
             DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
-            BodyAsString = handlebarsContext.ParseAndRender(original.BodyAsString!, model)
+            BodyAsString = transformerContext.ParseAndRender(original.BodyAsString!, model)
         };
     }
 
-    private static IBodyData TransformBodyAsFile(ITransformerContext handlebarsContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
+    private static IBodyData TransformBodyAsFile(ITransformerContext transformerContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
     {
-        string transformedBodyAsFilename = handlebarsContext.ParseAndRender(original.BodyAsFile!, model);
+        string transformedBodyAsFilename = transformerContext.ParseAndRender(original.BodyAsFile!, model);
 
         if (!useTransformerForBodyAsFile)
         {
@@ -345,12 +345,12 @@ internal class Transformer : ITransformer
             };
         }
 
-        string text = handlebarsContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+        string text = transformerContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
         return new BodyData
         {
             DetectedBodyType = BodyType.String,
             DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
-            BodyAsString = handlebarsContext.ParseAndRender(text, model),
+            BodyAsString = transformerContext.ParseAndRender(text, model),
             BodyAsFile = transformedBodyAsFilename
         };
     }
