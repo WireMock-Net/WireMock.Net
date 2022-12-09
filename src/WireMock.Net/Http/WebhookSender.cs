@@ -51,14 +51,14 @@ internal class WebhookSender
             switch (webhookRequest.TransformerType)
             {
                 case TransformerType.Handlebars:
-                    var factoryHandlebars = new HandlebarsContextFactory(_settings.FileSystemHandler, _settings.HandlebarsRegistrationCallback);
-                    transformer = new Transformer(factoryHandlebars);
+                    var factoryHandlebars = new HandlebarsContextFactory(_settings);
+                    transformer = new Transformer(_settings, factoryHandlebars);
                     break;
 
                 case TransformerType.Scriban:
                 case TransformerType.ScribanDotLiquid:
                     var factoryDotLiquid = new ScribanContextFactory(_settings.FileSystemHandler, webhookRequest.TransformerType);
-                    transformer = new Transformer(factoryDotLiquid);
+                    transformer = new Transformer(_settings, factoryDotLiquid);
                     break;
 
                 default:
