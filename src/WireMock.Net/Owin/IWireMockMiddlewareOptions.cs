@@ -42,6 +42,10 @@ internal interface IWireMockMiddlewareOptions
     Action<IServiceCollection>? AdditionalServiceRegistration { get; set; }
 
     CorsPolicyOptions? CorsPolicyOptions { get; set; }
+
+    public ClientCertificateMode ClientCertificateMode { get; set; }
+
+    public bool SkipClientCertificateValidation { get; set; }
 #endif
 
     IFileSystemHandler? FileSystemHandler { get; set; }

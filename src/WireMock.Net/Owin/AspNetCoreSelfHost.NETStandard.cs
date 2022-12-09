@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WireMock.HttpsCertificate;
+using CertificateLoader = WireMock.HttpsCertificate.CertificateLoader;
 
 namespace WireMock.Owin
 {
@@ -26,21 +27,25 @@ namespace WireMock.Owin
                 {
                     kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
                     {
-                        if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                        listenOptions.UseHttps(options =>
                         {
-                            listenOptions.UseHttps(CertificateLoader.LoadCertificate(
-                                wireMockMiddlewareOptions.X509StoreName,
-                                wireMockMiddlewareOptions.X509StoreLocation,
-                                wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
-                                wireMockMiddlewareOptions.X509CertificateFilePath,
-                                wireMockMiddlewareOptions.X509CertificatePassword,
-                                urlDetail.Host)
-                            );
-                        }
-                        else
-                        {
-                            listenOptions.UseHttps();
-                        }
+                            if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                            {
+                                options.ServerCertificate = CertificateLoader.LoadCertificate(
+                                    wireMockMiddlewareOptions.X509StoreName,
+                                    wireMockMiddlewareOptions.X509StoreLocation,
+                                    wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
+                                    wireMockMiddlewareOptions.X509CertificateFilePath,
+                                    wireMockMiddlewareOptions.X509CertificatePassword,
+                                    urlDetail.Host);
+                            }
+
+                            options.ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode;
+                            if (wireMockMiddlewareOptions.SkipClientCertificateValidation)
+                            {
+                                options.ClientCertificateValidation = (_, _, _) => true;
+                            }
+                        });
                     });
                 }
                 else

@@ -42,6 +42,11 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
     public Action<IServiceCollection>? AdditionalServiceRegistration { get; set; }
 
     public CorsPolicyOptions? CorsPolicyOptions { get; set; }
+
+    public ClientCertificateMode ClientCertificateMode { get; set; }
+
+    /// <inheritdoc cref="IWireMockMiddlewareOptions.SkipClientCertificateValidation"/>
+    public bool SkipClientCertificateValidation { get; set; }
 #endif
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.FileSystemHandler"/>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WireMock.HttpsCertificate;
@@ -23,21 +24,22 @@ internal partial class AspNetCoreSelfHost
         {
             if (urlDetail.IsHttps)
             {
-                if (wireMockMiddlewareOptions.CustomCertificateDefined)
+                options.UseHttps(new HttpsConnectionFilterOptions
                 {
-                    options.UseHttps(CertificateLoader.LoadCertificate(
-                        wireMockMiddlewareOptions.X509StoreName,
-                        wireMockMiddlewareOptions.X509StoreLocation,
-                        wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
-                        wireMockMiddlewareOptions.X509CertificateFilePath,
-                        wireMockMiddlewareOptions.X509CertificatePassword,
-                        urlDetail.Host)
-                    );
-                }
-                else
-                {
-                    options.UseHttps(PublicCertificateHelper.GetX509Certificate2());
-                }
+                    ServerCertificate = wireMockMiddlewareOptions.CustomCertificateDefined
+                        ? CertificateLoader.LoadCertificate(
+                            wireMockMiddlewareOptions.X509StoreName,
+                            wireMockMiddlewareOptions.X509StoreLocation,
+                            wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
+                            wireMockMiddlewareOptions.X509CertificateFilePath,
+                            wireMockMiddlewareOptions.X509CertificatePassword,
+                            urlDetail.Host)
+                        : PublicCertificateHelper.GetX509Certificate2(),
+                    ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode,
+                    ClientCertificateValidation = wireMockMiddlewareOptions.SkipClientCertificateValidation
+                        ? (_, _, _) => true
+                        : null,
+                });
             }
         }
     }

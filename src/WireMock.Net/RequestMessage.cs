@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+#if USE_ASPNETCORE
+using System.Security.Cryptography.X509Certificates;
+#endif
 using Stef.Validation;
 using WireMock.Models;
 using WireMock.Owin;
@@ -92,6 +95,11 @@ public class RequestMessage : IRequestMessage
     /// <inheritdoc cref="IRequestMessage.Origin" />
     public string Origin { get; }
 
+#if USE_ASPNETCORE
+    /// <inheritdoc cref="IRequestMessage.ClientCertificate" />
+    public X509Certificate2? ClientCertificate { get; }
+#endif
+
     /// <summary>
     /// Used for Unit Testing
     /// </summary>
@@ -115,13 +123,20 @@ public class RequestMessage : IRequestMessage
     /// <param name="bodyData">The BodyData.</param>
     /// <param name="headers">The headers.</param>
     /// <param name="cookies">The cookies.</param>
+#if USE_ASPNETCORE
+    /// <param name="clientCertificate">The client certificate</param>
+#endif
     internal RequestMessage(
         IWireMockMiddlewareOptions? options,
         UrlDetails urlDetails, string method,
         string clientIP,
         IBodyData? bodyData = null,
         IDictionary<string, string[]>? headers = null,
-        IDictionary<string, string>? cookies = null)
+        IDictionary<string, string>? cookies = null
+#if USE_ASPNETCORE
+        , X509Certificate2? clientCertificate = null
+#endif
+        )
     {
         Guard.NotNull(urlDetails, nameof(urlDetails));
         Guard.NotNull(method, nameof(method));
@@ -156,6 +171,9 @@ public class RequestMessage : IRequestMessage
         Cookies = cookies;
         RawQuery = urlDetails.Url.Query;
         Query = QueryStringParser.Parse(RawQuery, options?.QueryParameterMultipleValueSupport);
+#if USE_ASPNETCORE
+        ClientCertificate = clientCertificate;
+#endif
     }
 
     /// <summary>

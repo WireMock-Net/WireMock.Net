@@ -226,7 +226,9 @@ public partial class WireMockServer
             QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
 
 #if USE_ASPNETCORE
-            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
+            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString(),
+            ClientCertificateMode = _settings.ClientCertificateMode,
+            SkipClientCertificateValidation = _settings.SkipClientCertificateValidation
 #endif
         };
 
@@ -275,6 +277,9 @@ public partial class WireMockServer
             _settings.CorsPolicyOptions = corsPolicyOptions;
             _options.CorsPolicyOptions = corsPolicyOptions;
         }
+
+        _options.ClientCertificateMode = _settings.ClientCertificateMode;
+        _options.SkipClientCertificateValidation = _settings.SkipClientCertificateValidation;
 #endif
 
         return ResponseMessageBuilder.Create("Settings updated");
