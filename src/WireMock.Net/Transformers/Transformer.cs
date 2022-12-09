@@ -16,17 +16,15 @@ internal class Transformer : ITransformer
     private static readonly Type[] SupportedTypes = { typeof(bool), typeof(long), typeof(int), typeof(double), typeof(Guid), typeof(DateTime), typeof(TimeSpan), typeof(Uri) };
 
     private readonly JsonSerializer _jsonSerializer;
-    private readonly WireMockServerSettings _settings;
     private readonly ITransformerContextFactory _factory;
 
     public Transformer(WireMockServerSettings settings, ITransformerContextFactory factory)
     {
-        _settings = Guard.NotNull(settings);
         _factory = Guard.NotNull(factory);
 
         _jsonSerializer = new JsonSerializer
         {
-            Culture = _settings.Culture
+            Culture = Guard.NotNull(settings).Culture
         };
     }
 
@@ -242,7 +240,7 @@ internal class Transformer : ITransformer
                     return;
                 }
 
-                var transformed = transformerContext.ParseAndEvaluate(stringValue!, model);
+                var transformed = transformerContext.ParseAndEvaluate(stringValue, model);
                 if (!Equals(stringValue, transformed))
                 {
                     ReplaceNodeValue(options, node, transformed);
@@ -291,7 +289,7 @@ internal class Transformer : ITransformer
                 }
                 return;
 
-            default: // It's null, skip it.
+            default: // It's null, skip it. Maybe remove it ?
                 return;
         }
     }
@@ -308,7 +306,7 @@ internal class Transformer : ITransformer
             try
             {
                 convertedValue = Convert.ChangeType(transformedValue, supportedType);
-                return true;
+                return convertedValue is not null;
             }
             catch
             {
