@@ -107,25 +107,42 @@ public partial class WireMockServer : IWireMockServer
     #region HttpClient
     /// <summary>
     /// Create a <see cref="HttpClient"/> which can be used to call this instance.
+    /// <param name="handlers">
+    /// An ordered list of System.Net.Http.DelegatingHandler instances to be invoked
+    /// as an System.Net.Http.HttpRequestMessage travels from the System.Net.Http.HttpClient
+    /// to the network and an System.Net.Http.HttpResponseMessage travels from the network
+    /// back to System.Net.Http.HttpClient. The handlers are invoked in a top-down fashion.
+    /// That is, the first entry is invoked first for an outbound request message but
+    /// last for an inbound response message.
+    /// </param>
     /// </summary>
     [PublicAPI]
-    public HttpClient CreateClient()
+    public HttpClient CreateClient(params DelegatingHandler[] handlers)
     {
         if (!IsStarted)
         {
             throw new InvalidOperationException("Unable to create HttpClient because the service is not started.");
         }
 
-        var client = HttpClientFactory2.Create();
+        var client = HttpClientFactory2.Create(handlers);
         client.BaseAddress = new Uri(Url!);
         return client;
     }
 
     /// <summary>
     /// Create <see cref="HttpClient"/>s (one for each URL) which can be used to call this instance.
+    /// <param name="innerHandler">The inner handler represents the destination of the HTTP message channel.</param>
+    /// <param name="handlers">
+    /// An ordered list of System.Net.Http.DelegatingHandler instances to be invoked
+    /// as an System.Net.Http.HttpRequestMessage travels from the System.Net.Http.HttpClient
+    /// to the network and an System.Net.Http.HttpResponseMessage travels from the network
+    /// back to System.Net.Http.HttpClient. The handlers are invoked in a top-down fashion.
+    /// That is, the first entry is invoked first for an outbound request message but
+    /// last for an inbound response message.
+    /// </param>
     /// </summary>
     [PublicAPI]
-    public HttpClient[] CreateClients()
+    public HttpClient[] CreateClients(HttpMessageHandler innerHandler, params DelegatingHandler[] handlers)
     {
         if (!IsStarted)
         {
@@ -134,7 +151,7 @@ public partial class WireMockServer : IWireMockServer
 
         return Urls.Select(url =>
         {
-            var client = HttpClientFactory2.Create();
+            var client = HttpClientFactory2.Create(innerHandler, handlers);
             client.BaseAddress = new Uri(url);
             return client;
         }).ToArray();
