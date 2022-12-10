@@ -25,10 +25,6 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net461' ">
-        <DefineConstants>NET461</DefineConstants>
-    </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
