@@ -45,7 +45,7 @@ internal interface IWireMockMiddlewareOptions
 
     public ClientCertificateMode ClientCertificateMode { get; set; }
 
-    public bool SkipClientCertificateValidation { get; set; }
+    public bool AcceptAnyClientCertificate { get; set; }
 #endif
 
     IFileSystemHandler? FileSystemHandler { get; set; }

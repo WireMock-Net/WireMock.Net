@@ -25,10 +25,6 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-        <DefineConstants>NETSTANDARD_1_3_OR_GREATER</DefineConstants>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(TargetFramework)' == 'net461' ">
         <DefineConstants>NET461</DefineConstants>
     </PropertyGroup>
@@ -49,7 +45,7 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+    <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard')) and '$(TargetFramework)' != 'netstandard1.0'">
       <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.0" />
     </ItemGroup>
 

@@ -36,7 +36,7 @@ internal partial class AspNetCoreSelfHost
                             urlDetail.Host)
                         : PublicCertificateHelper.GetX509Certificate2(),
                     ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode,
-                    ClientCertificateValidation = wireMockMiddlewareOptions.SkipClientCertificateValidation
+                    ClientCertificateValidation = wireMockMiddlewareOptions.AcceptAnyClientCertificate
                         ? (_, _, _) => true
                         : null,
                 });

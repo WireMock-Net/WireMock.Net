@@ -242,9 +242,9 @@ namespace WireMock.Settings
         public ClientCertificateMode ClientCertificateMode { get; set; }
 
         /// <summary>
-        /// Whether to skip client certificate validation
+        /// Whether to accept any client certificate
         /// </summary>
-        public bool SkipClientCertificateValidation { get; set; }
+        public bool AcceptAnyClientCertificate { get; set; }
 #endif
 
         /// <summary>

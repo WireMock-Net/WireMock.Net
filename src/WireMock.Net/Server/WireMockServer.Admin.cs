@@ -228,7 +228,7 @@ public partial class WireMockServer
 #if USE_ASPNETCORE
             CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString(),
             ClientCertificateMode = _settings.ClientCertificateMode,
-            SkipClientCertificateValidation = _settings.SkipClientCertificateValidation
+            AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate
 #endif
         };
 
@@ -279,7 +279,7 @@ public partial class WireMockServer
         }
 
         _options.ClientCertificateMode = _settings.ClientCertificateMode;
-        _options.SkipClientCertificateValidation = _settings.SkipClientCertificateValidation;
+        _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 #endif
 
         return ResponseMessageBuilder.Create("Settings updated");

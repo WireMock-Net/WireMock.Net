@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-#if NETSTANDARD_1_3_OR_GREATER || NET461
+#if NETSTANDARD1_3_OR_GREATER || NET461
 using System.Security.Cryptography.X509Certificates;
 #endif
 using WireMock.Types;
@@ -138,7 +138,7 @@ public interface IRequestMessage
     /// </summary>
     string Origin { get; }
 
-#if NETSTANDARD_1_3_OR_GREATER || NET461
+#if NETSTANDARD1_3_OR_GREATER || NET461
     /// <summary>
     /// Gets the connection's client certificate
     /// </summary>

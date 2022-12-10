@@ -5,9 +5,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-#if NET461 || NETSTANDARD1_3 || NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
-using System.Security.Cryptography.X509Certificates;
-#endif
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -134,47 +131,6 @@ public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
 
     server.Stop();
 }
-#endif
-
-#if NET461 || NETSTANDARD1_3 || NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
-    [Fact]
-    public async Task WireMockServer_WithRequiredClientCertificates_Should_Work_Correct()
-    {
-        // Arrange
-        var settings = new WireMockServerSettings
-        {
-            ClientCertificateMode = ClientCertificateMode.RequireCertificate,
-            SkipClientCertificateValidation = true,
-            UseSSL = true,
-        };
-
-        using var server = WireMockServer.Start(settings);
-
-        server.Given(Request.Create().WithPath("/*"))
-            .RespondWith(Response.Create().WithCallback(message => new ResponseMessage
-            {
-                StatusCode = message.ClientCertificate?.Thumbprint == "2E32E3528C87046A95B8B0BA172A1597C3AF3A9D"
-                    ? 200
-                    : 403
-            }));
-
-        var certificates = new X509Certificate2Collection();
-        certificates.Import("client_cert.pfx", "1234", X509KeyStorageFlags.Exportable);
-
-        var httpMessageHandler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
-        };
-        httpMessageHandler.ClientCertificates.AddRange(certificates);
-
-        // Act
-        var response = await new HttpClient(httpMessageHandler)
-            .GetAsync("https://localhost:" + server.Ports[0] + "/foo")
-            .ConfigureAwait(false);
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-    }
 #endif
 
     [Fact]

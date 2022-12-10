@@ -41,7 +41,7 @@ namespace WireMock.Owin
                             }
 
                             options.ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode;
-                            if (wireMockMiddlewareOptions.SkipClientCertificateValidation)
+                            if (wireMockMiddlewareOptions.AcceptAnyClientCertificate)
                             {
                                 options.ClientCertificateValidation = (_, _, _) => true;
                             }

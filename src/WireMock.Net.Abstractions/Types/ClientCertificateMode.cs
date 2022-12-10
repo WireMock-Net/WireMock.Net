@@ -1,8 +1,9 @@
 namespace WireMock.Types;
 
-#if NETSTANDARD_1_3_OR_GREATER || NET461
+#if NETSTANDARD1_3_OR_GREATER || NET461
 /// <summary>
 /// Describes the client certificate requirements for a HTTPS connection.
+/// This enum is the same as https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.https.clientcertificatemode
 /// </summary>
 public enum ClientCertificateMode
 {

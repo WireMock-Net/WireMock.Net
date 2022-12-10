@@ -97,15 +97,15 @@ public class SettingsModel
     /// </summary>
     public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
 
-#if NETSTANDARD_1_3_OR_GREATER || NET461
+#if NETSTANDARD1_3_OR_GREATER || NET461
     /// <summary>
     /// Server client certificate mode
     /// </summary>
     public ClientCertificateMode ClientCertificateMode { get; set; }
 
     /// <summary>
-    /// Whether to skip client certificate validation
+    /// Whether to accept any client certificate
     /// </summary>
-    public bool SkipClientCertificateValidation { get; set; }
+    public bool AcceptAnyClientCertificate { get; set; }
 #endif
 }

@@ -92,7 +92,7 @@
         </None>
         <None Update="client_cert.pfx">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <DependentUpon>WireMockServerTests.cs</DependentUpon>
+          <DependentUpon>WireMockServerTests.ClientCertificate.cs</DependentUpon>
         </None>
     </ItemGroup>
 

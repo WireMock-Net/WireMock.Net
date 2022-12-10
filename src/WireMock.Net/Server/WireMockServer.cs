@@ -315,7 +315,7 @@ public partial class WireMockServer : IWireMockServer
         _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;
         _options.CorsPolicyOptions = _settings.CorsPolicyOptions;
         _options.ClientCertificateMode = _settings.ClientCertificateMode;
-        _options.SkipClientCertificateValidation = _settings.SkipClientCertificateValidation;
+        _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 
         _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
