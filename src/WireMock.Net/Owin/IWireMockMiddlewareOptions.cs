@@ -43,7 +43,7 @@ internal interface IWireMockMiddlewareOptions
 
     CorsPolicyOptions? CorsPolicyOptions { get; set; }
 
-    public ClientCertificateMode ClientCertificateMode { get; set; }
+    ClientCertificateMode ClientCertificateMode { get; set; }
 
     public bool AcceptAnyClientCertificate { get; set; }
 #endif

@@ -45,7 +45,7 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
 
     public ClientCertificateMode ClientCertificateMode { get; set; }
 
-    /// <inheritdoc cref="IWireMockMiddlewareOptions.AcceptAnyClientCertificate"/>
+    /// <inheritdoc />
     public bool AcceptAnyClientCertificate { get; set; }
 #endif
 
