@@ -1,7 +1,9 @@
-# 1.5.12 (03 December 2022)
-- #851 Fix Linux CI build + Fix opencover [feature]
-- #853 Add .Net 7 [feature]
-- #854 Fix logic for QueryParameterMultipleValueSupport [bug]
-- #857 Update some dependencies [feature]
+# 1.5.13 (11 December 2022)
+- #858 Update Transformer functionality to return value instead of string [feature]
+- #859 Add UpdatedAt property to Mapping [feature]
+- #861 Add extra functionality for issue 55
+- #862 Add client certificate support [feature]
+- #863 Update WireMockServer.CreateClient/CreateClients to include handlers [feature]
+- #856 Inconsistent result with overlapping (duplicate) request [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
