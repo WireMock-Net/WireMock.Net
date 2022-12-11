@@ -96,4 +96,16 @@ public class SettingsModel
     /// Default value = "All".
     /// </summary>
     public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
+
+#if NETSTANDARD1_3_OR_GREATER || NET461
+    /// <summary>
+    /// Server client certificate mode
+    /// </summary>
+    public ClientCertificateMode ClientCertificateMode { get; set; }
+
+    /// <summary>
+    /// Whether to accept any client certificate
+    /// </summary>
+    public bool AcceptAnyClientCertificate { get; set; }
+#endif
 }

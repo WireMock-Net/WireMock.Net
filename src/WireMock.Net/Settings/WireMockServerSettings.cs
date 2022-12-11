@@ -235,6 +235,19 @@ public class WireMockServerSettings
     [PublicAPI]
     public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
 
+#if USE_ASPNETCORE
+        /// <summary>
+        /// Client certificate mode for the server
+        /// </summary>
+        [PublicAPI]
+        public ClientCertificateMode ClientCertificateMode { get; set; }
+
+        /// <summary>
+        /// Whether to accept any client certificate
+        /// </summary>
+        public bool AcceptAnyClientCertificate { get; set; }
+#endif
+
     /// <summary>
     /// Defines the global IWebhookSettings to use.
     /// </summary>

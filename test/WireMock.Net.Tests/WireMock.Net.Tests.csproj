@@ -96,6 +96,10 @@
         <None Update="__admin\mappings\subdirectory\*.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="client_cert.pfx">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <DependentUpon>WireMockServerTests.ClientCertificate.cs</DependentUpon>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

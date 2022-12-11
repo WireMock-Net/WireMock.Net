@@ -64,6 +64,8 @@ public static class WireMockServerSettingsParser
 
 #if USE_ASPNETCORE
         settings.CorsPolicyOptions = parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
+        settings.ClientCertificateMode = parser.GetEnumValue(nameof(WireMockServerSettings.ClientCertificateMode), ClientCertificateMode.NoCertificate);
+        settings.AcceptAnyClientCertificate = parser.GetBoolValue(nameof(WireMockServerSettings.AcceptAnyClientCertificate));
 #endif
 
         var loggerType = parser.GetStringValue("WireMockLogger");
