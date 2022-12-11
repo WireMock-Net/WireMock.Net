@@ -1,36 +1,25 @@
-using System;
+namespace WireMock.Types;
 
-namespace WireMock.Types
+/// <summary>
+/// Logic to use when replace a JSON node using the Transformer.
+/// </summary>
+public enum ReplaceNodeOptions
 {
     /// <summary>
-    /// Flags to use when replace a JSON node using the Transformer.
+    /// Try to evaluate a templated value.
+    /// In case this is valid, return the value and if the value can be converted to a primitive type, use that value.
     /// </summary>
-    [Flags]
-    public enum ReplaceNodeOptions
-    {
-        /// <summary>
-        /// Default
-        /// </summary>
-        None = 0
+    EvaluateAndTryToConvert = 0,
 
-        ///// <summary>
-        ///// Replace boolean string value to a real boolean value. (This is used by default to maintain backward compatibility.)
-        ///// </summary>
-        //Bool = 0b00000001,
+    /// <summary>
+    /// Try to evaluate a templated value.
+    /// In case this is valid, return the value, else fallback to the parse behavior.
+    /// </summary>
+    Evaluate = 1,
 
-        ///// <summary>
-        ///// Replace integer string value to a real integer value.
-        ///// </summary>
-        //Integer = 0b00000010,
-
-        ///// <summary>
-        ///// Replace long string value to a real long value.
-        ///// </summary>
-        //Long = 0b00000100,
-
-        ///// <summary>
-        ///// Replace all string values to a real values.
-        ///// </summary>
-        //All = Bool | Integer | Long
-    }
+    /// <summary>
+    /// Parse templated string to a templated string.
+    /// (keep a templated string value as string value).
+    /// </summary>
+    Parse = 2
 }

@@ -108,7 +108,7 @@ public class ResponseWithHandlebarsJsonPathTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson!);
         Check.That(j["x"].Value<long>()).Equals(99);
     }
 

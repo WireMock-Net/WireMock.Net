@@ -14,6 +14,8 @@ using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
+using System.Globalization;
+using CultureAwareTesting.xUnit;
 #if NET452
 using Microsoft.Owin;
 #else
@@ -24,6 +26,7 @@ namespace WireMock.Net.Tests.ResponseBuilders;
 
 public class ResponseWithTransformerTests
 {
+    private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
     private readonly WireMockServerSettings _settings = new();
     private const string ClientIp = "::1";
 
@@ -33,10 +36,10 @@ public class ResponseWithTransformerTests
     {
         _mappingMock = new Mock<IMapping>();
 
-        var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
+        _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
+        _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        _settings.FileSystemHandler = filesystemHandlerMock.Object;
+        _settings.FileSystemHandler = _filesystemHandlerMock.Object;
     }
 
     [Theory]
@@ -333,7 +336,7 @@ public class ResponseWithTransformerTests
         // Assert
         Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
-        Check.That(response.Message.Headers["x"]).Contains("text/plain");
+        Check.That(response.Message.Headers!["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
     }
 
@@ -358,7 +361,7 @@ public class ResponseWithTransformerTests
         // Assert
         Check.That(response.Message.BodyData!.BodyAsString).Equals("test");
         Check.That(response.Message.Headers).ContainsKey("x");
-        Check.That(response.Message.Headers["x"]).Contains("text/plain");
+        Check.That(response.Message.Headers!["x"]).Contains("text/plain");
         Check.That(response.Message.Headers["x"]).Contains("http://localhost/foo");
     }
 
@@ -394,7 +397,7 @@ public class ResponseWithTransformerTests
     public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_ResultAsObject(TransformerType transformerType)
     {
         // Assign
-        string jsonString = "{ \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"WireMock\" } ] }";
+        string jsonString = "{ \"id\": 42, \"things\": [ { \"name\": \"RequiredThing\" }, { \"name\": \"WireMock\" } ] }";
         var bodyData = new BodyData
         {
             BodyAsJson = JsonConvert.DeserializeObject(jsonString),
@@ -411,7 +414,49 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"x\":\"test /foo_object\"}");
+    }
+
+    [CulturedTheory("en-US")]
+    [InlineData(TransformerType.Handlebars, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": 42 }", "{\"x\":\"test 42\",\"y\":42}")]
+    [InlineData(TransformerType.Handlebars, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": true }", "{\"x\":\"test True\",\"y\":true}")]
+    [InlineData(TransformerType.Handlebars, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    [InlineData(TransformerType.Scriban, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    [InlineData(TransformerType.ScribanDotLiquid, "{ \"id\": 0.005 }", "{\"x\":\"test 0.005\",\"y\":0.005}")]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_KeepType(TransformerType transformerType, string jsonString, string expected)
+    {
+        // Assign
+        var culture = CultureInfo.CreateSpecificCulture("en-US");
+        var settings = new WireMockServerSettings
+        {
+            FileSystemHandler = _filesystemHandlerMock.Object,
+            Culture = culture
+        };
+        var jsonSettings = new JsonSerializerSettings
+        {
+            Culture = culture
+        };
+        var bodyData = new BodyData
+        {
+            BodyAsJson = JsonConvert.DeserializeObject(jsonString, jsonSettings),
+            DetectedBodyType = BodyType.Json,
+            Encoding = Encoding.UTF8
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new { x = "test {{request.BodyAsJson.id}}", y = "{{request.BodyAsJson.id}}" })
+            .WithTransformer(transformerType);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, settings).ConfigureAwait(false);
+
+        // Assert
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be(expected);
     }
 
     [Theory]
@@ -431,7 +476,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
     }
 
     [Theory]
@@ -452,7 +497,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("[{\"x\":\"test\"}]");
     }
 
     //[Theory]
@@ -488,15 +533,15 @@ public class ResponseWithTransformerTests
     [InlineData(TransformerType.Handlebars, "\"a\"", "\"a\"")]
     [InlineData(TransformerType.Handlebars, "\" \"", "\" \"")]
     [InlineData(TransformerType.Handlebars, "\"'\"", "\"'\"")]
-    [InlineData(TransformerType.Handlebars, "\"false\"", "false")] // bool is special
+    [InlineData(TransformerType.Handlebars, "\"false\"", "\"false\"")]
     [InlineData(TransformerType.Handlebars, "false", "false")]
-    [InlineData(TransformerType.Handlebars, "\"true\"", "true")] // bool is special
+    [InlineData(TransformerType.Handlebars, "\"true\"", "\"true\"")]
     [InlineData(TransformerType.Handlebars, "true", "true")]
-    [InlineData(TransformerType.Handlebars, "\"-42\"", "-42")] // todo
+    [InlineData(TransformerType.Handlebars, "\"-42\"", "\"-42\"")]
     [InlineData(TransformerType.Handlebars, "-42", "-42")]
-    [InlineData(TransformerType.Handlebars, "\"2147483647\"", "2147483647")] // todo
+    [InlineData(TransformerType.Handlebars, "\"2147483647\"", "\"2147483647\"")]
     [InlineData(TransformerType.Handlebars, "2147483647", "2147483647")]
-    [InlineData(TransformerType.Handlebars, "\"9223372036854775807\"", "9223372036854775807")] // todo
+    [InlineData(TransformerType.Handlebars, "\"9223372036854775807\"", "\"9223372036854775807\"")]
     [InlineData(TransformerType.Handlebars, "9223372036854775807", "9223372036854775807")]
     public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_And_ReplaceNodeOptionsKeep(TransformerType transformerType, string value, string expected)
     {
@@ -511,50 +556,13 @@ public class ResponseWithTransformerTests
 
         var responseBuilder = Response.Create()
             .WithBodyAsJson(new { text = "{{request.bodyAsJson.x}}" })
-            .WithTransformer(transformerType, false, ReplaceNodeOptions.None);
+            .WithTransformer(transformerType, false, ReplaceNodeOptions.Evaluate);
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
-    }
-
-    [Theory]
-    [InlineData(TransformerType.Handlebars, "\"\"", "\"\"")]
-    [InlineData(TransformerType.Handlebars, "\"a\"", "\"a\"")]
-    [InlineData(TransformerType.Handlebars, "\" \"", "\" \"")]
-    [InlineData(TransformerType.Handlebars, "\"'\"", "\"'\"")]
-    [InlineData(TransformerType.Handlebars, "\"false\"", "false")] // bool is special
-    [InlineData(TransformerType.Handlebars, "false", "false")]
-    [InlineData(TransformerType.Handlebars, "\"true\"", "true")] // bool is special
-    [InlineData(TransformerType.Handlebars, "true", "true")]
-    [InlineData(TransformerType.Handlebars, "\"-42\"", "\"-42\"")]
-    [InlineData(TransformerType.Handlebars, "-42", "\"-42\"")]
-    [InlineData(TransformerType.Handlebars, "\"2147483647\"", "\"2147483647\"")]
-    [InlineData(TransformerType.Handlebars, "2147483647", "\"2147483647\"")]
-    [InlineData(TransformerType.Handlebars, "\"9223372036854775807\"", "\"9223372036854775807\"")]
-    [InlineData(TransformerType.Handlebars, "9223372036854775807", "\"9223372036854775807\"")]
-    public async Task Response_ProvideResponse_Transformer_WithBodyAsJsonWithExtraQuotes_AlwaysMakesString(TransformerType transformerType, string value, string expected)
-    {
-        string jsonString = $"{{ \"x\": {value} }}";
-        var bodyData = new BodyData
-        {
-            BodyAsJson = JsonConvert.DeserializeObject(jsonString),
-            DetectedBodyType = BodyType.Json,
-            Encoding = Encoding.UTF8
-        };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
-
-        var responseBuilder = Response.Create()
-            .WithBodyAsJson(new { text = "\"{{request.bodyAsJson.x}}\"" })
-            .WithTransformer(transformerType);
-
-        // Act
-        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
-
-        // Assert
-        JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be($"{{\"text\":{expected}}}");
     }
 
     [Theory]
@@ -581,7 +589,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("[\"first\",\"/foo_array\",\"test 1\",\"test 2\",\"last\"]");
     }
 
     [Fact]
@@ -598,7 +606,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
     }
 
     [Theory(Skip = @"Does not work in Scriban --> c:\\[""1""]\\test.xml")]
@@ -617,7 +625,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
     }
 
     [Theory]
@@ -642,7 +650,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.xml");
+        Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
         Check.That(response.Message.BodyData.DetectedBodyType).Equals(BodyType.String);
         Check.That(response.Message.BodyData!.BodyAsString).Equals("<xml MyUniqueNumber=\"1\"></xml>");
     }
@@ -671,14 +679,15 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("\"test\"");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("\"test\"");
     }
 
     [Fact(Skip = "todo...")]
+    //[Fact]
     public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsTemplatedString()
     {
         // Assign
-        string jsonString = "{ \"name\": \"WireMock\" }";
+        string jsonString = "{ \"name\": \"WireMock\", \"id\": 12345 }";
         var bodyData = new BodyData
         {
             BodyAsJson = JsonConvert.DeserializeObject(jsonString),
@@ -688,14 +697,14 @@ public class ResponseWithTransformerTests
         var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
 
         var responseBuilder = Response.Create()
-            .WithBodyAsJson("{{{request.BodyAsJson}}}")
+            .WithBodyAsJson("{{{request.BodyAsJson.name}}}")
             .WithTransformer();
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
     }
 
     [Theory(Skip = "{{{ }}} Does not work in Scriban")]
@@ -721,7 +730,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("{\"name\":\"WireMock\"}");
     }
 
     [Theory]
@@ -749,7 +758,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        response.Message.BodyData.BodyAsString.Should().Be(text);
+        response.Message.BodyData!.BodyAsString.Should().Be(text);
         response.Message.BodyData.Encoding.Should().Be(enc);
     }
 }

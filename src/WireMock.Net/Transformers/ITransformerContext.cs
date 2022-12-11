@@ -1,11 +1,12 @@
-﻿using WireMock.Handlers;
+using WireMock.Handlers;
 
-namespace WireMock.Transformers
+namespace WireMock.Transformers;
+
+internal interface ITransformerContext
 {
-    interface ITransformerContext
-    {
-        IFileSystemHandler FileSystemHandler { get; set; }
+    IFileSystemHandler FileSystemHandler { get; }
 
-        string ParseAndRender(string text, object model);
-    }
+    string ParseAndRender(string text, object model);
+
+    object? ParseAndEvaluate(string text, object model);
 }
