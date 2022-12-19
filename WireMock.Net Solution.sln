@@ -110,6 +110,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMockAzureQueueExample",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMockAzureQueueProxy", "examples\WireMockAzureQueueProxy\WireMockAzureQueueProxy.csproj", "{ADB557D8-D66B-4387-912B-3F73E290B478}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.NUnitTests", "test\WireMock.Net.NUnitTests\WireMock.Net.NUnitTests.csproj", "{2F919763-60C0-434B-A263-077AA19B3BE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -264,6 +266,10 @@ Global
 		{ADB557D8-D66B-4387-912B-3F73E290B478}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADB557D8-D66B-4387-912B-3F73E290B478}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADB557D8-D66B-4387-912B-3F73E290B478}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F919763-60C0-434B-A263-077AA19B3BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F919763-60C0-434B-A263-077AA19B3BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F919763-60C0-434B-A263-077AA19B3BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F919763-60C0-434B-A263-077AA19B3BE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -308,6 +314,7 @@ Global
 		{7C2A9DE8-C89F-4841-9058-6B9BF81E5E34} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
 		{BAA9EC2A-874B-45CE-8E51-A73622DC7F3D} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
 		{ADB557D8-D66B-4387-912B-3F73E290B478} = {985E0ADB-D4B4-473A-AA40-567E279B7946}
+		{2F919763-60C0-434B-A263-077AA19B3BE6} = {0BB8B634-407A-4610-A91F-11586990767A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}
