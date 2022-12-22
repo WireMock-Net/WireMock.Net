@@ -305,26 +305,9 @@ public partial class WireMockServer : IWireMockServer
             }
         }
 
-        _options.FileSystemHandler = _settings.FileSystemHandler;
-        _options.PreWireMockMiddlewareInit = _settings.PreWireMockMiddlewareInit;
-        _options.PostWireMockMiddlewareInit = _settings.PostWireMockMiddlewareInit;
-        _options.Logger = _settings.Logger;
-        _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
-        _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
-        _options.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
-        _options.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
-        _options.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
+        WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options);
 
-        if (settings.CustomCertificateDefined)
-        {
-            _options.X509StoreName = settings.CertificateSettings!.X509StoreName;
-            _options.X509StoreLocation = settings.CertificateSettings.X509StoreLocation;
-            _options.X509ThumbprintOrSubjectName = settings.CertificateSettings.X509StoreThumbprintOrSubjectName;
-            _options.X509CertificateFilePath = settings.CertificateSettings.X509CertificateFilePath;
-            _options.X509CertificatePassword = settings.CertificateSettings.X509CertificatePassword;
-        }
-
-        _matcherMapper = new MatcherMapper(_settings);
+          _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnyOfTypes;
 using SimMetrics.Net;
+using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Extensions;
 using WireMock.Matchers;
@@ -19,7 +20,7 @@ internal class MatcherMapper
 
     public MatcherMapper(WireMockServerSettings settings)
     {
-        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        _settings = Guard.NotNull(settings);
     }
 
     public IMatcher[]? Map(IEnumerable<MatcherModel>? matchers)
