@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Stef.Validation;
@@ -21,6 +20,7 @@ public class MappingBuilder : IMappingBuilder
     private readonly WireMockServerSettings _settings;
 
     private readonly MappingConverter _mappingConverter;
+    private readonly MappingToFileSaver _mappingToFileSaver;
 
     /// <summary>
     /// Create a MappingBuilder
@@ -33,10 +33,11 @@ public class MappingBuilder : IMappingBuilder
 
         var matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(matcherMapper);
+        _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
     }
 
     /// <inheritdoc />
-    public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
+    public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
     {
         return new RespondWithAProvider(RegisterMapping, Guard.NotNull(requestMatcher), _settings);
     }
@@ -53,27 +54,44 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public string ToJson()
     {
-        return ToJson(_options.Mappings.Values.ToArray());
+        return ToJson(GetMappings());
     }
 
     /// <inheritdoc />
     public void SaveMappingsToFile(string path)
     {
-        File.WriteAllText(Guard.NotNullOrEmpty(path), ToJson());
+        _mappingToFileSaver.SaveMappingsToFile(GetNonAdminMappings(), path);
     }
 
     /// <inheritdoc />
-    public void SaveMappingsToFiles(string folder)
+    public void SaveMappingsToFolder(string? folder)
     {
-        Guard.NotNullOrEmpty(folder);
+        folder = InitFolder(folder);
 
-        foreach (var mapping in GetMappings())
+        foreach (var mapping in GetNonAdminMappings().Where(m => !m.IsAdminInterface))
         {
-            File.WriteAllText(Path.Combine(folder, mapping.Guid.ToString()), ToJson(mapping));
+            _mappingToFileSaver.SaveMappingToFile(mapping, folder);
         }
     }
 
-    private void RegisterMapping(IMapping mapping, bool _)
+    private string InitFolder(string? folder = null)
+    {
+        folder ??= _settings.FileSystemHandler.GetMappingFolder();
+
+        if (!_settings.FileSystemHandler.FolderExists(folder))
+        {
+            _settings.FileSystemHandler.CreateFolder(folder);
+        }
+
+        return folder;
+    }
+
+    private IMapping[] GetNonAdminMappings()
+    {
+        return _options.Mappings.Values.ToArray();
+    }
+
+    private void RegisterMapping(IMapping mapping, bool saveToFile)
     {
         // Check a mapping exists with the same Guid. If so, update the datetime and replace it.
         if (_options.Mappings.ContainsKey(mapping.Guid))
@@ -84,6 +102,12 @@ public class MappingBuilder : IMappingBuilder
         else
         {
             _options.Mappings.TryAdd(mapping.Guid, mapping);
+        }
+
+        if (saveToFile)
+        {
+            var folder = InitFolder();
+            _mappingToFileSaver.SaveMappingToFile(mapping, folder);
         }
     }
 
