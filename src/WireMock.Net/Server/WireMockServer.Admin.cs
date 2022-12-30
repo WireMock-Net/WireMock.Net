@@ -111,10 +111,11 @@ public partial class WireMockServer
     [PublicAPI]
     public void SaveStaticMappings(string? folder = null)
     {
-        foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-        {
-            _mappingToFileSaver.SaveMappingToFile(mapping, folder);
-        }
+        _mappingBuilder.SaveMappingsToFolder(folder);
+        //foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
+        //{
+        //    _mappingToFileSaver.SaveMappingToFile(mapping, folder);
+        //}
     }
 
     /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
@@ -353,9 +354,9 @@ public partial class WireMockServer
         return ResponseMessageBuilder.Create("Mappings saved to disk");
     }
 
-    private IEnumerable<MappingModel> ToMappingModels()
+    private MappingModel[] ToMappingModels()
     {
-        return Mappings.Where(m => !m.IsAdminInterface).Select(_mappingConverter.ToMappingModel);
+        return _mappingBuilder.GetMappings();
     }
 
     private IResponseMessage MappingsGet(IRequestMessage requestMessage)
@@ -418,18 +419,15 @@ public partial class WireMockServer
         try
         {
             var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
-            foreach (var mappingModel in mappingModels)
+            foreach (var mappingModel in mappingModels.Where(mm => mm.Guid.HasValue))
             {
-                if (mappingModel.Guid.HasValue)
+                if (DeleteMapping(mappingModel.Guid!.Value))
                 {
-                    if (DeleteMapping(mappingModel.Guid.Value))
-                    {
-                        deletedGuids.Add(mappingModel.Guid.Value);
-                    }
-                    else
-                    {
-                        _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
-                    }
+                    deletedGuids.Add(mappingModel.Guid.Value);
+                }
+                else
+                {
+                    _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
                 }
             }
         }
@@ -697,7 +695,7 @@ public partial class WireMockServer
     {
         return requestMessage.BodyData?.DetectedBodyType switch
         {
-            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString),
+            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString!),
 
             BodyType.Json when requestMessage.BodyData?.BodyAsJson != null => ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!,
 
@@ -726,7 +724,7 @@ public partial class WireMockServer
     {
         if (value is JArray jArray)
         {
-            return jArray.ToObject<T[]>();
+            return jArray.ToObject<T[]>()!;
         }
 
         var singleResult = ((JObject)value).ToObject<T>();

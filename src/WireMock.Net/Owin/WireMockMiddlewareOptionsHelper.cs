@@ -8,6 +8,7 @@ internal static class WireMockMiddlewareOptionsHelper
     public static IWireMockMiddlewareOptions InitFromSettings(WireMockServerSettings settings, IWireMockMiddlewareOptions? options = null)
     {
         Guard.NotNull(settings);
+
         options ??= new WireMockMiddlewareOptions();
 
         options.FileSystemHandler = settings.FileSystemHandler;

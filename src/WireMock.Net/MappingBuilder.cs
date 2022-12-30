@@ -16,8 +16,8 @@ namespace WireMock;
 /// </summary>
 public class MappingBuilder : IMappingBuilder
 {
-    private readonly IWireMockMiddlewareOptions _options;
     private readonly WireMockServerSettings _settings;
+    private readonly IWireMockMiddlewareOptions _options;
 
     private readonly MappingConverter _mappingConverter;
     private readonly MappingToFileSaver _mappingToFileSaver;
@@ -36,10 +36,23 @@ public class MappingBuilder : IMappingBuilder
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
     }
 
+    internal MappingBuilder(
+        WireMockServerSettings settings,
+        IWireMockMiddlewareOptions options,
+        MappingConverter mappingConverter,
+        MappingToFileSaver mappingToFileSaver
+    )
+    {
+        _settings = Guard.NotNull(settings);
+        _options = Guard.NotNull(options);
+        _mappingConverter = Guard.NotNull(mappingConverter);
+        _mappingToFileSaver = Guard.NotNull(mappingToFileSaver);
+    }
+
     /// <inheritdoc />
     public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
     {
-        return new RespondWithAProvider(RegisterMapping, Guard.NotNull(requestMatcher), _settings);
+        return new RespondWithAProvider(RegisterMapping, Guard.NotNull(requestMatcher), _settings, saveToFile);
     }
 
     /// <inheritdoc />
@@ -66,25 +79,23 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public void SaveMappingsToFolder(string? folder)
     {
-        folder = InitFolder(folder);
-
         foreach (var mapping in GetNonAdminMappings().Where(m => !m.IsAdminInterface))
         {
             _mappingToFileSaver.SaveMappingToFile(mapping, folder);
         }
     }
 
-    private string InitFolder(string? folder = null)
-    {
-        folder ??= _settings.FileSystemHandler.GetMappingFolder();
+    //private string InitFolder(string? folder = null)
+    //{
+    //    folder ??= _settings.FileSystemHandler.GetMappingFolder();
 
-        if (!_settings.FileSystemHandler.FolderExists(folder))
-        {
-            _settings.FileSystemHandler.CreateFolder(folder);
-        }
+    //    if (!_settings.FileSystemHandler.FolderExists(folder))
+    //    {
+    //        _settings.FileSystemHandler.CreateFolder(folder);
+    //    }
 
-        return folder;
-    }
+    //    return folder;
+    //}
 
     private IMapping[] GetNonAdminMappings()
     {
@@ -106,8 +117,7 @@ public class MappingBuilder : IMappingBuilder
 
         if (saveToFile)
         {
-            var folder = InitFolder();
-            _mappingToFileSaver.SaveMappingToFile(mapping, folder);
+            _mappingToFileSaver.SaveMappingToFile(mapping);
         }
     }
 

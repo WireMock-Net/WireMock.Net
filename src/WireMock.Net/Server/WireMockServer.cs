@@ -38,6 +38,7 @@ public partial class WireMockServer : IWireMockServer
     private readonly MappingConverter _mappingConverter;
     private readonly MatcherMapper _matcherMapper;
     private readonly MappingToFileSaver _mappingToFileSaver;
+    private readonly MappingBuilder _mappingBuilder;
 
     /// <inheritdoc cref="IWireMockServer.IsStarted" />
     [PublicAPI]
@@ -246,7 +247,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public static WireMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
     {
-        Guard.NotNullOrEmpty(urls, nameof(urls));
+        Guard.NotNullOrEmpty(urls);
 
         return new WireMockServer(new WireMockServerSettings
         {
@@ -268,7 +269,7 @@ public partial class WireMockServer : IWireMockServer
     /// <exception cref="TimeoutException">Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}</exception>
     protected WireMockServer(WireMockServerSettings settings)
     {
-        _settings = settings;
+        _settings = Guard.NotNull(settings);
 
         // Set default values if not provided
         _settings.Logger = settings.Logger ?? new WireMockNullLogger();
@@ -307,9 +308,10 @@ public partial class WireMockServer : IWireMockServer
 
         WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options);
 
-          _matcherMapper = new MatcherMapper(_settings);
+        _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
+        _mappingBuilder = new MappingBuilder(settings, _options, _mappingConverter, _mappingToFileSaver);
 
 #if USE_ASPNETCORE
         _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;
@@ -521,26 +523,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
     {
-        return new RespondWithAProvider(RegisterMapping, requestMatcher, _settings, saveToFile);
-    }
-
-    private void RegisterMapping(IMapping mapping, bool saveToFile)
-    {
-        // Check a mapping exists with the same Guid. If so, update the datetime and replace it.
-        if (_options.Mappings.ContainsKey(mapping.Guid))
-        {
-            mapping.UpdatedAt = DateTime.UtcNow;
-            _options.Mappings[mapping.Guid] = mapping;
-        }
-        else
-        {
-            _options.Mappings.TryAdd(mapping.Guid, mapping);
-        }
-
-        if (saveToFile)
-        {
-            _mappingToFileSaver.SaveMappingToFile(mapping);
-        }
+        return _mappingBuilder.Given(requestMatcher, saveToFile);
     }
 
     private void InitSettings(WireMockServerSettings settings)
