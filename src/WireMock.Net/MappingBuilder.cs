@@ -85,18 +85,6 @@ public class MappingBuilder : IMappingBuilder
         }
     }
 
-    //private string InitFolder(string? folder = null)
-    //{
-    //    folder ??= _settings.FileSystemHandler.GetMappingFolder();
-
-    //    if (!_settings.FileSystemHandler.FolderExists(folder))
-    //    {
-    //        _settings.FileSystemHandler.CreateFolder(folder);
-    //    }
-
-    //    return folder;
-    //}
-
     private IMapping[] GetNonAdminMappings()
     {
         return _options.Mappings.Values.ToArray();

@@ -112,10 +112,6 @@ public partial class WireMockServer
     public void SaveStaticMappings(string? folder = null)
     {
         _mappingBuilder.SaveMappingsToFolder(folder);
-        //foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-        //{
-        //    _mappingToFileSaver.SaveMappingToFile(mapping, folder);
-        //}
     }
 
     /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
@@ -419,15 +415,15 @@ public partial class WireMockServer
         try
         {
             var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
-            foreach (var mappingModel in mappingModels.Where(mm => mm.Guid.HasValue))
+            foreach (var guid in mappingModels.Where(mm => mm.Guid.HasValue).Select(mm => mm.Guid!.Value))
             {
-                if (DeleteMapping(mappingModel.Guid!.Value))
+                if (DeleteMapping(guid))
                 {
-                    deletedGuids.Add(mappingModel.Guid.Value);
+                    deletedGuids.Add(guid);
                 }
                 else
                 {
-                    _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
+                    _settings.Logger.Debug($"Did not find/delete mapping with GUID: {guid}.");
                 }
             }
         }
