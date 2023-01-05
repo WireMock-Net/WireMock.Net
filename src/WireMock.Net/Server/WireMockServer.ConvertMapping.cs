@@ -102,6 +102,8 @@ public partial class WireMockServer
             respondProvider = respondProvider.WithWebhook(webhooks);
         }
 
+        respondProvider.WithWebhookFireAndForget(mappingModel.UseWebhooksFireAndForget ?? false);
+
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
 
