@@ -90,6 +90,8 @@ public partial class WireMockServer : IWireMockServer
     /// </summary>
     public void Dispose()
     {
+        _options.LogEntries.CollectionChanged -= LogEntries_CollectionChanged;
+
         Dispose(true);
         GC.SuppressFinalize(this);
     }
@@ -307,6 +309,8 @@ public partial class WireMockServer : IWireMockServer
         }
 
         WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options);
+
+        _options.LogEntries.CollectionChanged += LogEntries_CollectionChanged;
 
         _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
