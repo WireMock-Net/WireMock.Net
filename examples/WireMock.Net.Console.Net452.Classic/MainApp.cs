@@ -37,6 +37,20 @@ namespace WireMock.Net.ConsoleApplication
     {
         public static void Run()
         {
+            var mappingBuilder = new MappingBuilder();
+            mappingBuilder
+                .Given(Request
+                    .Create()
+                    .WithPath(new WildcardMatcher("/param2", true))
+                    .WithParam("key", "test")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new { result = "param2" }));
+
+            var json = mappingBuilder.ToJson();
+            System.Console.WriteLine("mappingBuilder : Json = {0}", json);
+
             var s = WireMockServer.Start();
             s.Stop();
 
