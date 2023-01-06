@@ -49,7 +49,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyAsJson(new { result = "param2" }));
 
             var json = mappingBuilder.ToJson();
-
+            System.Console.WriteLine("mappingBuilder : Json = {0}", json);
 
             var s = WireMockServer.Start();
             s.Stop();
