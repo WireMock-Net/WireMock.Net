@@ -175,6 +175,7 @@ internal class MappingConverter
         var mappingModel = new MappingModel
         {
             Guid = mapping.Guid,
+            UpdatedAt = mapping.UpdatedAt,
             TimeSettings = TimeSettingsMapper.Map(mapping.TimeSettings),
             Title = mapping.Title,
             Description = mapping.Description,

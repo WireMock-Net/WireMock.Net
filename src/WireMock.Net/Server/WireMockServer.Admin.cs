@@ -111,10 +111,7 @@ public partial class WireMockServer
     [PublicAPI]
     public void SaveStaticMappings(string? folder = null)
     {
-        foreach (var mapping in Mappings.Where(m => !m.IsAdminInterface))
-        {
-            _mappingToFileSaver.SaveMappingToFile(mapping, folder);
-        }
+        _mappingBuilder.SaveMappingsToFolder(folder);
     }
 
     /// <inheritdoc cref="IWireMockServer.ReadStaticMappings" />
@@ -226,7 +223,9 @@ public partial class WireMockServer
             QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
 
 #if USE_ASPNETCORE
-            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
+            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString(),
+            ClientCertificateMode = _settings.ClientCertificateMode,
+            AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate
 #endif
         };
 
@@ -275,6 +274,9 @@ public partial class WireMockServer
             _settings.CorsPolicyOptions = corsPolicyOptions;
             _options.CorsPolicyOptions = corsPolicyOptions;
         }
+
+        _options.ClientCertificateMode = _settings.ClientCertificateMode;
+        _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 #endif
 
         return ResponseMessageBuilder.Create("Settings updated");
@@ -348,9 +350,9 @@ public partial class WireMockServer
         return ResponseMessageBuilder.Create("Mappings saved to disk");
     }
 
-    private IEnumerable<MappingModel> ToMappingModels()
+    private MappingModel[] ToMappingModels()
     {
-        return Mappings.Where(m => !m.IsAdminInterface).Select(_mappingConverter.ToMappingModel);
+        return _mappingBuilder.GetMappings();
     }
 
     private IResponseMessage MappingsGet(IRequestMessage requestMessage)
@@ -413,18 +415,15 @@ public partial class WireMockServer
         try
         {
             var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
-            foreach (var mappingModel in mappingModels)
+            foreach (var guid in mappingModels.Where(mm => mm.Guid.HasValue).Select(mm => mm.Guid!.Value))
             {
-                if (mappingModel.Guid.HasValue)
+                if (DeleteMapping(guid))
                 {
-                    if (DeleteMapping(mappingModel.Guid.Value))
-                    {
-                        deletedGuids.Add(mappingModel.Guid.Value);
-                    }
-                    else
-                    {
-                        _settings.Logger.Debug($"Did not find/delete mapping with GUID: {mappingModel.Guid.Value}.");
-                    }
+                    deletedGuids.Add(guid);
+                }
+                else
+                {
+                    _settings.Logger.Debug($"Did not find/delete mapping with GUID: {guid}.");
                 }
             }
         }
@@ -692,7 +691,7 @@ public partial class WireMockServer
     {
         return requestMessage.BodyData?.DetectedBodyType switch
         {
-            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString),
+            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString!),
 
             BodyType.Json when requestMessage.BodyData?.BodyAsJson != null => ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!,
 
@@ -721,7 +720,7 @@ public partial class WireMockServer
     {
         if (value is JArray jArray)
         {
-            return jArray.ToObject<T[]>();
+            return jArray.ToObject<T[]>()!;
         }
 
         var singleResult = ((JObject)value).ToObject<T>();

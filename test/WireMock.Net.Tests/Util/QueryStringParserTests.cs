@@ -274,7 +274,7 @@ public class QueryStringParserTests
     }
 
     [Fact]
-    public void Parse_With1ParamContainingSpacesAndEqualSign()
+    public void Parse_With1ParamContainingSpacesSingleQuoteAndEqualSign()
     {
         // Assign
         string query = "?q=SELECT Id from User where username='user@gmail.com'";
@@ -285,6 +285,22 @@ public class QueryStringParserTests
         // Assert
         result.Count.Should().Be(1);
         result["q"].Should().Equal(new WireMockList<string>("SELECT Id from User where username='user@gmail.com'"));
+    }
+
+    // Issue #849
+    [Fact]
+    public void Parse_With1ParamContainingComma_Using_QueryParameterMultipleValueSupport_NoComma()
+    {
+        // Assign
+        string query = "?query=SELECT id, value FROM table WHERE id = 1&test=42";
+
+        // Act
+        var result = QueryStringParser.Parse(query, QueryParameterMultipleValueSupport.NoComma);
+
+        // Assert
+        result.Count.Should().Be(2);
+        result["query"].Should().Equal(new WireMockList<string>("SELECT id, value FROM table WHERE id = 1"));
+        result["test"].Should().Equal(new WireMockList<string>("42"));
     }
 
     [Fact]

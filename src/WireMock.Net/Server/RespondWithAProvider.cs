@@ -29,10 +29,12 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private readonly IRequestMatcher _requestMatcher;
     private readonly WireMockServerSettings _settings;
     private readonly bool _saveToFile;
+    private readonly IGuidUtils _guidUtils = new GuidUtils();
+    private readonly IDateTimeUtils _dateTimeUtils = new DateTimeUtils();
 
     private bool _useWebhookFireAndForget;
 
-    public Guid Guid { get; private set; } = Guid.NewGuid();
+    public Guid Guid { get; private set; }
 
     public IWebhook[]? Webhooks { get; private set; }
 
@@ -45,12 +47,19 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <param name="requestMatcher">The request matcher.</param>
     /// <param name="settings">The WireMockServerSettings.</param>
     /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
-    public RespondWithAProvider(RegistrationCallback registrationCallback, IRequestMatcher requestMatcher, WireMockServerSettings settings, bool saveToFile = false)
+    public RespondWithAProvider(
+        RegistrationCallback registrationCallback,
+        IRequestMatcher requestMatcher,
+        WireMockServerSettings settings,
+        bool saveToFile = false
+    )
     {
-        _registrationCallback = registrationCallback;
-        _requestMatcher = requestMatcher;
-        _settings = settings;
-        _saveToFile = saveToFile;
+        _registrationCallback = Guard.NotNull(registrationCallback);
+        _requestMatcher = Guard.NotNull(requestMatcher);
+        _settings = Guard.NotNull(settings);
+        _saveToFile = Guard.NotNull(saveToFile);
+
+        Guid = _guidUtils.NewGuid();
     }
 
     /// <summary>
@@ -59,7 +68,24 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <param name="provider">The provider.</param>
     public void RespondWith(IResponseProvider provider)
     {
-        _registrationCallback(new Mapping(Guid, _title, _description, _path, _settings, _requestMatcher, provider, _priority, _scenario, _executionConditionState, _nextState, _timesInSameState, Webhooks, _useWebhookFireAndForget, TimeSettings), _saveToFile);
+        var mapping = new Mapping(
+            Guid,
+            _dateTimeUtils.UtcNow,
+            _title,
+            _description,
+            _path,
+            _settings,
+            _requestMatcher,
+            provider,
+            _priority,
+            _scenario,
+            _executionConditionState,
+            _nextState,
+            _timesInSameState,
+            Webhooks,
+            _useWebhookFireAndForget,
+            TimeSettings);
+        _registrationCallback(mapping, _saveToFile);
     }
 
     /// <inheritdoc />

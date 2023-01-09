@@ -1,9 +1,8 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 
-namespace WireMock.Transformers.Handlebars
+namespace WireMock.Transformers.Handlebars;
+
+interface IHandlebarsContext : ITransformerContext
 {
-    interface IHandlebarsContext : ITransformerContext
-    {
-        IHandlebars Handlebars { get; set; }
-    }
+    IHandlebars Handlebars { get; }
 }

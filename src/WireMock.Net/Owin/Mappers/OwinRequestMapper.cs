@@ -68,7 +68,21 @@ namespace WireMock.Owin.Mappers
                 body = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
             }
 
-            return new RequestMessage(urlDetails, method, clientIP, body, headers, cookies) { DateTime = DateTime.UtcNow };
+            return new RequestMessage(
+                options,
+                urlDetails,
+                method,
+                clientIP,
+                body,
+                headers,
+                cookies
+#if USE_ASPNETCORE
+                , await request.HttpContext.Connection.GetClientCertificateAsync()
+#endif
+                )
+            {
+                DateTime = DateTime.UtcNow
+            };
         }
 
         private static (UrlDetails UrlDetails, string ClientIP) ParseRequest(IRequest request)

@@ -102,6 +102,8 @@ public partial class WireMockServer
             respondProvider = respondProvider.WithWebhook(webhooks);
         }
 
+        respondProvider.WithWebhookFireAndForget(mappingModel.UseWebhooksFireAndForget ?? false);
+
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
 
@@ -250,7 +252,7 @@ public partial class WireMockServer
 
             if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
             {
-                option = ReplaceNodeOptions.None;
+                option = ReplaceNodeOptions.Evaluate;
             }
             responseBuilder = responseBuilder.WithTransformer(
                 transformerType,

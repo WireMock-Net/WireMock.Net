@@ -38,6 +38,7 @@ public partial class WireMockServer : IWireMockServer
     private readonly MappingConverter _mappingConverter;
     private readonly MatcherMapper _matcherMapper;
     private readonly MappingToFileSaver _mappingToFileSaver;
+    private readonly MappingBuilder _mappingBuilder;
 
     /// <inheritdoc cref="IWireMockServer.IsStarted" />
     [PublicAPI]
@@ -107,25 +108,42 @@ public partial class WireMockServer : IWireMockServer
     #region HttpClient
     /// <summary>
     /// Create a <see cref="HttpClient"/> which can be used to call this instance.
+    /// <param name="handlers">
+    /// An ordered list of System.Net.Http.DelegatingHandler instances to be invoked
+    /// as an System.Net.Http.HttpRequestMessage travels from the System.Net.Http.HttpClient
+    /// to the network and an System.Net.Http.HttpResponseMessage travels from the network
+    /// back to System.Net.Http.HttpClient. The handlers are invoked in a top-down fashion.
+    /// That is, the first entry is invoked first for an outbound request message but
+    /// last for an inbound response message.
+    /// </param>
     /// </summary>
     [PublicAPI]
-    public HttpClient CreateClient()
+    public HttpClient CreateClient(params DelegatingHandler[] handlers)
     {
         if (!IsStarted)
         {
             throw new InvalidOperationException("Unable to create HttpClient because the service is not started.");
         }
 
-        var client = HttpClientFactory2.Create();
+        var client = HttpClientFactory2.Create(handlers);
         client.BaseAddress = new Uri(Url!);
         return client;
     }
 
     /// <summary>
     /// Create <see cref="HttpClient"/>s (one for each URL) which can be used to call this instance.
+    /// <param name="innerHandler">The inner handler represents the destination of the HTTP message channel.</param>
+    /// <param name="handlers">
+    /// An ordered list of System.Net.Http.DelegatingHandler instances to be invoked
+    /// as an System.Net.Http.HttpRequestMessage travels from the System.Net.Http.HttpClient
+    /// to the network and an System.Net.Http.HttpResponseMessage travels from the network
+    /// back to System.Net.Http.HttpClient. The handlers are invoked in a top-down fashion.
+    /// That is, the first entry is invoked first for an outbound request message but
+    /// last for an inbound response message.
+    /// </param>
     /// </summary>
     [PublicAPI]
-    public HttpClient[] CreateClients()
+    public HttpClient[] CreateClients(HttpMessageHandler innerHandler, params DelegatingHandler[] handlers)
     {
         if (!IsStarted)
         {
@@ -134,7 +152,7 @@ public partial class WireMockServer : IWireMockServer
 
         return Urls.Select(url =>
         {
-            var client = HttpClientFactory2.Create();
+            var client = HttpClientFactory2.Create(innerHandler, handlers);
             client.BaseAddress = new Uri(url);
             return client;
         }).ToArray();
@@ -229,7 +247,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public static WireMockServer StartWithAdminInterfaceAndReadStaticMappings(params string[] urls)
     {
-        Guard.NotNullOrEmpty(urls, nameof(urls));
+        Guard.NotNullOrEmpty(urls);
 
         return new WireMockServer(new WireMockServerSettings
         {
@@ -251,7 +269,7 @@ public partial class WireMockServer : IWireMockServer
     /// <exception cref="TimeoutException">Service start timed out after {TimeSpan.FromMilliseconds(settings.StartTimeout)}</exception>
     protected WireMockServer(WireMockServerSettings settings)
     {
-        _settings = settings;
+        _settings = Guard.NotNull(settings);
 
         // Set default values if not provided
         _settings.Logger = settings.Logger ?? new WireMockNullLogger();
@@ -288,32 +306,18 @@ public partial class WireMockServer : IWireMockServer
             }
         }
 
-        _options.FileSystemHandler = _settings.FileSystemHandler;
-        _options.PreWireMockMiddlewareInit = _settings.PreWireMockMiddlewareInit;
-        _options.PostWireMockMiddlewareInit = _settings.PostWireMockMiddlewareInit;
-        _options.Logger = _settings.Logger;
-        _options.DisableJsonBodyParsing = _settings.DisableJsonBodyParsing;
-        _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
-        _options.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
-        _options.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
-        _options.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
-
-        if (settings.CustomCertificateDefined)
-        {
-            _options.X509StoreName = settings.CertificateSettings!.X509StoreName;
-            _options.X509StoreLocation = settings.CertificateSettings.X509StoreLocation;
-            _options.X509ThumbprintOrSubjectName = settings.CertificateSettings.X509StoreThumbprintOrSubjectName;
-            _options.X509CertificateFilePath = settings.CertificateSettings.X509CertificateFilePath;
-            _options.X509CertificatePassword = settings.CertificateSettings.X509CertificatePassword;
-        }
+        WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options);
 
         _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
+        _mappingBuilder = new MappingBuilder(settings, _options, _mappingConverter, _mappingToFileSaver);
 
 #if USE_ASPNETCORE
         _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;
         _options.CorsPolicyOptions = _settings.CorsPolicyOptions;
+        _options.ClientCertificateMode = _settings.ClientCertificateMode;
+        _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 
         _httpServer = new AspNetCoreSelfHost(_options, urlOptions);
 #else
@@ -519,25 +523,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
     {
-        return new RespondWithAProvider(RegisterMapping, requestMatcher, _settings, saveToFile);
-    }
-
-    private void RegisterMapping(IMapping mapping, bool saveToFile)
-    {
-        // Check a mapping exists with the same Guid, if so, replace it.
-        if (_options.Mappings.ContainsKey(mapping.Guid))
-        {
-            _options.Mappings[mapping.Guid] = mapping;
-        }
-        else
-        {
-            _options.Mappings.TryAdd(mapping.Guid, mapping);
-        }
-
-        if (saveToFile)
-        {
-            _mappingToFileSaver.SaveMappingToFile(mapping);
-        }
+        return _mappingBuilder.Given(requestMatcher, saveToFile);
     }
 
     private void InitSettings(WireMockServerSettings settings)

@@ -4,7 +4,7 @@
     <Description>A CSharpCodeMatcher which can be used to match WireMock.Net Requests using C# code.</Description>
     <AssemblyTitle>WireMock.Net.Matchers.CSharpCode</AssemblyTitle>
     <Authors>Stef Heyenrath</Authors>
-    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>wiremock;matchers;matcher;csharp;csharpcode</PackageTags>
     <RootNamespace>WireMock</RootNamespace>
@@ -31,7 +31,7 @@
   <Target Name="CheckIfShouldKillVBCSCompiler" />
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="All" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 
     <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
@@ -45,7 +45,7 @@
     <PackageReference Include="CS-Script" Version="3.30.3" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0'">
     <PackageReference Include="CS-Script" Version="4.4.2" />
   </ItemGroup>
 

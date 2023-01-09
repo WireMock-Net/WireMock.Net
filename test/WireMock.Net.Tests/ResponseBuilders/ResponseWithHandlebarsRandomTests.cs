@@ -77,7 +77,7 @@ public class ResponseWithHandlebarsRandomTests
     }
 
     [Theory]
-    [InlineData(ReplaceNodeOptions.None, JTokenType.Integer)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.Integer)]
     //[InlineData(ReplaceNodeOptions.Bool, JTokenType.String)]
     //[InlineData(ReplaceNodeOptions.Integer, JTokenType.Integer)]
     //[InlineData(ReplaceNodeOptions.Bool | ReplaceNodeOptions.Integer, JTokenType.Integer)]

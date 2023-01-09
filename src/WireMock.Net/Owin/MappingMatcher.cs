@@ -12,13 +12,13 @@ internal class MappingMatcher : IMappingMatcher
 
     public MappingMatcher(IWireMockMiddlewareOptions options)
     {
-        Guard.NotNull(options, nameof(options));
-
-        _options = options;
+        _options = Guard.NotNull(options);
     }
 
     public (MappingMatcherResult? Match, MappingMatcherResult? Partial) FindBestMatch(RequestMessage request)
     {
+        Guard.NotNull(request);
+
         var possibleMappings = new List<MappingMatcherResult>();
 
         foreach (var mapping in _options.Mappings.Values.Where(m => m.TimeSettings.IsValid()))
@@ -41,8 +41,7 @@ internal class MappingMatcher : IMappingMatcher
 
         var partialMappings = possibleMappings
             .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
-            .OrderBy(m => m.RequestMatchResult)
-            .ThenBy(m => m.Mapping.Priority)
+            .OrderBy(m => m.RequestMatchResult).ThenBy(m => m.Mapping.Priority).ThenByDescending(m => m.Mapping.UpdatedAt)
             .ToList();
         var partialMatch = partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
 
@@ -53,7 +52,7 @@ internal class MappingMatcher : IMappingMatcher
 
         var match = possibleMappings
             .Where(m => m.RequestMatchResult.IsPerfectMatch)
-            .OrderBy(m => m.Mapping.Priority).ThenBy(m => m.RequestMatchResult)
+            .OrderBy(m => m.Mapping.Priority).ThenBy(m => m.RequestMatchResult).ThenByDescending(m => m.Mapping.UpdatedAt)
             .FirstOrDefault();
 
         return (match, partialMatch);

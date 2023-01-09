@@ -9,6 +9,12 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET 7'
+  inputs:
+    packageType: sdk
+    version: 7.0.x
+
 - task: DotNetCoreCLI@2
   displayName: Build Release
   inputs:

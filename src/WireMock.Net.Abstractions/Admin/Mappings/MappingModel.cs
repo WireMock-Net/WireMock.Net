@@ -15,6 +15,11 @@ public class MappingModel
     public Guid? Guid { get; set; }
 
     /// <summary>
+    /// The datetime when this mapping was created or updated.
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>
     /// Gets or sets the TimeSettings when which this mapping should be used.
     /// </summary>
     public TimeSettingsModel? TimeSettings { get; set; }

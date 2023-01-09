@@ -18,6 +18,11 @@ public interface IMapping
     Guid Guid { get; }
 
     /// <summary>
+    /// The datetime when this mapping was created or updated.
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>
     /// Gets the TimeSettings (Start, End and TTL).
     /// </summary>
     ITimeSettings? TimeSettings { get; }
