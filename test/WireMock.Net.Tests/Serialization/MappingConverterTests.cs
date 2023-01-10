@@ -300,6 +300,7 @@ public class MappingConverterTests
     public void ToCSharpCode_Returns_Correct_Code()
     {
         // Assign
+        var guid = new Guid("8e7b9ab7-e18e-4502-8bc9-11e6679811cc");
         var request = Request.Create()
             .UsingGet()
             .WithPath("test_path")
@@ -312,9 +313,9 @@ public class MappingConverterTests
             .WithHeader("Keep-Alive", "test")
             .WithBody("bbb")
             .WithDelay(12345)
-            .WithTransformer()
-        ;
-        var mapping = new Mapping(Guid.NewGuid(), string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+            .WithTransformer();
+
+        var mapping = new Mapping(guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
 
         // Act
         var code = _sut.ToCSharpCode(mapping);
