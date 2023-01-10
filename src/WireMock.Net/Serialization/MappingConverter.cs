@@ -12,7 +12,6 @@ using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Types;
 
@@ -29,8 +28,10 @@ internal class MappingConverter
         _mapper = Guard.NotNull(mapper);
     }
 
-    public string ToCSharpCode(IMapping mapping)
+    public string ToCSharpCode(IMapping mapping, MappingConverterSettings? settings = null)
     {
+        settings ??= new MappingConverterSettings();
+
         var request = (Request)mapping.RequestMatcher;
         var response = (Response)mapping.Provider;
 
@@ -43,28 +44,24 @@ internal class MappingConverter
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
 
-        var server = WireMockServer.Start();
-        server
-            .Given(Request.Create()
-                .UsingMethod("GET")
-                .WithPath("/proxy-test-keep-alive")
-                .WithParam("q", "x")
-                .WithClientIP("112")
-                .WithHeader("a", "a")
-                .WithCookie("c", "c")
-                .WithBody("b")
-            )
-            .RespondWith(Response.Create()
-                .WithHeader("Keep-Alive", "timeout=1, max=1")
-                .WithDelay(1111)
-                //.WithBody()
-                .WithTransformer()
-            );
-
         var sb = new StringBuilder();
 
-        sb.AppendLine("var server = WireMockServer.Start();");
-        sb.AppendLine("server");
+        if (settings.ConverterType == MappingConverterType.Server)
+        {
+            if (settings.AddStart)
+            {
+                sb.AppendLine("var server = WireMockServer.Start();");
+            }
+            sb.AppendLine("server");
+        }
+        else
+        {
+            if (settings.AddStart)
+            {
+                sb.AppendLine("var builder = new MappingBuilder();");
+            }
+            sb.AppendLine("builder");
+        }
 
         // Request
         sb.AppendLine("    .Given(Request.Create()");
@@ -379,7 +376,7 @@ internal class MappingConverter
 
     private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
     {
-        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => $"\"{p.GetPattern()}\"").ToArray();
+        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
     }
 
     private static string To1Or2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
