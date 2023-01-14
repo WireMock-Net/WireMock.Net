@@ -22,6 +22,7 @@ using WireMock.ResponseProviders;
 using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Server;
 
@@ -39,6 +40,8 @@ public partial class WireMockServer : IWireMockServer
     private readonly MatcherMapper _matcherMapper;
     private readonly MappingToFileSaver _mappingToFileSaver;
     private readonly MappingBuilder _mappingBuilder;
+    private readonly IGuidUtils _guidUtils = new GuidUtils();
+    private readonly IDateTimeUtils _dateTimeUtils = new DateTimeUtils();
 
     /// <inheritdoc cref="IWireMockServer.IsStarted" />
     [PublicAPI]
@@ -311,7 +314,14 @@ public partial class WireMockServer : IWireMockServer
         _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
-        _mappingBuilder = new MappingBuilder(settings, _options, _mappingConverter, _mappingToFileSaver);
+        _mappingBuilder = new MappingBuilder(
+            settings,
+            _options,
+            _mappingConverter,
+            _mappingToFileSaver,
+            _guidUtils,
+            _dateTimeUtils
+        );
 
 #if USE_ASPNETCORE
         _options.AdditionalServiceRegistration = _settings.AdditionalServiceRegistration;

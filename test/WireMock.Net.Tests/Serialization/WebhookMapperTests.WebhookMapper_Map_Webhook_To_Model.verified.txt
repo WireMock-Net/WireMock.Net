@@ -1,0 +1,16 @@
+﻿{
+  Request: {
+    Url: https://localhost,
+    Method: get,
+    Headers: {
+      x: y
+    },
+    BodyAsJson: {
+      n: 12345
+    },
+    TransformerReplaceNodeOptions: EvaluateAndTryToConvert,
+    Delay: 4,
+    MinimumRandomDelay: 5,
+    MaximumRandomDelay: 6
+  }
+}

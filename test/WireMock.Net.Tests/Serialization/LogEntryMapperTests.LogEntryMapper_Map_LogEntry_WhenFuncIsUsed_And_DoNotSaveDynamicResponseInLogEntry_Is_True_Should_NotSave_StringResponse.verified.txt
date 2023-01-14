@@ -1,0 +1,16 @@
+﻿{
+  Request: {
+    ClientIP: ::1,
+    Path: /,
+    AbsolutePath: /,
+    Url: http://localhost/,
+    AbsoluteUrl: http://localhost/,
+    Method: post,
+    BodyAsBytes: AA==,
+    DetectedBodyType: Bytes
+  },
+  Response: {
+    Body: Func<IRequestMessage, string>,
+    DetectedBodyType: String
+  }
+}

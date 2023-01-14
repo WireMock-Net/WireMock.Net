@@ -1,5 +1,8 @@
-using FluentAssertions;
-using NFluent;
+#if !(NET452 || NET461 || NETCOREAPP3_1)
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using VerifyTests;
+using VerifyXunit;
 using WireMock.Logging;
 using WireMock.Models;
 using WireMock.Owin;
@@ -11,6 +14,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Serialization;
 
+[UsesVerify]
 public class LogEntryMapperTests
 {
     private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
@@ -22,8 +26,15 @@ public class LogEntryMapperTests
         _sut = new LogEntryMapper(_options);
     }
 
+    [ModuleInitializer]
+    public static void ModuleInitializer()
+    {
+        VerifierSettings.DontScrubGuids();
+        VerifierSettings.DontScrubDateTimes();
+    }
+
     [Fact]
-    public void LogEntryMapper_Map_LogEntry_Check_BodyTypeBytes()
+    public Task LogEntryMapper_Map_LogEntry_Check_BodyTypeBytes()
     {
         // Assign
         var logEntry = new LogEntry
@@ -51,23 +62,12 @@ public class LogEntryMapperTests
         // Act
         var result = _sut.Map(logEntry);
 
-        // Assert
-        Check.That(result.Request.DetectedBodyType).IsEqualTo("Bytes");
-        Check.That(result.Request.DetectedBodyTypeFromContentType).IsNull();
-        Check.That(result.Request.BodyAsBytes).ContainsExactly(new byte[] { 0 });
-        Check.That(result.Request.Body).IsNull();
-        Check.That(result.Request.BodyAsJson).IsNull();
-
-        Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.Bytes);
-        Check.That(result.Response.DetectedBodyTypeFromContentType).IsNull();
-        Check.That(result.Response.BodyAsBytes).ContainsExactly(new byte[] { 0 });
-        Check.That(result.Response.Body).IsNull();
-        Check.That(result.Response.BodyAsJson).IsNull();
-        Check.That(result.Response.BodyAsFile).IsNull();
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void LogEntryMapper_Map_LogEntry_Check_ResponseBodyTypeFile()
+    public Task LogEntryMapper_Map_LogEntry_Check_ResponseBodyTypeFile()
     {
         // Assign
         var logEntry = new LogEntry
@@ -86,23 +86,12 @@ public class LogEntryMapperTests
         // Act
         var result = _sut.Map(logEntry);
 
-        // Assert
-        Check.That(result.Request.DetectedBodyType).IsNull();
-        Check.That(result.Request.DetectedBodyTypeFromContentType).IsNull();
-        Check.That(result.Request.BodyAsBytes).IsNull();
-        Check.That(result.Request.Body).IsNull();
-        Check.That(result.Request.BodyAsJson).IsNull();
-
-        Check.That(result.Response.DetectedBodyType).IsEqualTo(BodyType.File);
-        Check.That(result.Response.DetectedBodyTypeFromContentType).IsNull();
-        Check.That(result.Request.BodyAsBytes).IsNull();
-        Check.That(result.Response.Body).IsNull();
-        Check.That(result.Response.BodyAsJson).IsNull();
-        Check.That(result.Response.BodyAsFile).IsEqualTo("test");
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void LogEntryMapper_Map_LogEntry_WithFault()
+    public Task LogEntryMapper_Map_LogEntry_WithFault()
     {
         // Assign
         var logEntry = new LogEntry
@@ -123,13 +112,12 @@ public class LogEntryMapperTests
         // Act
         var result = _sut.Map(logEntry);
 
-        // Assert
-        result.Response.FaultType.Should().Be("EMPTY_RESPONSE");
-        result.Response.FaultPercentage.Should().Be(0.5);
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void LogEntryMapper_Map_LogEntry_WhenFuncIsUsed_And_DoNotSaveDynamicResponseInLogEntry_Is_True_Should_NotSave_StringResponse()
+    public Task LogEntryMapper_Map_LogEntry_WhenFuncIsUsed_And_DoNotSaveDynamicResponseInLogEntry_Is_True_Should_NotSave_StringResponse()
     {
         // Assign
         var options = new WireMockMiddlewareOptions
@@ -163,7 +151,8 @@ public class LogEntryMapperTests
         // Act
         var result = new LogEntryMapper(options).Map(logEntry);
 
-        // Assert
-        result.Response.Body.Should().Be(isFuncUsed);
+        // Verify
+        return Verifier.Verify(result);
     }
 }
+#endif

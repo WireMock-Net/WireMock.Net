@@ -1,0 +1,75 @@
+﻿{
+  Guid: ff55ac0a-fea9-4d7b-be74-5e483a2c1305,
+  UpdatedAt: 2022-12-04,
+  Title: my title,
+  Description: my description,
+  Priority: -2000000,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          Name: WildcardMatcher,
+          Pattern: x,
+          IgnoreCase: false
+        }
+      ]
+    },
+    Methods: [
+      POST
+    ],
+    Headers: [
+      {
+        Name: Content-Type,
+        Matchers: [
+          {
+            Name: ContentTypeMatcher,
+            Pattern: text/plain,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ],
+    Cookies: [
+      {
+        Name: c,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: x,
+            IgnoreCase: true
+          }
+        ]
+      }
+    ],
+    Params: [
+      {
+        Name: p1,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: p1-v,
+            IgnoreCase: false
+          }
+        ]
+      },
+      {
+        Name: p2,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: p2-v,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ],
+    Body: {
+      Matcher: {
+        Name: RegexMatcher,
+        Pattern: <RequestType>Auth</RequestType,
+        IgnoreCase: false
+      }
+    }
+  },
+  Response: {}
+}

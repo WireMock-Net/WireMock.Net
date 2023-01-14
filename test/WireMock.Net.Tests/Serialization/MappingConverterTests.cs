@@ -29,16 +29,13 @@ public class MappingConverterTests
 
     public MappingConverterTests()
     {
-
-
         _sut = new MappingConverter(new MatcherMapper(_settings));
     }
 
     [ModuleInitializer]
-    public static void MemberConverterByExpressionInit()
+    public static void ModuleInitializer()
     {
         VerifierSettings.DontScrubGuids();
-
         VerifierSettings.DontScrubDateTimes();
     }
 

@@ -28,9 +28,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private readonly RegistrationCallback _registrationCallback;
     private readonly IRequestMatcher _requestMatcher;
     private readonly WireMockServerSettings _settings;
+    private readonly IDateTimeUtils _dateTimeUtils;
     private readonly bool _saveToFile;
-    private readonly IGuidUtils _guidUtils = new GuidUtils();
-    private readonly IDateTimeUtils _dateTimeUtils = new DateTimeUtils();
 
     private bool _useWebhookFireAndForget;
 
@@ -46,20 +45,25 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <param name="registrationCallback">The registration callback.</param>
     /// <param name="requestMatcher">The request matcher.</param>
     /// <param name="settings">The WireMockServerSettings.</param>
+    /// <param name="guidUtils">GuidUtils to make unit testing possible.</param>
+    /// <param name="dateTimeUtils">DateTimeUtils to make unit testing possible.</param>
     /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
     public RespondWithAProvider(
         RegistrationCallback registrationCallback,
         IRequestMatcher requestMatcher,
         WireMockServerSettings settings,
+        IGuidUtils guidUtils,
+        IDateTimeUtils dateTimeUtils,
         bool saveToFile = false
     )
     {
         _registrationCallback = Guard.NotNull(registrationCallback);
         _requestMatcher = Guard.NotNull(requestMatcher);
         _settings = Guard.NotNull(settings);
-        _saveToFile = Guard.NotNull(saveToFile);
+        _dateTimeUtils = Guard.NotNull(dateTimeUtils);
+        _saveToFile = saveToFile;
 
-        Guid = _guidUtils.NewGuid();
+        Guid = guidUtils.NewGuid();
     }
 
     /// <summary>
