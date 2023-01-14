@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 #if NET452
 using Microsoft.Owin;
 #else
@@ -8,50 +8,49 @@ using NFluent;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests.Util
+namespace WireMock.Net.Tests.Util;
+
+public class UrlUtilsTests
 {
-    public class UrlUtilsTests
+    [Fact]
+    public void UriUtils_CreateUri_WithValidPathString()
     {
-        [Fact]
-        public void UriUtils_CreateUri_WithValidPathString()
-        {
-            // Assign
-            Uri uri = new Uri("https://localhost:1234/a/b?x=0");
+        // Assign
+        Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
-            // Act
-            var result = UrlUtils.Parse(uri, new PathString("/a"));
+        // Act
+        var result = UrlUtils.Parse(uri, new PathString("/a"));
 
-            // Assert
-            Check.That(result.Url.ToString()).Equals("https://localhost:1234/b?x=0");
-            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
-        }
+        // Assert
+        Check.That(result.Url.ToString()).Equals("https://localhost:1234/b?x=0");
+        Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
+    }
 
-        [Fact]
-        public void UriUtils_CreateUri_WithEmptyPathString()
-        {
-            // Assign
-            Uri uri = new Uri("https://localhost:1234/a/b?x=0");
+    [Fact]
+    public void UriUtils_CreateUri_WithEmptyPathString()
+    {
+        // Assign
+        Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
-            // Act
-            var result = UrlUtils.Parse(uri, new PathString());
+        // Act
+        var result = UrlUtils.Parse(uri, new PathString());
 
-            // Assert
-            Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
-            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
-        }
+        // Assert
+        Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
+        Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
+    }
 
-        [Fact]
-        public void UriUtils_CreateUri_WithDifferentPathString()
-        {
-            // Assign
-            Uri uri = new Uri("https://localhost:1234/a/b?x=0");
+    [Fact]
+    public void UriUtils_CreateUri_WithDifferentPathString()
+    {
+        // Assign
+        Uri uri = new Uri("https://localhost:1234/a/b?x=0");
 
-            // Act
-            var result = UrlUtils.Parse(uri, new PathString("/test"));
+        // Act
+        var result = UrlUtils.Parse(uri, new PathString("/test"));
 
-            // Assert
-            Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
-            Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
-        }
+        // Assert
+        Check.That(result.Url.ToString()).Equals("https://localhost:1234/a/b?x=0");
+        Check.That(result.AbsoluteUrl.ToString()).Equals("https://localhost:1234/a/b?x=0");
     }
 }
