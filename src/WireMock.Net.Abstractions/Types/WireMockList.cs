@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WireMock.Types;
 
@@ -63,7 +64,8 @@ public class WireMockList<T> : List<T>
                 return this[0]?.ToString();
 
             default:
-                return base.ToString();
+                var strings = this.Select(x => x as string ?? x?.ToString());
+                return string.Join(", ", strings);
         }
     }
 }

@@ -49,29 +49,29 @@
     <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Handlebars.Net.2.1.2\lib\net46\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars.Net.Helpers, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.10\lib\net452\Handlebars.Net.Helpers.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.12\lib\net46\Handlebars.Net.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Core.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.DynamicLinq, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.DynamicLinq.2.3.10\lib\net452\HandlebarsDotNet.Helpers.DynamicLinq.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.DynamicLinq, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.DynamicLinq.2.3.12\lib\net46\HandlebarsDotNet.Helpers.DynamicLinq.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Humanizer, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Humanizer.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Humanizer.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Humanizer, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Humanizer.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Humanizer.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Json, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Json.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Json.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Json, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Json.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Json.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Random, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Random.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Random.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Random, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Random.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Random.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Xeger, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Xeger.2.3.10\lib\net452\HandlebarsDotNet.Helpers.Xeger.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Xeger, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Xeger.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Xeger.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.XPath, Version=2.3.10.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.XPath.2.3.10\lib\net452\HandlebarsDotNet.Helpers.XPath.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.XPath, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.XPath.2.3.12\lib\net46\HandlebarsDotNet.Helpers.XPath.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.14.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Humanizer.Core.2.14.1\lib\netstandard2.0\Humanizer.dll</HintPath>

@@ -1,0 +1,18 @@
+﻿var builder = new MappingBuilder();
+builder
+    .Given(Request.Create()
+        .UsingMethod("GET")
+        .WithPath("test_path")
+        .WithParam("q", "42")
+        .WithClientIP("112.123.100.99")
+        .WithHeader("h-key", "h-value", true)
+        .WithCookie("c-key", "c-value", true)
+        .WithBody("b")
+    )
+    .WithGuid("8e7b9ab7-e18e-4502-8bc9-11e6679811cc")
+    .RespondWith(Response.Create()
+        .WithHeader("Keep-Alive)", "test")
+        .WithBody("bbb")
+        .WithDelay(12345)
+        .WithTransformer()
+    );
