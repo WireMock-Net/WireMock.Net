@@ -1,4 +1,4 @@
-﻿{
+{
   Guid: ff55ac0a-fea9-4d7b-be74-5e483a2c1305,
   UpdatedAt: 2022-12-04,
   Title: my title,
@@ -66,7 +66,7 @@
     Body: {
       Matcher: {
         Name: RegexMatcher,
-        Pattern: <RequestType>Auth</RequestType,
+        Pattern: <RequestType>Auth</RequestType>,
         IgnoreCase: false
       }
     }

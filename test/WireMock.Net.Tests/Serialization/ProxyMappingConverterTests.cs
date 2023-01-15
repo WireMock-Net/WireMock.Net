@@ -59,7 +59,7 @@ public class ProxyMappingConverterTests
             .WithParam("p2", "p2-v")
             .WithHeader("Content-Type", new ContentTypeMatcher("text/plain"))
             .WithCookie("c", "x")
-            .WithBody(new RegexMatcher("<RequestType>Auth</RequestType"));
+            .WithBody(new RegexMatcher("<RequestType>Auth</RequestType>"));
 
         var mappingMock = new Mock<IMapping>();
         mappingMock.SetupGet(m => m.RequestMatcher).Returns(request);
