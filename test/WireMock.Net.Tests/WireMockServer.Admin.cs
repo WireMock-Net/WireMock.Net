@@ -146,7 +146,7 @@ public class WireMockServerAdminTests
 
         string responseBodyFilePath = Path.Combine(GetCurrentFolder(), "responsebody.json");
 
-        dynamic jsonObj = JsonConvert.DeserializeObject(json);
+        dynamic jsonObj = JsonConvert.DeserializeObject(json)!;
         jsonObj["Response"]["BodyAsFile"] = responseBodyFilePath;
 
         string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);

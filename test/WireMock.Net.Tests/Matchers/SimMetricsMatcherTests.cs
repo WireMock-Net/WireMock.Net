@@ -2,86 +2,85 @@ using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
-namespace WireMock.Net.Tests.Matchers
+namespace WireMock.Net.Tests.Matchers;
+
+public class SimMetricsMatcherTests
 {
-    public class SimMetricsMatcherTests
+    [Fact]
+    public void SimMetricsMatcher_GetName()
     {
-        [Fact]
-        public void SimMetricsMatcher_GetName()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher("X");
+        // Assign
+        var matcher = new SimMetricsMatcher("X");
 
-            // Act
-            string name = matcher.Name;
+        // Act
+        string name = matcher.Name;
 
-            // Assert
-            Check.That(name).Equals("SimMetricsMatcher.Levenstein");
-        }
+        // Assert
+        Check.That(name).Equals("SimMetricsMatcher.Levenstein");
+    }
 
-        [Fact]
-        public void SimMetricsMatcher_GetPatterns()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher("X");
+    [Fact]
+    public void SimMetricsMatcher_GetPatterns()
+    {
+        // Assign
+        var matcher = new SimMetricsMatcher("X");
 
-            // Act
-            var patterns = matcher.GetPatterns();
+        // Act
+        var patterns = matcher.GetPatterns();
 
-            // Assert
-            Check.That(patterns).ContainsExactly("X");
-        }
+        // Assert
+        Check.That(patterns).ContainsExactly("X");
+    }
 
-        [Fact]
-        public void SimMetricsMatcher_IsMatch_1()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher("The cat walks in the street.");
+    [Fact]
+    public void SimMetricsMatcher_IsMatch_1()
+    {
+        // Assign
+        var matcher = new SimMetricsMatcher("The cat walks in the street.");
 
-            // Act
-            double result = matcher.IsMatch("The car drives in the street.");
+        // Act
+        double result = matcher.IsMatch("The car drives in the street.");
 
-            // Assert
-            Check.That(result).IsStrictlyLessThan(1.0).And.IsStrictlyGreaterThan(0.5);
-        }
+        // Assert
+        Check.That(result).IsStrictlyLessThan(1.0).And.IsStrictlyGreaterThan(0.5);
+    }
 
-        [Fact]
-        public void SimMetricsMatcher_IsMatch_2()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher("The cat walks in the street.");
+    [Fact]
+    public void SimMetricsMatcher_IsMatch_2()
+    {
+        // Assign
+        var matcher = new SimMetricsMatcher("The cat walks in the street.");
 
-            // Act
-            double result = matcher.IsMatch("Hello");
+        // Act
+        double result = matcher.IsMatch("Hello");
 
-            // Assert
-            Check.That(result).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
-        }
+        // Assert
+        Check.That(result).IsStrictlyLessThan(0.1).And.IsStrictlyGreaterThan(0.05);
+    }
 
-        [Fact]
-        public void SimMetricsMatcher_IsMatch_AcceptOnMatch()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher("test");
+    [Fact]
+    public void SimMetricsMatcher_IsMatch_AcceptOnMatch()
+    {
+        // Assign
+        var matcher = new SimMetricsMatcher("test");
 
-            // Act
-            double result = matcher.IsMatch("test");
+        // Act
+        double result = matcher.IsMatch("test");
 
-            // Assert
-            Check.That(result).IsEqualTo(1.0);
-        }
+        // Assert
+        Check.That(result).IsEqualTo(1.0);
+    }
 
-        [Fact]
-        public void SimMetricsMatcher_IsMatch_RejectOnMatch()
-        {
-            // Assign
-            var matcher = new SimMetricsMatcher(MatchBehaviour.RejectOnMatch, "test");
+    [Fact]
+    public void SimMetricsMatcher_IsMatch_RejectOnMatch()
+    {
+        // Assign
+        var matcher = new SimMetricsMatcher(MatchBehaviour.RejectOnMatch, "test");
 
-            // Act
-            double result = matcher.IsMatch("test");
+        // Act
+        double result = matcher.IsMatch("test");
 
-            // Assert
-            Check.That(result).IsEqualTo(0.0);
-        }
+        // Assert
+        Check.That(result).IsEqualTo(0.0);
     }
 }
