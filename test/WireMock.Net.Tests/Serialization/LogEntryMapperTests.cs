@@ -1,10 +1,10 @@
-#if !(NET452 || NET461 || NETCOREAPP3_1)
-using System.Runtime.CompilerServices;
+#if !(NET452 || NET461)
 using System.Threading.Tasks;
 using VerifyTests;
 using VerifyXunit;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.Owin;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
@@ -17,6 +17,12 @@ namespace WireMock.Net.Tests.Serialization;
 [UsesVerify]
 public class LogEntryMapperTests
 {
+    private static readonly VerifySettings VerifySettings = new();
+    static LogEntryMapperTests()
+    {
+        VerifySettings.Init<LogEntryMapperTests>();
+    }
+
     private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();
 
     private readonly LogEntryMapper _sut;
@@ -24,13 +30,6 @@ public class LogEntryMapperTests
     public LogEntryMapperTests()
     {
         _sut = new LogEntryMapper(_options);
-    }
-
-    [ModuleInitializer]
-    public static void ModuleInitializer()
-    {
-        VerifierSettings.DontScrubGuids();
-        VerifierSettings.DontScrubDateTimes();
     }
 
     [Fact]
@@ -63,7 +62,7 @@ public class LogEntryMapperTests
         var result = _sut.Map(logEntry);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -87,7 +86,7 @@ public class LogEntryMapperTests
         var result = _sut.Map(logEntry);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -113,7 +112,7 @@ public class LogEntryMapperTests
         var result = _sut.Map(logEntry);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -152,7 +151,7 @@ public class LogEntryMapperTests
         var result = new LogEntryMapper(options).Map(logEntry);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 }
 #endif

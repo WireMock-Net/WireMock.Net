@@ -4,6 +4,8 @@
 
     "dependentFileProviders": {
         "add": {
+            "addedExtension": {},
+            "pathSegment": {},
             "fileSuffixToExtension": {
                 "add": {
                     ".verified.txt": [
