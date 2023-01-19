@@ -1,6 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.Specialized;
 using System.Net.Http;
-using Newtonsoft.Json;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -26,10 +26,8 @@ namespace WireMock.Net.Console.Proxy.Net452
                 }
             });
 
-            server.LogEntriesChanged += (sender, eventRecordArgs) =>
-            {
-                System.Console.WriteLine(JsonConvert.SerializeObject(eventRecordArgs.NewItems, Formatting.Indented));
-            };
+            System.Console.WriteLine("Subscribing to LogEntriesChanged");
+            server.LogEntriesChanged += Server_LogEntriesChanged;
 
             var uri = new Uri(urls[0]);
             var form = new MultipartFormDataContent
@@ -38,9 +36,23 @@ namespace WireMock.Net.Console.Proxy.Net452
             };
             new HttpClient().PostAsync(uri, form).GetAwaiter().GetResult();
 
+            System.Console.WriteLine("Unsubscribing to LogEntriesChanged");
+            server.LogEntriesChanged -= Server_LogEntriesChanged;
+
+            form = new MultipartFormDataContent
+            {
+                { new StringContent("data2"), "test2", "test2.txt" }
+            };
+            new HttpClient().PostAsync(uri, form).GetAwaiter().GetResult();
+
             System.Console.WriteLine("Press any key to stop the server");
             System.Console.ReadKey();
             server.Stop();
+        }
+
+        private static void Server_LogEntriesChanged(object sender, NotifyCollectionChangedEventArgs eventRecordArgs)
+        {
+            System.Console.WriteLine("Server_LogEntriesChanged : {0}", eventRecordArgs.NewItems.Count);
         }
     }
 }

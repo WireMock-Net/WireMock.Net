@@ -14,26 +14,12 @@ namespace WireMock.Server;
 
 public partial class WireMockServer
 {
-    /// <inheritdoc cref="IWireMockServer.LogEntriesChanged" />
+    /// <inheritdoc />
     [PublicAPI]
     public event NotifyCollectionChangedEventHandler LogEntriesChanged
     {
-        add
-        {
-            _options.LogEntries.CollectionChanged += (sender, eventRecordArgs) =>
-            {
-                try
-                {
-                    value(sender, eventRecordArgs);
-                }
-                catch (Exception exception)
-                {
-                    _options.Logger.Error("Error calling the LogEntriesChanged event handler: {0}", exception.Message);
-                }
-            };
-        }
-
-        remove => _options.LogEntries.CollectionChanged -= value;
+        add => _logEntriesChanged += value;
+        remove => _logEntriesChanged -= value;
     }
 
     /// <inheritdoc cref="IWireMockServer.LogEntries" />
@@ -89,5 +75,25 @@ public partial class WireMockServer
         }
 
         return false;
+    }
+
+    private NotifyCollectionChangedEventHandler? _logEntriesChanged;
+
+    private void LogEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_logEntriesChanged is { })
+        {
+            foreach (var handler in _logEntriesChanged.GetInvocationList())
+            {
+                try
+                {
+                    handler.DynamicInvoke(this, e);
+                }
+                catch (Exception exception)
+                {
+                    _options.Logger.Error("Error calling the LogEntriesChanged event handler: {0}", exception.Message);
+                }
+            }
+        }
     }
 }
