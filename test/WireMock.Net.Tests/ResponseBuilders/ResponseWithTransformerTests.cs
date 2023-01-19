@@ -682,6 +682,27 @@ public class ResponseWithTransformerTests
         Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("\"test\"");
     }
 
+    [Fact]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsJson_Handlebars_StringAppend()
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("https://localhost/token?scope=scope1 scope2 scope3"), "POST", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(
+                new
+                {
+                    scope = "{{String.Append (String.Join request.query.scope) \" helloworld\" }}"
+                })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("[\"{\"scope\":\"scope1 scope2 scope3 helloworld\"}\"]");
+    }
+
     [Fact(Skip = "todo...")]
     //[Fact]
     public async Task Response_ProvideResponse_Handlebars_WithBodyAsJson_ResultAsTemplatedString()
