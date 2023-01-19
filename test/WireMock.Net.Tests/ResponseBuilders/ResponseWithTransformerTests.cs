@@ -700,7 +700,7 @@ public class ResponseWithTransformerTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson)).Equals("[\"{\"scope\":\"scope1 scope2 scope3 helloworld\"}\"]");
+        JsonConvert.SerializeObject(response.Message.BodyData!.BodyAsJson).Should().Be("{\"scope\":\"scope1 scope2 scope3 helloworld\"}");
     }
 
     [Fact(Skip = "todo...")]
