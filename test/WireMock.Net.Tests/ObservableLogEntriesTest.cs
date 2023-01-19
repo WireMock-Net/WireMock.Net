@@ -78,7 +78,6 @@ public class ObservableLogEntriesTest
         server.Dispose();
     }
 
-
     [Fact]
     public async Task WireMockServer_LogEntriesChanged_Add_And_Remove_EventHandler()
     {
