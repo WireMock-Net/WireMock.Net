@@ -297,5 +297,6 @@ public class WireMockServerSettings
     /// Currently used for:
     /// - Handlebars Transformer
     /// </summary>
+	[JsonIgnore]
     public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 }
