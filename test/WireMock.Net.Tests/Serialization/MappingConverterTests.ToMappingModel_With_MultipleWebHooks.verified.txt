@@ -1,0 +1,34 @@
+﻿{
+  Guid: c8eeaf99-d5c4-4341-8543-4597c3fd40d9,
+  UpdatedAt: 2022-12-04 11:12:13,
+  Title: ,
+  Description: ,
+  Request: {},
+  Response: {},
+  Webhooks: [
+    {
+      Request: {
+        Url: https://test1.com,
+        Method: post,
+        Headers: {
+          One: x
+        },
+        Body: 1,
+        TransformerReplaceNodeOptions: EvaluateAndTryToConvert
+      }
+    },
+    {
+      Request: {
+        Url: https://test2.com,
+        Method: post,
+        Headers: {
+          First: x,
+          Second: a, b
+        },
+        Body: 2,
+        TransformerReplaceNodeOptions: EvaluateAndTryToConvert
+      }
+    }
+  ],
+  UseWebhooksFireAndForget: true
+}

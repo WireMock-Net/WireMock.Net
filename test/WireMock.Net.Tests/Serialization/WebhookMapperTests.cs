@@ -1,5 +1,9 @@
+#if !(NET452 || NET461 || NETCOREAPP3_1)
 using System.Collections.Generic;
-using FluentAssertions;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using VerifyTests;
+using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Models;
 using WireMock.Serialization;
@@ -9,10 +13,18 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Serialization;
 
+[UsesVerify]
 public class WebhookMapperTests
 {
+    [ModuleInitializer]
+    public static void ModuleInitializer()
+    {
+        VerifierSettings.DontScrubGuids();
+        VerifierSettings.DontScrubDateTimes();
+    }
+
     [Fact]
-    public void WebhookMapper_Map_WebhookModel_BodyAsString_And_UseTransformerIsFalse()
+    public Task WebhookMapper_Map_WebhookModel_BodyAsString_And_UseTransformerIsFalse()
     {
         // Assign
         var model = new WebhookModel
@@ -32,17 +44,12 @@ public class WebhookMapperTests
 
         var result = WebhookMapper.Map(model);
 
-        result.Request.Url.Should().Be("https://localhost");
-        result.Request.Method.Should().Be("get");
-        result.Request.Headers.Should().HaveCount(1);
-        result.Request.BodyData!.BodyAsJson.Should().BeNull();
-        result.Request.BodyData.BodyAsString.Should().Be("test");
-        result.Request.BodyData.DetectedBodyType.Should().Be(BodyType.String);
-        result.Request.UseTransformer.Should().BeNull();
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void WebhookMapper_Map_WebhookModel_BodyAsString_And_UseTransformerIsTrue()
+    public Task WebhookMapper_Map_WebhookModel_BodyAsString_And_UseTransformerIsTrue()
     {
         // Assign
         var model = new WebhookModel
@@ -62,18 +69,12 @@ public class WebhookMapperTests
 
         var result = WebhookMapper.Map(model);
 
-        result.Request.Url.Should().Be("https://localhost");
-        result.Request.Method.Should().Be("get");
-        result.Request.Headers.Should().HaveCount(1);
-        result.Request.BodyData!.BodyAsJson.Should().BeNull();
-        result.Request.BodyData.BodyAsString.Should().Be("test");
-        result.Request.BodyData.DetectedBodyType.Should().Be(BodyType.String);
-        result.Request.UseTransformer.Should().BeTrue();
-        result.Request.TransformerType.Should().Be(TransformerType.Handlebars);
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void WebhookMapper_Map_WebhookModel_BodyAsJson()
+    public Task WebhookMapper_Map_WebhookModel_BodyAsJson()
     {
         // Assign
         var model = new WebhookModel
@@ -95,19 +96,12 @@ public class WebhookMapperTests
 
         var result = WebhookMapper.Map(model);
 
-        result.Request.Url.Should().Be("https://localhost");
-        result.Request.Method.Should().Be("get");
-        result.Request.Headers.Should().HaveCount(1);
-        result.Request.BodyData!.BodyAsString.Should().BeNull();
-        result.Request.BodyData.BodyAsJson.Should().NotBeNull();
-        result.Request.BodyData.DetectedBodyType.Should().Be(BodyType.Json);
-        result.Request.Delay.Should().Be(4);
-        result.Request.MinimumRandomDelay.Should().Be(5);
-        result.Request.MaximumRandomDelay.Should().Be(6);
+        // Verify
+        return Verifier.Verify(result);
     }
 
     [Fact]
-    public void WebhookMapper_Map_Webhook_To_Model()
+    public Task WebhookMapper_Map_Webhook_To_Model()
     {
         // Assign
         var webhook = new Webhook
@@ -134,12 +128,8 @@ public class WebhookMapperTests
 
         var result = WebhookMapper.Map(webhook);
 
-        result.Request.Url.Should().Be("https://localhost");
-        result.Request.Method.Should().Be("get");
-        result.Request.Headers.Should().HaveCount(1);
-        result.Request.BodyAsJson.Should().NotBeNull();
-        result.Request.Delay.Should().Be(4);
-        result.Request.MinimumRandomDelay.Should().Be(5);
-        result.Request.MaximumRandomDelay.Should().Be(6);
+        // Verify
+        return Verifier.Verify(result);
     }
 }
+#endif

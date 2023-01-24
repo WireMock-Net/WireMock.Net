@@ -1,0 +1,21 @@
+﻿{
+  Request: {
+    Url: https://localhost,
+    Method: get,
+    Headers: {
+      x: [
+        y
+      ]
+    },
+    BodyData: {
+      BodyAsJson: {
+        n: 12345
+      },
+      DetectedBodyType: Json,
+      DetectedBodyTypeFromContentType: Bytes
+    },
+    Delay: 4,
+    MinimumRandomDelay: 5,
+    MaximumRandomDelay: 6
+  }
+}

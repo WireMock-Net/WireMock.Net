@@ -1,0 +1,16 @@
+﻿{
+  Request: {
+    Url: https://localhost,
+    Method: get,
+    Headers: {
+      x: [
+        y
+      ]
+    },
+    BodyData: {
+      BodyAsString: test,
+      DetectedBodyType: String,
+      DetectedBodyTypeFromContentType: Bytes
+    }
+  }
+}

@@ -1,0 +1,25 @@
+﻿[
+  {
+    Guid: 41372914-1838-4c67-916b-b9aacdd096ce,
+    UpdatedAt: 2023-01-14 15:16:17,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /foo,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        GET
+      ]
+    },
+    Response: {
+      BodyDestination: SameAsSource,
+      Body: { msg: "Hello world!"}
+    },
+    UseWebhooksFireAndForget: false
+  }
+]

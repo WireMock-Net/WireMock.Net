@@ -1,8 +1,10 @@
+#if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Moq;
-using Newtonsoft.Json;
-using System.IO;
-using FluentAssertions;
+using VerifyTests;
+using VerifyXunit;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.Serialization;
@@ -12,6 +14,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Serialization;
 
+[UsesVerify]
 public class ProxyMappingConverterTests
 {
     private readonly WireMockServerSettings _settings = new();
@@ -33,8 +36,15 @@ public class ProxyMappingConverterTests
         _sut = new ProxyMappingConverter(_settings, guidUtilsMock.Object, dateTimeUtilsMock.Object);
     }
 
+    [ModuleInitializer]
+    public static void ModuleInitializer()
+    {
+        VerifierSettings.DontScrubGuids();
+        VerifierSettings.DontScrubDateTimes();
+    }
+
     [Fact]
-    public void ToMapping_UseDefinedRequestMatchers_True()
+    public Task ToMapping_UseDefinedRequestMatchers_True()
     {
         // Arrange
         var proxyAndRecordSettings = new ProxyAndRecordSettings
@@ -49,7 +59,7 @@ public class ProxyMappingConverterTests
             .WithParam("p2", "p2-v")
             .WithHeader("Content-Type", new ContentTypeMatcher("text/plain"))
             .WithCookie("c", "x")
-            .WithBody(new RegexMatcher("<RequestType>Auth</RequestType"));
+            .WithBody(new RegexMatcher("<RequestType>Auth</RequestType>"));
 
         var mappingMock = new Mock<IMapping>();
         mappingMock.SetupGet(m => m.RequestMatcher).Returns(request);
@@ -65,9 +75,9 @@ public class ProxyMappingConverterTests
 
         // Assert
         var model = _mappingConverter.ToMappingModel(proxyMapping);
-        var json = JsonConvert.SerializeObject(model, JsonSerializationConstants.JsonSerializerSettingsDefault);
-        var expected = File.ReadAllText(Path.Combine("../../../", "Serialization", "files", "proxy.json"));
 
-        json.Should().Be(expected);
+        // Verify
+        return Verifier.Verify(model);
     }
 }
+#endif

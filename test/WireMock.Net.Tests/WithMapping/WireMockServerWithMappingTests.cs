@@ -1,65 +1,65 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using WireMock.Admin.Mappings;
 using WireMock.Server;
 using Xunit;
 
-namespace WireMock.Net.Tests.WithMapping
+namespace WireMock.Net.Tests.WithMapping;
+
+public class WireMockServerWithMappingTests
 {
-    public class WireMockServerWithMappingTests
+    [Fact]
+    public void WireMockServer_WithMappingAsModel_Should_Add_Mapping()
     {
-        [Fact]
-        public void WireMockServer_WithMappingAsModel_Should_Add_Mapping()
+        // Arrange
+        var guid = Guid.NewGuid();
+        var pattern = "hello wiremock";
+        var path = "/foo";
+        var response = "OK";
+        var mapping = new MappingModel
         {
-            // Arrange
-            var guid = Guid.NewGuid();
-            var pattern = "hello wiremock";
-            var path = "/foo";
-            var response = "OK";
-            var mapping = new MappingModel
+            Guid = guid,
+            Request = new RequestModel
             {
-                Guid = guid,
-                Request = new RequestModel
+                Path = path,
+                Body = new BodyModel
                 {
-                    Path = path,
-                    Body = new BodyModel
+                    Matcher = new MatcherModel
                     {
-                        Matcher = new MatcherModel
-                        {
-                            Name = "ExactMatcher",
-                            Pattern = pattern
-                        }
+                        Name = "ExactMatcher",
+                        Pattern = pattern
                     }
-                },
-                Response = new ResponseModel
-                {
-                    Body = response,
-                    StatusCode = 201
                 }
-            };
+            },
+            Response = new ResponseModel
+            {
+                Body = response,
+                StatusCode = 201
+            }
+        };
 
-            var server = WireMockServer.Start();
+        var server = WireMockServer.Start();
 
-            // Act
-            server.WithMapping(mapping);
+        // Act
+        server.WithMapping(mapping);
 
-            // Assert
-            server.MappingModels.Should().HaveCount(1).And.Contain(m =>
-                m.Guid == guid &&
-                //((PathModel)m.Request.Path).Matchers.OfType<WildcardMatcher>().First().GetPatterns().First() == "/foo*"
-                // m.Request.Body.Matchers.OfType<ExactMatcher>().First().GetPatterns().First() == pattern &&
-                m.Response.Body == response &&
-                (int)m.Response.StatusCode == 201
-            );
+        // Assert
+        server.MappingModels.Should().HaveCount(1).And.Contain(m =>
+            m.Guid == guid &&
+            //((PathModel)m.Request.Path).Matchers.OfType<WildcardMatcher>().First().GetPatterns().First() == "/foo*"
+            // m.Request.Body.Matchers.OfType<ExactMatcher>().First().GetPatterns().First() == pattern &&
+            m.Response.Body == response &&
+            (int?)m.Response.StatusCode == 201
+        );
 
-            server.Stop();
-        }
+        server.Stop();
+    }
 
-        [Fact]
-        public void WireMockServer_WithMappingAsJson_Should_Add_Mapping()
-        {
-            // Arrange
-            var mapping = @"{
+    [Fact]
+    public void WireMockServer_WithMappingAsJson_Should_Add_Mapping()
+    {
+        // Arrange
+        var mapping = @"{
                 ""Guid"": ""532889c2-f84d-4dc8-b847-9ea2c6aca7d5"",
                 ""Request"": {
                     ""Path"": ""/pet"",
@@ -78,25 +78,25 @@ namespace WireMock.Net.Tests.WithMapping
                 }
             }";
 
-            var server = WireMockServer.Start();
+        var server = WireMockServer.Start();
 
-            // Act
-            server.WithMapping(mapping);
+        // Act
+        server.WithMapping(mapping);
 
-            // Assert
-            server.MappingModels.Should().HaveCount(1).And.Contain(m =>
-                m.Guid == Guid.Parse("532889c2-f84d-4dc8-b847-9ea2c6aca7d5") &&
-                (int)m.Response.StatusCode == 201
-            );
+        // Assert
+        server.MappingModels.Should().HaveCount(1).And.Contain(m =>
+            m.Guid == Guid.Parse("532889c2-f84d-4dc8-b847-9ea2c6aca7d5") &&
+            (int?)m.Response.StatusCode == 201
+        );
 
-            server.Stop();
-        }
+        server.Stop();
+    }
 
-        [Fact]
-        public void WireMockServer_WithMappingsAsJson_Should_Add_Mapping()
-        {
-            // Arrange
-            var mapping = @"[
+    [Fact]
+    public void WireMockServer_WithMappingsAsJson_Should_Add_Mapping()
+    {
+        // Arrange
+        var mapping = @"[
             {
                 ""Guid"": ""532889c2-f84d-4dc8-b847-9ea2c6aca7d1"",
                 ""Request"": {
@@ -117,15 +117,14 @@ namespace WireMock.Net.Tests.WithMapping
             }
             ]";
 
-            var server = WireMockServer.Start();
+        var server = WireMockServer.Start();
 
-            // Act
-            server.WithMapping(mapping);
+        // Act
+        server.WithMapping(mapping);
 
-            // Assert
-            server.MappingModels.Should().HaveCount(2);
+        // Assert
+        server.MappingModels.Should().HaveCount(2);
 
-            server.Stop();
-        }
+        server.Stop();
     }
 }

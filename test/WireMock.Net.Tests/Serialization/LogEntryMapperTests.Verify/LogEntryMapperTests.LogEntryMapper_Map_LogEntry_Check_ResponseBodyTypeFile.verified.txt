@@ -1,0 +1,14 @@
+﻿{
+  Request: {
+    ClientIP: ::1,
+    Path: /,
+    AbsolutePath: /,
+    Url: http://localhost/,
+    AbsoluteUrl: http://localhost/,
+    Method: get
+  },
+  Response: {
+    BodyAsFile: test,
+    DetectedBodyType: File
+  }
+}

@@ -1,5 +1,10 @@
-using FluentAssertions;
+#if !(NET452 || NET461 || NETCOREAPP3_1)
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Moq;
+using VerifyTests;
+using VerifyXunit;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Owin;
@@ -7,13 +12,17 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests;
 
+[UsesVerify]
 public class MappingBuilderTests
 {
-    private static readonly string MappingGuid = "41372914-1838-4c67-916b-b9aacdd096ce";
+    private static readonly Guid NewGuid = new("98fae52e-76df-47d9-876f-2ee32e931d9b");
+    private const string MappingGuid = "41372914-1838-4c67-916b-b9aacdd096ce";
+    private static readonly DateTime UtcNow = new(2023, 1, 14, 15, 16, 17);
 
     private readonly Mock<IFileSystemHandler> _fileSystemHandlerMock;
 
@@ -22,6 +31,12 @@ public class MappingBuilderTests
     public MappingBuilderTests()
     {
         _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+
+        var guidUtilsMock = new Mock<IGuidUtils>();
+        guidUtilsMock.Setup(g => g.NewGuid()).Returns(NewGuid);
+
+        var dateTimeUtilsMock = new Mock<IDateTimeUtils>();
+        dateTimeUtilsMock.SetupGet(d => d.UtcNow).Returns(UtcNow);
 
         var settings = new WireMockServerSettings
         {
@@ -33,7 +48,14 @@ public class MappingBuilderTests
         var mappingConverter = new MappingConverter(matcherMapper);
         var mappingToFileSaver = new MappingToFileSaver(settings, mappingConverter);
 
-        _sut = new MappingBuilder(settings, options, mappingConverter, mappingToFileSaver);
+        _sut = new MappingBuilder(
+            settings,
+            options,
+            mappingConverter,
+            mappingToFileSaver,
+            guidUtilsMock.Object,
+            dateTimeUtilsMock.Object
+        );
 
         _sut.Given(Request.Create()
             .WithPath("/foo")
@@ -45,24 +67,31 @@ public class MappingBuilderTests
         );
     }
 
+    [ModuleInitializer]
+    public static void ModuleInitializer()
+    {
+        VerifierSettings.DontScrubGuids();
+        VerifierSettings.DontScrubDateTimes();
+    }
+
     [Fact]
-    public void GetMappings()
+    public Task GetMappings()
     {
         // Act
         var mappings = _sut.GetMappings();
 
-        // Assert
-        mappings.Should().HaveCount(1);
+        // Verify
+        return Verifier.Verify(mappings);
     }
 
     [Fact]
-    public void ToJson()
+    public Task ToJson()
     {
         // Act
         var json = _sut.ToJson();
 
-        // Assert
-        json.Should().NotBeEmpty();
+        // Verify
+        return Verifier.VerifyJson(json);
     }
 
     [Fact]
@@ -134,3 +163,4 @@ public class MappingBuilderTests
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 }
+#endif

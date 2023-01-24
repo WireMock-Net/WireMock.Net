@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Constants;
+using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -16,11 +19,140 @@ namespace WireMock.Serialization;
 
 internal class MappingConverter
 {
+    private static readonly string AcceptOnMatch = MatchBehaviour.AcceptOnMatch.GetFullyQualifiedEnumValue();
+
     private readonly MatcherMapper _mapper;
 
     public MappingConverter(MatcherMapper mapper)
     {
         _mapper = Guard.NotNull(mapper);
+    }
+
+    public string ToCSharpCode(IMapping mapping, MappingConverterSettings? settings = null)
+    {
+        settings ??= new MappingConverterSettings();
+
+        var request = (Request)mapping.RequestMatcher;
+        var response = (Response)mapping.Provider;
+
+        var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
+        var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
+        var urlMatcher = request.GetRequestMessageMatcher<RequestMessageUrlMatcher>();
+        var headerMatchers = request.GetRequestMessageMatchers<RequestMessageHeaderMatcher>();
+        var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
+        var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
+        var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+        var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+
+        var sb = new StringBuilder();
+
+        if (settings.ConverterType == MappingConverterType.Server)
+        {
+            if (settings.AddStart)
+            {
+                sb.AppendLine("var server = WireMockServer.Start();");
+            }
+            sb.AppendLine("server");
+        }
+        else
+        {
+            if (settings.AddStart)
+            {
+                sb.AppendLine("var builder = new MappingBuilder();");
+            }
+            sb.AppendLine("builder");
+        }
+
+        // Request
+        sb.AppendLine("    .Given(Request.Create()");
+        sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
+
+        if (pathMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithPath({To1Or2Arguments(pathMatcher.MatchOperator, pathMatcher.Matchers)})");
+        }
+        else if (urlMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithUrl({To1Or2Arguments(urlMatcher.MatchOperator, urlMatcher.Matchers)})");
+        }
+
+        foreach (var paramsMatcher in paramsMatchers)
+        {
+            sb.AppendLine($"        .WithParam({To1Or2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
+        }
+
+        if (clientIPMatcher is { Matchers: { } })
+        {
+            sb.AppendLine($"        .WithClientIP({ToValueArguments(GetStringArray(clientIPMatcher.Matchers))})");
+        }
+
+        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
+        {
+            var headerBuilder = new StringBuilder($"\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true");
+            if (headerMatcher.MatchOperator != MatchOperator.Or)
+            {
+                headerBuilder.Append($"{AcceptOnMatch}, {headerMatcher.MatchOperator.GetFullyQualifiedEnumValue()}");
+            }
+            sb.AppendLine($"        .WithHeader({headerBuilder})");
+        }
+
+        foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
+        {
+            sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
+        }
+
+        if (bodyMatcher is { Matchers: { } })
+        {
+            var wildcardMatcher = bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault();
+            if (wildcardMatcher is { } && wildcardMatcher.GetPatterns().Any())
+            {
+                sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
+            }
+        }
+
+        sb.AppendLine(@"    )");
+
+        // Guid
+        sb.AppendLine($"    .WithGuid(\"{mapping.Guid}\")");
+
+        // Response
+        sb.AppendLine("    .RespondWith(Response.Create()");
+
+        if (response.ResponseMessage.Headers is { })
+        {
+            foreach (var header in response.ResponseMessage.Headers)
+            {
+                sb.AppendLine($"        .WithHeader(\"{header.Key})\", {ToValueArguments(header.Value.ToArray())})");
+            }
+        }
+
+        if (response.ResponseMessage.BodyData is { })
+        {
+            switch (response.ResponseMessage.BodyData.DetectedBodyType)
+            {
+                case BodyType.String:
+                    sb.AppendLine($"        .WithBody(\"{response.ResponseMessage.BodyData.BodyAsString}\")");
+                    break;
+            }
+        }
+
+        if (response.Delay is { })
+        {
+            sb.AppendLine($"        .WithDelay({response.Delay.Value.TotalMilliseconds})");
+        }
+        else if (response.MinimumDelayMilliseconds > 0 && response.MaximumDelayMilliseconds > 0)
+        {
+            sb.AppendLine($"        .WithRandomDelay({response.MinimumDelayMilliseconds}, {response.MaximumDelayMilliseconds})");
+        }
+
+        if (response.UseTransformer)
+        {
+            var transformerArgs = response.TransformerType != TransformerType.Handlebars ? response.TransformerType.GetFullyQualifiedEnumValue() : string.Empty;
+            sb.AppendLine($"        .WithTransformer({transformerArgs})");
+        }
+        sb.AppendLine(@"    );");
+
+        return sb.ToString();
     }
 
     public MappingModel ToMappingModel(IMapping mapping)
@@ -235,6 +367,64 @@ internal class MappingConverter
         }
 
         return mappingModel;
+    }
+
+    private static string GetString(IStringMatcher stringMatcher)
+    {
+        return stringMatcher.GetPatterns().Select(p => $"\"{p.GetPattern()}\"").First();
+    }
+
+    private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
+    {
+        return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
+    }
+
+    private static string To1Or2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
+    {
+        var sb = new StringBuilder($"\"{key}\", ");
+
+        if (matchBehaviour.HasValue && matchBehaviour != MatchBehaviour.AcceptOnMatch)
+        {
+            sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
+        }
+
+        sb.AppendFormat("{0}", ToValueArguments(GetStringArray(matchers), string.Empty));
+
+        return sb.ToString();
+    }
+
+    private static string To1Or2Or3Arguments(MatchBehaviour? matchBehaviour, MatchOperator? matchOperator, string[]? values, string defaultValue)
+    {
+        var sb = new StringBuilder();
+
+        if (matchBehaviour.HasValue && matchBehaviour != MatchBehaviour.AcceptOnMatch)
+        {
+            sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
+        }
+
+        return To1Or2Arguments(matchOperator, values, defaultValue);
+    }
+
+    private static string To1Or2Arguments(MatchOperator? matchOperator, IReadOnlyList<IStringMatcher> matchers)
+    {
+        return To1Or2Arguments(matchOperator, GetStringArray(matchers), string.Empty);
+    }
+
+    private static string To1Or2Arguments(MatchOperator? matchOperator, string[]? values, string defaultValue)
+    {
+        var sb = new StringBuilder();
+
+        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
+        {
+            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
+        }
+
+        return sb.Append(ToValueArguments(values, defaultValue)).ToString();
+    }
+
+    private static string ToValueArguments(string[]? values, string defaultValue = "")
+    {
+        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : $"\"{defaultValue}\"";
     }
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)

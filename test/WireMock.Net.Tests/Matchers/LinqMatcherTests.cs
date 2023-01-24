@@ -3,110 +3,109 @@ using NFluent;
 using WireMock.Matchers;
 using Xunit;
 
-namespace WireMock.Net.Tests.Matchers
+namespace WireMock.Net.Tests.Matchers;
+
+public class LinqMatcherTests
 {
-    public class LinqMatcherTests
+    [Fact]
+    public void LinqMatcher_For_String_SinglePattern_IsMatch_Positive()
     {
-        [Fact]
-        public void LinqMatcher_For_String_SinglePattern_IsMatch_Positive()
+        // Assign
+        string input = "2018-08-31 13:59:59";
+
+        // Act
+        var matcher = new LinqMatcher("DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
+
+        // Assert
+        Check.That(matcher.IsMatch(input)).IsEqualTo(1.0d);
+    }
+
+    [Fact]
+    public void LinqMatcher_For_String_IsMatch_Negative()
+    {
+        // Assign
+        string input = "2018-08-31 13:59:59";
+
+        // Act
+        var matcher = new LinqMatcher("DateTime.Parse(it) > \"2019-01-01 00:00:00\"");
+
+        // Assert
+        Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
+    }
+
+    [Fact]
+    public void LinqMatcher_For_String_IsMatch_RejectOnMatch()
+    {
+        // Assign
+        string input = "2018-08-31 13:59:59";
+
+        // Act
+        var matcher = new LinqMatcher(MatchBehaviour.RejectOnMatch, "DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
+
+        // Assert
+        Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
+    }
+
+    [Fact]
+    public void LinqMatcher_For_Object_IsMatch()
+    {
+        // Assign
+        var input = new
         {
-            // Assign
-            string input = "2018-08-31 13:59:59";
+            Id = 9,
+            Name = "Test"
+        };
 
-            // Act
-            var matcher = new LinqMatcher("DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
+        // Act
+        var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
+        double match = matcher.IsMatch(input);
 
-            // Assert
-            Check.That(matcher.IsMatch(input)).IsEqualTo(1.0d);
-        }
+        // Assert
+        Assert.Equal(1.0, match);
+    }
 
-        [Fact]
-        public void LinqMatcher_For_String_IsMatch_Negative()
+    [Fact]
+    public void LinqMatcher_For_JObject_IsMatch()
+    {
+        // Assign
+        var input = new JObject
         {
-            // Assign
-            string input = "2018-08-31 13:59:59";
+            { "IntegerId", new JValue(9) },
+            { "LongId", new JValue(long.MaxValue) },
+            { "Name", new JValue("Test") }
+        };
 
-            // Act
-            var matcher = new LinqMatcher("DateTime.Parse(it) > \"2019-01-01 00:00:00\"");
+        // Act
+        var matcher = new LinqMatcher("IntegerId > 1 AND LongId > 1 && Name == \"Test\"");
+        double match = matcher.IsMatch(input);
 
-            // Assert
-            Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
-        }
+        // Assert
+        Assert.Equal(1.0, match);
+    }
 
-        [Fact]
-        public void LinqMatcher_For_String_IsMatch_RejectOnMatch()
-        {
-            // Assign
-            string input = "2018-08-31 13:59:59";
+    [Fact]
+    public void LinqMatcher_GetName()
+    {
+        // Assign
+        var matcher = new LinqMatcher("x");
 
-            // Act
-            var matcher = new LinqMatcher(MatchBehaviour.RejectOnMatch, "DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
+        // Act
+        string name = matcher.Name;
 
-            // Assert
-            Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
-        }
+        // Assert
+        Check.That(name).Equals("LinqMatcher");
+    }
 
-        [Fact]
-        public void LinqMatcher_For_Object_IsMatch()
-        {
-            // Assign
-            var input = new
-            {
-                Id = 9,
-                Name = "Test"
-            };
+    [Fact]
+    public void LinqMatcher_GetPatterns()
+    {
+        // Assign
+        var matcher = new LinqMatcher("x");
 
-            // Act
-            var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
-            double match = matcher.IsMatch(input);
+        // Act
+        var patterns = matcher.GetPatterns();
 
-            // Assert
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void LinqMatcher_For_JObject_IsMatch()
-        {
-            // Assign
-            var input = new JObject
-            {
-                { "IntegerId", new JValue(9) },
-                { "LongId", new JValue(long.MaxValue) },
-                { "Name", new JValue("Test") }
-            };
-
-            // Act
-            var matcher = new LinqMatcher("IntegerId > 1 AND LongId > 1 && Name == \"Test\"");
-            double match = matcher.IsMatch(input);
-
-            // Assert
-            Assert.Equal(1.0, match);
-        }
-
-        [Fact]
-        public void LinqMatcher_GetName()
-        {
-            // Assign
-            var matcher = new LinqMatcher("x");
-
-            // Act
-            string name = matcher.Name;
-
-            // Assert
-            Check.That(name).Equals("LinqMatcher");
-        }
-
-        [Fact]
-        public void LinqMatcher_GetPatterns()
-        {
-            // Assign
-            var matcher = new LinqMatcher("x");
-
-            // Act
-            var patterns = matcher.GetPatterns();
-
-            // Assert
-            Check.That(patterns).ContainsExactly("x");
-        }
+        // Assert
+        Check.That(patterns).ContainsExactly("x");
     }
 }

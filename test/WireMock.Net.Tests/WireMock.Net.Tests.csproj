@@ -25,6 +25,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- https://stackoverflow.com/questions/59406201/filenesting-not-working-for-class-or-shared-library-projects -->
+        <ProjectCapability Include="ConfigurableFileNesting" />
+        <ProjectCapability Include="ConfigurableFileNestingFeatureEnabled" />
+    </ItemGroup>
+
+    <!--<ItemGroup>
+        <Compile Update="**\*.*.verified.txt">
+            <DependentUpon>$([System.String]::Copy((Filename)*.cs))</DependentUpon>
+        </Compile>
+    </ItemGroup>-->
+
+    <ItemGroup>
         <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
@@ -41,12 +53,6 @@
         </PackageReference>
         <PackageReference Include="CultureAwareTesting.xUnit" Version="0.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.core" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="coverlet.collector" Version="3.2.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -66,10 +72,23 @@
         <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="3.1.0" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.core" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="FluentAssertions" Version="6.7.0" />
+        <PackageReference Include="FluentAssertions" Version="6.9.0" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.core" Version="2.4.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Verify.Xunit" Version="19.6.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
@@ -80,9 +99,6 @@
     <ItemGroup>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Serialization\files\proxy.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="__admin\mappings.org\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -108,7 +124,6 @@
 
     <ItemGroup>
       <Folder Include="Pact\files\" />
-      <Folder Include="Serialization\files\" />
     </ItemGroup>
 
 </Project>

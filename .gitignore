@@ -255,3 +255,5 @@ paket-files/
 /test/WireMock.Net.Tests/coverage.opencover.xml
 /test/WireMock.Net.Tests/coverage.netcoreapp3.1.opencover.xml
 /test/WireMock.Net.Tests/coverage.net5.0.opencover.xml
+
+*.received.*

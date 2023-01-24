@@ -1,0 +1,17 @@
+﻿{
+  Guid: c8eeaf99-d5c4-4341-8543-4597c3fd40d9,
+  UpdatedAt: 2022-12-04 11:12:13,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {},
+  Response: {
+    BodyAsJson: {
+      x: x
+    },
+    UseTransformer: true,
+    TransformerType: Handlebars,
+    TransformerReplaceNodeOptions: Evaluate
+  },
+  UseWebhooksFireAndForget: false
+}

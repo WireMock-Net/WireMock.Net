@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Newtonsoft.Json;
 using Stef.Validation;
@@ -8,6 +7,7 @@ using WireMock.Owin;
 using WireMock.Serialization;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 
 namespace WireMock;
 
@@ -18,9 +18,10 @@ public class MappingBuilder : IMappingBuilder
 {
     private readonly WireMockServerSettings _settings;
     private readonly IWireMockMiddlewareOptions _options;
-
     private readonly MappingConverter _mappingConverter;
     private readonly MappingToFileSaver _mappingToFileSaver;
+    private readonly IGuidUtils _guidUtils;
+    private readonly IDateTimeUtils _dateTimeUtils;
 
     /// <summary>
     /// Create a MappingBuilder
@@ -34,25 +35,32 @@ public class MappingBuilder : IMappingBuilder
         var matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(matcherMapper);
         _mappingToFileSaver = new MappingToFileSaver(_settings, _mappingConverter);
+
+        _guidUtils = new GuidUtils();
+        _dateTimeUtils = new DateTimeUtils();
     }
 
     internal MappingBuilder(
         WireMockServerSettings settings,
         IWireMockMiddlewareOptions options,
         MappingConverter mappingConverter,
-        MappingToFileSaver mappingToFileSaver
+        MappingToFileSaver mappingToFileSaver,
+        IGuidUtils guidUtils,
+        IDateTimeUtils dateTimeUtils
     )
     {
         _settings = Guard.NotNull(settings);
         _options = Guard.NotNull(options);
         _mappingConverter = Guard.NotNull(mappingConverter);
         _mappingToFileSaver = Guard.NotNull(mappingToFileSaver);
+        _guidUtils = Guard.NotNull(guidUtils);
+        _dateTimeUtils = Guard.NotNull(dateTimeUtils);
     }
 
     /// <inheritdoc />
     public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
     {
-        return new RespondWithAProvider(RegisterMapping, Guard.NotNull(requestMatcher), _settings, saveToFile);
+        return new RespondWithAProvider(RegisterMapping, Guard.NotNull(requestMatcher), _settings, _guidUtils, _dateTimeUtils, saveToFile);
     }
 
     /// <inheritdoc />
@@ -95,7 +103,7 @@ public class MappingBuilder : IMappingBuilder
         // Check a mapping exists with the same Guid. If so, update the datetime and replace it.
         if (_options.Mappings.ContainsKey(mapping.Guid))
         {
-            mapping.UpdatedAt = DateTime.UtcNow;
+            mapping.UpdatedAt = _dateTimeUtils.UtcNow;
             _options.Mappings[mapping.Guid] = mapping;
         }
         else
