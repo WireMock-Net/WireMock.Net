@@ -1,3 +1,14 @@
+# 1.5.14 (24 January 2023)
+- [#842](https://github.com/WireMock-Net/WireMock.Net/pull/842) - Generate C# code from Mapping [feature] contributed by [StefH](https://github.com/StefH)
+- [#869](https://github.com/WireMock-Net/WireMock.Net/pull/869) - Add MappingBuilder to build mappings in code and export to Models or JSON [feature] contributed by [StefH](https://github.com/StefH)
+- [#871](https://github.com/WireMock-Net/WireMock.Net/pull/871) - Add UseWebhooksFireAndForget to Server ConvertMapping [bug] contributed by [ggradnig](https://github.com/ggradnig)
+- [#872](https://github.com/WireMock-Net/WireMock.Net/pull/872) - Fix unsubscribe from LogEntriesChanged event handler [bug] contributed by [StefH](https://github.com/StefH)
+- [#875](https://github.com/WireMock-Net/WireMock.Net/pull/875) - Fix Self referencing loop detected for property [bug] contributed by [eseneckiy](https://github.com/eseneckiy)
+- [#877](https://github.com/WireMock-Net/WireMock.Net/pull/877) - Add unit test example for Transformer Handlebars String.Append String.Join [test] contributed by [StefH](https://github.com/StefH)
+- [#701](https://github.com/WireMock-Net/WireMock.Net/issues/701) - Allow to create MappingModel from c# to be able to configure local and remote mocks similarly [feature]
+- [#867](https://github.com/WireMock-Net/WireMock.Net/issues/867) - Can I build mappings with code and save them to JSON-file without starting server [feature]
+- [#870](https://github.com/WireMock-Net/WireMock.Net/issues/870) - Can not unsubscribe from LogEntriesChanged event. [bug]
+
 # 1.5.13 (11 December 2022)
 - [#858](https://github.com/WireMock-Net/WireMock.Net/pull/858) - Update Transformer functionality to return value instead of string [feature] contributed by [StefH](https://github.com/StefH)
 - [#859](https://github.com/WireMock-Net/WireMock.Net/pull/859) - Add UpdatedAt property to Mapping [feature] contributed by [StefH](https://github.com/StefH)
