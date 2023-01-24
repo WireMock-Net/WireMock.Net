@@ -108,6 +108,7 @@ namespace WireMock.Net.ConsoleApplication
             // server.AllowPartialMapping();
 
             server.Given(Request.Create().WithPath(MatchOperator.Or, "/mypath", "/mypath1", "/mypath2").UsingPost())
+                .WithGuid("86984b0e-2516-4935-a2ef-b45bf4820d7d")
                 .RespondWith(Response.Create()
                         .WithHeader("Content-Type", "application/json")
                         .WithBodyAsJson("{{JsonPath.SelectToken request.body \"..name\"}}")

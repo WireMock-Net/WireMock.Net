@@ -4,6 +4,7 @@ using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.Owin;
+using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Server;
 using WireMock.Settings;
@@ -66,10 +67,12 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public MappingModel[] GetMappings()
     {
-        return _options.Mappings.Values.ToArray()
-            .Where(m => !m.IsAdminInterface)
-            .Select(_mappingConverter.ToMappingModel)
-            .ToArray();
+        return GetMappingsInternal().Select(_mappingConverter.ToMappingModel).ToArray();
+    }
+
+    internal IMapping[] GetMappingsInternal()
+    {
+        return _options.Mappings.Values.ToArray().Where(m => !m.IsAdminInterface).ToArray();
     }
 
     /// <inheritdoc />
