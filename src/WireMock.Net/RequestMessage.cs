@@ -56,9 +56,12 @@ public class RequestMessage : IRequestMessage
     /// <inheritdoc cref="IRequestMessage.Cookies" />
     public IDictionary<string, string>? Cookies { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Query" />
+    /// <inheritdoc />
     public IDictionary<string, WireMockList<string>>? Query { get; }
 
+    /// <inheritdoc />
+    public IDictionary<string, WireMockList<string>>? QueryIgnoreCase { get; }
+    
     /// <inheritdoc cref="IRequestMessage.RawQuery" />
     public string RawQuery { get; }
 
@@ -171,6 +174,7 @@ public class RequestMessage : IRequestMessage
         Cookies = cookies;
         RawQuery = urlDetails.Url.Query;
         Query = QueryStringParser.Parse(RawQuery, options?.QueryParameterMultipleValueSupport);
+        QueryIgnoreCase = new Dictionary<string, WireMockList<string>>(Query, StringComparer.OrdinalIgnoreCase);
 #if USE_ASPNETCORE
         ClientCertificate = clientCertificate;
 #endif

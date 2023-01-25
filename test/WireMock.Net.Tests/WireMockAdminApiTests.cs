@@ -1,4 +1,4 @@
-#if !NET452 && !NET461
+#if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -9,18 +9,22 @@ using FluentAssertions;
 using Moq;
 using NFluent;
 using RestEase;
+using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests;
 
+[UsesVerify]
 public class WireMockAdminApiTests
 {
     [Fact]
@@ -628,6 +632,42 @@ public class WireMockAdminApiTests
         // Act
         var status = await api.ResetScenarioAsync(name).ConfigureAwait(false);
         status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingCodeByGuidAsync()
+    {
+        // Arrange
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+        var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                    .UsingGet()
+            )
+            .WithGuid(guid)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("1")
+            );
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
+        mappings.Should().HaveCount(1);
+
+        var code = await api.GetMappingCodeAsync(guid).ConfigureAwait(false);
+
+        // Assert
+        await Verifier.Verify(code).DontScrubDateTimes().DontScrubGuids();
+
+        server.Stop();
     }
 }
 #endif

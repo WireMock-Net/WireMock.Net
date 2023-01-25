@@ -79,6 +79,11 @@ public interface IRequestMessage
     IDictionary<string, WireMockList<string>>? Query { get; }
 
     /// <summary>
+    /// Gets the query.
+    /// </summary>
+    IDictionary<string, WireMockList<string>>? QueryIgnoreCase { get; }
+
+    /// <summary>
     /// Gets the raw query.
     /// </summary>
     string RawQuery { get; }

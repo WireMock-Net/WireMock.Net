@@ -7,6 +7,7 @@ using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
+using WireMock.Types;
 
 namespace WireMock.Client
 {
@@ -53,6 +54,13 @@ namespace WireMock.Client
         Task<IList<MappingModel>> GetMappingsAsync();
 
         /// <summary>
+        /// Get the C# code from all mappings
+        /// </summary>
+        /// <returns>C# code</returns>
+        [Get("mappings/code")]
+        Task<string> GetMappingsCodeAsync([Query] MappingConverterType mappingConverterType = MappingConverterType.Server);
+        
+        /// <summary>
         /// Add a new mapping.
         /// </summary>
         /// <param name="mapping">MappingModel</param>
@@ -97,6 +105,15 @@ namespace WireMock.Client
         [Get("mappings/{guid}")]
         Task<MappingModel> GetMappingAsync([Path] Guid guid);
 
+        /// <summary>
+        /// Get the C# code from a mapping based on the guid
+        /// </summary>
+        /// <param name="guid">The Guid</param>
+        /// <param name="mappingConverterType">The optional mappingConverterType (can be Server or Builder)</param>
+        /// <returns>C# code</returns>
+        [Get("mappings/code/{guid}")]
+        Task<string> GetMappingCodeAsync([Path] Guid guid, [Query] MappingConverterType mappingConverterType = MappingConverterType.Server);
+        
         /// <summary>
         /// Update a mapping based on the guid
         /// </summary>

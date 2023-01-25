@@ -47,8 +47,6 @@ public partial class WireMockServer
     private static readonly RegexMatcher AdminScenariosNameMatcher = new(@"^\/__admin\/scenarios\/.+$");
     private static readonly RegexMatcher AdminScenariosNameWithResetMatcher = new(@"^\/__admin\/scenarios\/.+\/reset$");
 
-    private static readonly MappingConverterSettings MappingConverterSettingsAddStart = new() { AddStart = true, ConverterType = MappingConverterType.Server };
-
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
     #region InitAdmin
@@ -319,8 +317,23 @@ public partial class WireMockServer
             return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
         }
 
-        var code = _mappingConverter.ToCSharpCode(mapping, MappingConverterSettingsAddStart);
+        var settings = new MappingConverterSettings { AddStart = true, ConverterType = GetMappingConverterType(requestMessage) };
+
+        var code = _mappingConverter.ToCSharpCode(mapping, settings);
         return ToResponseMessage(code);
+    }
+
+    private static MappingConverterType GetMappingConverterType(IRequestMessage requestMessage)
+    {
+        var mappingConverterType = MappingConverterType.Server;
+
+        if (requestMessage.QueryIgnoreCase?.TryGetValue(nameof(MappingConverterType), out var values) == true &&
+            Enum.TryParse(values.FirstOrDefault(), out MappingConverterType parsed))
+        {
+            mappingConverterType = parsed;
+        }
+
+        return mappingConverterType;
     }
 
     private IMapping? FindMappingByGuid(IRequestMessage requestMessage)
@@ -394,18 +407,17 @@ public partial class WireMockServer
 
     private IResponseMessage MappingsCodeGet(IRequestMessage requestMessage)
     {
+        var converterType = GetMappingConverterType(requestMessage);
+
         var sb = new StringBuilder();
-        bool first = true;
+        bool addStart = true;
         foreach (var mapping in _mappingBuilder.GetMappingsInternal())
         {
-            if (first)
+            sb.AppendLine(_mappingConverter.ToCSharpCode(mapping, new MappingConverterSettings { AddStart = addStart, ConverterType = converterType }));
+
+            if (addStart)
             {
-                first = false;
-                sb.AppendLine(_mappingConverter.ToCSharpCode(mapping, MappingConverterSettingsAddStart));
-            }
-            else
-            {
-                sb.AppendLine(_mappingConverter.ToCSharpCode(mapping));
+                addStart = false;
             }
         }
 
