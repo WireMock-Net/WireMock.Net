@@ -102,7 +102,7 @@ namespace WireMock.Net.Tests
             server.Mappings.Should().NotBeNull();
             server.Mappings.Should().HaveCount(31);
 
-            server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(28);
+            server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(30);
             server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
         }
 
