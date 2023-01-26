@@ -302,7 +302,7 @@ public class WireMockAdminApiTests
     public async Task IWireMockAdminApi_GetMappingAsync_WithBodyModelMatcherModel_WithoutMethods_ShouldReturnCorrectMappingModel()
     {
         // Arrange
-        var guid = Guid.NewGuid();
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
         var server = WireMockServer.StartWithAdminInterface();
         var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
 
@@ -334,9 +334,8 @@ public class WireMockAdminApiTests
         mapping.Should().NotBeNull();
 
         var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
-        getMappingResult.Should().NotBeNull();
 
-        getMappingResult.Request.Body.Should().BeEquivalentTo(model.Request.Body);
+        await Verifier.Verify(getMappingResult).DontScrubGuids();
 
         server.Stop();
     }
@@ -632,6 +631,40 @@ public class WireMockAdminApiTests
         // Act
         var status = await api.ResetScenarioAsync(name).ConfigureAwait(false);
         status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingByGuidAsync()
+    {
+        // Arrange
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+        var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                    .UsingGet()
+            )
+            .WithGuid(guid)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("1")
+            );
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+        var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
+
+        // Assert
+        var mapping = server.Mappings.FirstOrDefault(m => m.Guid == guid);
+        mapping.Should().NotBeNull();
+
+        await Verifier.Verify(getMappingResult).DontScrubGuids();
+
+        server.Stop();
     }
 
     [Fact]

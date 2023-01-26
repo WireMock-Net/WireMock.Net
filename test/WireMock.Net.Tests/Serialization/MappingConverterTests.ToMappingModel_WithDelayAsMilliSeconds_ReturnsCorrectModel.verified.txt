@@ -6,8 +6,7 @@
   Priority: 42,
   Request: {},
   Response: {
-    MinimumRandomDelay: 1000,
-    MaximumRandomDelay: 2000
+    Delay: 1000
   },
   UseWebhooksFireAndForget: false
 }

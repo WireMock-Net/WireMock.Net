@@ -1,0 +1,36 @@
+﻿{
+  Guid: 90356dba-b36c-469a-a17e-669cd84f1f05,
+  UpdatedAt: DateTime_1,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          IgnoreCase: [],
+          Name: [],
+          Pattern: []
+        }
+      ]
+    },
+    Methods: [
+      GET
+    ],
+    Params: [
+      {
+        Name: p1,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: xyz,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ]
+  },
+  Response: {
+    StatusCode: 200,
+    BodyDestination: SameAsSource,
+    Body: 1
+  },
+  UseWebhooksFireAndForget: false
+}

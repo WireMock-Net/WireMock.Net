@@ -1,0 +1,26 @@
+﻿{
+  Guid: 90356dba-b36c-469a-a17e-669cd84f1f05,
+  UpdatedAt: DateTime_1,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          IgnoreCase: [],
+          Name: [],
+          Pattern: []
+        }
+      ]
+    },
+    Body: {
+      Matcher: {
+        Name: RegexMatcher,
+        Pattern: hello,
+        IgnoreCase: true
+      }
+    }
+  },
+  Response: {
+    Body: world
+  },
+  UseWebhooksFireAndForget: false
+}

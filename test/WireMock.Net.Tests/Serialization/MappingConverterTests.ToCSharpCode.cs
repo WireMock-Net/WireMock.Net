@@ -1,10 +1,10 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using FluentAssertions;
 using VerifyTests;
 using VerifyXunit;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
@@ -16,12 +16,10 @@ namespace WireMock.Net.Tests.Serialization;
 [UsesVerify]
 public partial class MappingConverterTests
 {
-
-    [ModuleInitializer]
-    public static void ModuleInitializer()
+    private static readonly VerifySettings VerifySettings = new();
+    static MappingConverterTests()
     {
-        VerifierSettings.DontScrubGuids();
-        VerifierSettings.DontScrubDateTimes();
+        VerifySettings.Init();
     }
 
     [Fact]
@@ -41,7 +39,7 @@ public partial class MappingConverterTests
         code.Should().NotBeEmpty();
 
         // Verify
-        return Verifier.Verify(code);
+        return Verifier.Verify(code, VerifySettings);
     }
 
     [Fact]
@@ -61,7 +59,7 @@ public partial class MappingConverterTests
         code.Should().NotBeEmpty();
 
         // Verify
-        return Verifier.Verify(code);
+        return Verifier.Verify(code, VerifySettings);
     }
 
     [Fact]
@@ -81,7 +79,7 @@ public partial class MappingConverterTests
         code.Should().NotBeEmpty();
 
         // Verify
-        return Verifier.Verify(code);
+        return Verifier.Verify(code, VerifySettings);
     }
 
     [Fact]
@@ -101,7 +99,7 @@ public partial class MappingConverterTests
         code.Should().NotBeEmpty();
 
         // Verify
-        return Verifier.Verify(code);
+        return Verifier.Verify(code, VerifySettings);
     }
 
     private Mapping CreateMapping()

@@ -232,7 +232,7 @@ public partial class MappingConverterTests
         model.TimeSettings.TTL.Should().Be(ttl);
 
         // Verify
-        return Verifier.Verify(model);
+        return Verifier.Verify(model, VerifySettings);
     }
 
     [Fact]
@@ -262,7 +262,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithDelayAsMilleSeconds_ReturnsCorrectModel()
+    public Task ToMappingModel_WithDelayAsMilliSeconds_ReturnsCorrectModel()
     {
         // Assign
         var delay = 1000;
