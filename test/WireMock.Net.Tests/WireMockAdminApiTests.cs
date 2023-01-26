@@ -634,7 +634,6 @@ public class WireMockAdminApiTests
         status.Status.Should().Be("No scenario found by name 'x'.");
     }
 
-
     [Fact]
     public async Task IWireMockAdminApi_GetMappingCodeByGuidAsync()
     {
