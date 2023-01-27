@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using NFluent;
 using RestEase;
+using VerifyTests;
 using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
@@ -16,6 +17,7 @@ using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -27,6 +29,12 @@ namespace WireMock.Net.Tests;
 [UsesVerify]
 public class WireMockAdminApiTests
 {
+    private static readonly VerifySettings VerifySettings = new();
+    static WireMockAdminApiTests()
+    {
+        VerifyNewtonsoftJson.Enable(VerifySettings);
+    }
+
     [Fact]
     public async Task IWireMockAdminApi_GetSettingsAsync()
     {
@@ -304,7 +312,7 @@ public class WireMockAdminApiTests
         // Arrange
         var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
         var server = WireMockServer.StartWithAdminInterface();
-        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         // Act
         var model = new MappingModel
@@ -335,7 +343,7 @@ public class WireMockAdminApiTests
 
         var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
 
-        await Verifier.Verify(getMappingResult).DontScrubGuids();
+        await Verifier.Verify(getMappingResult, VerifySettings).DontScrubGuids();
 
         server.Stop();
     }
@@ -662,7 +670,7 @@ public class WireMockAdminApiTests
         var mapping = server.Mappings.FirstOrDefault(m => m.Guid == guid);
         mapping.Should().NotBeNull();
 
-        await Verifier.Verify(getMappingResult).DontScrubGuids();
+        await Verifier.Verify(getMappingResult, VerifySettings).DontScrubGuids();
 
         server.Stop();
     }

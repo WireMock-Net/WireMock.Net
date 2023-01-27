@@ -10,6 +10,8 @@ internal static class VerifySettingsExtensions
         verifySettings.DontScrubDateTimes();
         verifySettings.DontScrubDateTimes();
         // verifySettings.UseDirectory($"{typeof(T).Name}.Verify");
+
+        VerifyNewtonsoftJson.Enable(verifySettings);
     }
 }
 #endif

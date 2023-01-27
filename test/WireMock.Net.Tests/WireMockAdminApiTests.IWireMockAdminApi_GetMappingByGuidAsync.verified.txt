@@ -5,9 +5,9 @@
     Path: {
       Matchers: [
         {
-          IgnoreCase: [],
-          Name: [],
-          Pattern: []
+          Name: WildcardMatcher,
+          Pattern: /foo1,
+          IgnoreCase: false
         }
       ]
     },
