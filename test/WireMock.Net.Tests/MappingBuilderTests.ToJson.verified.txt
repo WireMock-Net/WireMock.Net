@@ -19,7 +19,6 @@
     Response: {
       BodyDestination: SameAsSource,
       Body: { msg: "Hello world!"}
-    },
-    UseWebhooksFireAndForget: false
+    }
   }
 ]

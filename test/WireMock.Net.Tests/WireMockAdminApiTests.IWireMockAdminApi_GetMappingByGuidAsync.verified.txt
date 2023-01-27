@@ -31,6 +31,5 @@
     StatusCode: 200,
     BodyDestination: SameAsSource,
     Body: 1
-  },
-  UseWebhooksFireAndForget: false
+  }
 }
