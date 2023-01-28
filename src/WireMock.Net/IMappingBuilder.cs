@@ -1,6 +1,8 @@
+using System;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.Server;
+using WireMock.Types;
 
 namespace WireMock;
 
@@ -40,4 +42,19 @@ public interface IMappingBuilder
     /// </summary>
     /// <param name="folder">The folder to write the files to.</param>
     void SaveMappingsToFolder(string folder);
+
+    /// <summary>
+    /// Get the C# code for a mapping.
+    /// </summary>
+    /// <param name="guid">The Mapping Guid.</param>
+    /// <param name="converterType">The <see cref="MappingConverterType"/></param>
+    /// <returns>C# code (null in case the mapping is not found)</returns>
+    string? ToCSharpCode(Guid guid, MappingConverterType converterType);
+
+    /// <summary>
+    /// Get the C# code for all mappings.
+    /// </summary>
+    /// <param name="converterType">The <see cref="MappingConverterType"/></param>
+    /// <returns>C# code</returns>
+    public string ToCSharpCode(MappingConverterType converterType);
 }

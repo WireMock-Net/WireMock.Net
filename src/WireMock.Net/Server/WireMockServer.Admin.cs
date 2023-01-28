@@ -310,17 +310,20 @@ public partial class WireMockServer
 
     private IResponseMessage MappingCodeGet(IRequestMessage requestMessage)
     {
-        var mapping = FindMappingByGuid(requestMessage);
-        if (mapping == null)
+        if (TryParseGuidFromRequestMessage(requestMessage, out var guid))
         {
-            _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-            return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+            var code = _mappingBuilder.ToCSharpCode(guid, GetMappingConverterType(requestMessage));
+            if (code is null)
+            {
+                _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
+                return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+            }
+
+            return ToResponseMessage(code);
         }
 
-        var settings = new MappingConverterSettings { AddStart = true, ConverterType = GetMappingConverterType(requestMessage) };
-
-        var code = _mappingConverter.ToCSharpCode(mapping, settings);
-        return ToResponseMessage(code);
+        _settings.Logger.Warn("HttpStatusCode set to 400");
+        return ResponseMessageBuilder.Create("GUID is missing", HttpStatusCode.BadRequest);
     }
 
     private static MappingConverterType GetMappingConverterType(IRequestMessage requestMessage)
@@ -328,7 +331,7 @@ public partial class WireMockServer
         var mappingConverterType = MappingConverterType.Server;
 
         if (requestMessage.QueryIgnoreCase?.TryGetValue(nameof(MappingConverterType), out var values) == true &&
-            Enum.TryParse(values.FirstOrDefault(), out MappingConverterType parsed))
+            Enum.TryParse(values.FirstOrDefault(), true, out MappingConverterType parsed))
         {
             mappingConverterType = parsed;
         }
@@ -409,19 +412,9 @@ public partial class WireMockServer
     {
         var converterType = GetMappingConverterType(requestMessage);
 
-        var sb = new StringBuilder();
-        bool addStart = true;
-        foreach (var mapping in _mappingBuilder.GetMappingsInternal())
-        {
-            sb.AppendLine(_mappingConverter.ToCSharpCode(mapping, new MappingConverterSettings { AddStart = addStart, ConverterType = converterType }));
+        var code = _mappingBuilder.ToCSharpCode(converterType);
 
-            if (addStart)
-            {
-                addStart = false;
-            }
-        }
-
-        return ToResponseMessage(sb.ToString());
+        return ToResponseMessage(code);
     }
 
     private IResponseMessage MappingsPost(IRequestMessage requestMessage)

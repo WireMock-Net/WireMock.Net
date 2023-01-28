@@ -1,13 +1,15 @@
+using System;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.Owin;
-using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 
 namespace WireMock;
@@ -79,6 +81,37 @@ public class MappingBuilder : IMappingBuilder
     public string ToJson()
     {
         return ToJson(GetMappings());
+    }
+
+    /// <inheritdoc />
+    public string? ToCSharpCode(Guid guid, MappingConverterType converterType)
+    {
+        var mapping = GetMappingsInternal().FirstOrDefault(m => m.Guid == guid);
+        if (mapping is null)
+        {
+            return null;
+        }
+
+        var settings = new MappingConverterSettings { AddStart = true, ConverterType = converterType };
+        return _mappingConverter.ToCSharpCode(mapping, settings);
+    }
+
+    /// <inheritdoc />
+    public string ToCSharpCode(MappingConverterType converterType)
+    {
+        var sb = new StringBuilder();
+        bool addStart = true;
+        foreach (var mapping in GetMappingsInternal())
+        {
+            sb.AppendLine(_mappingConverter.ToCSharpCode(mapping, new MappingConverterSettings { AddStart = addStart, ConverterType = converterType }));
+
+            if (addStart)
+            {
+                addStart = false;
+            }
+        }
+
+        return sb.ToString();
     }
 
     /// <inheritdoc />
