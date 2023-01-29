@@ -1,12 +1,4 @@
-# 1.5.14 (24 January 2023)
-- #842 Generate C# code from Mapping [feature]
-- #869 Add MappingBuilder to build mappings in code and export to Models or JSON [feature]
-- #871 Add UseWebhooksFireAndForget to Server ConvertMapping [bug]
-- #872 Fix unsubscribe from LogEntriesChanged event handler [bug]
-- #875 Fix Self referencing loop detected for property [bug]
-- #877 Add unit test example for Transformer Handlebars String.Append String.Join [test]
-- #701 Allow to create MappingModel from c# to be able to configure local and remote mocks similarly [feature]
-- #867 Can I build mappings with code and save them to JSON-file without starting server [feature]
-- #870 Can not unsubscribe from LogEntriesChanged event. [bug]
+# 1.5.15 (29 January 2023)
+- #878 Update REST Admin interface to support &quot;Get Mapping(s) as C# Code&quot; [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

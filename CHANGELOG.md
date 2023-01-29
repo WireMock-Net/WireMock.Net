@@ -1,3 +1,6 @@
+# 1.5.15 (29 January 2023)
+- [#878](https://github.com/WireMock-Net/WireMock.Net/pull/878) - Update REST Admin interface to support &quot;Get Mapping(s) as C# Code&quot; [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.14 (24 January 2023)
 - [#842](https://github.com/WireMock-Net/WireMock.Net/pull/842) - Generate C# code from Mapping [feature] contributed by [StefH](https://github.com/StefH)
 - [#869](https://github.com/WireMock-Net/WireMock.Net/pull/869) - Add MappingBuilder to build mappings in code and export to Models or JSON [feature] contributed by [StefH](https://github.com/StefH)
