@@ -1,4 +1,4 @@
-#if !NET452 && !NET461
+#if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -9,20 +9,32 @@ using FluentAssertions;
 using Moq;
 using NFluent;
 using RestEase;
+using VerifyTests;
+using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Models;
+using WireMock.Net.Tests.VerifyExtensions;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests;
 
+[UsesVerify]
 public class WireMockAdminApiTests
 {
+    private static readonly VerifySettings VerifySettings = new();
+    static WireMockAdminApiTests()
+    {
+        VerifyNewtonsoftJson.Enable(VerifySettings);
+    }
+
     [Fact]
     public async Task IWireMockAdminApi_GetSettingsAsync()
     {
@@ -298,9 +310,9 @@ public class WireMockAdminApiTests
     public async Task IWireMockAdminApi_GetMappingAsync_WithBodyModelMatcherModel_WithoutMethods_ShouldReturnCorrectMappingModel()
     {
         // Arrange
-        var guid = Guid.NewGuid();
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
         var server = WireMockServer.StartWithAdminInterface();
-        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         // Act
         var model = new MappingModel
@@ -330,9 +342,8 @@ public class WireMockAdminApiTests
         mapping.Should().NotBeNull();
 
         var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
-        getMappingResult.Should().NotBeNull();
 
-        getMappingResult.Request.Body.Should().BeEquivalentTo(model.Request.Body);
+        await Verifier.Verify(getMappingResult, VerifySettings).DontScrubGuids();
 
         server.Stop();
     }
@@ -628,6 +639,126 @@ public class WireMockAdminApiTests
         // Act
         var status = await api.ResetScenarioAsync(name).ConfigureAwait(false);
         status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingByGuidAsync()
+    {
+        // Arrange
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+        var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                    .UsingGet()
+            )
+            .WithGuid(guid)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("1")
+            );
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+        var getMappingResult = await api.GetMappingAsync(guid).ConfigureAwait(false);
+
+        // Assert
+        var mapping = server.Mappings.FirstOrDefault(m => m.Guid == guid);
+        mapping.Should().NotBeNull();
+
+        await Verifier.Verify(getMappingResult, VerifySettings).DontScrubGuids();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingCodeByGuidAsync()
+    {
+        // Arrange
+        var guid = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+        var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                    .UsingGet()
+            )
+            .WithGuid(guid)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("1")
+            );
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
+        mappings.Should().HaveCount(1);
+
+        var code = await api.GetMappingCodeAsync(guid).ConfigureAwait(false);
+
+        // Assert
+        await Verifier.Verify(code).DontScrubDateTimes().DontScrubGuids();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingsCode()
+    {
+        // Arrange
+        var guid1 = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
+        var guid2 = Guid.Parse("1b731398-4a5b-457f-a6e3-d65e541c428f");
+        var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                    .UsingGet()
+            )
+            .WithGuid(guid1)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("1")
+            );
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo2")
+                    .WithParam("p2", "abc")
+                    .UsingGet()
+            )
+            .WithGuid(guid2)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(201)
+                    .WithHeader("hk", "hv")
+                    .WithBody("2")
+            );
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
+        mappings.Should().HaveCount(2);
+
+        var code = await api.GetMappingsCodeAsync().ConfigureAwait(false);
+
+        // Assert
+        await Verifier.Verify(code).DontScrubDateTimes().DontScrubGuids();
+
+        server.Stop();
     }
 }
 #endif

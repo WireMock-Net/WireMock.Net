@@ -1,11 +1,11 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Moq;
 using VerifyTests;
 using VerifyXunit;
 using WireMock.Matchers;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.RequestBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
@@ -17,6 +17,12 @@ namespace WireMock.Net.Tests.Serialization;
 [UsesVerify]
 public class ProxyMappingConverterTests
 {
+    private static readonly VerifySettings VerifySettings = new();
+    static ProxyMappingConverterTests()
+    {
+        VerifySettings.Init();
+    }
+
     private readonly WireMockServerSettings _settings = new();
 
     private readonly MappingConverter _mappingConverter;
@@ -34,13 +40,6 @@ public class ProxyMappingConverterTests
         _mappingConverter = new MappingConverter(new MatcherMapper(_settings));
 
         _sut = new ProxyMappingConverter(_settings, guidUtilsMock.Object, dateTimeUtilsMock.Object);
-    }
-
-    [ModuleInitializer]
-    public static void ModuleInitializer()
-    {
-        VerifierSettings.DontScrubGuids();
-        VerifierSettings.DontScrubDateTimes();
     }
 
     [Fact]
@@ -77,7 +76,7 @@ public class ProxyMappingConverterTests
         var model = _mappingConverter.ToMappingModel(proxyMapping);
 
         // Verify
-        return Verifier.Verify(model);
+        return Verifier.Verify(model, VerifySettings);
     }
 }
 #endif

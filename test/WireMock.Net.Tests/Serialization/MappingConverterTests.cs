@@ -1,11 +1,9 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using VerifyTests;
 using VerifyXunit;
 using WireMock.Models;
 using WireMock.RequestBuilders;
@@ -232,7 +230,7 @@ public partial class MappingConverterTests
         model.TimeSettings.TTL.Should().Be(ttl);
 
         // Verify
-        return Verifier.Verify(model);
+        return Verifier.Verify(model, VerifySettings);
     }
 
     [Fact]
@@ -262,7 +260,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithDelayAsMilleSeconds_ReturnsCorrectModel()
+    public Task ToMappingModel_WithDelayAsMilliSeconds_ReturnsCorrectModel()
     {
         // Assign
         var delay = 1000;

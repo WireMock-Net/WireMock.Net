@@ -33,7 +33,7 @@ internal class MappingConverter
         settings ??= new MappingConverterSettings();
 
         var request = (Request)mapping.RequestMatcher;
-        var response = (Response)mapping.Provider;
+        var response = (Response) mapping.Provider;
 
         var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();

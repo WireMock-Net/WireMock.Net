@@ -1,0 +1,11 @@
+﻿var server = WireMockServer.Start();
+server
+    .Given(Request.Create()
+        .UsingMethod("GET")
+        .WithPath("/foo1")
+        .WithParam("p1", "xyz")
+    )
+    .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+    .RespondWith(Response.Create()
+        .WithBody("1")
+    );

@@ -1,12 +1,12 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Moq;
 using VerifyTests;
 using VerifyXunit;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -20,6 +20,12 @@ namespace WireMock.Net.Tests;
 [UsesVerify]
 public class MappingBuilderTests
 {
+    private static readonly VerifySettings VerifySettings = new();
+    static MappingBuilderTests()
+    {
+        VerifySettings.Init();
+    }
+
     private static readonly Guid NewGuid = new("98fae52e-76df-47d9-876f-2ee32e931d9b");
     private const string MappingGuid = "41372914-1838-4c67-916b-b9aacdd096ce";
     private static readonly DateTime UtcNow = new(2023, 1, 14, 15, 16, 17);
@@ -67,13 +73,6 @@ public class MappingBuilderTests
         );
     }
 
-    [ModuleInitializer]
-    public static void ModuleInitializer()
-    {
-        VerifierSettings.DontScrubGuids();
-        VerifierSettings.DontScrubDateTimes();
-    }
-
     [Fact]
     public Task GetMappings()
     {
@@ -81,7 +80,7 @@ public class MappingBuilderTests
         var mappings = _sut.GetMappings();
 
         // Verify
-        return Verifier.Verify(mappings);
+        return Verifier.Verify(mappings, VerifySettings);
     }
 
     [Fact]
@@ -91,7 +90,7 @@ public class MappingBuilderTests
         var json = _sut.ToJson();
 
         // Verify
-        return Verifier.VerifyJson(json);
+        return Verifier.VerifyJson(json, VerifySettings);
     }
 
     [Fact]

@@ -31,7 +31,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private readonly IDateTimeUtils _dateTimeUtils;
     private readonly bool _saveToFile;
 
-    private bool _useWebhookFireAndForget;
+    private bool? _useWebhookFireAndForget;
 
     public Guid Guid { get; private set; }
 

@@ -106,8 +106,19 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
+            server
+                .Given(Request.Create()
+                    .UsingMethod("GET")
+                    .WithPath("/foo1")
+                    .WithParam("p1", "xyz")
+                )
+                .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+                .RespondWith(Response.Create()
+                    .WithBody("Hello World")
+                );
 
             server.Given(Request.Create().WithPath(MatchOperator.Or, "/mypath", "/mypath1", "/mypath2").UsingPost())
+                .WithGuid("86984b0e-2516-4935-a2ef-b45bf4820d7d")
                 .RespondWith(Response.Create()
                         .WithHeader("Content-Type", "application/json")
                         .WithBodyAsJson("{{JsonPath.SelectToken request.body \"..name\"}}")
@@ -380,7 +391,7 @@ namespace WireMock.Net.ConsoleApplication
             // http://localhost:9091/trans?start=1000&stop=1&stop=2
             server
                 .Given(Request.Create().WithPath("/trans").UsingGet())
-                .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+                .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f06")
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")

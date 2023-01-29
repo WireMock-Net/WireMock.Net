@@ -1,6 +1,6 @@
 ﻿[
   {
-    Guid: 41372914-1838-4c67-916b-b9aacdd096ce,
+    Guid: Guid_1,
     UpdatedAt: 2023-01-14T15:16:17,
     Request: {
       Path: {
@@ -19,7 +19,6 @@
     Response: {
       BodyDestination: SameAsSource,
       Body: { msg: "Hello world!"}
-    },
-    UseWebhooksFireAndForget: false
+    }
   }
 ]

@@ -540,6 +540,20 @@ public partial class WireMockServer : IWireMockServer
         return _mappingBuilder.Given(requestMatcher, saveToFile);
     }
 
+    /// <inheritdoc />
+    [PublicAPI]
+    public string? MappingToCSharpCode(Guid guid, MappingConverterType converterType)
+    {
+        return _mappingBuilder.ToCSharpCode(guid, converterType);
+    }
+
+    /// <inheritdoc />
+    [PublicAPI]
+    public string MappingsToCSharpCode(MappingConverterType converterType)
+    {
+        return _mappingBuilder.ToCSharpCode(converterType);
+    }
+
     private void InitSettings(WireMockServerSettings settings)
     {
         if (settings.AllowBodyForAllHttpMethods == true)

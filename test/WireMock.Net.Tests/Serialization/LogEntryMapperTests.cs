@@ -20,7 +20,7 @@ public class LogEntryMapperTests
     private static readonly VerifySettings VerifySettings = new();
     static LogEntryMapperTests()
     {
-        VerifySettings.Init<LogEntryMapperTests>();
+        VerifySettings.Init();
     }
 
     private readonly IWireMockMiddlewareOptions _options = new WireMockMiddlewareOptions();

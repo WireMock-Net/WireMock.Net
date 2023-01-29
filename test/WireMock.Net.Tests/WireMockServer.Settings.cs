@@ -10,187 +10,186 @@ using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
 
-namespace WireMock.Net.Tests
+namespace WireMock.Net.Tests;
+
+public class WireMockServerSettingsTests
 {
-    public class WireMockServerSettingsTests
+    private readonly Mock<IWireMockLogger> _loggerMock;
+
+    public WireMockServerSettingsTests()
     {
-        private readonly Mock<IWireMockLogger> _loggerMock;
+        _loggerMock = new Mock<IWireMockLogger>();
+        _loggerMock.Setup(l => l.Info(It.IsAny<string>(), It.IsAny<object[]>()));
+    }
 
-        public WireMockServerSettingsTests()
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            _loggerMock = new Mock<IWireMockLogger>();
-            _loggerMock.Setup(l => l.Info(It.IsAny<string>(), It.IsAny<object[]>()));
-        }
+            StartAdminInterface = true,
+            AdminUsername = "u",
+            AdminPassword = "p"
+        });
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_BasicAuthenticationIsSet()
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<BasicAuthenticationMatcher>();
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_AzureADAuthenticationIsSet()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
+            StartAdminInterface = true,
+            AdminAzureADTenant = "t",
+            AdminAzureADAudience = "a"
+        });
+
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<AzureADAuthenticationMatcher>();
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_StartAdminInterfaceFalse_BasicAuthenticationIsNotSet()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = false,
+            AdminUsername = "u",
+            AdminPassword = "p"
+        });
+
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        Check.That(options.AuthenticationMatcher).IsNull();
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true
+        });
+
+        // Assert
+        server.Mappings.Should().NotBeNull();
+        server.Mappings.Should().HaveCount(30);
+        server.Mappings.All(m => m.Priority == WireMockConstants.AdminPriority).Should().BeTrue();
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_IsMinus2000000_When_StartAdminInterface_IsTrue()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true,
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
-                StartAdminInterface = true,
-                AdminUsername = "u",
-                AdminPassword = "p"
-            });
+                Url = "www.google.com"
+            }
+        });
 
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<BasicAuthenticationMatcher>();
-        }
+        // Assert
+        server.Mappings.Should().NotBeNull();
+        server.Mappings.Should().HaveCount(31);
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceTrue_AzureADAuthenticationIsSet()
+        server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(30);
+        server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is0_When_StartAdminInterface_IsFalse()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
-                StartAdminInterface = true,
-                AdminAzureADTenant = "t",
-                AdminAzureADAudience = "a"
-            });
+                Url = "www.google.com"
+            }
+        });
 
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            options.AuthenticationMatcher.Should().NotBeNull().And.BeOfType<AzureADAuthenticationMatcher>();
-        }
+        // Assert
+        var mappings = server.Mappings.ToArray();
+        Check.That(mappings.Count()).IsEqualTo(1);
+        Check.That(mappings[0].Priority).IsEqualTo(0);
+    }
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_StartAdminInterfaceFalse_BasicAuthenticationIsNotSet()
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_AllowPartialMapping()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                StartAdminInterface = false,
-                AdminUsername = "u",
-                AdminPassword = "p"
-            });
+            Logger = _loggerMock.Object,
+            AllowPartialMapping = true
+        });
 
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AuthenticationMatcher).IsNull();
-        }
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        Check.That(options.AllowPartialMapping).Equals(true);
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
+        // Verify
+        _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_AllowBodyForAllHttpMethods()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                StartAdminInterface = true
-            });
+            Logger = _loggerMock.Object,
+            AllowBodyForAllHttpMethods = true
+        });
 
-            // Assert
-            server.Mappings.Should().NotBeNull();
-            server.Mappings.Should().HaveCount(28);
-            server.Mappings.All(m => m.Priority == WireMockConstants.AdminPriority).Should().BeTrue();
-        }
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        Check.That(options.AllowBodyForAllHttpMethods).Equals(true);
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_IsMinus2000000_When_StartAdminInterface_IsTrue()
+        // Verify
+        _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowBodyForAllHttpMethods") && s.Contains("True"))));
+    }
+
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_AllowOnlyDefinedHttpStatusCodeInResponse()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                StartAdminInterface = true,
-                ProxyAndRecordSettings = new ProxyAndRecordSettings
-                {
-                    Url = "www.google.com"
-                }
-            });
+            Logger = _loggerMock.Object,
+            AllowOnlyDefinedHttpStatusCodeInResponse = true
+        });
 
-            // Assert
-            server.Mappings.Should().NotBeNull();
-            server.Mappings.Should().HaveCount(29);
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        Check.That(options.AllowOnlyDefinedHttpStatusCodeInResponse).Equals(true);
 
-            server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(28);
-            server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
-        }
+        // Verify
+        _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowOnlyDefinedHttpStatusCodeInResponse") && s.Contains("True"))));
+    }
 
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_Is0_When_StartAdminInterface_IsFalse()
+    [Fact]
+    public void WireMockServer_WireMockServerSettings_RequestLogExpirationDuration()
+    {
+        // Assign and Act
+        var server = WireMockServer.Start(new WireMockServerSettings
         {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                ProxyAndRecordSettings = new ProxyAndRecordSettings
-                {
-                    Url = "www.google.com"
-                }
-            });
+            Logger = _loggerMock.Object,
+            RequestLogExpirationDuration = 1
+        });
 
-            // Assert
-            var mappings = server.Mappings.ToArray();
-            Check.That(mappings.Count()).IsEqualTo(1);
-            Check.That(mappings[0].Priority).IsEqualTo(0);
-        }
-
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_AllowPartialMapping()
-        {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                Logger = _loggerMock.Object,
-                AllowPartialMapping = true
-            });
-
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AllowPartialMapping).Equals(true);
-
-            // Verify
-            _loggerMock.Verify(l => l.Info(It.IsAny<string>(), It.IsAny<bool>()));
-        }
-
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_AllowBodyForAllHttpMethods()
-        {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                Logger = _loggerMock.Object,
-                AllowBodyForAllHttpMethods = true
-            });
-
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AllowBodyForAllHttpMethods).Equals(true);
-
-            // Verify
-            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowBodyForAllHttpMethods") && s.Contains("True"))));
-        }
-
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_AllowOnlyDefinedHttpStatusCodeInResponse()
-        {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                Logger = _loggerMock.Object,
-                AllowOnlyDefinedHttpStatusCodeInResponse = true
-            });
-
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.AllowOnlyDefinedHttpStatusCodeInResponse).Equals(true);
-
-            // Verify
-            _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("AllowOnlyDefinedHttpStatusCodeInResponse") && s.Contains("True"))));
-        }
-
-        [Fact]
-        public void WireMockServer_WireMockServerSettings_RequestLogExpirationDuration()
-        {
-            // Assign and Act
-            var server = WireMockServer.Start(new WireMockServerSettings
-            {
-                Logger = _loggerMock.Object,
-                RequestLogExpirationDuration = 1
-            });
-
-            // Assert
-            var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
-            Check.That(options.RequestLogExpirationDuration).IsEqualTo(1);
-        }
+        // Assert
+        var options = server.GetPrivateFieldValue<IWireMockMiddlewareOptions>("_options");
+        Check.That(options.RequestLogExpirationDuration).IsEqualTo(1);
     }
 }

@@ -1,11 +1,11 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VerifyTests;
 using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Models;
+using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.Serialization;
 using WireMock.Types;
 using WireMock.Util;
@@ -16,11 +16,10 @@ namespace WireMock.Net.Tests.Serialization;
 [UsesVerify]
 public class WebhookMapperTests
 {
-    [ModuleInitializer]
-    public static void ModuleInitializer()
+    private static readonly VerifySettings VerifySettings = new();
+    static WebhookMapperTests()
     {
-        VerifierSettings.DontScrubGuids();
-        VerifierSettings.DontScrubDateTimes();
+        VerifySettings.Init();
     }
 
     [Fact]
@@ -45,7 +44,7 @@ public class WebhookMapperTests
         var result = WebhookMapper.Map(model);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class WebhookMapperTests
         var result = WebhookMapper.Map(model);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -97,7 +96,7 @@ public class WebhookMapperTests
         var result = WebhookMapper.Map(model);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 
     [Fact]
@@ -129,7 +128,7 @@ public class WebhookMapperTests
         var result = WebhookMapper.Map(webhook);
 
         // Verify
-        return Verifier.Verify(result);
+        return Verifier.Verify(result, VerifySettings);
     }
 }
 #endif
