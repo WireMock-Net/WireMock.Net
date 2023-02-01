@@ -121,28 +121,6 @@ public class ResponseWithBodyTests
     }
 
     [Fact]
-    public async Task Response_ProvideResponse_WithBody_Object_Indented()
-    {
-        // given
-        var body = new BodyData
-        {
-            DetectedBodyType = BodyType.String,
-            BodyAsString = "abc"
-        };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
-
-        object x = new { message = "Hello" };
-        var responseBuilder = Response.Create().WithBodyAsJson(x, true);
-
-        // act
-        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
-
-        // then
-        Check.That(response.Message.BodyData.BodyAsJson).Equals(x);
-        Check.That(response.Message.BodyData.BodyAsJsonIndented).IsEqualTo(true);
-    }
-
-    [Fact]
     public async Task Response_ProvideResponse_WithBody_String_SameAsSource_Encoding()
     {
         // Assign
@@ -194,6 +172,49 @@ public class ResponseWithBodyTests
         Check.That(response.Message.BodyData.BodyAsBytes).IsNull();
         Check.That(((dynamic)response.Message.BodyData.BodyAsJson).value).Equals(42);
         Check.That(response.Message.BodyData.Encoding).Equals(Encoding.ASCII);
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_WithBodyAsJson_Object_Indented()
+    {
+        // given
+        var body = new BodyData
+        {
+            DetectedBodyType = BodyType.String,
+            BodyAsString = "abc"
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
+
+        object x = new { message = "Hello" };
+        var responseBuilder = Response.Create().WithBodyAsJson(x, true);
+
+        // act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // then
+        Check.That(response.Message.BodyData.BodyAsJson).Equals(x);
+        Check.That(response.Message.BodyData.BodyAsJsonIndented).IsEqualTo(true);
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponse_WithBodyAsJson_FuncObject()
+    {
+        // Arrange
+        var requestBody = new BodyData
+        {
+            DetectedBodyType = BodyType.String,
+            BodyAsString = "abc"
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, requestBody);
+
+        object responseBody = new { message = "Hello" };
+        var responseBuilder = Response.Create().WithBodyAsJson(requestMessage => responseBody);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData!.BodyAsJson.Should().BeEquivalentTo(responseBody);
     }
 
     [Fact]

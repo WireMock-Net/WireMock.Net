@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -33,6 +35,11 @@ namespace WireMock.Net.ConsoleApplication
         }
     }
 
+    public class Todo
+    {
+        public int Id { get; set; }
+    }
+
     public static class MainApp
     {
         public static void Run()
@@ -54,6 +61,33 @@ namespace WireMock.Net.ConsoleApplication
             var s = WireMockServer.Start();
             s.Stop();
 
+            var todos = new Dictionary<int, Todo>();
+
+            var server = WireMockServer.Start();
+
+            server
+                .Given(Request.Create()
+                    .WithPath("todos")
+                    .UsingGet()
+                )
+                .RespondWith(Response.Create()
+                    .WithBodyAsJson(todos.Values)
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingGet()
+                    .WithPath("todos")
+                    .WithParam("id")
+                )
+                .RespondWith(Response.Create()
+                    .WithBodyAsJson(rm => todos[int.Parse(rm.Query!["id"].ToString())])
+                );
+
+            var httpClient = server.CreateClient();
+            //server.Stop();
+
+
             var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps,
@@ -71,7 +105,7 @@ namespace WireMock.Net.ConsoleApplication
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
 
-            var server = WireMockServer.Start(new WireMockServerSettings
+            server = WireMockServer.Start(new WireMockServerSettings
             {
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3 },

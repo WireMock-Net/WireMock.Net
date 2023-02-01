@@ -29,7 +29,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
     /// <summary>
-    /// WithBody : Create a ... response based on a callback function.
+    /// WithBody : Create a ... response based on a async callback function.
     /// </summary>
     /// <param name="bodyFactory">The async delegate to build the body.</param>
     /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
@@ -62,6 +62,22 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="indented">Define whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBodyAsJson(object body, bool indented);
+
+    /// <summary>
+    /// WithBodyAsJson : Create a ... response based on a callback function.
+    /// </summary>
+    /// <param name="bodyFactory">The delegate to build the body.</param>
+    /// <param name="encoding">The body encoding.</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsJson(Func<IRequestMessage, object> bodyFactory, Encoding? encoding = null);
+
+    /// <summary>
+    /// WithBodyAsJson : Create a ... response based on a async callback function.
+    /// </summary>
+    /// <param name="bodyFactory">The async delegate to build the body.</param>
+    /// <param name="encoding">The body encoding.</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsJson(Func<IRequestMessage, Task<object>> bodyFactory, Encoding? encoding = null);
 
     /// <summary>
     /// WithBodyFromFile : Create a ... response based on a File.

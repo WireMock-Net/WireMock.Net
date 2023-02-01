@@ -13,7 +13,7 @@ public partial class Response
     /// <inheritdoc />
     public IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
     {
-        Guard.NotNull(bodyFactory, nameof(bodyFactory));
+        Guard.NotNull(bodyFactory);
 
         return WithCallbackInternal(true, req => new ResponseMessage
         {
@@ -30,7 +30,7 @@ public partial class Response
     /// <inheritdoc />
     public IResponseBuilder WithBody(Func<IRequestMessage, Task<string>> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
     {
-        Guard.NotNull(bodyFactory, nameof(bodyFactory));
+        Guard.NotNull(bodyFactory);
 
         return WithCallbackInternal(true, async req => new ResponseMessage
         {
@@ -70,7 +70,7 @@ public partial class Response
         return this;
     }
 
-    /// <inheritdoc cref="IBodyResponseBuilder.WithBodyFromFile"/>
+    /// <inheritdoc />
     public IResponseBuilder WithBodyFromFile(string filename, bool cache = true)
     {
         Guard.NotNull(filename);
@@ -127,7 +127,7 @@ public partial class Response
         return this;
     }
 
-    /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, Encoding, bool?)"/>
+    /// <inheritdoc />
     public IResponseBuilder WithBodyAsJson(object body, Encoding? encoding = null, bool? indented = null)
     {
         Guard.NotNull(body);
@@ -144,10 +144,44 @@ public partial class Response
         return this;
     }
 
-    /// <inheritdoc cref="IBodyResponseBuilder.WithBodyAsJson(object, bool)"/>
+    /// <inheritdoc />
     public IResponseBuilder WithBodyAsJson(object body, bool indented)
     {
         return WithBodyAsJson(body, null, indented);
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithBodyAsJson(Func<IRequestMessage, object> bodyFactory, Encoding? encoding = null)
+    {
+        Guard.NotNull(bodyFactory);
+
+        return WithCallbackInternal(true, req => new ResponseMessage
+        {
+            BodyData = new BodyData
+            {
+                Encoding = encoding ?? Encoding.UTF8,
+                DetectedBodyType = BodyType.Json,
+                BodyAsJson = bodyFactory(req),
+                IsFuncUsed = "Func<IRequestMessage, object>"
+            }
+        });
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithBodyAsJson(Func<IRequestMessage, Task<object>> bodyFactory, Encoding? encoding = null)
+    {
+        Guard.NotNull(bodyFactory);
+
+        return WithCallbackInternal(true, async req => new ResponseMessage
+        {
+            BodyData = new BodyData
+            {
+                Encoding = encoding ?? Encoding.UTF8,
+                DetectedBodyType = BodyType.Json,
+                BodyAsJson = await bodyFactory(req).ConfigureAwait(false),
+                IsFuncUsed = "Func<IRequestMessage, Task<object>>"
+            }
+        });
     }
 
     /// <inheritdoc />
