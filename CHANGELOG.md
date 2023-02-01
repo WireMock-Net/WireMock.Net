@@ -1,3 +1,7 @@
+# 1.5.16 (01 February 2023)
+- [#880](https://github.com/WireMock-Net/WireMock.Net/pull/880) - Add `WithProxy(string proxyUrl, X509Certificate2 certificate)` [feature] contributed by [StefH](https://github.com/StefH)
+- [#879](https://github.com/WireMock-Net/WireMock.Net/issues/879) - Possibility to pass a X509Certificate2 to WithProxy() or specifiy certificate loading options [feature]
+
 # 1.5.15 (29 January 2023)
 - [#878](https://github.com/WireMock-Net/WireMock.Net/pull/878) - Update REST Admin interface to support &quot;Get Mapping(s) as C# Code&quot; [feature] contributed by [StefH](https://github.com/StefH)
 
