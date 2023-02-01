@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+using System.Security.Cryptography.X509Certificates;
 using WireMock.Settings;
 
 namespace WireMock.ResponseBuilders;
@@ -17,9 +17,17 @@ public interface IProxyResponseBuilder : IStatusCodeResponseBuilder
     IResponseBuilder WithProxy(string proxyUrl, string? clientX509Certificate2ThumbprintOrSubjectName = null);
 
     /// <summary>
-    /// WithProxy using IProxyAndRecordSettings.
+    /// WithProxy using <see cref="ProxyAndRecordSettings"/>.
     /// </summary>
-    /// <param name="settings">The IProxyAndRecordSettings.</param>
+    /// <param name="settings">The ProxyAndRecordSettings.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithProxy([NotNull] ProxyAndRecordSettings settings);
+    IResponseBuilder WithProxy(ProxyAndRecordSettings settings);
+
+    /// <summary>
+    /// WithProxy using <see cref="X509Certificate2"/>.
+    /// </summary>
+    /// <param name="proxyUrl">The proxy url.</param>
+    /// <param name="certificate"">The X509Certificate2.</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithProxy(string proxyUrl, X509Certificate2 certificate);
 }

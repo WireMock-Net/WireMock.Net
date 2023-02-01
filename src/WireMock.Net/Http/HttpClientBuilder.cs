@@ -35,8 +35,13 @@ internal static class HttpClientBuilder
         {
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
-            var x509Certificate2 = CertificateLoader.LoadCertificate(settings.ClientX509Certificate2ThumbprintOrSubjectName);
+            var x509Certificate2 = CertificateLoader.LoadCertificate(settings.ClientX509Certificate2ThumbprintOrSubjectName!);
             handler.ClientCertificates.Add(x509Certificate2);
+        }
+        else if (settings.Certificate != null)
+        {
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ClientCertificates.Add(settings.Certificate);
         }
 
         handler.AllowAutoRedirect = settings.AllowAutoRedirect == true;

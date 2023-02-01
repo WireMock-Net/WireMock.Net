@@ -1,6 +1,3 @@
-using FluentAssertions;
-using Moq;
-using NFluent;
 using System;
 using System.Linq;
 using System.Net;
@@ -8,6 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
+using NFluent;
 using WireMock.Constants;
 using WireMock.Handlers;
 using WireMock.Matchers;
@@ -144,9 +144,11 @@ public class WireMockServerProxyTests
         };
 
         var server = WireMockServer.Start(settings);
-        server.Given(Request.Create()
+        server
+            .Given(Request.Create()
                 .WithPath("/*")
-                .WithBody(new RegexMatcher(stringBody)))
+                .WithBody(new RegexMatcher(stringBody))
+            )
             .WithTitle(title)
             .WithDescription(description)
             .AtPriority(WireMockConstants.ProxyPriority)

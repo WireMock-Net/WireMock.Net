@@ -2,6 +2,7 @@ using System.Net.Http;
 using WireMock.Http;
 using WireMock.Settings;
 using Stef.Validation;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WireMock.ResponseBuilders;
 
@@ -37,5 +38,20 @@ public partial class Response
 
         _httpClientForProxy = HttpClientBuilder.Build(settings);
         return this;
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithProxy(string proxyUrl, X509Certificate2 certificate)
+    {
+        Guard.NotNullOrEmpty(proxyUrl);
+        Guard.NotNull(certificate);
+
+        var settings = new ProxyAndRecordSettings
+        {
+            Url = proxyUrl,
+            Certificate = certificate
+        };
+
+        return WithProxy(settings);
     }
 }

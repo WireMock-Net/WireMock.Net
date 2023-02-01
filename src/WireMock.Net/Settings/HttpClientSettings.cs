@@ -1,9 +1,11 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace WireMock.Settings;
 
 /// <summary>
 /// HttpClientSettings
 /// </summary>
-public class HttpClientSettings
+public abstract class HttpClientSettings
 {
     /// <summary>
     /// The clientCertificate thumbprint or subject name fragment to use.
@@ -20,4 +22,9 @@ public class HttpClientSettings
     /// Proxy requests should follow redirection (30x).
     /// </summary>
     public bool? AllowAutoRedirect { get; set; }
+
+    /// <summary>
+    /// The <see cref="X509Certificate2"/> to use.
+    /// </summary>
+    public X509Certificate2? Certificate { get; set; }
 }
