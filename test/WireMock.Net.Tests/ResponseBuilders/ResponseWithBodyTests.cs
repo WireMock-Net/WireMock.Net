@@ -218,6 +218,27 @@ public class ResponseWithBodyTests
     }
 
     [Fact]
+    public async Task Response_ProvideResponse_WithBodyAsJson_AsyncFuncObject()
+    {
+        // Arrange
+        var requestBody = new BodyData
+        {
+            DetectedBodyType = BodyType.String,
+            BodyAsString = "abc"
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, requestBody);
+
+        object responseBody = new { message = "Hello" };
+        var responseBuilder = Response.Create().WithBodyAsJson(requestMessage => Task.FromResult(responseBody));
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData!.BodyAsJson.Should().BeEquivalentTo(responseBody);
+    }
+
+    [Fact]
     public async Task Response_ProvideResponse_WithJsonBodyAndTransform()
     {
         // Assign

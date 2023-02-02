@@ -86,8 +86,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var httpClient = server.CreateClient();
             //server.Stop();
-
-
+            
             var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps,
