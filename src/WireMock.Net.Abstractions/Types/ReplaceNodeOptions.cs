@@ -21,5 +21,10 @@ public enum ReplaceNodeOptions
     /// Parse templated string to a templated string.
     /// (keep a templated string value as string value).
     /// </summary>
-    Parse = 2
+    Parse = 2,
+
+    /// <summary>
+    /// Keep the original type.
+    /// </summary>
+    KeepString = 3
 }

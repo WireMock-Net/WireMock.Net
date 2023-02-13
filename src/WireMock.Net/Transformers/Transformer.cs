@@ -240,7 +240,7 @@ internal class Transformer : ITransformer
                     return;
                 }
 
-                var transformed = transformerContext.ParseAndEvaluate(stringValue, model);
+                var transformed = transformerContext.ParseAndEvaluate(stringValue!, model);
                 if (!Equals(stringValue, transformed))
                 {
                     ReplaceNodeValue(options, node, transformed);
@@ -259,7 +259,7 @@ internal class Transformer : ITransformer
                 return;
 
             case string transformedString:
-                if (TryConvert(transformedString, out var convertedFromStringValue))
+                if (options != ReplaceNodeOptions.KeepString && TryConvert(transformedString, out var convertedFromStringValue))
                 {
                     node.Replace(JToken.FromObject(convertedFromStringValue, _jsonSerializer));
                 }
