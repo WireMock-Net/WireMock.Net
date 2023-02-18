@@ -58,9 +58,6 @@ namespace WireMock.Net.ConsoleApplication
             var json = mappingBuilder.ToJson();
             System.Console.WriteLine("mappingBuilder : Json = {0}", json);
 
-            var s = WireMockServer.Start();
-            s.Stop();
-
             var todos = new Dictionary<int, Todo>();
 
             var server = WireMockServer.Start();
@@ -86,7 +83,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var httpClient = server.CreateClient();
             //server.Stop();
-            
+
             var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps,
@@ -139,6 +136,31 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
+
+            // 400 ms
+            server
+                .Given(Request.Create()
+                    .WithPath("/slow/400")
+                    .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(400)
+                        .WithBody("return 400")
+                        .WithHeader("Content-Type", "text/plain")
+                );
+            // 4 sec
+            server
+                .Given(Request.Create()
+                    .WithPath("/slow/500")
+                    .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(500)
+                        .WithBody("return 500")
+                        .WithHeader("Content-Type", "text/plain")
+                );
+
+
             server
                 .Given(Request.Create()
                     .UsingMethod("GET")
