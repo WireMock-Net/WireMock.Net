@@ -7,67 +7,58 @@ namespace WireMock.Admin.Mappings;
 public partial class RequestModelBuilder
 {
     /// <summary>
-    /// UsingConnect: add HTTP Method matching on `CONNECT` and matchBehaviour (optional).
+    /// UsingConnect: add HTTP Method matching on `CONNECT`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingConnect(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingConnect() => WithMethods("CONNECT");
 
     /// <summary>
-    /// UsingDelete: add HTTP Method matching on `DELETE` and matchBehaviour (optional).
+    /// UsingDelete: add HTTP Method matching on `DELETE`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingDelete(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingDelete() => WithMethods("DELETE");
 
     /// <summary>
-    /// UsingGet: add HTTP Method matching on `GET` and matchBehaviour (optional).
+    /// UsingGet: add HTTP Method matching on `GET`.
     /// </summary>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    /// IRequestBuilder UsingGet(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
     public RequestModelBuilder UsingGet() => WithMethods("GET");
 
     /// <summary>
-    /// UsingHead: Add HTTP Method matching on `HEAD` and matchBehaviour (optional).
+    /// UsingHead: Add HTTP Method matching on `HEAD`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingHead(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingHead() => WithMethods("HEAD");
 
     /// <summary>
-    /// UsingPost: add HTTP Method matching on `POST` and matchBehaviour (optional).
+    /// UsingPost: add HTTP Method matching on `POST`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingPost(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingPost() => WithMethods("POST");
 
     /// <summary>
-    /// UsingPatch: add HTTP Method matching on `PATCH` and matchBehaviour (optional).
+    /// UsingPatch: add HTTP Method matching on `PATCH`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingPatch(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingPatch() => WithMethods("PATCH");
 
     /// <summary>
-    /// UsingPut: add HTTP Method matching on `OPTIONS` and matchBehaviour (optional).
+    /// UsingPut: add HTTP Method matching on `OPTIONS`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingOptions(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingOptions() => WithMethods("OPTIONS");
 
     /// <summary>
-    /// UsingPut: add HTTP Method matching on `PUT` and matchBehaviour (optional).
+    /// UsingPut: add HTTP Method matching on `PUT`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingPut(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingPut() => WithMethods("PUT");
 
     /// <summary>
-    /// UsingTrace: add HTTP Method matching on `TRACE` and matchBehaviour (optional).
+    /// UsingTrace: add HTTP Method matching on `TRACE`.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    //public RequestModelBuilder UsingTrace(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    public RequestModelBuilder UsingTrace() => WithMethods("TRACE");
 
     /// <summary>
     /// UsingAnyMethod: add HTTP Method matching on any method.
