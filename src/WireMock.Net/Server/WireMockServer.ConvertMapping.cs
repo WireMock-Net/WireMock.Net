@@ -335,6 +335,11 @@ public partial class WireMockServer
             responseBuilder.WithFault(faultType, responseModel.Fault.Percentage);
         }
 
+        if (responseModel.Data != null)
+        {
+            responseBuilder.WithData(responseModel.Data);
+        }
+
         return responseBuilder;
     }
 }

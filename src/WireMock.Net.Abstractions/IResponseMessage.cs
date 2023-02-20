@@ -46,6 +46,15 @@ public interface IResponseMessage
     object? StatusCode { get; }
 
     /// <summary>
+    /// Data Dictionary Object which can be used when WithTransformer is used.
+    /// e.g. lookup an element in this dictionary using
+    /// <example>
+    /// Dictionary.Lookup data "1"
+    /// </example>
+    /// </summary>
+    IDictionary<string, object?>? Data { get; set; }
+
+    /// <summary>
     /// Adds the header.
     /// </summary>
     /// <param name="name">The name.</param>

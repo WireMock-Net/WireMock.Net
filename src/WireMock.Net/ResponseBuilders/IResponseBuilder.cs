@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace WireMock.ResponseBuilders;
 
 /// <summary>
@@ -5,4 +7,5 @@ namespace WireMock.ResponseBuilders;
 /// </summary>
 public interface IResponseBuilder : IProxyResponseBuilder
 {
+    IResponseBuilder WithData(IDictionary<string, object?> data);
 }

@@ -276,6 +276,8 @@ internal class MappingConverter
             }
         }
 
+        mappingModel.Response.Data = response.ResponseMessage.Data;
+
         if (response.ProxyAndRecordSettings != null)
         {
             mappingModel.Response.StatusCode = null;

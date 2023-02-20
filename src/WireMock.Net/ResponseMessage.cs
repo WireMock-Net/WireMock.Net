@@ -35,6 +35,9 @@ public class ResponseMessage : IResponseMessage
     /// <inheritdoc cref="IResponseMessage.FaultPercentage" />
     public double? FaultPercentage { get; set; }
 
+    /// <inheritdoc />
+    public IDictionary<string, object?>? Data { get; set; }
+
     /// <inheritdoc cref="IResponseMessage.AddHeader(string, string)" />
     public void AddHeader(string name, string value)
     {

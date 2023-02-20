@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace WireMock.Transformers;
@@ -10,4 +11,6 @@ internal struct TransformModel
     public IRequestMessage request { get; set; }
 
     public IResponseMessage? response { get; set; }
+
+    public IDictionary<string, object?> data { get; set; }
 }
