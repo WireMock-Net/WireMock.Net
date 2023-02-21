@@ -168,11 +168,11 @@ public interface IRespondWithAProvider
     );
 
     /// <summary>
-    /// Data Dictionary Object which can be used when WithTransformer is used.
-    /// e.g. lookup an element in this dictionary using
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
     /// <param name="data">The data dictionary object.</param>
     /// <example>
-    /// Dictionary.Lookup data "1"
+    /// Path.Lookup data "1"
     /// </example>
     /// </summary>
     IRespondWithAProvider WithData(IDictionary<string, object?> data);

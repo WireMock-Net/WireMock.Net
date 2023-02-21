@@ -124,10 +124,10 @@ public interface IMapping
     bool? UseWebhooksFireAndForget { get; set; }
 
     /// <summary>
-    /// Data Dictionary Object which can be used when WithTransformer is used.
-    /// e.g. lookup an element in this dictionary using
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
     /// <example>
-    /// Dictionary.Lookup data "1"
+    /// Path.Lookup data "1"
     /// </example>
     /// </summary>
     IDictionary<string, object?>? Data { get; set; }
