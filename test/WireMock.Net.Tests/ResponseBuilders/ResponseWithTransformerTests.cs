@@ -798,11 +798,10 @@ public class ResponseWithTransformerTests
         };
 
         var responseBuilder = Response.Create()
-            .WithData(data)
             .WithBody("{{Dictionary.Lookup data request.PathSegments.[1] 'N/A'}}")
             .WithTransformer();
 
-        _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
+        _mappingMock.SetupGet(m => m.Data).Returns(data);
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);

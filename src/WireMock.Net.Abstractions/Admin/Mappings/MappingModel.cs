@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using WireMock.Models;
 
 namespace WireMock.Admin.Mappings;
@@ -84,4 +85,13 @@ public class MappingModel
     /// Fire and forget for webhooks.
     /// </summary>
     public bool? UseWebhooksFireAndForget { get; set; }
+    
+    /// <summary>
+    /// Data Dictionary Object which can be used when WithTransformer is used.
+    /// e.g. lookup an element in this dictionary using
+    /// <example>
+    /// Dictionary.Lookup data "1"
+    /// </example>
+    /// </summary>
+    public IDictionary<string, object?>? Data { get; set; }
 }

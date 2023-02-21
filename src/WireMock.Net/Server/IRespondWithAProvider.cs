@@ -166,4 +166,14 @@ public interface IRespondWithAProvider
         bool useTransformer = true,
         TransformerType transformerType = TransformerType.Handlebars
     );
+
+    /// <summary>
+    /// Data Dictionary Object which can be used when WithTransformer is used.
+    /// e.g. lookup an element in this dictionary using
+    /// <param name="data">The data dictionary object.</param>
+    /// <example>
+    /// Dictionary.Lookup data "1"
+    /// </example>
+    /// </summary>
+    IRespondWithAProvider WithData(IDictionary<string, object?> data);
 }

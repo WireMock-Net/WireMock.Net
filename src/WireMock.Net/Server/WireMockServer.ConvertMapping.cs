@@ -46,7 +46,7 @@ public partial class WireMockServer
         }
 
         var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
-
+        
         if (guid != null)
         {
             respondProvider = respondProvider.WithGuid(guid.Value);
@@ -54,6 +54,11 @@ public partial class WireMockServer
         else if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
         {
             respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
+        }
+
+        if (mappingModel.Data != null)
+        {
+            respondProvider = respondProvider.WithData(mappingModel.Data);
         }
 
         var timeSettings = TimeSettingsMapper.Map(mappingModel.TimeSettings);
@@ -333,11 +338,6 @@ public partial class WireMockServer
         if (responseModel.Fault != null && Enum.TryParse(responseModel.Fault.Type, out FaultType faultType))
         {
             responseBuilder.WithFault(faultType, responseModel.Fault.Percentage);
-        }
-
-        if (responseModel.Data != null)
-        {
-            responseBuilder.WithData(responseModel.Data);
         }
 
         return responseBuilder;

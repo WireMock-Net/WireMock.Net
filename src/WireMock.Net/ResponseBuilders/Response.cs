@@ -112,15 +112,7 @@ public partial class Response : IResponseBuilder
     {
         ResponseMessage = responseMessage;
     }
-
-    /// <inheritdoc />
-    [PublicAPI]
-    public IResponseBuilder WithData(IDictionary<string, object?> data)
-    {
-        ResponseMessage.Data = data;
-        return this;
-    }
-
+    
     /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(int)"/>
     [PublicAPI]
     public IResponseBuilder WithStatusCode(int code)

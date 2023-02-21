@@ -181,6 +181,7 @@ internal class MappingConverter
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
+            Data = mapping.Data,
             Request = new RequestModel
             {
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
@@ -275,8 +276,6 @@ internal class MappingConverter
                 mappingModel.Request.Body.MatchOperator = bodyMatcher.MatchOperator.ToString();
             }
         }
-
-        mappingModel.Response.Data = response.ResponseMessage.Data;
 
         if (response.ProxyAndRecordSettings != null)
         {

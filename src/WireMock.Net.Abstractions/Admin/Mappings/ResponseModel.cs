@@ -117,13 +117,4 @@ public class ResponseModel
     /// Gets or sets the WebProxy settings.
     /// </summary>
     public WebProxyModel? WebProxy { get; set; }
-
-    /// <summary>
-    /// Data Dictionary Object which can be used when WithTransformer is used.
-    /// e.g. lookup an element in this dictionary using
-    /// <example>
-    /// Dictionary.Lookup data "1"
-    /// </example>
-    /// </summary>
-    public IDictionary<string, object?>? Data { get; set; }
 }

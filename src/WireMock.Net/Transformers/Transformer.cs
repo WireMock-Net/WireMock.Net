@@ -112,14 +112,12 @@ internal class Transformer : ITransformer
 
     private (ITransformerContext TransformerContext, TransformModel Model) Create(IMapping mapping, IRequestMessage request, IResponseMessage? response)
     {
-        var responseBuilderFromMapping = mapping.Provider as Response;
-
         return (_factory.Create(), new TransformModel
         {
             mapping = mapping,
             request = request,
             response = response,
-            data = responseBuilderFromMapping?.ResponseMessage.Data ?? new Dictionary<string, object?>()
+            data = mapping.Data ?? new Dictionary<string, object?>()
         });
     }
 

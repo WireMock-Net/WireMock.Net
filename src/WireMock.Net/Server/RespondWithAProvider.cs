@@ -2,6 +2,7 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -38,6 +39,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IWebhook[]? Webhooks { get; private set; }
 
     public ITimeSettings? TimeSettings { get; private set; }
+
+    public IDictionary<string, object?>? Data { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -88,8 +91,18 @@ internal class RespondWithAProvider : IRespondWithAProvider
             _timesInSameState,
             Webhooks,
             _useWebhookFireAndForget,
-            TimeSettings);
+            TimeSettings,
+            Data);
+
         _registrationCallback(mapping, _saveToFile);
+    }
+
+    /// <inheritdoc />
+    [PublicAPI]
+    public IRespondWithAProvider WithData(IDictionary<string, object?> data)
+    {
+        Data = data;
+        return this;
     }
 
     /// <inheritdoc />
