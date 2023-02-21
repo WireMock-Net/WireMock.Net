@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -74,7 +73,7 @@ public class Mapping : IMapping
     public ITimeSettings? TimeSettings { get; }
 
     /// <inheritdoc />
-    public IDictionary<string, object?>? Data { get; set; }
+    public object? Data { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -95,7 +94,7 @@ public class Mapping : IMapping
     /// <param name="webhooks">The Webhooks. [Optional]</param>
     /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
-    /// <param name="data">The data dictionary. [Optional]</param>
+    /// <param name="data">The data object. [Optional]</param>
     public Mapping(
         Guid guid,
         DateTime updatedAt,
@@ -113,7 +112,7 @@ public class Mapping : IMapping
         IWebhook[]? webhooks,
         bool? useWebhooksFireAndForget,
         ITimeSettings? timeSettings,
-        IDictionary<string, object?>? data)
+        object? data)
     {
         Guid = guid;
         UpdatedAt = updatedAt;

@@ -117,7 +117,7 @@ internal class Transformer : ITransformer
             mapping = mapping,
             request = request,
             response = response,
-            data = mapping.Data ?? new Dictionary<string, object?>()
+            data = mapping.Data ?? new { }
         });
     }
 

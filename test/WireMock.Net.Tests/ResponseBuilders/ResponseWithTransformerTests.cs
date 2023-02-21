@@ -787,7 +787,7 @@ public class ResponseWithTransformerTests
     [InlineData("/wiremock-data/1", "one")]
     [InlineData("/wiremock-data/2", "two")]
     [InlineData("/wiremock-data/3", "N/A")]
-    public async Task Response_ProvideResponse_Handlebars_DataDictionary(string path, string expected)
+    public async Task Response_ProvideResponse_Handlebars_DataObject(string path, string expected)
     {
         // Arrange
         var request = new RequestMessage(new UrlDetails("https://localhost" + path), "POST", ClientIp);
@@ -798,7 +798,7 @@ public class ResponseWithTransformerTests
         };
 
         var responseBuilder = Response.Create()
-            .WithBody("{{Dictionary.Lookup data request.PathSegments.[1] 'N/A'}}")
+            .WithBody("{{Path.Lookup data request.PathSegments.[1] 'N/A'}}")
             .WithTransformer();
 
         _mappingMock.SetupGet(m => m.Data).Returns(data);

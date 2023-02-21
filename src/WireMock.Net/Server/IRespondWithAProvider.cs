@@ -175,5 +175,5 @@ public interface IRespondWithAProvider
     /// Path.Lookup data "1"
     /// </example>
     /// </summary>
-    IRespondWithAProvider WithData(IDictionary<string, object?> data);
+    IRespondWithAProvider WithData(object data);
 }

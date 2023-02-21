@@ -40,7 +40,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
 
     public ITimeSettings? TimeSettings { get; private set; }
 
-    public IDictionary<string, object?>? Data { get; private set; }
+    public object? Data { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -99,7 +99,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
 
     /// <inheritdoc />
     [PublicAPI]
-    public IRespondWithAProvider WithData(IDictionary<string, object?> data)
+    public IRespondWithAProvider WithData(object data)
     {
         Data = data;
         return this;

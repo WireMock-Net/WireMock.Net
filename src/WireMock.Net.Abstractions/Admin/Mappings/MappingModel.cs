@@ -93,5 +93,5 @@ public class MappingModel
     /// Path.Lookup data "1"
     /// </example>
     /// </summary>
-    public IDictionary<string, object?>? Data { get; set; }
+    public object? Data { get; set; }
 }

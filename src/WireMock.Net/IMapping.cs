@@ -130,7 +130,7 @@ public interface IMapping
     /// Path.Lookup data "1"
     /// </example>
     /// </summary>
-    IDictionary<string, object?>? Data { get; set; }
+    object? Data { get; set; }
 
     /// <summary>
     /// ProvideResponseAsync
