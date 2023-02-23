@@ -7,12 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestEase" Version="1.5.7" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
     </ItemGroup>
 

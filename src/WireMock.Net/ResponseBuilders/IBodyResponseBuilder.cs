@@ -51,7 +51,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// </summary>
     /// <param name="body">The body.</param>
     /// <param name="encoding">The body encoding.</param>
-    /// <param name="indented">Use JSON indented.</param>
+    /// <param name="indented">Define whether child objects to be indented according to the Newtonsoft.Json.JsonTextWriter.Indentation and Newtonsoft.Json.JsonTextWriter.IndentChar settings.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBodyAsJson(object body, Encoding? encoding = null, bool? indented = null);
 

@@ -17,7 +17,7 @@ class Program
         // Create an implementation of the IWireMockAdminApi and pass in the base URL for the API.
         var api = RestClient.For<IWireMockAdminApi>("http://localhost:9091");
 
-        await api.ResetMappingsAsync().ConfigureAwait(false);
+        // await api.ResetMappingsAsync().ConfigureAwait(false);
 
         var mappingBuilder = api.GetMappingBuilder();
         mappingBuilder.Given(m => m
@@ -41,6 +41,20 @@ class Program
             .WithResponse(rsp => rsp
                 .WithBody("x2")
                 .WithHeaders(h => h.Add("h2", "v2"))
+            )
+        );
+
+        mappingBuilder.Given(m => m
+            .WithTitle("This is my title 3")
+            .WithRequest(req => req
+                .UsingGet()
+                .WithPath("/bla3")
+            )
+            .WithResponse(rsp => rsp
+                .WithBodyAsJson(new 
+                {
+                    x = "test"
+                }, true)
             )
         );
 

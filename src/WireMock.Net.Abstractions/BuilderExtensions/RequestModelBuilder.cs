@@ -65,4 +65,34 @@ public partial class RequestModelBuilder
     /// </summary>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
     public RequestModelBuilder UsingAnyMethod() => this;
+
+    /// <summary>
+    /// Set the ClientIP.
+    /// </summary>
+    public RequestModelBuilder WithClientIP(string value) => WithClientIP(() => value);
+
+    /// <summary>
+    /// Set the ClientIP.
+    /// </summary>
+    public RequestModelBuilder WithClientIP(ClientIPModel value) => WithClientIP(() => value);
+
+    /// <summary>
+    /// Set the Path.
+    /// </summary>
+    public RequestModelBuilder WithPath(string value) => WithPath(() => value);
+
+    /// <summary>
+    /// Set the Path.
+    /// </summary>
+    public RequestModelBuilder WithPath(PathModel value) => WithPath(() => value);
+
+    /// <summary>
+    /// Set the Url.
+    /// </summary>
+    public RequestModelBuilder WithUrl(string value) => WithUrl(() => value);
+
+    /// <summary>
+    /// Set the Url.
+    /// </summary>
+    public RequestModelBuilder WithUrl(UrlModel value) => WithUrl(() => value);
 }
