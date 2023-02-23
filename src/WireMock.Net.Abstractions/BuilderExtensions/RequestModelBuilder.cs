@@ -1,3 +1,5 @@
+using System;
+
 // ReSharper disable once CheckNamespace
 namespace WireMock.Admin.Mappings;
 
@@ -77,6 +79,19 @@ public partial class RequestModelBuilder
     public RequestModelBuilder WithClientIP(ClientIPModel value) => WithClientIP(() => value);
 
     /// <summary>
+    /// Set the ClientIP.
+    /// </summary>
+    public RequestModelBuilder WithClientIP(Action<ClientIPModelBuilder> action)
+    {
+        return WithClientIP(() =>
+        {
+            var builder = new ClientIPModelBuilder();
+            action(builder);
+            return builder.Build();
+        });
+    }
+
+    /// <summary>
     /// Set the Path.
     /// </summary>
     public RequestModelBuilder WithPath(string value) => WithPath(() => value);
@@ -87,6 +102,19 @@ public partial class RequestModelBuilder
     public RequestModelBuilder WithPath(PathModel value) => WithPath(() => value);
 
     /// <summary>
+    /// Set the Path.
+    /// </summary>
+    public RequestModelBuilder WithPath(Action<PathModelBuilder> action)
+    {
+        return WithPath(() =>
+        {
+            var builder = new PathModelBuilder();
+            action(builder);
+            return builder.Build();
+        });
+    }
+
+    /// <summary>
     /// Set the Url.
     /// </summary>
     public RequestModelBuilder WithUrl(string value) => WithUrl(() => value);
@@ -95,4 +123,17 @@ public partial class RequestModelBuilder
     /// Set the Url.
     /// </summary>
     public RequestModelBuilder WithUrl(UrlModel value) => WithUrl(() => value);
+
+    /// <summary>
+    /// Set the Url.
+    /// </summary>
+    public RequestModelBuilder WithUrl(Action<UrlModelBuilder> action)
+    {
+        return WithUrl(() =>
+        {
+            var builder = new UrlModelBuilder();
+            action(builder);
+            return builder.Build();
+        });
+    }
 }
