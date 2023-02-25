@@ -1,3 +1,8 @@
+# 1.5.17 (25 February 2023)
+- [#881](https://github.com/WireMock-Net/WireMock.Net/pull/881) - Add WithBodyAsJson builder method with accepts a Func [feature] contributed by [StefH](https://github.com/StefH)
+- [#882](https://github.com/WireMock-Net/WireMock.Net/pull/882) - Add example code to test HTTP Status 400 and 500 [test] contributed by [StefH](https://github.com/StefH)
+- [#890](https://github.com/WireMock-Net/WireMock.Net/pull/890) - AdminApiMappingBuilder [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.16 (01 February 2023)
 - [#880](https://github.com/WireMock-Net/WireMock.Net/pull/880) - Add `WithProxy(string proxyUrl, X509Certificate2 certificate)` [feature] contributed by [StefH](https://github.com/StefH)
 - [#879](https://github.com/WireMock-Net/WireMock.Net/issues/879) - Possibility to pass a X509Certificate2 to WithProxy() or specifiy certificate loading options [feature]
@@ -651,8 +656,8 @@
 - [#263](https://github.com/WireMock-Net/WireMock.Net/issues/263) - Content-Type multipart/form-data is not serialized in proxy and recording mode [bug]
 
 # 1.0.11.0 (30 March 2019)
-- [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [psypilat](https://github.com/psypilat)
-- [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [psypilat](https://github.com/psypilat)
+- [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [ghost](https://github.com/ghost)
+- [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [ghost](https://github.com/ghost)
 
 # 1.0.10.0 (27 March 2019)
 - [#260](https://github.com/WireMock-Net/WireMock.Net/pull/260) - Fix Response.Delay property serialization [bug] contributed by [StefH](https://github.com/StefH)
