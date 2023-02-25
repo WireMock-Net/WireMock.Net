@@ -1,250 +1,283 @@
-using RestEase;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
+using RestEase;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Requests;
 using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
 using WireMock.Types;
 
-namespace WireMock.Client
+namespace WireMock.Client;
+
+/// <summary>
+/// The RestEase interface which defines all admin commands.
+/// </summary>
+[BasePath("__admin")]
+public interface IWireMockAdminApi
 {
     /// <summary>
-    /// The RestEase interface which defines all admin commands.
+    /// Authentication header
     /// </summary>
-    [BasePath("__admin")]
-    public interface IWireMockAdminApi
-    {
-        /// <summary>
-        /// Authentication header
-        /// </summary>
-        [Header("Authorization")]
-        AuthenticationHeaderValue Authorization { get; set; }
+    [Header("Authorization")]
+    AuthenticationHeaderValue Authorization { get; set; }
 
-        /// <summary>
-        /// Get the settings.
-        /// </summary>
-        /// <returns>SettingsModel</returns>
-        [Get("settings")]
-        Task<SettingsModel> GetSettingsAsync();
+    /// <summary>
+    /// Get the settings.
+    /// </summary>
+    /// <returns>SettingsModel</returns>
+    [Get("settings")]
+    Task<SettingsModel> GetSettingsAsync();
 
-        /// <summary>
-        /// Update the settings.
-        /// </summary>
-        /// <param name="settings">SettingsModel</param>
-        [Put("settings")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> PutSettingsAsync([Body] SettingsModel settings);
+    /// <summary>
+    /// Update the settings.
+    /// </summary>
+    /// <param name="settings">SettingsModel</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Put("settings")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> PutSettingsAsync([Body] SettingsModel settings, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Update the settings
-        /// </summary>
-        /// <param name="settings">SettingsModel</param>
-        [Post("settings")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> PostSettingsAsync([Body] SettingsModel settings);
+    /// <summary>
+    /// Update the settings
+    /// </summary>
+    /// <param name="settings">SettingsModel</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("settings")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> PostSettingsAsync([Body] SettingsModel settings, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get the mappings.
-        /// </summary>
-        /// <returns>MappingModels</returns>
-        [Get("mappings")]
-        Task<IList<MappingModel>> GetMappingsAsync();
+    /// <summary>
+    /// Get the mappings.
+    /// </summary>
+    /// <returns>MappingModels</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("mappings")]
+    Task<IList<MappingModel>> GetMappingsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get the C# code from all mappings
-        /// </summary>
-        /// <returns>C# code</returns>
-        [Get("mappings/code")]
-        Task<string> GetMappingsCodeAsync([Query] MappingConverterType mappingConverterType = MappingConverterType.Server);
-        
-        /// <summary>
-        /// Add a new mapping.
-        /// </summary>
-        /// <param name="mapping">MappingModel</param>
-        [Post("mappings")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> PostMappingAsync([Body] MappingModel mapping);
+    /// <summary>
+    /// Get the C# code from all mappings
+    /// </summary>
+    /// <returns>C# code</returns>
+    /// <param name="mappingConverterType">The <see cref="MappingConverterType"/>, default is Server.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("mappings/code")]
+    Task<string> GetMappingsCodeAsync([Query] MappingConverterType mappingConverterType = MappingConverterType.Server, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Add new mappings.
-        /// </summary>
-        /// <param name="mappings">MappingModels</param>
-        [Post("mappings")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> PostMappingsAsync([Body] IList<MappingModel> mappings);
+    /// <summary>
+    /// Add a new mapping.
+    /// </summary>
+    /// <param name="mapping">MappingModel</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("mappings")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> PostMappingAsync([Body] MappingModel mapping, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete all mappings.
-        /// </summary>
-        [Delete("mappings")]
-        Task<StatusModel> DeleteMappingsAsync();
+    /// <summary>
+    /// Add new mappings.
+    /// </summary>
+    /// <param name="mappings">MappingModels</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("mappings")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> PostMappingsAsync([Body] IList<MappingModel> mappings, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete mappings according to GUIDs
-        /// </summary>
-        /// <param name="mappings">MappingModels</param>
-        [Delete("mappings")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> DeleteMappingsAsync([Body] IList<MappingModel> mappings);
+    /// <summary>
+    /// Delete all mappings.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("mappings")]
+    Task<StatusModel> DeleteMappingsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) all mappings.
-        /// </summary>
-        /// <param name="reloadStaticMappings">A value indicating whether to reload the static mappings after the reset.</param>
-        [Post("mappings/reset")]
-        Task<StatusModel> ResetMappingsAsync(bool? reloadStaticMappings = false);
+    /// <summary>
+    /// Delete mappings according to GUIDs
+    /// </summary>
+    /// <param name="mappings">MappingModels</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("mappings")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> DeleteMappingsAsync([Body] IList<MappingModel> mappings, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get a mapping based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        /// <returns>MappingModel</returns>
-        [Get("mappings/{guid}")]
-        Task<MappingModel> GetMappingAsync([Path] Guid guid);
+    /// <summary>
+    /// Delete (reset) all mappings.
+    /// </summary>
+    /// <param name="reloadStaticMappings">A value indicating whether to reload the static mappings after the reset.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("mappings/reset")]
+    Task<StatusModel> ResetMappingsAsync(bool? reloadStaticMappings = false, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get the C# code from a mapping based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        /// <param name="mappingConverterType">The optional mappingConverterType (can be Server or Builder)</param>
-        /// <returns>C# code</returns>
-        [Get("mappings/code/{guid}")]
-        Task<string> GetMappingCodeAsync([Path] Guid guid, [Query] MappingConverterType mappingConverterType = MappingConverterType.Server);
-        
-        /// <summary>
-        /// Update a mapping based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        /// <param name="mapping">MappingModel</param>
-        [Put("mappings/{guid}")]
-        [Header("Content-Type", "application/json")]
-        Task<StatusModel> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping);
+    /// <summary>
+    /// Get a mapping based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <returns>MappingModel</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("mappings/{guid}")]
+    Task<MappingModel> GetMappingAsync([Path] Guid guid, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete a mapping based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        [Delete("mappings/{guid}")]
-        Task<StatusModel> DeleteMappingAsync([Path] Guid guid);
+    /// <summary>
+    /// Get the C# code from a mapping based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <param name="mappingConverterType">The optional mappingConverterType (can be Server or Builder)</param>
+    /// <returns>C# code</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("mappings/code/{guid}")]
+    Task<string> GetMappingCodeAsync([Path] Guid guid, [Query] MappingConverterType mappingConverterType = MappingConverterType.Server, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Save the mappings
-        /// </summary>
-        [Post("mappings/save")]
-        Task<StatusModel> SaveMappingAsync();
+    /// <summary>
+    /// Update a mapping based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <param name="mapping">MappingModel</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Put("mappings/{guid}")]
+    [Header("Content-Type", "application/json")]
+    Task<StatusModel> PutMappingAsync([Path] Guid guid, [Body] MappingModel mapping, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get the requests.
-        /// </summary>
-        /// <returns>LogRequestModels</returns>
-        [Get("requests")]
-        Task<IList<LogEntryModel>> GetRequestsAsync();
+    /// <summary>
+    /// Delete a mapping based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("mappings/{guid}")]
+    Task<StatusModel> DeleteMappingAsync([Path] Guid guid, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete all requests.
-        /// </summary>
-        [Delete("requests")]
-        Task<StatusModel> DeleteRequestsAsync();
+    /// <summary>
+    /// Save the mappings
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("mappings/save")]
+    Task<StatusModel> SaveMappingAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) all requests.
-        /// </summary>
-        [Post("requests/reset")]
-        Task<StatusModel> ResetRequestsAsync();
+    /// <summary>
+    /// Get the requests.
+    /// </summary>
+    /// <returns>LogRequestModels</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("requests")]
+    Task<IList<LogEntryModel>> GetRequestsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get a request based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        /// <returns>MappingModel</returns>
-        [Get("requests/{guid}")]
-        Task<LogEntryModel> GetRequestAsync([Path] Guid guid);
+    /// <summary>
+    /// Delete all requests.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("requests")]
+    Task<StatusModel> DeleteRequestsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete a request based on the guid
-        /// </summary>
-        /// <param name="guid">The Guid</param>
-        [Delete("requests/{guid}")]
-        Task<StatusModel> DeleteRequestAsync([Path] Guid guid);
+    /// <summary>
+    /// Delete (reset) all requests.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("requests/reset")]
+    Task<StatusModel> ResetRequestsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Find a request based on the criteria
-        /// </summary>
-        /// <param name="model">The RequestModel</param>
-        [Post("requests/find")]
-        [Header("Content-Type", "application/json")]
-        Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model);
+    /// <summary>
+    /// Get a request based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <returns>MappingModel</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("requests/{guid}")]
+    Task<LogEntryModel> GetRequestAsync([Path] Guid guid, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get all scenarios
-        /// </summary>
-        [Get("scenarios")]
-        Task<IList<ScenarioStateModel>> GetScenariosAsync();
+    /// <summary>
+    /// Delete a request based on the guid
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("requests/{guid}")]
+    Task<StatusModel> DeleteRequestAsync([Path] Guid guid, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) all scenarios
-        /// </summary>
-        [Delete("scenarios")]
-        Task<StatusModel> DeleteScenariosAsync();
+    /// <summary>
+    /// Find a request based on the criteria
+    /// </summary>
+    /// <param name="model">The RequestModel</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("requests/find")]
+    [Header("Content-Type", "application/json")]
+    Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) all scenarios
-        /// </summary>
-        [Post("scenarios")]
-        Task<StatusModel> ResetScenariosAsync();
+    /// <summary>
+    /// Get all scenarios
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("scenarios")]
+    Task<IList<ScenarioStateModel>> GetScenariosAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) a specific scenario
-        /// </summary>
-        [Delete("scenarios/{name}")]
-        [AllowAnyStatusCode]
-        Task<StatusModel> DeleteScenarioAsync([Path] string name);
+    /// <summary>
+    /// Delete (reset) all scenarios
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("scenarios")]
+    Task<StatusModel> DeleteScenariosAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete (reset) all scenarios
-        /// </summary>
-        [Post("scenarios/{name}/reset")]
-        [AllowAnyStatusCode]
-        Task<StatusModel> ResetScenarioAsync([Path] string name);
+    /// <summary>
+    /// Delete (reset) all scenarios
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("scenarios")]
+    Task<StatusModel> ResetScenariosAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Create a new File
-        /// </summary>
-        /// <param name="filename">The filename</param>
-        /// <param name="body">The body</param>
-        [Post("files/{filename}")]
-        Task<StatusModel> PostFileAsync([Path] string filename, [Body] string body);
+    /// <summary>
+    /// Delete (reset) a specific scenario
+    /// </summary>
+    /// <param name="name">Scenario name.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("scenarios/{name}")]
+    [AllowAnyStatusCode]
+    Task<StatusModel> DeleteScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Update an existing File
-        /// </summary>
-        /// <param name="filename">The filename</param>
-        /// <param name="body">The body</param>
-        [Put("files/{filename}")]
-        Task<StatusModel> PutFileAsync([Path] string filename, [Body] string body);
+    /// <summary>
+    /// Delete (reset) all scenarios
+    /// </summary>
+    /// <param name="name">Scenario name.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("scenarios/{name}/reset")]
+    [AllowAnyStatusCode]
+    Task<StatusModel> ResetScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Get the content of an existing File
-        /// </summary>
-        /// <param name="filename">The filename</param>
-        [Get("files/{filename}")]
-        Task<string> GetFileAsync([Path] string filename);
+    /// <summary>
+    /// Create a new File
+    /// </summary>
+    /// <param name="filename">The filename</param>
+    /// <param name="body">The body</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("files/{filename}")]
+    Task<StatusModel> PostFileAsync([Path] string filename, [Body] string body, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Delete an existing File
-        /// </summary>
-        /// <param name="filename">The filename</param>
-        [Delete("files/{filename}")]
-        Task<StatusModel> DeleteFileAsync([Path] string filename);
+    /// <summary>
+    /// Update an existing File
+    /// </summary>
+    /// <param name="filename">The filename</param>
+    /// <param name="body">The body</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Put("files/{filename}")]
+    Task<StatusModel> PutFileAsync([Path] string filename, [Body] string body, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Check if a file exists
-        /// </summary>
-        /// <param name="filename">The filename</param>
-        [Head("files/{filename}")]
-        Task FileExistsAsync([Path] string filename);
-    }
+    /// <summary>
+    /// Get the content of an existing File
+    /// </summary>
+    /// <param name="filename">The filename</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("files/{filename}")]
+    Task<string> GetFileAsync([Path] string filename, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Delete an existing File
+    /// </summary>
+    /// <param name="filename">The filename</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Delete("files/{filename}")]
+    Task<StatusModel> DeleteFileAsync([Path] string filename, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Check if a file exists
+    /// </summary>
+    /// <param name="filename">The filename</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Head("files/{filename}")]
+    Task FileExistsAsync([Path] string filename, CancellationToken cancellationToken = default);
 }
