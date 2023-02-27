@@ -25,6 +25,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Util\JsonUtilsTests.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- https://stackoverflow.com/questions/59406201/filenesting-not-working-for-class-or-shared-library-projects -->
         <ProjectCapability Include="ConfigurableFileNesting" />
         <ProjectCapability Include="ConfigurableFileNestingFeatureEnabled" />

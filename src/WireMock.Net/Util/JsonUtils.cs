@@ -11,38 +11,6 @@ namespace WireMock.Util;
 
 internal static class JsonUtils
 {
-    public static Type CreateTypeFromJObject(JObject instance, string? fullName = null)
-    {
-        static Type ConvertType(JToken value, string? propertyName = null)
-        {
-            var type = value.Type;
-            return type switch
-            {
-                JTokenType.Array => value.HasValues ? ConvertType(value.First!, propertyName).MakeArrayType() : typeof(object).MakeArrayType(),
-                JTokenType.Boolean => typeof(bool),
-                JTokenType.Bytes => typeof(byte[]),
-                JTokenType.Date => typeof(DateTime),
-                JTokenType.Guid => typeof(Guid),
-                JTokenType.Float => typeof(float),
-                JTokenType.Integer => typeof(long),
-                JTokenType.Null => typeof(object),
-                JTokenType.Object => CreateTypeFromJObject((JObject)value, propertyName),
-                JTokenType.String => typeof(string),
-                JTokenType.TimeSpan => typeof(TimeSpan),
-                JTokenType.Uri => typeof(string),
-                _ => typeof(object)
-            };
-        }
-
-        var properties = new Dictionary<string, Type>();
-        foreach (var item in instance.Properties())
-        {
-            properties.Add(item.Name, ConvertType(item.Value, item.Name));
-        }
-
-        return TypeBuilderUtils.BuildType(properties, fullName) ?? throw new InvalidOperationException();
-    }
-
     public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
     {
         value = null;
@@ -141,6 +109,9 @@ internal static class JsonUtils
         };
     }
 
+    /// <summary>
+    /// Based on / copied from Handlebars.Net Handlebars.Net.Helpers.Utils.JsonUtils
+    /// </summary>
     public static string GenerateDynamicLinqStatement(JToken jsonObject)
     {
         var lines = new List<string>();
