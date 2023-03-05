@@ -798,7 +798,7 @@ public class ResponseWithTransformerTests
         };
 
         var responseBuilder = Response.Create()
-            .WithBody("{{Path.Lookup data request.PathSegments.[1] 'N/A'}}")
+            .WithBody("{{lookup data request.PathSegments.[1] 'N/A'}}")
             .WithTransformer();
 
         _mappingMock.SetupGet(m => m.Data).Returns(data);

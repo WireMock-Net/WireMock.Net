@@ -172,7 +172,7 @@ public interface IRespondWithAProvider
     /// e.g. lookup an path in this object using
     /// <param name="data">The data dictionary object.</param>
     /// <example>
-    /// Path.Lookup data "1"
+    /// lookup data "1"
     /// </example>
     /// </summary>
     IRespondWithAProvider WithData(object data);
