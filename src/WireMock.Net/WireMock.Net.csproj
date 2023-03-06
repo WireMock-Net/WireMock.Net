@@ -59,7 +59,7 @@
         <PackageReference Include="NJsonSchema.Extensions" Version="0.1.0" />
         <PackageReference Include="NSwag.Core" Version="13.16.1" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.23" />
+        <!--<PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.23" />-->
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
         <PackageReference Include="TinyMapper" Version="3.0.3" />
@@ -177,13 +177,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Handlebars.Net.Helpers" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.3.14" />
-        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.14" />
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.3.15-preview-01" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.3.15-preview-01" />
     </ItemGroup>
 
     <ItemGroup>
