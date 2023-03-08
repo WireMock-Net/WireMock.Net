@@ -41,17 +41,13 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-        var methodMathers = request?.GetRequestMessageMatchers<RequestMessageMethodMatcher>();
+        var methodMather = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
 
         if (useDefinedRequestMatchers && excludedHttpMethods.Any())
         {
-            if (methodMathers != null)
+            if (methodMather != null && methodMather.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
             {
-                var matchingHttpMethods = methodMathers
-                    .Where(m => m.Methods is not null && m.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
-                    .SelectMany(m => m.Methods)
-                    .Distinct();
-                foreach (var httpMethod in matchingHttpMethods)
+                foreach (var httpMethod in methodMather.Methods)
                 {
                     if (excludedHttpMethods.Contains(httpMethod, StringComparer.OrdinalIgnoreCase))
                     {
