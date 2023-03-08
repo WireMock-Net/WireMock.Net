@@ -41,27 +41,6 @@ internal class ProxyMappingConverter
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
 
-        //if (useDefinedRequestMatchers && excludedHttpMethods.Any())
-        //{
-        //    if (methodMather != null && methodMather.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
-        //    {
-        //        foreach (var httpMethod in methodMather.Methods)
-        //        {
-        //            if (excludedHttpMethods.Contains(httpMethod, StringComparer.OrdinalIgnoreCase))
-        //            {
-        //                return null;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (excludedHttpMethods.Contains("GET", StringComparer.OrdinalIgnoreCase))
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //}
-
         var newRequest = Request.Create();
 
         // ClientIP

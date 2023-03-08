@@ -15,7 +15,7 @@ public class ProxySaveMappingSettings
     public ProxySaveMappingSetting<string>? StatusCodePattern { get; set; } = "*";
 
     /// <summary>
-    /// 
+    /// Only save these Http Methods. (Note that SaveMapping must also be set to true.)
     /// </summary>
     [PublicAPI]
     public ProxySaveMappingSetting<string[]>? HttpMethods { get; set; }

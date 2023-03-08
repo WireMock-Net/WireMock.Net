@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Stef.Validation;
@@ -7,7 +8,6 @@ using WireMock.Matchers;
 using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Util;
-using System.Linq;
 
 namespace WireMock.Proxy;
 
@@ -68,12 +68,6 @@ internal class ProxyHelper
         {
             newMapping = _proxyMappingConverter.ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
         }
-
-        //if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
-        //    (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
-        //{
-        //    newMapping = _proxyMappingConverter.ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
-        //}
 
         return (responseMessage, newMapping);
     }
