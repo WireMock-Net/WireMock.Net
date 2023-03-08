@@ -26,8 +26,13 @@ internal class ProxyMappingConverter
         _dateTimeUtils = Guard.NotNull(dateTimeUtils);
     }
 
-    public IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
+    public IMapping? ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
+        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
+        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[0];
+        var excludedHttpMethods = proxyAndRecordSettings.ExcludedHttpMethods ?? new string[0];
+
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request?.GetRequestMessageMatcher<RequestMessagePathMatcher>();
@@ -36,11 +41,32 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var methodMathers = request?.GetRequestMessageMatchers<RequestMessageMethodMatcher>();
 
-        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
-
-        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
-        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
+        if (useDefinedRequestMatchers && excludedHttpMethods.Any())
+        {
+            if (methodMathers != null)
+            {
+                var matchingHttpMethods = methodMathers
+                    .Where(m => m.Methods is not null && m.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
+                    .SelectMany(m => m.Methods)
+                    .Distinct();
+                foreach (var httpMethod in matchingHttpMethods)
+                {
+                    if (excludedHttpMethods.Contains(httpMethod, StringComparer.OrdinalIgnoreCase))
+                    {
+                        return null;
+                    }
+                }
+            }
+            else
+            {
+                if (excludedHttpMethods.Contains("GET", StringComparer.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+            }
+        }
 
         var newRequest = Request.Create();
 

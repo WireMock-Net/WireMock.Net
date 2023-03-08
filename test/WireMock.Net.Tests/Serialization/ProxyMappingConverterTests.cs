@@ -70,7 +70,7 @@ public class ProxyMappingConverterTests
         var responseMessage = new ResponseMessage();
 
         // Act
-        var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage);
+        var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage)!;
 
         // Assert
         var model = _mappingConverter.ToMappingModel(proxyMapping);
