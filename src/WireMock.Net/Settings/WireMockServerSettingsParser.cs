@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Logging;
+using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -111,7 +112,12 @@ public static class WireMockServerSettingsParser
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                 UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 AppendGuidToSavedMappingFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
-                Url = proxyUrl!
+                Url = proxyUrl!,
+                SaveMappingSettings = new ProxySaveMappingSettings
+                {
+                    StatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
+                    // HttpMethods = new ProxySaveMappingSetting<string[]>(parser.GetValues("DoNotSaveMappingForHttpMethods", new string[0]), MatchBehaviour.RejectOnMatch)
+                }
             };
 
             string? proxyAddress = parser.GetStringValue("WebProxyAddress");

@@ -31,7 +31,6 @@ internal class ProxyMappingConverter
         var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
         var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
         var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[0];
-        var excludedHttpMethods = proxyAndRecordSettings.ExcludedHttpMethods ?? new string[0];
 
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
@@ -41,28 +40,27 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-        var methodMather = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
 
-        if (useDefinedRequestMatchers && excludedHttpMethods.Any())
-        {
-            if (methodMather != null && methodMather.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
-            {
-                foreach (var httpMethod in methodMather.Methods)
-                {
-                    if (excludedHttpMethods.Contains(httpMethod, StringComparer.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                }
-            }
-            else
-            {
-                if (excludedHttpMethods.Contains("GET", StringComparer.OrdinalIgnoreCase))
-                {
-                    return null;
-                }
-            }
-        }
+        //if (useDefinedRequestMatchers && excludedHttpMethods.Any())
+        //{
+        //    if (methodMather != null && methodMather.MatchBehaviour == MatchBehaviour.AcceptOnMatch)
+        //    {
+        //        foreach (var httpMethod in methodMather.Methods)
+        //        {
+        //            if (excludedHttpMethods.Contains(httpMethod, StringComparer.OrdinalIgnoreCase))
+        //            {
+        //                return null;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (excludedHttpMethods.Contains("GET", StringComparer.OrdinalIgnoreCase))
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}
 
         var newRequest = Request.Create();
 
