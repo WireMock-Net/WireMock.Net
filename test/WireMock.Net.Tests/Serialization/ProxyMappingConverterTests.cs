@@ -1,6 +1,7 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using VerifyTests;
 using VerifyXunit;
@@ -77,6 +78,32 @@ public class ProxyMappingConverterTests
 
         // Verify
         return Verifier.Verify(model, VerifySettings);
+    }
+
+    [Fact]
+    public void ToMapping_UseDefinedRequestMatchers_True_ExcludedHttpMethods()
+    {
+        // Arrange
+        var proxyAndRecordSettings = new ProxyAndRecordSettings
+        {
+            UseDefinedRequestMatchers = true,
+            ExcludedHttpMethods = new[] { "Get", "Options" }
+        };
+
+        var requestOptions = Request.Create().UsingOptions();
+
+        var mappingMock = new Mock<IMapping>();
+        mappingMock.SetupGet(m => m.RequestMatcher).Returns(requestOptions);
+        
+        var requestMessageMock = new Mock<IRequestMessage>();
+
+        var responseMessage = new ResponseMessage();
+
+        // Act
+        var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage)!;
+
+        // Assert
+        proxyMapping.Should().BeNull();
     }
 }
 #endif
