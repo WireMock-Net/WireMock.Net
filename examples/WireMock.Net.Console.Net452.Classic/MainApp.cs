@@ -643,6 +643,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
+
             server
                 .Given(Request.Create().WithPath("/random200or505").UsingGet())
                 .RespondWith(Response.Create().WithCallback(request =>
@@ -650,7 +651,11 @@ namespace WireMock.Net.ConsoleApplication
                     int code = new Random().Next(1, 2) == 1 ? 505 : 200;
                     return new ResponseMessage
                     {
-                        BodyData = new BodyData { BodyAsString = "random200or505:" + code, DetectedBodyType = Types.BodyType.String },
+                        BodyData = new BodyData
+                        {
+                            BodyAsString = "random200or505:" + code + ", HeadersFromRequest = " + string.Join(",", request.Headers),
+                            DetectedBodyType = Types.BodyType.String,
+                        },
                         StatusCode = code
                     };
                 }));

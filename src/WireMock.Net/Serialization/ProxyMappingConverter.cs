@@ -26,8 +26,12 @@ internal class ProxyMappingConverter
         _dateTimeUtils = Guard.NotNull(dateTimeUtils);
     }
 
-    public IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
+    public IMapping? ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
+        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
+        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[0];
+
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request?.GetRequestMessageMatcher<RequestMessagePathMatcher>();
@@ -36,11 +40,6 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-
-        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
-
-        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
-        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
         var newRequest = Request.Create();
 

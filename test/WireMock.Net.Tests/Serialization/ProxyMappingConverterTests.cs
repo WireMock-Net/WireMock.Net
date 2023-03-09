@@ -1,6 +1,7 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using VerifyTests;
 using VerifyXunit;
@@ -70,7 +71,7 @@ public class ProxyMappingConverterTests
         var responseMessage = new ResponseMessage();
 
         // Act
-        var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage);
+        var proxyMapping = _sut.ToMapping(mappingMock.Object, proxyAndRecordSettings, requestMessageMock.Object, responseMessage)!;
 
         // Assert
         var model = _mappingConverter.ToMappingModel(proxyMapping);
