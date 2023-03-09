@@ -72,6 +72,9 @@ public class Mapping : IMapping
     /// <inheritdoc />
     public ITimeSettings? TimeSettings { get; }
 
+    /// <inheritdoc />
+    public object? Data { get; set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.
     /// </summary>
@@ -91,6 +94,7 @@ public class Mapping : IMapping
     /// <param name="webhooks">The Webhooks. [Optional]</param>
     /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
+    /// <param name="data">The data object. [Optional]</param>
     public Mapping(
         Guid guid,
         DateTime updatedAt,
@@ -107,7 +111,8 @@ public class Mapping : IMapping
         int? stateTimes,
         IWebhook[]? webhooks,
         bool? useWebhooksFireAndForget,
-        ITimeSettings? timeSettings)
+        ITimeSettings? timeSettings,
+        object? data)
     {
         Guid = guid;
         UpdatedAt = updatedAt;
@@ -125,6 +130,7 @@ public class Mapping : IMapping
         Webhooks = webhooks;
         UseWebhooksFireAndForget = useWebhooksFireAndForget;
         TimeSettings = timeSettings;
+        Data = data;
     }
 
     /// <inheritdoc cref="IMapping.ProvideResponseAsync" />

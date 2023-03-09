@@ -782,4 +782,31 @@ public class ResponseWithTransformerTests
         response.Message.BodyData!.BodyAsString.Should().Be(text);
         response.Message.BodyData.Encoding.Should().Be(enc);
     }
+
+    [Theory]
+    [InlineData("/wiremock-data/1", "one")]
+    [InlineData("/wiremock-data/2", "two")]
+    [InlineData("/wiremock-data/3", "N/A")]
+    public async Task Response_ProvideResponse_Handlebars_DataObject(string path, string expected)
+    {
+        // Arrange
+        var request = new RequestMessage(new UrlDetails("https://localhost" + path), "POST", ClientIp);
+        var data = new Dictionary<string, object?>
+        {
+            { "1", "one" },
+            { "2", "two" }
+        };
+
+        var responseBuilder = Response.Create()
+            .WithBody("{{lookup data request.PathSegments.[1] 'N/A'}}")
+            .WithTransformer();
+
+        _mappingMock.SetupGet(m => m.Data).Returns(data);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData!.BodyAsString.Should().Be(expected);
+    }
 }

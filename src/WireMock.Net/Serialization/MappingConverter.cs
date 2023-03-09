@@ -181,6 +181,7 @@ internal class MappingConverter
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
+            Data = mapping.Data,
             Request = new RequestModel
             {
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel

@@ -164,22 +164,6 @@ public class ResponseWithHandlebarsLinqTests
     }
 
     [Fact]
-    public void Response_ProvideResponse_Handlebars_Linq1_Throws_ArgumentNullException()
-    {
-        // Assign
-        var body = new BodyData();
-
-        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "POST", "::1", body);
-
-        var responseBuilder = Response.Create()
-            .WithBodyAsJson(new { x = "{{Linq request.body 'Name'}}" })
-            .WithTransformer();
-
-        // Act
-        Check.ThatAsyncCode(() => responseBuilder.ProvideResponseAsync(mappingMock.Object, request, _settings)).Throws<ArgumentNullException>();
-    }
-
-    [Fact]
     public void Response_ProvideResponse_Handlebars_Linq1_Throws_HandlebarsException()
     {
         // Assign

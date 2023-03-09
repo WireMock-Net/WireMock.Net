@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
+using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
@@ -115,7 +116,8 @@ internal class Transformer : ITransformer
         {
             mapping = mapping,
             request = request,
-            response = response
+            response = response,
+            data = mapping.Data ?? new { }
         });
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -120,7 +121,16 @@ public interface IMapping
     /// <summary>
     /// Use Fire and Forget for the defined webhook(s). [Optional]
     /// </summary>
-    public bool? UseWebhooksFireAndForget { get; set; }
+    bool? UseWebhooksFireAndForget { get; set; }
+
+    /// <summary>
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
+    /// <example>
+    /// lookup data "1"
+    /// </example>
+    /// </summary>
+    object? Data { get; set; }
 
     /// <summary>
     /// ProvideResponseAsync
