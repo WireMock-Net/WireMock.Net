@@ -1,3 +1,10 @@
+# 1.5.18 (09 March 2023)
+- [#893](https://github.com/WireMock-Net/WireMock.Net/pull/893) - Add 'Data' to response which can be used during transforming the response [feature] contributed by [StefH](https://github.com/StefH)
+- [#896](https://github.com/WireMock-Net/WireMock.Net/pull/896) - Bump Microsoft.Owin from 2.0.2 to 4.2.2 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#900](https://github.com/WireMock-Net/WireMock.Net/pull/900) - ProxySettings : Add logic to not save some requests depending on HttpMethods  [feature] contributed by [StefH](https://github.com/StefH)
+- [#897](https://github.com/WireMock-Net/WireMock.Net/issues/897) - WebHostBuilder.ConfigureServices method not found when using nunit3testadapter 4.4.0 [bug]
+- [#899](https://github.com/WireMock-Net/WireMock.Net/issues/899) - Ignore OPTIONS request when using proxyandrecord [feature]
+
 # 1.5.17 (25 February 2023)
 - [#881](https://github.com/WireMock-Net/WireMock.Net/pull/881) - Add WithBodyAsJson builder method with accepts a Func [feature] contributed by [StefH](https://github.com/StefH)
 - [#882](https://github.com/WireMock-Net/WireMock.Net/pull/882) - Add example code to test HTTP Status 400 and 500 [test] contributed by [StefH](https://github.com/StefH)
