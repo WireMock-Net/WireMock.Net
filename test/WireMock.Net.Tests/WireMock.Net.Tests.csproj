@@ -12,7 +12,6 @@
 
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-        <DelaySign>true</DelaySign>
 
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
 
