@@ -81,7 +81,7 @@ public interface IBodyRequestBuilder : IRequestMatcher
     /// <summary>
     /// WithBody: Body as form-urlencoded values.
     /// </summary>
-    /// <param name="form">The form-urlencoded values.</param>
+    /// <param name="func">The form-urlencoded values.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(Func<IDictionary<string, string>?, bool> form);
+    IRequestBuilder WithBody(Func<IDictionary<string, string>?, bool> func);
 }
