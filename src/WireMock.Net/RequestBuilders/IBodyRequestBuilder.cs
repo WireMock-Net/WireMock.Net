@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Util;
@@ -54,26 +55,33 @@ public interface IBodyRequestBuilder : IRequestMatcher
     /// </summary>
     /// <param name="func">The function.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(Func<string, bool> func);
+    IRequestBuilder WithBody(Func<string?, bool> func);
 
     /// <summary>
     /// WithBody: func (byte[])
     /// </summary>
     /// <param name="func">The function.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(Func<byte[], bool> func);
+    IRequestBuilder WithBody(Func<byte[]?, bool> func);
 
     /// <summary>
     /// WithBody: func (json object)
     /// </summary>
     /// <param name="func">The function.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(Func<object, bool> func);
+    IRequestBuilder WithBody(Func<object?, bool> func);
 
     /// <summary>
     /// WithBody: func (BodyData object)
     /// </summary>
     /// <param name="func">The function.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(Func<IBodyData, bool> func);
+    IRequestBuilder WithBody(Func<IBodyData?, bool> func);
+
+    /// <summary>
+    /// WithBody: Body as form-urlencoded values.
+    /// </summary>
+    /// <param name="form">The form-urlencoded values.</param>
+    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
+    IRequestBuilder WithBody(Func<IDictionary<string, string>?, bool> form);
 }

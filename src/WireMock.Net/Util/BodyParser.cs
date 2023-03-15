@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Stef.Validation;
 using WireMock.Constants;
 using WireMock.Matchers;
@@ -49,14 +50,16 @@ internal static class BodyParser
         new WildcardMatcher("application/vnd.*+json", true)
     };
 
+    private static readonly IStringMatcher FormUrlEncodedMatcher = new WildcardMatcher("application/x-www-form-urlencoded", true);
+
     private static readonly IStringMatcher[] TextContentTypeMatchers =
     {
         new WildcardMatcher("text/*", true),
         new RegexMatcher("^application\\/(java|type)script$", true),
         new WildcardMatcher("application/*xml", true),
-        new WildcardMatcher("application/x-www-form-urlencoded", true)
+        FormUrlEncodedMatcher
     };
-
+    
     public static bool ShouldParseBody(string? httpMethod, bool allowBodyForAllHttpMethods)
     {
         if (string.IsNullOrEmpty(httpMethod))
@@ -86,6 +89,11 @@ internal static class BodyParser
         if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out MediaTypeHeaderValue contentType))
         {
             return BodyType.Bytes;
+        }
+
+        if (MatchScores.IsPerfect(FormUrlEncodedMatcher.IsMatch(contentType.MediaType)))
+        {
+            return BodyType.FormUrlEncoded;
         }
 
         if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
@@ -133,12 +141,27 @@ internal static class BodyParser
             return data;
         }
 
-        // Try to get the body as String or Json
+        // Try to get the body as String, FormUrlEncoded or Json
         try
         {
             data.BodyAsString = DefaultEncoding.GetString(data.BodyAsBytes);
             data.Encoding = DefaultEncoding;
             data.DetectedBodyType = BodyType.String;
+
+            // If string is not null or empty, try to deserialize the string to a IDictionary<string, string>
+            if (settings.DeserializeFormUrlEncoded && !string.IsNullOrEmpty(data.BodyAsString))
+            {
+                try
+                {
+                    var formValues = HttpUtility.ParseQueryString(data.BodyAsString);
+                    data.BodyAsFormUrlEncoded = formValues.AllKeys.ToDictionary(key => key, key => formValues[key]);
+                    data.DetectedBodyType = BodyType.FormUrlEncoded;
+                }
+                catch
+                {
+                    // Deserialize FormUrlEncoded failed, just ignore.
+                }
+            }
 
             // If string is not null or empty, try to deserialize the string to a JObject
             if (settings.DeserializeJson && !string.IsNullOrEmpty(data.BodyAsString))
