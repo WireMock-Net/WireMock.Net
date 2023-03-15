@@ -148,7 +148,10 @@ internal static class BodyParser
             data.DetectedBodyType = BodyType.String;
 
             // If string is not null or empty, try to deserialize the string to a IDictionary<string, string>
-            if (settings.DeserializeFormUrlEncoded && QueryStringParser.TryParse(data.BodyAsString, out var nameValueCollection))
+            if (settings.DeserializeFormUrlEncoded &&
+                data.DetectedBodyTypeFromContentType == BodyType.FormUrlEncoded &&
+                QueryStringParser.TryParse(data.BodyAsString, out var nameValueCollection)
+            )
             {
                 try
                 {
