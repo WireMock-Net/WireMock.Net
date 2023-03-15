@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using WireMock.Types;
 
@@ -12,6 +13,21 @@ namespace WireMock.Util;
 internal static class QueryStringParser
 {
     private static readonly Dictionary<string, WireMockList<string>> Empty = new();
+
+    public static bool TryParse(string? data, [NotNullWhen(true)] out IDictionary<string, string>? nameValueCollection)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            nameValueCollection = default;
+            return false;
+        }
+
+        nameValueCollection = data!
+            .Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
+            .ToDictionary(grouping => grouping[0], grouping => WebUtility.UrlDecode(grouping[1]));
+        return true;
+    }
 
     public static IDictionary<string, WireMockList<string>> Parse(string? queryString, QueryParameterMultipleValueSupport? support = null)
     {
