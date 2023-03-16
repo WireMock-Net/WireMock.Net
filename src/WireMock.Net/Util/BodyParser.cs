@@ -71,7 +71,7 @@ internal static class BodyParser
             return true;
         }
 
-        if (BodyAllowedForMethods.TryGetValue(httpMethod!.ToUpper(), out bool allowed))
+        if (BodyAllowedForMethods.TryGetValue(httpMethod!.ToUpper(), out var allowed))
         {
             return allowed;
         }
@@ -150,7 +150,7 @@ internal static class BodyParser
             // If string is not null or empty, try to deserialize the string to a IDictionary<string, string>
             if (settings.DeserializeFormUrlEncoded &&
                 data.DetectedBodyTypeFromContentType == BodyType.FormUrlEncoded &&
-                QueryStringParser.TryParse(data.BodyAsString, out var nameValueCollection)
+                QueryStringParser.TryParse(data.BodyAsString, false, out var nameValueCollection)
             )
             {
                 try

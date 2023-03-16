@@ -1,8 +1,8 @@
 using System;
-using System.Net;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
 using WireMock.Types;
 
 namespace WireMock.Util;
@@ -14,18 +14,28 @@ internal static class QueryStringParser
 {
     private static readonly Dictionary<string, WireMockList<string>> Empty = new();
 
-    public static bool TryParse(string? data, [NotNullWhen(true)] out IDictionary<string, string>? nameValueCollection)
+    public static bool TryParse(string? queryString, bool caseIgnore, [NotNullWhen(true)] out IDictionary<string, string>? nameValueCollection)
     {
-        if (string.IsNullOrEmpty(data))
+        if (string.IsNullOrEmpty(queryString))
         {
             nameValueCollection = default;
             return false;
         }
 
-        nameValueCollection = data!
+        var parts = queryString!
             .Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
-            .ToDictionary(grouping => grouping[0], grouping => WebUtility.UrlDecode(grouping[1]));
+            .Select(parameter => parameter.Split('='))
+            .Distinct();
+
+        nameValueCollection = caseIgnore ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) : new Dictionary<string, string>();
+        foreach (var part in parts)
+        {
+            if (part.Length == 2)
+            {
+                nameValueCollection.Add(part[0], part[1]);
+            }
+        }
+
         return true;
     }
 

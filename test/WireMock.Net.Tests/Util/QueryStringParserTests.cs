@@ -1,5 +1,5 @@
-using FluentAssertions;
 using System.Collections.Generic;
+using FluentAssertions;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
@@ -8,6 +8,49 @@ namespace WireMock.Net.Tests.Util;
 
 public class QueryStringParserTests
 {
+    [Fact]
+    public void TryParse_Should_Parse_QueryString()
+    {
+        // Arrange
+        var queryString = "key1=value1&key2=value2";
+        var expected = new Dictionary<string, string>
+        {
+            { "key1", "value1" },
+            { "key2", "value2" }
+        };
+
+        // Act
+        var result = QueryStringParser.TryParse(queryString, caseIgnore: false, out var actual);
+
+        // Assert
+        result.Should().BeTrue();
+        actual.Should().BeEquivalentTo(expected);
+    }
+
+    public static IEnumerable<object?[]> QueryStringTestData => new List<object?[]>
+    {
+        new object?[] { null, false, false, null },
+        new object?[] { string.Empty, false, false, null },
+        new object?[] { "test", false, true, new Dictionary<string, string> { { "test", "" } } },
+        new object?[] { "&", false, false, null },
+        new object?[] { "&&", false, false, null },
+        new object?[] { "a=", false, true, new Dictionary<string, string> { { "a", "" } } },
+        new object?[] { "&a", false, false, null },
+        new object?[] { "&a=", false, true, new Dictionary<string, string> { { "a", "" } } },
+    };
+
+    [Theory]
+    [MemberData(nameof(QueryStringTestData))]
+    public void TryParse_Should_Parse_QueryString(string queryString, bool caseIgnore, bool expectedResult, IDictionary<string, string> expectedOutput)
+    {
+        // Act
+        var result = QueryStringParser.TryParse(queryString, caseIgnore, out var actual);
+
+        // Assert
+        result.Should().Be(expectedResult);
+        actual.Should().BeEquivalentTo(expectedOutput);
+    }
+
     [Fact]
     public void Parse_WithNullString()
     {
