@@ -1,7 +1,6 @@
 # 1.5.19 (17 March 2023)
 - #903 Add WithBody with IDictionary (form-urlencoded values) [feature]
 - #904 Update Handlebars.Net.Helpers to 2.3.15 [feature]
-- #865 Could not load file or assembly 'Microsoft.Extensions.DependencyInjection.Abstractions' for .NET 6
 - #901 Matching one form-urlencoded value [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
