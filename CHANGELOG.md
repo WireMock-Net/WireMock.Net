@@ -1,3 +1,8 @@
+# 1.5.19 (17 March 2023)
+- [#903](https://github.com/WireMock-Net/WireMock.Net/pull/903) - Add WithBody with IDictionary (form-urlencoded values) [feature] contributed by [StefH](https://github.com/StefH)
+- [#904](https://github.com/WireMock-Net/WireMock.Net/pull/904) - Update Handlebars.Net.Helpers to 2.3.15 [feature] contributed by [StefH](https://github.com/StefH)
+- [#901](https://github.com/WireMock-Net/WireMock.Net/issues/901) - Matching one form-urlencoded value [feature]
+
 # 1.5.18 (09 March 2023)
 - [#893](https://github.com/WireMock-Net/WireMock.Net/pull/893) - Add 'Data' to response which can be used during transforming the response [feature] contributed by [StefH](https://github.com/StefH)
 - [#896](https://github.com/WireMock-Net/WireMock.Net/pull/896) - Bump Microsoft.Owin from 2.0.2 to 4.2.2 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)

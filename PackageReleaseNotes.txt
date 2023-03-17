@@ -1,8 +1,7 @@
-# 1.5.18 (09 March 2023)
-- #893 Add 'Data' to response which can be used during transforming the response [feature]
-- #896 Bump Microsoft.Owin from 2.0.2 to 4.2.2 in /examples/WireMock.Net.Service [dependencies]
-- #900 ProxySettings : Add logic to not save some requests depending on HttpMethods  [feature]
-- #897 WebHostBuilder.ConfigureServices method not found when using nunit3testadapter 4.4.0 [bug]
-- #899 Ignore OPTIONS request when using proxyandrecord [feature]
+# 1.5.19 (17 March 2023)
+- #903 Add WithBody with IDictionary (form-urlencoded values) [feature]
+- #904 Update Handlebars.Net.Helpers to 2.3.15 [feature]
+- #865 Could not load file or assembly 'Microsoft.Extensions.DependencyInjection.Abstractions' for .NET 6
+- #901 Matching one form-urlencoded value [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
