@@ -16,7 +16,7 @@ internal static class QueryStringParser
 
     public static bool TryParse(string? queryString, bool caseIgnore, [NotNullWhen(true)] out IDictionary<string, string>? nameValueCollection)
     {
-        if (string.IsNullOrEmpty(queryString))
+        if (queryString is null)
         {
             nameValueCollection = default;
             return false;

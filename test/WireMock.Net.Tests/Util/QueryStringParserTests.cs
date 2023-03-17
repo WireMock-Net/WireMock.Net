@@ -8,35 +8,22 @@ namespace WireMock.Net.Tests.Util;
 
 public class QueryStringParserTests
 {
-    [Fact]
-    public void TryParse_Should_Parse_QueryString()
-    {
-        // Arrange
-        var queryString = "key1=value1&key2=value2";
-        var expected = new Dictionary<string, string>
-        {
-            { "key1", "value1" },
-            { "key2", "value2" }
-        };
-
-        // Act
-        var result = QueryStringParser.TryParse(queryString, caseIgnore: false, out var actual);
-
-        // Assert
-        result.Should().BeTrue();
-        actual.Should().BeEquivalentTo(expected);
-    }
-
     public static IEnumerable<object?[]> QueryStringTestData => new List<object?[]>
     {
         new object?[] { null, false, false, null },
-        new object?[] { string.Empty, false, false, null },
-        new object?[] { "test", false, true, new Dictionary<string, string> { { "test", "" } } },
-        new object?[] { "&", false, false, null },
-        new object?[] { "&&", false, false, null },
+        new object?[] { string.Empty, false, true, new Dictionary<string, string>() },
+        new object?[] { "test", false, true, new Dictionary<string, string>() },
+        new object?[] { "&", false, true, new Dictionary<string, string>() },
+        new object?[] { "&&", false, true, new Dictionary<string, string>() },
         new object?[] { "a=", false, true, new Dictionary<string, string> { { "a", "" } } },
-        new object?[] { "&a", false, false, null },
+        new object?[] { "&a", false, true, new Dictionary<string, string>() },
         new object?[] { "&a=", false, true, new Dictionary<string, string> { { "a", "" } } },
+        new object?[] { "&key1=value1", false, true, new Dictionary<string, string> { { "key1", "value1" } } },
+        new object?[] { "key1=value1", false, true, new Dictionary<string, string> { { "key1", "value1" } } },
+        new object?[] { "key1=value1&key2=value2", false, true, new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } } },
+        new object?[] { "key1=value1&key2=value2&", false, true, new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } } },
+        new object?[] { "key1=value1&&key2=value2", false, true, new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } } },
+        new object?[] { "&key1=value1&key2=value2&&", false, true, new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } } },
     };
 
     [Theory]
