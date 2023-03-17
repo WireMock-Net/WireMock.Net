@@ -15,7 +15,8 @@ internal static class HttpResponseMessageHelper
         Uri requiredUri,
         Uri originalUri,
         bool deserializeJson,
-        bool decompressGzipAndDeflate)
+        bool decompressGzipAndDeflate,
+        bool deserializeFormUrlEncoded)
     {
         var responseMessage = new ResponseMessage { StatusCode = (int)httpResponseMessage.StatusCode };
 
@@ -44,7 +45,8 @@ internal static class HttpResponseMessageHelper
                     ContentType = contentTypeHeader?.FirstOrDefault(),
                     DeserializeJson = deserializeJson,
                     ContentEncoding = contentEncodingHeader?.FirstOrDefault(),
-                    DecompressGZipAndDeflate = decompressGzipAndDeflate
+                    DecompressGZipAndDeflate = decompressGzipAndDeflate,
+                    DeserializeFormUrlEncoded = deserializeFormUrlEncoded
                 };
                 responseMessage.BodyData = await BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false);
             }
@@ -55,7 +57,7 @@ internal static class HttpResponseMessageHelper
             // If Location header contains absolute redirect URL, and base URL is one that we proxy to,
             // we need to replace it to original one.
             if (string.Equals(header.Key, HttpKnownHeaderNames.Location, StringComparison.OrdinalIgnoreCase)
-                && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out Uri absoluteLocationUri)
+                && Uri.TryCreate(header.Value.First(), UriKind.Absolute, out var absoluteLocationUri)
                 && string.Equals(absoluteLocationUri.Host, requiredUri.Host, StringComparison.OrdinalIgnoreCase))
             {
                 var replacedLocationUri = new Uri(originalUri, absoluteLocationUri.PathAndQuery);

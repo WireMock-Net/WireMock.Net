@@ -4,7 +4,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Logging;
-using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -47,6 +46,8 @@ public static class WireMockServerSettingsParser
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
             AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
             DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
+            DisableRequestBodyDecompressing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableRequestBodyDecompressing)),
+            DisableDeserializeFormUrlEncoded = parser.GetBoolValue(nameof(WireMockServerSettings.DisableDeserializeFormUrlEncoded)),
             HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
             MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
             ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
