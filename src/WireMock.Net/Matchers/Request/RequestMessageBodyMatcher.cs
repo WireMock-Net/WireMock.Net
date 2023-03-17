@@ -1,8 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using AnyOfTypes;
 using Stef.Validation;
-using WireMock.Models;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -32,6 +31,11 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// The body data function for BodyData
     /// </summary>
     public Func<IBodyData?, bool>? BodyDataFunc { get; }
+
+    /// <summary>
+    /// The body data function for FormUrlEncoded
+    /// </summary>
+    public Func<IDictionary<string, string>?, bool>? FormUrlEncodedFunc { get; }
 
     /// <summary>
     /// The matchers.
@@ -112,6 +116,15 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
     /// </summary>
+    /// <param name="func">The function.</param>
+    public RequestMessageBodyMatcher(Func<IDictionary<string, string>?, bool> func)
+    {
+        FormUrlEncodedFunc = Guard.NotNull(func);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageBodyMatcher"/> class.
+    /// </summary>
     /// <param name="matchers">The matchers.</param>
     public RequestMessageBodyMatcher(params IMatcher[] matchers)
     {
@@ -184,7 +197,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
         if (matcher is IStringMatcher stringMatcher)
         {
             // If the body is a Json or a String, use the BodyAsString to match on.
-            if (requestMessage?.BodyData?.DetectedBodyType == BodyType.Json || requestMessage?.BodyData?.DetectedBodyType == BodyType.String)
+            if (requestMessage?.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String)
             {
                 return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
             }
@@ -204,6 +217,11 @@ public class RequestMessageBodyMatcher : IRequestMatcher
         if (Func != null)
         {
             return MatchScores.ToScore(Func(requestMessage.BodyData?.BodyAsString));
+        }
+
+        if (FormUrlEncodedFunc != null)
+        {
+            return MatchScores.ToScore(FormUrlEncodedFunc(requestMessage.BodyData?.BodyAsFormUrlEncoded));
         }
 
         if (JsonFunc != null)

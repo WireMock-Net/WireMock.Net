@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using WireMock.Types;
 
@@ -13,6 +14,9 @@ public class BodyData : IBodyData
 
     /// <inheritdoc />
     public string? BodyAsString { get; set; }
+
+    /// <inheritdoc />
+    public IDictionary<string, string>? BodyAsFormUrlEncoded { get; set; }
 
     /// <inheritdoc cref="IBodyData.BodyAsJson" />
     public object? BodyAsJson { get; set; }

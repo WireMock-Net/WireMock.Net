@@ -431,7 +431,7 @@ public class RequestMessageBodyMatcherTests
                 // JSON match +++
                 {json, new RequestMessageBodyMatcher((object? o) => ((dynamic) o!).a == "b"), true},
                 {json, new RequestMessageBodyMatcher((string? s) => s == json), true},
-                {json, new RequestMessageBodyMatcher((byte[]? b) => b.SequenceEqual(Encoding.UTF8.GetBytes(json))), true},
+                {json, new RequestMessageBodyMatcher((byte[]? b) => b?.SequenceEqual(Encoding.UTF8.GetBytes(json)) == true), true},
                 
                 // JSON no match ---
                 {json, new RequestMessageBodyMatcher((object? o) => false), false},
@@ -442,7 +442,7 @@ public class RequestMessageBodyMatcherTests
                 // string match +++
                 {str, new RequestMessageBodyMatcher((object? o) => o == null), true},
                 {str, new RequestMessageBodyMatcher((string? s) => s == str), true},
-                {str, new RequestMessageBodyMatcher((byte[]? b) => b.SequenceEqual(Encoding.UTF8.GetBytes(str))), true},
+                {str, new RequestMessageBodyMatcher((byte[]? b) => b?.SequenceEqual(Encoding.UTF8.GetBytes(str)) == true), true},
 
                 // string no match ---
                 {str, new RequestMessageBodyMatcher((object? o) => false), false},
@@ -453,13 +453,13 @@ public class RequestMessageBodyMatcherTests
                 // binary match +++
                 {bytes, new RequestMessageBodyMatcher((object? o) => o == null), true},
                 {bytes, new RequestMessageBodyMatcher((string? s) => s == null), true},
-                {bytes, new RequestMessageBodyMatcher((byte[]? b) => b.SequenceEqual(bytes)), true},
+                {bytes, new RequestMessageBodyMatcher((byte[]? b) => b?.SequenceEqual(bytes) == true), true},
 
                 // binary no match ---
                 {bytes, new RequestMessageBodyMatcher((object? o) => false), false},
                 {bytes, new RequestMessageBodyMatcher((string? s) => false), false},
                 {bytes, new RequestMessageBodyMatcher((byte[]? b) => false), false},
-                {bytes, new RequestMessageBodyMatcher(), false },
+                {bytes, new RequestMessageBodyMatcher(), false }
             };
         }
     }
