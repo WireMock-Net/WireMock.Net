@@ -6,7 +6,7 @@ public class ProxySaveMappingSetting<T>
 {
     public MatchBehaviour MatchBehaviour { get; } = MatchBehaviour.AcceptOnMatch;
 
-    public T Value { get; private set; }
+    public T Value { get; }
 
     public ProxySaveMappingSetting(T value, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
@@ -14,7 +14,7 @@ public class ProxySaveMappingSetting<T>
         MatchBehaviour = matchBehaviour;
     }
 
-    public static implicit operator ProxySaveMappingSetting<T>(T value) => new ProxySaveMappingSetting<T>(value);
+    public static implicit operator ProxySaveMappingSetting<T>(T value) => new(value);
 
     public static implicit operator T(ProxySaveMappingSetting<T> @this) => @this.Value;
 }

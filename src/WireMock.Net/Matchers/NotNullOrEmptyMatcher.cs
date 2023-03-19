@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using AnyOfTypes;
 using WireMock.Models;
@@ -62,7 +63,7 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
-        return new AnyOf<string, StringPattern>[0];
+        return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
     /// <inheritdoc />

@@ -217,10 +217,17 @@ public partial class WireMockServer
         var model = new SettingsModel
         {
             AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods,
+            AllowOnlyDefinedHttpStatusCodeInResponse = _settings.AllowOnlyDefinedHttpStatusCodeInResponse,
             AllowPartialMapping = _settings.AllowPartialMapping,
+            DisableDeserializeFormUrlEncoded = _settings.DisableDeserializeFormUrlEncoded,
+            DisableJsonBodyParsing = _settings.DisableJsonBodyParsing,
+            DisableRequestBodyDecompressing = _settings.DisableRequestBodyDecompressing,
+            DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
             GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
             HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
+            HostingScheme = _settings.HostingScheme,
             MaxRequestLogCount = _settings.MaxRequestLogCount,
+            QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
             ReadStaticMappings = _settings.ReadStaticMappings,
             RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
             SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
@@ -228,14 +235,11 @@ public partial class WireMockServer
             UseRegexExtended = _settings.UseRegexExtended,
             WatchStaticMappings = _settings.WatchStaticMappings,
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
-            HostingScheme = _settings.HostingScheme,
-            DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
-            QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
 
 #if USE_ASPNETCORE
-            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString(),
+            AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate,
             ClientCertificateMode = _settings.ClientCertificateMode,
-            AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate
+            CorsPolicyOptions = _settings.CorsPolicyOptions?.ToString()
 #endif
         };
 
@@ -250,10 +254,16 @@ public partial class WireMockServer
 
         // _settings
         _settings.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
+        _settings.AllowOnlyDefinedHttpStatusCodeInResponse = settings.AllowOnlyDefinedHttpStatusCodeInResponse;
         _settings.AllowPartialMapping = settings.AllowPartialMapping;
+        _settings.DisableDeserializeFormUrlEncoded = settings.DisableDeserializeFormUrlEncoded;
+        _settings.DisableJsonBodyParsing = settings.DisableJsonBodyParsing;
+        _settings.DisableRequestBodyDecompressing = settings.DisableRequestBodyDecompressing;
+        _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
         _settings.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _settings.MaxRequestLogCount = settings.MaxRequestLogCount;
         _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
+        _settings.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
         _settings.ReadStaticMappings = settings.ReadStaticMappings;
         _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
         _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
@@ -261,8 +271,6 @@ public partial class WireMockServer
         _settings.UseRegexExtended = settings.UseRegexExtended;
         _settings.WatchStaticMappings = settings.WatchStaticMappings;
         _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;
-        _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
-        _settings.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
 
         InitSettings(_settings);
 

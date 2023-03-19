@@ -36,14 +36,12 @@ internal static class RegexUtils
         {
             if (useRegexExtended)
             {
-                var r = new RegexExtended(pattern, RegexOptions.None, RegexTimeOut);
-                return (true, r.IsMatch(input));
+                var regexExtended = new RegexExtended(pattern, RegexOptions.None, RegexTimeOut);
+                return (true, regexExtended.IsMatch(input));
             }
-            else
-            {
-                var r = new Regex(pattern, RegexOptions.None, RegexTimeOut);
-                return (true, r.IsMatch(input));
-            }
+
+            var regex = new Regex(pattern, RegexOptions.None, RegexTimeOut);
+            return (true, regex.IsMatch(input));
         }
         catch
         {

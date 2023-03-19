@@ -60,7 +60,7 @@ internal static class JObjectExtensions
     {
         if (src == null)
         {
-            return new object?[0];
+            return EmptyArray<object?>.Value;
         }
 
         return ConvertJTokenArray(src, options);

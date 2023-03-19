@@ -182,13 +182,13 @@ public class WireMockServerSettings
     public bool? AllowCSharpCodeMatcher { get; set; }
 
     /// <summary>
-    /// Allow a Body for all HTTP Methods. (default set to false).
+    /// Allow a Body for all HTTP Methods. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? AllowBodyForAllHttpMethods { get; set; }
 
     /// <summary>
-    /// Allow only a HttpStatus Code in the response which is defined. (default set to false).
+    /// Allow only a HttpStatus Code in the response which is defined. (default set to <c>false</c>).
     /// - false : also null, 0, empty or invalid HttpStatus codes are allowed.
     /// - true  : only codes defined in <see cref="System.Net.HttpStatusCode"/> are allowed.
     /// </summary>
@@ -196,25 +196,31 @@ public class WireMockServerSettings
     public bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
 
     /// <summary>
-    /// Set to true to disable Json deserialization when processing requests. (default set to false).
+    /// Set to true to disable Json deserialization when processing requests. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? DisableJsonBodyParsing { get; set; }
 
     /// <summary>
-    /// Disable support for GZip and Deflate request body decompression. (default set to false).
+    /// Disable support for GZip and Deflate request body decompression. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? DisableRequestBodyDecompressing { get; set; }
 
     /// <summary>
-    /// Handle all requests synchronously. (default set to false).
+    /// Set to true to disable FormUrlEncoded deserializing when processing requests. (default set to <c>false</c>).
+    /// </summary>
+    [PublicAPI]
+    public bool? DisableDeserializeFormUrlEncoded { get; set; }
+
+    /// <summary>
+    /// Handle all requests synchronously. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? HandleRequestsSynchronously { get; set; }
 
     /// <summary>
-    /// Throw an exception when the <see cref="IMatcher"/> fails because of invalid input. (default set to false).
+    /// Throw an exception when the <see cref="IMatcher"/> fails because of invalid input. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? ThrowExceptionWhenMatcherFails { get; set; }
@@ -255,19 +261,19 @@ public class WireMockServerSettings
     public WebhookSettings? WebhookSettings { get; set; }
 
     /// <summary>
-    /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/> (default set to true).
+    /// Use the <see cref="RegexExtended"/> instead of the default <see cref="Regex"/> (default set to <c>true</c>).
     /// </summary>
     [PublicAPI]
     public bool? UseRegexExtended { get; set; } = true;
 
     /// <summary>
-    /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/> (default set to false).
+    /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/> (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? SaveUnmatchedRequests { get; set; }
 
     /// <summary>
-    /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to false).
+    /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to <c>false</c>).
     /// </summary>
     [PublicAPI]
     public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }

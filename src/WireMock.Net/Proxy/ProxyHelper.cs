@@ -45,8 +45,16 @@ internal class ProxyHelper
         // Create ResponseMessage
         bool deserializeJson = !_settings.DisableJsonBodyParsing.GetValueOrDefault(false);
         bool decompressGzipAndDeflate = !_settings.DisableRequestBodyDecompressing.GetValueOrDefault(false);
+        bool deserializeFormUrlEncoded = !_settings.DisableDeserializeFormUrlEncoded.GetValueOrDefault(false);
 
-        var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
+        var responseMessage = await HttpResponseMessageHelper.CreateAsync(
+            httpResponseMessage,
+            requiredUri,
+            originalUri,
+            deserializeJson,
+            decompressGzipAndDeflate,
+            deserializeFormUrlEncoded
+        ).ConfigureAwait(false);
 
         IMapping? newMapping = null;
 
@@ -56,11 +64,11 @@ internal class ProxyHelper
         if (saveMappingSettings != null)
         {
             save &= Check(saveMappingSettings.StatusCodePattern,
-                () => HttpStatusRangeParser.IsMatch(saveMappingSettings.StatusCodePattern, responseMessage.StatusCode)
+                () => saveMappingSettings.StatusCodePattern != null && HttpStatusRangeParser.IsMatch(saveMappingSettings.StatusCodePattern, responseMessage.StatusCode)
             );
 
             save &= Check(saveMappingSettings.HttpMethods,
-                () => saveMappingSettings.HttpMethods.Value.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase)
+                () => saveMappingSettings.HttpMethods != null && saveMappingSettings.HttpMethods.Value.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase)
             );
         }
 

@@ -16,18 +16,14 @@ internal static class HttpStatusRangeParser
     /// <param name="pattern">The pattern. (Can be null, in that case it's allowed.)</param>
     /// <param name="httpStatusCode">The value.</param>
     /// <exception cref="ArgumentException"><paramref name="pattern"/> is invalid.</exception>
-    public static bool IsMatch(string pattern, object? httpStatusCode)
+    public static bool IsMatch(string? pattern, object? httpStatusCode)
     {
-        switch (httpStatusCode)
+        return httpStatusCode switch
         {
-            case int statusCodeAsInteger:
-                return IsMatch(pattern, statusCodeAsInteger);
-
-            case string statusCodeAsString:
-                return IsMatch(pattern, int.Parse(statusCodeAsString));
-        }
-
-        return false;
+            int statusCodeAsInteger => IsMatch(pattern, statusCodeAsInteger),
+            string statusCodeAsString => IsMatch(pattern, int.Parse(statusCodeAsString)),
+            _ => false
+        };
     }
 
     /// <summary>

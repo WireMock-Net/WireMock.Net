@@ -31,27 +31,49 @@ public class SettingsModel
     public int? MaxRequestLogCount { get; set; }
 
     /// <summary>
-    /// Allow a Body for all HTTP Methods. (default set to false).
+    /// Allow a Body for all HTTP Methods. (default set to <c>false</c>).
     /// </summary>
     public bool? AllowBodyForAllHttpMethods { get; set; }
 
     /// <summary>
-    /// Handle all requests synchronously. (default set to false).
+    /// Allow only a HttpStatus Code in the response which is defined. (default set to <c>false</c>).
+    /// - false : also null, 0, empty or invalid HttpStatus codes are allowed.
+    /// - true  : only codes defined in <see cref="System.Net.HttpStatusCode"/> are allowed.
+    /// </summary>
+    public bool? AllowOnlyDefinedHttpStatusCodeInResponse { get; set; }
+
+    /// <summary>
+    /// Set to true to disable Json deserialization when processing requests. (default set to <c>false</c>).
+    /// </summary>
+    public bool? DisableJsonBodyParsing { get; set; }
+
+    /// <summary>
+    /// Disable support for GZip and Deflate request body decompression. (default set to <c>false</c>).
+    /// </summary>
+    public bool? DisableRequestBodyDecompressing { get; set; }
+
+    /// <summary>
+    /// Set to true to disable FormUrlEncoded deserializing when processing requests. (default set to <c>false</c>).
+    /// </summary>
+    public bool? DisableDeserializeFormUrlEncoded { get; set; }
+
+    /// <summary>
+    /// Handle all requests synchronously. (default set to <c>false</c>).
     /// </summary>
     public bool? HandleRequestsSynchronously { get; set; }
 
     /// <summary>
-    /// Throw an exception when the Matcher fails because of invalid input. (default set to false).
+    /// Throw an exception when the Matcher fails because of invalid input. (default set to <c>false</c>).
     /// </summary>
     public bool? ThrowExceptionWhenMatcherFails { get; set; }
 
     /// <summary>
-    /// Use the RegexExtended instead of the default <see cref="Regex"/>.  (default set to true).
+    /// Use the RegexExtended instead of the default <see cref="Regex"/>.  (default set to <c>true</c>).
     /// </summary>
     public bool? UseRegexExtended { get; set; }
 
     /// <summary>
-    /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>. (default set to false).
+    /// Save unmatched requests to a file using the <see cref="IFileSystemHandler"/>. (default set to <c>false</c>).
     /// </summary>
     public bool? SaveUnmatchedRequests { get; set; }
 
@@ -86,7 +108,7 @@ public class SettingsModel
     public HostingScheme? HostingScheme { get; set; }
 
     /// <summary>
-    /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to false).
+    /// Don't save the response-string in the LogEntry when WithBody(Func{IRequestMessage, string}) or WithBody(Func{IRequestMessage, Task{string}}) is used. (default set to <c>false</c>).
     /// </summary>
     public bool? DoNotSaveDynamicResponseInLogEntry { get; set; }
 

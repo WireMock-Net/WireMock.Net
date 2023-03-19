@@ -140,7 +140,7 @@ internal class MappingConverter
         {
             sb.AppendLine($"        .WithDelay({response.Delay.Value.TotalMilliseconds})");
         }
-        else if (response.MinimumDelayMilliseconds > 0 && response.MaximumDelayMilliseconds > 0)
+        else if (response is { MinimumDelayMilliseconds: > 0, MaximumDelayMilliseconds: > 0 })
         {
             sb.AppendLine($"        .WithRandomDelay({response.MinimumDelayMilliseconds}, {response.MaximumDelayMilliseconds})");
         }
