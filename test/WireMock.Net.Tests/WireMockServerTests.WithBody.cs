@@ -94,6 +94,38 @@ public partial class WireMockServerTests
 
         server.Stop();
     }
-}
 
+    [Fact]
+    public async Task WireMockServer_WithBodyAsFormUrlEncoded_Using_PostAsync_And_WithExactMatcher()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+        server.Given(
+                Request.Create()
+                    .UsingPost()
+                    .WithPath("/foo")
+                    .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .WithBody(new ExactMatcher("name=John+Doe&email=johndoe%40example.com")
+                )
+            )
+            .RespondWith(
+                Response.Create()
+            );
+
+        // Act
+        var content = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("name", "John Doe"),
+            new KeyValuePair<string, string>("email", "johndoe@example.com")
+        });
+        var response = await new HttpClient()
+            .PostAsync($"{server.Url}/foo", content)
+            .ConfigureAwait(false);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        server.Stop();
+    }
+}
 #endif

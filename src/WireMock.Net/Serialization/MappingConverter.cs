@@ -131,6 +131,7 @@ internal class MappingConverter
             switch (response.ResponseMessage.BodyData.DetectedBodyType)
             {
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     sb.AppendLine($"        .WithBody(\"{response.ResponseMessage.BodyData.BodyAsString}\")");
                     break;
             }
@@ -325,6 +326,7 @@ internal class MappingConverter
                 switch (response.ResponseMessage.BodyData?.DetectedBodyType)
                 {
                     case BodyType.String:
+                    case BodyType.FormUrlEncoded:
                         mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
                         break;
 

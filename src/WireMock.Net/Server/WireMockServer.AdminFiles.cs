@@ -65,7 +65,7 @@ namespace WireMock.Server
                 }
             };
 
-            if (BytesEncodingUtils.TryGetEncoding(bytes, out Encoding encoding) && FileBodyIsString.Select(x => x.Equals(encoding)).Any())
+            if (BytesEncodingUtils.TryGetEncoding(bytes, out var encoding) && FileBodyIsString.Select(x => x.Equals(encoding)).Any())
             {
                 response.BodyData.DetectedBodyType = BodyType.String;
                 response.BodyData.BodyAsString = encoding.GetString(bytes);
