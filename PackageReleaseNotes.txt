@@ -1,6 +1,6 @@
-# 1.5.19 (17 March 2023)
-- #903 Add WithBody with IDictionary (form-urlencoded values) [feature]
-- #904 Update Handlebars.Net.Helpers to 2.3.15 [feature]
-- #901 Matching one form-urlencoded value [feature]
+# 1.5.20 (19 March 2023)
+- #905 Add DeserializeFormUrl Encoded to the settings [feature]
+- #907 Fix issue with application/x-www-form-urlencoded and ExactMatcher [bug]
+- #906 Upgrade to 1.5.19 breaks a form data test [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
