@@ -2,10 +2,12 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
+using JsonConverter.Abstractions;
+using Newtonsoft.Json;
+using Stef.Validation;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Util;
-using Stef.Validation;
 
 namespace WireMock.RequestBuilders;
 
@@ -29,6 +31,24 @@ public partial class Request
     public IRequestBuilder WithBody(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBodyAsJson(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        var bodyAsJsonString = JsonConvert.SerializeObject(body);
+        _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, bodyAsJsonString));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        Guard.NotNull(converter);
+
+        var bodyAsJsonString = converter.Serialize(body, options);
+        _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, bodyAsJsonString));
         return this;
     }
 

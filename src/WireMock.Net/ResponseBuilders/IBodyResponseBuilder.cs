@@ -92,7 +92,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// </summary>
     /// <param name="body">The body.</param>
     /// <param name="converter">The JsonConverter.</param>
-    /// <param name="options">The IJsonConverterOption [optional].</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null);
 
@@ -102,7 +102,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="body">The body.</param>
     /// <param name="encoding">The body encoding, can be <c>null</c>.</param>
     /// <param name="converter">The JsonConverter.</param>
-    /// <param name="options">The IJsonConverterOption [optional].</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, JsonConverterOptions? options = null);
 }
