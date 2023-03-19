@@ -130,6 +130,7 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString!);
 
                 case BodyType.Json:

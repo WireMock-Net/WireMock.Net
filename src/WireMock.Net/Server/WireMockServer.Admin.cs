@@ -767,14 +767,18 @@ public partial class WireMockServer
 
     private static T DeserializeObject<T>(IRequestMessage requestMessage) where T : new()
     {
-        return requestMessage.BodyData?.DetectedBodyType switch
+        switch (requestMessage.BodyData?.DetectedBodyType)
         {
-            BodyType.String => JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString!),
+            case BodyType.String:
+            case BodyType.FormUrlEncoded:
+                return JsonUtils.DeserializeObject<T>(requestMessage.BodyData.BodyAsString!);
 
-            BodyType.Json when requestMessage.BodyData?.BodyAsJson != null => ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!,
+            case BodyType.Json when requestMessage.BodyData?.BodyAsJson != null:
+                return ((JObject)requestMessage.BodyData.BodyAsJson).ToObject<T>()!;
 
-            _ => throw new NotSupportedException()
-        };
+            default:
+                throw new NotSupportedException();
+        }
     }
 
     private static T[] DeserializeRequestMessageToArray<T>(IRequestMessage requestMessage)
