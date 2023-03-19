@@ -43,7 +43,7 @@ public partial class Request
     }
 
     /// <inheritdoc />
-    public IRequestBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    public IRequestBuilder WithBodyAsJson(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         Guard.NotNull(converter);
 

@@ -67,7 +67,7 @@ public interface IBodyRequestBuilder : IRequestMatcher
     /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <param name="matchBehaviour">The match behaviour [default is AcceptOnMatch].</param>
     /// <returns>A <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    IRequestBuilder WithBodyAsJson(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
     /// <summary>
     /// WithBody: func (string)
