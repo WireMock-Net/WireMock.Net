@@ -97,6 +97,7 @@ internal static class WebhookMapper
             switch (webhook.Request.BodyData.DetectedBodyType)
             {
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     model.Request.Body = webhook.Request.BodyData.BodyAsString;
                     break;
 

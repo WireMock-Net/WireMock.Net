@@ -141,6 +141,7 @@ internal class ProxyMappingConverter
                     break;
 
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, true, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString!));
                     break;
 

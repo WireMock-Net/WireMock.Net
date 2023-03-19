@@ -1,3 +1,8 @@
+# 1.5.20 (19 March 2023)
+- [#905](https://github.com/WireMock-Net/WireMock.Net/pull/905) - Add DeserializeFormUrl Encoded to the settings [feature] contributed by [StefH](https://github.com/StefH)
+- [#907](https://github.com/WireMock-Net/WireMock.Net/pull/907) - Fix issue with application/x-www-form-urlencoded and ExactMatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#906](https://github.com/WireMock-Net/WireMock.Net/issues/906) - Upgrade to 1.5.19 breaks a form data test [bug]
+
 # 1.5.19 (17 March 2023)
 - [#903](https://github.com/WireMock-Net/WireMock.Net/pull/903) - Add WithBody with IDictionary (form-urlencoded values) [feature] contributed by [StefH](https://github.com/StefH)
 - [#904](https://github.com/WireMock-Net/WireMock.Net/pull/904) - Update Handlebars.Net.Helpers to 2.3.15 [feature] contributed by [StefH](https://github.com/StefH)

@@ -28,7 +28,7 @@ internal static class HttpRequestMessageHelper
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Bytes:
-                httpRequestMessage.Content = ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes, contentType);
+                httpRequestMessage.Content = ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes!, contentType);
                 break;
 
             case BodyType.Json:
@@ -36,7 +36,8 @@ internal static class HttpRequestMessageHelper
                 break;
 
             case BodyType.String:
-                httpRequestMessage.Content = StringContentHelper.Create(requestMessage.BodyData.BodyAsString, contentType);
+            case BodyType.FormUrlEncoded:
+                httpRequestMessage.Content = StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType);
                 break;
         }
 

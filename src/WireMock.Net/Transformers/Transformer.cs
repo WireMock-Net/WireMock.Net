@@ -85,7 +85,7 @@ internal class Transformer : ITransformer
         {
             responseMessage.BodyData = TransformBodyData(transformerContext, options, model, original.BodyData, useTransformerForBodyAsFile);
 
-            if (original.BodyData.DetectedBodyType == BodyType.String)
+            if (original.BodyData.DetectedBodyType is BodyType.String or BodyType.FormUrlEncoded)
             {
                 responseMessage.BodyOriginal = original.BodyData.BodyAsString;
             }
@@ -123,13 +123,21 @@ internal class Transformer : ITransformer
 
     private IBodyData? TransformBodyData(ITransformerContext transformerContext, ReplaceNodeOptions options, TransformModel model, IBodyData original, bool useTransformerForBodyAsFile)
     {
-        return original.DetectedBodyType switch
+        switch (original.DetectedBodyType)
         {
-            BodyType.Json => TransformBodyAsJson(transformerContext, options, model, original),
-            BodyType.File => TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile),
-            BodyType.String => TransformBodyAsString(transformerContext, model, original),
-            _ => null
-        };
+            case BodyType.Json:
+                return TransformBodyAsJson(transformerContext, options, model, original);
+
+            case BodyType.File:
+                return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
+
+            case BodyType.String:
+            case BodyType.FormUrlEncoded:
+                return TransformBodyAsString(transformerContext, model, original);
+
+            default:
+                return null;
+        }
     }
 
     private static IDictionary<string, WireMockList<string>> TransformHeaders(ITransformerContext transformerContext, TransformModel model, IDictionary<string, WireMockList<string>>? original)

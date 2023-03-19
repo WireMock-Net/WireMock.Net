@@ -157,6 +157,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
             {
                 case BodyType.Json:
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
 
                 case BodyType.Bytes:
@@ -171,7 +172,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
         {
             // If the body is a byte array, try to match.
             var detectedBodyType = requestMessage.BodyData?.DetectedBodyType;
-            if (detectedBodyType is BodyType.Bytes or BodyType.String)
+            if (detectedBodyType is BodyType.Bytes or BodyType.String or BodyType.FormUrlEncoded)
             {
                 return exactObjectMatcher.IsMatch(requestMessage.BodyData?.BodyAsBytes);
             }
@@ -197,7 +198,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
         if (matcher is IStringMatcher stringMatcher)
         {
             // If the body is a Json or a String, use the BodyAsString to match on.
-            if (requestMessage?.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String)
+            if (requestMessage?.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
             {
                 return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
             }
