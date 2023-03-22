@@ -17,7 +17,7 @@ namespace WireMock.Util;
 /// http://www.unicode.org/versions/corrigendum1.html
 /// http://www.ietf.org/rfc/rfc2279.txt
 /// </summary>
-public static class BytesEncodingUtils
+internal static class BytesEncodingUtils
 {
     /// <summary>
     /// Tries the get the Encoding from an array of bytes.
