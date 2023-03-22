@@ -32,7 +32,7 @@ internal static class QueryStringParser
         {
             if (part.Length == 2)
             {
-                nameValueCollection.Add(part[0], part[1]);
+                nameValueCollection.Add(part[0], WebUtility.UrlDecode(part[1]));
             }
         }
 
