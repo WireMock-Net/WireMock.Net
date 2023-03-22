@@ -1,6 +1,6 @@
-# 1.5.20 (19 March 2023)
-- #905 Add DeserializeFormUrl Encoded to the settings [feature]
-- #907 Fix issue with application/x-www-form-urlencoded and ExactMatcher [bug]
-- #906 Upgrade to 1.5.19 breaks a form data test [bug]
+# 1.5.21 (22 March 2023)
+- #908 RequestBuilder : add WithBodyAsJson and WithBody (with IJsonConverter) [feature]
+- #911 Fixed QueryStringParser for UrlEncoded values [bug]
+- #901 Matching one form-urlencoded value [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

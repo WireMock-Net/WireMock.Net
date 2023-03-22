@@ -1,3 +1,8 @@
+# 1.5.21 (22 March 2023)
+- [#908](https://github.com/WireMock-Net/WireMock.Net/pull/908) - RequestBuilder : add WithBodyAsJson and WithBody (with IJsonConverter) [feature] contributed by [StefH](https://github.com/StefH)
+- [#911](https://github.com/WireMock-Net/WireMock.Net/pull/911) - Fixed QueryStringParser for UrlEncoded values [bug] contributed by [StefH](https://github.com/StefH)
+- [#901](https://github.com/WireMock-Net/WireMock.Net/issues/901) - Matching one form-urlencoded value [feature]
+
 # 1.5.20 (19 March 2023)
 - [#905](https://github.com/WireMock-Net/WireMock.Net/pull/905) - Add DeserializeFormUrl Encoded to the settings [feature] contributed by [StefH](https://github.com/StefH)
 - [#907](https://github.com/WireMock-Net/WireMock.Net/pull/907) - Fix issue with application/x-www-form-urlencoded and ExactMatcher [bug] contributed by [StefH](https://github.com/StefH)
@@ -6,7 +11,6 @@
 # 1.5.19 (17 March 2023)
 - [#903](https://github.com/WireMock-Net/WireMock.Net/pull/903) - Add WithBody with IDictionary (form-urlencoded values) [feature] contributed by [StefH](https://github.com/StefH)
 - [#904](https://github.com/WireMock-Net/WireMock.Net/pull/904) - Update Handlebars.Net.Helpers to 2.3.15 [feature] contributed by [StefH](https://github.com/StefH)
-- [#901](https://github.com/WireMock-Net/WireMock.Net/issues/901) - Matching one form-urlencoded value [feature]
 
 # 1.5.18 (09 March 2023)
 - [#893](https://github.com/WireMock-Net/WireMock.Net/pull/893) - Add 'Data' to response which can be used during transforming the response [feature] contributed by [StefH](https://github.com/StefH)
