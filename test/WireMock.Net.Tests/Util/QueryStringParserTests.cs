@@ -39,6 +39,21 @@ public class QueryStringParserTests
     }
 
     [Fact]
+    public void TryParse_Should_Parse_QueryStringWithUrlEncodedValues()
+    {
+        // Arrange
+        var key = "x";
+        var value = "rNaCP7hv8UOmS%2FJcujdvLw%3D%3D";
+
+        // Act
+        var result = QueryStringParser.TryParse($"{key}={value}", true, out var actual);
+
+        // Assert
+        result.Should().BeTrue();
+        actual.Should().BeEquivalentTo(new Dictionary<string, string> { { "x", "rNaCP7hv8UOmS/JcujdvLw==" } });
+    }
+
+    [Fact]
     public void Parse_WithNullString()
     {
         // Assign
