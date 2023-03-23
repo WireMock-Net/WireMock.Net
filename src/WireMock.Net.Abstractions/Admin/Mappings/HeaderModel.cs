@@ -9,7 +9,7 @@ namespace WireMock.Admin.Mappings;
 public class HeaderModel
 {
     /// <summary>
-    /// Gets or sets the name.
+    /// Gets or sets the name (key).
     /// </summary>
     public string Name { get; set; } = null!;
 
@@ -19,12 +19,12 @@ public class HeaderModel
     public IList<MatcherModel>? Matchers { get; set; }
 
     /// <summary>
-    /// Gets or sets the ignore case.
+    /// Gets or sets the ignore case for the Header Key.
     /// </summary>
     public bool? IgnoreCase { get; set; }
 
     /// <summary>
-    /// Reject on match.
+    /// Gets or sets the Reject on match for the Header Key.
     /// </summary>
     public bool? RejectOnMatch { get; set; }
 

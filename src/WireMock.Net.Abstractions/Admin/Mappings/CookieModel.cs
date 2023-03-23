@@ -19,12 +19,12 @@ public class CookieModel
     public IList<MatcherModel>? Matchers { get; set; }
 
     /// <summary>
-    /// Gets or sets the ignore case.
+    /// Gets or sets the ignore case for the Cookie Name.
     /// </summary>
     public bool? IgnoreCase { get; set; }
 
     /// <summary>
-    /// Reject on match.
+    /// Gets or sets the Reject on match for the Cookie Name.
     /// </summary>
     public bool? RejectOnMatch { get; set; }
 
