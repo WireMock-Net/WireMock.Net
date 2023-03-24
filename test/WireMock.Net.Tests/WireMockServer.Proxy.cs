@@ -529,6 +529,48 @@ public class WireMockServerProxyTests
     }
 
     [Fact]
+    public async Task WireMockServer_Proxy_Should_exclude_ExcludedParams_in_mapping()
+    {
+        // Assign
+        string path = $"/prx_{Guid.NewGuid()}";
+        var serverForProxyForwarding = WireMockServer.Start();
+        serverForProxyForwarding
+            .Given(Request.Create().WithPath(path))
+            .RespondWith(Response.Create());
+
+        var settings = new WireMockServerSettings
+        {
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
+            {
+                Url = serverForProxyForwarding.Urls[0],
+                SaveMapping = true,
+                SaveMappingToFile = false,
+                ExcludedParams = new[] { "timestamp" }
+            }
+        };
+        var server = WireMockServer.Start(settings);
+        var defaultMapping = server.Mappings.First();
+        var param01 = "?timestamp=2023-03-23";
+        var param02 = "&name=person";
+
+        // Act
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri($"{server.Urls[0]}{path}{param01}{param02}"),
+            Content = new StringContent("stringContent"),
+        };
+        await new HttpClient().SendAsync(requestMessage).ConfigureAwait(false);
+
+        // Assert
+        var mapping = server.Mappings.FirstOrDefault(m => m.Guid != defaultMapping.Guid);
+        Check.That(mapping).IsNotNull();
+        var matchers = ((Request)mapping.RequestMatcher).GetRequestMessageMatchers<RequestMessageParamMatcher>().Select(m => m.Key).ToList();
+        Check.That(matchers).Not.Contains("timestamp");
+        Check.That(matchers).Contains("name");
+    }
+
+    [Fact]
     public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
     {
         // Assign

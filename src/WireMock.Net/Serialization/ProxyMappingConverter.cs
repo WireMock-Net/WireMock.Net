@@ -31,6 +31,7 @@ internal class ProxyMappingConverter
         var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
         var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
         var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[0];
+        var excludedParams = proxyAndRecordSettings.ExcludedParams ?? new string[0];
 
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
@@ -74,12 +75,21 @@ internal class ProxyMappingConverter
         {
             foreach (var paramMatcher in paramMatchers)
             {
-                newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers!.ToArray());
+                if (!excludedParams.Contains(paramMatcher.Key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers!.ToArray());
+                }
             }
         }
         else
         {
-            requestMessage.Query?.Loop((key, value) => newRequest.WithParam(key, false, value.ToArray()));
+            requestMessage.Query?.Loop((key, value) =>
+            {
+                if (!excludedParams.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithParam(key, false, value.ToArray());
+                }
+            });
         }
 
         // Cookies

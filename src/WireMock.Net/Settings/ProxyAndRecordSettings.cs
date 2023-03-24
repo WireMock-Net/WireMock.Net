@@ -58,6 +58,12 @@ public class ProxyAndRecordSettings : HttpClientSettings
     public string[]? ExcludedHeaders { get; set; }
 
     /// <summary>
+    /// Defines a list of params which will be excluded from the saved mappings.
+    /// </summary>
+    [PublicAPI]
+    public string[]? ExcludedParams { get; set; }
+
+    /// <summary>
     /// Defines a list of cookies which will be excluded from the saved mappings.
     /// </summary>
     [PublicAPI]
