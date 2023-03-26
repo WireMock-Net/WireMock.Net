@@ -31,13 +31,13 @@ public static class WireMockServerExtensions
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="path">Path containing OpenAPI file to parse and use the mappings.</param>
-    /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
     /// <param name="settings">Additional settings</param>
+    /// <param name="diagnostic">Returns diagnostic object containing errors detected during parsing</param>
     [PublicAPI]
     public static IWireMockServer WithMappingFromOpenApiFile(this IWireMockServer server, string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
-        Guard.NotNull(server, nameof(server));
-        Guard.NotNullOrEmpty(path, nameof(path));
+        Guard.NotNull(server);
+        Guard.NotNullOrEmpty(path);
 
         var mappings = new WireMockOpenApiParser().FromFile(path, settings, out diagnostic);
 
@@ -80,9 +80,9 @@ public static class WireMockServerExtensions
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="document">The OpenAPI document to use as mappings.</param>
-    /// <param name="settings">Additional settings [optional]</param>
+    /// <param name="settings">Additional settings [optional].</param>
     [PublicAPI]
-    public static IWireMockServer WithMappingFromOpenApiDocument(this IWireMockServer server, OpenApiDocument document, WireMockOpenApiParserSettings settings)
+    public static IWireMockServer WithMappingFromOpenApiDocument(this IWireMockServer server, OpenApiDocument document, WireMockOpenApiParserSettings? settings = null)
     {
         Guard.NotNull(server);
         Guard.NotNull(document);
