@@ -11,7 +11,7 @@ public class DynamicDataGeneration : WireMockOpenApiParserDynamicExampleValues
         get
         {
             // Since you have your Schema, you can get if max-length is set. You can generate accurate examples with this settings
-            var maxLength = Schema.MaxLength ?? 9;
+            var maxLength = Schema?.MaxLength ?? 9;
 
             return RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex
             {
