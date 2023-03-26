@@ -11,23 +11,27 @@ namespace WireMock.Net.OpenApiParser.Utils;
 
 internal class ExampleValueGenerator
 {
-    private readonly WireMockOpenApiParserSettings _settings;
+    private readonly IWireMockOpenApiParserExampleValues _exampleValues;
 
     public ExampleValueGenerator(WireMockOpenApiParserSettings settings)
     {
-        _settings = Guard.NotNull(settings);
+        Guard.NotNull(settings);
 
         // Check if user provided an own implementation
         if (settings.ExampleValues is null)
         {
-            if (_settings.DynamicExamples)
+            if (settings.DynamicExamples)
             {
-                _settings.ExampleValues = new WireMockOpenApiParserDynamicExampleValues();
+                _exampleValues = new WireMockOpenApiParserDynamicExampleValues();
             }
             else
             {
-                _settings.ExampleValues = new WireMockOpenApiParserExampleValues();
+                _exampleValues = new WireMockOpenApiParserExampleValues();
             }
+        }
+        else
+        {
+            _exampleValues = settings.ExampleValues;
         }
     }
 
@@ -36,78 +40,78 @@ internal class ExampleValueGenerator
         var schemaExample = schema?.Example;
         var schemaEnum = GetRandomEnumValue(schema?.Enum);
 
-        _settings.ExampleValues.Schema = schema;
+        _exampleValues.Schema = schema;
 
         switch (schema?.GetSchemaType())
         {
             case SchemaType.Boolean:
                 var exampleBoolean = schemaExample as OpenApiBoolean;
-                return exampleBoolean is null ? _settings.ExampleValues.Boolean : exampleBoolean.Value;
+                return exampleBoolean?.Value ?? _exampleValues.Boolean;
 
             case SchemaType.Integer:
                 switch (schema?.GetSchemaFormat())
                 {
                     case SchemaFormat.Int64:
-                        var exampleLong = (OpenApiLong)schemaExample;
-                        var enumLong = (OpenApiLong)schemaEnum;
-                        var valueLongEnumOrExample = enumLong is null ? exampleLong?.Value : enumLong?.Value;
-                        return valueLongEnumOrExample ?? _settings.ExampleValues.Integer;
+                        var exampleLong = schemaExample as OpenApiLong;
+                        var enumLong = schemaEnum as OpenApiLong;
+                        var valueLongEnumOrExample = enumLong?.Value ?? exampleLong?.Value;
+                        return valueLongEnumOrExample ?? _exampleValues.Integer;
 
                     default:
-                        var exampleInteger = (OpenApiInteger)schemaExample;
-                        var enumInteger = (OpenApiInteger)schemaEnum;
-                        var valueIntegerEnumOrExample = enumInteger is null ? exampleInteger?.Value : enumInteger?.Value;
-                        return valueIntegerEnumOrExample ?? _settings.ExampleValues.Integer;
+                        var exampleInteger = schemaExample as OpenApiInteger;
+                        var enumInteger = schemaEnum as OpenApiInteger;
+                        var valueIntegerEnumOrExample = enumInteger?.Value ?? exampleInteger?.Value;
+                        return valueIntegerEnumOrExample ?? _exampleValues.Integer;
                 }
 
             case SchemaType.Number:
                 switch (schema?.GetSchemaFormat())
                 {
                     case SchemaFormat.Float:
-                        var exampleFloat = (OpenApiFloat)schemaExample;
-                        var enumFloat = (OpenApiFloat)schemaEnum;
-                        var valueFloatEnumOrExample = enumFloat is null ? exampleFloat?.Value : enumFloat?.Value;
-                        return valueFloatEnumOrExample ?? _settings.ExampleValues.Float;
+                        var exampleFloat = schemaExample as OpenApiFloat;
+                        var enumFloat = schemaEnum as OpenApiFloat;
+                        var valueFloatEnumOrExample = enumFloat?.Value ?? exampleFloat?.Value;
+                        return valueFloatEnumOrExample ?? _exampleValues.Float;
 
                     default:
-                        var exampleDouble = (OpenApiDouble)schemaExample;
-                        var enumDouble = (OpenApiDouble)schemaEnum;
-                        var valueDoubleEnumOrExample = enumDouble is null ? exampleDouble?.Value : enumDouble?.Value;
-                        return valueDoubleEnumOrExample ?? _settings.ExampleValues.Double;
+                        var exampleDouble = schemaExample as OpenApiDouble;
+                        var enumDouble = schemaEnum as OpenApiDouble;
+                        var valueDoubleEnumOrExample = enumDouble?.Value ?? exampleDouble?.Value;
+                        return valueDoubleEnumOrExample ?? _exampleValues.Double;
                 }
 
             default:
                 switch (schema?.GetSchemaFormat())
                 {
                     case SchemaFormat.Date:
-                        var exampleDate = (OpenApiDate)schemaExample;
-                        var enumDate = (OpenApiDate)schemaEnum;
-                        var valueDateEnumOrExample = enumDate is null ? exampleDate?.Value : enumDate?.Value;
-                        return DateTimeUtils.ToRfc3339Date(valueDateEnumOrExample ?? _settings.ExampleValues.Date());
+                        var exampleDate = schemaExample as OpenApiDate;
+                        var enumDate = schemaEnum as OpenApiDate;
+                        var valueDateEnumOrExample = enumDate?.Value ?? exampleDate?.Value;
+                        return DateTimeUtils.ToRfc3339Date(valueDateEnumOrExample ?? _exampleValues.Date());
 
                     case SchemaFormat.DateTime:
-                        var exampleDateTime = (OpenApiDateTime)schemaExample;
-                        var enumDateTime = (OpenApiDateTime)schemaEnum;
-                        var valueDateTimeEnumOrExample = enumDateTime is null ? exampleDateTime?.Value : enumDateTime?.Value;
-                        return DateTimeUtils.ToRfc3339DateTime(valueDateTimeEnumOrExample?.DateTime ?? _settings.ExampleValues.DateTime());
+                        var exampleDateTime = schemaExample as OpenApiDateTime;
+                        var enumDateTime = schemaEnum as OpenApiDateTime;
+                        var valueDateTimeEnumOrExample = enumDateTime?.Value ?? exampleDateTime?.Value;
+                        return DateTimeUtils.ToRfc3339DateTime(valueDateTimeEnumOrExample?.DateTime ?? _exampleValues.DateTime());
 
                     case SchemaFormat.Byte:
-                        var exampleByte = (OpenApiByte)schemaExample;
-                        var enumByte = (OpenApiByte)schemaEnum;
-                        var valueByteEnumOrExample = enumByte is null ? exampleByte?.Value : enumByte?.Value;
-                        return valueByteEnumOrExample ?? _settings.ExampleValues.Bytes;
+                        var exampleByte = schemaExample as OpenApiByte;
+                        var enumByte = schemaEnum as OpenApiByte;
+                        var valueByteEnumOrExample = enumByte?.Value ?? exampleByte?.Value;
+                        return valueByteEnumOrExample ?? _exampleValues.Bytes;
 
                     case SchemaFormat.Binary:
-                        var exampleBinary = (OpenApiBinary)schemaExample;
-                        var enumBinary = (OpenApiBinary)schemaEnum;
-                        var valueBinaryEnumOrExample = enumBinary is null ? exampleBinary?.Value : enumBinary?.Value;
-                        return valueBinaryEnumOrExample ?? _settings.ExampleValues.Object;
+                        var exampleBinary = schemaExample as OpenApiBinary;
+                        var enumBinary = schemaEnum as OpenApiBinary;
+                        var valueBinaryEnumOrExample = enumBinary?.Value ?? exampleBinary?.Value;
+                        return valueBinaryEnumOrExample ?? _exampleValues.Object;
 
                     default:
-                        var exampleString = (OpenApiString)schemaExample;
-                        var enumString = (OpenApiString)schemaEnum;
-                        var valueStringEnumOrExample = enumString is null ? exampleString?.Value : enumString?.Value;
-                        return valueStringEnumOrExample ?? _settings.ExampleValues.String;
+                        var exampleString = schemaExample as OpenApiString;
+                        var enumString = schemaEnum as OpenApiString;
+                        var valueStringEnumOrExample = enumString?.Value ?? exampleString?.Value;
+                        return valueStringEnumOrExample ?? _exampleValues.String;
                 }
         }
     }
