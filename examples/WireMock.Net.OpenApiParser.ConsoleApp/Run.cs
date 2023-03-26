@@ -17,7 +17,7 @@ public static class Run
         string path,
         string url,
         bool dynamicExamples = true,
-        IWireMockOpenApiParserExampleValues? examplesValuesGenerator =  null,
+        IWireMockOpenApiParserExampleValues? examplesValuesGenerator = null,
         ExampleValueType pathPatternToUse = ExampleValueType.Wildcard,
         ExampleValueType headerPatternToUse = ExampleValueType.Wildcard
     )
