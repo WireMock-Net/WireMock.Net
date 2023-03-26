@@ -16,16 +16,16 @@ namespace WireMock.Net.OpenApiParser;
 /// </summary>
 public class WireMockOpenApiParser : IWireMockOpenApiParser
 {
-    private readonly OpenApiStreamReader _reader = new OpenApiStreamReader();
+    private readonly OpenApiStreamReader _reader = new();
 
-    /// <inheritdoc cref="IWireMockOpenApiParser.FromFile(string, out OpenApiDiagnostic)" />
+    /// <inheritdoc />
     [PublicAPI]
     public IEnumerable<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
     {
         return FromFile(path, new WireMockOpenApiParserSettings(), out diagnostic);
     }
 
-    /// <inheritdoc cref="IWireMockOpenApiParser.FromFile(string, WireMockOpenApiParserSettings, out OpenApiDiagnostic)" />
+    /// <inheritdoc />
     [PublicAPI]
     public IEnumerable<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
@@ -44,24 +44,24 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
         return FromDocument(document, settings);
     }
 
-    /// <inheritdoc cref="IWireMockOpenApiParser.FromStream(Stream, out OpenApiDiagnostic)" />
+    /// <inheritdoc  />
     [PublicAPI]
     public IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
     {
         return FromDocument(_reader.Read(stream, out diagnostic));
     }
 
-    /// <inheritdoc cref="IWireMockOpenApiParser.FromStream(Stream, WireMockOpenApiParserSettings, out OpenApiDiagnostic)" />
+    /// <inheritdoc />
     [PublicAPI]
     public IEnumerable<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
         return FromDocument(_reader.Read(stream, out diagnostic), settings);
     }
 
-    /// <inheritdoc cref="IWireMockOpenApiParser.FromDocument(OpenApiDocument, WireMockOpenApiParserSettings)" />
+    /// <inheritdoc />
     [PublicAPI]
     public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
     {
-        return new OpenApiPathsMapper(settings).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
+        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
     }
 }
