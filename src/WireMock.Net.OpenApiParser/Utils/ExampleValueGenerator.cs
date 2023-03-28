@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using RandomDataGenerator.FieldOptions;
+using RandomDataGenerator.Randomizers;
 using Stef.Validation;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Settings;
@@ -120,8 +121,7 @@ internal class ExampleValueGenerator
     {
         if (schemaEnum?.Count > 0)
         {
-            int maxValue = schemaEnum.Count - 1;
-            int randomEnum = new Random().Next(0, maxValue);
+            int randomEnum = RandomizerFactory.GetRandomizer(new FieldOptionsInteger { Min = 0, Max = schemaEnum.Count - 1 }).Generate() ?? 42;
             return schemaEnum[randomEnum];
         }
 
