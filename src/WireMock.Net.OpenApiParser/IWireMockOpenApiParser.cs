@@ -53,4 +53,21 @@ public interface IWireMockOpenApiParser
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
     IEnumerable<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
+
+    /// <summary>
+    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="string"/>.
+    /// </summary>
+    /// <param name="text">The source text</param>
+    /// <param name="diagnostic">OpenApiDiagnostic output</param>
+    /// <returns>MappingModel</returns>
+    IEnumerable<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic);
+
+    /// <summary>
+    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="string"/>.
+    /// </summary>
+    /// <param name="text">The source text</param>
+    /// <param name="settings">Additional settings</param>
+    /// <param name="diagnostic">OpenApiDiagnostic output</param>
+    /// <returns>MappingModel</returns>
+    IEnumerable<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
@@ -44,6 +45,13 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
         return FromDocument(document, settings);
     }
 
+    /// <inheritdoc />
+    [PublicAPI]
+    public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
+    {
+        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
+    }
+
     /// <inheritdoc  />
     [PublicAPI]
     public IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
@@ -58,10 +66,17 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
         return FromDocument(_reader.Read(stream, out diagnostic), settings);
     }
 
+    /// <inheritdoc  />
+    [PublicAPI]
+    public IEnumerable<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic)
+    {
+        return FromStream(new MemoryStream(Encoding.UTF8.GetBytes(text)), out diagnostic);
+    }
+
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
+    public IEnumerable<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
-        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
+        return FromStream(new MemoryStream(Encoding.UTF8.GetBytes(text)), settings, out diagnostic);
     }
 }
