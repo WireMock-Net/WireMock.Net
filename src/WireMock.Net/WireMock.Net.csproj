@@ -46,6 +46,10 @@
         <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' ">
+        <DefineConstants>OPENAPIPARSER</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
         <Compile Remove="Matchers\Request\IRequestMatcher.cs" />
@@ -188,5 +192,9 @@
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' ">
+        <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
     </ItemGroup>
 </Project>

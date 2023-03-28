@@ -13,61 +13,61 @@ namespace WireMock.Net.OpenApiParser;
 public interface IWireMockOpenApiParser
 {
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a file-path.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
     /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a file-path.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
     /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
     /// <param name="settings">Additional settings</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from an <seealso cref="OpenApiDocument"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from an <seealso cref="OpenApiDocument"/>.
     /// </summary>
     /// <param name="document">The source OpenApiDocument</param>
     /// <param name="settings">Additional settings [optional]</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null);
+    IReadOnlyList<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="Stream"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a <seealso cref="Stream"/>.
     /// </summary>
     /// <param name="stream">The source stream</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="Stream"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a <seealso cref="Stream"/>.
     /// </summary>
     /// <param name="stream">The source stream</param>
     /// <param name="settings">Additional settings</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="string"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a <seealso cref="string"/>.
     /// </summary>
     /// <param name="text">The source text</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IEnumerable{MappingModel}"/> from a <seealso cref="string"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a <seealso cref="string"/>.
     /// </summary>
     /// <param name="text">The source text</param>
     /// <param name="settings">Additional settings</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
-    IEnumerable<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
+    IReadOnlyList<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
 }

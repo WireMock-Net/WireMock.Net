@@ -21,14 +21,14 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
 
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
     {
         return FromFile(path, new WireMockOpenApiParserSettings(), out diagnostic);
     }
 
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
         OpenApiDocument document;
         if (Path.GetExtension(path).EndsWith("raml", StringComparison.OrdinalIgnoreCase))
@@ -47,35 +47,35 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
 
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
+    public IReadOnlyList<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
     {
         return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
     }
 
     /// <inheritdoc  />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
     {
         return FromDocument(_reader.Read(stream, out diagnostic));
     }
 
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
         return FromDocument(_reader.Read(stream, out diagnostic), settings);
     }
 
     /// <inheritdoc  />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromText(string text, out OpenApiDiagnostic diagnostic)
     {
         return FromStream(new MemoryStream(Encoding.UTF8.GetBytes(text)), out diagnostic);
     }
 
     /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
+    public IReadOnlyList<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
         return FromStream(new MemoryStream(Encoding.UTF8.GetBytes(text)), settings, out diagnostic);
     }

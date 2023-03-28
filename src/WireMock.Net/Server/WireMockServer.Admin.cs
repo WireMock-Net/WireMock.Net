@@ -113,6 +113,10 @@ public partial class WireMockServer
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
+
+#if OPENAPIPARSER
+        InitOpenApiParserAdmin();
+#endif
     }
     #endregion
 
@@ -737,7 +741,7 @@ public partial class WireMockServer
         return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
     }
 
-    private static ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
+    private static ResponseMessage ToJson<T>(T result, bool keepNullValues = false, object? statusCode = null)
     {
         return new ResponseMessage
         {
@@ -746,7 +750,7 @@ public partial class WireMockServer
                 DetectedBodyType = BodyType.String,
                 BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues : JsonSerializationConstants.JsonSerializerSettingsDefault)
             },
-            StatusCode = (int)HttpStatusCode.OK,
+            StatusCode = statusCode ?? (int)HttpStatusCode.OK,
             Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(WireMockConstants.ContentTypeJson) } }
         };
     }

@@ -31,19 +31,19 @@ internal class OpenApiPathsMapper
         _exampleValueGenerator = new ExampleValueGenerator(settings);
     }
 
-    public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
+    public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray();
     }
 
-    private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
+    private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray();
     }
 
-    private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
+    private IReadOnlyList<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
     {
-        return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers));
+        return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers)).ToArray();
     }
 
     private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation, IList<OpenApiServer> servers)
