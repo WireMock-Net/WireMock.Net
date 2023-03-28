@@ -15,9 +15,9 @@ public partial class WireMockServer
 
     private void InitOpenApiParserAdmin()
     {
-        Given(Request.Create().WithPath($"{AdminOpenApi}/convert").UsingPost().WithBody(b => b != null)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ConvertOpenApiToMappings));
+        Given(Request.Create().WithPath($"{AdminOpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ConvertOpenApiToMappings));
 
-        Given(Request.Create().WithPath($"{AdminOpenApi}/save").UsingPost().WithBody(b => b != null)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SaveOpenApiToMappings));
+        Given(Request.Create().WithPath($"{AdminOpenApi}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SaveOpenApiToMappings));
 
     }
 
