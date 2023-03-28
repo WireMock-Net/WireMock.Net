@@ -2,27 +2,16 @@
 using System;
 using System.Linq;
 using System.Net;
-using WireMock.Constants;
 using WireMock.Net.OpenApiParser;
-using WireMock.RequestBuilders;
-using WireMock.ResponseProviders;
+#endif
 
 namespace WireMock.Server;
 
 public partial class WireMockServer
 {
-    private const string AdminOpenApi = "/__admin/openapi";
-
-    private void InitOpenApiParserAdmin()
-    {
-        Given(Request.Create().WithPath($"{AdminOpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ConvertOpenApiToMappings));
-
-        Given(Request.Create().WithPath($"{AdminOpenApi}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SaveOpenApiToMappings));
-
-    }
-
     private IResponseMessage ConvertOpenApiToMappings(IRequestMessage requestMessage)
     {
+#if OPENAPIPARSER
         try
         {
             var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body, out var diagnostic);
@@ -33,10 +22,14 @@ public partial class WireMockServer
             _settings.Logger.Error("HttpStatusCode set to {0} {1}", HttpStatusCode.BadRequest, e);
             return ResponseMessageBuilder.Create(e.ToString(), HttpStatusCode.BadRequest);
         }
+#else
+        return ResponseMessageBuilder.Create("Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.", 400);
+#endif
     }
 
     private IResponseMessage SaveOpenApiToMappings(IRequestMessage requestMessage)
     {
+#if OPENAPIPARSER
         try
         {
             var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body, out var diagnostic);
@@ -54,6 +47,8 @@ public partial class WireMockServer
             _settings.Logger.Error("HttpStatusCode set to {0} {1}", HttpStatusCode.BadRequest, e);
             return ResponseMessageBuilder.Create(e.ToString(), HttpStatusCode.BadRequest);
         }
+#else
+        return ResponseMessageBuilder.Create("Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.", 400);
+#endif
     }
 }
-#endif

@@ -117,7 +117,7 @@ public class WireMockServerProxyTests
         }
 
         // Assert
-        server.Mappings.Should().HaveCount(32);
+        server.Mappings.Should().HaveCount(34);
     }
 
     [Fact]

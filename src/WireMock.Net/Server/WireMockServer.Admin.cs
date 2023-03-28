@@ -37,6 +37,8 @@ public partial class WireMockServer
     private const string AdminRequests = "/__admin/requests";
     private const string AdminSettings = "/__admin/settings";
     private const string AdminScenarios = "/__admin/scenarios";
+    private const string AdminOpenApi = "/__admin/openapi";
+
     private const string QueryParamReloadStaticMappings = "reloadStaticMappings";
 
     private static readonly Guid ProxyMappingGuid = new("e59914fd-782e-428e-91c1-4810ffb86567");
@@ -114,9 +116,9 @@ public partial class WireMockServer
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
 
-#if OPENAPIPARSER
-        InitOpenApiParserAdmin();
-#endif
+        // __admin/openapi
+        Given(Request.Create().WithPath($"{AdminOpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ConvertOpenApiToMappings));
+        Given(Request.Create().WithPath($"{AdminOpenApi}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SaveOpenApiToMappings));
     }
     #endregion
 
