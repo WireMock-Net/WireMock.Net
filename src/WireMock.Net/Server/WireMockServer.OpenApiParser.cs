@@ -20,7 +20,7 @@ public partial class WireMockServer
         catch (Exception e)
         {
             _settings.Logger.Error("HttpStatusCode set to {0} {1}", HttpStatusCode.BadRequest, e);
-            return ResponseMessageBuilder.Create(e.ToString(), HttpStatusCode.BadRequest);
+            return ResponseMessageBuilder.Create(e.Message, HttpStatusCode.BadRequest);
         }
 #else
         return ResponseMessageBuilder.Create("Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.", 400);
@@ -45,7 +45,7 @@ public partial class WireMockServer
         catch (Exception e)
         {
             _settings.Logger.Error("HttpStatusCode set to {0} {1}", HttpStatusCode.BadRequest, e);
-            return ResponseMessageBuilder.Create(e.ToString(), HttpStatusCode.BadRequest);
+            return ResponseMessageBuilder.Create(e.Message, HttpStatusCode.BadRequest);
         }
 #else
         return ResponseMessageBuilder.Create("Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.", 400);

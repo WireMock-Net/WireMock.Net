@@ -31,14 +31,14 @@ internal class OpenApiPathsMapper
         _exampleValueGenerator = new ExampleValueGenerator(settings);
     }
 
-    public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
+    public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray();
+        return paths?.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray() ?? Array.Empty<MappingModel>();
     }
 
-    private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
+    private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray();
+        return paths?.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray() ?? Array.Empty<MappingModel>();
     }
 
     private IReadOnlyList<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
