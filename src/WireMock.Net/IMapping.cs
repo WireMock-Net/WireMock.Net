@@ -121,7 +121,7 @@ public interface IMapping
     /// <summary>
     /// Use Fire and Forget for the defined webhook(s). [Optional]
     /// </summary>
-    bool? UseWebhooksFireAndForget { get; set; }
+    bool? UseWebhooksFireAndForget { get; }
 
     /// <summary>
     /// Data Object which can be used when WithTransformer is used.
@@ -130,7 +130,7 @@ public interface IMapping
     /// lookup data "1"
     /// </example>
     /// </summary>
-    object? Data { get; set; }
+    object? Data { get; }
 
     /// <summary>
     /// ProvideResponseAsync
