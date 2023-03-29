@@ -121,7 +121,7 @@ internal class ExampleValueGenerator
     {
         if (schemaEnum?.Count > 0)
         {
-            int randomEnum = RandomizerFactory.GetRandomizer(new FieldOptionsInteger { Min = 0, Max = schemaEnum.Count - 1 }).Generate() ?? 42;
+            var randomEnum = RandomizerFactory.GetRandomizer(new FieldOptionsInteger { Min = 0, Max = schemaEnum.Count - 1 }).Generate() ?? 0;
             return schemaEnum[randomEnum];
         }
 
