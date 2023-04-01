@@ -14,7 +14,11 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 * Response templating / transformation using Handlebars and extensions
 * Can be used locally or in CI/CD scenarios
 
-## Info
+## Blogs
+- [mStack.nl : Generate C# Code from Mapping(s)](https://mstack.nl/blog/20230201-wiremock.net-tocode/)
+
+
+## Project Info
 | | |
 | --- | --- |
 | ***Project*** | &nbsp; |
