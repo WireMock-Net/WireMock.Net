@@ -1,8 +1,6 @@
-using System.Collections.Generic;
+using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using RandomDataGenerator.FieldOptions;
-using RandomDataGenerator.Randomizers;
 using Stef.Validation;
 using WireMock.Net.OpenApiParser.Extensions;
 using WireMock.Net.OpenApiParser.Settings;
@@ -39,7 +37,7 @@ internal class ExampleValueGenerator
     public object GetExampleValue(OpenApiSchema? schema)
     {
         var schemaExample = schema?.Example;
-        var schemaEnum = GetRandomEnumValue(schema?.Enum);
+        var schemaEnum = schema?.Enum?.FirstOrDefault();
 
         _exampleValues.Schema = schema;
 
@@ -115,16 +113,5 @@ internal class ExampleValueGenerator
                         return valueStringEnumOrExample ?? _exampleValues.String;
                 }
         }
-    }
-
-    private static IOpenApiAny? GetRandomEnumValue(IList<IOpenApiAny>? schemaEnum)
-    {
-        if (schemaEnum?.Count > 0)
-        {
-            var randomEnum = RandomizerFactory.GetRandomizer(new FieldOptionsInteger { Min = 0, Max = schemaEnum.Count - 1 }).Generate() ?? 0;
-            return schemaEnum[randomEnum];
-        }
-
-        return null;
     }
 }

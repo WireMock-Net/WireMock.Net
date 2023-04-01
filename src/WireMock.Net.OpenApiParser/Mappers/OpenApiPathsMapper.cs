@@ -33,12 +33,22 @@ internal class OpenApiPathsMapper
 
     public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths?.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray() ?? Array.Empty<MappingModel>();
+        return paths?
+            .OrderBy(p => p.Key)
+            .Select(p => MapPath(p.Key, p.Value, servers))
+            .SelectMany(x => x)
+            .ToArray() ??
+               Array.Empty<MappingModel>();
     }
 
     private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths?.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x).ToArray() ?? Array.Empty<MappingModel>();
+        return paths?
+            .OrderBy(p => p.Key)
+            .Select(p => MapPath(p.Key, p.Value, servers))
+            .SelectMany(x => x)
+            .ToArray() ??
+               Array.Empty<MappingModel>();
     }
 
     private IReadOnlyList<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
