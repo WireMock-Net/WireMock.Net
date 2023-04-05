@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace WireMock.Serialization;
 
-internal static class JsonSerializationConstants
+public static class JsonSerializationConstants
 {
     public static readonly JsonSerializerSettings JsonSerializerSettingsDefault = new()
     {

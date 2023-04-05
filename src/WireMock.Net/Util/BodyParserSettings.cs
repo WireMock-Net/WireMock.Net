@@ -2,7 +2,7 @@ using System.IO;
 
 namespace WireMock.Util;
 
-internal class BodyParserSettings
+public class BodyParserSettings
 {
     public Stream Stream { get; set; } = null!;
 

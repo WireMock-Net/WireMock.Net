@@ -11,7 +11,7 @@ using WireMock.Types;
 
 namespace WireMock.Util;
 
-internal static class BodyParser
+public static class BodyParser
 {
     private static readonly Encoding DefaultEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
     private static readonly Encoding[] SupportedBodyAsStringEncodingForMultipart = { DefaultEncoding, Encoding.ASCII };
