@@ -1,9 +1,8 @@
-﻿namespace WireMock.RequestBuilders
+namespace WireMock.RequestBuilders;
+
+/// <summary>
+/// IRequestBuilder
+/// </summary>
+public interface IRequestBuilder : IClientIPRequestBuilder
 {
-    /// <summary>
-    /// IRequestBuilder
-    /// </summary>
-    public interface IRequestBuilder : IClientIPRequestBuilder
-    {
-    }
 }

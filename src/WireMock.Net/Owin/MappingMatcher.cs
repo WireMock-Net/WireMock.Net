@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RandomDataGenerator.FieldOptions;
 using WireMock.Extensions;
 using Stef.Validation;
+using RandomDataGenerator.Randomizers;
 
 namespace WireMock.Owin;
 
 internal class MappingMatcher : IMappingMatcher
 {
+    private readonly IRandomizerNumber<double> _randomizerDouble = RandomizerFactory.GetRandomizer(new FieldOptionsDouble { Min = 0, Max = 1 });
     private readonly IWireMockMiddlewareOptions _options;
 
     public MappingMatcher(IWireMockMiddlewareOptions options)
@@ -21,7 +24,12 @@ internal class MappingMatcher : IMappingMatcher
 
         var possibleMappings = new List<MappingMatcherResult>();
 
-        foreach (var mapping in _options.Mappings.Values.Where(m => m.TimeSettings.IsValid()))
+        var mappings = _options.Mappings.Values
+            .Where(m => m.TimeSettings.IsValid())
+            .Where(m => m.Probability is null || m.Probability <= _randomizerDouble.Generate())
+            .ToArray();
+
+        foreach (var mapping in mappings)
         {
             try
             {

@@ -14,7 +14,7 @@ namespace WireMock.RequestBuilders;
 /// </summary>
 public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
 {
-    private readonly IList<IRequestMatcher> _requestMatchers;
+    private readonly IReadOnlyList<IRequestMatcher> _requestMatchers;
 
     /// <summary>
     /// Creates this instance.
@@ -29,7 +29,7 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     /// Initializes a new instance of the <see cref="Request"/> class.
     /// </summary>
     /// <param name="requestMatchers">The request matchers.</param>
-    private Request(IList<IRequestMatcher> requestMatchers) : base(requestMatchers)
+    private Request(IReadOnlyList<IRequestMatcher> requestMatchers) : base(requestMatchers)
     {
         _requestMatchers = Guard.NotNull(requestMatchers);
     }
@@ -63,5 +63,4 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         return _requestMatchers.OfType<T>().FirstOrDefault(func);
     }
-  
 }
