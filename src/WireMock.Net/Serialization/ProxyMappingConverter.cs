@@ -189,7 +189,8 @@ internal class ProxyMappingConverter
             webhooks: null,
             useWebhooksFireAndForget: null,
             timeSettings: null,
-            data: mapping?.Data
+            data: mapping?.Data,
+            probability: null
         );
     }
 }

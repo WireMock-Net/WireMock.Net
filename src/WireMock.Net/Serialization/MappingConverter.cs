@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Serialization;
 
@@ -33,7 +35,7 @@ internal class MappingConverter
         settings ??= new MappingConverterSettings();
 
         var request = (Request)mapping.RequestMatcher;
-        var response = (Response) mapping.Provider;
+        var response = (Response)mapping.Provider;
 
         var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
@@ -115,6 +117,11 @@ internal class MappingConverter
         // Guid
         sb.AppendLine($"    .WithGuid(\"{mapping.Guid}\")");
 
+        if (mapping.Probability != null)
+        {
+            sb.AppendLine($"    .WithProbability({mapping.Probability.Value.ToString(CultureInfoUtils.CultureInfoEnUS)})");
+        }
+
         // Response
         sb.AppendLine("    .RespondWith(Response.Create()");
 
@@ -183,6 +190,7 @@ internal class MappingConverter
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
             Data = mapping.Data,
+            Probability = mapping.Probability,
             Request = new RequestModel
             {
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel

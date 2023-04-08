@@ -33,7 +33,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private string? _scenario;
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
-    private double _probability;
+    private double? _probability;
 
     public Guid Guid { get; private set; }
 

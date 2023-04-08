@@ -113,6 +113,11 @@ public partial class WireMockServer
             respondProvider.WithWebhookFireAndForget(mappingModel.UseWebhooksFireAndForget.Value);
         }
 
+        if (mappingModel.Probability != null)
+        {
+            respondProvider.WithProbability(mappingModel.Probability.Value);
+        }
+
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
 

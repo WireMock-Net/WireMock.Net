@@ -74,7 +74,7 @@ public class MappingBuilder : IMappingBuilder
 
     internal IMapping[] GetMappingsInternal()
     {
-        return _options.Mappings.Values.ToArray().Where(m => !m.IsAdminInterface).ToArray();
+        return _options.Mappings.Values.ToArray().Where(m => !m.IsAdminInterface).OrderBy(m => m.UpdatedAt).ToArray();
     }
 
     /// <inheritdoc />

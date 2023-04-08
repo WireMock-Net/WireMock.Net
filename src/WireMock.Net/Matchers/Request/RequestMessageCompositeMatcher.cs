@@ -24,7 +24,7 @@ public abstract class RequestMessageCompositeMatcher : IRequestMatcher
     /// </summary>
     /// <param name="requestMatchers">The request matchers.</param>
     /// <param name="type">The CompositeMatcherType type (Defaults to 'And')</param>
-    protected RequestMessageCompositeMatcher(IReadOnlyList<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
+    protected RequestMessageCompositeMatcher(IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
     {
         Guard.NotNull(requestMatchers);
 
