@@ -103,6 +103,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="OpenApiParser\*.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="OpenApiParser\*.yml">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

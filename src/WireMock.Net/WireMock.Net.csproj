@@ -35,15 +35,19 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-        <DefineConstants>NETSTANDARD;USE_ASPNETCORE</DefineConstants>
+        <DefineConstants>$(DefineConstants);NETSTANDARD;USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0'or '$(TargetFramework)' == 'net7.0' ">
-        <DefineConstants>USE_ASPNETCORE</DefineConstants>
+        <DefineConstants>$(DefineConstants);USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
-        <DefineConstants>USE_ASPNETCORE;NET46</DefineConstants>
+        <DefineConstants>$(DefineConstants);USE_ASPNETCORE;NET46</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
+        <DefineConstants>$(DefineConstants);OPENAPIPARSER</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -188,5 +192,9 @@
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
+        <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
     </ItemGroup>
 </Project>

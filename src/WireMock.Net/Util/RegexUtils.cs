@@ -25,7 +25,7 @@ internal static class RegexUtils
         return namedGroupsDictionary;
     }
 
-    public static (bool IsValid, bool Result) MatchRegex(string pattern, string input, bool useRegexExtended = true)
+    public static (bool IsValid, bool Result) MatchRegex(string? pattern, string input, bool useRegexExtended = true)
     {
         if (string.IsNullOrEmpty(pattern))
         {

@@ -54,10 +54,12 @@ internal static class SwaggerMapper
             {
                 operation.Parameters.Add(openApiParameter);
             }
+
             foreach (var openApiParameter in MapRequestHeaders(mapping.Request.Headers))
             {
                 operation.Parameters.Add(openApiParameter);
             }
+
             foreach (var openApiParameter in MapRequestCookies(mapping.Request.Cookies))
             {
                 operation.Parameters.Add(openApiParameter);
@@ -94,7 +96,7 @@ internal static class SwaggerMapper
         return openApiDocument.ToJson(SchemaType.OpenApi3, Formatting.Indented);
     }
 
-    private static IEnumerable<OpenApiParameter> MapRequestQueryParameters(IList<ParamModel>? queryParameters)
+    private static IReadOnlyList<OpenApiParameter> MapRequestQueryParameters(IList<ParamModel>? queryParameters)
     {
         if (queryParameters == null)
         {
@@ -146,7 +148,7 @@ internal static class SwaggerMapper
             .ToList();
     }
 
-    private static IEnumerable<OpenApiParameter> MapRequestCookies(IList<CookieModel>? cookies)
+    private static IReadOnlyList<OpenApiParameter> MapRequestCookies(IList<CookieModel>? cookies)
     {
         if (cookies == null)
         {

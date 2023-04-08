@@ -1,5 +1,6 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -757,6 +758,82 @@ public class WireMockAdminApiTests
 
         // Assert
         await Verifier.Verify(code).DontScrubDateTimes().DontScrubGuids();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_OpenApiConvert_Yml()
+    {
+        // Arrange
+        var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "petstore.yml"));
+
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        // Act
+        var mappings = await api.OpenApiConvertAsync(openApiDocument).ConfigureAwait(false);
+
+        // Assert
+        server.MappingModels.Should().BeEmpty();
+        mappings.Should().HaveCount(20);
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_OpenApiConvert_Json()
+    {
+        // Arrange
+        var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "petstore-openapi3.json"));
+
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        // Act
+        var mappings = await api.OpenApiConvertAsync(openApiDocument).ConfigureAwait(false);
+
+        // Assert
+        server.MappingModels.Should().BeEmpty();
+        mappings.Should().HaveCount(19);
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_OpenApiSave_Json()
+    {
+        // Arrange
+        var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "petstore-openapi3.json"));
+
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        // Act
+        var statusModel = await api.OpenApiSaveAsync(openApiDocument).ConfigureAwait(false);
+
+        // Assert
+        statusModel.Status.Should().Be("OpenApi document converted to Mappings");
+        server.MappingModels.Should().HaveCount(19);
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_OpenApiSave_Yml()
+    {
+        // Arrange
+        var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "petstore.yml"));
+
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        // Act
+        var mappings = await api.OpenApiConvertAsync(openApiDocument).ConfigureAwait(false);
+
+        // Assert
+        server.MappingModels.Should().BeEmpty();
+        mappings.Should().HaveCount(20);
 
         server.Stop();
     }

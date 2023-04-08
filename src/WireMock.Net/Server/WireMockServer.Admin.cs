@@ -37,6 +37,8 @@ public partial class WireMockServer
     private const string AdminRequests = "/__admin/requests";
     private const string AdminSettings = "/__admin/settings";
     private const string AdminScenarios = "/__admin/scenarios";
+    private const string AdminOpenApi = "/__admin/openapi";
+
     private const string QueryParamReloadStaticMappings = "reloadStaticMappings";
 
     private static readonly Guid ProxyMappingGuid = new("e59914fd-782e-428e-91c1-4810ffb86567");
@@ -113,6 +115,10 @@ public partial class WireMockServer
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
         Given(Request.Create().WithPath(_adminFilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
+
+        // __admin/openapi
+        Given(Request.Create().WithPath($"{AdminOpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(OpenApiConvertToMappings));
+        Given(Request.Create().WithPath($"{AdminOpenApi}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(OpenApiSaveToMappings));
     }
     #endregion
 
@@ -737,7 +743,7 @@ public partial class WireMockServer
         return encodingModel != null ? Encoding.GetEncoding(encodingModel.CodePage) : null;
     }
 
-    private static ResponseMessage ToJson<T>(T result, bool keepNullValues = false)
+    private static ResponseMessage ToJson<T>(T result, bool keepNullValues = false, object? statusCode = null)
     {
         return new ResponseMessage
         {
@@ -746,7 +752,7 @@ public partial class WireMockServer
                 DetectedBodyType = BodyType.String,
                 BodyAsString = JsonConvert.SerializeObject(result, keepNullValues ? JsonSerializationConstants.JsonSerializerSettingsIncludeNullValues : JsonSerializationConstants.JsonSerializerSettingsDefault)
             },
-            StatusCode = (int)HttpStatusCode.OK,
+            StatusCode = statusCode ?? (int)HttpStatusCode.OK,
             Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(WireMockConstants.ContentTypeJson) } }
         };
     }

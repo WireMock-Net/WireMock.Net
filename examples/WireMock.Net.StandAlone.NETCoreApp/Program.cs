@@ -24,8 +24,8 @@ static class Program
 
     static async Task Main(string[] args)
     {
-        await TestAsync().ConfigureAwait(false);
-        return;
+        //await TestAsync().ConfigureAwait(false);
+        //return;
 
         XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 

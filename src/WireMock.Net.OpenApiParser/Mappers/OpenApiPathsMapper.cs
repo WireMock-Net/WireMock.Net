@@ -31,19 +31,29 @@ internal class OpenApiPathsMapper
         _exampleValueGenerator = new ExampleValueGenerator(settings);
     }
 
-    public IEnumerable<MappingModel> ToMappingModels(OpenApiPaths paths, IList<OpenApiServer> servers)
+    public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+        return paths?
+            .OrderBy(p => p.Key)
+            .Select(p => MapPath(p.Key, p.Value, servers))
+            .SelectMany(x => x)
+            .ToArray() ??
+               Array.Empty<MappingModel>();
     }
 
-    private IEnumerable<MappingModel> MapPaths(OpenApiPaths paths, IList<OpenApiServer> servers)
+    private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths? paths, IList<OpenApiServer> servers)
     {
-        return paths.Select(p => MapPath(p.Key, p.Value, servers)).SelectMany(x => x);
+        return paths?
+            .OrderBy(p => p.Key)
+            .Select(p => MapPath(p.Key, p.Value, servers))
+            .SelectMany(x => x)
+            .ToArray() ??
+               Array.Empty<MappingModel>();
     }
 
-    private IEnumerable<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
+    private IReadOnlyList<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
     {
-        return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers));
+        return pathItem.Operations.Select(o => MapOperationToMappingModel(path, o.Key.ToString().ToUpperInvariant(), o.Value, servers)).ToArray();
     }
 
     private MappingModel MapOperationToMappingModel(string path, string httpMethod, OpenApiOperation operation, IList<OpenApiServer> servers)
@@ -123,7 +133,7 @@ internal class OpenApiPathsMapper
         };
     }
 
-    private bool TryGetContent(IDictionary<string, OpenApiMediaType>? contents, [NotNullWhen(true)] out OpenApiMediaType? openApiMediaType, [NotNullWhen(true)] out string? contentType)
+    private static bool TryGetContent(IDictionary<string, OpenApiMediaType>? contents, [NotNullWhen(true)] out OpenApiMediaType? openApiMediaType, [NotNullWhen(true)] out string? contentType)
     {
         openApiMediaType = null;
         contentType = null;
@@ -305,19 +315,19 @@ internal class OpenApiPathsMapper
         return JObject.Parse(outputString.ToString());
     }
 
-    private IDictionary<string, object?>? MapHeaders(string responseContentType, IDictionary<string, OpenApiHeader> headers)
+    private IDictionary<string, object>? MapHeaders(string? responseContentType, IDictionary<string, OpenApiHeader>? headers)
     {
-        var mappedHeaders = headers.ToDictionary(
+        var mappedHeaders = headers?.ToDictionary(
             item => item.Key,
-            _ => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern
+            _ => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern!
         );
 
         if (!string.IsNullOrEmpty(responseContentType))
         {
-            mappedHeaders.TryAdd(HeaderContentType, responseContentType);
+            mappedHeaders.TryAdd(HeaderContentType, responseContentType!);
         }
 
-        return mappedHeaders.Keys.Any() ? mappedHeaders : null;
+        return mappedHeaders?.Keys.Any() == true ? mappedHeaders : null;
     }
 
     private IList<ParamModel>? MapQueryParameters(IEnumerable<OpenApiParameter> queryParameters)
@@ -360,9 +370,18 @@ internal class OpenApiPathsMapper
     {
         return type switch
         {
-            ExampleValueType.Value => new MatcherModel { Name = "ExactMatcher", Pattern = GetExampleValueAsStringForSchemaType(schema), IgnoreCase = _settings.IgnoreCaseExampleValues },
+            ExampleValueType.Value => new MatcherModel
+            {
+                Name = "ExactMatcher",
+                Pattern = GetExampleValueAsStringForSchemaType(schema),
+                IgnoreCase = _settings.IgnoreCaseExampleValues
+            },
 
-            _ => new MatcherModel { Name = "WildcardMatcher", Pattern = "*" }
+            _ => new MatcherModel
+            {
+                Name = "WildcardMatcher",
+                Pattern = "*"
+            }
         };
     }
 

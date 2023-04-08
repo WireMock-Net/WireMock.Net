@@ -81,7 +81,7 @@ public class WireMockServerSettingsTests
 
         // Assert
         server.Mappings.Should().NotBeNull();
-        server.Mappings.Should().HaveCount(30);
+        server.Mappings.Should().HaveCount(32);
         server.Mappings.All(m => m.Priority == WireMockConstants.AdminPriority).Should().BeTrue();
     }
 
@@ -100,9 +100,9 @@ public class WireMockServerSettingsTests
 
         // Assert
         server.Mappings.Should().NotBeNull();
-        server.Mappings.Should().HaveCount(31);
+        server.Mappings.Should().HaveCount(33);
 
-        server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(30);
+        server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(32);
         server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
     }
 

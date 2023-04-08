@@ -67,13 +67,13 @@ public class Mapping : IMapping
     public IWebhook[]? Webhooks { get; }
 
     /// <inheritdoc />
-    public bool? UseWebhooksFireAndForget { get; set; }
+    public bool? UseWebhooksFireAndForget { get; }
 
     /// <inheritdoc />
     public ITimeSettings? TimeSettings { get; }
 
     /// <inheritdoc />
-    public object? Data { get; set; }
+    public object? Data { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.

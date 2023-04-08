@@ -36,5 +36,5 @@ public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleV
     public virtual string String { get; set; } = "example-string";
 
     /// <inheritdoc />
-    public virtual OpenApiSchema? Schema { get; set; } = new OpenApiSchema();
+    public virtual OpenApiSchema? Schema { get; set; } = new();
 }

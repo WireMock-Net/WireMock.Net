@@ -280,4 +280,20 @@ public interface IWireMockAdminApi
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Head("files/{filename}")]
     Task FileExistsAsync([Path] string filename, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Convert an OpenApi / RAML document to mappings.
+    /// </summary>
+    /// <param name="text">The OpenApi or RAML document as text.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("openapi/convert")]
+    Task<IReadOnlyList<MappingModel>> OpenApiConvertAsync([Body] string text, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Convert an OpenApi / RAML document to mappings and save these.
+    /// </summary>
+    /// <param name="text">The OpenApi or RAML document as text.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("openapi/save")]
+    Task<StatusModel> OpenApiSaveAsync([Body] string text, CancellationToken cancellationToken = default);
 }
