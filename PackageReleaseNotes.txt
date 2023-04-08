@@ -1,6 +1,6 @@
-# 1.5.21 (22 March 2023)
-- #908 RequestBuilder : add WithBodyAsJson and WithBody (with IJsonConverter) [feature]
-- #911 Fixed QueryStringParser for UrlEncoded values [bug]
-- #901 Matching one form-urlencoded value [feature]
+# 1.5.22 (08 April 2023)
+- #914 #912 add excluded params to proxy mapping [feature]
+- #916 Include WireMockOpenApiParser project [feature]
+- #912 Feature: adding excluded params to proxy and records settings [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

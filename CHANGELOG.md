@@ -1,3 +1,8 @@
+# 1.5.22 (08 April 2023)
+- [#914](https://github.com/WireMock-Net/WireMock.Net/pull/914) - #912 add excluded params to proxy mapping [feature] contributed by [walidhaidarii](https://github.com/walidhaidarii)
+- [#916](https://github.com/WireMock-Net/WireMock.Net/pull/916) - Include WireMockOpenApiParser project [feature] contributed by [StefH](https://github.com/StefH)
+- [#912](https://github.com/WireMock-Net/WireMock.Net/issues/912) - Feature: adding excluded params to proxy and records settings [feature]
+
 # 1.5.21 (22 March 2023)
 - [#908](https://github.com/WireMock-Net/WireMock.Net/pull/908) - RequestBuilder : add WithBodyAsJson and WithBody (with IJsonConverter) [feature] contributed by [StefH](https://github.com/StefH)
 - [#911](https://github.com/WireMock-Net/WireMock.Net/pull/911) - Fixed QueryStringParser for UrlEncoded values [bug] contributed by [StefH](https://github.com/StefH)
