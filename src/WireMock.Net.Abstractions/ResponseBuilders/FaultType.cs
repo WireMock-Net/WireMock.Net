@@ -1,23 +1,23 @@
-﻿namespace WireMock.ResponseBuilders
+// ReSharper disable InconsistentNaming
+namespace WireMock.ResponseBuilders;
+
+/// <summary>
+/// The FaultType enumeration
+/// </summary>
+public enum FaultType
 {
     /// <summary>
-    /// The FaultType enumeration
+    /// No Fault
     /// </summary>
-    public enum FaultType
-    {
-        /// <summary>
-        /// No Fault
-        /// </summary>
-        NONE,
+    NONE,
 
-        /// <summary>
-        /// Return a completely empty response.
-        /// </summary>
-        EMPTY_RESPONSE,
+    /// <summary>
+    /// Return a completely empty response.
+    /// </summary>
+    EMPTY_RESPONSE,
 
-        /// <summary>
-        /// Send a defined status header, then garbage, then close the connection.
-        /// </summary>
-        MALFORMED_RESPONSE_CHUNK
-    }
+    /// <summary>
+    /// Send a defined status header, then garbage, then close the connection.
+    /// </summary>
+    MALFORMED_RESPONSE_CHUNK
 }
