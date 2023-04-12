@@ -5,6 +5,8 @@ namespace WireMock.Util;
 
 internal static class CultureInfoUtils
 {
+    public static readonly CultureInfo CultureInfoEnUS = new("en-US");
+
     public static CultureInfo Parse(string? value)
     {
         if (value is null)

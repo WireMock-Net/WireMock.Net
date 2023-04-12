@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using WireMock.Models;
 
 namespace WireMock.Admin.Mappings;
@@ -94,4 +93,9 @@ public class MappingModel
     /// </example>
     /// </summary>
     public object? Data { get; set; }
+
+    /// <summary> 
+    /// The probability when this request should be matched. Value is between 0 and 1. [Optional]
+    /// </summary>
+    public double? Probability { get; set; }
 }

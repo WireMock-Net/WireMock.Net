@@ -6,6 +6,7 @@ using WireMock.Logging;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.Owin;
+using WireMock.Services;
 using WireMock.Util;
 using Xunit;
 
@@ -14,6 +15,8 @@ namespace WireMock.Net.Tests.Owin;
 public class MappingMatcherTests
 {
     private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
+    private readonly Mock<IRandomizerDoubleBetween0And1> _randomizerDoubleBetween0And1Mock;
+
     private readonly MappingMatcher _sut;
 
     public MappingMatcherTests()
@@ -29,7 +32,10 @@ public class MappingMatcherTests
         loggerMock.Setup(l => l.Error(It.IsAny<string>()));
         _optionsMock.Setup(o => o.Logger).Returns(loggerMock.Object);
 
-        _sut = new MappingMatcher(_optionsMock.Object);
+        _randomizerDoubleBetween0And1Mock = new Mock<IRandomizerDoubleBetween0And1>();
+        _randomizerDoubleBetween0And1Mock.Setup(r => r.Generate()).Returns(0.0);
+
+        _sut = new MappingMatcher(_optionsMock.Object, _randomizerDoubleBetween0And1Mock.Object);
     }
 
     [Fact]
@@ -76,8 +82,8 @@ public class MappingMatcherTests
         var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
         var mappings = InitMappings
         (
-            (guid1, new[] { 0.1 }),
-            (guid2, new[] { 1.0 })
+            (guid1, new[] { 0.1 }, null),
+            (guid2, new[] { 1.0 }, null)
         );
         _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -104,8 +110,8 @@ public class MappingMatcherTests
         var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
         var mappings = InitMappings
         (
-            (guid1, new[] { 0.1 }),
-            (guid2, new[] { 0.9 })
+            (guid1, new[] { 0.1 }, null),
+            (guid2, new[] { 0.9 }, null)
         );
         _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -131,8 +137,8 @@ public class MappingMatcherTests
 
         _optionsMock.SetupGet(o => o.AllowPartialMapping).Returns(true);
         var mappings = InitMappings(
-            (guid1, new[] { 0.1 }),
-            (guid2, new[] { 0.9 })
+            (guid1, new[] { 0.1 }, null),
+            (guid2, new[] { 0.9 }, null)
         );
         _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -158,8 +164,8 @@ public class MappingMatcherTests
         var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
         var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
         var mappings = InitMappings(
-            (guid1, new[] { 1.0 }),
-            (guid2, new[] { 1.0, 1.0 })
+            (guid1, new[] { 1.0 }, null),
+            (guid2, new[] { 1.0, 1.0 }, null)
         );
         _optionsMock.Setup(o => o.Mappings).Returns(mappings);
 
@@ -178,7 +184,31 @@ public class MappingMatcherTests
         result.Partial.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
     }
 
-    private static ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double[] scores)[] matches)
+    [Fact]
+    public void MappingMatcher_FindBestMatch_WhenProbabilityFailsFirst_ShouldReturnSecondMatch()
+    {
+        // Assign
+        var guid1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        var guid2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
+        var mappings = InitMappings
+        (
+            (guid1, new[] { 1.0 }, 1.0),
+            (guid2, new[] { 1.0 }, null)
+        );
+        _optionsMock.Setup(o => o.Mappings).Returns(mappings);
+
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1");
+
+        // Act
+        var result = _sut.FindBestMatch(request);
+
+        // Assert
+        result.Match.Should().NotBeNull();
+        result.Match!.Mapping.Guid.Should().Be(guid2);
+        result.Match.RequestMatchResult.AverageTotalScore.Should().Be(1.0);
+    }
+
+    private static ConcurrentDictionary<Guid, IMapping> InitMappings(params (Guid guid, double[] scores, double? probability)[] matches)
     {
         var mappings = new ConcurrentDictionary<Guid, IMapping>();
 
@@ -192,6 +222,8 @@ public class MappingMatcherTests
             {
                 requestMatchResult.AddScore(typeof(object), score);
             }
+
+            mappingMock.SetupGet(m => m.Probability).Returns(match.probability);
 
             mappingMock.Setup(m => m.GetRequestMatchResult(It.IsAny<RequestMessage>(), It.IsAny<string>())).Returns(requestMatchResult);
 

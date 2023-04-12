@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -131,6 +130,11 @@ public interface IMapping
     /// </example>
     /// </summary>
     object? Data { get; }
+
+    /// <summary> 
+    /// The probability when this request should be matched. Value is between 0 and 1. [Optional]
+    /// </summary>
+    double? Probability { get; }
 
     /// <summary>
     /// ProvideResponseAsync

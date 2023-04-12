@@ -177,7 +177,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null);
+        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null, null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();
@@ -231,7 +231,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null);
+        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null, probability: null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();

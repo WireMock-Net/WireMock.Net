@@ -4,7 +4,7 @@ using System.Linq.Dynamic.Core;
 
 namespace WireMock.Json;
 
-public class DynamicPropertyWithValue : DynamicProperty
+internal class DynamicPropertyWithValue : DynamicProperty
 {
     public object? Value { get; }
 

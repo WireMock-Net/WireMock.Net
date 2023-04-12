@@ -1,0 +1,6 @@
+namespace WireMock.Services;
+
+internal interface IRandomizerDoubleBetween0And1
+{
+    double Generate();
+}

@@ -18,6 +18,12 @@ namespace WireMock.Server;
 /// </summary>
 internal class RespondWithAProvider : IRespondWithAProvider
 {
+    private readonly RegistrationCallback _registrationCallback;
+    private readonly IRequestMatcher _requestMatcher;
+    private readonly WireMockServerSettings _settings;
+    private readonly IDateTimeUtils _dateTimeUtils;
+    private readonly bool _saveToFile;
+
     private int _priority;
     private string? _title;
     private string? _description;
@@ -26,13 +32,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private string? _nextState;
     private string? _scenario;
     private int _timesInSameState = 1;
-    private readonly RegistrationCallback _registrationCallback;
-    private readonly IRequestMatcher _requestMatcher;
-    private readonly WireMockServerSettings _settings;
-    private readonly IDateTimeUtils _dateTimeUtils;
-    private readonly bool _saveToFile;
-
     private bool? _useWebhookFireAndForget;
+    private double? _probability;
 
     public Guid Guid { get; private set; }
 
@@ -92,7 +93,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
             Webhooks,
             _useWebhookFireAndForget,
             TimeSettings,
-            Data);
+            Data,
+            _probability);
 
         _registrationCallback(mapping, _saveToFile);
     }
@@ -281,6 +283,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget)
     {
         _useWebhookFireAndForget = useWebhooksFireAndForget;
+
+        return this;
+    }
+
+    public IRespondWithAProvider WithProbability(double probability)
+    {
+        _probability = Guard.Condition(probability, p => p is >= 0 and <= 1.0);
 
         return this;
     }

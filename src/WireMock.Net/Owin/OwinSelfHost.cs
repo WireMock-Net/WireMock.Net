@@ -9,6 +9,9 @@ using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using Stef.Validation;
+using RandomDataGenerator.FieldOptions;
+using RandomDataGenerator.Randomizers;
+using WireMock.Services;
 
 namespace WireMock.Owin;
 
@@ -70,7 +73,7 @@ internal class OwinSelfHost : IOwinSelfHost
         {
             var requestMapper = new OwinRequestMapper();
             var responseMapper = new OwinResponseMapper(_options);
-            var matcher = new MappingMatcher(_options);
+            var matcher = new MappingMatcher(_options, new RandomizerDoubleBetween0And1());
 
             Action<IAppBuilder> startup = app =>
             {

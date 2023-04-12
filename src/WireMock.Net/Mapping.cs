@@ -75,6 +75,9 @@ public class Mapping : IMapping
     /// <inheritdoc />
     public object? Data { get; }
 
+    /// <inheritdoc />
+    public double? Probability { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.
     /// </summary>
@@ -95,6 +98,7 @@ public class Mapping : IMapping
     /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
     /// <param name="data">The data object. [Optional]</param>
+    /// <param name="probability">Define the probability when this request should be matched. [Optional]</param>
     public Mapping(
         Guid guid,
         DateTime updatedAt,
@@ -112,7 +116,8 @@ public class Mapping : IMapping
         IWebhook[]? webhooks,
         bool? useWebhooksFireAndForget,
         ITimeSettings? timeSettings,
-        object? data)
+        object? data,
+        double? probability)
     {
         Guid = guid;
         UpdatedAt = updatedAt;
@@ -131,6 +136,7 @@ public class Mapping : IMapping
         UseWebhooksFireAndForget = useWebhooksFireAndForget;
         TimeSettings = timeSettings;
         Data = data;
+        Probability = probability;
     }
 
     /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
