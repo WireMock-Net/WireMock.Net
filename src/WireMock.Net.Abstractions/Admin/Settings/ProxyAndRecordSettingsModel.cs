@@ -72,5 +72,5 @@ public class ProxyAndRecordSettingsModel
     /// <summary>
     /// Defines the Replace Settings
     /// </summary>
-    public ProxyUrlReplaceSettings? ReplaceSettings { get; set; }
+    public ProxyUrlReplaceSettingsModel? ReplaceSettings { get; set; }
 }
