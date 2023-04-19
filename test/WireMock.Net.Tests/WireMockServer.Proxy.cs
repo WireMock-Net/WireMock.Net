@@ -574,7 +574,7 @@ public class WireMockServerProxyTests
     public async Task WireMockServer_Proxy_Should_replace_old_path_value_with_new_path_value_in_replace_settings()
     {
         // Assign
-        var replaceSettings = new ReplaceSettings
+        var replaceSettings = new ProxyUrlReplaceSettings
         {
             OldValue = "value-to-replace",
             NewValue = "new-value"
