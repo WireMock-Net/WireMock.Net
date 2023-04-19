@@ -68,4 +68,9 @@ public class ProxyAndRecordSettingsModel
     /// Append an unique GUID to the filename from the saved mapping file.
     /// </summary>
     public bool AppendGuidToSavedMappingFile { get; set; }
+
+    /// <summary>
+    /// Defines the Replace Settings
+    /// </summary>
+    public ProxyUrlReplaceSettings? ReplaceSettings { get; set; }
 }

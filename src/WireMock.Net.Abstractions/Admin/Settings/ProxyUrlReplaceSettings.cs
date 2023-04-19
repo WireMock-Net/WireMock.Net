@@ -1,8 +1,10 @@
-namespace WireMock.Settings;
+namespace WireMock.Admin.Settings;
 
 /// <summary>
 /// Defines an old path param and a new path param to be replaced when proxying.
 /// </summary>
+
+[FluentBuilder.AutoGenerateBuilder]
 public class ProxyUrlReplaceSettings
 {
     /// <summary>

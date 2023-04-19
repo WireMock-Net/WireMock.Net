@@ -118,6 +118,11 @@ public static class WireMockServerSettingsParser
                 {
                     StatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                     // HttpMethods = new ProxySaveMappingSetting<string[]>(parser.GetValues("DoNotSaveMappingForHttpMethods", new string[0]), MatchBehaviour.RejectOnMatch)
+                },
+                ReplaceSettings = new ProxyUrlReplaceSettings
+                {
+                    OldValue = parser.GetStringValue("ProxyUrlReplaceOldValue", ""),
+                    NewValue = parser.GetStringValue("ProxyUrlReplaceNewValue", "")
                 }
             };
 
@@ -131,6 +136,7 @@ public static class WireMockServerSettingsParser
                     Password = parser.GetStringValue("WebProxyPassword")
                 };
             }
+
         }
 
         var certificateSettings = new WireMockCertificateSettings
