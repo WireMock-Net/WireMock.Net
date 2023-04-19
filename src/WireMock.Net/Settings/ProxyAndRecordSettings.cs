@@ -70,6 +70,12 @@ public class ProxyAndRecordSettings : HttpClientSettings
     public string[]? ExcludedCookies { get; set; }
 
     /// <summary>
+    /// Replace Settings
+    /// </summary>
+    [PublicAPI]
+    public ReplaceSettings? Replace { get; set; }
+
+    /// <summary>
     /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).
     /// </summary>
     //[PublicAPI]
