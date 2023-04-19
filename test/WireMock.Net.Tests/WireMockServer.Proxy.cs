@@ -570,7 +570,7 @@ public class WireMockServerProxyTests
         Check.That(matchers).Contains("name");
     }
 
-        [Fact]
+    [Fact]
     public async Task WireMockServer_Proxy_Should_replace_old_path_value_with_new_path_value_in_replace_settings()
     {
         // Assign
@@ -592,7 +592,7 @@ public class WireMockServerProxyTests
                 Url = serverForProxyForwarding.Urls[0],
                 SaveMapping = true,
                 SaveMappingToFile = false,
-                Replace = replaceSettings
+                ReplaceSettings = replaceSettings
             }
         };
         var server = WireMockServer.Start(settings);

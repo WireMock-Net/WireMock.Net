@@ -73,7 +73,7 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Replace Settings
     /// </summary>
     [PublicAPI]
-    public ReplaceSettings? Replace { get; set; }
+    public ReplaceSettings? ReplaceSettings { get; set; }
 
     /// <summary>
     /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).

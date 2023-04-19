@@ -37,7 +37,7 @@ internal class ProxyHelper
         var requiredUri = new Uri(url);
 
         // Create HttpRequestMessage
-        var replaceSettings = proxyAndRecordSettings.Replace;
+        var replaceSettings = proxyAndRecordSettings.ReplaceSettings;
         var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, replaceSettings is not null
             ? url.Replace(replaceSettings.OldValue, replaceSettings.NewValue)
             : url
