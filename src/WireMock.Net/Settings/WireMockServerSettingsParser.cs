@@ -136,7 +136,6 @@ public static class WireMockServerSettingsParser
                     Password = parser.GetStringValue("WebProxyPassword")
                 };
             }
-
         }
 
         var certificateSettings = new WireMockCertificateSettings
