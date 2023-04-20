@@ -136,6 +136,17 @@ public static class WireMockServerSettingsParser
                     Password = parser.GetStringValue("WebProxyPassword")
                 };
             }
+
+            var proxyUrlReplaceOldValue = parser.GetStringValue("ProxyUrlReplaceOldValue");
+            var proxyUrlReplaceNewValue = parser.GetStringValue("ProxyUrlReplaceNewValue");
+            if (!string.IsNullOrEmpty(proxyUrlReplaceOldValue) && proxyUrlReplaceNewValue != null)
+            {
+                settings.ProxyAndRecordSettings.ReplaceSettings = new ProxyUrlReplaceSettings
+                {
+                    OldValue = proxyUrlReplaceOldValue!,
+                    NewValue = proxyUrlReplaceNewValue!
+                };
+            }
         }
 
         var certificateSettings = new WireMockCertificateSettings

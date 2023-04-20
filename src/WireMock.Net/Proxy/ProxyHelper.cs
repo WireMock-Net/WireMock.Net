@@ -38,10 +38,8 @@ internal class ProxyHelper
 
         // Create HttpRequestMessage
         var replaceSettings = proxyAndRecordSettings.ReplaceSettings;
-        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, replaceSettings is not null
-            ? url.Replace(replaceSettings.OldValue, replaceSettings.NewValue)
-            : url
-        );
+        var proxyUrl= replaceSettings is not null ? url.Replace(replaceSettings.OldValue, replaceSettings.NewValue) : url;
+        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, proxyUrl);
 
         // Call the URL
         var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
