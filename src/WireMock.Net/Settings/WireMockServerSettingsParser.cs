@@ -21,7 +21,8 @@ public static class WireMockServerSettingsParser
     /// <param name="logger">The logger (optional, can be null)</param>
     /// <param name="settings">The parsed settings</param>
     [PublicAPI]
-    public static bool TryParseArguments(string[] args, [NotNullWhen(true)] out WireMockServerSettings? settings, IWireMockLogger? logger = null)
+    public static bool TryParseArguments(string[] args, [NotNullWhen(true)] out WireMockServerSettings? settings,
+        IWireMockLogger? logger = null)
     {
         Guard.HasNoNulls(args);
 
@@ -30,7 +31,8 @@ public static class WireMockServerSettingsParser
 
         if (parser.GetBoolSwitchValue("help"))
         {
-            (logger ?? new WireMockConsoleLogger()).Info("See https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
+            (logger ?? new WireMockConsoleLogger()).Info(
+                "See https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
             settings = null;
             return false;
         }
@@ -46,8 +48,10 @@ public static class WireMockServerSettingsParser
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
             AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
             DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
-            DisableRequestBodyDecompressing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableRequestBodyDecompressing)),
-            DisableDeserializeFormUrlEncoded = parser.GetBoolValue(nameof(WireMockServerSettings.DisableDeserializeFormUrlEncoded)),
+            DisableRequestBodyDecompressing =
+                parser.GetBoolValue(nameof(WireMockServerSettings.DisableRequestBodyDecompressing)),
+            DisableDeserializeFormUrlEncoded =
+                parser.GetBoolValue(nameof(WireMockServerSettings.DisableDeserializeFormUrlEncoded)),
             HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
             MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
             ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
@@ -59,17 +63,35 @@ public static class WireMockServerSettingsParser
             WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
             HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
-            DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
-            QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
-            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture)
+            DoNotSaveDynamicResponseInLogEntry =
+                parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
+            QueryParameterMultipleValueSupport =
+                parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings
+                    .QueryParameterMultipleValueSupport)),
+            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture),
+                strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture)
         };
 
 #if USE_ASPNETCORE
-        settings.CorsPolicyOptions = parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
-        settings.ClientCertificateMode = parser.GetEnumValue(nameof(WireMockServerSettings.ClientCertificateMode), ClientCertificateMode.NoCertificate);
-        settings.AcceptAnyClientCertificate = parser.GetBoolValue(nameof(WireMockServerSettings.AcceptAnyClientCertificate));
+        settings.CorsPolicyOptions =
+            parser.GetEnumValue(nameof(WireMockServerSettings.CorsPolicyOptions), CorsPolicyOptions.None);
+        settings.ClientCertificateMode = parser.GetEnumValue(nameof(WireMockServerSettings.ClientCertificateMode),
+            ClientCertificateMode.NoCertificate);
+        settings.AcceptAnyClientCertificate =
+            parser.GetBoolValue(nameof(WireMockServerSettings.AcceptAnyClientCertificate));
 #endif
 
+        TryParseLoggerSettings(settings, logger, parser);
+        TryParsePortSettings(settings, parser);
+        TryParseProxyAndRecordSettings(settings, parser);
+        TryParseCertificateSettings(settings, parser);
+
+        return true;
+    }
+
+    private static void TryParseLoggerSettings(WireMockServerSettings settings, IWireMockLogger? logger,
+        SimpleCommandLineParser parser)
+    {
         var loggerType = parser.GetStringValue("WireMockLogger");
         switch (loggerType)
         {
@@ -86,33 +108,31 @@ public static class WireMockServerSettingsParser
                 {
                     settings.Logger = logger;
                 }
+
                 break;
         }
+    }
 
-        if (parser.Contains(nameof(WireMockServerSettings.Port)))
-        {
-            settings.Port = parser.GetIntValue(nameof(WireMockServerSettings.Port));
-        }
-        else if (settings.HostingScheme is null)
-        {
-            settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
-        }
-
+    private static void TryParseProxyAndRecordSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    {
         var proxyUrl = parser.GetStringValue("ProxyURL") ?? parser.GetStringValue("ProxyUrl");
         if (!string.IsNullOrEmpty(proxyUrl))
         {
             settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
                 AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect"),
-                ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
+                ClientX509Certificate2ThumbprintOrSubjectName =
+                    parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
                 ExcludedCookies = parser.GetValues("ExcludedCookies"),
                 ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
                 // PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
                 SaveMapping = parser.GetBoolValue("SaveMapping"),
                 SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
-                UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
-                AppendGuidToSavedMappingFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
+                UseDefinedRequestMatchers =
+                    parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
+                AppendGuidToSavedMappingFile =
+                    parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
                 Url = proxyUrl!,
                 SaveMappingSettings = new ProxySaveMappingSettings
                 {
@@ -126,29 +146,25 @@ public static class WireMockServerSettingsParser
                 }
             };
 
-            string? proxyAddress = parser.GetStringValue("WebProxyAddress");
-            if (!string.IsNullOrEmpty(proxyAddress))
-            {
-                settings.ProxyAndRecordSettings.WebProxySettings = new WebProxySettings
-                {
-                    Address = proxyAddress!,
-                    UserName = parser.GetStringValue("WebProxyUserName"),
-                    Password = parser.GetStringValue("WebProxyPassword")
-                };
-            }
-
-            var proxyUrlReplaceOldValue = parser.GetStringValue("ProxyUrlReplaceOldValue");
-            var proxyUrlReplaceNewValue = parser.GetStringValue("ProxyUrlReplaceNewValue");
-            if (!string.IsNullOrEmpty(proxyUrlReplaceOldValue) && proxyUrlReplaceNewValue != null)
-            {
-                settings.ProxyAndRecordSettings.ReplaceSettings = new ProxyUrlReplaceSettings
-                {
-                    OldValue = proxyUrlReplaceOldValue!,
-                    NewValue = proxyUrlReplaceNewValue!
-                };
-            }
+            TryParseWebProxyAddressSettings(settings, parser);
+            TryParseProxyUrlReplaceSettings(settings, parser);
         }
+    }
 
+    private static void TryParsePortSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    {
+        if (parser.Contains(nameof(WireMockServerSettings.Port)))
+        {
+            settings.Port = parser.GetIntValue(nameof(WireMockServerSettings.Port));
+        }
+        else if (settings.HostingScheme is null)
+        {
+            settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
+        }
+    }
+
+    private static void TryParseCertificateSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    {
         var certificateSettings = new WireMockCertificateSettings
         {
             X509StoreName = parser.GetStringValue("X509StoreName"),
@@ -161,7 +177,33 @@ public static class WireMockServerSettingsParser
         {
             settings.CertificateSettings = certificateSettings;
         }
+    }
 
-        return true;
+    private static void TryParseWebProxyAddressSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    {
+        string? proxyAddress = parser.GetStringValue("WebProxyAddress");
+        if (!string.IsNullOrEmpty(proxyAddress))
+        {
+            settings.ProxyAndRecordSettings!.WebProxySettings = new WebProxySettings
+            {
+                Address = proxyAddress!,
+                UserName = parser.GetStringValue("WebProxyUserName"),
+                Password = parser.GetStringValue("WebProxyPassword")
+            };
+        }
+    }
+
+    private static void TryParseProxyUrlReplaceSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    {
+        var proxyUrlReplaceOldValue = parser.GetStringValue("ProxyUrlReplaceOldValue");
+        var proxyUrlReplaceNewValue = parser.GetStringValue("ProxyUrlReplaceNewValue");
+        if (!string.IsNullOrEmpty(proxyUrlReplaceOldValue) && proxyUrlReplaceNewValue != null)
+        {
+            settings.ProxyAndRecordSettings!.ReplaceSettings = new ProxyUrlReplaceSettings
+            {
+                OldValue = proxyUrlReplaceOldValue!,
+                NewValue = proxyUrlReplaceNewValue!
+            };
+        }
     }
 }
