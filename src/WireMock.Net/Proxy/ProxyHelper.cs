@@ -38,7 +38,17 @@ internal class ProxyHelper
 
         // Create HttpRequestMessage
         var replaceSettings = proxyAndRecordSettings.ReplaceSettings;
-        var proxyUrl = replaceSettings is not null ? url.Replace(replaceSettings.OldValue, replaceSettings.NewValue) : url;
+        string proxyUrl;
+        if (replaceSettings is not null)
+        {
+            var stringComparison = replaceSettings.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            proxyUrl = url.Replace(replaceSettings.OldValue, replaceSettings.NewValue, stringComparison);
+        }
+        else
+        {
+            proxyUrl = url;
+        }
+
         var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, proxyUrl);
 
         // Call the URL
