@@ -571,6 +571,52 @@ public class WireMockServerProxyTests
     }
 
     [Fact]
+    public async Task WireMockServer_Proxy_Should_replace_old_path_value_with_new_path_value_in_replace_settings()
+    {
+        // Assign
+        var replaceSettings = new ProxyUrlReplaceSettings
+        {
+            OldValue = "value-to-replace",
+            NewValue = "new-value"
+        };
+        string path = $"/prx_{Guid.NewGuid()}";
+        var serverForProxyForwarding = WireMockServer.Start();
+        serverForProxyForwarding
+            .Given(Request.Create().WithPath($"/{replaceSettings.NewValue}{path}"))
+            .RespondWith(Response.Create());
+
+        var settings = new WireMockServerSettings
+        {
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
+            {
+                Url = serverForProxyForwarding.Urls[0],
+                SaveMapping = true,
+                SaveMappingToFile = false,
+                ReplaceSettings = replaceSettings
+            }
+        };
+        var server = WireMockServer.Start(settings);
+        var defaultMapping = server.Mappings.First();
+
+        // Act
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri($"{server.Urls[0]}/{replaceSettings.OldValue}{path}"),
+            Content = new StringContent("stringContent")
+        };
+
+        var handler = new HttpClientHandler();
+        await new HttpClient(handler).SendAsync(requestMessage).ConfigureAwait(false);
+
+        // Assert
+        var mapping = serverForProxyForwarding.Mappings.FirstOrDefault(m => m.Guid != defaultMapping.Guid);
+        var score = mapping.RequestMatcher.GetMatchingScore(serverForProxyForwarding.LogEntries.First().RequestMessage,
+            new RequestMatchResult());
+        Check.That(score).IsEqualTo(1.0);
+    }
+
+    [Fact]
     public async Task WireMockServer_Proxy_Should_preserve_content_header_in_proxied_request_with_empty_content()
     {
         // Assign
@@ -701,7 +747,7 @@ public class WireMockServerProxyTests
     /// <summary>
     /// Send some binary content in a request through the proxy and check that the same content
     /// arrived at the target. As example a JPEG/JIFF header is used, which is not representable
-    /// in UTF8 and breaks if it is not treated as binary content. 
+    /// in UTF8 and breaks if it is not treated as binary content.
     /// </summary>
     [Fact]
     public async Task WireMockServer_Proxy_Should_preserve_binary_request_content()
