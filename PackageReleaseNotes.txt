@@ -1,6 +1,6 @@
-# 1.5.22 (08 April 2023)
-- #914 #912 add excluded params to proxy mapping [feature]
-- #916 Include WireMockOpenApiParser project [feature]
-- #912 Feature: adding excluded params to proxy and records settings [feature]
+# 1.5.23 (23 April 2023)
+- #922 Add WithProbability [feature]
+- #924 Allow removal of prefix when proxying to another server (#630) [feature]
+- #925 Add IgnoreCase option to ProxyUrlReplaceSettings [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

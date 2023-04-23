@@ -1,3 +1,8 @@
+# 1.5.23 (23 April 2023)
+- [#922](https://github.com/WireMock-Net/WireMock.Net/pull/922) - Add WithProbability [feature] contributed by [StefH](https://github.com/StefH)
+- [#924](https://github.com/WireMock-Net/WireMock.Net/pull/924) - Allow removal of prefix when proxying to another server (#630) [feature] contributed by [nudejustin](https://github.com/nudejustin)
+- [#925](https://github.com/WireMock-Net/WireMock.Net/pull/925) - Add IgnoreCase option to ProxyUrlReplaceSettings [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.22 (08 April 2023)
 - [#914](https://github.com/WireMock-Net/WireMock.Net/pull/914) - #912 add excluded params to proxy mapping [feature] contributed by [walidhaidarii](https://github.com/walidhaidarii)
 - [#916](https://github.com/WireMock-Net/WireMock.Net/pull/916) - Include WireMockOpenApiParser project [feature] contributed by [StefH](https://github.com/StefH)
