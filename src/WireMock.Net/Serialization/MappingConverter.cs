@@ -129,7 +129,7 @@ internal class MappingConverter
         {
             foreach (var header in response.ResponseMessage.Headers)
             {
-                sb.AppendLine($"        .WithHeader(\"{header.Key})\", {ToValueArguments(header.Value.ToArray())})");
+                sb.AppendLine($"        .WithHeader(\"{header.Key}\", {ToValueArguments(header.Value.ToArray())})");
             }
         }
 
