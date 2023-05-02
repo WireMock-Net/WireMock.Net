@@ -18,7 +18,7 @@ server
     )
     .WithGuid("1b731398-4a5b-457f-a6e3-d65e541c428f")
     .RespondWith(Response.Create()
-        .WithHeader("hk)", "hv")
+        .WithHeader("hk", "hv")
         .WithBody("2")
     );
 
