@@ -7,6 +7,7 @@ server
     )
     .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
     .RespondWith(Response.Create()
+        .WithStatusCode(200)
         .WithBody("1")
     );
 
@@ -18,6 +19,7 @@ server
     )
     .WithGuid("1b731398-4a5b-457f-a6e3-d65e541c428f")
     .RespondWith(Response.Create()
+        .WithStatusCode(201)
         .WithHeader("hk", "hv")
         .WithBody("2")
     );

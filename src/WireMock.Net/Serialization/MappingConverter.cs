@@ -125,6 +125,11 @@ internal class MappingConverter
         // Response
         sb.AppendLine("    .RespondWith(Response.Create()");
 
+        if (response.ResponseMessage.StatusCode is { } statusCode)
+        {
+            sb.AppendLine($"        .WithStatusCode({statusCode})");
+        }
+
         if (response.ResponseMessage.Headers is { })
         {
             foreach (var header in response.ResponseMessage.Headers)
