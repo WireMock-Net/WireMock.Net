@@ -29,7 +29,7 @@
 
     <ItemGroup>
         <None Include="../../resources/WireMock.Net-Logo.png" Pack="true" PackagePath="" />
-        <!--<None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>-->
+        <None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 
     <Choose>
