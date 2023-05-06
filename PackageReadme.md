@@ -5,7 +5,7 @@ Lightweight Http Mocking Server for .NET, inspired by [WireMock(http://WireMock.
 * HTTP response stubbing, matchable on URL/Path, headers, cookies and body content patterns
 * Library can be used in unit tests and integration tests
 * Runs as a standalone process, as windows service, as Azure/IIS or as docker
-* Configurable via a fluent DotNet API, JSON files and JSON over HTTP
+* Configurable via a fluent C# .NET API, JSON files and JSON over HTTP
 * Record/playback of stubs (proxying)
 * Per-request conditional proxying
 * Stateful behaviour simulation
