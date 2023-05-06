@@ -12,6 +12,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
         <ApplicationIcon>../../resources/WireMock.Net-Logo.ico</ApplicationIcon>
+        <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
         <LangVersion>Latest</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
