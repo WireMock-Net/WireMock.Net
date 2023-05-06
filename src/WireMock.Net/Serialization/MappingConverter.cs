@@ -149,7 +149,7 @@ internal class MappingConverter
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    sb.AppendLine($"        .WithBody(\"{response.ResponseMessage.BodyData.BodyAsString}\")");
+                    sb.AppendLine($"        .WithBody(\"{EscapeCSharpString(bodyData.BodyAsString)}\")");
                     break;
             }
         }
@@ -445,8 +445,10 @@ internal class MappingConverter
 
     private static string ToValueArguments(string[]? values, string defaultValue = "")
     {
-        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : $"\"{defaultValue}\"";
+        return values is { } ? string.Join(", ", values.Select(v => $"\"{EscapeCSharpString(v)}\"")) : $"\"{EscapeCSharpString(defaultValue)}\"";
     }
+
+    private static string? EscapeCSharpString(string? value) => value?.Replace("\"", "\\\"");
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
     {

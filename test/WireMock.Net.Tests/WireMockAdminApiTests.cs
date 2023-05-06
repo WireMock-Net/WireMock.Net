@@ -740,6 +740,7 @@ public class WireMockAdminApiTests
                 Request.Create()
                     .WithPath("/foo2")
                     .WithParam("p2", "abc")
+                    .WithHeader("h1", "W/\"234f2q3r\"")
                     .UsingPost()
             )
             .WithGuid(guid2)
@@ -747,6 +748,7 @@ public class WireMockAdminApiTests
                 Response.Create()
                     .WithStatusCode("201")
                     .WithHeader("hk", "hv")
+                    .WithHeader("ETag", "W/\"168d8e\"")
                     .WithBody("2")
             );
 
