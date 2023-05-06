@@ -7,5 +7,6 @@ server
     )
     .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
     .RespondWith(Response.Create()
+        .WithStatusCode(200)
         .WithBody("1")
     );
