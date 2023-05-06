@@ -42,6 +42,7 @@ public partial class WireMockServerTests
 
         // Assert
         server.IsStarted.Should().BeTrue();
+        server.IsStartedWithAdminInterface.Should().BeFalse();
 
         server.Stop();
     }
