@@ -43,9 +43,13 @@ public partial class WireMockServer : IWireMockServer
     private readonly IGuidUtils _guidUtils = new GuidUtils();
     private readonly IDateTimeUtils _dateTimeUtils = new DateTimeUtils();
 
-    /// <inheritdoc cref="IWireMockServer.IsStarted" />
+    /// <inheritdoc />
     [PublicAPI]
     public bool IsStarted => _httpServer is { IsStarted: true };
+
+    /// <inheritdoc />
+    [PublicAPI]
+    public bool IsStartedWithAdminInterface => IsStarted && _settings.StartAdminInterface.GetValueOrDefault();
 
     /// <inheritdoc />
     [PublicAPI]
