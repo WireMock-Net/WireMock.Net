@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
@@ -125,9 +126,13 @@ internal class MappingConverter
         // Response
         sb.AppendLine("    .RespondWith(Response.Create()");
 
-        if (response.ResponseMessage.StatusCode is { } statusCode)
+        if (response.ResponseMessage.StatusCode is int or string)
         {
-            sb.AppendLine($"        .WithStatusCode({statusCode})");
+            sb.AppendLine($"        .WithStatusCode({JsonConvert.SerializeObject(response.ResponseMessage.StatusCode)})");
+        }
+        else if (response.ResponseMessage.StatusCode is HttpStatusCode httpStatusCode)
+        {
+            sb.AppendLine($"        .WithStatusCode({(int)httpStatusCode})");
         }
 
         if (response.ResponseMessage.Headers is { })

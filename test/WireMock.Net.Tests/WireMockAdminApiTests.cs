@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -717,6 +718,7 @@ public class WireMockAdminApiTests
         // Arrange
         var guid1 = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
         var guid2 = Guid.Parse("1b731398-4a5b-457f-a6e3-d65e541c428f");
+        var guid3 = Guid.Parse("f74fd144-df53-404f-8e35-da22a640bd5f");
         var server = WireMockServer.StartWithAdminInterface();
 
         server
@@ -738,21 +740,34 @@ public class WireMockAdminApiTests
                 Request.Create()
                     .WithPath("/foo2")
                     .WithParam("p2", "abc")
-                    .UsingGet()
+                    .UsingPost()
             )
             .WithGuid(guid2)
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(201)
+                    .WithStatusCode("201")
                     .WithHeader("hk", "hv")
                     .WithBody("2")
+            );
+
+        server
+            .Given(
+                Request.Create()
+                    .WithUrl("https://localhost/test")
+                    .UsingDelete()
+            )
+            .WithGuid(guid3)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.AlreadyReported)
+                    .WithBodyAsJson(new { x = 1 })
             );
 
         // Act
         var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
-        mappings.Should().HaveCount(2);
+        mappings.Should().HaveCount(3);
 
         var code = await api.GetMappingsCodeAsync().ConfigureAwait(false);
 
