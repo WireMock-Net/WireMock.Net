@@ -13,14 +13,24 @@ server
 
 server
     .Given(Request.Create()
-        .UsingMethod("GET")
+        .UsingMethod("POST")
         .WithPath("/foo2")
         .WithParam("p2", "abc")
     )
     .WithGuid("1b731398-4a5b-457f-a6e3-d65e541c428f")
     .RespondWith(Response.Create()
-        .WithStatusCode(201)
+        .WithStatusCode("201")
         .WithHeader("hk", "hv")
         .WithBody("2")
+    );
+
+server
+    .Given(Request.Create()
+        .UsingMethod("DELETE")
+        .WithUrl("https://localhost/test")
+    )
+    .WithGuid("f74fd144-df53-404f-8e35-da22a640bd5f")
+    .RespondWith(Response.Create()
+        .WithStatusCode(208)
     );
 
