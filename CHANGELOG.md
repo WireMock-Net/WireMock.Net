@@ -1,3 +1,10 @@
+# 1.5.24 (07 May 2023)
+- [#926](https://github.com/WireMock-Net/WireMock.Net/pull/926) - Fix C# mapping code generator for header names [bug] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#927](https://github.com/WireMock-Net/WireMock.Net/pull/927) - Enrich generated code with status code [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#930](https://github.com/WireMock-Net/WireMock.Net/pull/930) - Update C# mapping code generator for WithStatusCode [feature] contributed by [StefH](https://github.com/StefH)
+- [#931](https://github.com/WireMock-Net/WireMock.Net/pull/931) - Add property 'IsStartedWithAdminInterface' to 'IWireMockServer' [feature] contributed by [StefH](https://github.com/StefH)
+- [#933](https://github.com/WireMock-Net/WireMock.Net/pull/933) - C# code generator improvements [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+
 # 1.5.23 (23 April 2023)
 - [#922](https://github.com/WireMock-Net/WireMock.Net/pull/922) - Add WithProbability [feature] contributed by [StefH](https://github.com/StefH)
 - [#924](https://github.com/WireMock-Net/WireMock.Net/pull/924) - Allow removal of prefix when proxying to another server (#630) [feature] contributed by [nudejustin](https://github.com/nudejustin)

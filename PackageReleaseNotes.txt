@@ -1,6 +1,8 @@
-# 1.5.23 (23 April 2023)
-- #922 Add WithProbability [feature]
-- #924 Allow removal of prefix when proxying to another server (#630) [feature]
-- #925 Add IgnoreCase option to ProxyUrlReplaceSettings [feature]
+# 1.5.24 (07 May 2023)
+- #926 Fix C# mapping code generator for header names [bug]
+- #927 Enrich generated code with status code [feature]
+- #930 Update C# mapping code generator for WithStatusCode [feature]
+- #931 Add property 'IsStartedWithAdminInterface' to 'IWireMockServer' [feature]
+- #933 C# code generator improvements [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
