@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
@@ -143,13 +144,26 @@ internal class MappingConverter
             }
         }
 
-        if (response.ResponseMessage.BodyData is { })
+        if (response.ResponseMessage.BodyData is { } bodyData)
         {
             switch (response.ResponseMessage.BodyData.DetectedBodyType)
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
                     sb.AppendLine($"        .WithBody(\"{EscapeCSharpString(bodyData.BodyAsString)}\")");
+                    break;
+                case BodyType.Json:
+                    if (bodyData.BodyAsJson is string bodyStringValue)
+                    {
+                        sb.AppendLine($"        .WithBody(\"{EscapeCSharpString(bodyStringValue)}\")");
+                    }
+                    else
+                    {
+                        var serializedBody = JsonConvert.SerializeObject(bodyData.BodyAsJson);
+                        var deserializedBody = JToken.Parse(serializedBody);
+                        sb.AppendLine($"        .WithBodyAsJson({ConvertJsonToAnonymousObjectDefinition(deserializedBody, 2)})");
+                    }
+
                     break;
             }
         }
@@ -171,6 +185,50 @@ internal class MappingConverter
         sb.AppendLine(@"    );");
 
         return sb.ToString();
+    }
+
+    private string ConvertJsonToAnonymousObjectDefinition(JToken token, int ind = 0)
+    {
+        string FormatObject(JObject jObject)
+        {
+            var indStr = new string(' ', 4 * ind);
+            var indStrSub = new string(' ', 4 * (ind + 1));
+            var items = jObject.Properties().Select(x => ConvertJsonToAnonymousObjectDefinition(x, ind + 1));
+            return $"new\r\n{indStr}{{\r\n{indStrSub}{string.Join($",\r\n{indStrSub}", items)}\r\n{indStr}}}";
+        }
+
+        string FormatArray(JArray jArray, int ind)
+        {
+            var hasComplexItems = jArray.FirstOrDefault() is JObject or JArray;
+            var items = jArray.Select(x => ConvertJsonToAnonymousObjectDefinition(x, hasComplexItems ? ind + 1 : ind));
+            if (hasComplexItems)
+            {
+                var indStr = new string(' ', 4 * ind);
+                var indStrSub = new string(' ', 4 * (ind + 1));
+                return $"new []\r\n{indStr}{{\r\n{indStrSub}{string.Join($",\r\n{indStrSub}", items)}\r\n{indStr}}}";
+            }
+
+            return $"new [] {{ {string.Join(", ", items)} }}";
+        }
+
+        return token switch
+        {
+            JArray jArray => FormatArray(jArray, ind),
+            JObject jObject => FormatObject(jObject),
+            JProperty jProperty => $"{jProperty.Name} = {ConvertJsonToAnonymousObjectDefinition(jProperty.Value, ind)}",
+            JValue jValue => jValue.Type switch
+            {
+                JTokenType.None => "null",
+                JTokenType.Integer => jValue.Value?.ToString() ?? "null",
+                JTokenType.Float => jValue.Value?.ToString() ?? "null",
+                JTokenType.String => $"\"{EscapeCSharpString(jValue.Value?.ToString())}\"",
+                JTokenType.Boolean => jValue.Value?.ToString().ToLower() ?? "null",
+                JTokenType.Null => "null",
+                JTokenType.Undefined => "null",
+                _ => $"UNHANDLED_CASE: {jValue.Type}"
+            },
+            _ => $"UNHANDLED_CASE: {token}"
+        };
     }
 
     public MappingModel ToMappingModel(IMapping mapping)
