@@ -59,7 +59,12 @@ server
                         b = 3
                     }
                 }
-            }
+            },
+            multiline_text = @"This
+is
+multiline
+text
+"
         })
     );
 

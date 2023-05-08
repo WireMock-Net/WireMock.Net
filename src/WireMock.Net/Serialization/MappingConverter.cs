@@ -150,12 +150,12 @@ internal class MappingConverter
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    sb.AppendLine($"        .WithBody(\"{EscapeCSharpString(bodyData.BodyAsString)}\")");
+                    sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyData.BodyAsString)})");
                     break;
                 case BodyType.Json:
                     if (bodyData.BodyAsJson is string bodyStringValue)
                     {
-                        sb.AppendLine($"        .WithBody(\"{EscapeCSharpString(bodyStringValue)}\")");
+                        sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyStringValue)})");
                     }
                     else
                     {
@@ -406,7 +406,7 @@ internal class MappingConverter
 
     private static string GetString(IStringMatcher stringMatcher)
     {
-        return stringMatcher.GetPatterns().Select(p => $"\"{p.GetPattern()}\"").First();
+        return stringMatcher.GetPatterns().Select(p => ToCSharpStringLiteral(p.GetPattern())).First();
     }
 
     private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
@@ -459,10 +459,18 @@ internal class MappingConverter
 
     private static string ToValueArguments(string[]? values, string defaultValue = "")
     {
-        return values is { } ? string.Join(", ", values.Select(v => $"\"{EscapeCSharpString(v)}\"")) : $"\"{EscapeCSharpString(defaultValue)}\"";
+        return values is { } ? string.Join(", ", values.Select(ToCSharpStringLiteral)) : ToCSharpStringLiteral(defaultValue);
     }
 
-    private static string? EscapeCSharpString(string? value) => value?.Replace("\"", "\\\"");
+    private static string ToCSharpStringLiteral(string? value)
+    {
+        var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
+        if (escapedValue.Contains("\n"))
+        {
+            return $"@\"{escapedValue}\"";
+        }
+        return $"\"{escapedValue}\"";
+    }
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
     {
@@ -505,7 +513,7 @@ internal class MappingConverter
                 JTokenType.None => "null",
                 JTokenType.Integer => jValue.Value?.ToString() ?? "null",
                 JTokenType.Float => jValue.Value?.ToString() ?? "null",
-                JTokenType.String => $"\"{EscapeCSharpString(jValue.Value?.ToString())}\"",
+                JTokenType.String => ToCSharpStringLiteral(jValue.Value?.ToString()),
                 JTokenType.Boolean => jValue.Value?.ToString()?.ToLower() ?? "null",
                 JTokenType.Null => "null",
                 JTokenType.Undefined => "null",
