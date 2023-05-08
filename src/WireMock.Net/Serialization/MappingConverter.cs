@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -157,10 +158,13 @@ internal class MappingConverter
                     {
                         sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyStringValue)})");
                     }
-                    else
+                    else if(bodyData.BodyAsJson is {} jsonBody)
                     {
-                        var serializedBody = JsonConvert.SerializeObject(bodyData.BodyAsJson);
-                        var deserializedBody = JToken.Parse(serializedBody);
+                        var serializedBody = JsonConvert.SerializeObject(jsonBody);
+                        using var jsonReader = new JsonTextReader(new StringReader(serializedBody));
+                        jsonReader.DateParseHandling = DateParseHandling.None;
+                        var deserializedBody = JObject.Load(jsonReader);
+
                         sb.AppendLine($"        .WithBodyAsJson({ConvertJsonToAnonymousObjectDefinition(deserializedBody, 2)})");
                     }
 
@@ -517,6 +521,7 @@ internal class MappingConverter
                 JTokenType.Boolean => jValue.Value?.ToString()?.ToLower() ?? "null",
                 JTokenType.Null => "null",
                 JTokenType.Undefined => "null",
+                JTokenType.Date when jValue.Value is DateTime dateValue => $"DateTime.Parse({ToCSharpStringLiteral(dateValue.ToString("s"))})",
                 _ => $"UNHANDLED_CASE: {jValue.Type}"
             },
             _ => $"UNHANDLED_CASE: {token}"

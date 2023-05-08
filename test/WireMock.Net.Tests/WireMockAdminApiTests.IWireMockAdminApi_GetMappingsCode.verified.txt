@@ -60,6 +60,8 @@ server
                     }
                 }
             },
+            date_field = "2023-05-08T11:20:19",
+            string_field_with_date = "2021-03-13T21:04:00Z",
             multiline_text = @"This
 is
 multiline
