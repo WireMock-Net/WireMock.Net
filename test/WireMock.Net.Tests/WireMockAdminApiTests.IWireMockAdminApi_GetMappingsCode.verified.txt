@@ -36,7 +36,7 @@ server
         .WithStatusCode(208)
         .WithBodyAsJson(new
         {
-            a = 1,
+            @as = 1,
             b = 1.2,
             d = true,
             e = false,
@@ -59,7 +59,14 @@ server
                         b = 3
                     }
                 }
-            }
+            },
+            date_field = "2023-05-08T11:20:19",
+            string_field_with_date = "2021-03-13T21:04:00Z",
+            multiline_text = @"This
+is
+multiline
+text
+"
         })
     );
 

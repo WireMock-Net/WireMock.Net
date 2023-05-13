@@ -1,8 +1,4 @@
-# 1.5.24 (07 May 2023)
-- #926 Fix C# mapping code generator for header names [bug]
-- #927 Enrich generated code with status code [feature]
-- #930 Update C# mapping code generator for WithStatusCode [feature]
-- #931 Add property 'IsStartedWithAdminInterface' to 'IWireMockServer' [feature]
-- #933 C# code generator improvements [feature]
+# 1.5.25 (13 May 2023)
+- #934 Code generator improvements [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
