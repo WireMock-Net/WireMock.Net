@@ -60,7 +60,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var todos = new Dictionary<int, Todo>();
 
-            var server = WireMockServer.Start();
+            var server = WireMockServer.StartWithAdminInterface();
 
             server
                 .Given(Request.Create()
