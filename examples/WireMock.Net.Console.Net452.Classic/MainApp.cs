@@ -709,6 +709,25 @@ namespace WireMock.Net.ConsoleApplication
                 .WithWebhookFireAndForget(true)
                 .RespondWith(Response.Create().WithBody("a-response"));
 
+            server
+                .Given(Request.Create().WithPath("/todo/items").UsingGet())
+                .InScenario("To do list")
+                .WillSetStateTo("TodoList State Started")
+                .RespondWith(Response.Create().WithBody("Buy milk"));
+
+            server
+                .Given(Request.Create().WithPath("/todo/items").UsingPost())
+                .InScenario("To do list")
+                .WhenStateIs("TodoList State Started")
+                .WillSetStateTo("Cancel newspaper item added")
+                .RespondWith(Response.Create().WithStatusCode(201));
+
+            server
+                .Given(Request.Create().WithPath("/todo/items").UsingGet())
+                .InScenario("To do list")
+                .WhenStateIs("Cancel newspaper item added")
+                .RespondWith(Response.Create().WithBody("Buy milk;Cancel newspaper subscription"));
+
             System.Console.WriteLine(JsonConvert.SerializeObject(server.MappingModels, Formatting.Indented));
 
             System.Console.WriteLine("Press any key to stop the server");
