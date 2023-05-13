@@ -1,3 +1,6 @@
+# 1.5.25 (13 May 2023)
+- [#934](https://github.com/WireMock-Net/WireMock.Net/pull/934) - Code generator improvements [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+
 # 1.5.24 (07 May 2023)
 - [#926](https://github.com/WireMock-Net/WireMock.Net/pull/926) - Fix C# mapping code generator for header names [bug] contributed by [cezarypiatek](https://github.com/cezarypiatek)
 - [#927](https://github.com/WireMock-Net/WireMock.Net/pull/927) - Enrich generated code with status code [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
