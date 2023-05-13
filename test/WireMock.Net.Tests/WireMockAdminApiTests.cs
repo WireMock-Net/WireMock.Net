@@ -762,7 +762,11 @@ public class WireMockAdminApiTests
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.AlreadyReported)
-                    .WithBodyAsJson(new { a = 1, b=1.2, d=true, e=false, f=new[]{1,2,3,4}, g= new{z1=1, z2=2, z3=new []{"a","b","c"}, z4=new[]{new {a=1, b=2},new {a=2, b=3}}} })
+                    .WithBodyAsJson(new { @as = 1, b=1.2, d=true, e=false, f=new[]{1,2,3,4}, g= new{z1=1, z2=2, z3=new []{"a","b","c"}, z4=new[]{new {a=1, b=2},new {a=2, b=3}}}, date_field = new DateTime(2023,05,08,11,20,19), string_field_with_date="2021-03-13T21:04:00Z", multiline_text= @"This
+is
+multiline
+text
+" })
             );
 
         // Act
