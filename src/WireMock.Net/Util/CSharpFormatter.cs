@@ -92,6 +92,7 @@ internal static class CSharpFormatter
         "while"
     });
     #endregion
+
     private const string Null = "null";
 
     public static object ConvertToAnonymousObjectDefinition(object jsonBody)
@@ -127,7 +128,7 @@ internal static class CSharpFormatter
             _ => $"UNHANDLED_CASE: {token}"
         };
     }
-    
+
     public static string ToCSharpStringLiteral(string? value)
     {
         var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
