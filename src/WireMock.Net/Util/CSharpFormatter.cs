@@ -92,6 +92,7 @@ internal static class CSharpFormatter
         "while"
     });
     #endregion
+
     private const string Null = "null";
 
     public static object ConvertToAnonymousObjectDefinition(object jsonBody)
@@ -104,7 +105,7 @@ internal static class CSharpFormatter
         return ConvertJsonToAnonymousObjectDefinition(deserializedBody, 2);
     }
 
-    private static string ConvertJsonToAnonymousObjectDefinition(JToken token, int ind = 0)
+    public static string ConvertJsonToAnonymousObjectDefinition(JToken token, int ind = 0)
     {
         return token switch
         {
@@ -127,7 +128,7 @@ internal static class CSharpFormatter
             _ => $"UNHANDLED_CASE: {token}"
         };
     }
-    
+
     public static string ToCSharpStringLiteral(string? value)
     {
         var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
@@ -139,7 +140,7 @@ internal static class CSharpFormatter
         return $"\"{escapedValue}\"";
     }
 
-    private static string FormatPropertyName(string propertyName)
+    public static string FormatPropertyName(string propertyName)
     {
         return CSharpReservedKeywords.Contains(propertyName) ? "@" + propertyName : propertyName;
     }
