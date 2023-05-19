@@ -60,7 +60,7 @@ namespace WireMock.Owin
         public Task Invoke(IContext ctx)
 #endif
         {
-            if (_options.HandleRequestsSynchronously.GetValueOrDefault(true))
+            if (_options.HandleRequestsSynchronously.GetValueOrDefault(false))
             {
                 lock (_lock)
                 {
