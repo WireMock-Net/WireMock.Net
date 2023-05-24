@@ -129,6 +129,8 @@ internal static class CSharpFormatter
         };
     }
 
+    public static string ToCSharpBooleanLiteral(bool value) => value ? "true" : "false";
+
     public static string ToCSharpStringLiteral(string? value)
     {
         if (string.IsNullOrEmpty(value))
