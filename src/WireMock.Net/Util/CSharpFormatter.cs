@@ -131,13 +131,21 @@ internal static class CSharpFormatter
 
     public static string ToCSharpStringLiteral(string? value)
     {
-        var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
-        if (escapedValue.Contains("\n"))
+        if (string.IsNullOrEmpty(value))
         {
-            return $"@\"{escapedValue}\"";
+            return "\"\"";
         }
 
-        return $"\"{escapedValue}\"";
+        if (value.Contains("\n"))
+        {
+            var escapedValue = value?.Replace("\"", "\"\"") ?? string.Empty;
+            return $"@\"{escapedValue}\"";
+        }
+        else
+        {
+            var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
+            return $"\"{escapedValue}\"";
+        }
     }
 
     public static string FormatPropertyName(string propertyName)
