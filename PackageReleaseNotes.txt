@@ -1,4 +1,8 @@
-# 1.5.25 (13 May 2023)
-- #934 Code generator improvements [feature]
+# 1.5.26 (25 May 2023)
+- #938 Add more unitests for CSharpFormatter utils [test]
+- #939 WireMockMiddleware should use HandleRequestsSynchronously correctly [bug]
+- #940 Code generator improvements
+- #942 Add GetParameter method to IRequestMessage [feature]
+- #941 RequestMessage.GetParameter method missing from IRequestMessage interface [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

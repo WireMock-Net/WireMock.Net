@@ -1,3 +1,10 @@
+# 1.5.26 (25 May 2023)
+- [#938](https://github.com/WireMock-Net/WireMock.Net/pull/938) - Add more unitests for CSharpFormatter utils [test] contributed by [StefH](https://github.com/StefH)
+- [#939](https://github.com/WireMock-Net/WireMock.Net/pull/939) - WireMockMiddleware should use HandleRequestsSynchronously correctly [bug] contributed by [StefH](https://github.com/StefH)
+- [#940](https://github.com/WireMock-Net/WireMock.Net/pull/940) - Code generator improvements contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#942](https://github.com/WireMock-Net/WireMock.Net/pull/942) - Add GetParameter method to IRequestMessage [feature] contributed by [StefH](https://github.com/StefH)
+- [#941](https://github.com/WireMock-Net/WireMock.Net/issues/941) - RequestMessage.GetParameter method missing from IRequestMessage interface [feature]
+
 # 1.5.25 (13 May 2023)
 - [#934](https://github.com/WireMock-Net/WireMock.Net/pull/934) - Code generator improvements [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
 
