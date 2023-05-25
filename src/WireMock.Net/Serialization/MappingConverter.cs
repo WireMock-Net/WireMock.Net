@@ -107,10 +107,27 @@ internal class MappingConverter
 
         if (bodyMatcher is { Matchers: { } })
         {
-            var wildcardMatcher = bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault();
-            if (wildcardMatcher is { } && wildcardMatcher.GetPatterns().Any())
+            if (bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
+            }
+            else if (bodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
+            {
+                sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
+                                            value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
+                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
+                                            throwException: {ToCSharpBooleanLiteral(jsonPartialMatcher.ThrowException)},
+                                            regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
+                                         ))");
+            }
+            else if (bodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
+            {
+                sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
+                                            value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
+                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
+                                            throwException: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.ThrowException)},
+                                            regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
+                                         ))");
             }
         }
 

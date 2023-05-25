@@ -18,6 +18,7 @@ using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
 using WireMock.Models;
 using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.RequestBuilders;
@@ -719,6 +720,7 @@ public class WireMockAdminApiTests
         var guid1 = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
         var guid2 = Guid.Parse("1b731398-4a5b-457f-a6e3-d65e541c428f");
         var guid3 = Guid.Parse("f74fd144-df53-404f-8e35-da22a640bd5f");
+        var guid4 = Guid.Parse("4126DEC8-470B-4EFF-93BB-C24F83B8B1FD");
         var server = WireMockServer.StartWithAdminInterface();
 
         server
@@ -769,11 +771,25 @@ text
 " })
             );
 
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/foo3")
+                    .WithBody(new JsonPartialMatcher(new { a=1, b=2}))
+                    .UsingPost()
+            )
+            .WithGuid(guid4)
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody("Line1\r\nSome \"value\" in Line2")
+            );
+
         // Act
         var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
-        mappings.Should().HaveCount(3);
+        mappings.Should().HaveCount(4);
 
         var code = await api.GetMappingsCodeAsync().ConfigureAwait(false);
 

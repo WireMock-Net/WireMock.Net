@@ -70,3 +70,21 @@ text
         })
     );
 
+server
+    .Given(Request.Create()
+        .UsingMethod("POST")
+        .WithPath("/foo3")
+        .WithBody(new JsonPartialMatcher(
+                                            value: "{ a = 1, b = 2 }",
+                                            ignoreCase: false,
+                                            throwException: false,
+                                            regex: false
+                                         ))
+    )
+    .WithGuid("4126dec8-470b-4eff-93bb-c24f83b8b1fd")
+    .RespondWith(Response.Create()
+        .WithStatusCode(200)
+        .WithBody(@"Line1
+Some ""value"" in Line2")
+    );
+
