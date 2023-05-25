@@ -180,12 +180,7 @@ public class RequestMessage : IRequestMessage
 #endif
     }
 
-    /// <summary>
-    /// Get a query parameter.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
-    /// <returns>The query parameter.</returns>
+    /// <inheritdoc />
     public WireMockList<string>? GetParameter(string key, bool ignoreCase = false)
     {
         if (Query == null)
