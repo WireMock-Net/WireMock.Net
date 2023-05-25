@@ -143,6 +143,14 @@ public interface IRequestMessage
     /// </summary>
     string Origin { get; }
 
+    /// <summary>
+    /// Get a query parameter.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
+    /// <returns>The query parameter value as WireMockList or null when not found.</returns>
+    WireMockList<string>? GetParameter(string key, bool ignoreCase = false);
+
 #if NETSTANDARD1_3_OR_GREATER || NET461
     /// <summary>
     /// Gets the connection's client certificate
