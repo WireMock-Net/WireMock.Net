@@ -5,16 +5,18 @@ namespace WireMock.Net.TestcontainersExample;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var container = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
-            .WithReadStaticMappings()
+            .WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings")
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
             .Build();
 
         await container.StartAsync().ConfigureAwait(false);
 
-        var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1));
+        var logs = await container.GetLogsAsync().ConfigureAwait(false);
         Console.WriteLine("logs = " + logs.Stdout);
 
         var httpClient = new HttpClient();
@@ -25,14 +27,12 @@ internal class Program
 
         Console.WriteLine("settings = " + settings);
 
-
         var mappingsUri = container.GetPublicUrl() + "__admin/mappings";
         var mappings = await httpClient.GetStringAsync(mappingsUri).ConfigureAwait(false);
 
         Console.WriteLine("mappings = " + mappings);
 
         await container.StopAsync();
-
 
         var sql = new MsSqlBuilder().Build();
     }

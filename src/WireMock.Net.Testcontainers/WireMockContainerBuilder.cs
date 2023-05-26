@@ -15,9 +15,20 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 {
     private const string LinuxImage = "sheyenrath/wiremock.net:latest";
     private const string WindowsImage = "sheyenrath/wiremock.net-windows:latest";
+
+    private const string LinuxMappingsPath = "/app/__admin/mappings";
+    private const string WindowsMappingsPath = @"c:\app\__admin\mappings";
+
     private const string DefaultLogger = "WireMockConsoleLogger";
 
-    private readonly Lazy<Task<bool>> _isWindowsLazy = new(IsWindowsAsync);
+    private readonly Lazy<Task<bool>> _isWindowsLazy = new(async () =>
+    {
+        using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
+        using var dockerClient = dockerClientConfig.CreateClient();
+
+        var version = await dockerClient.System.GetVersionAsync();
+        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) > -1;
+    });
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
@@ -65,7 +76,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithConsoleLogger()
     {
-        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: "WireMockConsoleLogger"));
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: DefaultLogger));
     }
 
     /// <summary>
@@ -87,6 +98,21 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         return Merge(DockerResourceConfiguration, new WireMockConfiguration(readStaticMappings: true))
             .WithCommand("--ReadStaticMappings true");
+    }
+
+    /// <summary>
+    /// Specifies the path for the (static) mapping json files.
+    /// </summary>
+    /// <param name="path">The path</param>
+    /// <returns></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithMappings(string path)
+    {
+        Guard.NotNullOrEmpty(path);
+
+        var isWindows = _isWindowsLazy.Value.GetAwaiter().GetResult();
+
+        return WithReadStaticMappings().WithBindMount(path, isWindows ? WindowsMappingsPath : LinuxMappingsPath);
     }
 
     /// <summary>
@@ -133,14 +159,5 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     protected override WireMockContainerBuilder Merge(WireMockConfiguration oldValue, WireMockConfiguration newValue)
     {
         return new WireMockContainerBuilder(new WireMockConfiguration(oldValue, newValue));
-    }
-
-    private static async Task<bool> IsWindowsAsync()
-    {
-        using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
-        using var dockerClient = dockerClientConfig.CreateClient();
-
-        var version = await dockerClient.System.GetVersionAsync();
-        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) > -1;
     }
 }
