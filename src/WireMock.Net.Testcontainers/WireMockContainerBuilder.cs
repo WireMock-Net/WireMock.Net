@@ -11,23 +11,18 @@ namespace WireMock.Net.Testcontainers;
 /// <summary>
 /// An specific fluent Docker container builder for WireMock.Net
 /// </summary>
-public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, IContainerConfiguration>
+public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
     private const string LinuxImage = "sheyenrath/wiremock.net:latest";
     private const string WindowsImage = "sheyenrath/wiremock.net-windows:latest";
+    private const string DefaultLogger = "WireMockConsoleLogger";
 
     private readonly Lazy<Task<bool>> _isWindowsLazy = new(IsWindowsAsync);
-
-    #region Settings
-    private string? _username;
-    private string? _password;
-    private string _logger = "WireMockConsoleLogger";
-    #endregion
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
     /// </summary>
-    public WireMockContainerBuilder() : this(new ContainerConfiguration())
+    public WireMockContainerBuilder() : this(new WireMockConfiguration(logger: DefaultLogger))
     {
         DockerResourceConfiguration = Init().DockerResourceConfiguration;
     }
@@ -59,10 +54,8 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             return this;
         }
 
-        _username = username;
-        _password = password;
-
-        return WithCommand($"--AdminUserName {username}", $"--AdminPassword {password}");
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(username, password))
+            .WithCommand($"--AdminUserName {username}", $"--AdminPassword {password}");
     }
 
     /// <summary>
@@ -72,8 +65,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithConsoleLogger()
     {
-        _logger = "WireMockConsoleLogger";
-        return this;
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: "WireMockConsoleLogger"));
     }
 
     /// <summary>
@@ -83,8 +75,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithNullLogger()
     {
-        _logger = "WireMockNullLogger";
-        return this;
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: "WireMockNullLogger"));
     }
 
     /// <summary>
@@ -94,30 +85,21 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithReadStaticMappings()
     {
-        return WithCommand("--ReadStaticMappings true");
-    }
-
-    /// <summary>
-    /// Allow Partial Mapping (default set to false).
-    /// </summary>
-    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
-    [PublicAPI]
-    public WireMockContainerBuilder WithAllowPartialMapping()
-    {
-        return WithCommand("--AllowPartialMapping true");
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(readStaticMappings: true))
+            .WithCommand("--ReadStaticMappings true");
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainerBuilder" /> class.
     /// </summary>
     /// <param name="dockerResourceConfiguration">The Docker resource configuration.</param>
-    private WireMockContainerBuilder(IContainerConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
+    private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
     {
         DockerResourceConfiguration = dockerResourceConfiguration;
     }
 
     /// <inheritdoc />
-    protected override IContainerConfiguration DockerResourceConfiguration { get; }
+    protected override WireMockConfiguration DockerResourceConfiguration { get; }
 
     /// <inheritdoc />
     public override WireMockContainer Build()
@@ -132,25 +114,25 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return base.Init()
             .WithImage()
             .WithPortBinding(WireMockContainer.ContainerPort, true)
-            .WithCommand($"--WireMockLogger {_logger}");
-    }
-
-    /// <inheritdoc />
-    protected override WireMockContainerBuilder Clone(IResourceConfiguration<CreateContainerParameters> resourceConfiguration)
-    {
-        return Merge(DockerResourceConfiguration, new ContainerConfiguration(resourceConfiguration));
+            .WithCommand($"--WireMockLogger {DockerResourceConfiguration.Logger}");
     }
 
     /// <inheritdoc />
     protected override WireMockContainerBuilder Clone(IContainerConfiguration resourceConfiguration)
     {
-        return Merge(DockerResourceConfiguration, new ContainerConfiguration(resourceConfiguration));
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(resourceConfiguration));
     }
 
     /// <inheritdoc />
-    protected override WireMockContainerBuilder Merge(IContainerConfiguration oldValue, IContainerConfiguration newValue)
+    protected override WireMockContainerBuilder Clone(IResourceConfiguration<CreateContainerParameters> resourceConfiguration)
     {
-        return new WireMockContainerBuilder(new ContainerConfiguration(oldValue, newValue));
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(resourceConfiguration));
+    }
+
+    /// <inheritdoc />
+    protected override WireMockContainerBuilder Merge(WireMockConfiguration oldValue, WireMockConfiguration newValue)
+    {
+        return new WireMockContainerBuilder(new WireMockConfiguration(oldValue, newValue));
     }
 
     private static async Task<bool> IsWindowsAsync()

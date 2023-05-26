@@ -1,3 +1,4 @@
+using Testcontainers.MsSql;
 using WireMock.Net.Testcontainers;
 
 namespace WireMock.Net.TestcontainersExample;
@@ -9,7 +10,6 @@ internal class Program
         var container = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
             .WithReadStaticMappings()
-            .WithAllowPartialMapping()
             .Build();
 
         await container.StartAsync().ConfigureAwait(false);
@@ -32,5 +32,8 @@ internal class Program
         Console.WriteLine("mappings = " + mappings);
 
         await container.StopAsync();
+
+
+        var sql = new MsSqlBuilder().Build();
     }
 }
