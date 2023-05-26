@@ -22,7 +22,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | | |
 | --- | --- |
 | ***Project*** | &nbsp; |
-| &nbsp;&nbsp;**Chat** | [![Slack](https://badgen.net/badge/icon/slack?icon=slack&label)](https://wiremock-community.slack.com/app_redirect?channel=C059E0MBM29) [![Gitter](https://img.shields.io/gitter/room/wiremock_dotnet/Lobby.svg)](https://gitter.im/wiremock_dotnet/Lobby) |
+| &nbsp;&nbsp;**Chat** | [![Slack](https://badgen.net/badge/icon/slack?icon=slack&label)](https://slack.wiremock.org/) [![Gitter](https://img.shields.io/gitter/room/wiremock_dotnet/Lobby.svg)](https://gitter.im/wiremock_dotnet/Lobby) |
 | &nbsp;&nbsp;**Issues** | [![GitHub issues](https://img.shields.io/github/issues/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/issues) |
 | | |
 | ***Quality*** | &nbsp; |
