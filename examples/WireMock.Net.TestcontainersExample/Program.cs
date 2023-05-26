@@ -8,6 +8,8 @@ internal class Program
     {
         var container = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
+            .WithReadStaticMappings()
+            .WithAllowPartialMapping()
             .Build();
 
         await container.StartAsync().ConfigureAwait(false);

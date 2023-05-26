@@ -65,6 +65,24 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
+    /// Defines if the static mappings should be read at startup (default set to false).
+    /// </summary>
+    [PublicAPI]
+    public WireMockContainerBuilder WithReadStaticMappings()
+    {
+        return WithCommand("--ReadStaticMappings true");
+    }
+
+    /// <summary>
+    /// Allow Partial Mapping (default set to false).
+    /// </summary>
+    [PublicAPI]
+    public WireMockContainerBuilder WithAllowPartialMapping()
+    {
+        return WithCommand("--AllowPartialMapping true");
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainerBuilder" /> class.
     /// </summary>
     /// <param name="dockerResourceConfiguration">The Docker resource configuration.</param>
@@ -84,7 +102,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <inheritdoc />
-    protected sealed override WireMockContainerBuilder Init()
+    protected override WireMockContainerBuilder Init()
     {
         return base.Init()
             .WithImage()
