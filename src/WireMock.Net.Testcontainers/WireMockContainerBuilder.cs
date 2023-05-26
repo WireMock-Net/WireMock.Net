@@ -21,6 +21,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     #region Settings
     private string? _username;
     private string? _password;
+    private string _logger = "WireMockConsoleLogger";
     #endregion
 
     /// <summary>
@@ -65,8 +66,31 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
+    /// Use the WireMockConsoleLogger (default)
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithConsoleLogger()
+    {
+        _logger = "WireMockConsoleLogger";
+        return this;
+    }
+
+    /// <summary>
+    /// Use the WireMockNullLogger.
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithNullLogger()
+    {
+        _logger = "WireMockNullLogger";
+        return this;
+    }
+
+    /// <summary>
     /// Defines if the static mappings should be read at startup (default set to false).
     /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithReadStaticMappings()
     {
@@ -76,6 +100,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <summary>
     /// Allow Partial Mapping (default set to false).
     /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithAllowPartialMapping()
     {
@@ -106,7 +131,8 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         return base.Init()
             .WithImage()
-            .WithPortBinding(WireMockContainer.ContainerPort, true);
+            .WithPortBinding(WireMockContainer.ContainerPort, true)
+            .WithCommand($"--WireMockLogger {_logger}");
     }
 
     /// <inheritdoc />

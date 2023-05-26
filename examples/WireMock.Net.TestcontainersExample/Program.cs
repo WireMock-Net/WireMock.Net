@@ -14,6 +14,9 @@ internal class Program
 
         await container.StartAsync().ConfigureAwait(false);
 
+        var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1));
+        Console.WriteLine("logs = " + logs.Stdout);
+
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("Authorization", "Basic eDp5");
 
