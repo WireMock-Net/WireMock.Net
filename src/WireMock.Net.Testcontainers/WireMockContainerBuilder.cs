@@ -101,6 +101,18 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
+    /// Watch the static mapping files + folder for changes when running.
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
+    {
+        return Merge(DockerResourceConfiguration, new WireMockConfiguration(watchStaticMappings: true, watchStaticMappingsInSubdirectories: includeSubDirectories))
+            .WithCommand("--WatchStaticMappings true")
+            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+    }
+
+    /// <summary>
     /// Specifies the path for the (static) mapping json files.
     /// </summary>
     /// <param name="path">The path</param>
@@ -137,8 +149,15 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <inheritdoc />
     protected override WireMockContainerBuilder Init()
     {
-        return base.Init()
-            .WithImage()
+        var builder = base.Init();
+
+        // In case no image has been set, set the image using internal logic.
+        if (builder.DockerResourceConfiguration.Image == null)
+        {
+            builder = builder.WithImage();
+        }
+
+        return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DockerResourceConfiguration.Logger}");
     }

@@ -9,40 +9,36 @@ namespace WireMock.Net.Testcontainers;
 [PublicAPI]
 public sealed class WireMockConfiguration : ContainerConfiguration
 {
-    /// <summary>
-    /// Gets the admin username.
-    /// </summary>
+#pragma warning disable CS1591
     public string? Username { get; }
-
-    /// <summary>
-    /// Gets the admin password.
-    /// </summary>
+    
     public string? Password { get; }
 
-    /// <summary>
-    /// Gets the logger (WireMockNullLogger or WireMockConsoleLogger).
-    /// </summary>
     public string? Logger { get; }
 
-    /// <summary>
-    /// Gets the ReadStaticMappings.
-    /// </summary>
     public bool ReadStaticMappings { get; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WireMockConfiguration" /> class.
-    /// </summary>
-    /// <param name="username">The admin username.</param>
-    /// <param name="password">The admin password.</param>
-    /// <param name="logger">The logger.</param>
-    /// <param name="readStaticMappings">The readStaticMappings</param>
-    public WireMockConfiguration(string? username = null, string? password = null, string? logger = null, bool readStaticMappings = false)
+    public bool WatchStaticMappings { get; }
+
+    public bool WatchStaticMappingsInSubdirectories { get; }
+    
+    public WireMockConfiguration(
+        string? username = null,
+        string? password = null,
+        string? logger = null,
+        bool readStaticMappings = false,
+        bool watchStaticMappings = false,
+        bool watchStaticMappingsInSubdirectories = false
+    )
     {
         Username = username;
         Password = password;
         Logger = logger;
         ReadStaticMappings = readStaticMappings;
+        WatchStaticMappings = watchStaticMappings;
+        WatchStaticMappingsInSubdirectories = watchStaticMappingsInSubdirectories;
     }
+#pragma warning restore CS1591
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockConfiguration" /> class.
@@ -82,5 +78,7 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         Password = BuildConfiguration.Combine(oldValue.Password, newValue.Password);
         Logger = BuildConfiguration.Combine(oldValue.Logger, newValue.Logger);
         ReadStaticMappings = BuildConfiguration.Combine(oldValue.ReadStaticMappings, newValue.ReadStaticMappings);
+        WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
+        WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
     }
 }

@@ -10,6 +10,7 @@ internal class Program
         var container = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
             .WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings")
+            .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
             .WithCleanUp(true)
             .Build();
@@ -19,16 +20,16 @@ internal class Program
         var logs = await container.GetLogsAsync().ConfigureAwait(false);
         Console.WriteLine("logs = " + logs.Stdout);
 
-        var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Basic eDp5");
+        var authenticatedHttpClient = new HttpClient();
+        authenticatedHttpClient.DefaultRequestHeaders.Add("Authorization", "Basic eDp5");
 
         var settingsUri = container.GetPublicUrl() + "__admin/settings";
-        var settings = await httpClient.GetStringAsync(settingsUri).ConfigureAwait(false);
+        var settings = await authenticatedHttpClient.GetStringAsync(settingsUri).ConfigureAwait(false);
 
         Console.WriteLine("settings = " + settings);
 
         var mappingsUri = container.GetPublicUrl() + "__admin/mappings";
-        var mappings = await httpClient.GetStringAsync(mappingsUri).ConfigureAwait(false);
+        var mappings = await authenticatedHttpClient.GetStringAsync(mappingsUri).ConfigureAwait(false);
 
         Console.WriteLine("mappings = " + mappings);
 
