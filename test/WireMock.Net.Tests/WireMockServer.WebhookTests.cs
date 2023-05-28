@@ -4,10 +4,13 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
+using WireMock.Logging;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
@@ -71,7 +74,7 @@ public class WireMockServerWebhookTests
 
         // Assert
         var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
-        string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         content.Should().Be("a-response");
@@ -120,7 +123,7 @@ public class WireMockServerWebhookTests
 
         // Assert
         var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
-        string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         content.Should().Be("a-response");
@@ -133,6 +136,115 @@ public class WireMockServerWebhookTests
     }
 
     [Fact]
+    public async Task WireMockServer_WithWebhook_When_WebhookEndPointReturnsError_Should_LogWarning()
+    {
+        // Arrange
+        var serverReceivingTheWebhook = WireMockServer.Start();
+        serverReceivingTheWebhook.Given(Request.Create().WithPath("/x").UsingPost()).RespondWith(Response.Create().WithBody("!Server Error!").WithStatusCode(500));
+
+        var loggerMock = new Mock<IWireMockLogger>();
+        var settings = new WireMockServerSettings
+        {
+            Logger = loggerMock.Object
+        };
+
+        // Act
+        var guid = "942cb963-c9a3-4e9c-8e71-c1b26d2a4a05";
+        var server = WireMockServer.Start(settings);
+        server.Given(Request.Create().UsingPost())
+            .WithWebhook(new Webhook
+            {
+                Request = new WebhookRequest
+                {
+                    Url = serverReceivingTheWebhook.Url! + "/{{request.Query.q}}",
+                    Method = "post",
+                    BodyData = new BodyData
+                    {
+                        BodyAsString = "abc",
+                        DetectedBodyType = BodyType.String,
+                        DetectedBodyTypeFromContentType = BodyType.String
+                    },
+                    UseTransformer = true
+                }
+            })
+            .WithGuid(guid)
+            .RespondWith(Response.Create().WithBody("a-response"));
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri($"{server.Urls[0]}/TST?q=x"),
+            Content = new StringContent("test")
+        };
+
+        // Assert
+        var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        content.Should().Be("a-response");
+
+        loggerMock.Verify(l => l.Warn("Sending message to Webhook [0] from Mapping '942cb963-c9a3-4e9c-8e71-c1b26d2a4a05' failed. HttpStatusCode: InternalServerError Content: !Server Error!"));
+
+        serverReceivingTheWebhook.LogEntries.Should().HaveCount(1);
+        serverReceivingTheWebhook.LogEntries.First().MappingGuid.Should().NotBeNull();
+
+        server.Dispose();
+        serverReceivingTheWebhook.Dispose();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithWebhook_When_WebhookEndPointDoesNotExists_Should_LogError()
+    {
+        // Arrange
+        var loggerMock = new Mock<IWireMockLogger>();
+        var settings = new WireMockServerSettings
+        {
+            Logger = loggerMock.Object
+        };
+
+        // Act
+        var guid = "942cb963-c9a3-4e9c-8e71-c1b26d2a4a05";
+        var server = WireMockServer.Start(settings);
+        server.Given(Request.Create().UsingPost())
+            .WithWebhook(new Webhook
+            {
+                Request = new WebhookRequest
+                {
+                    Url = "http://error-not-does-exist-" + Guid.NewGuid(),
+                    Method = "post",
+                    BodyData = new BodyData
+                    {
+                        BodyAsString = "abc",
+                        DetectedBodyType = BodyType.String,
+                        DetectedBodyTypeFromContentType = BodyType.String
+                    },
+                    UseTransformer = true
+                }
+            })
+            .WithGuid(guid)
+            .RespondWith(Response.Create().WithBody("a-response"));
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(server.Urls[0]),
+            Content = new StringContent("test")
+        };
+
+        // Assert
+        var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        content.Should().Be("a-response");
+
+        loggerMock.Verify(l => l.Error(It.Is<string>(formatString => formatString.Contains("Sending message to Webhook [0] from Mapping '942cb963-c9a3-4e9c-8e71-c1b26d2a4a05' failed. Exception"))));
+
+        server.Dispose();
+    }
+
+    [Fact]
     public async Task WireMockServer_WithWebhookArgs_Should_Send_StringMessage_To_Webhook()
     {
         // Assign
@@ -142,7 +254,7 @@ public class WireMockServerWebhookTests
         // Act
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingPost())
-            .WithWebhook(serverReceivingTheWebhook.Urls[0], "post", null, "OK !", true, TransformerType.Handlebars)
+            .WithWebhook(serverReceivingTheWebhook.Urls[0], "post", null, "OK !")
             .RespondWith(Response.Create().WithBody("a-response"));
 
         var request = new HttpRequestMessage
@@ -154,7 +266,7 @@ public class WireMockServerWebhookTests
 
         // Assert
         var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
-        string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         content.Should().Be("a-response");
@@ -176,7 +288,7 @@ public class WireMockServerWebhookTests
         // Act
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingPost())
-            .WithWebhook(serverReceivingTheWebhook.Urls[0], "post", null, new { Status = "OK" }, true, TransformerType.Handlebars)
+            .WithWebhook(serverReceivingTheWebhook.Urls[0], "post", null, new { Status = "OK" })
             .RespondWith(Response.Create().WithBody("a-response"));
 
         var request = new HttpRequestMessage
@@ -188,7 +300,7 @@ public class WireMockServerWebhookTests
 
         // Assert
         var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
-        string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         content.Should().Be("a-response");
