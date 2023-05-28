@@ -11,32 +11,18 @@ public sealed class WireMockConfiguration : ContainerConfiguration
 {
 #pragma warning disable CS1591
     public string? Username { get; }
-    
+
     public string? Password { get; }
 
-    public string? Logger { get; }
+    public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 
-    public bool ReadStaticMappings { get; }
-
-    public bool WatchStaticMappings { get; }
-
-    public bool WatchStaticMappingsInSubdirectories { get; }
-    
     public WireMockConfiguration(
         string? username = null,
-        string? password = null,
-        string? logger = null,
-        bool readStaticMappings = false,
-        bool watchStaticMappings = false,
-        bool watchStaticMappingsInSubdirectories = false
+        string? password = null
     )
     {
         Username = username;
         Password = password;
-        Logger = logger;
-        ReadStaticMappings = readStaticMappings;
-        WatchStaticMappings = watchStaticMappings;
-        WatchStaticMappingsInSubdirectories = watchStaticMappingsInSubdirectories;
     }
 #pragma warning restore CS1591
 
@@ -76,9 +62,5 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     {
         Username = BuildConfiguration.Combine(oldValue.Username, newValue.Username);
         Password = BuildConfiguration.Combine(oldValue.Password, newValue.Password);
-        Logger = BuildConfiguration.Combine(oldValue.Logger, newValue.Logger);
-        ReadStaticMappings = BuildConfiguration.Combine(oldValue.ReadStaticMappings, newValue.ReadStaticMappings);
-        WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
-        WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
     }
 }

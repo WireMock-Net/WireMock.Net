@@ -1,3 +1,5 @@
+using JsonConverter.Newtonsoft.Json;
+using Newtonsoft.Json;
 using Testcontainers.MsSql;
 using WireMock.Net.Testcontainers;
 
@@ -17,21 +19,16 @@ internal class Program
 
         await container.StartAsync().ConfigureAwait(false);
 
-        var logs = await container.GetLogsAsync().ConfigureAwait(false);
+        var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1)).ConfigureAwait(false);
         Console.WriteLine("logs = " + logs.Stdout);
 
-        var authenticatedHttpClient = new HttpClient();
-        authenticatedHttpClient.DefaultRequestHeaders.Add("Authorization", "Basic eDp5");
+        var restEaseApiClient = container.CreateWireMockAdminClient();
 
-        var settingsUri = container.GetPublicUrl() + "__admin/settings";
-        var settings = await authenticatedHttpClient.GetStringAsync(settingsUri).ConfigureAwait(false);
+        var settings = await restEaseApiClient.GetSettingsAsync();
+        Console.WriteLine("settings = " + JsonConvert.SerializeObject(settings, Formatting.Indented));
 
-        Console.WriteLine("settings = " + settings);
-
-        var mappingsUri = container.GetPublicUrl() + "__admin/mappings";
-        var mappings = await authenticatedHttpClient.GetStringAsync(mappingsUri).ConfigureAwait(false);
-
-        Console.WriteLine("mappings = " + mappings);
+        var mappings = await restEaseApiClient.GetMappingsAsync();
+        Console.WriteLine("mappings = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
 
         await container.StopAsync();
 

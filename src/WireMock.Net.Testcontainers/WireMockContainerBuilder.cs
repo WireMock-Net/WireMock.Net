@@ -21,7 +21,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 
     private const string DefaultLogger = "WireMockConsoleLogger";
 
-    private readonly Lazy<Task<bool>> _isWindowsLazy = new(async () =>
+    private readonly Lazy<Task<bool>> _isWindowsAsLazy = new(async () =>
     {
         using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
         using var dockerClient = dockerClientConfig.CreateClient();
@@ -33,7 +33,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
     /// </summary>
-    public WireMockContainerBuilder() : this(new WireMockConfiguration(logger: DefaultLogger))
+    public WireMockContainerBuilder() : this(new WireMockConfiguration())
     {
         DockerResourceConfiguration = Init().DockerResourceConfiguration;
     }
@@ -45,7 +45,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        var isWindows = _isWindowsLazy.Value.GetAwaiter().GetResult();
+        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
         return WithImage(isWindows ? WindowsImage : LinuxImage);
     }
 
@@ -70,23 +70,13 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
-    /// Use the WireMockConsoleLogger (default)
-    /// </summary>
-    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
-    [PublicAPI]
-    public WireMockContainerBuilder WithConsoleLogger()
-    {
-        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: DefaultLogger));
-    }
-
-    /// <summary>
     /// Use the WireMockNullLogger.
     /// </summary>
     /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithNullLogger()
     {
-        return Merge(DockerResourceConfiguration, new WireMockConfiguration(logger: "WireMockNullLogger"));
+        return WithCommand("--WireMockLogger WireMockNullLogger");
     }
 
     /// <summary>
@@ -96,8 +86,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithReadStaticMappings()
     {
-        return Merge(DockerResourceConfiguration, new WireMockConfiguration(readStaticMappings: true))
-            .WithCommand("--ReadStaticMappings true");
+        return WithCommand("--ReadStaticMappings true");
     }
 
     /// <summary>
@@ -107,9 +96,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
     {
-        return Merge(DockerResourceConfiguration, new WireMockConfiguration(watchStaticMappings: true, watchStaticMappingsInSubdirectories: includeSubDirectories))
-            .WithCommand("--WatchStaticMappings true")
-            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        return WithCommand("--WatchStaticMappings true").WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     /// <summary>
@@ -122,7 +109,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         Guard.NotNullOrEmpty(path);
 
-        var isWindows = _isWindowsLazy.Value.GetAwaiter().GetResult();
+        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
 
         return WithReadStaticMappings().WithBindMount(path, isWindows ? WindowsMappingsPath : LinuxMappingsPath);
     }
@@ -143,6 +130,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     public override WireMockContainer Build()
     {
         Validate();
+
         return new WireMockContainer(DockerResourceConfiguration, TestcontainersSettings.Logger);
     }
 
@@ -157,9 +145,12 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             builder = builder.WithImage();
         }
 
+        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
+        var waitForContainerOS = isWindows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
-            .WithCommand($"--WireMockLogger {DockerResourceConfiguration.Logger}");
+            .WithCommand($"--WireMockLogger {DefaultLogger}")
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
     }
 
     /// <inheritdoc />
