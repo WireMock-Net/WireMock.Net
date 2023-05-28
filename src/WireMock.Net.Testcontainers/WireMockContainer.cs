@@ -37,9 +37,9 @@ public sealed class WireMockContainer : DockerContainer
     public string GetPublicUrl() => GetPublicUri().ToString();
 
     /// <summary>
-    /// Create a RestEase Admin client
+    /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
     /// </summary>
-    /// <returns>A c<see cref="IWireMockAdminApi"/></returns>
+    /// <returns>A <see cref="IWireMockAdminApi"/></returns>
     [PublicAPI]
     public IWireMockAdminApi CreateWireMockAdminClient()
     {

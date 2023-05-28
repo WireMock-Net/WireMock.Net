@@ -30,6 +30,10 @@ internal class Program
         var mappings = await restEaseApiClient.GetMappingsAsync();
         Console.WriteLine("mappings = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
 
+        var client = container.CreateClient();
+        var result = await client.GetStringAsync("/static/mapping");
+        Console.WriteLine("result = " + result);
+
         await container.StopAsync();
 
         var sql = new MsSqlBuilder().Build();
