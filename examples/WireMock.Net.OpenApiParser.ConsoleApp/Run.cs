@@ -18,8 +18,8 @@ public static class Run
         string url,
         bool dynamicExamples = true,
         IWireMockOpenApiParserExampleValues? examplesValuesGenerator = null,
-        ExampleValueType pathPatternToUse = ExampleValueType.Wildcard,
-        ExampleValueType headerPatternToUse = ExampleValueType.Wildcard
+        PatternType pathPatternToUse = PatternType.Wildcard,
+        PatternType headerPatternToUse = PatternType.Wildcard
     )
     {
         var server = WireMockServer.Start(new WireMockServerSettings

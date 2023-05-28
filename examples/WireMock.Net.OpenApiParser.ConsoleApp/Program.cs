@@ -18,7 +18,7 @@ class Program
     private static void RunMockServerWithDynamicExampleGeneration()
     {
         // Run your mocking framework specifying your Example Values generator class.
-        var serverCustomer_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Customer_V2.0.json"), "http://localhost:8090/", true, new DynamicDataGeneration(), Types.ExampleValueType.Value, Types.ExampleValueType.Value);
+        var serverCustomer_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Customer_V2.0.json"), "http://localhost:8090/", true, new DynamicDataGeneration(), Types.PatternType.Value, Types.PatternType.Value);
         Console.WriteLine("Press any key to stop the servers");
 
         Console.ReadKey();

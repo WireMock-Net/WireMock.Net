@@ -37,18 +37,7 @@ internal class OpenApiPathsMapper
             .OrderBy(p => p.Key)
             .Select(p => MapPath(p.Key, p.Value, servers))
             .SelectMany(x => x)
-            .ToArray() ??
-               Array.Empty<MappingModel>();
-    }
-
-    private IReadOnlyList<MappingModel> MapPaths(OpenApiPaths? paths, IList<OpenApiServer> servers)
-    {
-        return paths?
-            .OrderBy(p => p.Key)
-            .Select(p => MapPath(p.Key, p.Value, servers))
-            .SelectMany(x => x)
-            .ToArray() ??
-               Array.Empty<MappingModel>();
+            .ToArray() ?? Array.Empty<MappingModel>();
     }
 
     private IReadOnlyList<MappingModel> MapPath(string path, OpenApiPathItem pathItem, IList<OpenApiServer> servers)
@@ -280,41 +269,6 @@ internal class OpenApiPathsMapper
         return newPath;
     }
 
-    private string MapBasePath(IList<OpenApiServer>? servers)
-    {
-        if (servers == null || servers.Count == 0)
-        {
-            return string.Empty;
-        }
-
-        OpenApiServer server = servers.First();
-        if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out Uri uriResult))
-        {
-            return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
-        }
-
-        return string.Empty;
-    }
-
-    private JToken? MapOpenApiAnyToJToken(IOpenApiAny? any)
-    {
-        if (any == null)
-        {
-            return null;
-        }
-
-        using var outputString = new StringWriter();
-        var writer = new OpenApiJsonWriter(outputString);
-        any.Write(writer, OpenApiSpecVersion.OpenApi3_0);
-
-        if (any.AnyType == AnyType.Array)
-        {
-            return JArray.Parse(outputString.ToString());
-        }
-
-        return JObject.Parse(outputString.ToString());
-    }
-
     private IDictionary<string, object>? MapHeaders(string? responseContentType, IDictionary<string, OpenApiHeader>? headers)
     {
         var mappedHeaders = headers?.ToDictionary(
@@ -366,26 +320,34 @@ internal class OpenApiPathsMapper
         return list.Any() ? list : null;
     }
 
-    private MatcherModel GetExampleMatcherModel(OpenApiSchema? schema, ExampleValueType type)
+    private MatcherModel GetExampleMatcherModel(OpenApiSchema? schema, ExampleValueType exampleValueType)
     {
-        return type switch
+        return exampleValueType switch
         {
             ExampleValueType.Value => new MatcherModel
             {
                 Name = "ExactMatcher",
-                Pattern = GetExampleValueAsStringForSchemaType(schema),
+                Pattern = GetExampleValueAsStringForSchemaType(schema, exampleValueType),
+                IgnoreCase = _settings.IgnoreCaseExampleValues
+            },
+
+            ExampleValueType.Regex => new MatcherModel
+            {
+                Name = "RegexMatcher",
+                Pattern = GetExampleValueAsStringForSchemaType(schema, exampleValueType),
                 IgnoreCase = _settings.IgnoreCaseExampleValues
             },
 
             _ => new MatcherModel
             {
                 Name = "WildcardMatcher",
-                Pattern = "*"
+                Pattern = "*",
+                IgnoreCase = _settings.IgnoreCaseExampleValues
             }
         };
     }
 
-    private string GetExampleValueAsStringForSchemaType(OpenApiSchema? schema)
+    private string GetExampleValueAsStringForSchemaType(OpenApiSchema? schema, ExampleValueType exampleValueType)
     {
         var value = _exampleValueGenerator.GetExampleValue(schema);
 
@@ -395,5 +357,40 @@ internal class OpenApiPathsMapper
 
             _ => value.ToString(),
         };
+    }
+
+    private static string MapBasePath(IList<OpenApiServer>? servers)
+    {
+        if (servers == null || servers.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var server = servers.First();
+        if (Uri.TryCreate(server.Url, UriKind.RelativeOrAbsolute, out Uri uriResult))
+        {
+            return uriResult.IsAbsoluteUri ? uriResult.AbsolutePath : uriResult.ToString();
+        }
+
+        return string.Empty;
+    }
+
+    private static JToken? MapOpenApiAnyToJToken(IOpenApiAny? any)
+    {
+        if (any == null)
+        {
+            return null;
+        }
+
+        using var outputString = new StringWriter();
+        var writer = new OpenApiJsonWriter(outputString);
+        any.Write(writer, OpenApiSpecVersion.OpenApi3_0);
+
+        if (any.AnyType == AnyType.Array)
+        {
+            return JArray.Parse(outputString.ToString());
+        }
+
+        return JObject.Parse(outputString.ToString());
     }
 }

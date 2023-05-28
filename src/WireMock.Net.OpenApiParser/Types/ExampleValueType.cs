@@ -1,7 +1,7 @@
 namespace WireMock.Net.OpenApiParser.Types;
 
 /// <summary>
-/// The example value to use
+/// The (example) value pattern to use.
 /// </summary>
 public enum ExampleValueType
 {
@@ -11,6 +11,11 @@ public enum ExampleValueType
     ///    then the <see cref="Settings.IWireMockOpenApiParserExampleValues"/> will be used (custom, fixed or dynamic).
     /// </summary>
     Value,
+
+    /// <summary>
+    /// Build a Regex based on the SchemaType.
+    /// </summary>
+    Regex,
 
     /// <summary>
     /// Just use a Wildcard (*) character.
