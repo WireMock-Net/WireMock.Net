@@ -8,7 +8,7 @@ using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.Utils;
 
-internal class ExampleValueGenerator
+internal class ExampleValueGenerator : IExampleValueGenerator
 {
     private readonly IWireMockOpenApiParserExampleValues _exampleValues;
 

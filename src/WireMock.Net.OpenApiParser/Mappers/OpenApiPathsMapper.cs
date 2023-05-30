@@ -23,12 +23,14 @@ internal class OpenApiPathsMapper
     private const string HeaderContentType = "Content-Type";
 
     private readonly WireMockOpenApiParserSettings _settings;
-    private readonly ExampleValueGenerator _exampleValueGenerator;
+    private readonly IExampleValueGenerator _exampleValueGenerator;
+    private readonly IExampleValueGenerator _regexExampleValueGenerator;
 
     public OpenApiPathsMapper(WireMockOpenApiParserSettings settings)
     {
         _settings = Guard.NotNull(settings);
         _exampleValueGenerator = new ExampleValueGenerator(settings);
+        _regexExampleValueGenerator = new RegexExampleValueGenerator(settings);
     }
 
     public IReadOnlyList<MappingModel> ToMappingModels(OpenApiPaths? paths, IList<OpenApiServer> servers)
@@ -349,7 +351,9 @@ internal class OpenApiPathsMapper
 
     private string GetExampleValueAsStringForSchemaType(OpenApiSchema? schema, ExampleValueType exampleValueType)
     {
-        var value = _exampleValueGenerator.GetExampleValue(schema);
+        var value = exampleValueType == ExampleValueType.Regex ?
+            _regexExampleValueGenerator.GetExampleValue(schema) :
+            _exampleValueGenerator.GetExampleValue(schema);
 
         return value switch
         {
