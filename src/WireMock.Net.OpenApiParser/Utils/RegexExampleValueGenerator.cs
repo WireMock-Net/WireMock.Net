@@ -21,7 +21,7 @@ internal class RegexExampleValueGenerator : IExampleValueGenerator
                 return @"(true|false)";
 
             case SchemaType.Integer:
-                return @"-?\d+$";
+                return @"-?\d+";
 
             case SchemaType.Number:
                 return @"[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?";

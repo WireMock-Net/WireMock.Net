@@ -9,6 +9,7 @@ using RamlToOpenApiConverter;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Mappers;
 using WireMock.Net.OpenApiParser.Settings;
+using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser;
 
@@ -17,13 +18,20 @@ namespace WireMock.Net.OpenApiParser;
 /// </summary>
 public class WireMockOpenApiParser : IWireMockOpenApiParser
 {
+    private readonly WireMockOpenApiParserSettings _wireMockOpenApiParserSettings = new WireMockOpenApiParserSettings
+    {
+        HeaderPatternToUse = ExampleValueType.Regex,
+        QueryParameterPatternToUse = ExampleValueType.Regex,
+        PathPatternToUse = ExampleValueType.Regex
+    };
+
     private readonly OpenApiStreamReader _reader = new();
 
     /// <inheritdoc />
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic)
     {
-        return FromFile(path, new WireMockOpenApiParserSettings(), out diagnostic);
+        return FromFile(path, _wireMockOpenApiParserSettings, out diagnostic);
     }
 
     /// <inheritdoc />
@@ -49,7 +57,7 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
     {
-        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
+        return new OpenApiPathsMapper(settings ?? _wireMockOpenApiParserSettings).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
     }
 
     /// <inheritdoc  />

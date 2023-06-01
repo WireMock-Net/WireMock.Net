@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using WireMock.Net.OpenApiParser.Types;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -18,7 +19,7 @@ class Program
     private static void RunMockServerWithDynamicExampleGeneration()
     {
         // Run your mocking framework specifying your Example Values generator class.
-        var serverCustomer_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Customer_V2.0.json"), "http://localhost:8090/", true, new DynamicDataGeneration(), Types.PatternType.Value, Types.PatternType.Value);
+        var serverCustomer_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Customer_V2.0.json"), "http://localhost:8090/", true, new DynamicDataGeneration(), ExampleValueType.Value, ExampleValueType.Value);
         Console.WriteLine("Press any key to stop the servers");
 
         Console.ReadKey();
