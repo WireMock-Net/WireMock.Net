@@ -14,6 +14,7 @@
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <LangVersion>10</LangVersion>
+        <UserSecretsId>299888a2-d06f-4e57-aa6d-7f8dc76bf961</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -21,6 +22,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="IsExternalInit" Version="1.0.3">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.8" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
         <PackageReference Include="Testcontainers" Version="3.2.0" />

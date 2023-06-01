@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
 using Stef.Validation;
+using WireMock.Net.Testcontainers.Models;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -13,11 +15,11 @@ namespace WireMock.Net.Testcontainers;
 /// </summary>
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
-    private const string LinuxImage = "sheyenrath/wiremock.net:latest";
-    private const string WindowsImage = "sheyenrath/wiremock.net-windows:latest";
-
-    private const string LinuxMappingsPath = "/app/__admin/mappings";
-    private const string WindowsMappingsPath = @"c:\app\__admin\mappings";
+    private readonly Dictionary<bool, ContainerInfo> _info = new()
+    {
+        { false, new ContainerInfo("sheyenrath/wiremock.net:latest", "/app/__admin/mappings") },
+        { true, new ContainerInfo("sheyenrath/wiremock.net-windows:latest", @"c:\app\__admin\mappings") }
+    };
 
     private const string DefaultLogger = "WireMockConsoleLogger";
 
@@ -46,11 +48,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     public WireMockContainerBuilder WithImage()
     {
         var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
-        return WithImage(isWindows ? WindowsImage : LinuxImage);
+        return WithImage(_info[isWindows].Image);
     }
 
     /// <summary>
-    /// Set the admin username and password for the container.
+    /// Set the admin username. and password for the container.
     /// </summary>
     /// <param name="username">The admin username.</param>
     /// <param name="password">The admin password.</param>
@@ -111,7 +113,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 
         var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
 
-        return WithReadStaticMappings().WithBindMount(path, isWindows ? WindowsMappingsPath : LinuxMappingsPath);
+        return WithReadStaticMappings().WithBindMount(path, _info[isWindows].MappingsPath);
     }
 
     /// <summary>
