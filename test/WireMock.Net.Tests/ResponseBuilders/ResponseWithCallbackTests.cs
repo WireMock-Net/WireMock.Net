@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -278,5 +279,39 @@ public class ResponseWithCallbackTests
         // Assert
         response.Message.BodyData.BodyAsString.Should().Be("/fooBar");
         response.Message.StatusCode.Should().Be(302);
+    }
+
+    // https://github.com/WireMock-Net/WireMock.Net/issues/898
+    [Fact]
+    public async Task Response_WithCallback_WithRequestHeaders_Should_BeAccessibleInCallback()
+    {
+        // Assign
+        var headerKey = "headerKey";
+        var headerValues = new[] { "abc" };
+        var requestHeaders = new Dictionary<string, string[]>
+        {
+            { headerKey, headerValues }
+        };
+        var requestMessage = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", "::1", null, requestHeaders);
+        var responseBuilder = Response.Create()
+            .WithCallback(request =>
+            {
+                var headersFromRequest = request!.Headers![headerKey].ToList();
+                headersFromRequest.Add("extra");
+
+                return new ResponseMessage
+                {
+                    Headers = new Dictionary<string, WireMockList<string>>
+                    {
+                        { headerKey, new WireMockList<string>(headersFromRequest) }
+                    }
+                };
+            });
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, requestMessage, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.Headers![headerKey].Should().Contain("extra");
     }
 }

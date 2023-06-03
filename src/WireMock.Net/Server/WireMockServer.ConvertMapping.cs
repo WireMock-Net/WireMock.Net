@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
@@ -14,7 +15,7 @@ namespace WireMock.Server;
 
 public partial class WireMockServer
 {
-    private void ConvertMappingsAndRegisterAsRespondProvider(MappingModel[] mappingModels, string? path = null)
+    private void ConvertMappingsAndRegisterAsRespondProvider(IReadOnlyList<MappingModel> mappingModels, string? path = null)
     {
         var duplicateGuids = mappingModels
             .Where(m => m.Guid != null)
@@ -54,6 +55,11 @@ public partial class WireMockServer
         else if (mappingModel.Guid != null && mappingModel.Guid != Guid.Empty)
         {
             respondProvider = respondProvider.WithGuid(mappingModel.Guid.Value);
+        }
+
+        if (mappingModel.Data != null)
+        {
+            respondProvider = respondProvider.WithData(mappingModel.Data);
         }
 
         var timeSettings = TimeSettingsMapper.Map(mappingModel.TimeSettings);
@@ -102,7 +108,15 @@ public partial class WireMockServer
             respondProvider = respondProvider.WithWebhook(webhooks);
         }
 
-        respondProvider.WithWebhookFireAndForget(mappingModel.UseWebhooksFireAndForget ?? false);
+        if (mappingModel.UseWebhooksFireAndForget == true)
+        {
+            respondProvider.WithWebhookFireAndForget(mappingModel.UseWebhooksFireAndForget.Value);
+        }
+
+        if (mappingModel.Probability != null)
+        {
+            respondProvider.WithProbability(mappingModel.Probability.Value);
+        }
 
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
@@ -200,11 +214,11 @@ public partial class WireMockServer
         {
             foreach (var cookieModel in requestModel.Cookies.Where(c => c.Matchers != null))
             {
-               requestBuilder = requestBuilder.WithCookie(
-                    cookieModel.Name,
-                    cookieModel.IgnoreCase == true,
-                    cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                    cookieModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
+                requestBuilder = requestBuilder.WithCookie(
+                     cookieModel.Name,
+                     cookieModel.IgnoreCase == true,
+                     cookieModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
+                     cookieModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
             }
         }
 

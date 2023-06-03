@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Stef.Validation;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
+using WireMock.Services;
 using WireMock.Util;
 
 namespace WireMock.Owin
@@ -66,6 +67,7 @@ namespace WireMock.Owin
                 {
                     services.AddSingleton(_wireMockMiddlewareOptions);
                     services.AddSingleton<IMappingMatcher, MappingMatcher>();
+                    services.AddSingleton<IRandomizerDoubleBetween0And1, RandomizerDoubleBetween0And1>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
 

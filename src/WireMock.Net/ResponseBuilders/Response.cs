@@ -107,14 +107,12 @@ public partial class Response : IResponseBuilder
     /// <summary>
     /// Initializes a new instance of the <see cref="Response"/> class.
     /// </summary>
-    /// <param name="responseMessage">
-    /// The response.
-    /// </param>
+    /// <param name="responseMessage">The response.</param>
     private Response(ResponseMessage responseMessage)
     {
         ResponseMessage = responseMessage;
     }
-
+    
     /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(int)"/>
     [PublicAPI]
     public IResponseBuilder WithStatusCode(int code)

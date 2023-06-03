@@ -69,12 +69,7 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public MappingModel[] GetMappings()
     {
-        return GetMappingsInternal().Select(_mappingConverter.ToMappingModel).ToArray();
-    }
-
-    internal IMapping[] GetMappingsInternal()
-    {
-        return _options.Mappings.Values.ToArray().Where(m => !m.IsAdminInterface).ToArray();
+        return GetNonAdminMappings().Select(_mappingConverter.ToMappingModel).ToArray();
     }
 
     /// <inheritdoc />
@@ -86,7 +81,7 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public string? ToCSharpCode(Guid guid, MappingConverterType converterType)
     {
-        var mapping = GetMappingsInternal().FirstOrDefault(m => m.Guid == guid);
+        var mapping = GetNonAdminMappings().FirstOrDefault(m => m.Guid == guid);
         if (mapping is null)
         {
             return null;
@@ -101,7 +96,7 @@ public class MappingBuilder : IMappingBuilder
     {
         var sb = new StringBuilder();
         bool addStart = true;
-        foreach (var mapping in GetMappingsInternal())
+        foreach (var mapping in GetNonAdminMappings())
         {
             sb.AppendLine(_mappingConverter.ToCSharpCode(mapping, new MappingConverterSettings { AddStart = addStart, ConverterType = converterType }));
 
@@ -123,7 +118,7 @@ public class MappingBuilder : IMappingBuilder
     /// <inheritdoc />
     public void SaveMappingsToFolder(string? folder)
     {
-        foreach (var mapping in GetNonAdminMappings().Where(m => !m.IsAdminInterface))
+        foreach (var mapping in GetNonAdminMappings())
         {
             _mappingToFileSaver.SaveMappingToFile(mapping, folder);
         }
@@ -131,7 +126,7 @@ public class MappingBuilder : IMappingBuilder
 
     private IMapping[] GetNonAdminMappings()
     {
-        return _options.Mappings.Values.ToArray();
+        return _options.Mappings.Values.Where(m => !m.IsAdminInterface).OrderBy(m => m.UpdatedAt).ToArray();
     }
 
     private void RegisterMapping(IMapping mapping, bool saveToFile)

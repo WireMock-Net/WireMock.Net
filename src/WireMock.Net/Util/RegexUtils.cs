@@ -25,7 +25,7 @@ internal static class RegexUtils
         return namedGroupsDictionary;
     }
 
-    public static (bool IsValid, bool Result) MatchRegex(string pattern, string input, bool useRegexExtended = true)
+    public static (bool IsValid, bool Result) MatchRegex(string? pattern, string input, bool useRegexExtended = true)
     {
         if (string.IsNullOrEmpty(pattern))
         {
@@ -36,14 +36,12 @@ internal static class RegexUtils
         {
             if (useRegexExtended)
             {
-                var r = new RegexExtended(pattern, RegexOptions.None, RegexTimeOut);
-                return (true, r.IsMatch(input));
+                var regexExtended = new RegexExtended(pattern, RegexOptions.None, RegexTimeOut);
+                return (true, regexExtended.IsMatch(input));
             }
-            else
-            {
-                var r = new Regex(pattern, RegexOptions.None, RegexTimeOut);
-                return (true, r.IsMatch(input));
-            }
+
+            var regex = new Regex(pattern, RegexOptions.None, RegexTimeOut);
+            return (true, regex.IsMatch(input));
         }
         catch
         {

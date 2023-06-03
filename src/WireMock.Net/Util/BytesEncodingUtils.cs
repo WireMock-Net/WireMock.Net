@@ -17,7 +17,7 @@ namespace WireMock.Util;
 /// http://www.unicode.org/versions/corrigendum1.html
 /// http://www.ietf.org/rfc/rfc2279.txt
 /// </summary>
-public static class BytesEncodingUtils
+internal static class BytesEncodingUtils
 {
     /// <summary>
     /// Tries the get the Encoding from an array of bytes.
@@ -108,7 +108,7 @@ public static class BytesEncodingUtils
             return true;
         }
 
-        if (ch >= 0xc2 && ch <= 0xdf)
+        if (ch is >= 0xc2 and <= 0xdf)
         {
             if (position >= length - 2)
             {
@@ -145,7 +145,7 @@ public static class BytesEncodingUtils
             return true;
         }
 
-        if (ch >= 0xe1 && ch <= 0xef)
+        if (ch is >= 0xe1 and <= 0xef)
         {
             if (position >= length - 3)
             {
@@ -204,7 +204,7 @@ public static class BytesEncodingUtils
             return true;
         }
 
-        if (ch >= 0xf1 && ch <= 0xf3)
+        if (ch is >= 0xf1 and <= 0xf3)
         {
             if (position >= length - 4)
             {

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
+using JsonConverter.Abstractions;
+using Moq;
 using Newtonsoft.Json;
 using NFluent;
 using WireMock.Matchers;
@@ -56,10 +59,30 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
+        public void Request_WithBody_FuncFormUrlEncoded()
+        {
+            // Assign
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((IDictionary<string, string>? values) => values != null);
+
+            // Act
+            var body = new BodyData
+            {
+                BodyAsFormUrlEncoded = new Dictionary<string, string>(),
+                DetectedBodyTypeFromContentType = BodyType.FormUrlEncoded,
+                DetectedBodyType = BodyType.FormUrlEncoded
+            };
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
         public void Request_WithBody_FuncBodyData()
         {
             // Assign
-            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((IBodyData b) => b != null);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((IBodyData? b) => b != null);
 
             // Act
             var body = new BodyData
@@ -78,7 +101,7 @@ namespace WireMock.Net.Tests
         public void Request_WithBody_FuncByteArray()
         {
             // Assign
-            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((byte[] b) => b != null);
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBody((byte[]? b) => b != null);
 
             // Act
             var body = new BodyData
@@ -113,7 +136,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_BodyAsString_Using_WildcardMatcher()
+        public void Request_WithBody_BodyDataAsString_Using_WildcardMatcher()
         {
             // Arrange
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("H*o*"));
@@ -132,7 +155,7 @@ namespace WireMock.Net.Tests
         }
 
         [Fact]
-        public void Request_BodyAsJson_Using_WildcardMatcher()
+        public void Request_WithBody_BodyDataAsJson_Using_WildcardMatcher()
         {
             // Arrange
             var spec = Request.Create().WithPath("/foo").UsingAnyMethod().WithBody(new WildcardMatcher("*Hello*"));
@@ -322,6 +345,56 @@ namespace WireMock.Net.Tests
 
             // Act
             var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, bodyData);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithBodyAsJson_UsingObject()
+        {
+            // Assign
+            object body = new
+            {
+                Test = "abc"
+            };
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBodyAsJson(body);
+
+            var bodyData = new BodyData
+            {
+                BodyAsString = JsonConvert.SerializeObject(body),
+                DetectedBodyType = BodyType.String
+            };
+
+            // Act
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
+
+            // Assert
+            var requestMatchResult = new RequestMatchResult();
+            Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
+        }
+
+        [Fact]
+        public void Request_WithBodyAsJson_WithIJsonConverter_UsingObject()
+        {
+            // Assign
+            var jsonConverterMock = new Mock<IJsonConverter>();
+            jsonConverterMock.Setup(j => j.Serialize(It.IsAny<object>(), It.IsAny<JsonConverterOptions>())).Returns("test");
+            object body = new
+            {
+                Any = "key"
+            };
+            var requestBuilder = Request.Create().UsingAnyMethod().WithBodyAsJson(body, jsonConverterMock.Object);
+
+            var bodyData = new BodyData
+            {
+                BodyAsString = "test",
+                DetectedBodyType = BodyType.String
+            };
+
+            // Act
+            var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
 
             // Assert
             var requestMatchResult = new RequestMatchResult();

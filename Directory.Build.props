@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.5.16</VersionPrefix>
+        <VersionPrefix>1.5.27</VersionPrefix>
         <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
         <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -12,6 +12,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/WireMock-Net/WireMock.Net</RepositoryUrl>
         <ApplicationIcon>../../resources/WireMock.Net-Logo.ico</ApplicationIcon>
+        <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
         <LangVersion>Latest</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -29,7 +30,7 @@
 
     <ItemGroup>
         <None Include="../../resources/WireMock.Net-Logo.png" Pack="true" PackagePath="" />
-        <!--<None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>-->
+        <None Include="../../PackageReadme.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 
     <Choose>

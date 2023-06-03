@@ -1,49 +1,49 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<Description>FluentAssertions extensions for WireMock.Net</Description>
-		<AssemblyTitle>WireMock.Net.FluentAssertions</AssemblyTitle>
-		<Authors>Mahmoud Ali;Stef Heyenrath</Authors>
-		<TargetFrameworks>net451;netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>WireMock.Net.FluentAssertions</AssemblyName>
-		<PackageId>WireMock.Net.FluentAssertions</PackageId>
-		<PackageTags>wiremock;FluentAssertions;UnitTest;Assert;Assertions</PackageTags>
-		<RootNamespace>WireMock.FluentAssertions</RootNamespace>
-		<ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A95}</ProjectGuid>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
-		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-		<!--<DelaySign>true</DelaySign>-->
-		<PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <LangVersion>10</LangVersion>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Description>FluentAssertions extensions for WireMock.Net</Description>
+        <AssemblyTitle>WireMock.Net.FluentAssertions</AssemblyTitle>
+        <Authors>Mahmoud Ali;Stef Heyenrath</Authors>
+        <TargetFrameworks>net451;net47;netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.FluentAssertions</AssemblyName>
+        <PackageId>WireMock.Net.FluentAssertions</PackageId>
+        <PackageTags>wiremock;FluentAssertions;UnitTest;Assert;Assertions</PackageTags>
+        <RootNamespace>WireMock.FluentAssertions</RootNamespace>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A95}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
 
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	</PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'netstandard1.3'">
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'netstandard1.3'">
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'netstandard1.3'">
-    <PackageReference Include="FluentAssertions" Version="6.5.1" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'netstandard1.3'">
+        <PackageReference Include="FluentAssertions" Version="6.5.1" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+    </ItemGroup>
 
 </Project>

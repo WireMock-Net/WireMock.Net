@@ -13,4 +13,6 @@ internal class BodyParserSettings
     public bool DecompressGZipAndDeflate { get; set; } = true;
 
     public bool DeserializeJson { get; set; } = true;
+
+    public bool DeserializeFormUrlEncoded { get; set; } = true;
 }

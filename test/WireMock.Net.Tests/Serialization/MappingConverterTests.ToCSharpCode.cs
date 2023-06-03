@@ -119,7 +119,26 @@ public partial class MappingConverterTests
             .WithDelay(12345)
             .WithTransformer();
 
-        return new Mapping(guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null);
+        return new Mapping(
+            guid,
+            _updatedAt,
+            string.Empty,
+            string.Empty,
+            null,
+            _settings,
+            request,
+            response,
+            42,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            data: null,
+            probability: 0.3
+        );
     }
 }
 #endif

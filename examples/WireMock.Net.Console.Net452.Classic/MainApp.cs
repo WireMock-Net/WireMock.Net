@@ -58,9 +58,6 @@ namespace WireMock.Net.ConsoleApplication
             var json = mappingBuilder.ToJson();
             System.Console.WriteLine("mappingBuilder : Json = {0}", json);
 
-            var s = WireMockServer.Start();
-            s.Stop();
-
             var todos = new Dictionary<int, Todo>();
 
             var server = WireMockServer.Start();
@@ -86,7 +83,7 @@ namespace WireMock.Net.ConsoleApplication
 
             var httpClient = server.CreateClient();
             //server.Stop();
-            
+
             var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps,
@@ -139,6 +136,31 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
+
+            // 400 ms
+            server
+                .Given(Request.Create()
+                    .WithPath("/slow/400")
+                    .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(400)
+                        .WithBody("return 400")
+                        .WithHeader("Content-Type", "text/plain")
+                );
+            // 4 sec
+            server
+                .Given(Request.Create()
+                    .WithPath("/slow/500")
+                    .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(500)
+                        .WithBody("return 500")
+                        .WithHeader("Content-Type", "text/plain")
+                );
+
+
             server
                 .Given(Request.Create()
                     .UsingMethod("GET")
@@ -621,6 +643,7 @@ namespace WireMock.Net.ConsoleApplication
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { Id = "5bdf076c-5654-4b3e-842c-7caf1fabf8c9" }));
+
             server
                 .Given(Request.Create().WithPath("/random200or505").UsingGet())
                 .RespondWith(Response.Create().WithCallback(request =>
@@ -628,7 +651,11 @@ namespace WireMock.Net.ConsoleApplication
                     int code = new Random().Next(1, 2) == 1 ? 505 : 200;
                     return new ResponseMessage
                     {
-                        BodyData = new BodyData { BodyAsString = "random200or505:" + code, DetectedBodyType = Types.BodyType.String },
+                        BodyData = new BodyData
+                        {
+                            BodyAsString = "random200or505:" + code + ", HeadersFromRequest = " + string.Join(",", request.Headers),
+                            DetectedBodyType = Types.BodyType.String,
+                        },
                         StatusCode = code
                     };
                 }));

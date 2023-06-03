@@ -2,6 +2,7 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -17,6 +18,12 @@ namespace WireMock.Server;
 /// </summary>
 internal class RespondWithAProvider : IRespondWithAProvider
 {
+    private readonly RegistrationCallback _registrationCallback;
+    private readonly IRequestMatcher _requestMatcher;
+    private readonly WireMockServerSettings _settings;
+    private readonly IDateTimeUtils _dateTimeUtils;
+    private readonly bool _saveToFile;
+
     private int _priority;
     private string? _title;
     private string? _description;
@@ -25,19 +32,16 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private string? _nextState;
     private string? _scenario;
     private int _timesInSameState = 1;
-    private readonly RegistrationCallback _registrationCallback;
-    private readonly IRequestMatcher _requestMatcher;
-    private readonly WireMockServerSettings _settings;
-    private readonly IDateTimeUtils _dateTimeUtils;
-    private readonly bool _saveToFile;
-
     private bool? _useWebhookFireAndForget;
+    private double? _probability;
 
     public Guid Guid { get; private set; }
 
     public IWebhook[]? Webhooks { get; private set; }
 
     public ITimeSettings? TimeSettings { get; private set; }
+
+    public object? Data { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -88,8 +92,19 @@ internal class RespondWithAProvider : IRespondWithAProvider
             _timesInSameState,
             Webhooks,
             _useWebhookFireAndForget,
-            TimeSettings);
+            TimeSettings,
+            Data,
+            _probability);
+
         _registrationCallback(mapping, _saveToFile);
+    }
+
+    /// <inheritdoc />
+    [PublicAPI]
+    public IRespondWithAProvider WithData(object data)
+    {
+        Data = data;
+        return this;
     }
 
     /// <inheritdoc />
@@ -268,6 +283,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget)
     {
         _useWebhookFireAndForget = useWebhooksFireAndForget;
+
+        return this;
+    }
+
+    public IRespondWithAProvider WithProbability(double probability)
+    {
+        _probability = Guard.Condition(probability, p => p is >= 0 and <= 1.0);
 
         return this;
     }

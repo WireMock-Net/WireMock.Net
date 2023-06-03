@@ -26,8 +26,13 @@ internal class ProxyMappingConverter
         _dateTimeUtils = Guard.NotNull(dateTimeUtils);
     }
 
-    public IMapping ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
+    public IMapping? ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
+        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
+        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[0];
+        var excludedParams = proxyAndRecordSettings.ExcludedParams ?? new string[0];
+
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request?.GetRequestMessageMatcher<RequestMessagePathMatcher>();
@@ -36,11 +41,6 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-
-        var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
-
-        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
-        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? new string[] { };
 
         var newRequest = Request.Create();
 
@@ -75,12 +75,21 @@ internal class ProxyMappingConverter
         {
             foreach (var paramMatcher in paramMatchers)
             {
-                newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers!.ToArray());
+                if (!excludedParams.Contains(paramMatcher.Key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithParam(paramMatcher.Key, paramMatcher.MatchBehaviour, paramMatcher.Matchers!.ToArray());
+                }
             }
         }
         else
         {
-            requestMessage.Query?.Loop((key, value) => newRequest.WithParam(key, false, value.ToArray()));
+            requestMessage.Query?.Loop((key, value) =>
+            {
+                if (!excludedParams.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    newRequest.WithParam(key, false, value.ToArray());
+                }
+            });
         }
 
         // Cookies
@@ -142,6 +151,7 @@ internal class ProxyMappingConverter
                     break;
 
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     newRequest.WithBody(new ExactMatcher(MatchBehaviour.AcceptOnMatch, true, throwExceptionWhenMatcherFails, MatchOperator.Or, requestMessage.BodyData.BodyAsString!));
                     break;
 
@@ -178,7 +188,9 @@ internal class ProxyMappingConverter
             stateTimes: null,
             webhooks: null,
             useWebhooksFireAndForget: null,
-            timeSettings: null
+            timeSettings: null,
+            data: mapping?.Data,
+            probability: null
         );
     }
 }

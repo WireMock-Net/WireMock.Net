@@ -10,4 +10,6 @@ internal struct TransformModel
     public IRequestMessage request { get; set; }
 
     public IResponseMessage? response { get; set; }
+
+    public object data { get; set; }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Stef.Validation;
 using WireMock.Http;
+using WireMock.Matchers;
 using WireMock.Serialization;
 using WireMock.Settings;
 using WireMock.Util;
@@ -35,7 +37,19 @@ internal class ProxyHelper
         var requiredUri = new Uri(url);
 
         // Create HttpRequestMessage
-        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, url);
+        var replaceSettings = proxyAndRecordSettings.ReplaceSettings;
+        string proxyUrl;
+        if (replaceSettings is not null)
+        {
+            var stringComparison = replaceSettings.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            proxyUrl = url.Replace(replaceSettings.OldValue, replaceSettings.NewValue, stringComparison);
+        }
+        else
+        {
+            proxyUrl = url;
+        }
+
+        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, proxyUrl);
 
         // Call the URL
         var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
@@ -43,16 +57,45 @@ internal class ProxyHelper
         // Create ResponseMessage
         bool deserializeJson = !_settings.DisableJsonBodyParsing.GetValueOrDefault(false);
         bool decompressGzipAndDeflate = !_settings.DisableRequestBodyDecompressing.GetValueOrDefault(false);
+        bool deserializeFormUrlEncoded = !_settings.DisableDeserializeFormUrlEncoded.GetValueOrDefault(false);
 
-        var responseMessage = await HttpResponseMessageHelper.CreateAsync(httpResponseMessage, requiredUri, originalUri, deserializeJson, decompressGzipAndDeflate).ConfigureAwait(false);
+        var responseMessage = await HttpResponseMessageHelper.CreateAsync(
+            httpResponseMessage,
+            requiredUri,
+            originalUri,
+            deserializeJson,
+            decompressGzipAndDeflate,
+            deserializeFormUrlEncoded
+        ).ConfigureAwait(false);
 
         IMapping? newMapping = null;
-        if (HttpStatusRangeParser.IsMatch(proxyAndRecordSettings.SaveMappingForStatusCodePattern, responseMessage.StatusCode) &&
-            (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
+
+        var saveMappingSettings = proxyAndRecordSettings.SaveMappingSettings;
+
+        bool save = true;
+        if (saveMappingSettings != null)
+        {
+            save &= Check(saveMappingSettings.StatusCodePattern,
+                () => saveMappingSettings.StatusCodePattern != null && HttpStatusRangeParser.IsMatch(saveMappingSettings.StatusCodePattern, responseMessage.StatusCode)
+            );
+
+            save &= Check(saveMappingSettings.HttpMethods,
+                () => saveMappingSettings.HttpMethods != null && saveMappingSettings.HttpMethods.Value.Contains(requestMessage.Method, StringComparer.OrdinalIgnoreCase)
+            );
+        }
+
+        if (save && (proxyAndRecordSettings.SaveMapping || proxyAndRecordSettings.SaveMappingToFile))
         {
             newMapping = _proxyMappingConverter.ToMapping(mapping, proxyAndRecordSettings, requestMessage, responseMessage);
         }
 
         return (responseMessage, newMapping);
+    }
+
+    private static bool Check<T>(ProxySaveMappingSetting<T>? saveMappingSetting, Func<bool> action)
+    {
+        var isMatch = saveMappingSetting is null || action();
+        var matchBehaviour = saveMappingSetting?.MatchBehaviour ?? MatchBehaviour.AcceptOnMatch;
+        return isMatch == (matchBehaviour == MatchBehaviour.AcceptOnMatch);
     }
 }

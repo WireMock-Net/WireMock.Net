@@ -9,7 +9,7 @@ namespace WireMock.Util;
 /// <summary>
 /// Port Utility class
 /// </summary>
-public static class PortUtils
+internal static class PortUtils
 {
     private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled);
 

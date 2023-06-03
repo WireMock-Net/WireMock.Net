@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
@@ -37,7 +38,7 @@ public class JsonPathMatcherTests
     public void JsonPathMatcher_IsMatch_ByteArray()
     {
         // Assign
-        var bytes = new byte[0];
+        var bytes = EmptyArray<byte>.Value;
         var matcher = new JsonPathMatcher("");
 
         // Act 

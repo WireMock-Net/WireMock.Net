@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using WireMock.Types;
 
@@ -37,6 +38,11 @@ public interface IBodyData
     /// The body as string, this is defined when BodyAsString or BodyAsJson are not null.
     /// </summary>
     string? BodyAsString { get; set; }
+
+    /// <summary>
+    /// The body as Form UrlEncoded dictionary.
+    /// </summary>
+    IDictionary<string, string>? BodyAsFormUrlEncoded { get; set; }
 
     /// <summary>
     /// The detected body type (detection based on body content).

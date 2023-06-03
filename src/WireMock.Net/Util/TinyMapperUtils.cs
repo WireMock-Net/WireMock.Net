@@ -12,9 +12,11 @@ internal sealed class TinyMapperUtils
     {
         TinyMapper.Bind<ProxyAndRecordSettings, ProxyAndRecordSettingsModel>();
         TinyMapper.Bind<WebProxySettings, WebProxySettingsModel>();
+        TinyMapper.Bind<ProxyUrlReplaceSettings, ProxyUrlReplaceSettingsModel>();
 
         TinyMapper.Bind<ProxyAndRecordSettingsModel, ProxyAndRecordSettings>();
         TinyMapper.Bind<WebProxySettingsModel, WebProxySettings>();
+        TinyMapper.Bind<ProxyUrlReplaceSettingsModel, ProxyUrlReplaceSettings>();
     }
 
     public ProxyAndRecordSettingsModel? Map(ProxyAndRecordSettings? instance)

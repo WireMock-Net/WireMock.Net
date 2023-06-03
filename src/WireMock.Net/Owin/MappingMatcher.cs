@@ -1,18 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WireMock.Extensions;
 using Stef.Validation;
+using WireMock.Extensions;
+using WireMock.Services;
 
 namespace WireMock.Owin;
 
 internal class MappingMatcher : IMappingMatcher
 {
     private readonly IWireMockMiddlewareOptions _options;
+    private readonly IRandomizerDoubleBetween0And1 _randomizerDoubleBetween0And1;
 
-    public MappingMatcher(IWireMockMiddlewareOptions options)
+    public MappingMatcher(IWireMockMiddlewareOptions options, IRandomizerDoubleBetween0And1 randomizerDoubleBetween0And1)
     {
         _options = Guard.NotNull(options);
+        _randomizerDoubleBetween0And1 = Guard.NotNull(randomizerDoubleBetween0And1);
     }
 
     public (MappingMatcherResult? Match, MappingMatcherResult? Partial) FindBestMatch(RequestMessage request)
@@ -21,7 +24,12 @@ internal class MappingMatcher : IMappingMatcher
 
         var possibleMappings = new List<MappingMatcherResult>();
 
-        foreach (var mapping in _options.Mappings.Values.Where(m => m.TimeSettings.IsValid()))
+        var mappings = _options.Mappings.Values
+            .Where(m => m.TimeSettings.IsValid())
+            .Where(m => m.Probability is null || m.Probability <= _randomizerDoubleBetween0And1.Generate())
+            .ToArray();
+
+        foreach (var mapping in mappings)
         {
             try
             {

@@ -32,7 +32,7 @@ internal class SimpleCommandLineParser
             }
             else if (string.IsNullOrEmpty(currentName))
             {
-                Arguments[arg] = new string[0];
+                Arguments[arg] = EmptyArray<string>.Value;
             }
             else
             {

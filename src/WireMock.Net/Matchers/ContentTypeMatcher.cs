@@ -1,6 +1,5 @@
 using System.Net.Http.Headers;
 using AnyOfTypes;
-using JetBrains.Annotations;
 using WireMock.Models;
 
 namespace WireMock.Matchers;

@@ -166,4 +166,22 @@ public interface IRespondWithAProvider
         bool useTransformer = true,
         TransformerType transformerType = TransformerType.Handlebars
     );
+
+    /// <summary>
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
+    /// <param name="data">The data dictionary object.</param>
+    /// <example>
+    /// lookup data "1"
+    /// </example>
+    /// </summary>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithData(object data);
+
+    /// <summary>
+    /// Define the probability when this request should be matched. Value is between 0 and 1.
+    /// </summary>
+    /// <param name="probability">The probability when this request should be matched. Value is between 0 and 1.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithProbability(double probability);
 }

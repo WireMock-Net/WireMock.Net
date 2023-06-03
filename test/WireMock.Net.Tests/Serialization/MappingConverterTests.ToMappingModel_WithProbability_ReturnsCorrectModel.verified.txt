@@ -1,0 +1,11 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {},
+  Response: {},
+  UseWebhooksFireAndForget: false,
+  Probability: 0.4
+}

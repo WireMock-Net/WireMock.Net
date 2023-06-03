@@ -1,24 +1,28 @@
 # WireMock.Net
-A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based [WireMock.org](http://WireMock.org).
+A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based [WireMock](http://WireMock.org).
 
 For more info, see also this WIKI page: [What is WireMock.Net](https://github.com/WireMock-Net/WireMock.Net/wiki/What-Is-WireMock.Net).
 
-## Key Features
+## :star: Key Features
 * HTTP response stubbing, matchable on URL/Path, headers, cookies and body content patterns
 * Library can be used in unit tests and integration tests
 * Runs as a standalone process, as windows service, as Azure/IIS or as docker
-* Configurable via a fluent DotNet API, JSON files and JSON over HTTP
+* Configurable via a fluent C# .NET API, JSON files and JSON over HTTP
 * Record/playback of stubs (proxying)
 * Per-request conditional proxying
 * Stateful behaviour simulation
 * Response templating / transformation using Handlebars and extensions
 * Can be used locally or in CI/CD scenarios
 
-## Info
+## :memo: Blogs
+- [mStack.nl : Generate C# Code from Mapping(s)](https://mstack.nl/blog/20230201-wiremock.net-tocode/)
+
+
+## :computer: Project Info
 | | |
 | --- | --- |
 | ***Project*** | &nbsp; |
-| &nbsp;&nbsp;**Chat** | [![Gitter](https://img.shields.io/gitter/room/wiremock_dotnet/Lobby.svg)](https://gitter.im/wiremock_dotnet/Lobby) |
+| &nbsp;&nbsp;**Chat** | [![Slack](https://badgen.net/badge/icon/slack?icon=slack&label)](https://slack.wiremock.org/) [![Gitter](https://img.shields.io/gitter/room/wiremock_dotnet/Lobby.svg)](https://gitter.im/wiremock_dotnet/Lobby) |
 | &nbsp;&nbsp;**Issues** | [![GitHub issues](https://img.shields.io/github/issues/WireMock-Net/WireMock.Net.svg)](https://github.com/WireMock-Net/WireMock.Net/issues) |
 | | |
 | ***Quality*** | &nbsp; |
@@ -27,7 +31,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**Sonar Bugs** | [![Sonar Bugs](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=bugs)](https://sonarcloud.io/project/issues?id=WireMock-Net_WireMock.Net&resolved=false&types=BUG) [![Sonar Code Smells](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=code_smells)](https://sonarcloud.io/project/issues?id=WireMock-Net_WireMock.Net&resolved=false&types=CODE_SMELL) |
 | &nbsp;&nbsp;**Coverage** | [![Sonar Coverage](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=coverage)](https://sonarcloud.io/component_measures?id=WireMock-Net_WireMock.Net&metric=coverage) [![codecov](https://codecov.io/gh/WireMock-Net/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/WireMock-Net/WireMock.Net)|
 
-### NuGet packages
+### :package: NuGet packages
 
 | | Official | Preview [:information_source:](https://github.com/WireMock-Net/WireMock.Net/wiki/MyGet-preview-versions) |
 | - | - | - |
@@ -41,23 +45,23 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**WireMock.Org.RestClient** | [![NuGet Badge WireMock.Org.RestClient](https://buildstats.info/nuget/WireMock.Org.RestClient)](https://www.nuget.org/packages/WireMock.Org.RestClient) | [![MyGet Badge WireMock.Org.RestClient](https://buildstats.info/myget/wiremock-net/WireMock.Org.RestClient?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Org.RestClient)
 
 
-## Development
+## :memo: Development
 For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
 
-## Stubbing
+## :star: Stubbing
 A core feature of WireMock.Net is the ability to return predefined HTTP responses for requests matching criteria.
 See [Wiki : Stubbing](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing).
 
-## Request Matching
+## :star: Request Matching
 WireMock.Net support advanced request-matching logic, see [Wiki : Request Matching](https://github.com/WireMock-Net/WireMock.Net/wiki/Request-Matching).
 
-## Response Templating
+## :star: Response Templating
 The response which is returned WireMock.Net can be changed using templating. This is described here [Wiki : Response Templating](https://github.com/WireMock-Net/WireMock.Net/wiki/Response-Templating).
 
-## Admin API Reference
+## :star: Admin API Reference
 The WireMock admin API provides functionality to define the mappings via a http interface see [Wiki : Admin API Reference](https://github.com/StefH/WireMock.Net/wiki/Admin-API-Reference).
 
-## Using
+## :star: Using
 WireMock.Net can be used in several ways:
 
 ### UnitTesting

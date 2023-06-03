@@ -44,7 +44,7 @@ public interface IResponseMessage
     /// Gets or sets the status code.
     /// </summary>
     object? StatusCode { get; }
-
+    
     /// <summary>
     /// Adds the header.
     /// </summary>

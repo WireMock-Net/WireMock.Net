@@ -1,33 +1,54 @@
 // This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
+using System.Collections.Generic;
+using JsonConverter.Abstractions;
+using Newtonsoft.Json;
+using Stef.Validation;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Util;
-using Stef.Validation;
 
 namespace WireMock.RequestBuilders;
 
 public partial class Request
 {
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(string, MatchBehaviour)"/>
+    /// <inheritdoc />
     public IRequestBuilder WithBody(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(byte[], MatchBehaviour)"/>
+    /// <inheritdoc />
     public IRequestBuilder WithBody(byte[] body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(object, MatchBehaviour)"/>
+    /// <inheritdoc />
     public IRequestBuilder WithBody(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, body));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBodyAsJson(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        var bodyAsJsonString = JsonConvert.SerializeObject(body);
+        _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, bodyAsJsonString));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBodyAsJson(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        Guard.NotNull(converter);
+
+        var bodyAsJsonString = converter.Serialize(body, options);
+        _requestMatchers.Add(new RequestMessageBodyMatcher(matchBehaviour, bodyAsJsonString));
         return this;
     }
 
@@ -46,39 +67,46 @@ public partial class Request
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{string, bool})"/>
-    public IRequestBuilder WithBody(Func<string, bool> func)
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(Func<string?, bool> func)
     {
-        Guard.NotNull(func, nameof(func));
+        Guard.NotNull(func);
 
         _requestMatchers.Add(new RequestMessageBodyMatcher(func));
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{byte[], bool})"/>
-    public IRequestBuilder WithBody(Func<byte[], bool> func)
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(Func<byte[]?, bool> func)
     {
-        Guard.NotNull(func, nameof(func));
+        Guard.NotNull(func);
 
         _requestMatchers.Add(new RequestMessageBodyMatcher(func));
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{object, bool})"/>
-    public IRequestBuilder WithBody(Func<object, bool> func)
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(Func<object?, bool> func)
     {
-        Guard.NotNull(func, nameof(func));
+        Guard.NotNull(func);
 
         _requestMatchers.Add(new RequestMessageBodyMatcher(func));
         return this;
     }
 
-    /// <inheritdoc cref="IBodyRequestBuilder.WithBody(Func{IBodyData, bool})"/>
-    public IRequestBuilder WithBody(Func<IBodyData, bool> func)
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(Func<IBodyData?, bool> func)
     {
-        Guard.NotNull(func, nameof(func));
+        Guard.NotNull(func);
 
         _requestMatchers.Add(new RequestMessageBodyMatcher(func));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBody(Func<IDictionary<string, string>?, bool> func)
+    {
+        _requestMatchers.Add(new RequestMessageBodyMatcher(Guard.NotNull(func)));
         return this;
     }
 }

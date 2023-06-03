@@ -28,9 +28,28 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// <summary>
     /// Only save request/response to the internal Mappings if the status code is included in this pattern. (Note that SaveMapping must also be set to true.)
     /// The pattern can contain a single value like "200", but also ranges like "2xx", "100,300,600" or "100-299,6xx" are supported.
+    ///
+    /// Deprecated : use SaveMappingSettings.
     /// </summary>
     [PublicAPI]
-    public string SaveMappingForStatusCodePattern { get; set; } = "*";
+    public string SaveMappingForStatusCodePattern
+    {
+        set
+        {
+            if (SaveMappingSettings is null)
+            {
+                SaveMappingSettings = new ProxySaveMappingSettings();
+            }
+
+            SaveMappingSettings.StatusCodePattern = value;
+        }
+    }
+
+    /// <summary>
+    /// Additional SaveMappingSettings.
+    /// </summary>
+    [PublicAPI]
+    public ProxySaveMappingSettings? SaveMappingSettings { get; set; }
 
     /// <summary>
     /// Defines a list from headers which will be excluded from the saved mappings.
@@ -39,10 +58,22 @@ public class ProxyAndRecordSettings : HttpClientSettings
     public string[]? ExcludedHeaders { get; set; }
 
     /// <summary>
+    /// Defines a list of params which will be excluded from the saved mappings.
+    /// </summary>
+    [PublicAPI]
+    public string[]? ExcludedParams { get; set; }
+
+    /// <summary>
     /// Defines a list of cookies which will be excluded from the saved mappings.
     /// </summary>
     [PublicAPI]
     public string[]? ExcludedCookies { get; set; }
+
+    /// <summary>
+    /// Replace Settings
+    /// </summary>
+    [PublicAPI]
+    public ProxyUrlReplaceSettings? ReplaceSettings { get; set; }
 
     /// <summary>
     /// Prefer the Proxy Mapping over the saved Mapping (in case SaveMapping is set to <c>true</c>).

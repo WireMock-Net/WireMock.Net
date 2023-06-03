@@ -60,7 +60,7 @@ namespace WireMock.Owin
         public Task Invoke(IContext ctx)
 #endif
         {
-            if (_options.HandleRequestsSynchronously.GetValueOrDefault(true))
+            if (_options.HandleRequestsSynchronously.GetValueOrDefault(false))
             {
                 lock (_lock)
                 {
@@ -216,7 +216,12 @@ namespace WireMock.Owin
                 {
                     try
                     {
-                        await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
+                        var result = await webhookSender.SendAsync(httpClientForWebhook, mapping, webhookRequest, request, response).ConfigureAwait(false);
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            _options.Logger.Warn($"Sending message to Webhook [{webHookIndex}] from Mapping '{mapping.Guid}' failed. HttpStatusCode: {result.StatusCode} Content: {content}");
+                        }
                     }
                     catch (Exception ex)
                     {

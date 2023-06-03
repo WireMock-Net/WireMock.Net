@@ -1,3 +1,62 @@
+# 1.5.27 (03 June 2023)
+- [#946](https://github.com/WireMock-Net/WireMock.Net/pull/946) - Add warning logging when sending a request to a Webhook does not return status 200 [feature] contributed by [StefH](https://github.com/StefH)
+- [#949](https://github.com/WireMock-Net/WireMock.Net/pull/949) - Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
+- [#928](https://github.com/WireMock-Net/WireMock.Net/issues/928) - TypeLoadException when using WithHeader method. [bug]
+- [#945](https://github.com/WireMock-Net/WireMock.Net/issues/945) - Webhook logging [feature]
+
+# 1.5.26 (25 May 2023)
+- [#938](https://github.com/WireMock-Net/WireMock.Net/pull/938) - Add more unitests for CSharpFormatter utils [test] contributed by [StefH](https://github.com/StefH)
+- [#939](https://github.com/WireMock-Net/WireMock.Net/pull/939) - WireMockMiddleware should use HandleRequestsSynchronously correctly [bug] contributed by [StefH](https://github.com/StefH)
+- [#940](https://github.com/WireMock-Net/WireMock.Net/pull/940) - Code generator improvements contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#942](https://github.com/WireMock-Net/WireMock.Net/pull/942) - Add GetParameter method to IRequestMessage [feature] contributed by [StefH](https://github.com/StefH)
+- [#941](https://github.com/WireMock-Net/WireMock.Net/issues/941) - RequestMessage.GetParameter method missing from IRequestMessage interface [feature]
+
+# 1.5.25 (13 May 2023)
+- [#934](https://github.com/WireMock-Net/WireMock.Net/pull/934) - Code generator improvements [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+
+# 1.5.24 (07 May 2023)
+- [#926](https://github.com/WireMock-Net/WireMock.Net/pull/926) - Fix C# mapping code generator for header names [bug] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#927](https://github.com/WireMock-Net/WireMock.Net/pull/927) - Enrich generated code with status code [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+- [#930](https://github.com/WireMock-Net/WireMock.Net/pull/930) - Update C# mapping code generator for WithStatusCode [feature] contributed by [StefH](https://github.com/StefH)
+- [#931](https://github.com/WireMock-Net/WireMock.Net/pull/931) - Add property 'IsStartedWithAdminInterface' to 'IWireMockServer' [feature] contributed by [StefH](https://github.com/StefH)
+- [#933](https://github.com/WireMock-Net/WireMock.Net/pull/933) - C# code generator improvements [feature] contributed by [cezarypiatek](https://github.com/cezarypiatek)
+
+# 1.5.23 (23 April 2023)
+- [#922](https://github.com/WireMock-Net/WireMock.Net/pull/922) - Add WithProbability [feature] contributed by [StefH](https://github.com/StefH)
+- [#924](https://github.com/WireMock-Net/WireMock.Net/pull/924) - Allow removal of prefix when proxying to another server (#630) [feature] contributed by [nudejustin](https://github.com/nudejustin)
+- [#925](https://github.com/WireMock-Net/WireMock.Net/pull/925) - Add IgnoreCase option to ProxyUrlReplaceSettings [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.5.22 (08 April 2023)
+- [#914](https://github.com/WireMock-Net/WireMock.Net/pull/914) - #912 add excluded params to proxy mapping [feature] contributed by [walidhaidarii](https://github.com/walidhaidarii)
+- [#916](https://github.com/WireMock-Net/WireMock.Net/pull/916) - Include WireMockOpenApiParser project [feature] contributed by [StefH](https://github.com/StefH)
+- [#912](https://github.com/WireMock-Net/WireMock.Net/issues/912) - Feature: adding excluded params to proxy and records settings [feature]
+
+# 1.5.21 (22 March 2023)
+- [#908](https://github.com/WireMock-Net/WireMock.Net/pull/908) - RequestBuilder : add WithBodyAsJson and WithBody (with IJsonConverter) [feature] contributed by [StefH](https://github.com/StefH)
+- [#911](https://github.com/WireMock-Net/WireMock.Net/pull/911) - Fixed QueryStringParser for UrlEncoded values [bug] contributed by [StefH](https://github.com/StefH)
+- [#901](https://github.com/WireMock-Net/WireMock.Net/issues/901) - Matching one form-urlencoded value [feature]
+
+# 1.5.20 (19 March 2023)
+- [#905](https://github.com/WireMock-Net/WireMock.Net/pull/905) - Add DeserializeFormUrl Encoded to the settings [feature] contributed by [StefH](https://github.com/StefH)
+- [#907](https://github.com/WireMock-Net/WireMock.Net/pull/907) - Fix issue with application/x-www-form-urlencoded and ExactMatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#906](https://github.com/WireMock-Net/WireMock.Net/issues/906) - Upgrade to 1.5.19 breaks a form data test [bug]
+
+# 1.5.19 (17 March 2023)
+- [#903](https://github.com/WireMock-Net/WireMock.Net/pull/903) - Add WithBody with IDictionary (form-urlencoded values) [feature] contributed by [StefH](https://github.com/StefH)
+- [#904](https://github.com/WireMock-Net/WireMock.Net/pull/904) - Update Handlebars.Net.Helpers to 2.3.15 [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.5.18 (09 March 2023)
+- [#893](https://github.com/WireMock-Net/WireMock.Net/pull/893) - Add 'Data' to response which can be used during transforming the response [feature] contributed by [StefH](https://github.com/StefH)
+- [#896](https://github.com/WireMock-Net/WireMock.Net/pull/896) - Bump Microsoft.Owin from 2.0.2 to 4.2.2 in /examples/WireMock.Net.Service [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#900](https://github.com/WireMock-Net/WireMock.Net/pull/900) - ProxySettings : Add logic to not save some requests depending on HttpMethods  [feature] contributed by [StefH](https://github.com/StefH)
+- [#897](https://github.com/WireMock-Net/WireMock.Net/issues/897) - WebHostBuilder.ConfigureServices method not found when using nunit3testadapter 4.4.0 [bug]
+- [#899](https://github.com/WireMock-Net/WireMock.Net/issues/899) - Ignore OPTIONS request when using proxyandrecord [feature]
+
+# 1.5.17 (25 February 2023)
+- [#881](https://github.com/WireMock-Net/WireMock.Net/pull/881) - Add WithBodyAsJson builder method with accepts a Func [feature] contributed by [StefH](https://github.com/StefH)
+- [#882](https://github.com/WireMock-Net/WireMock.Net/pull/882) - Add example code to test HTTP Status 400 and 500 [test] contributed by [StefH](https://github.com/StefH)
+- [#890](https://github.com/WireMock-Net/WireMock.Net/pull/890) - AdminApiMappingBuilder [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.16 (01 February 2023)
 - [#880](https://github.com/WireMock-Net/WireMock.Net/pull/880) - Add `WithProxy(string proxyUrl, X509Certificate2 certificate)` [feature] contributed by [StefH](https://github.com/StefH)
 - [#879](https://github.com/WireMock-Net/WireMock.Net/issues/879) - Possibility to pass a X509Certificate2 to WithProxy() or specifiy certificate loading options [feature]
@@ -651,8 +710,8 @@
 - [#263](https://github.com/WireMock-Net/WireMock.Net/issues/263) - Content-Type multipart/form-data is not serialized in proxy and recording mode [bug]
 
 # 1.0.11.0 (30 March 2019)
-- [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [psypilat](https://github.com/psypilat)
-- [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [psypilat](https://github.com/psypilat)
+- [#261](https://github.com/WireMock-Net/WireMock.Net/pull/261) - Fix BodyAsJson transform bug in ResponseMessageTransformer contributed by [ghost](https://github.com/ghost)
+- [#262](https://github.com/WireMock-Net/WireMock.Net/pull/262) - Add ProvideResponse_WithJsonBodyAndTransform test contributed by [ghost](https://github.com/ghost)
 
 # 1.0.10.0 (27 March 2019)
 - [#260](https://github.com/WireMock-Net/WireMock.Net/pull/260) - Fix Response.Delay property serialization [bug] contributed by [StefH](https://github.com/StefH)

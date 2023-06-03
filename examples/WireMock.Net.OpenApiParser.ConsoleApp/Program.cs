@@ -17,7 +17,7 @@ class Program
 
     private static void RunMockServerWithDynamicExampleGeneration()
     {
-        //Run your mocking framework specifieing youur Example Values generator class.
+        // Run your mocking framework specifying your Example Values generator class.
         var serverCustomer_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Customer_V2.0.json"), "http://localhost:8090/", true, new DynamicDataGeneration(), Types.ExampleValueType.Value, Types.ExampleValueType.Value);
         Console.WriteLine("Press any key to stop the servers");
 
@@ -27,15 +27,15 @@ class Program
 
     private static void RunOthersOpenApiParserExample()
     {
-        var serverOpenAPIExamples = Run.RunServer(Path.Combine(Folder, "openAPIExamples.yaml"), "https://localhost:9091/");
-        var serverPetstore_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.json"), "https://localhost:9092/");
-        var serverPetstore_V2_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.yaml"), "https://localhost:9093/");
-        var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "https://localhost:9094/");
-        var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "https://localhost:9095/");
-        var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "https://localhost:9096/");
-        var file_errorYaml = Run.RunServer(Path.Combine(Folder, "file_error.yaml"), "https://localhost:9097/");
-        var file_petJson = Run.RunServer(Path.Combine(Folder, "pet.json"), "https://localhost:9098/");
-        var refsYaml = Run.RunServer(Path.Combine(Folder, "refs.yaml"), "https://localhost:9099/");
+        var serverOpenAPIExamples = Run.RunServer(Path.Combine(Folder, "openAPIExamples.yaml"), "http://localhost:9091/");
+        var serverPetstore_V2_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.json"), "http://localhost:9092/");
+        var serverPetstore_V2_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V2.0.yaml"), "http://localhost:9093/");
+        var serverPetstore_V300_yaml = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.0.yaml"), "http://localhost:9094/");
+        var serverPetstore_V302_json = Run.RunServer(Path.Combine(Folder, "Swagger_Petstore_V3.0.2.json"), "http://localhost:9095/");
+        var testopenapifile_json = Run.RunServer(Path.Combine(Folder, "testopenapifile.json"), "http://localhost:9096/");
+        var file_errorYaml = Run.RunServer(Path.Combine(Folder, "file_error.yaml"), "http://localhost:9097/");
+        var file_petJson = Run.RunServer(Path.Combine(Folder, "pet.json"), "http://localhost:9098/");
+        var refsYaml = Run.RunServer(Path.Combine(Folder, "refs.yaml"), "http://localhost:9099/");
 
         testopenapifile_json
             .Given(Request.Create().WithPath("/x").UsingGet())

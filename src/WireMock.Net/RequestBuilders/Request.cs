@@ -63,5 +63,4 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     {
         return _requestMatchers.OfType<T>().FirstOrDefault(func);
     }
-  
 }

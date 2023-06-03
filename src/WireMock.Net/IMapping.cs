@@ -120,7 +120,21 @@ public interface IMapping
     /// <summary>
     /// Use Fire and Forget for the defined webhook(s). [Optional]
     /// </summary>
-    public bool? UseWebhooksFireAndForget { get; set; }
+    bool? UseWebhooksFireAndForget { get; }
+
+    /// <summary>
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
+    /// <example>
+    /// lookup data "1"
+    /// </example>
+    /// </summary>
+    object? Data { get; }
+
+    /// <summary> 
+    /// The probability when this request should be matched. Value is between 0 and 1. [Optional]
+    /// </summary>
+    double? Probability { get; }
 
     /// <summary>
     /// ProvideResponseAsync

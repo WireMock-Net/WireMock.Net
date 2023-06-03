@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Constants;
@@ -14,7 +16,9 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
+using WireMock.Util;
 
+using static WireMock.Util.CSharpFormatter;
 namespace WireMock.Serialization;
 
 internal class MappingConverter
@@ -33,7 +37,7 @@ internal class MappingConverter
         settings ??= new MappingConverterSettings();
 
         var request = (Request)mapping.RequestMatcher;
-        var response = (Response) mapping.Provider;
+        var response = (Response)mapping.Provider;
 
         var clientIPMatcher = request.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
@@ -103,10 +107,27 @@ internal class MappingConverter
 
         if (bodyMatcher is { Matchers: { } })
         {
-            var wildcardMatcher = bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault();
-            if (wildcardMatcher is { } && wildcardMatcher.GetPatterns().Any())
+            if (bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
+            }
+            else if (bodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
+            {
+                sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
+                                            value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
+                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
+                                            throwException: {ToCSharpBooleanLiteral(jsonPartialMatcher.ThrowException)},
+                                            regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
+                                         ))");
+            }
+            else if (bodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
+            {
+                sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
+                                            value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
+                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
+                                            throwException: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.ThrowException)},
+                                            regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
+                                         ))");
             }
         }
 
@@ -115,23 +136,50 @@ internal class MappingConverter
         // Guid
         sb.AppendLine($"    .WithGuid(\"{mapping.Guid}\")");
 
+        if (mapping.Probability != null)
+        {
+            sb.AppendLine($"    .WithProbability({mapping.Probability.Value.ToString(CultureInfoUtils.CultureInfoEnUS)})");
+        }
+
         // Response
         sb.AppendLine("    .RespondWith(Response.Create()");
+
+        if (response.ResponseMessage.StatusCode is int or string)
+        {
+            sb.AppendLine($"        .WithStatusCode({JsonConvert.SerializeObject(response.ResponseMessage.StatusCode)})");
+        }
+        else if (response.ResponseMessage.StatusCode is HttpStatusCode httpStatusCode)
+        {
+            sb.AppendLine($"        .WithStatusCode({(int)httpStatusCode})");
+        }
 
         if (response.ResponseMessage.Headers is { })
         {
             foreach (var header in response.ResponseMessage.Headers)
             {
-                sb.AppendLine($"        .WithHeader(\"{header.Key})\", {ToValueArguments(header.Value.ToArray())})");
+                sb.AppendLine($"        .WithHeader(\"{header.Key}\", {ToValueArguments(header.Value.ToArray())})");
             }
         }
 
-        if (response.ResponseMessage.BodyData is { })
+        if (response.ResponseMessage.BodyData is { } bodyData)
         {
             switch (response.ResponseMessage.BodyData.DetectedBodyType)
             {
                 case BodyType.String:
-                    sb.AppendLine($"        .WithBody(\"{response.ResponseMessage.BodyData.BodyAsString}\")");
+                case BodyType.FormUrlEncoded:
+                    sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyData.BodyAsString)})");
+                    break;
+                case BodyType.Json:
+                    if (bodyData.BodyAsJson is string bodyStringValue)
+                    {
+                        sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyStringValue)})");
+                    }
+                    else if(bodyData.BodyAsJson is {} jsonBody)
+                    {
+                        var anonymousObjectDefinition = ConvertToAnonymousObjectDefinition(jsonBody);
+                        sb.AppendLine($"        .WithBodyAsJson({anonymousObjectDefinition})");
+                    }
+
                     break;
             }
         }
@@ -140,7 +188,7 @@ internal class MappingConverter
         {
             sb.AppendLine($"        .WithDelay({response.Delay.Value.TotalMilliseconds})");
         }
-        else if (response.MinimumDelayMilliseconds > 0 && response.MaximumDelayMilliseconds > 0)
+        else if (response is { MinimumDelayMilliseconds: > 0, MaximumDelayMilliseconds: > 0 })
         {
             sb.AppendLine($"        .WithRandomDelay({response.MinimumDelayMilliseconds}, {response.MaximumDelayMilliseconds})");
         }
@@ -181,6 +229,8 @@ internal class MappingConverter
             Scenario = mapping.Scenario,
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
+            Data = mapping.Data,
+            Probability = mapping.Probability,
             Request = new RequestModel
             {
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
@@ -324,6 +374,7 @@ internal class MappingConverter
                 switch (response.ResponseMessage.BodyData?.DetectedBodyType)
                 {
                     case BodyType.String:
+                    case BodyType.FormUrlEncoded:
                         mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
                         break;
 
@@ -371,7 +422,7 @@ internal class MappingConverter
 
     private static string GetString(IStringMatcher stringMatcher)
     {
-        return stringMatcher.GetPatterns().Select(p => $"\"{p.GetPattern()}\"").First();
+        return stringMatcher.GetPatterns().Select(p => ToCSharpStringLiteral(p.GetPattern())).First();
     }
 
     private static string[] GetStringArray(IReadOnlyList<IStringMatcher> stringMatchers)
@@ -424,7 +475,7 @@ internal class MappingConverter
 
     private static string ToValueArguments(string[]? values, string defaultValue = "")
     {
-        return values is { } ? string.Join(", ", values.Select(v => $"\"{v}\"")) : $"\"{defaultValue}\"";
+        return values is { } ? string.Join(", ", values.Select(ToCSharpStringLiteral)) : ToCSharpStringLiteral(defaultValue);
     }
 
     private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
@@ -455,4 +506,6 @@ internal class MappingConverter
 
         return newDictionary;
     }
+
+
 }

@@ -84,4 +84,18 @@ public class MappingModel
     /// Fire and forget for webhooks.
     /// </summary>
     public bool? UseWebhooksFireAndForget { get; set; }
+    
+    /// <summary>
+    /// Data Object which can be used when WithTransformer is used.
+    /// e.g. lookup an path in this object using
+    /// <example>
+    /// lookup data "1"
+    /// </example>
+    /// </summary>
+    public object? Data { get; set; }
+
+    /// <summary> 
+    /// The probability when this request should be matched. Value is between 0 and 1. [Optional]
+    /// </summary>
+    public double? Probability { get; set; }
 }

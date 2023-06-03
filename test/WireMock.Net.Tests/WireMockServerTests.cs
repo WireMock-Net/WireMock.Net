@@ -35,6 +35,32 @@ public partial class WireMockServerTests
     }
 
     [Fact]
+    public void WireMockServer_Start()
+    {
+        // Act
+        var server = WireMockServer.Start();
+
+        // Assert
+        server.IsStarted.Should().BeTrue();
+        server.IsStartedWithAdminInterface.Should().BeFalse();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public void WireMockServer_StartWithAdminInterface()
+    {
+        // Act
+        var server = WireMockServer.StartWithAdminInterface();
+
+        // Assert
+        server.IsStarted.Should().BeTrue();
+        server.IsStartedWithAdminInterface.Should().BeTrue();
+
+        server.Stop();
+    }
+
+    [Fact]
     public async Task WireMockServer_Should_Reset_LogEntries()
     {
         // Arrange

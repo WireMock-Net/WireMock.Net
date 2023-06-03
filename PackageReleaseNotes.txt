@@ -1,5 +1,7 @@
-# 1.5.16 (01 February 2023)
-- #880 Add `WithProxy(string proxyUrl, X509Certificate2 certificate)` [feature]
-- #879 Possibility to pass a X509Certificate2 to WithProxy() or specifiy certificate loading options [feature]
+# 1.5.27 (03 June 2023)
+- #946 Add warning logging when sending a request to a Webhook does not return status 200 [feature]
+- #949 Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature]
+- #928 TypeLoadException when using WithHeader method. [bug]
+- #945 Webhook logging [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

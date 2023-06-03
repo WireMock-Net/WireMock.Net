@@ -44,6 +44,7 @@ internal class LogEntryMapper
             switch (logEntry.RequestMessage.BodyData.DetectedBodyType)
             {
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     logRequestModel.Body = logEntry.RequestMessage.BodyData.BodyAsString;
                     break;
 
@@ -120,6 +121,7 @@ internal class LogEntryMapper
         switch (logEntry.ResponseMessage.BodyData!.DetectedBodyType)
         {
             case BodyType.String:
+            case BodyType.FormUrlEncoded:
                 if (!string.IsNullOrEmpty(logEntry.ResponseMessage.BodyData.IsFuncUsed) && _options.DoNotSaveDynamicResponseInLogEntry == true)
                 {
                     logResponseModel.Body = logEntry.ResponseMessage.BodyData.IsFuncUsed;
@@ -141,6 +143,9 @@ internal class LogEntryMapper
             case BodyType.File:
                 logResponseModel.BodyAsFile = logEntry.ResponseMessage.BodyData.BodyAsFile;
                 logResponseModel.BodyAsFileIsCached = logEntry.ResponseMessage.BodyData.BodyAsFileIsCached;
+                break;
+
+            default:
                 break;
         }
     }

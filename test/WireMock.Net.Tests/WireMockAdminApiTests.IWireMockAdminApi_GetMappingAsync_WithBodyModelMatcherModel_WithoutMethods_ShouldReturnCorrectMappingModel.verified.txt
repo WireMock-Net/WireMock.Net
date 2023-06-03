@@ -21,6 +21,5 @@
   },
   Response: {
     Body: world
-  },
-  UseWebhooksFireAndForget: false
+  }
 }

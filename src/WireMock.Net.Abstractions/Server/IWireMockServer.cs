@@ -18,6 +18,11 @@ public interface IWireMockServer : IDisposable
     bool IsStarted { get; }
 
     /// <summary>
+    /// Gets a value indicating whether this server is started with the admin interface enabled.
+    /// </summary>
+    bool IsStartedWithAdminInterface { get; }
+
+    /// <summary>
     /// Gets the request logs.
     /// </summary>
     IEnumerable<ILogEntry> LogEntries { get; }

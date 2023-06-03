@@ -62,11 +62,11 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.FaultType)
             {
                 case FaultType.EMPTY_RESPONSE:
-                    bytes = IsFault(responseMessage) ? new byte[0] : GetNormalBody(responseMessage);
+                    bytes = IsFault(responseMessage) ? EmptyArray<byte>.Value : GetNormalBody(responseMessage);
                     break;
 
                 case FaultType.MALFORMED_RESPONSE_CHUNK:
-                    bytes = GetNormalBody(responseMessage) ?? new byte[0];
+                    bytes = GetNormalBody(responseMessage) ?? EmptyArray<byte>.Value;
                     if (IsFault(responseMessage))
                     {
                         bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();
@@ -87,7 +87,7 @@ namespace WireMock.Owin.Mappers
 
                 case { } typeAsString when typeAsString == typeof(string):
                     // Note: this case will also match on null 
-                    int.TryParse(responseMessage.StatusCode as string, out int result);
+                    int.TryParse(responseMessage.StatusCode as string, out var result);
                     response.StatusCode = MapStatusCode(result);
                     break;
 
@@ -130,6 +130,7 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
                 case BodyType.String:
+                case BodyType.FormUrlEncoded:
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString!);
 
                 case BodyType.Json:
