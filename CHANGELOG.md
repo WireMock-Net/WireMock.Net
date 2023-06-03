@@ -1,3 +1,9 @@
+# 1.5.27 (03 June 2023)
+- [#946](https://github.com/WireMock-Net/WireMock.Net/pull/946) - Add warning logging when sending a request to a Webhook does not return status 200 [feature] contributed by [StefH](https://github.com/StefH)
+- [#949](https://github.com/WireMock-Net/WireMock.Net/pull/949) - Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
+- [#928](https://github.com/WireMock-Net/WireMock.Net/issues/928) - TypeLoadException when using WithHeader method. [bug]
+- [#945](https://github.com/WireMock-Net/WireMock.Net/issues/945) - Webhook logging [feature]
+
 # 1.5.26 (25 May 2023)
 - [#938](https://github.com/WireMock-Net/WireMock.Net/pull/938) - Add more unitests for CSharpFormatter utils [test] contributed by [StefH](https://github.com/StefH)
 - [#939](https://github.com/WireMock-Net/WireMock.Net/pull/939) - WireMockMiddleware should use HandleRequestsSynchronously correctly [bug] contributed by [StefH](https://github.com/StefH)
