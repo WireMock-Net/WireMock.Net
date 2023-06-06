@@ -1,7 +1,9 @@
 using NFluent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using WireMock.Http;
 using WireMock.Models;
 using WireMock.Types;
@@ -159,5 +161,30 @@ public class HttpRequestMessageHelperTests
 
         // Assert
         Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=Ascii");
+    }
+
+    [Theory]
+    [InlineData("HEAD", true)]
+    [InlineData("GET", false)]
+    [InlineData("PUT", false)]
+    [InlineData("POST", false)]
+    [InlineData("DELETE", false)]
+    [InlineData("TRACE", false)]
+    [InlineData("OPTIONS", false)]
+    [InlineData("CONNECT", false)]
+    [InlineData("PATCH", false)]
+    public void HttpRequestMessageHelper_Create_ContentLengthAllowedForMethod(string method, bool resultShouldBe)
+    {
+        // Arrange
+        var key = "Content-Length";
+        var value = 1234;
+        var headers = new Dictionary<string, string[]> { { key, new[] { "1234" } } };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), method, ClientIp, null, headers);
+
+        // Act
+        var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+        // Assert
+        message.Content?.Headers.ContentLength.Should().Be(resultShouldBe ? value : null);
     }
 }
