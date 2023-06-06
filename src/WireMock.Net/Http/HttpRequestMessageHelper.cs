@@ -31,8 +31,6 @@ internal static class HttpRequestMessageHelper
             MediaTypeHeaderValue.TryParse(value, out contentType);
         }
 
-
-
         switch (requestMessage.BodyData?.DetectedBodyType)
         {
             case BodyType.Bytes:
