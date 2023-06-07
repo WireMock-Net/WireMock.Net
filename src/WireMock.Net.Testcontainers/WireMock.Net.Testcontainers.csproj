@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <version>0.0.1-preview-01</version>
-        <Description>A fluent Docker testcontainer builder for WireMock.Net</Description>
+        <version>0.0.1-preview-02</version>
+        <Description>A fluent testcontainer builder for the Docker version of WireMock.Net</Description>
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageTags>wiremock;docker;testcontainer;testcontainers</PackageTags>
@@ -14,7 +14,6 @@
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <LangVersion>10</LangVersion>
-        <UserSecretsId>299888a2-d06f-4e57-aa6d-7f8dc76bf961</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -26,7 +25,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.8" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
         <PackageReference Include="Testcontainers" Version="3.2.0" />
         <PackageReference Include="JetBrains.Annotations" VersionOverride="2022.3.1" PrivateAssets="All" Version="2022.3.1" />

@@ -10,7 +10,7 @@ internal class Program
     {
         var container = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
-            .WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings")
+            .WithMappings(@"../WireMock.Net.Console.NET6/__admin/mappings")
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
             .WithCleanUp(true)
