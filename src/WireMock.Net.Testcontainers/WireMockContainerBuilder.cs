@@ -52,7 +52,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
-    /// Set the admin username. and password for the container (basic authentication).
+    /// Set the admin username and password for the container (basic authentication).
     /// </summary>
     /// <param name="username">The admin username.</param>
     /// <param name="password">The admin password.</param>
