@@ -1,3 +1,7 @@
+# 1.5.28 (11 June 2023)
+- [#948](https://github.com/WireMock-Net/WireMock.Net/pull/948) - WireMock.Net.Testcontainers [feature] contributed by [StefH](https://github.com/StefH)
+- [#951](https://github.com/WireMock-Net/WireMock.Net/pull/951) - Allow setting the Content-Length header for a HTTP method HEAD [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.27 (03 June 2023)
 - [#946](https://github.com/WireMock-Net/WireMock.Net/pull/946) - Add warning logging when sending a request to a Webhook does not return status 200 [feature] contributed by [StefH](https://github.com/StefH)
 - [#949](https://github.com/WireMock-Net/WireMock.Net/pull/949) - Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)

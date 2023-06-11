@@ -1,7 +1,5 @@
-# 1.5.27 (03 June 2023)
-- #946 Add warning logging when sending a request to a Webhook does not return status 200 [feature]
-- #949 Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature]
-- #928 TypeLoadException when using WithHeader method. [bug]
-- #945 Webhook logging [feature]
+# 1.5.28 (11 June 2023)
+- #948 WireMock.Net.Testcontainers [feature]
+- #951 Allow setting the Content-Length header for a HTTP method HEAD [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
