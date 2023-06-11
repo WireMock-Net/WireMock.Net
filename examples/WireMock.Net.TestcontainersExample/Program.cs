@@ -35,6 +35,9 @@ internal class Program
 
         await container.StopAsync();
 
-        var sql = new MsSqlBuilder().Build();
+        var sql = new MsSqlBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .Build();
     }
 }
