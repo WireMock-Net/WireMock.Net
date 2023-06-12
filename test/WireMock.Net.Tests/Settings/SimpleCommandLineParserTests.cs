@@ -150,7 +150,7 @@ public class SimpleSettingsParserTests
         var env = new Dictionary<string, string>
         {
             { "WireMockServerSettings__test1", "42" },
-            { "WireMockServerSettings__test2", "55" }
+            { "WireMockServerSETTINGS__TEST2", "55" }
         };
         _parser.Parse(new string[0], env);
 

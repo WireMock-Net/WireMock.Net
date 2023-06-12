@@ -53,7 +53,7 @@ internal class SimpleSettingsParser
         {
             foreach (string key in environment.Keys)
             {
-                if (key.StartsWith(Prefix))
+                if (key.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
                 {
                     Arguments[key.Substring(PrefixLength)] = environment[key].ToString().Split(' ').ToArray();
                 }
