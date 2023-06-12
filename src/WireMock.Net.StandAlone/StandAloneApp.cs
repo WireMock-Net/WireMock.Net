@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -63,7 +64,7 @@ public static class StandAloneApp
     {
         Guard.NotNull(args, nameof(args));
 
-        if (WireMockServerSettingsParser.TryParseArguments(args, out var settings, logger))
+        if (WireMockServerSettingsParser.TryParseArguments(args, Environment.GetEnvironmentVariables(), out var settings, logger))
         {
             settings.Logger?.Info("Version [{0}]", Version);
             settings.Logger?.Debug("Server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
