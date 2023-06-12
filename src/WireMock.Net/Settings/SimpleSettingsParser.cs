@@ -1,17 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace WireMock.Settings;
 
 // Based on http://blog.gauffin.org/2014/12/simple-command-line-parser/
-internal class SimpleCommandLineParser
+internal class SimpleSettingsParser
 {
     private const string Sigil = "--";
+    private const string Prefix = $"{nameof(WireMockServerSettings)}__";
+    private static readonly int PrefixLength = Prefix.Length;
 
     private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
 
-    public void Parse(string[] arguments)
+    public void Parse(string[] arguments, IDictionary? environment = null)
     {
         string currentName = string.Empty;
 
@@ -43,6 +46,18 @@ internal class SimpleCommandLineParser
         if (!string.IsNullOrEmpty(currentName))
         {
             Arguments[currentName] = values.ToArray();
+        }
+
+        // Now also parse environment
+        if (environment != null)
+        {
+            foreach (string key in environment.Keys)
+            {
+                if (key.StartsWith(Prefix))
+                {
+                    Arguments[key.Substring(PrefixLength)] = environment[key].ToString().Split(' ').ToArray();
+                }
+            }
         }
     }
 
