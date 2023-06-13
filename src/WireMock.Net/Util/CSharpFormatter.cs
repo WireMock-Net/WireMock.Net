@@ -138,7 +138,7 @@ internal static class CSharpFormatter
             return "\"\"";
         }
 
-        if (value.Contains("\n"))
+        if (value.Contains('\n'))
         {
             var escapedValue = value?.Replace("\"", "\"\"") ?? string.Empty;
             return $"@\"{escapedValue}\"";
