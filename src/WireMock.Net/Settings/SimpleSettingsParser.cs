@@ -101,7 +101,16 @@ internal class SimpleSettingsParser
         return Contains(name);
     }
 
-    public int? GetIntValue(string name, int? defaultValue = null)
+    public int? GetIntValue(string name)
+    {
+        return GetValue<int?>(name, values =>
+        {
+            var value = values.FirstOrDefault();
+            return !string.IsNullOrEmpty(value) ? int.Parse(value) : null;
+        }, null);
+    }
+
+    public int GetIntValue(string name, int defaultValue)
     {
         return GetValue(name, values =>
         {
