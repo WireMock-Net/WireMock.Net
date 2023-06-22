@@ -211,6 +211,36 @@ public class WireMockAssertionsTests : IDisposable
     }
 
     [Fact]
+    public async Task HaveReceivedACall_WithHeader_ShouldCheckAllRequests()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+        using var client = server.CreateClient();
+
+        // Act 1
+        await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        {
+            Headers =
+            {
+                Authorization = new AuthenticationHeaderValue("Bearer", "invalidToken")
+            }
+        });
+
+        // Act 2
+        await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        {
+            Headers =
+            {
+                Authorization = new AuthenticationHeaderValue("Bearer", "validToken")
+            }
+        });
+
+        // Assert
+        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer invalidToken");
+        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer validToken");
+    }
+
+    [Fact]
     public async Task HaveReceivedACall_AtUrl_WhenACallWasMadeToUrl_Should_BeOK()
     {
         await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
