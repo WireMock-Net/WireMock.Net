@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using FluentAssertions;
 using NFluent;
 using WireMock.Settings;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.Settings;
@@ -18,17 +20,23 @@ public class SimpleSettingsParserTests
     public void SimpleCommandLineParser_Parse_Arguments()
     {
         // Assign
-        _parser.Parse(new[] { "--test1", "one", "--test2", "two", "--test3", "three" });
+        _parser.Parse(new[] { "--test1", "one", "--test2", "2", "--test3", "3", "--test4", "true", "--test5", "Https" });
 
         // Act
-        string? value1 = _parser.GetStringValue("test1");
-        string? value2 = _parser.GetStringValue("test2");
-        string? value3 = _parser.GetStringValue("test3");
+        string? stringValue = _parser.GetStringValue("test1");
+        int? intOptional = _parser.GetIntValue("test2");
+        int intWithDefault = _parser.GetIntValue("test3", 42);
+        bool? boolWithDefault = _parser.GetBoolValue("test4");
+        HostingScheme? enumOptional = _parser.GetEnumValue<HostingScheme>("test5");
+        HostingScheme enumWithDefault = _parser.GetEnumValue("test99", HostingScheme.HttpAndHttps);
 
         // Assert
-        Check.That(value1).IsEqualTo("one");
-        Check.That(value2).IsEqualTo("two");
-        Check.That(value3).IsEqualTo("three");
+        stringValue.Should().Be("one");
+        intOptional.Should().Be(2);
+        intWithDefault.Should().Be(3);
+        boolWithDefault.Should().Be(true);
+        enumOptional.Should().Be(HostingScheme.Https);
+        enumWithDefault.Should().Be(HostingScheme.HttpAndHttps);
     }
 
     [Fact]
