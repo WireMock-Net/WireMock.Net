@@ -29,7 +29,7 @@ static class Program
 
         XmlConfigurator.Configure(LogRepository, new FileInfo("log4net.config"));
 
-        if (!WireMockServerSettingsParser.TryParseArguments(args, out var settings, new WireMockLog4NetLogger()))
+        if (!WireMockServerSettingsParser.TryParseArguments(args, Environment.GetEnvironmentVariables(), out var settings, new WireMockLog4NetLogger()))
         {
             return;
         }

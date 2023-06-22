@@ -1,17 +1,21 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using WireMock.Extensions;
 
 namespace WireMock.Settings;
 
 // Based on http://blog.gauffin.org/2014/12/simple-command-line-parser/
-internal class SimpleCommandLineParser
+internal class SimpleSettingsParser
 {
     private const string Sigil = "--";
+    private const string Prefix = $"{nameof(WireMockServerSettings)}__";
+    private static readonly int PrefixLength = Prefix.Length;
 
     private IDictionary<string, string[]> Arguments { get; } = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
 
-    public void Parse(string[] arguments)
+    public void Parse(string[] arguments, IDictionary? environment = null)
     {
         string currentName = string.Empty;
 
@@ -43,6 +47,18 @@ internal class SimpleCommandLineParser
         if (!string.IsNullOrEmpty(currentName))
         {
             Arguments[currentName] = values.ToArray();
+        }
+
+        // Now also parse environment
+        if (environment != null)
+        {
+            foreach (string key in environment.Keys)
+            {
+                if (key.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase) && environment.TryGetStringValue(key, out var value))
+                {
+                    Arguments[key.Substring(PrefixLength)] = value.Split(' ').ToArray();
+                }
+            }
         }
     }
 
@@ -85,7 +101,16 @@ internal class SimpleCommandLineParser
         return Contains(name);
     }
 
-    public int? GetIntValue(string name, int? defaultValue = null)
+    public int? GetIntValue(string name)
+    {
+        return GetValue<int?>(name, values =>
+        {
+            var value = values.FirstOrDefault();
+            return !string.IsNullOrEmpty(value) ? int.Parse(value) : null;
+        }, null);
+    }
+
+    public int GetIntValue(string name, int defaultValue)
     {
         return GetValue(name, values =>
         {

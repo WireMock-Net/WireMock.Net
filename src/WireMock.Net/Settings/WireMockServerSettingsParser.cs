@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -18,16 +19,16 @@ public static class WireMockServerSettingsParser
     /// Parse commandline arguments into WireMockServerSettings.
     /// </summary>
     /// <param name="args">The commandline arguments</param>
+    /// <param name="environment">The environment settings (optional)</param>
     /// <param name="logger">The logger (optional, can be null)</param>
     /// <param name="settings">The parsed settings</param>
     [PublicAPI]
-    public static bool TryParseArguments(string[] args, [NotNullWhen(true)] out WireMockServerSettings? settings,
-        IWireMockLogger? logger = null)
+    public static bool TryParseArguments(string[] args, IDictionary? environment, [NotNullWhen(true)] out WireMockServerSettings? settings, IWireMockLogger? logger = null)
     {
         Guard.HasNoNulls(args);
 
-        var parser = new SimpleCommandLineParser();
-        parser.Parse(args);
+        var parser = new SimpleSettingsParser();
+        parser.Parse(args, environment);
 
         if (parser.GetBoolSwitchValue("help"))
         {
@@ -55,6 +56,7 @@ public static class WireMockServerSettingsParser
             RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
             SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
             StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
+            StartTimeout = parser.GetIntValue(nameof(WireMockServerSettings.StartTimeout), WireMockServerSettings.DefaultStartTimeout),
             ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
             WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
@@ -79,8 +81,7 @@ public static class WireMockServerSettingsParser
         return true;
     }
 
-    private static void ParseLoggerSettings(WireMockServerSettings settings, IWireMockLogger? logger,
-        SimpleCommandLineParser parser)
+    private static void ParseLoggerSettings(WireMockServerSettings settings, IWireMockLogger? logger, SimpleSettingsParser parser)
     {
         var loggerType = parser.GetStringValue("WireMockLogger");
         switch (loggerType)
@@ -103,7 +104,7 @@ public static class WireMockServerSettingsParser
         }
     }
 
-    private static void ParseProxyAndRecordSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    private static void ParseProxyAndRecordSettings(WireMockServerSettings settings, SimpleSettingsParser parser)
     {
         var proxyUrl = parser.GetStringValue("ProxyURL") ?? parser.GetStringValue("ProxyUrl");
         if (!string.IsNullOrEmpty(proxyUrl))
@@ -135,7 +136,7 @@ public static class WireMockServerSettingsParser
         }
     }
 
-    private static void ParsePortSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    private static void ParsePortSettings(WireMockServerSettings settings, SimpleSettingsParser parser)
     {
         if (parser.Contains(nameof(WireMockServerSettings.Port)))
         {
@@ -147,7 +148,7 @@ public static class WireMockServerSettingsParser
         }
     }
 
-    private static void ParseCertificateSettings(WireMockServerSettings settings, SimpleCommandLineParser parser)
+    private static void ParseCertificateSettings(WireMockServerSettings settings, SimpleSettingsParser parser)
     {
         var certificateSettings = new WireMockCertificateSettings
         {
@@ -163,7 +164,7 @@ public static class WireMockServerSettingsParser
         }
     }
 
-    private static void ParseWebProxyAddressSettings(ProxyAndRecordSettings settings, SimpleCommandLineParser parser)
+    private static void ParseWebProxyAddressSettings(ProxyAndRecordSettings settings, SimpleSettingsParser parser)
     {
         string? proxyAddress = parser.GetStringValue("WebProxyAddress");
         if (!string.IsNullOrEmpty(proxyAddress))
@@ -177,7 +178,7 @@ public static class WireMockServerSettingsParser
         }
     }
 
-    private static void ParseProxyUrlReplaceSettings(ProxyAndRecordSettings settings, SimpleCommandLineParser parser)
+    private static void ParseProxyUrlReplaceSettings(ProxyAndRecordSettings settings, SimpleSettingsParser parser)
     {
         var proxyUrlReplaceOldValue = parser.GetStringValue("ProxyUrlReplaceOldValue");
         var proxyUrlReplaceNewValue = parser.GetStringValue("ProxyUrlReplaceNewValue");
