@@ -25,7 +25,7 @@ public static class StandAloneApp
     [PublicAPI]
     public static WireMockServer Start(WireMockServerSettings settings)
     {
-        Guard.NotNull(settings, nameof(settings));
+        Guard.NotNull(settings);
 
         var server = WireMockServer.Start(settings);
 
@@ -43,7 +43,7 @@ public static class StandAloneApp
     [PublicAPI]
     public static WireMockServer Start(string[] args, IWireMockLogger? logger = null)
     {
-        Guard.NotNull(args, nameof(args));
+        Guard.NotNull(args);
 
         if (TryStart(args, out var server, logger))
         {
@@ -62,7 +62,7 @@ public static class StandAloneApp
     [PublicAPI]
     public static bool TryStart(string[] args, [NotNullWhen(true)] out WireMockServer? server, IWireMockLogger? logger = null)
     {
-        Guard.NotNull(args, nameof(args));
+        Guard.NotNull(args);
 
         if (WireMockServerSettingsParser.TryParseArguments(args, Environment.GetEnvironmentVariables(), out var settings, logger))
         {

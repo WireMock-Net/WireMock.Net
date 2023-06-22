@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using WireMock.Extensions;
 
 namespace WireMock.Settings;
 
@@ -53,9 +54,9 @@ internal class SimpleSettingsParser
         {
             foreach (string key in environment.Keys)
             {
-                if (key.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+                if (key.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase) && environment.TryGetStringValue(key, out var value))
                 {
-                    Arguments[key.Substring(PrefixLength)] = environment[key].ToString().Split(' ').ToArray();
+                    Arguments[key.Substring(PrefixLength)] = value.Split(' ').ToArray();
                 }
             }
         }
