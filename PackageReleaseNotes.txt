@@ -1,5 +1,6 @@
-# 1.5.28 (11 June 2023)
-- #948 WireMock.Net.Testcontainers [feature]
-- #951 Allow setting the Content-Length header for a HTTP method HEAD [feature]
+# 1.5.29 (22 June 2023)
+- #954 Support setting WireMockServerSettings via Environment [feature]
+- #955 Fix some SonarCloud issues [refactor]
+- #953 How to use environment variable [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
