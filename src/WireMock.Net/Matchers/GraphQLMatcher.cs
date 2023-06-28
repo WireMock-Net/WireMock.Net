@@ -18,14 +18,13 @@ public class GraphQLMatcher : IStringMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
-    private readonly Lazy<ISchema> _schema;
+    private readonly ISchema _schema;
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <inheritdoc />
     public bool ThrowException { get; }
-
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
@@ -42,25 +41,25 @@ public class GraphQLMatcher : IStringMatcher
         MatchOperator = matchOperator;
 
         var patterns = new List<AnyOf<string, StringPattern>>();
-        _schema = new Lazy<ISchema>(() =>
+        switch (schema.CurrentType)
         {
-            switch (schema.CurrentType)
-            {
-                case AnyOfType.First:
-                    patterns.Add(schema.First);
-                    return BuildSchema(schema);
+            case AnyOfType.First:
+                patterns.Add(schema.First);
+                _schema = BuildSchema(schema);
+                break;
 
-                case AnyOfType.Second:
-                    patterns.Add(schema.Second);
-                    return BuildSchema(schema.Second.Pattern); // TODO : check if that is correct
+            case AnyOfType.Second:
+                patterns.Add(schema.Second);
+                _schema = BuildSchema(schema.Second.Pattern); // TODO : check if that is correct
+                break;
 
-                case AnyOfType.Third:
-                    return schema.Third;
+            case AnyOfType.Third:
+                _schema = schema.Third;
+                break;
 
-                default:
-                    throw new NotSupportedException();
-            }
-        });
+            default:
+                throw new NotSupportedException();
+        }
         _patterns = patterns.ToArray();
     }
 
@@ -71,11 +70,11 @@ public class GraphQLMatcher : IStringMatcher
 
         try
         {
-            if (_schema.Value.MakeExecutable().ExecuteAsync(input!).GetAwaiter().GetResult() is not QueryResult queryResult)
+            if (_schema.MakeExecutable().ExecuteAsync(input!).GetAwaiter().GetResult() is not QueryResult queryResult)
             {
                 throw new GraphQLException("Invalid GraphQL execution result.");
             }
-            
+
             if (queryResult.Errors == null || queryResult.Errors.Count == 0)
             {
                 match = MatchScores.Perfect;
@@ -90,7 +89,6 @@ public class GraphQLMatcher : IStringMatcher
 
                 throw new AggregateException(exceptions);
             }
-            
         }
         catch
         {
@@ -102,7 +100,7 @@ public class GraphQLMatcher : IStringMatcher
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
     }
-    
+
     /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
@@ -113,7 +111,7 @@ public class GraphQLMatcher : IStringMatcher
     public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc cref="IMatcher.Name"/>
-    public string Name => "GrapQLMatcher";
+    public string Name => nameof(GraphQLMatcher);
 
     private static ISchema BuildSchema(string schema)
     {

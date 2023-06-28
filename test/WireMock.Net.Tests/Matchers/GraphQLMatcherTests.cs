@@ -1,7 +1,8 @@
 #if !(NET451 || NET452 || NET46 || NET461 || NETSTANDARD1_3)
+using System;
 using FluentAssertions;
-using Newtonsoft.Json.Linq;
-using NFluent;
+using HotChocolate;
+using HotChocolate.Language;
 using WireMock.Matchers;
 using Xunit;
 
@@ -40,7 +41,7 @@ public class GraphQLMatcherTests
   }";
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_CorrectQuery_IsMatch_Positive()
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectQuery_IsMatch()
     {
         // Arrange
         var input = @"
@@ -59,7 +60,7 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_CorrectMutation_IsMatch_Positive()
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectMutation_IsMatch()
     {
         // Arrange
         var input = @"mutation {
@@ -79,7 +80,7 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQuery_IsMatch_Positive()
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQuery_IsMismatch()
     {
         // Arrange
         var input = @"
@@ -99,22 +100,14 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_InvalidSchema_And_CorrectQuery_IsMatch_Negative()
+    public void GraphQLMatcher_For_InvalidSchema_ThrowsSyntaxException()
     {
-        // Arrange
-        var input = @"
-{
-  students {
-    fullName
-    id
-  }
-}";
         // Act
-        var matcher = new GraphQLMatcher("in va lid");
-        var result = matcher.IsMatch(input);
+        // ReSharper disable once ObjectCreationAsStatement
+        Action action = () => new GraphQLMatcher("in va lid");
 
         // Assert
-        result.Should().Be(MatchScores.Mismatch);
+        action.Should().Throw<SyntaxException>();
     }
 }
 #endif
