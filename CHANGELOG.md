@@ -1,3 +1,10 @@
+# 1.5.30 (28 June 2023)
+- [#959](https://github.com/WireMock-Net/WireMock.Net/pull/959) - Fixed logic for FluentAssertions WithHeader [bug] contributed by [StefH](https://github.com/StefH)
+- [#961](https://github.com/WireMock-Net/WireMock.Net/pull/961) - Add unit-test for Param MatcherModel LinqMatcher [test] contributed by [StefH](https://github.com/StefH)
+- [#962](https://github.com/WireMock-Net/WireMock.Net/pull/962) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#963](https://github.com/WireMock-Net/WireMock.Net/pull/963) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#958](https://github.com/WireMock-Net/WireMock.Net/issues/958) - [FluentAssertions] Should().HaveReceivedACall().WithHeader() only checks the first header with the matching key. [bug]
+
 # 1.5.29 (22 June 2023)
 - [#954](https://github.com/WireMock-Net/WireMock.Net/pull/954) - Support setting WireMockServerSettings via Environment [feature] contributed by [StefH](https://github.com/StefH)
 - [#955](https://github.com/WireMock-Net/WireMock.Net/pull/955) - Fix some SonarCloud issues [refactor] contributed by [StefH](https://github.com/StefH)

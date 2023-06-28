@@ -25,7 +25,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Util\JsonUtilsTests.cs" />
+        <Compile Remove="Util\JsonUtilsTests.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -63,8 +63,6 @@
         </PackageReference>
 
         <PackageReference Include="Moq" Version="4.17.2" />
-
-        <!--<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.1" />-->
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -104,10 +102,10 @@
 
     <ItemGroup>
         <None Update="OpenApiParser\*.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="OpenApiParser\*.yml">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
