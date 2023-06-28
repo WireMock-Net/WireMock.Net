@@ -14,7 +14,7 @@ namespace WireMock.Matchers;
 /// GrapQLMatcher Schema Matcher
 /// </summary>
 /// <inheritdoc cref="IStringMatcher"/>
-public class GrapQLMatcher : IStringMatcher
+public class GraphQLMatcher : IStringMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
@@ -34,7 +34,7 @@ public class GrapQLMatcher : IStringMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    public GrapQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour, bool throwException = false, MatchOperator matchOperator = MatchOperator.Or)
+    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, bool throwException = false, MatchOperator matchOperator = MatchOperator.Or)
     {
         Guard.NotNull(schema);
         MatchBehaviour = matchBehaviour;
