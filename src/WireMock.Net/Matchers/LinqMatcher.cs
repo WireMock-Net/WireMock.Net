@@ -69,7 +69,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         MatchOperator = matchOperator;
     }
 
-    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
+    /// <inheritdoc />
     public double IsMatch(string? input)
     {
         double match = MatchScores.Mismatch;
@@ -95,7 +95,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
+    /// <inheritdoc />
     public double IsMatch(object? input)
     {
         double match = MatchScores.Mismatch;
@@ -110,41 +110,15 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
             jArray = new JArray { JToken.FromObject(input) };
         }
 
-        //enumerable = jArray.ToDynamicClassArray();
-
-        //JObject value;
-        //switch (input)
-        //{
-        //    case JObject valueAsJObject:
-        //        value = valueAsJObject;
-        //        break;
-
-        //    case { } valueAsObject:
-        //        value = JObject.FromObject(valueAsObject);
-        //        break;
-
-        //    default:
-        //        return MatchScores.Mismatch;
-        //}
-
         // Convert a single object to a Queryable JObject-list with 1 entry.
-        //var queryable1 = new[] { value }.AsQueryable();
         var queryable = jArray.ToDynamicClassArray().AsQueryable();
 
         try
         {
-            // Generate the DynamicLinq select statement.
-            //string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
-
-            // Execute DynamicLinq Select statement.
-            //var queryable2 = queryable1.Select(dynamicSelect);
-
-            // Use the Any(...) method to check if the result matches.
-
             var patternsAsStringArray = _patterns.Select(p => p.GetPattern()).ToArray();
             var scores = patternsAsStringArray.Select(p => queryable.Any(p)).ToArray();
 
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
+            match = MatchScores.ToScore(scores, MatchOperator);
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
@@ -159,7 +133,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
@@ -168,6 +142,6 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => "LinqMatcher";
 }
