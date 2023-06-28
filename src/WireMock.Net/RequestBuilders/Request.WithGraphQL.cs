@@ -11,4 +11,13 @@ public partial class Request
         _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
         return this;
     }
+
+#if GRAPHQL
+    /// <inheritdoc />
+    public IRequestBuilder WithGraphQLSchema(HotChocolate.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
+        return this;
+    }
+#endif
 }

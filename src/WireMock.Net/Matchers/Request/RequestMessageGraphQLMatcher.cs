@@ -23,12 +23,23 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="body">The body.</param>
-    public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, string body) :
-        this(CreateMatcherArray(matchBehaviour, body))
+    /// <param name="schema">The schema.</param>
+    public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, string schema) :
+        this(CreateMatcherArray(matchBehaviour, schema))
     {
     }
 
+#if GRAPHQL
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="schema">The schema.</param>
+    public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, HotChocolate.ISchema schema) :
+        this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, Models.StringPattern, HotChocolate.ISchema>(schema)))
+    {
+    }
+#endif
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
     /// </summary>
@@ -82,12 +93,15 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
         return MatchScores.ToScore(matchersResult, MatchOperator);
     }
 
-    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, string body)
-    {
 #if GRAPHQL
-        return new[] { new GraphQLMatcher(body, matchBehaviour) }.Cast<IMatcher>().ToArray();
-#else
-        throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#endif
+    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, AnyOfTypes.AnyOf<string, Models.StringPattern, HotChocolate.ISchema> schema)
+    {
+        return new[] { new GraphQLMatcher(schema, matchBehaviour) }.Cast<IMatcher>().ToArray();
     }
+#else
+    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, object schema)
+    {
+        throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+    }
+#endif
 }
