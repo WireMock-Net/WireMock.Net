@@ -1,5 +1,6 @@
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 
 namespace WireMock.RequestBuilders;
 

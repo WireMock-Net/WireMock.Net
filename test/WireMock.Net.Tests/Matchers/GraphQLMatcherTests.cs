@@ -56,6 +56,8 @@ public class GraphQLMatcherTests
 
         // Assert
         result.Should().Be(MatchScores.Perfect);
+
+        matcher.GetPatterns().Should().Contain(TestSchema);
     }
 
     [Fact]
