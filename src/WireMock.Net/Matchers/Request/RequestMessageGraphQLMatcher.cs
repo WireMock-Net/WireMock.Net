@@ -84,7 +84,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
 
     private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, string body)
     {
-#if !(NET451 || NET452 || NET46 || NET461 || NETSTANDARD1_3)
+#if GRAPHQL
         return new[] { new GraphQLMatcher(body, matchBehaviour) }.Cast<IMatcher>().ToArray();
 #else
         throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");

@@ -46,7 +46,8 @@ internal class MappingConverter
         var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
-        var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
 
         var sb = new StringBuilder();
 
@@ -105,13 +106,22 @@ internal class MappingConverter
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
 
-        if (bodyMatcher is { Matchers: { } })
+#if GRAPHQL
+        if (requestMessageGraphQLMatcher is { Matchers: { } })
         {
-            if (bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
+            if (requestMessageGraphQLMatcher.Matchers.OfType<GraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
+            {
+                sb.AppendLine($"        .WithGraphQLSchema({GetString(graphQLMatcher)})");
+            }
+        } else
+#endif
+        if (requestMessageBodyMatcher is { Matchers: { } })
+        {
+            if (requestMessageBodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
             }
-            else if (bodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
+            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
             {
                 sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
@@ -120,7 +130,7 @@ internal class MappingConverter
                                             regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
                                          ))");
             }
-            else if (bodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
+            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
             {
                 sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
@@ -216,6 +226,7 @@ internal class MappingConverter
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -301,7 +312,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? new IWebhook[0];
+        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? EmptyArray<IWebhook>.Value;
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
@@ -311,18 +322,20 @@ internal class MappingConverter
             mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
         }
 
-        if (bodyMatcher?.Matchers != null)
+        var graphQLOrBodyMatchers = graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
+        var matchOperator = graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
+        if (graphQLOrBodyMatchers != null && matchOperator != null)
         {
             mappingModel.Request.Body = new BodyModel();
 
-            if (bodyMatcher.Matchers.Length == 1)
+            if (graphQLOrBodyMatchers.Length == 1)
             {
-                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatcher.Matchers[0]);
+                mappingModel.Request.Body.Matcher = _mapper.Map(graphQLOrBodyMatchers[0]);
             }
-            else if (bodyMatcher.Matchers.Length > 1)
+            else if (graphQLOrBodyMatchers.Length > 1)
             {
-                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatcher.Matchers);
-                mappingModel.Request.Body.MatchOperator = bodyMatcher.MatchOperator.ToString();
+                mappingModel.Request.Body.Matchers = _mapper.Map(graphQLOrBodyMatchers);
+                mappingModel.Request.Body.MatchOperator = matchOperator.ToString();
             }
         }
 

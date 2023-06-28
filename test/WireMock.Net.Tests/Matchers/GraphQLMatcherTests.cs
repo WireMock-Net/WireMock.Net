@@ -1,7 +1,6 @@
-#if !(NET451 || NET452 || NET46 || NET461 || NETSTANDARD1_3)
+#if GRAPHQL
 using System;
 using FluentAssertions;
-using HotChocolate;
 using HotChocolate.Language;
 using WireMock.Matchers;
 using Xunit;

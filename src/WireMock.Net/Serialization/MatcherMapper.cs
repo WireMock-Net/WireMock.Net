@@ -71,7 +71,10 @@ internal class MatcherMapper
 
             case nameof(ExactObjectMatcher):
                 return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
-
+#if GRAPHQL
+            case nameof(GraphQLMatcher):
+                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
+#endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended, matchOperator);
 

@@ -50,6 +50,10 @@
         <DefineConstants>$(DefineConstants);OPENAPIPARSER</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
+        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
         <!--<Compile Remove="Matchers\Request\IRequestMatcher.cs" />-->
