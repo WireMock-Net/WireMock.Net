@@ -42,6 +42,36 @@ namespace WireMock.Net.ConsoleApplication
 
     public static class MainApp
     {
+        private const string TestSchema = @"
+  input MessageInput {
+    content: String
+    author: String
+  }
+
+  type Message {
+    id: ID!
+    content: String
+    author: String
+  }
+
+  type Mutation {
+    createMessage(input: MessageInput): Message
+    updateMessage(id: ID!, input: MessageInput): Message
+  }
+
+  type Query {
+   greeting:String
+   students:[Student]
+   studentById(id:ID!):Student
+  }
+
+  type Student {
+   id:ID!
+   firstName:String
+   lastName:String
+   fullName:String 
+  }";
+
         public static void Run()
         {
             var mappingBuilder = new MappingBuilder();
@@ -136,6 +166,16 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/graphql")
+                    .UsingPost()
+                    .WithGraphQLSchema(TestSchema)
+                )
+                .RespondWith(Response.Create()
+                    .WithBody("GraphQL is ok")
+                );
 
             // 400 ms
             server
