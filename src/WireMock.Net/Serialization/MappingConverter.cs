@@ -113,7 +113,8 @@ internal class MappingConverter
             {
                 sb.AppendLine($"        .WithGraphQLSchema({GetString(graphQLMatcher)})");
             }
-        } else
+        }
+        else
 #endif
         if (requestMessageBodyMatcher is { Matchers: { } })
         {

@@ -70,13 +70,10 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     private static double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
     {
         // Check if the matcher is a IStringMatcher
-        if (matcher is IStringMatcher stringMatcher)
+        // If the body is a Json or a String, use the BodyAsString to match on.
+        if (matcher is IStringMatcher stringMatcher && requestMessage.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
         {
-            // If the body is a Json or a String, use the BodyAsString to match on.
-            if (requestMessage.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
-            {
-                return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
-            }
+            return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
         }
 
         return MatchScores.Mismatch;

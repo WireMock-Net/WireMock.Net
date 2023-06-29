@@ -1,8 +1,10 @@
 #if GRAPHQL
 using System;
 using FluentAssertions;
+using HotChocolate;
 using HotChocolate.Language;
 using WireMock.Matchers;
+using WireMock.Models;
 using Xunit;
 
 namespace WireMock.Net.Tests.Matchers;
@@ -98,6 +100,71 @@ public class GraphQLMatcherTests
 
         // Assert
         result.Should().Be(MatchScores.Mismatch);
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchemaAsStringPattern_And_CorrectQuery_IsMatch()
+    {
+        // Arrange
+        var input = @"
+{
+  students {
+    fullName
+    id
+  }
+}";
+        var schema = new StringPattern
+        {
+            Pattern = TestSchema
+        };
+
+        // Act
+        var matcher = new GraphQLMatcher(schema);
+        var result = matcher.IsMatch(input);
+
+        // Assert
+        result.Should().Be(MatchScores.Perfect);
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWith1Error_WithThrowExceptionTrue_ThrowsException()
+    {
+        // Arrange
+        var input = @"
+{
+  students {
+    fullName
+    id
+    abc
+  }
+}";
+        // Act
+        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
+        Action action = () => matcher.IsMatch(input);
+
+        // Assert
+        action.Should().Throw<GraphQLException>();
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWith2Errors_WithThrowExceptionTrue_ThrowsException()
+    {
+        // Arrange
+        var input = @"
+{
+  aaa
+  students {
+    fullName
+    id
+    abc
+  }
+}";
+        // Act
+        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
+        Action action = () => matcher.IsMatch(input);
+
+        // Assert
+        action.Should().Throw<AggregateException>().Which.InnerExceptions.Count.Should().Be(2);
     }
 
     [Fact]

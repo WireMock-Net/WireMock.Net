@@ -50,7 +50,7 @@ public class GraphQLMatcher : IStringMatcher
 
             case AnyOfType.Second:
                 patterns.Add(schema.Second);
-                _schema = BuildSchema(schema.Second.Pattern); // TODO : check if that is correct
+                _schema = BuildSchema(schema.Second.Pattern);
                 break;
 
             case AnyOfType.Third:
