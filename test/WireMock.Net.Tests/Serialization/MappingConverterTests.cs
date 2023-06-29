@@ -260,7 +260,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithDelayAsMilliSeconds_ReturnsCorrectModel()
+    public Task ToMappingModel_WithDelayAsMilliseconds_ReturnsCorrectModel()
     {
         // Assign
         var delay = 1000;
@@ -343,5 +343,38 @@ public partial class MappingConverterTests
         // Verify
         return Verifier.Verify(model);
     }
+
+#if GRAPHQL
+    [Fact]
+    public Task ToMappingModel_WithGraphQLSchema_ReturnsCorrectModel()
+    {
+        // Assign
+        var schema = @"
+  type Query {
+   greeting:String
+   students:[Student]
+   studentById(id:ID!):Student
+  }
+
+  type Student {
+   id:ID!
+   firstName:String
+   lastName:String
+   fullName:String 
+  }";
+        var request = Request.Create().WithGraphQLSchema(schema);
+        var response = Response.Create();
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+#endif
 }
 #endif
