@@ -1,8 +1,7 @@
 #if GRAPHQL
 using System;
 using FluentAssertions;
-using HotChocolate;
-using HotChocolate.Language;
+using GraphQLParser.Exceptions;
 using WireMock.Matchers;
 using WireMock.Models;
 using Xunit;
@@ -45,13 +44,8 @@ public class GraphQLMatcherTests
     public void GraphQLMatcher_For_ValidSchema_And_CorrectQuery_IsMatch()
     {
         // Arrange
-        var input = @"
-{
-  students {
-    fullName
-    id
-  }
-}";
+        var input = "{\"query\":\"{\\r\\n students {\\r\\n fullName\\r\\n id\\r\\n }\\r\\n}\"}";
+
         // Act
         var matcher = new GraphQLMatcher(TestSchema);
         var result = matcher.IsMatch(input);
@@ -63,16 +57,14 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_CorrectMutation_IsMatch()
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQLQuery_IsMatch()
     {
         // Arrange
-        var input = @"mutation {
-  createMessage(input: {
-    author: ""stef"",
-    content: ""test 123"",
-  }) {
-    id
-  }
+        var input = @"{
+	""query"": ""query ($sid: ID!)\r\n{\r\n studentById(id: $sid) {\r\n fullName\r\n id\r\n }\r\n}"",
+	""variables"": {
+		""sid"": ""1""
+	}
 }";
         // Act
         var matcher = new GraphQLMatcher(TestSchema);
@@ -80,6 +72,8 @@ public class GraphQLMatcherTests
 
         // Assert
         result.Should().Be(MatchScores.Perfect);
+
+        matcher.GetPatterns().Should().Contain(TestSchema);
     }
 
     [Fact]
@@ -106,13 +100,7 @@ public class GraphQLMatcherTests
     public void GraphQLMatcher_For_ValidSchemaAsStringPattern_And_CorrectQuery_IsMatch()
     {
         // Arrange
-        var input = @"
-{
-  students {
-    fullName
-    id
-  }
-}";
+        var input = "{\"query\":\"{\\r\\n students {\\r\\n fullName\\r\\n id\\r\\n }\\r\\n}\"}";
         var schema = new StringPattern
         {
             Pattern = TestSchema
@@ -127,55 +115,28 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWith1Error_WithThrowExceptionTrue_ThrowsException()
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWithError_WithThrowExceptionTrue_ThrowsException()
     {
         // Arrange
-        var input = @"
-{
-  students {
-    fullName
-    id
-    abc
-  }
-}";
+        var input = "{\"query\":\"{\\r\\n studentsX {\\r\\n fullName\\r\\n X\\r\\n }\\r\\n}\"}";
+
         // Act
         var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
         Action action = () => matcher.IsMatch(input);
 
         // Assert
-        action.Should().Throw<GraphQLException>();
+        action.Should().Throw<Exception>();
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWith2Errors_WithThrowExceptionTrue_ThrowsException()
-    {
-        // Arrange
-        var input = @"
-{
-  aaa
-  students {
-    fullName
-    id
-    abc
-  }
-}";
-        // Act
-        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
-        Action action = () => matcher.IsMatch(input);
-
-        // Assert
-        action.Should().Throw<AggregateException>().Which.InnerExceptions.Count.Should().Be(2);
-    }
-
-    [Fact]
-    public void GraphQLMatcher_For_InvalidSchema_ThrowsSyntaxException()
+    public void GraphQLMatcher_For_InvalidSchema_ThrowsGraphQLSyntaxErrorException()
     {
         // Act
         // ReSharper disable once ObjectCreationAsStatement
         Action action = () => new GraphQLMatcher("in va lid");
 
         // Assert
-        action.Should().Throw<SyntaxException>();
+        action.Should().Throw<GraphQLSyntaxErrorException>();
     }
 }
 #endif

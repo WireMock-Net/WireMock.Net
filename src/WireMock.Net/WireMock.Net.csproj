@@ -56,7 +56,6 @@
 
     <ItemGroup>
         <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
-        <!--<Compile Remove="Matchers\Request\IRequestMatcher.cs" />-->
     </ItemGroup>
 
     <ItemGroup>
@@ -159,7 +158,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="HotChocolate.Execution" Version="13.2.1" />
+        <PackageReference Include="GraphQL" Version="7.5.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">

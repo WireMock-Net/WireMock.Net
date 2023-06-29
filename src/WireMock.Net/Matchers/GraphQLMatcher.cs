@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnyOfTypes;
-using HotChocolate;
-using HotChocolate.Execution;
+using GraphQL;
+using GraphQL.Types;
+using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Models;
 
@@ -16,6 +17,15 @@ namespace WireMock.Matchers;
 /// <inheritdoc cref="IStringMatcher"/>
 public class GraphQLMatcher : IStringMatcher
 {
+    private class GraphQLRequest
+    {
+        //[JsonPropertyName("query")]
+        public string? Query { get; set; }
+
+        //[JsonPropertyName("variables")]
+        public Dictionary<string, object?>? Variables { get; set; }
+    }
+
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     private readonly ISchema _schema;
@@ -70,10 +80,20 @@ public class GraphQLMatcher : IStringMatcher
 
         try
         {
-            if (_schema.MakeExecutable().ExecuteAsync(input!).GetAwaiter().GetResult() is not QueryResult queryResult)
+            var graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input!)!;
+
+            var queryResult = new DocumentExecuter().ExecuteAsync(_ =>
             {
-                throw new GraphQLException("Invalid GraphQL execution result.");
-            }
+                _.ThrowOnUnhandledException = true;
+
+                _.Schema = _schema;
+                _.Query = graphQLRequest.Query;
+
+                if (graphQLRequest.Variables != null)
+                {
+                    _.Variables = new Inputs(graphQLRequest.Variables);
+                }
+            }).GetAwaiter().GetResult();
 
             if (queryResult.Errors == null || queryResult.Errors.Count == 0)
             {
@@ -81,7 +101,7 @@ public class GraphQLMatcher : IStringMatcher
             }
             else
             {
-                var exceptions = queryResult.Errors.Select(e => e.Exception ?? new GraphQLException(e.Message)).ToArray();
+                var exceptions = queryResult.Errors.OfType<Exception>().ToArray();
                 if (exceptions.Length == 1)
                 {
                     throw exceptions[0];
@@ -115,10 +135,7 @@ public class GraphQLMatcher : IStringMatcher
 
     private static ISchema BuildSchema(string schema)
     {
-        return SchemaBuilder.New()
-            .AddDocumentFromString(schema)
-            .Use(next => next.Invoke)
-            .Create();
+        return Schema.For(schema);
     }
 }
 #endif

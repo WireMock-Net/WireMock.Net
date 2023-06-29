@@ -1,11 +1,11 @@
 #if GRAPHQL
-using Xunit;
-using FluentAssertions;
 using System.Collections.Generic;
+using FluentAssertions;
+using GraphQL.Types;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
-using HotChocolate;
+using Xunit;
 
 namespace WireMock.Net.Tests.RequestBuilders;
 
@@ -57,10 +57,7 @@ public class RequestBuilderWithGraphQLSchemaTests
     public void RequestBuilder_WithGraphQLSchema_SchemaAsISchema()
     {
         // Arrange
-        var schema = SchemaBuilder.New()
-            .AddDocumentFromString(TestSchema)
-            .Use(next => next.Invoke)
-            .Create();
+        var schema = Schema.For(TestSchema);
 
         // Act
         var requestBuilder = (Request)Request.Create().WithGraphQLSchema(schema);

@@ -1,6 +1,5 @@
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.Models;
 
 namespace WireMock.RequestBuilders;
 
@@ -15,7 +14,7 @@ public partial class Request
 
 #if GRAPHQL
     /// <inheritdoc />
-    public IRequestBuilder WithGraphQLSchema(HotChocolate.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    public IRequestBuilder WithGraphQLSchema(GraphQL.Types.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
         return this;

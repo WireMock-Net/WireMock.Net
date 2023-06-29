@@ -35,8 +35,8 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="schema">The schema.</param>
-    public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, HotChocolate.ISchema schema) :
-        this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, Models.StringPattern, HotChocolate.ISchema>(schema)))
+    public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, GraphQL.Types.ISchema schema) :
+        this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, Models.StringPattern, GraphQL.Types.ISchema>(schema)))
     {
     }
 #endif
@@ -91,7 +91,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     }
 
 #if GRAPHQL
-    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, AnyOfTypes.AnyOf<string, Models.StringPattern, HotChocolate.ISchema> schema)
+    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, AnyOfTypes.AnyOf<string, Models.StringPattern, GraphQL.Types.ISchema> schema)
     {
         return new[] { new GraphQLMatcher(schema, matchBehaviour) }.Cast<IMatcher>().ToArray();
     }

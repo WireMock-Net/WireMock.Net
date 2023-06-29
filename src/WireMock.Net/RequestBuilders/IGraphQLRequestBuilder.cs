@@ -23,6 +23,6 @@ public interface IGraphQLRequestBuilder : IRequestMatcher
     /// <param name="schema">The GraphQL schema.</param>
     /// <param name="matchBehaviour">The match behaviour. (Default is <c>MatchBehaviour.AcceptOnMatch</c>).</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithGraphQLSchema(HotChocolate.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
+    IRequestBuilder WithGraphQLSchema(GraphQL.Types.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 #endif
 }
