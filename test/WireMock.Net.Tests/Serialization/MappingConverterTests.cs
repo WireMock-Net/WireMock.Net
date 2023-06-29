@@ -260,7 +260,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithDelayAsMilliseconds_ReturnsCorrectModel()
+    public Task ToMappingModel_WithDelay_ReturnsCorrectModel()
     {
         // Assign
         var delay = 1000;
