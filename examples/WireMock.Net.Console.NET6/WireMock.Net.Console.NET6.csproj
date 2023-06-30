@@ -29,7 +29,6 @@
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
