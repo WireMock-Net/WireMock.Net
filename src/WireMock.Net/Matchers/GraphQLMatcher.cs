@@ -19,10 +19,8 @@ public class GraphQLMatcher : IStringMatcher
 {
     private class GraphQLRequest
     {
-        //[JsonPropertyName("query")]
         public string? Query { get; set; }
 
-        //[JsonPropertyName("variables")]
         public Dictionary<string, object?>? Variables { get; set; }
     }
 
@@ -82,7 +80,7 @@ public class GraphQLMatcher : IStringMatcher
         {
             var graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input!)!;
 
-            var queryResult = new DocumentExecuter().ExecuteAsync(_ =>
+            var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
             {
                 _.ThrowOnUnhandledException = true;
 
@@ -95,13 +93,13 @@ public class GraphQLMatcher : IStringMatcher
                 }
             }).GetAwaiter().GetResult();
 
-            if (queryResult.Errors == null || queryResult.Errors.Count == 0)
+            if (executionResult.Errors == null || executionResult.Errors.Count == 0)
             {
                 match = MatchScores.Perfect;
             }
             else
             {
-                var exceptions = queryResult.Errors.OfType<Exception>().ToArray();
+                var exceptions = executionResult.Errors.OfType<Exception>().ToArray();
                 if (exceptions.Length == 1)
                 {
                     throw exceptions[0];
