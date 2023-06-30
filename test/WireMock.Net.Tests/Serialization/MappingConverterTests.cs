@@ -364,7 +364,7 @@ public partial class MappingConverterTests
 
 #if GRAPHQL
     [Fact]
-    public Task ToMappingModel_Request_WithGraphQLSchema_ReturnsCorrectModel()
+    public Task ToMappingModel_Request_WithBodyAsGraphQLSchema_ReturnsCorrectModel()
     {
         // Arrange
         var schema = @"
@@ -380,7 +380,7 @@ public partial class MappingConverterTests
    lastName:String
    fullName:String 
   }";
-        var request = Request.Create().WithGraphQLSchema(schema);
+        var request = Request.Create().WithBodyAsGraphQLSchema(schema);
         var response = Response.Create();
         var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
 

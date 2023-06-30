@@ -109,4 +109,10 @@ public partial class Request
         _requestMatchers.Add(new RequestMessageBodyMatcher(Guard.NotNull(func)));
         return this;
     }
+
+    /// <inheritdoc />
+    public IRequestBuilder WithBodyAsGraphQLSchema(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    {
+        return WithGraphQLSchema(body, matchBehaviour);
+    }
 }
