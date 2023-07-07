@@ -133,7 +133,7 @@ public class GraphQLMatcherTests
     {
         // Act
         // ReSharper disable once ObjectCreationAsStatement
-        Action action = () => new GraphQLMatcher("in va lid");
+        Action action = () => _ = new GraphQLMatcher("in va lid");
 
         // Assert
         action.Should().Throw<GraphQLSyntaxErrorException>();

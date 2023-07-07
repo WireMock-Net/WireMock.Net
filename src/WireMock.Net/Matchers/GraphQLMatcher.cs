@@ -17,7 +17,7 @@ namespace WireMock.Matchers;
 /// <inheritdoc cref="IStringMatcher"/>
 public class GraphQLMatcher : IStringMatcher
 {
-    private class GraphQLRequest
+    private sealed class GraphQLRequest
     {
         public string? Query { get; set; }
 
