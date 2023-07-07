@@ -1,0 +1,29 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {
+    Body: {
+      Matcher: {
+        Name: GraphQLMatcher,
+        Pattern:
+  type Query {
+   greeting:String
+   students:[Student]
+   studentById(id:ID!):Student
+  }
+
+  type Student {
+   id:ID!
+   firstName:String
+   lastName:String
+   fullName:String 
+  }
+      }
+    }
+  },
+  Response: {},
+  UseWebhooksFireAndForget: false
+}

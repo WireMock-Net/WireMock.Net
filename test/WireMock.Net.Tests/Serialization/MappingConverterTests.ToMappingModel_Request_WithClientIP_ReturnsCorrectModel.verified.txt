@@ -1,0 +1,20 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          Name: WildcardMatcher,
+          Pattern: 1.2.3.4,
+          IgnoreCase: false
+        }
+      ]
+    }
+  },
+  Response: {},
+  UseWebhooksFireAndForget: false
+}

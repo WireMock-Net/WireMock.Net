@@ -24,6 +24,10 @@
         <DefineConstants>NETFRAMEWORK</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
+        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="Util\JsonUtilsTests.cs" />
     </ItemGroup>
@@ -65,7 +69,6 @@
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
