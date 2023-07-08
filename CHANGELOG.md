@@ -1,3 +1,6 @@
+# 1.5.31 (08 July 2023)
+- [#964](https://github.com/WireMock-Net/WireMock.Net/pull/964) - Add GraphQL Schema matching [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.30 (28 June 2023)
 - [#959](https://github.com/WireMock-Net/WireMock.Net/pull/959) - Fixed logic for FluentAssertions WithHeader [bug] contributed by [StefH](https://github.com/StefH)
 - [#961](https://github.com/WireMock-Net/WireMock.Net/pull/961) - Add unit-test for Param MatcherModel LinqMatcher [test] contributed by [StefH](https://github.com/StefH)
@@ -962,7 +965,7 @@
 - [#86](https://github.com/WireMock-Net/WireMock.Net/issues/86) - Feature : Add FileSystemWatcher logic for watching static mapping files [feature]
 
 # 1.0.2.13 (23 January 2018)
-- [#79](https://github.com/WireMock-Net/WireMock.Net/pull/79) - Fix missed content headers contributed by [vladimir-fed](https://github.com/vladimir-fed)
+- [#79](https://github.com/WireMock-Net/WireMock.Net/pull/79) - Fix missed content headers contributed by [volodymyr-fed](https://github.com/volodymyr-fed)
 - [#57](https://github.com/WireMock-Net/WireMock.Net/issues/57) - ProxyAndRecord does not save query-parameters, headers and body [bug]
 - [#78](https://github.com/WireMock-Net/WireMock.Net/issues/78) - WireMock not working when attempting to access from anything other than localhost.
 
@@ -989,7 +992,7 @@
 
 # 1.0.2.7 (18 November 2017)
 - [#62](https://github.com/WireMock-Net/WireMock.Net/pull/62) - Add the Host, Protocol, Port and Origin to the Request message so they can be used in templating contributed by [alastairtree](https://github.com/alastairtree)
-- [#63](https://github.com/WireMock-Net/WireMock.Net/pull/63) - Fix issue with concurrent logging contributed by [vladimir-fed](https://github.com/vladimir-fed)
+- [#63](https://github.com/WireMock-Net/WireMock.Net/pull/63) - Fix issue with concurrent logging contributed by [volodymyr-fed](https://github.com/volodymyr-fed)
 - [#27](https://github.com/WireMock-Net/WireMock.Net/issues/27) - New feature: Record and Save
 - [#42](https://github.com/WireMock-Net/WireMock.Net/issues/42) - Enhancement - Save/load request logs to/from disk [feature]
 - [#53](https://github.com/WireMock-Net/WireMock.Net/issues/53) - New feature request: Access to Owin pipeline
