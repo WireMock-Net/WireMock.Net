@@ -121,28 +121,32 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 
     private double IsMatch(JToken jToken)
     {
-        // https://github.com/WireMock-Net/WireMock.Net/issues/965
-        // https://stackoverflow.com/questions/66922188/newtonsoft-jsonpath-with-c-sharp-syntax
-        // Filtering using SelectToken() isn't guaranteed to work for objects inside objects -- only objects inside arrays.
-        // So this code checks if it's an JArray, if it's not an array, construct a new JArray.
-        JToken newJToken;
-        if (jToken is JArray)
+        var array = ConvertJTokenToJArrayIfNeeded(jToken);
+
+        return MatchScores.ToScore(_patterns.Select(pattern => array.SelectToken(pattern.GetPattern())?.Any() == true).ToArray(), MatchOperator);
+    }
+
+    // https://github.com/WireMock-Net/WireMock.Net/issues/965
+    // https://stackoverflow.com/questions/66922188/newtonsoft-jsonpath-with-c-sharp-syntax
+    // Filtering using SelectToken() isn't guaranteed to work for objects inside objects -- only objects inside arrays.
+    // So this code checks if it's an JArray, if it's not an array, construct a new JArray.
+    private static JToken ConvertJTokenToJArrayIfNeeded(JToken jToken)
+    {
+        if (jToken.Count() == 1)
         {
-            newJToken = (JArray)jToken;
-        }
-        else if (jToken.Count() == 1)
-        {
-            var item = jToken.First();
-            newJToken = new JObject
+            var property = jToken.First();
+            var item = property.First();
+            if (item is JArray)
             {
-                [item.Path] = new JArray(item.First())
+               return jToken;
+            }
+            
+            return new JObject
+            {
+                [property.Path] = new JArray(item)
             };
         }
-        else
-        {
-            newJToken = jToken;
-        }
 
-        return MatchScores.ToScore(_patterns.Select(pattern => newJToken.SelectToken(pattern.GetPattern())?.Any() == true).ToArray(), MatchOperator);
+        return jToken;
     }
 }
