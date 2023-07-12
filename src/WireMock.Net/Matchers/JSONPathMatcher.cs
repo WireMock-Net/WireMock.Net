@@ -121,6 +121,27 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 
     private double IsMatch(JToken jToken)
     {
-        return MatchScores.ToScore(_patterns.Select(pattern => jToken.SelectTokens(pattern.GetPattern()) != null).ToArray(), MatchOperator);
+        // https://github.com/WireMock-Net/WireMock.Net/issues/965
+        // Filtering using SelectToken() isn't guaranteed to work for objects inside objects -- only objects inside arrays.
+        // So this code checks if it's an JArray, if it's not an array, construct a new JArray.
+        JToken newJToken;
+        if (jToken is JArray)
+        {
+            newJToken = (JArray)jToken;
+        }
+        else if (jToken.Count() == 1)
+        {
+            var item = jToken.First();
+            newJToken = new JObject
+            {
+                [item.Path] = new JArray(item.First())
+            };
+        }
+        else
+        {
+            newJToken = jToken;
+        }
+
+        return MatchScores.ToScore(_patterns.Select(pattern => newJToken.SelectToken(pattern.GetPattern())?.Any() == true).ToArray(), MatchOperator);
     }
 }

@@ -115,8 +115,6 @@ public class JsonPathMatcherTests
         Check.That(match).IsEqualTo(1);
     }
 
-    // - https://github.com/WireMock-Net/WireMock.Net/issues/965
-    // - https://stackoverflow.com/questions/66922188/newtonsoft-jsonpath-with-c-sharp-syntax
     [Fact]
     public void JsonPathMatcher_IsMatch_AnonymousObject_WithNestedObject()
     {
@@ -142,6 +140,20 @@ public class JsonPathMatcherTests
 
         // Assert 
         Check.That(match).IsEqualTo(1);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsNoMatch_String_WithNestedObject()
+    {
+        // Arrange
+        var json = "{ \"things\": { \"name\": \"y\" } }";
+        var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
+
+        // Act 
+        double match = matcher.IsMatch(json);
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
     }
 
     [Fact]
