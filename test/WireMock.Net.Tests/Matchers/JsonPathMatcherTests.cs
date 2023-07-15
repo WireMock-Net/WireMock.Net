@@ -11,7 +11,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_GetName()
     {
-        // Assign
+        // Arrange
         var matcher = new JsonPathMatcher("X");
 
         // Act
@@ -24,7 +24,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_GetPatterns()
     {
-        // Assign
+        // Arrange
         var matcher = new JsonPathMatcher("X");
 
         // Act
@@ -37,7 +37,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_ByteArray()
     {
-        // Assign
+        // Arrange
         var bytes = EmptyArray<byte>.Value;
         var matcher = new JsonPathMatcher("");
 
@@ -51,7 +51,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_NullString()
     {
-        // Assign
+        // Arrange
         string? s = null;
         var matcher = new JsonPathMatcher("");
 
@@ -65,7 +65,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_NullObject()
     {
-        // Assign
+        // Arrange
         object? o = null;
         var matcher = new JsonPathMatcher("");
 
@@ -79,7 +79,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_String_Exception_Mismatch()
     {
-        // Assign
+        // Arrange
         var matcher = new JsonPathMatcher("xxx");
 
         // Act 
@@ -92,7 +92,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_Object_Exception_Mismatch()
     {
-        // Assign
+        // Arrange
         var matcher = new JsonPathMatcher("");
 
         // Act 
@@ -105,7 +105,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_AnonymousObject()
     {
-        // Assign 
+        // Arrange 
         var matcher = new JsonPathMatcher("$..[?(@.Id == 1)]");
 
         // Act 
@@ -116,9 +116,50 @@ public class JsonPathMatcherTests
     }
 
     [Fact]
+    public void JsonPathMatcher_IsMatch_AnonymousObject_WithNestedObject()
+    {
+        // Arrange
+        var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
+
+        // Act 
+        double match = matcher.IsMatch(new { things = new { name = "x" } });
+
+        // Assert 
+        Check.That(match).IsEqualTo(1);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_String_WithNestedObject()
+    {
+        // Arrange
+        var json = "{ \"things\": { \"name\": \"x\" } }";
+        var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
+
+        // Act 
+        double match = matcher.IsMatch(json);
+
+        // Assert 
+        Check.That(match).IsEqualTo(1);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsNoMatch_String_WithNestedObject()
+    {
+        // Arrange
+        var json = "{ \"things\": { \"name\": \"y\" } }";
+        var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
+
+        // Act 
+        double match = matcher.IsMatch(json);
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
     public void JsonPathMatcher_IsMatch_JObject()
     {
-        // Assign 
+        // Arrange 
         string[] patterns = { "$..[?(@.Id == 1)]" };
         var matcher = new JsonPathMatcher(patterns);
 
@@ -137,7 +178,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_JObject_Parsed()
     {
-        // Assign 
+        // Arrange 
         var matcher = new JsonPathMatcher("$..[?(@.Id == 1)]");
 
         // Act 
@@ -150,7 +191,7 @@ public class JsonPathMatcherTests
     [Fact]
     public void JsonPathMatcher_IsMatch_RejectOnMatch()
     {
-        // Assign
+        // Arrange
         var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "$..[?(@.Id == 1)]");
 
         // Act
