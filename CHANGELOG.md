@@ -1,3 +1,8 @@
+# 1.5.32 (15 July 2023)
+- [#966](https://github.com/WireMock-Net/WireMock.Net/pull/966) - Fixed JsonPathMatcher to match nested objects [bug] contributed by [StefH](https://github.com/StefH)
+- [#965](https://github.com/WireMock-Net/WireMock.Net/issues/965) - JsonPathMatcher does not match json body nested objects [bug]
+- [#967](https://github.com/WireMock-Net/WireMock.Net/issues/967) - &#11088;10 million downloads ! &#11088; [feature]
+
 # 1.5.31 (08 July 2023)
 - [#964](https://github.com/WireMock-Net/WireMock.Net/pull/964) - Add GraphQL Schema matching [feature] contributed by [StefH](https://github.com/StefH)
 
