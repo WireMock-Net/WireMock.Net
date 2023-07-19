@@ -74,6 +74,13 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
             }
         }
 
+        if (input != null &&
+        	((value.Type == JTokenType.Guid && input.Type == JTokenType.String) ||
+        	(value.Type == JTokenType.String && input.Type == JTokenType.Guid)))
+        {
+        	return IsMatch(value.ToString(), input.ToString());
+        }
+
         if (input == null || value.Type != input.Type)
         {
             return false;

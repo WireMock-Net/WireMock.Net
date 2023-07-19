@@ -200,6 +200,27 @@ public class JsonPartialMatcherTests
     }
 
     [Fact]
+    public void JsonPartialMatcher_IsMatch_GuidAsString_UsingRegex()
+    {
+        var guid = new Guid("1111238e-b775-44a9-a263-95e570135c94");
+        var matcher = new JsonPartialMatcher(new {
+            Id = 1,
+            Name = "^1111[a-fA-F0-9]{4}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}$"
+        }, false, false, true);
+
+        // Act
+        var jObject = new JObject
+        {
+            { "Id", new JValue(1) },
+            { "Name", new JValue(guid) }
+        };
+        double match = matcher.IsMatch(jObject);
+
+        // Assert
+        Assert.Equal(1.0, match);
+    }
+
+    [Fact]
     public void JsonPartialMatcher_IsMatch_WithIgnoreCaseTrue_JObject()
     {
         // Assign 
@@ -279,6 +300,25 @@ public class JsonPartialMatcherTests
 
         // Assert 
         Assert.Equal(1.0, match);
+    }
+
+    [Fact]
+    public void JsonPartialMatcher_IsMatch_GuidAsString()
+    {
+    	// Assign
+    	var guid = Guid.NewGuid();
+    	var matcher = new JsonPartialMatcher(new { Id = 1, Name = guid });
+
+    	// Act
+    	var jObject = new JObject
+    	{
+    		{ "Id", new JValue(1) },
+    		{ "Name", new JValue(guid.ToString()) }
+    	};
+    	double match = matcher.IsMatch(jObject);
+
+    	// Assert
+    	Assert.Equal(1.0, match);
     }
 
     [Fact]
