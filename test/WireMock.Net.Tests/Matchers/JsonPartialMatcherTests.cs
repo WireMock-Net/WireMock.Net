@@ -282,6 +282,25 @@ public class JsonPartialMatcherTests
     }
 
     [Fact]
+    public void JsonPartialMatcher_IsMatch_GuidAsString()
+    {
+    	// Assign
+    	var guid = Guid.NewGuid();
+    	var matcher = new JsonPartialMatcher(new { Id = 1, Name = guid });
+
+    	// Act
+    	var jObject = new JObject
+    	{
+    		{ "Id", new JValue(1) },
+    		{ "Name", new JValue(guid.ToString()) }
+    	};
+    	double match = matcher.IsMatch(jObject);
+
+    	// Assert
+    	Assert.Equal(1.0, match);
+    }
+
+    [Fact]
     public void JsonPartialMatcher_IsMatch_WithIgnoreCaseTrue_JObjectAsString()
     {
         // Assign 
