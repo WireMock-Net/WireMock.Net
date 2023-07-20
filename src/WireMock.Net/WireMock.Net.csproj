@@ -59,6 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AgileObjects.AgileMapper" Version="1.8.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
         <PackageReference Include="JsonConverter.Abstractions" Version="0.4.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
@@ -68,7 +69,6 @@
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
-        <PackageReference Include="TinyMapper" Version="3.0.3" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
@@ -204,5 +204,47 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
         <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+      <PackageReference Include="Riok.Mapperly">
+        <Version>2.8.0</Version>
+      </PackageReference>
     </ItemGroup>
 </Project>
