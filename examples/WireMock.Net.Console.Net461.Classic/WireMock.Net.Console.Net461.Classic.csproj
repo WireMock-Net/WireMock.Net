@@ -38,14 +38,14 @@
     <Reference Include="AnyOf, Version=0.3.0.0, Culture=neutral, PublicKeyToken=b35e6abbb527c6b1, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AnyOf.0.3.0\lib\net45\AnyOf.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.2.1.2\lib\net46\Handlebars.dll</HintPath>
+    <Reference Include="Handlebars, Version=2.1.4.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.2.1.4\lib\net46\Handlebars.dll</HintPath>
     </Reference>
-    <Reference Include="Handlebars.Net.Helpers, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.3.12\lib\net46\Handlebars.Net.Helpers.dll</HintPath>
+    <Reference Include="Handlebars.Net.Helpers, Version=2.4.0.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.2.4.0\lib\net46\Handlebars.Net.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.3.12.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.3.12\lib\net46\HandlebarsDotNet.Helpers.Core.dll</HintPath>
+    <Reference Include="HandlebarsDotNet.Helpers.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=00d131fae0c250bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Handlebars.Net.Helpers.Core.2.4.0\lib\net46\HandlebarsDotNet.Helpers.Core.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
@@ -54,7 +54,7 @@
       <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
