@@ -73,7 +73,6 @@ class Program
 
         var settingsViaBuilder = new SettingsModelBuilder()
             .WithGlobalProcessingDelay(1077)
-            .WithoutGlobalProcessingDelay()
             .Build();
 
         settings1.GlobalProcessingDelay = 1077;
