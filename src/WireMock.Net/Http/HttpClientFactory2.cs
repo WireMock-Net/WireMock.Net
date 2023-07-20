@@ -2,6 +2,11 @@ using System.Net.Http;
 
 namespace WireMock.Http;
 
+// https://github.com/WireMock-Net/WireMock.Net/issues/974
+#if !NETSTANDARD1_3
+extern alias SystemNetHttpFormatting;
+#endif
+
 internal static class HttpClientFactory2
 {
     public static HttpClient Create(params DelegatingHandler[] handlers)
@@ -9,7 +14,8 @@ internal static class HttpClientFactory2
 #if NETSTANDARD1_3
         return new HttpClient();
 #else
-        return HttpClientFactory.Create(handlers);
+        // ReSharper disable once RedundantNameQualifier
+        return SystemNetHttpFormatting::System.Net.Http.HttpClientFactory.Create(handlers);
 #endif
     }
 
@@ -18,7 +24,8 @@ internal static class HttpClientFactory2
 #if NETSTANDARD1_3
         return new HttpClient(innerHandler);
 #else
-        return HttpClientFactory.Create(innerHandler, handlers);
+        // ReSharper disable once RedundantNameQualifier
+        return SystemNetHttpFormatting::System.Net.Http.HttpClientFactory.Create(innerHandler, handlers);
 #endif
     }
 }
