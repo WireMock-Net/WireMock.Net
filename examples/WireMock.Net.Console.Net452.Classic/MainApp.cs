@@ -167,6 +167,7 @@ namespace WireMock.Net.ConsoleApplication
 
             // server.AllowPartialMapping();
 
+#if !(NET452 || NET461 || NET472)
             server
                 .Given(Request.Create()
                     .WithPath("/graphql")
@@ -176,7 +177,7 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")
                 );
-
+#endif
             // 400 ms
             server
                 .Given(Request.Create()
