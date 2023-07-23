@@ -55,6 +55,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Remove="Matchers\MultiPartMatcher.cs" />
         <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
     </ItemGroup>
 

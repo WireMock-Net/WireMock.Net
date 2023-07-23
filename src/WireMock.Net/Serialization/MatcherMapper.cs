@@ -195,6 +195,11 @@ internal class MatcherMapper
             case ExactObjectMatcher exactObjectMatcher:
                 model.Pattern = exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes;
                 break;
+
+#if MIMEKIT
+            //case MultiPartMatcher multiPartMatcher:
+
+#endif
         }
 
         return model;

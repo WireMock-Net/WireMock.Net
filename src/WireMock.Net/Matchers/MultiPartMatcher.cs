@@ -45,12 +45,12 @@ public class MultiPartMatcher : IMatcher
         try
         {
             var message = MimeMessage.Load(StreamUtils.CreateStream(input!));
-            foreach (var part in message.BodyParts.OfType<MimePart>())
+            foreach (var mimePart in message.BodyParts.OfType<MimePart>())
             {
-                var matchesForPath = new List<double> { MatchScores.Mismatch };
-                matchesForPath.AddRange(_matchers.Select(matcher => matcher.IsMatch(part)));
+                var matchesForMimePart = new List<double> { MatchScores.Mismatch };
+                matchesForMimePart.AddRange(_matchers.Select(matcher => matcher.IsMatch(mimePart)));
 
-                match = matchesForPath.Max();
+                match = matchesForMimePart.Max();
                 if (!MatchScores.IsPerfect(match))
                 {
                     break;

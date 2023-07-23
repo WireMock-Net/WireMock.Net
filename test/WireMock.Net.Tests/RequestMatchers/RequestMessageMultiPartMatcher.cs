@@ -10,7 +10,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers;
 
-public partial class RequestMessageBodyMatcherTests
+public class RequestMessageMultiPartMatcherTests
 {
     private const string TestMultiPart = @"Content-Type: multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""
 
@@ -59,18 +59,16 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
         var imagePngContentMatcher = new ExactObjectMatcher(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAADFBMVEX/tID/vpH/pWX/sHidUyjlAAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC"));
         var imagePngMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, imagePngContentTypeMatcher, imagePngContentDispositionMatcher, imagePngContentTransferEncodingMatcher, imagePngContentMatcher);
 
-        var matchers = new[]
+        var matchers = new IMatcher[]
         {
             textPlainMatcher,
             partTextMatcher,
             imagePngMatcher
         };
-
-        var multiPartMatcher = new MultiPartMatcher(MatchBehaviour.AcceptOnMatch, matchers);
-
+        
         var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
 
-        var matcher = new RequestMessageBodyMatcher(multiPartMatcher);
+        var matcher = new RequestMessageMultiPartMatcher(matchers);
 
         // Act
         var result = new RequestMatchResult();

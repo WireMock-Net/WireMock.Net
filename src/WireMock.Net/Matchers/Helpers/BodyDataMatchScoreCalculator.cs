@@ -63,7 +63,7 @@ internal static class BodyDataMatchScoreCalculator
             }
         }
 
-#if MIMEKIT
+#if MIMEKIT_XXX
         if (matcher is MultiPartMatcher multiPartMatcher)
         {
             // If the body is a String or MultiPart, use the BodyAsString to match on.

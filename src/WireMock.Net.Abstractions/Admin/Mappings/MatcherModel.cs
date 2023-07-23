@@ -50,9 +50,5 @@ public class MatcherModel
     /// </summary>
     public bool? Regex { get; set; }
 
-    /// <summary>
-    /// Gets or sets the Index to match.
-    /// Only used for MultiPartMatcher.
-    /// </summary>
-    public int? Index { get; set; }
+    public MatcherModel[]? MatcherModels { get; set; }
 }

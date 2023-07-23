@@ -15,7 +15,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.RequestMatchers;
 
-public partial class RequestMessageBodyMatcherTests
+public class RequestMessageBodyMatcherTests
 {
     [Fact]
     public void RequestMessageBodyMatcher_GetMatchingScore_BodyAsString_IStringMatcher()
