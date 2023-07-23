@@ -75,6 +75,11 @@ internal class MatcherMapper
             case nameof(GraphQLMatcher):
                 return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
 #endif
+
+#if MIMEKIT
+            case nameof(MimePartMatcher):
+                return null; //new MimePartMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
+#endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended, matchOperator);
 
