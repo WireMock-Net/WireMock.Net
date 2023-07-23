@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using AnyOfTypes;
@@ -122,7 +121,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 
             return MatchBehaviourHelper.Convert(MatchBehaviour, match);
         }
-        catch (Exception e)
+        catch
         {
             if (ThrowException)
             {

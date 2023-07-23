@@ -1,13 +1,9 @@
 #if MIMEKIT
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnyOfTypes;
-using GraphQL.Types;
-using Stef.Validation;
-using WireMock.Models;
+using MimeKit;
+using WireMock.Matchers.Helpers;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -16,57 +12,115 @@ namespace WireMock.Matchers;
 /// </summary>
 public class MultiPartMatcher : IMatcher
 {
-    private readonly AnyOf<string, StringPattern>[] _patterns;
-
-    /// <summary>
-    /// The matchers.
-    /// </summary>
-    public IMatcher[]? Matchers { get; }
+    private readonly Func<MimePart, double>[] _funcs;
 
     /// <inheritdoc />
     public string Name => nameof(MultiPartMatcher);
+
+    /// <summary>
+    /// ContentType Matcher (image/png; name=image.png.)
+    /// </summary>
+    public IStringMatcher? ContentTypeMatcher { get; }
+
+    /// <summary>
+    /// ContentDisposition Matcher (attachment; filename=image.png)
+    /// </summary>
+    public IStringMatcher? ContentDispositionMatcher { get; }
+
+    /// <summary>
+    /// ContentTransferEncoding Matcher (base64)
+    /// </summary>
+    public IStringMatcher? ContentTransferEncodingMatcher { get; }
+
+    /// <summary>
+    /// Content Matcher
+    /// </summary>
+    public IMatcher? ContentMatcher { get; }
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <inheritdoc />
-    // public MatchOperator MatchOperator { get; }
-
-    /// <inheritdoc />
     public bool ThrowException { get; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public int Index { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiPartMatcher"/> class.
     /// </summary>
-    /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="patterns">The patterns.</param>
-    /// <param name="ignoreCase">IgnoreCase</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
-    public MultiPartMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false, bool throwException = false, MatchOperator matchOperator = MatchOperator.Or)
+    public MultiPartMatcher(
+        MatchBehaviour matchBehaviour,
+        IStringMatcher? contentTypeMatcher,
+        IStringMatcher? contentDispositionMatcher,
+        IStringMatcher? contentTransferEncodingMatcher,
+        IMatcher? contentMatcher,
+        bool throwException = false
+    )
     {
-        _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
+        ContentTypeMatcher = contentTypeMatcher;
+        ContentDispositionMatcher = contentDispositionMatcher;
+        ContentTransferEncodingMatcher = contentTransferEncodingMatcher;
+        ContentMatcher = contentMatcher;
         ThrowException = throwException;
-        //MatchOperator = matchOperator;
-        ThrowException = throwException;
+
+        _funcs = new[]
+        {
+            mp => ContentTypeMatcher?.IsMatch(GetContentTypeAsString(mp.ContentType)) ?? MatchScores.Perfect,
+            mp => ContentDispositionMatcher?.IsMatch(mp.ContentDisposition.ToString().Replace("Content-Disposition: ", string.Empty)) ?? MatchScores.Perfect,
+            mp => ContentTransferEncodingMatcher?.IsMatch(mp.ContentTransferEncoding.ToString().ToLowerInvariant()) ?? MatchScores.Perfect,
+            MatchOnContent
+        };
     }
 
-    /// <inheritdoc />
-    public double IsMatch(string? input)
+    /// <summary>
+    /// Determines whether the specified MimePart is match.
+    /// </summary>
+    /// <param name="mimePart">The MimePart.</param>
+    /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
+    public double IsMatch(MimePart mimePart)
     {
-        throw new NotImplementedException();
+        var match = MatchScores.Mismatch;
+
+        try
+        {
+            if (_funcs.All(func => MatchScores.IsPerfect(func(mimePart))))
+            {
+                match = MatchScores.Perfect;
+            }
+        }
+        catch
+        {
+            if (ThrowException)
+            {
+                throw;
+            }
+        }
+
+        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
     }
 
-    /// <inheritdoc />
-    public AnyOf<string, StringPattern>[] GetPatterns()
+    private double MatchOnContent(MimePart mimePart)
     {
-        return _patterns;
+        if (ContentMatcher == null)
+        {
+            return MatchScores.Perfect;
+        }
+
+        var bodyParserSettings = new BodyParserSettings
+        {
+            Stream = mimePart.Content.Open(),
+            ContentType = GetContentTypeAsString(mimePart.ContentType),
+            DeserializeJson = true,
+            ContentEncoding = null, // mimePart.ContentType.CharsetEncoding.ToString(),
+            DecompressGZipAndDeflate = true
+        };
+
+        var bodyData = BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false).GetAwaiter().GetResult();
+        return BodyDataMatchScoreCalculator.CalculateMatchScore(bodyData, ContentMatcher);
+    }
+
+    private static string? GetContentTypeAsString(ContentType? contentType)
+    {
+        return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }
 }
 #endif
