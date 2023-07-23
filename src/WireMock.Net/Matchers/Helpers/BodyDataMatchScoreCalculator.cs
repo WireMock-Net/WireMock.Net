@@ -63,6 +63,16 @@ internal static class BodyDataMatchScoreCalculator
             }
         }
 
+#if MIMEKIT
+        if (matcher is MultiPartMatcher multiPartMatcher)
+        {
+            // If the body is a String or MultiPart, use the BodyAsString to match on.
+            if (requestMessage?.DetectedBodyType is BodyType.String or BodyType.MultiPart)
+            {
+                return multiPartMatcher.IsMatch(requestMessage.BodyAsString);
+            }
+        }
+#endif
         return MatchScores.Mismatch;
     }
 }

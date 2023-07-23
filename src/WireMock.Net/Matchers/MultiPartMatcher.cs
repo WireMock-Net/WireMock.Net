@@ -1,41 +1,21 @@
 #if MIMEKIT
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using MimeKit;
-using WireMock.Matchers.Helpers;
+using Stef.Validation;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
 
 /// <summary>
-/// MultiPartMatcher
+/// MimePartMatcher
 /// </summary>
 public class MultiPartMatcher : IMatcher
 {
-    private readonly Func<MimePart, double>[] _funcs;
+    private readonly MimePartMatcher[] _matchers;
 
     /// <inheritdoc />
     public string Name => nameof(MultiPartMatcher);
-
-    /// <summary>
-    /// ContentType Matcher (image/png; name=image.png.)
-    /// </summary>
-    public IStringMatcher? ContentTypeMatcher { get; }
-
-    /// <summary>
-    /// ContentDisposition Matcher (attachment; filename=image.png)
-    /// </summary>
-    public IStringMatcher? ContentDispositionMatcher { get; }
-
-    /// <summary>
-    /// ContentTransferEncoding Matcher (base64)
-    /// </summary>
-    public IStringMatcher? ContentTransferEncodingMatcher { get; }
-
-    /// <summary>
-    /// Content Matcher
-    /// </summary>
-    public IMatcher? ContentMatcher { get; }
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
@@ -46,45 +26,35 @@ public class MultiPartMatcher : IMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiPartMatcher"/> class.
     /// </summary>
-    public MultiPartMatcher(
-        MatchBehaviour matchBehaviour,
-        IStringMatcher? contentTypeMatcher,
-        IStringMatcher? contentDispositionMatcher,
-        IStringMatcher? contentTransferEncodingMatcher,
-        IMatcher? contentMatcher,
-        bool throwException = false
-    )
+    public MultiPartMatcher(MatchBehaviour matchBehaviour, MimePartMatcher[] matchers, bool throwException = false)
     {
+        _matchers = Guard.NotNull(matchers);
         MatchBehaviour = matchBehaviour;
-        ContentTypeMatcher = contentTypeMatcher;
-        ContentDispositionMatcher = contentDispositionMatcher;
-        ContentTransferEncodingMatcher = contentTransferEncodingMatcher;
-        ContentMatcher = contentMatcher;
         ThrowException = throwException;
-
-        _funcs = new[]
-        {
-            mp => ContentTypeMatcher?.IsMatch(GetContentTypeAsString(mp.ContentType)) ?? MatchScores.Perfect,
-            mp => ContentDispositionMatcher?.IsMatch(mp.ContentDisposition.ToString().Replace("Content-Disposition: ", string.Empty)) ?? MatchScores.Perfect,
-            mp => ContentTransferEncodingMatcher?.IsMatch(mp.ContentTransferEncoding.ToString().ToLowerInvariant()) ?? MatchScores.Perfect,
-            MatchOnContent
-        };
     }
 
     /// <summary>
-    /// Determines whether the specified MimePart is match.
+    /// Determines whether the specified body is match.
     /// </summary>
-    /// <param name="mimePart">The MimePart.</param>
+    /// <param name="input">The body.</param>
     /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-    public double IsMatch(MimePart mimePart)
+    public double IsMatch(string? input)
     {
         var match = MatchScores.Mismatch;
 
         try
         {
-            if (_funcs.All(func => MatchScores.IsPerfect(func(mimePart))))
+            var message = MimeMessage.Load(StreamUtils.CreateStream(input!));
+            foreach (var part in message.BodyParts.OfType<MimePart>())
             {
-                match = MatchScores.Perfect;
+                var matchesForPath = new List<double> { MatchScores.Mismatch };
+                matchesForPath.AddRange(_matchers.Select(matcher => matcher.IsMatch(part)));
+
+                match = matchesForPath.Max();
+                if (!MatchScores.IsPerfect(match))
+                {
+                    break;
+                }
             }
         }
         catch
@@ -96,31 +66,6 @@ public class MultiPartMatcher : IMatcher
         }
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, match);
-    }
-
-    private double MatchOnContent(MimePart mimePart)
-    {
-        if (ContentMatcher == null)
-        {
-            return MatchScores.Perfect;
-        }
-
-        var bodyParserSettings = new BodyParserSettings
-        {
-            Stream = mimePart.Content.Open(),
-            ContentType = GetContentTypeAsString(mimePart.ContentType),
-            DeserializeJson = true,
-            ContentEncoding = null, // mimePart.ContentType.CharsetEncoding.ToString(),
-            DecompressGZipAndDeflate = true
-        };
-
-        var bodyData = BodyParser.ParseAsync(bodyParserSettings).ConfigureAwait(false).GetAwaiter().GetResult();
-        return BodyDataMatchScoreCalculator.CalculateMatchScore(bodyData, ContentMatcher);
-    }
-
-    private static string? GetContentTypeAsString(ContentType? contentType)
-    {
-        return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }
 }
 #endif
