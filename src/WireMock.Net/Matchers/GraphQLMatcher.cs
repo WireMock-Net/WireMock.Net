@@ -128,7 +128,7 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => nameof(GraphQLMatcher);
 
     private static ISchema BuildSchema(string schema)

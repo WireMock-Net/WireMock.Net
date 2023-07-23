@@ -39,14 +39,20 @@ public class MatcherModel
     /// <summary>
     /// The Operator to use when multiple patterns are defined. Optional.
     /// - null      = Same as "or".
-    /// - "or"      = Only one pattern should match.
+    /// - "or"      = Only one pattern is required to match.
     /// - "and"     = All patterns should match.
     /// - "average" = The average value from all patterns.
     /// </summary>
     public string? MatchOperator { get; set; }
 
     /// <summary>
-    /// Support Regex, only used for JsonPartialMatcher.
+    /// Support Regex, only used for JsonPartialMatcher and JsonPartialWildcardMatcher.
     /// </summary>
     public bool? Regex { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Index to match.
+    /// Only used for MultiPartMatcher.
+    /// </summary>
+    public int? Index { get; set; }
 }

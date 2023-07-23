@@ -51,7 +51,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -160,6 +160,7 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <PackageReference Include="GraphQL" Version="7.5.0" />
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
+        <PackageReference Include="MimeKitLite" Version="4.1.0.1" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
