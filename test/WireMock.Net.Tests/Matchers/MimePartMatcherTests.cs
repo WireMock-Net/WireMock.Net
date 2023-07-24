@@ -54,6 +54,7 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
         var result = matcher.IsMatch(part);
 
         // Assert
+        matcher.Name.Should().Be("MimePartMatcher");
         result.Should().Be(MatchScores.Perfect);
     }
 

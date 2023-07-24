@@ -111,12 +111,4 @@ public interface IBodyRequestBuilder : IGraphQLRequestBuilder
     /// <param name="matchBehaviour">The match behaviour. (Default is <c>MatchBehaviour.AcceptOnMatch</c>).</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
     IRequestBuilder WithBodyAsGraphQLSchema(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
-
-    /// <summary>
-    /// WithBodyAsMultiPart: Body as MultiPart.
-    /// </summary>
-    /// <param name="body">The GraphQL schema.</param>
-    /// <param name="matchBehaviour">The match behaviour. (Default is <c>MatchBehaviour.AcceptOnMatch</c>).</param>
-    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    // IRequestBuilder WithBodyAsMultiPart(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 }

@@ -82,7 +82,7 @@ public class MimePartMatcher : IMatcher
 
         try
         {
-            if (_funcs.All(func => MatchScores.IsPerfect(func(mimePart))))
+            if (Array.TrueForAll(_funcs, func => MatchScores.IsPerfect(func(mimePart))))
             {
                 match = MatchScores.Perfect;
             }
