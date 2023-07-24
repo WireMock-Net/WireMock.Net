@@ -49,6 +49,4 @@ public class MatcherModel
     /// Support Regex, only used for JsonPartialMatcher and JsonPartialWildcardMatcher.
     /// </summary>
     public bool? Regex { get; set; }
-
-    public MatcherModel[]? MatcherModels { get; set; }
 }

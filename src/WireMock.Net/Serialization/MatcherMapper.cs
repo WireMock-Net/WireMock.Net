@@ -78,7 +78,7 @@ internal class MatcherMapper
 
 #if MIMEKIT
             case nameof(MimePartMatcher):
-                return null; //new MimePartMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
+                return CreateMimePartMatcher(matchBehaviour, matcher, throwExceptionWhenMatcherFails);
 #endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended, matchOperator);
@@ -131,12 +131,7 @@ internal class MatcherMapper
 
     public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
     {
-        if (matchers == null)
-        {
-            return null;
-        }
-
-        return matchers.Where(m => m != null).Select(Map).ToArray()!;
+        return matchers == null ? null : matchers.Where(m => m != null).Select(Map).ToArray();
     }
 
     public MatcherModel? Map(IMatcher? matcher)
@@ -202,8 +197,17 @@ internal class MatcherMapper
                 break;
 
 #if MIMEKIT
-            //case MultiPartMatcher multiPartMatcher:
-
+            case MimePartMatcher mimePartMatcher:
+                return new MimePartMatcherModel
+                {
+                    RejectOnMatch = rejectOnMatch,
+                    IgnoreCase = ignoreCase,
+                    Name = matcher.Name,
+                    ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher),
+                    ContentMatcher = Map(mimePartMatcher.ContentMatcher),
+                    ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher),
+                    ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher)
+                };
 #endif
         }
 
@@ -251,4 +255,16 @@ internal class MatcherMapper
 
         return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
     }
+
+#if MIMEKIT
+    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher, bool throwExceptionWhenMatcherFails)
+    {
+        var mimePartMatcherModel = matcher as MimePartMatcherModel;
+        var contentTypeMatcher = Map(mimePartMatcherModel?.ContentTypeMatcher) as IStringMatcher;
+        var contentDispositionMatcher = Map(mimePartMatcherModel?.ContentDispositionMatcher) as IStringMatcher;
+        var contentTransferEncodingMatcher = Map(mimePartMatcherModel?.ContentTransferEncodingMatcher) as IStringMatcher;
+        var contentMatcher = Map(mimePartMatcherModel?.ContentMatcher);
+        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher, throwExceptionWhenMatcherFails);
+    }
+#endif
 }
