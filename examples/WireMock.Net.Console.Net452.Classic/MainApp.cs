@@ -206,6 +206,7 @@ namespace WireMock.Net.ConsoleApplication
                     .UsingPost()
                     .WithMultiPart(matchers)
                 )
+                .WithGuid("b9c82182-e469-41da-bcaf-b6e3157fefdb")
                 .RespondWith(Response.Create()
                     .WithBody("MultiPart is ok")
                 );

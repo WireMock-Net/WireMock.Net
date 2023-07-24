@@ -131,7 +131,7 @@ internal class MatcherMapper
 
     public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
     {
-        return matchers == null ? null : matchers.Where(m => m != null).Select(Map).ToArray();
+        return matchers?.Where(m => m != null).Select(Map).ToArray();
     }
 
     public MatcherModel? Map(IMatcher? matcher)
@@ -198,16 +198,11 @@ internal class MatcherMapper
 
 #if MIMEKIT
             case MimePartMatcher mimePartMatcher:
-                return new MimePartMatcherModel
-                {
-                    RejectOnMatch = rejectOnMatch,
-                    IgnoreCase = ignoreCase,
-                    Name = matcher.Name,
-                    ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher),
-                    ContentMatcher = Map(mimePartMatcher.ContentMatcher),
-                    ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher),
-                    ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher)
-                };
+                model.ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher);
+                model.ContentMatcher = Map(mimePartMatcher.ContentMatcher);
+                model.ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher);
+                model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
+                break;
 #endif
         }
 
@@ -259,11 +254,10 @@ internal class MatcherMapper
 #if MIMEKIT
     private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher, bool throwExceptionWhenMatcherFails)
     {
-        var mimePartMatcherModel = matcher as MimePartMatcherModel;
-        var contentTypeMatcher = Map(mimePartMatcherModel?.ContentTypeMatcher) as IStringMatcher;
-        var contentDispositionMatcher = Map(mimePartMatcherModel?.ContentDispositionMatcher) as IStringMatcher;
-        var contentTransferEncodingMatcher = Map(mimePartMatcherModel?.ContentTransferEncodingMatcher) as IStringMatcher;
-        var contentMatcher = Map(mimePartMatcherModel?.ContentMatcher);
+        var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
+        var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
+        var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
+        var contentMatcher = Map(matcher?.ContentMatcher);
         return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher, throwExceptionWhenMatcherFails);
     }
 #endif
