@@ -19,6 +19,7 @@ using WireMock.Types;
 using WireMock.Util;
 
 using static WireMock.Util.CSharpFormatter;
+
 namespace WireMock.Serialization;
 
 internal class MappingConverter
@@ -49,7 +50,7 @@ internal class MappingConverter
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
-        
+
         var sb = new StringBuilder();
 
         if (settings.ConverterType == MappingConverterType.Server)
@@ -122,8 +123,7 @@ internal class MappingConverter
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
             {
-                // IRequestBuilder WithMultiPart(IMatcher[] matchers, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, MatchOperator matchOperator = MatchOperator.Or);
-                sb.AppendLine($"        .WithMultiPart(null) // TODO");
+                sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
         }
 #endif

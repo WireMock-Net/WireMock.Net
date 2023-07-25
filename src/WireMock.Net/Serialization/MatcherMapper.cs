@@ -233,7 +233,7 @@ internal class MatcherMapper
             return new[] { new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = patternAsFile }) };
         }
 
-        return new AnyOf<string, StringPattern>[0];
+        return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
     private static ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern, bool throwException)
@@ -258,6 +258,7 @@ internal class MatcherMapper
         var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
         var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
         var contentMatcher = Map(matcher?.ContentMatcher);
+
         return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher, throwExceptionWhenMatcherFails);
     }
 #endif
