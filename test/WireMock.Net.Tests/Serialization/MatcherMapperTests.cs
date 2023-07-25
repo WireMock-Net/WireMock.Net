@@ -428,4 +428,22 @@ public class MatcherMapperTests
         matcher.GetPatterns().Should().Contain("p");
         matcher.IgnoreCase.Should().BeTrue();
     }
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_NotNullOrEmptyMatcher()
+    {
+        // Assign
+        var model = new MatcherModel
+        {
+            Name = "NotNullOrEmptyMatcher",
+            RejectOnMatch = true
+        };
+
+        // Act
+        var matcher = _sut.Map(model)!;
+
+        // Assert
+        matcher.Should().BeAssignableTo<NotNullOrEmptyMatcher>();
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.RejectOnMatch);
+    }
 }
