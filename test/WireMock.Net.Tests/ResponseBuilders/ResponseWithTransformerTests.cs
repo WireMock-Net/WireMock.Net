@@ -783,6 +783,56 @@ public class ResponseWithTransformerTests
         response.Message.BodyData.Encoding.Should().Be(enc);
     }
 
+#if MIMEKIT
+    [Theory]
+    [InlineData(TransformerType.Handlebars)]
+    // [InlineData(TransformerType.Scriban)]
+    // [InlineData(TransformerType.ScribanDotLiquid)]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsMimeMessage(TransformerType transformerType)
+    {
+        // Assign
+        var multiPart = @"Content-Type: multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""
+
+--=-5XgmpXt0XOfzdtcgNJc2ZQ==
+Content-Type: text/plain; charset=utf-8
+
+This is some plain text
+--=-5XgmpXt0XOfzdtcgNJc2ZQ==
+Content-Type: text/json; charset=utf-8
+
+{
+        ""Key"": ""Value""
+    }
+--=-5XgmpXt0XOfzdtcgNJc2ZQ==
+Content-Type: image/png; name=image.png
+Content-Disposition: attachment; filename=image.png
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAADFBMVEX/tID/vpH/pWX/sHidUyjl
+AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
+
+--=-5XgmpXt0XOfzdtcgNJc2ZQ==-- 
+";
+
+        var bodyData = new BodyData
+        {
+            BodyAsString = multiPart,
+            DetectedBodyType = BodyType.MultiPart
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+        var responseBuilder = Response.Create()
+            .WithBody("{{request.BodyAsMimeMessage.BodyParts.[0].ContentType.MimeType}} {{request.BodyAsMimeMessage.BodyParts.[1].ContentType.MimeType}} {{request.BodyAsMimeMessage.BodyParts.[2].FileName}}")
+            .WithTransformer(transformerType);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        response.Message.BodyData!.BodyAsString.Should().Be("text/plain text/json image.png");
+    }
+#endif
+
     [Theory]
     [InlineData("/wiremock-data/1", "one")]
     [InlineData("/wiremock-data/2", "two")]
