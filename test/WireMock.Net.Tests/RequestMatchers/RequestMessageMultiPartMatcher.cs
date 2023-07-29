@@ -1,5 +1,6 @@
 #if MIMEKIT
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -12,9 +13,7 @@ namespace WireMock.Net.Tests.RequestMatchers;
 
 public class RequestMessageMultiPartMatcherTests
 {
-    private const string TestMultiPart = @"Content-Type: multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""
-
---=-5XgmpXt0XOfzdtcgNJc2ZQ==
+    private const string TestMultiPart = @"--=-5XgmpXt0XOfzdtcgNJc2ZQ==
 Content-Type: text/plain; charset=utf-8
 
 This is some plain text
@@ -65,8 +64,12 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
             partTextMatcher,
             imagePngMatcher
         };
-        
-        var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body);
+
+        var headers = new Dictionary<string, string[]>
+        {
+            { "Content-Type", new[] { @"multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""" } }
+        };
+        var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body, headers);
 
         var matcher = new RequestMessageMultiPartMatcher(matchers);
 

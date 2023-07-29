@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 #endif
 using Stef.Validation;
+using WireMock.Http;
 using WireMock.Models;
 using WireMock.Owin;
 using WireMock.Types;
@@ -179,10 +180,7 @@ public class RequestMessage : IRequestMessage
 #if MIMEKIT
         try
         {
-            if (BodyData is { DetectedBodyType: BodyType.MultiPart, BodyAsString: { } })
-            {
-                BodyAsMimeMessage = MimeKit.MimeMessage.Load(StreamUtils.CreateStream(BodyData.BodyAsString));
-            }
+            BodyAsMimeMessage = MimeKitUtils.GetMimeMessage(BodyData, headers![HttpKnownHeaderNames.ContentType].First());
         }
         catch
         {

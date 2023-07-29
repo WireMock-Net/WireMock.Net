@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Stef.Validation;
-using WireMock.Types;
+using WireMock.Http;
 using WireMock.Util;
 
 namespace WireMock.Matchers.Request;
@@ -66,27 +63,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 
         try
         {
-            MimeKit.MimeMessage message;
-
-            // If the body is a String or MultiPart, use the BodyAsString to match on.
-            if (requestMessage.BodyData?.DetectedBodyType is BodyType.String or BodyType.MultiPart)
-            {
-                message = MimeKit.MimeMessage.Load(StreamUtils.CreateStream(requestMessage.BodyData.BodyAsString!));
-            }
-
-            // If the body is bytes, use the BodyAsBytes to match on.
-            else if (requestMessage.BodyData?.DetectedBodyType is BodyType.Bytes)
-            {
-                var s = Encoding.UTF8.GetString(requestMessage.BodyData.BodyAsBytes!);
-
-                message = MimeKit.MimeMessage.Load(new MemoryStream(requestMessage.BodyData.BodyAsBytes!));
-            }
-
-            // Else throw
-            else
-            {
-                throw new NotSupportedException();
-            }
+            var message = MimeKitUtils.GetMimeMessage(requestMessage.BodyData!, requestMessage.Headers![HttpKnownHeaderNames.ContentType].ToString());
 
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 

@@ -791,9 +791,7 @@ public class ResponseWithTransformerTests
     public async Task Response_ProvideResponse_Transformer_WithBodyAsMimeMessage(TransformerType transformerType)
     {
         // Assign
-        var multiPart = @"Content-Type: multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""
-
---=-5XgmpXt0XOfzdtcgNJc2ZQ==
+        var multiPart = @"--=-5XgmpXt0XOfzdtcgNJc2ZQ==
 Content-Type: text/plain; charset=utf-8
 
 This is some plain text
@@ -819,7 +817,12 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
             BodyAsString = multiPart,
             DetectedBodyType = BodyType.MultiPart
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData);
+
+        var headers = new Dictionary<string, string[]>
+        {
+            { "Content-Type", new[] { @"multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ=="""} }
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo_object"), "POST", ClientIp, bodyData, headers);
 
         var responseBuilder = Response.Create()
             .WithBody("{{request.BodyAsMimeMessage.BodyParts.[0].ContentType.MimeType}} {{request.BodyAsMimeMessage.BodyParts.[1].ContentType.MimeType}} {{request.BodyAsMimeMessage.BodyParts.[2].FileName}}")
