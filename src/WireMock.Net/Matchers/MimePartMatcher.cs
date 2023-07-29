@@ -1,6 +1,5 @@
 #if MIMEKIT
 using System;
-using System.Linq;
 using MimeKit;
 using WireMock.Matchers.Helpers;
 using WireMock.Util;

@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Stef.Validation;
 using WireMock.Types;
 using WireMock.Util;
@@ -56,40 +59,61 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 #else
         var match = MatchScores.Mismatch;
 
-        // If the body is a String or MultiPart, use the BodyAsString to match on.
-        if (requestMessage.BodyData?.DetectedBodyType is BodyType.String or BodyType.MultiPart && Matchers?.Any() == true)
+        if (Matchers?.Any() != true)
         {
+            return requestMatchResult.AddScore(GetType(), match);
+        }
+
+        try
+        {
+            MimeKit.MimeMessage message;
+
+            // If the body is a String or MultiPart, use the BodyAsString to match on.
+            if (requestMessage.BodyData?.DetectedBodyType is BodyType.String or BodyType.MultiPart)
+            {
+                message = MimeKit.MimeMessage.Load(StreamUtils.CreateStream(requestMessage.BodyData.BodyAsString!));
+            }
+
+            // If the body is bytes, use the BodyAsBytes to match on.
+            else if (requestMessage.BodyData?.DetectedBodyType is BodyType.Bytes)
+            {
+                var s = Encoding.UTF8.GetString(requestMessage.BodyData.BodyAsBytes!);
+
+                message = MimeKit.MimeMessage.Load(new MemoryStream(requestMessage.BodyData.BodyAsBytes!));
+            }
+
+            // Else throw
+            else
+            {
+                throw new NotSupportedException();
+            }
+
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
-            try
+            foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
             {
-                var message = MimeKit.MimeMessage.Load(StreamUtils.CreateStream(requestMessage.BodyData.BodyAsString!));
+                var matchesForMimePart = new List<double> { MatchScores.Mismatch };
+                matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
 
-                foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
+                match = matchesForMimePart.Max();
+
+                if (MatchScores.IsPerfect(match))
                 {
-                    var matchesForMimePart = new List<double> { MatchScores.Mismatch };
-                    matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
-
-                    match = matchesForMimePart.Max();
-
-                    if (MatchScores.IsPerfect(match))
+                    if (MatchOperator == MatchOperator.Or)
                     {
-                        if (MatchOperator == MatchOperator.Or)
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        match = MatchScores.Mismatch;
                         break;
                     }
                 }
+                else
+                {
+                    match = MatchScores.Mismatch;
+                    break;
+                }
             }
-            catch
-            {
-                // Empty
-            }
+        }
+        catch
+        {
+            // Empty
         }
 
         return requestMatchResult.AddScore(GetType(), match);
