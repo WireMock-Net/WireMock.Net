@@ -31,21 +31,14 @@ internal static class HttpRequestMessageHelper
             MediaTypeHeaderValue.TryParse(value, out contentType);
         }
 
-        switch (requestMessage.BodyData?.DetectedBodyType)
+        httpRequestMessage.Content = requestMessage.BodyData?.DetectedBodyType switch
         {
-            case BodyType.Bytes:
-                httpRequestMessage.Content = ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes!, contentType);
-                break;
-
-            case BodyType.Json:
-                httpRequestMessage.Content = StringContentHelper.Create(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), contentType);
-                break;
-
-            case BodyType.String:
-            case BodyType.FormUrlEncoded:
-                httpRequestMessage.Content = StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType);
-                break;
-        }
+            BodyType.Bytes => ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes!, contentType),
+            BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), contentType),
+            BodyType.String => StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType),
+            BodyType.FormUrlEncoded => StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType),
+            _ => httpRequestMessage.Content
+        };
 
         // Overwrite the host header
         httpRequestMessage.Headers.Host = new Uri(url).Authority;
