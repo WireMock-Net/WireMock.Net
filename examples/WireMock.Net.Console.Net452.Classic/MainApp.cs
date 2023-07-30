@@ -183,9 +183,9 @@ namespace WireMock.Net.ConsoleApplication
             var textPlainContentMatcher = new ExactMatcher("This is some plain text");
             var textPlainMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, textPlainContentTypeMatcher, null, null, textPlainContentMatcher);
 
-            var partTextJsonContentTypeMatcher = new ContentTypeMatcher("text/json");
-            var partTextJsonContentMatcher = new JsonMatcher(new { Key = "Value" }, true);
-            var partTextMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, partTextJsonContentTypeMatcher, null, null, partTextJsonContentMatcher);
+            var textJsonContentTypeMatcher = new ContentTypeMatcher("text/json");
+            var textJsonContentMatcher = new JsonMatcher(new { Key = "Value" }, true);
+            var textJsonMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, textJsonContentTypeMatcher, null, null, textJsonContentMatcher);
 
             var imagePngContentTypeMatcher = new ContentTypeMatcher("image/png");
             var imagePngContentDispositionMatcher = new ExactMatcher("attachment; filename=\"image.png\"");
@@ -196,7 +196,7 @@ namespace WireMock.Net.ConsoleApplication
             var matchers = new IMatcher[]
             {
                 textPlainMatcher,
-                partTextMatcher,
+                textJsonMatcher,
                 imagePngMatcher
             };
 
