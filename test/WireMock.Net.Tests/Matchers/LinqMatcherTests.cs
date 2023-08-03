@@ -58,7 +58,7 @@ public class LinqMatcherTests
 
         // Act
         var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
-        double match = matcher.IsMatch(input);
+        double match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -77,7 +77,7 @@ public class LinqMatcherTests
 
         // Act
         var matcher = new LinqMatcher("IntegerId > 1 AND LongId > 1 && Name == \"Test\"");
-        double match = matcher.IsMatch(input);
+        double match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);

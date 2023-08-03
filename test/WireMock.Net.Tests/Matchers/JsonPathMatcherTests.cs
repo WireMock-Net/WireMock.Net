@@ -42,7 +42,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(bytes);
+        double match = matcher.IsMatch(bytes).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -56,7 +56,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(s);
+        double match = matcher.IsMatch(s).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -70,7 +70,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(o);
+        double match = matcher.IsMatch(o).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -83,7 +83,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("xxx");
 
         // Act 
-        double match = matcher.IsMatch("");
+        double match = matcher.IsMatch("").Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -96,7 +96,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch("x");
+        double match = matcher.IsMatch("x").Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -109,7 +109,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("$..[?(@.Id == 1)]");
 
         // Act 
-        double match = matcher.IsMatch(new { Id = 1, Name = "Test" });
+        double match = matcher.IsMatch(new { Id = 1, Name = "Test" }).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -122,7 +122,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
 
         // Act 
-        double match = matcher.IsMatch(new { things = new { name = "x" } });
+        double match = matcher.IsMatch(new { things = new { name = "x" } }).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -136,7 +136,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
 
         // Act 
-        double match = matcher.IsMatch(json);
+        double match = matcher.IsMatch(json).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -150,7 +150,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("$.things[?(@.name == 'x')]");
 
         // Act 
-        double match = matcher.IsMatch(json);
+        double match = matcher.IsMatch(json).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -169,7 +169,7 @@ public class JsonPathMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jobject);
+        double match = matcher.IsMatch(jobject).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -182,7 +182,7 @@ public class JsonPathMatcherTests
         var matcher = new JsonPathMatcher("$..[?(@.Id == 1)]");
 
         // Act 
-        double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}"));
+        double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}")).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -192,10 +192,10 @@ public class JsonPathMatcherTests
     public void JsonPathMatcher_IsMatch_RejectOnMatch()
     {
         // Arrange
-        var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "$..[?(@.Id == 1)]");
+        var matcher = new JsonPathMatcher(MatchBehaviour.RejectOnMatch, MatchOperator.Or, "$..[?(@.Id == 1)]");
 
         // Act
-        double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}"));
+        double match = matcher.IsMatch(JObject.Parse("{\"Id\":1,\"Name\":\"Test\"}")).Score;
 
         // Assert
         Check.That(match).IsEqualTo(0.0);

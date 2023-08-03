@@ -105,7 +105,7 @@ public class WildcardMatcherTest
         var matcher = new WildcardMatcher("x");
 
         // Act
-        string name = matcher.Name;
+        var name = matcher.Name;
 
         // Assert
         Check.That(name).Equals("WildcardMatcher");
@@ -131,7 +131,7 @@ public class WildcardMatcherTest
         var matcher = new WildcardMatcher(MatchBehaviour.RejectOnMatch, "m");
 
         // Act
-        double result = matcher.IsMatch("m");
+        var result = matcher.IsMatch("m").Score;
 
         Check.That(result).IsEqualTo(0.0);
     }

@@ -14,9 +14,4 @@ public interface IMatcher
     /// Gets the match behaviour.
     /// </summary>
     MatchBehaviour MatchBehaviour { get; }
-
-    /// <summary>
-    /// Throw an exception when the internal matching fails because of invalid input.
-    /// </summary>
-    bool ThrowException { get; }
 }

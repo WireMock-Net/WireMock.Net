@@ -7,6 +7,7 @@ using GraphQL;
 using GraphQL.Types;
 using Newtonsoft.Json;
 using Stef.Validation;
+using WireMock.Matchers;
 using WireMock.Models;
 
 namespace WireMock.Matchers;
@@ -19,8 +20,10 @@ public class GraphQLMatcher : IStringMatcher
 {
     private sealed class GraphQLRequest
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public string? Query { get; set; }
 
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public Dictionary<string, object?>? Variables { get; set; }
     }
 
@@ -31,21 +34,16 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc />
-    public bool ThrowException { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
     /// <param name="schema">The schema.</param>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, bool throwException = false, MatchOperator matchOperator = MatchOperator.Or)
+    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, MatchOperator matchOperator = MatchOperator.Or)
     {
         Guard.NotNull(schema);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
 
         var patterns = new List<AnyOf<string, StringPattern>>();
@@ -72,9 +70,10 @@ public class GraphQLMatcher : IStringMatcher
     }
 
     /// <inheritdoc />
-    public double IsMatch(string? input)
+    public MatchResult IsMatch(string? input)
     {
-        var match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        string? error = null;
 
         try
         {
@@ -95,28 +94,20 @@ public class GraphQLMatcher : IStringMatcher
 
             if (executionResult.Errors == null || executionResult.Errors.Count == 0)
             {
-                match = MatchScores.Perfect;
+                score = MatchScores.Perfect;
             }
             else
             {
                 var exceptions = executionResult.Errors.OfType<Exception>().ToArray();
-                if (exceptions.Length == 1)
-                {
-                    throw exceptions[0];
-                }
-
-                throw new AggregateException(exceptions);
+                error = exceptions.Length == 1 ? exceptions[0].Message : string.Join(",", exceptions.Select(e => e.Message));
             }
         }
-        catch
+        catch (Exception ex)
         {
-            if (ThrowException)
-            {
-                throw;
-            }
+            error = ex.ToString();
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
     /// <inheritdoc />

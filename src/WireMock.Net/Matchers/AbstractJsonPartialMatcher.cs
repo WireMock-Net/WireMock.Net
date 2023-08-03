@@ -20,10 +20,8 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// </summary>
     /// <param name="value">The string value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="regex">Support Regex.</param>
-    protected AbstractJsonPartialMatcher(string value, bool ignoreCase = false, bool throwException = false, bool regex = false)
-        : base(value, ignoreCase, throwException)
+    protected AbstractJsonPartialMatcher(string value, bool ignoreCase = false, bool regex = false) : base(value, ignoreCase)
     {
         Regex = regex;
     }
@@ -33,10 +31,8 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// </summary>
     /// <param name="value">The object value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="regex">Support Regex.</param>
-    protected AbstractJsonPartialMatcher(object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
-        : base(value, ignoreCase, throwException)
+    protected AbstractJsonPartialMatcher(object value, bool ignoreCase = false, bool regex = false) : base(value, ignoreCase)
     {
         Regex = regex;
     }
@@ -47,10 +43,8 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="value">The value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="regex">Support Regex.</param>
-    protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false, bool regex = false)
-        : base(matchBehaviour, value, ignoreCase, throwException)
+    protected AbstractJsonPartialMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool regex = false) : base(matchBehaviour, value, ignoreCase)
     {
         Regex = regex;
     }
@@ -66,7 +60,7 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
         if (Regex && value.Type == JTokenType.String && input != null)
         {
             var valueAsString = value.ToString();
-            
+
             var (valid, result) = RegexUtils.MatchRegex(valueAsString, input.ToString());
             if (valid)
             {
@@ -75,10 +69,10 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
         }
 
         if (input != null &&
-        	((value.Type == JTokenType.Guid && input.Type == JTokenType.String) ||
-        	(value.Type == JTokenType.String && input.Type == JTokenType.Guid)))
+            ((value.Type == JTokenType.Guid && input.Type == JTokenType.String) ||
+            (value.Type == JTokenType.String && input.Type == JTokenType.Guid)))
         {
-        	return IsMatch(value.ToString(), input.ToString());
+            return IsMatch(value.ToString(), input.ToString());
         }
 
         if (input == null || value.Type != input.Type)

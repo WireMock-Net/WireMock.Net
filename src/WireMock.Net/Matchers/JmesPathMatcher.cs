@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using AnyOfTypes;
 using DevLab.JmesPath;
@@ -18,14 +19,11 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc />
-    public bool ThrowException { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
     /// </summary>
     /// <param name="patterns">The patterns.</param>
-    public JmesPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns.ToAnyOfPatterns())
+    public JmesPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, patterns.ToAnyOfPatterns())
     {
     }
 
@@ -33,18 +31,17 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
     /// </summary>
     /// <param name="patterns">The patterns.</param>
-    public JmesPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
+    public JmesPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, patterns)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
     /// </summary>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
     /// <param name="patterns">The patterns.</param>
-    public JmesPathMatcher(bool throwException = false, MatchOperator matchOperator = MatchOperator.Or, params AnyOf<string, StringPattern>[] patterns) :
-        this(MatchBehaviour.AcceptOnMatch, throwException, matchOperator, patterns)
+    public JmesPathMatcher(MatchOperator matchOperator = MatchOperator.Or, params AnyOf<string, StringPattern>[] patterns) :
+        this(MatchBehaviour.AcceptOnMatch, matchOperator, patterns)
     {
     }
 
@@ -52,60 +49,56 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     /// Initializes a new instance of the <see cref="JmesPathMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
     /// <param name="patterns">The patterns.</param>
     public JmesPathMatcher(
         MatchBehaviour matchBehaviour,
-        bool throwException = false,
         MatchOperator matchOperator = MatchOperator.Or,
         params AnyOf<string, StringPattern>[] patterns)
     {
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
     }
 
-    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(string? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        string? error = null;
+
         if (input != null)
         {
             try
             {
                 var results = _patterns.Select(pattern => bool.Parse(new JmesPath().Transform(input, pattern.GetPattern()))).ToArray();
-                match = MatchScores.ToScore(results, MatchOperator);
+                score = MatchScores.ToScore(results, MatchOperator);
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                if (ThrowException)
-                {
-                    throw;
-                }
+                error = ex.ToString();
             }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
 
         // When input is null or byte[], return Mismatch.
         if (input != null && !(input is byte[]))
         {
-            string inputAsString = JsonConvert.SerializeObject(input);
+            var inputAsString = JsonConvert.SerializeObject(input);
             return IsMatch(inputAsString);
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return MatchBehaviourHelper.Convert(MatchBehaviour, score);
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
@@ -114,6 +107,6 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
-    public string Name => "JmesPathMatcher";
+    /// <inheritdoc />
+    public string Name => nameof(JmesPathMatcher);
 }

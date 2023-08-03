@@ -130,7 +130,7 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
             var results = new List<double>();
             foreach (var matcher in Matchers)
             {
-                var resultsPerMatcher = headers[Name].Select(v => matcher.IsMatch(v)).ToArray();
+                var resultsPerMatcher = headers[Name].Select(v => matcher.IsMatch(v).Score).ToArray();
 
                 results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
             }

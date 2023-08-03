@@ -118,6 +118,6 @@ public class RequestMessageCookieMatcher : IRequestMatcher
         }
 
         string value = cookies[Name];
-        return Matchers.Max(m => m.IsMatch(value));
+        return Matchers.Max(m => m.IsMatch(value).Score);
     }
 }

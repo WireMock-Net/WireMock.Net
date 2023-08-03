@@ -146,7 +146,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
         double score = CalculateMatchScore(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        return requestMatchResult.AddScore(GetType(), score, null);
     }
 
     private double CalculateMatchScore(IRequestMessage requestMessage)

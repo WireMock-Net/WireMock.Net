@@ -17,10 +17,10 @@ internal static class BodyDataMatchScoreCalculator
                 case BodyType.Json:
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsString);
+                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsString).Score;
 
                 case BodyType.Bytes:
-                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsBytes);
+                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsBytes).Score;
 
                 default:
                     return MatchScores.Mismatch;
@@ -33,7 +33,7 @@ internal static class BodyDataMatchScoreCalculator
             var detectedBodyType = requestMessage?.DetectedBodyType;
             if (detectedBodyType is BodyType.Bytes or BodyType.String or BodyType.FormUrlEncoded)
             {
-                return exactObjectMatcher.IsMatch(requestMessage?.BodyAsBytes);
+                return exactObjectMatcher.IsMatch(requestMessage?.BodyAsBytes).Score;
             }
         }
 
@@ -43,13 +43,13 @@ internal static class BodyDataMatchScoreCalculator
             // If the body is a JSON object, try to match.
             if (requestMessage?.DetectedBodyType == BodyType.Json)
             {
-                return objectMatcher.IsMatch(requestMessage.BodyAsJson);
+                return objectMatcher.IsMatch(requestMessage.BodyAsJson).Score;
             }
 
             // If the body is a byte array, try to match.
             if (requestMessage?.DetectedBodyType == BodyType.Bytes)
             {
-                return objectMatcher.IsMatch(requestMessage.BodyAsBytes);
+                return objectMatcher.IsMatch(requestMessage.BodyAsBytes).Score;
             }
         }
 
@@ -59,7 +59,7 @@ internal static class BodyDataMatchScoreCalculator
             // If the body is a Json or a String, use the BodyAsString to match on.
             if (requestMessage?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
             {
-                return stringMatcher.IsMatch(requestMessage.BodyAsString);
+                return stringMatcher.IsMatch(requestMessage.BodyAsString).Score;
             }
         }
 

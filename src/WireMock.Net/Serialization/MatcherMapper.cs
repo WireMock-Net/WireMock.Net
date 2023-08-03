@@ -46,7 +46,6 @@ internal class MatcherMapper
         var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
         var matchOperator = StringUtils.ParseMatchOperator(matcher.MatchOperator);
         bool ignoreCase = matcher.IgnoreCase == true;
-        bool throwExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails == true;
         bool useRegexExtended = _settings.UseRegexExtended == true;
         bool useRegex = matcher.Regex == true;
 
@@ -64,51 +63,51 @@ internal class MatcherMapper
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
             case nameof(LinqMatcher):
-                return new LinqMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(ExactMatcher):
-                return new ExactMatcher(matchBehaviour, ignoreCase, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new ExactMatcher(matchBehaviour, ignoreCase, matchOperator, stringPatterns);
 
             case nameof(ExactObjectMatcher):
-                return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0], throwExceptionWhenMatcherFails);
+                return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
 #if GRAPHQL
             case nameof(GraphQLMatcher):
-                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
+                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, matchOperator);
 #endif
 
 #if MIMEKIT
             case nameof(MimePartMatcher):
-                return CreateMimePartMatcher(matchBehaviour, matcher, throwExceptionWhenMatcherFails);
+                return CreateMimePartMatcher(matchBehaviour, matcher);
 #endif
             case nameof(RegexMatcher):
-                return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended, matchOperator);
+                return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, useRegexExtended, matchOperator);
 
             case nameof(JsonMatcher):
                 var valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
-                return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase, throwExceptionWhenMatcherFails);
+                return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase);
 
             case nameof(JsonPartialMatcher):
                 var valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
-                return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, throwExceptionWhenMatcherFails, useRegex);
+                return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, useRegex);
 
             case nameof(JsonPartialWildcardMatcher):
                 var valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
-                return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, throwExceptionWhenMatcherFails, useRegex);
+                return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, useRegex);
 
             case nameof(JsonPathMatcher):
-                return new JsonPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new JsonPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(JmesPathMatcher):
-                return new JmesPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new JmesPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(XPathMatcher):
-                return new XPathMatcher(matchBehaviour, throwExceptionWhenMatcherFails, matchOperator, stringPatterns);
+                return new XPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(WildcardMatcher):
-                return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, matchOperator);
+                return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, matchOperator);
 
             case nameof(ContentTypeMatcher):
-                return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails);
+                return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase);
 
             case nameof(SimMetricsMatcher):
                 SimMetricType type = SimMetricType.Levenstein;
@@ -117,7 +116,7 @@ internal class MatcherMapper
                     throw new NotSupportedException($"Matcher '{matcherName}' with Type '{matcherType}' is not supported.");
                 }
 
-                return new SimMetricsMatcher(matchBehaviour, stringPatterns, type, throwExceptionWhenMatcherFails);
+                return new SimMetricsMatcher(matchBehaviour, stringPatterns, type);
 
             default:
                 if (_settings.CustomMatcherMappings != null && _settings.CustomMatcherMappings.ContainsKey(matcherName))
@@ -236,7 +235,7 @@ internal class MatcherMapper
         return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
-    private static ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern, bool throwException)
+    private static ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern)
     {
         byte[] bytePattern;
         try
@@ -248,18 +247,18 @@ internal class MatcherMapper
             throw new ArgumentException($"Matcher 'ExactObjectMatcher' has invalid pattern. The pattern value '{stringPattern}' is not a Base64String.", nameof(stringPattern));
         }
 
-        return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
+        return new ExactObjectMatcher(matchBehaviour, bytePattern);
     }
 
 #if MIMEKIT
-    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher, bool throwExceptionWhenMatcherFails)
+    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher)
     {
         var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
         var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
         var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
         var contentMatcher = Map(matcher?.ContentMatcher);
 
-        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher, throwExceptionWhenMatcherFails);
+        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
     }
 #endif
 }

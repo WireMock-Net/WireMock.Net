@@ -34,8 +34,6 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
     public MatchBehaviour MatchBehaviour => MatchBehaviour.AcceptOnMatch;
 
-    public bool ThrowException => false;
-
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return EmptyArray<AnyOf<string, StringPattern>>.Value;
@@ -43,7 +41,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
     public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 
-    public double IsMatch(string? input)
+    public MatchResult IsMatch(string? input)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -70,9 +68,9 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
             return MatchScores.Perfect;
         }
-        catch
+        catch (Exception ex)
         {
-            return MatchScores.Mismatch;
+            return new MatchResult(MatchScores.Mismatch, ex.ToString());
         }
     }
 }

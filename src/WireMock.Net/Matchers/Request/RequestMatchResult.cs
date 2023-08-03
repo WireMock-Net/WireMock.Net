@@ -29,10 +29,11 @@ public class RequestMatchResult : IRequestMatchResult
     /// </summary>
     /// <param name="matcherType">The matcher Type.</param>
     /// <param name="score">The score.</param>
+    /// <param name="error">The error (exception).</param>
     /// <returns>The score.</returns>
-    public double AddScore(Type matcherType, double score)
+    public double AddScore(Type matcherType, double score, string? error)
     {
-        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score });
+        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score, Error = error});
 
         return score;
     }

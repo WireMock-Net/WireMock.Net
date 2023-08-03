@@ -54,7 +54,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <param name="ignoreCase">Defines if the key should be matched using case-ignore.</param>
     /// <param name="values">The values.</param>
     public RequestMessageParamMatcher(MatchBehaviour matchBehaviour, string key, bool ignoreCase, params string[]? values) :
-        this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, ignoreCase, false, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
+        this(matchBehaviour, key, ignoreCase, values?.Select(value => new ExactMatcher(matchBehaviour, ignoreCase, MatchOperator.And, value)).Cast<IStringMatcher>().ToArray())
     {
     }
 
@@ -130,7 +130,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
                 double score = 0d;
                 foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
                 {
-                    score += matcher.IsMatch(valuePresentInRequestMessage) / matcher.GetPatterns().Length;
+                    score += matcher.IsMatch(valuePresentInRequestMessage).Score / matcher.GetPatterns().Length;
                 }
 
                 total.Add(score);
@@ -140,7 +140,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
         {
             foreach (string valuePresentInRequestMessage in valuesPresentInRequestMessage)
             {
-                double score = matchers.Max(m => m.IsMatch(valuePresentInRequestMessage));
+                var score = matchers.Max(m => m.IsMatch(valuePresentInRequestMessage).Score);
                 total.Add(score);
             }
         }

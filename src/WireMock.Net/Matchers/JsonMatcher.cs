@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using WireMock.Util;
@@ -13,20 +12,17 @@ namespace WireMock.Matchers;
 /// </summary>
 public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
 {
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public virtual string Name => "JsonMatcher";
 
     /// <inheritdoc cref="IValueMatcher.Value"/>
     public object Value { get; }
-    
+
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
     public bool IgnoreCase { get; }
-
-    /// <inheritdoc />
-    public bool ThrowException { get; }
 
     private readonly JToken _valueAsJToken;
     private readonly Func<JToken, JToken> _jTokenConverter;
@@ -36,8 +32,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     /// </summary>
     /// <param name="value">The string value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    public JsonMatcher(string value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
+    public JsonMatcher(string value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
     {
     }
 
@@ -46,8 +41,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     /// </summary>
     /// <param name="value">The object value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    public JsonMatcher(object value, bool ignoreCase = false, bool throwException = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, throwException)
+    public JsonMatcher(object value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
     {
     }
 
@@ -57,24 +51,23 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="value">The value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    public JsonMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool throwException = false)
+    public JsonMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false)
     {
         Guard.NotNull(value, nameof(value));
 
         MatchBehaviour = matchBehaviour;
         IgnoreCase = ignoreCase;
-        ThrowException = throwException;
 
         Value = value;
         _valueAsJToken = ConvertValueToJToken(value);
         _jTokenConverter = ignoreCase ? Rename : jToken => jToken;
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object? input)
     {
-        bool match = false;
+        var score = MatchScores.Mismatch;
+        string? error = null;
 
         // When input is null or byte[], return Mismatch.
         if (input != null && input is not byte[])
@@ -83,20 +76,16 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
             {
                 var inputAsJToken = ConvertValueToJToken(input);
 
-                match = IsMatch(
-                    _jTokenConverter(_valueAsJToken),
-                    _jTokenConverter(inputAsJToken));
+                var match = IsMatch(_jTokenConverter(_valueAsJToken), _jTokenConverter(inputAsJToken));
+                score = MatchScores.ToScore(match);
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                if (ThrowException)
-                {
-                    throw;
-                }
+                error = ex.ToString();
             }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(match));
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
     /// <summary>

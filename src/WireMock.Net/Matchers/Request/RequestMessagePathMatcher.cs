@@ -43,7 +43,7 @@ public class RequestMessagePathMatcher : IRequestMatcher
         MatchOperator matchOperator,
         params string[] paths) :
         this(matchBehaviour, matchOperator, paths
-            .Select(path => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { path }, false, false, matchOperator))
+            .Select(path => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { path }, false, matchOperator))
             .Cast<IStringMatcher>().ToArray())
     {
         Behaviour = matchBehaviour;
@@ -83,7 +83,7 @@ public class RequestMessagePathMatcher : IRequestMatcher
     {
         if (Matchers != null)
         {
-            var results = Matchers.Select(m => m.IsMatch(requestMessage.Path)).ToArray();
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.Path).Score).ToArray();
             return MatchScores.ToScore(results, MatchOperator);
         }
 

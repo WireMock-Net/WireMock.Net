@@ -12,7 +12,7 @@ public class NotNullOrEmptyMatcherTests
     {
         // Act
         var matcher = new NotNullOrEmptyMatcher();
-        string name = matcher.Name;
+        var name = matcher.Name;
 
         // Assert
         Check.That(name).Equals("NotNullOrEmptyMatcher");
@@ -26,7 +26,7 @@ public class NotNullOrEmptyMatcherTests
     {
         // Act
         var matcher = new NotNullOrEmptyMatcher();
-        double result = matcher.IsMatch(data);
+        var result = matcher.IsMatch(data).Score;
 
         // Assert
         result.Should().Be(expected);
@@ -40,7 +40,7 @@ public class NotNullOrEmptyMatcherTests
     {
         // Act
         var matcher = new NotNullOrEmptyMatcher();
-        double result = matcher.IsMatch(@string);
+        var result = matcher.IsMatch(@string).Score;
 
         // Assert
         result.Should().Be(expected);
@@ -54,7 +54,7 @@ public class NotNullOrEmptyMatcherTests
     {
         // Act
         var matcher = new NotNullOrEmptyMatcher();
-        double result = matcher.IsMatch((object)@string);
+        var result = matcher.IsMatch((object)@string).Score;
 
         // Assert
         result.Should().Be(expected);
@@ -65,7 +65,7 @@ public class NotNullOrEmptyMatcherTests
     {
         // Act
         var matcher = new NotNullOrEmptyMatcher();
-        double result = matcher.IsMatch(new { x = "x" });
+        var result = matcher.IsMatch(new { x = "x" }).Score;
 
         // Assert
         result.Should().Be(1.0);

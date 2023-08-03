@@ -49,14 +49,12 @@ public class WildcardMatcher : RegexMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="patterns">The patterns.</param>
     /// <param name="ignoreCase">IgnoreCase</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="MatchOperator"/> to use. (default = "Or")</param>
     public WildcardMatcher(
         MatchBehaviour matchBehaviour,
         AnyOf<string, StringPattern>[] patterns,
         bool ignoreCase = false,
-        bool throwException = false,
-        MatchOperator matchOperator = MatchOperator.Or) : base(matchBehaviour, CreateArray(patterns), ignoreCase, throwException, true, matchOperator)
+        MatchOperator matchOperator = MatchOperator.Or) : base(matchBehaviour, CreateArray(patterns), ignoreCase, true, matchOperator)
     {
         _patterns = Guard.NotNull(patterns);
     }

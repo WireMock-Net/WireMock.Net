@@ -138,25 +138,25 @@ public partial class WireMockServerTests
 
 #if NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
     [Fact]
-public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
-{
-    // Arrange
-    var settings = new WireMockServerSettings
+    public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
     {
-        CorsPolicyOptions = CorsPolicyOptions.AllowAll
-    };
-    var server = WireMockServer.Start(settings);
+        // Arrange
+        var settings = new WireMockServerSettings
+        {
+            CorsPolicyOptions = CorsPolicyOptions.AllowAll
+        };
+        var server = WireMockServer.Start(settings);
 
-    server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+        server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
 
-    // Act
-    var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+        // Act
+        var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
 
-    // Asser.
-    response.Should().Be("x");
+        // Asser.
+        response.Should().Be("x");
 
-    server.Stop();
-}
+        server.Stop();
+    }
 #endif
 
     [Fact]
@@ -277,34 +277,34 @@ public async Task WireMockServer_WithCorsPolicyOptions_Should_Work_Correct()
     }
 
 #if !NET452 && !NET461
-[Theory]
-[InlineData("TRACE")]
-[InlineData("GET")]
-public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
-{
-    // Assign
-    string content = "hello";
-    var server = WireMockServer.Start();
+    [Theory]
+    [InlineData("TRACE")]
+    [InlineData("GET")]
+    public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_definitely_disallowed(string method)
+    {
+        // Assign
+        string content = "hello";
+        var server = WireMockServer.Start();
 
-    server
-        .Given(Request.Create().WithBody((byte[] bodyBytes) => bodyBytes != null))
-        .AtPriority(0)
-        .RespondWith(Response.Create().WithStatusCode(400));
-    server
-        .Given(Request.Create())
-        .AtPriority(1)
-        .RespondWith(Response.Create().WithStatusCode(200));
+        server
+            .Given(Request.Create().WithBody((byte[] bodyBytes) => bodyBytes != null))
+            .AtPriority(0)
+            .RespondWith(Response.Create().WithStatusCode(400));
+        server
+            .Given(Request.Create())
+            .AtPriority(1)
+            .RespondWith(Response.Create().WithStatusCode(200));
 
-    // Act
-    var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
-    request.Content = new StringContent(content);
-    var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
+        // Act
+        var request = new HttpRequestMessage(new HttpMethod(method), "http://localhost:" + server.Ports[0] + "/");
+        request.Content = new StringContent(content);
+        var response = await new HttpClient().SendAsync(request).ConfigureAwait(false);
 
-    // Assert
-    Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
+        // Assert
+        Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
 
-    server.Stop();
-}
+        server.Stop();
+    }
 #endif
 
     [Theory]
@@ -465,8 +465,7 @@ public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_d
             var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
             return new CustomPathParamMatcher(
                 matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                matcherParams.Path, matcherParams.PathParams,
-                settings.ThrowExceptionWhenMatcherFails == true
+                matcherParams.Path, matcherParams.PathParams
             );
         };
 
@@ -513,8 +512,7 @@ public async Task WireMockServer_Should_exclude_body_for_methods_where_body_is_d
             var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
             return new CustomPathParamMatcher(
                 matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
-                matcherParams.Path, matcherParams.PathParams,
-                settings.ThrowExceptionWhenMatcherFails == true
+                matcherParams.Path, matcherParams.PathParams
             );
         };
 

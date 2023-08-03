@@ -237,7 +237,6 @@ public partial class WireMockServer
             ReadStaticMappings = _settings.ReadStaticMappings,
             RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
             SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
-            ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails,
             UseRegexExtended = _settings.UseRegexExtended,
             WatchStaticMappings = _settings.WatchStaticMappings,
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
@@ -273,7 +272,6 @@ public partial class WireMockServer
         _settings.ReadStaticMappings = settings.ReadStaticMappings;
         _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
         _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
-        _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
         _settings.UseRegexExtended = settings.UseRegexExtended;
         _settings.WatchStaticMappings = settings.WatchStaticMappings;
         _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;

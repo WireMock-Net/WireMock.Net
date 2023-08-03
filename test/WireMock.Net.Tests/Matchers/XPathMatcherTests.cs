@@ -43,7 +43,7 @@ public class XPathMatcherTests
         var matcher = new XPathMatcher("/todo-list[count(todo-item) = 1]");
 
         // Act
-        double result = matcher.IsMatch(xml);
+        double result = matcher.IsMatch(xml).Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -57,10 +57,10 @@ public class XPathMatcherTests
                     <todo-list>
                         <todo-item id='a1'>abc</todo-item>
                     </todo-list>";
-        var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "/todo-list[count(todo-item) = 1]");
+        var matcher = new XPathMatcher(MatchBehaviour.RejectOnMatch, MatchOperator.Or, "/todo-list[count(todo-item) = 1]");
 
         // Act
-        double result = matcher.IsMatch(xml);
+        double result = matcher.IsMatch(xml).Score;
 
         // Assert
         Check.That(result).IsEqualTo(0.0);

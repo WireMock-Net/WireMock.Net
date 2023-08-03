@@ -43,7 +43,7 @@ public class RequestMessageClientIPMatcher : IRequestMatcher
         MatchOperator matchOperator,
         params string[] clientIPs) :
         this(matchBehaviour, matchOperator, clientIPs
-            .Select(clientIP => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { clientIP }, false, false, matchOperator))
+            .Select(clientIP => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { clientIP }, false, matchOperator))
             .Cast<IStringMatcher>().ToArray())
     {
         Behaviour = matchBehaviour;

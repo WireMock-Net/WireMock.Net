@@ -139,7 +139,6 @@ internal class MappingConverter
                 sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
                                          ))");
             }
@@ -148,7 +147,6 @@ internal class MappingConverter
                 sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
                                          ))");
             }

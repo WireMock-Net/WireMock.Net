@@ -1,7 +1,9 @@
 #if MIMEKIT
 using System;
 using MimeKit;
+using WireMock.Matchers;
 using WireMock.Matchers.Helpers;
+using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -11,7 +13,7 @@ namespace WireMock.Matchers;
 /// </summary>
 public class MimePartMatcher : IMatcher
 {
-    private readonly Func<MimePart, double>[] _funcs;
+    private readonly Func<MimePart, MatchResult>[] _funcs;
 
     /// <inheritdoc />
     public string Name => nameof(MimePartMatcher);
@@ -39,9 +41,6 @@ public class MimePartMatcher : IMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc />
-    public bool ThrowException { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MimePartMatcher"/> class.
     /// </summary>
@@ -50,8 +49,7 @@ public class MimePartMatcher : IMatcher
         IStringMatcher? contentTypeMatcher,
         IStringMatcher? contentDispositionMatcher,
         IStringMatcher? contentTransferEncodingMatcher,
-        IMatcher? contentMatcher,
-        bool throwException = false
+        IMatcher? contentMatcher
     )
     {
         MatchBehaviour = matchBehaviour;
@@ -59,7 +57,6 @@ public class MimePartMatcher : IMatcher
         ContentDispositionMatcher = contentDispositionMatcher;
         ContentTransferEncodingMatcher = contentTransferEncodingMatcher;
         ContentMatcher = contentMatcher;
-        ThrowException = throwException;
 
         _funcs = new[]
         {
@@ -75,29 +72,27 @@ public class MimePartMatcher : IMatcher
     /// </summary>
     /// <param name="mimePart">The MimePart.</param>
     /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-    public double IsMatch(MimePart mimePart)
+    public MatchResult IsMatch(MimePart mimePart)
     {
-        var match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        string? error = null;
 
         try
         {
-            if (Array.TrueForAll(_funcs, func => MatchScores.IsPerfect(func(mimePart))))
+            if (Array.TrueForAll(_funcs, func => func(mimePart).IsPerfect()))
             {
-                match = MatchScores.Perfect;
+                score = MatchScores.Perfect;
             }
         }
-        catch
+        catch (Exception ex)
         {
-            if (ThrowException)
-            {
-                throw;
-            }
+            error = ex.ToString();
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
-    private double MatchOnContent(MimePart mimePart)
+    private MatchResult MatchOnContent(MimePart mimePart)
     {
         if (ContentMatcher == null)
         {

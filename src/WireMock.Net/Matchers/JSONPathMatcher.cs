@@ -1,6 +1,6 @@
+using System;
 using System.Linq;
 using AnyOfTypes;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using WireMock.Extensions;
@@ -20,14 +20,11 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc />
-    public bool ThrowException { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
     /// </summary>
     /// <param name="patterns">The patterns.</param>
-    public JsonPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns.ToAnyOfPatterns())
+    public JsonPathMatcher(params string[] patterns) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, patterns.ToAnyOfPatterns())
     {
     }
 
@@ -35,7 +32,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
     /// </summary>
     /// <param name="patterns">The patterns.</param>
-    public JsonPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
+    public JsonPathMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, patterns)
     {
     }
 
@@ -43,48 +40,45 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="patterns">The patterns.</param>
     public JsonPathMatcher(
         MatchBehaviour matchBehaviour,
-        bool throwException = false,
         MatchOperator matchOperator = MatchOperator.Or,
         params AnyOf<string, StringPattern>[] patterns)
     {
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
     }
 
-    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(string? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        string? error = null;
+
         if (input != null)
         {
             try
             {
                 var jToken = JToken.Parse(input);
-                match = IsMatch(jToken);
+                score = IsMatch(jToken);
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                if (ThrowException)
-                {
-                    throw;
-                }
+                error = ex.ToString();
             }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        string? error = null;
 
         // When input is null or byte[], return Mismatch.
         if (input != null && !(input is byte[]))
@@ -93,18 +87,15 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
             {
                 // Check if JToken or object
                 JToken jToken = input as JToken ?? JObject.FromObject(input);
-                match = IsMatch(jToken);
+                score = IsMatch(jToken);
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                if (ThrowException)
-                {
-                    throw;
-                }
+                error = ex.ToString();
             }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
     /// <inheritdoc />
@@ -116,7 +107,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => "JsonPathMatcher";
 
     private double IsMatch(JToken jToken)
@@ -138,9 +129,9 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
             var item = property.First();
             if (item is JArray)
             {
-               return jToken;
+                return jToken;
             }
-            
+
             return new JObject
             {
                 [property.Path] = new JArray(item)

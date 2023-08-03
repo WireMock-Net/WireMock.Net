@@ -222,12 +222,6 @@ public class WireMockServerSettings
     public bool? HandleRequestsSynchronously { get; set; }
 
     /// <summary>
-    /// Throw an exception when the <see cref="IMatcher"/> fails because of invalid input. (default set to <c>false</c>).
-    /// </summary>
-    [PublicAPI]
-    public bool? ThrowExceptionWhenMatcherFails { get; set; }
-
-    /// <summary>
     /// If https is used, these settings can be used to configure the CertificateSettings in case a custom certificate instead the default .NET certificate should be used.
     ///
     /// X509StoreName and X509StoreLocation should be defined
