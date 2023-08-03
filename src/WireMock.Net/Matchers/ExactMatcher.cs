@@ -14,10 +14,10 @@ public class ExactMatcher : IStringMatcher, IIgnoreCaseMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _values;
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     /// <summary>

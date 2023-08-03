@@ -32,7 +32,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
 
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     private readonly AnyOf<string, StringPattern>[] _patterns;

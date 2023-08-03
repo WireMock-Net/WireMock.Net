@@ -19,10 +19,10 @@ public class ExactObjectMatcher : IObjectMatcher
     /// </summary>
     public byte[]? ValueAsBytes { get; }
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     /// <summary>

@@ -105,7 +105,7 @@ namespace WireMock.Owin
                 {
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
-                    response = ResponseMessageBuilder.Create("No matching mapping found", 404);
+                    response = ResponseMessageBuilder.Create(404, "No matching mapping found");
                     return;
                 }
 
@@ -117,7 +117,7 @@ namespace WireMock.Owin
                     if (!present || _options.AuthenticationMatcher.IsMatch(authorization!.ToString()) < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
-                        response = ResponseMessageBuilder.Create(null, HttpStatusCode.Unauthorized);
+                        response = ResponseMessageBuilder.Create(HttpStatusCode.Unauthorized, null);
                         return;
                     }
                 }
@@ -162,7 +162,7 @@ namespace WireMock.Owin
             catch (Exception ex)
             {
                 _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
-                response = ResponseMessageBuilder.Create(ex.Message, 500);
+                response = ResponseMessageBuilder.Create(500, ex.Message);
             }
             finally
             {

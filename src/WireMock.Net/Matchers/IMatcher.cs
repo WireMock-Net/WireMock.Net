@@ -16,7 +16,7 @@ public interface IMatcher
     MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// Should this matcher throw an exception?
+    /// Throw an exception when the internal matching fails because of invalid input.
     /// </summary>
     bool ThrowException { get; }
 }

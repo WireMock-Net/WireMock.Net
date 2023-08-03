@@ -19,13 +19,13 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     /// <inheritdoc cref="IValueMatcher.Value"/>
     public object Value { get; }
     
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
     public bool IgnoreCase { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     private readonly JToken _valueAsJToken;

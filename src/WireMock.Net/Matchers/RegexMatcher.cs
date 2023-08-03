@@ -20,10 +20,10 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     private readonly AnyOf<string, StringPattern>[] _patterns;
     private readonly Regex[] _expressions;
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     /// <summary>

@@ -56,8 +56,7 @@ public class WildcardMatcher : RegexMatcher
         AnyOf<string, StringPattern>[] patterns,
         bool ignoreCase = false,
         bool throwException = false,
-        MatchOperator matchOperator = MatchOperator.Or) :
-            base(matchBehaviour, CreateArray(patterns), ignoreCase, throwException, true, matchOperator)
+        MatchOperator matchOperator = MatchOperator.Or) : base(matchBehaviour, CreateArray(patterns), ignoreCase, throwException, true, matchOperator)
     {
         _patterns = Guard.NotNull(patterns);
     }

@@ -14,10 +14,10 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc cref="IMatcher.Name"/>
     public string Name => "NotNullOrEmptyMatcher";
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     /// <summary>

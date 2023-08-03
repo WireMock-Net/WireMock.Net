@@ -391,7 +391,7 @@ public partial class WireMockServer : IWireMockServer
         Given(Request.Create().WithPath("/*").UsingAnyMethod())
             .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
             .AtPriority(1000)
-            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create("No matching mapping found", 404)));
+            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create(404, "No matching mapping found")));
     }
 
     /// <inheritdoc cref="IWireMockServer.Reset" />

@@ -17,10 +17,10 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
+    /// <inheritdoc />
     public bool ThrowException { get; }
 
     /// <summary>
