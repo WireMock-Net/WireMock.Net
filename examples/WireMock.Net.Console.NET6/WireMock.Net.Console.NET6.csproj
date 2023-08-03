@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+      <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

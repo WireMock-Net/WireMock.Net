@@ -40,6 +40,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     {
     }
 #endif
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
     /// </summary>

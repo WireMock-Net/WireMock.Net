@@ -75,6 +75,11 @@ internal class MatcherMapper
             case nameof(GraphQLMatcher):
                 return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, throwExceptionWhenMatcherFails, matchOperator);
 #endif
+
+#if MIMEKIT
+            case nameof(MimePartMatcher):
+                return CreateMimePartMatcher(matchBehaviour, matcher, throwExceptionWhenMatcherFails);
+#endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, throwExceptionWhenMatcherFails, useRegexExtended, matchOperator);
 
@@ -126,12 +131,7 @@ internal class MatcherMapper
 
     public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
     {
-        if (matchers == null)
-        {
-            return null;
-        }
-
-        return matchers.Where(m => m != null).Select(Map).ToArray()!;
+        return matchers?.Where(m => m != null).Select(Map).ToArray();
     }
 
     public MatcherModel? Map(IMatcher? matcher)
@@ -195,6 +195,15 @@ internal class MatcherMapper
             case ExactObjectMatcher exactObjectMatcher:
                 model.Pattern = exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes;
                 break;
+
+#if MIMEKIT
+            case MimePartMatcher mimePartMatcher:
+                model.ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher);
+                model.ContentMatcher = Map(mimePartMatcher.ContentMatcher);
+                model.ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher);
+                model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
+                break;
+#endif
         }
 
         return model;
@@ -224,7 +233,7 @@ internal class MatcherMapper
             return new[] { new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = patternAsFile }) };
         }
 
-        return new AnyOf<string, StringPattern>[0];
+        return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
     private static ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern, bool throwException)
@@ -241,4 +250,16 @@ internal class MatcherMapper
 
         return new ExactObjectMatcher(matchBehaviour, bytePattern, throwException);
     }
+
+#if MIMEKIT
+    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher, bool throwExceptionWhenMatcherFails)
+    {
+        var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
+        var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
+        var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
+        var contentMatcher = Map(matcher?.ContentMatcher);
+
+        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher, throwExceptionWhenMatcherFails);
+    }
+#endif
 }
