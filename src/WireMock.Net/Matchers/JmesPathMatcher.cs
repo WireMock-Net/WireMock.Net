@@ -65,7 +65,7 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     public MatchResult IsMatch(string? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         if (input != null)
         {
@@ -76,11 +76,11 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
             }
             catch (Exception ex)
             {
-                error = ex.ToString();
+                exception = ex;
             }
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />

@@ -67,7 +67,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     public MatchResult IsMatch(object? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? error = null;
 
         // When input is null or byte[], return Mismatch.
         if (input != null && input is not byte[])
@@ -81,7 +81,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
             }
             catch (Exception ex)
             {
-                error = ex.ToString();
+                error = ex;
             }
         }
 

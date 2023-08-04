@@ -88,11 +88,11 @@ public class RequestMessageCookieMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
         if (requestMessage.Cookies == null)
         {
@@ -109,7 +109,7 @@ public class RequestMessageCookieMatcher : IRequestMatcher
 
         if (Matchers == null)
         {
-            return MatchScores.Mismatch;
+            return default;
         }
 
         if (!cookies.ContainsKey(Name))
@@ -117,7 +117,6 @@ public class RequestMessageCookieMatcher : IRequestMatcher
             return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
         }
 
-        string value = cookies[Name];
-        return Matchers.Max(m => m.IsMatch(value).Score);
+        return Matchers.Max(m => m.IsMatch(cookies[Name]));
     }
 }

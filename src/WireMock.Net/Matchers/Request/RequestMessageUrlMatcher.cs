@@ -75,25 +75,24 @@ public class RequestMessageUrlMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
-        var score = MatchScores.Mismatch;
-
         if (Matchers != null)
         {
-            var results = Matchers.Select(m => m.IsMatch(requestMessage.Url).Score).ToArray();
-            score = MatchScores.ToScore(results, MatchOperator);
-        }
-        else if (Funcs != null)
-        {
-            var results = Funcs.Select(func => func(requestMessage.Url)).ToArray();
-            score = MatchScores.ToScore(results, MatchOperator);
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.Url)).ToArray();
+            return MatchResult.From(results, MatchOperator);
         }
 
-        return score;
+        if (Funcs != null)
+        {
+            var results = Funcs.Select(func => func(requestMessage.Url)).ToArray();
+            return MatchScores.ToScore(results, MatchOperator);
+        }
+
+        return default;
     }
 }

@@ -70,7 +70,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
         }
         catch (Exception ex)
         {
-            return new MatchResult(MatchScores.Mismatch, ex.ToString());
+            return new MatchResult(MatchScores.Mismatch, ex);
         }
     }
 }

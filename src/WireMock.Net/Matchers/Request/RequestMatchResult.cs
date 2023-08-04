@@ -19,15 +19,15 @@ public class RequestMatchResult : IRequestMatchResult
     public bool IsPerfectMatch => Math.Abs(TotalScore - TotalNumber) < MatchScores.Tolerance;
 
     /// <inheritdoc />
-    public double AverageTotalScore => TotalNumber == 0 ? 0.0 : TotalScore / TotalNumber;
+    public double AverageTotalScore => TotalNumber == 0 ? MatchScores.Mismatch : TotalScore / TotalNumber;
 
     /// <inheritdoc />
     public IList<MatchDetail> MatchDetails { get; } = new List<MatchDetail>();
 
     /// <inheritdoc />
-    public double AddScore(Type matcherType, double score)
+    public double AddScore(Type matcherType, double score, Exception? exception, int dummy)
     {
-        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score });
+        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score, Exception = exception });
 
         return score;
     }
@@ -39,11 +39,16 @@ public class RequestMatchResult : IRequestMatchResult
     /// <returns>
     /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
     /// </returns>
-    public int CompareTo(object obj)
+    public int CompareTo(object? obj)
     {
+        if (obj == null)
+        {
+            return -1;
+        }
+
         var compareObj = (RequestMatchResult)obj;
 
-        int averageTotalScoreResult = compareObj.AverageTotalScore.CompareTo(AverageTotalScore);
+        var averageTotalScoreResult = compareObj.AverageTotalScore.CompareTo(AverageTotalScore);
 
         // In case the score is equal, prefer the one with the most matchers.
         return averageTotalScoreResult == 0 ? compareObj.TotalNumber.CompareTo(TotalNumber) : averageTotalScoreResult;

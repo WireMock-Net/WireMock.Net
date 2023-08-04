@@ -145,16 +145,16 @@ public class RequestMessageBodyMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = CalculateMatchScore(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score, null);
+        var (score, exception) = CalculateMatchScore(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private double CalculateMatchScore(IRequestMessage requestMessage)
+    private MatchResult CalculateMatchScore(IRequestMessage requestMessage)
     {
         if (Matchers != null)
         {
-            var matchersResult = Matchers.Select(matcher => BodyDataMatchScoreCalculator.CalculateMatchScore(requestMessage.BodyData, matcher)).ToArray();
-            return MatchScores.ToScore(matchersResult, MatchOperator);
+            var results = Matchers.Select(matcher => BodyDataMatchScoreCalculator.CalculateMatchScore(requestMessage.BodyData, matcher)).ToArray();
+            return MatchResult.From(results, MatchOperator);
         }
 
         if (Func != null)
@@ -182,6 +182,6 @@ public class RequestMessageBodyMatcher : IRequestMatcher
             return MatchScores.ToScore(BodyDataFunc(requestMessage.BodyData));
         }
 
-        return MatchScores.Mismatch;
+        return default;
     }
 }

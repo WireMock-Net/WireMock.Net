@@ -56,11 +56,11 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         throw new System.NotSupportedException("The MultiPartMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         if (Matchers?.Any() != true)
         {
-            return requestMatchResult.AddScore(GetType(), score, error);
+            return requestMatchResult.AddScore(GetType(), score, null, 0);
         }
 
         try
@@ -71,7 +71,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 
             foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
             {
-                var matchesForMimePart = new List<MatchResult> { MatchScores.Mismatch };
+                var matchesForMimePart = new List<MatchResult> { default };
                 matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
 
                 score = matchesForMimePart.Select(m => m.Score).Max();
@@ -92,10 +92,10 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         }
         catch (Exception ex)
         {
-            error = ex.ToString();
+            exception = ex;
         }
 
-        return requestMatchResult.AddScore(GetType(), score, error);
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
 #endif
     }
 }

@@ -67,7 +67,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     public MatchResult IsMatch(string? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? error = null;
 
         // Convert a single input string to a Queryable string-list with 1 entry.
         IQueryable queryable = new[] { input }.AsQueryable();
@@ -79,7 +79,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         }
         catch (Exception e)
         {
-            error = e.Message;
+            error = e;
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
@@ -89,7 +89,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     public MatchResult IsMatch(object? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? error = null;
 
         JArray jArray;
         try
@@ -113,7 +113,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         }
         catch (Exception e)
         {
-            error = e.Message;
+            error = e;
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
@@ -129,5 +129,5 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc />
-    public string Name => "LinqMatcher";
+    public string Name => nameof(LinqMatcher);
 }

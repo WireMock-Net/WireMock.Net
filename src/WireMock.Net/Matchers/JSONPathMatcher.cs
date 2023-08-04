@@ -56,7 +56,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     public MatchResult IsMatch(string? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         if (input != null)
         {
@@ -67,18 +67,18 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
             }
             catch (Exception ex)
             {
-                error = ex.ToString();
+                exception = ex;
             }
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         // When input is null or byte[], return Mismatch.
         if (input != null && !(input is byte[]))
@@ -91,11 +91,11 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
             }
             catch (Exception ex)
             {
-                error = ex.ToString();
+                exception = ex;
             }
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />

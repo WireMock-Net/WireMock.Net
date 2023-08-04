@@ -75,7 +75,7 @@ public class MimePartMatcher : IMatcher
     public MatchResult IsMatch(MimePart mimePart)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         try
         {
@@ -86,10 +86,10 @@ public class MimePartMatcher : IMatcher
         }
         catch (Exception ex)
         {
-            error = ex.ToString();
+            exception = ex;
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     private MatchResult MatchOnContent(MimePart mimePart)

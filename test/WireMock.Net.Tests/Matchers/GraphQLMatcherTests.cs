@@ -126,7 +126,7 @@ public class GraphQLMatcherTests
 
         // Assert
         result.Score.Should().Be(MatchScores.Mismatch);
-        result.Error.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
+        result.Exception.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
     }
 
     [Fact]

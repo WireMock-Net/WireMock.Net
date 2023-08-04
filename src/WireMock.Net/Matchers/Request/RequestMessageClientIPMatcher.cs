@@ -75,16 +75,16 @@ public class RequestMessageClientIPMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
         if (Matchers != null)
         {
-            var results = Matchers.Select(m => m.IsMatch(requestMessage.ClientIP).Score).ToArray();
-            return MatchScores.ToScore(results, MatchOperator);
+            var results = Matchers.Select(m => m.IsMatch(requestMessage.ClientIP)).ToArray();
+            return MatchResult.From(results, MatchOperator);
         }
 
         if (Funcs != null)
@@ -93,6 +93,6 @@ public class RequestMessageClientIPMatcher : IRequestMatcher
             return MatchScores.ToScore(results, MatchOperator);
         }
 
-        return MatchScores.Mismatch;
+        return default;
     }
 }

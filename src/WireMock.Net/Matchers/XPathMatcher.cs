@@ -50,7 +50,7 @@ namespace WireMock.Matchers
         public MatchResult IsMatch(string? input)
         {
             var score = MatchScores.Mismatch;
-            string? error = null;
+            Exception? exception = null;
 
             if (input != null)
             {
@@ -65,11 +65,11 @@ namespace WireMock.Matchers
                 }
                 catch (Exception ex)
                 {
-                    error = ex.ToString();
+                    exception = ex;
                 }
             }
 
-            return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+            return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
         }
 
         /// <inheritdoc />

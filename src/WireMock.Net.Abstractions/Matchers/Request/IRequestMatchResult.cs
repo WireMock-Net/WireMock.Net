@@ -50,6 +50,7 @@ public interface IRequestMatchResult : IComparable
     /// </summary>
     /// <param name="matcherType">The matcher Type.</param>
     /// <param name="score">The score.</param>
+    /// <param name="exception">The exception [Optional].</param>
     /// <returns>The score.</returns>
-    double AddScore(Type matcherType, double score);
+    double AddScore(Type matcherType, double score, Exception? exception, int dummy);
 }

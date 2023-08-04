@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
 using WireMock.Types;
@@ -64,31 +65,27 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        var score = CalculateMatchScore(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var results = CalculateMatchResults(requestMessage);
+        var (score, exception) = MatchResult.From(results, MatchOperator).Expand();
+
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private static double CalculateMatchScore(IRequestMessage requestMessage, IMatcher matcher)
+    private static MatchResult CalculateMatchResult(IRequestMessage requestMessage, IMatcher matcher)
     {
         // Check if the matcher is a IStringMatcher
         // If the body is a Json or a String, use the BodyAsString to match on.
         if (matcher is IStringMatcher stringMatcher && requestMessage.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
         {
-            return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString).Score;
+            return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);
         }
 
-        return MatchScores.Mismatch;
+        return default;
     }
 
-    private double CalculateMatchScore(IRequestMessage requestMessage)
+    private IReadOnlyList<MatchResult> CalculateMatchResults(IRequestMessage requestMessage)
     {
-        if (Matchers == null)
-        {
-            return MatchScores.Mismatch;
-        }
-
-        var matchersResult = Matchers.Select(matcher => CalculateMatchScore(requestMessage, matcher)).ToArray();
-        return MatchScores.ToScore(matchersResult, MatchOperator);
+        return Matchers == null ? new[] { new MatchResult() } : Matchers.Select(matcher => CalculateMatchResult(requestMessage, matcher)).ToArray();
     }
 
 #if GRAPHQL

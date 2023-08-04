@@ -6,7 +6,7 @@ namespace WireMock.Matchers.Helpers;
 
 internal static class BodyDataMatchScoreCalculator
 {
-    public static double CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
+    public static MatchResult CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
     {
         Guard.NotNull(matcher);
 
@@ -17,13 +17,13 @@ internal static class BodyDataMatchScoreCalculator
                 case BodyType.Json:
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsString).Score;
+                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsString);
 
                 case BodyType.Bytes:
-                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsBytes).Score;
+                    return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsBytes);
 
                 default:
-                    return MatchScores.Mismatch;
+                    return default;
             }
         }
 
@@ -33,7 +33,7 @@ internal static class BodyDataMatchScoreCalculator
             var detectedBodyType = requestMessage?.DetectedBodyType;
             if (detectedBodyType is BodyType.Bytes or BodyType.String or BodyType.FormUrlEncoded)
             {
-                return exactObjectMatcher.IsMatch(requestMessage?.BodyAsBytes).Score;
+                return exactObjectMatcher.IsMatch(requestMessage?.BodyAsBytes);
             }
         }
 
@@ -43,13 +43,13 @@ internal static class BodyDataMatchScoreCalculator
             // If the body is a JSON object, try to match.
             if (requestMessage?.DetectedBodyType == BodyType.Json)
             {
-                return objectMatcher.IsMatch(requestMessage.BodyAsJson).Score;
+                return objectMatcher.IsMatch(requestMessage.BodyAsJson);
             }
 
             // If the body is a byte array, try to match.
             if (requestMessage?.DetectedBodyType == BodyType.Bytes)
             {
-                return objectMatcher.IsMatch(requestMessage.BodyAsBytes).Score;
+                return objectMatcher.IsMatch(requestMessage.BodyAsBytes);
             }
         }
 
@@ -59,20 +59,10 @@ internal static class BodyDataMatchScoreCalculator
             // If the body is a Json or a String, use the BodyAsString to match on.
             if (requestMessage?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
             {
-                return stringMatcher.IsMatch(requestMessage.BodyAsString).Score;
+                return stringMatcher.IsMatch(requestMessage.BodyAsString);
             }
         }
 
-#if MIMEKIT_XXX
-        if (matcher is MultiPartMatcher multiPartMatcher)
-        {
-            // If the body is a String or MultiPart, use the BodyAsString to match on.
-            if (requestMessage?.DetectedBodyType is BodyType.String or BodyType.MultiPart)
-            {
-                return multiPartMatcher.IsMatch(requestMessage.BodyAsString);
-            }
-        }
-#endif
-        return MatchScores.Mismatch;
+        return default;
     }
 }

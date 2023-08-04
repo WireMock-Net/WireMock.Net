@@ -100,11 +100,11 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception, 0);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
         if (requestMessage.Headers == null)
         {
@@ -127,15 +127,15 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
                 return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
             }
 
-            var results = new List<double>();
+            var results = new List<MatchResult>();
             foreach (var matcher in Matchers)
             {
-                var resultsPerMatcher = headers[Name].Select(v => matcher.IsMatch(v).Score).ToArray();
+                var resultsPerMatcher = headers[Name].Select(matcher.IsMatch).ToArray();
 
-                results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
+                results.Add(MatchResult.From(resultsPerMatcher, MatchOperator.And));
             }
 
-            return MatchScores.ToScore(results, MatchOperator);
+            return MatchResult.From(results, MatchOperator);
         }
 
         return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);

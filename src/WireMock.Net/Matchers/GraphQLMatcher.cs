@@ -7,6 +7,7 @@ using GraphQL;
 using GraphQL.Types;
 using Newtonsoft.Json;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
 
 namespace WireMock.Matchers;
@@ -72,7 +73,7 @@ public class GraphQLMatcher : IStringMatcher
     public MatchResult IsMatch(string? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         try
         {
@@ -97,16 +98,15 @@ public class GraphQLMatcher : IStringMatcher
             }
             else
             {
-                var exceptions = executionResult.Errors.OfType<Exception>().ToArray();
-                error = exceptions.Length == 1 ? exceptions[0].Message : string.Join(",", exceptions.Select(e => e.Message));
+                exception = executionResult.Errors.OfType<Exception>().ToArray().ToException();
             }
         }
         catch (Exception ex)
         {
-            error = ex.ToString();
+            exception = ex;
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />

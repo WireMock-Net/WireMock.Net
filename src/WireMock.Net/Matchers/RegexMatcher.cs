@@ -91,7 +91,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     public virtual MatchResult IsMatch(string? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         if (input != null)
         {
@@ -99,13 +99,13 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
             {
                 score = MatchScores.ToScore(_expressions.Select(e => e.IsMatch(input)).ToArray(), MatchOperator);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                error = e.Message;
+                exception = ex;
             }
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />
