@@ -7,7 +7,6 @@ using GraphQL;
 using GraphQL.Types;
 using Newtonsoft.Json;
 using Stef.Validation;
-using WireMock.Matchers;
 using WireMock.Models;
 
 namespace WireMock.Matchers;

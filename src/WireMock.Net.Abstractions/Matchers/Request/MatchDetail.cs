@@ -16,10 +16,4 @@ public class MatchDetail
     /// Gets or sets the score between 0.0 and 1.0
     /// </summary>
     public double Score { get; set; }
-
-    /// <summary>
-    /// The error message (exception message) in case the  matching fails.
-    /// [Optional]
-    /// </summary>
-    public string? Error { get; set; }
 }

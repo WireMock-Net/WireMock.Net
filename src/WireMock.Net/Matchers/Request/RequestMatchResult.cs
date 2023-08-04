@@ -9,31 +9,25 @@ namespace WireMock.Matchers.Request;
 /// </summary>
 public class RequestMatchResult : IRequestMatchResult
 {
-    /// <inheritdoc cref="IRequestMatchResult.TotalScore" />
+    /// <inheritdoc />
     public double TotalScore => MatchDetails.Sum(md => md.Score);
 
-    /// <inheritdoc cref="IRequestMatchResult.TotalNumber" />
+    /// <inheritdoc />
     public int TotalNumber => MatchDetails.Count;
 
-    /// <inheritdoc cref="IRequestMatchResult.IsPerfectMatch" />
+    /// <inheritdoc />
     public bool IsPerfectMatch => Math.Abs(TotalScore - TotalNumber) < MatchScores.Tolerance;
 
-    /// <inheritdoc cref="IRequestMatchResult.AverageTotalScore" />
+    /// <inheritdoc />
     public double AverageTotalScore => TotalNumber == 0 ? 0.0 : TotalScore / TotalNumber;
 
-    /// <inheritdoc cref="IRequestMatchResult.MatchDetails" />
+    /// <inheritdoc />
     public IList<MatchDetail> MatchDetails { get; } = new List<MatchDetail>();
 
-    /// <summary>
-    /// Adds the score.
-    /// </summary>
-    /// <param name="matcherType">The matcher Type.</param>
-    /// <param name="score">The score.</param>
-    /// <param name="error">The error (exception).</param>
-    /// <returns>The score.</returns>
-    public double AddScore(Type matcherType, double score, string? error)
+    /// <inheritdoc />
+    public double AddScore(Type matcherType, double score)
     {
-        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score, Error = error});
+        MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score });
 
         return score;
     }
