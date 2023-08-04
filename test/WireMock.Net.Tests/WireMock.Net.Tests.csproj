@@ -95,7 +95,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Verify.Xunit" Version="19.6.0" />
-        <PackageReference Include="MimeKitLite" Version="4.1.0.1" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
