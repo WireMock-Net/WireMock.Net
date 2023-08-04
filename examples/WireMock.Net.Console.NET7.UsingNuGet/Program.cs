@@ -11,7 +11,7 @@ namespace WireMock.Net.Console.NET7.UsingNuGet;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var server = WireMockServer.Start(new WireMockServerSettings
         {
