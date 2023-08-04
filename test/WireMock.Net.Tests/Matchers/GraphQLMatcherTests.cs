@@ -121,12 +121,12 @@ public class GraphQLMatcherTests
         var input = "{\"query\":\"{\\r\\n studentsX {\\r\\n fullName\\r\\n X\\r\\n }\\r\\n}\"}";
 
         // Act
-        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch);
+        var matcher = new GraphQLMatcher(TestSchema);
         var result = matcher.IsMatch(input);
 
         // Assert
         result.Score.Should().Be(MatchScores.Mismatch);
-        result.Exception.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
+        result.Exception!.Message.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
     }
 
     [Fact]

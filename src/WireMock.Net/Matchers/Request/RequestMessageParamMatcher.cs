@@ -86,7 +86,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
         var (score, exception) = GetMatchResult(requestMessage).Expand();
-        return requestMatchResult.AddScore(GetType(), score, exception, 0);
+        return requestMatchResult.AddScore(GetType(), score, exception);
     }
 
     private MatchResult GetMatchResult(IRequestMessage requestMessage)

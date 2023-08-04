@@ -25,7 +25,7 @@ public class RequestMatchResult : IRequestMatchResult
     public IList<MatchDetail> MatchDetails { get; } = new List<MatchDetail>();
 
     /// <inheritdoc />
-    public double AddScore(Type matcherType, double score, Exception? exception, int dummy)
+    public double AddScore(Type matcherType, double score, Exception? exception)
     {
         MatchDetails.Add(new MatchDetail { MatcherType = matcherType, Score = score, Exception = exception });
 

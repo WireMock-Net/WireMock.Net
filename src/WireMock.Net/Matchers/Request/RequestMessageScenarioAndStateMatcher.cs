@@ -30,7 +30,7 @@ internal class RequestMessageScenarioAndStateMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        return requestMatchResult.AddScore(GetType(), GetScore(), null, 0);
+        return requestMatchResult.AddScore(GetType(), GetScore(), null);
     }
 
     private double GetScore()

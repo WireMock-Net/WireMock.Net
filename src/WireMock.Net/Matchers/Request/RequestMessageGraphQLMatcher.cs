@@ -68,7 +68,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
         var results = CalculateMatchResults(requestMessage);
         var (score, exception) = MatchResult.From(results, MatchOperator).Expand();
 
-        return requestMatchResult.AddScore(GetType(), score, exception, 0);
+        return requestMatchResult.AddScore(GetType(), score, exception);
     }
 
     private static MatchResult CalculateMatchResult(IRequestMessage requestMessage, IMatcher matcher)

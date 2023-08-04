@@ -60,7 +60,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 
         if (Matchers?.Any() != true)
         {
-            return requestMatchResult.AddScore(GetType(), score, null, 0);
+            return requestMatchResult.AddScore(GetType(), score, null);
         }
 
         try
@@ -95,7 +95,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
             exception = ex;
         }
 
-        return requestMatchResult.AddScore(GetType(), score, exception, 0);
+        return requestMatchResult.AddScore(GetType(), score, exception);
 #endif
     }
 }

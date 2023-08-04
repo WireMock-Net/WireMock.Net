@@ -69,7 +69,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     public MatchResult IsMatchInternal(object? input)
     {
         var score = MatchScores.Mismatch;
-        string? error = null;
+        Exception? exception = null;
 
         if (input != null)
         {
@@ -79,11 +79,11 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
             }
             catch (Exception ex)
             {
-                error = ex.ToString();
+                exception = ex;
             }
         }
 
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     private bool IsMatch(dynamic input, string pattern)

@@ -42,6 +42,6 @@ internal class RequestMessageMethodMatcher : IRequestMatcher
     {
         var scores = Methods.Select(m => string.Equals(m, requestMessage.Method, StringComparison.OrdinalIgnoreCase)).ToArray();
         var score = MatchScores.ToScore(scores, MatchOperator);
-        return requestMatchResult.AddScore(GetType(), score, null, 0);
+        return requestMatchResult.AddScore(GetType(), score, null);
     }
 }
