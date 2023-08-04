@@ -12,6 +12,8 @@ using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using System.Collections.Generic;
+using WireMock.Constants;
+using WireMock.Util;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -105,7 +107,7 @@ namespace WireMock.Owin
                 {
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
-                    response = ResponseMessageBuilder.Create(404, "No matching mapping found");
+                    response = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
                     return;
                 }
 
@@ -196,7 +198,17 @@ namespace WireMock.Owin
                     // Empty catch
                 }
 
-                await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
+                try
+                {
+                    await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Error("HttpStatusCode set to 404 : No matching mapping found", ex);
+
+                    var notFoundResponse = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
+                    await _responseMapper.MapAsync(notFoundResponse, ctx.Response).ConfigureAwait(false);
+                }
             }
 
             await CompletedTask.ConfigureAwait(false);
