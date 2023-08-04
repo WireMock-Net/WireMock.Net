@@ -1,10 +1,5 @@
-# 1.5.33 (03 August 2023)
-- #972 JsonPartialMatcher - match guid and string
-- #976 Upgrade to Handlebars.Net.Helpers 2.4.0 to update XPath.SelectTokens and XPath.EvaluateToString [feature]
-- #981 Add MultiPart/MimePart Request Matcher [feature]
-- #968 Using request multipart in response template [feature]
-- #969 Multipart validation [feature]
-- #970 Loop through xml elements in handlebars template [feature]
-- #971 JsonPartialMatcher - match guid and string [feature]
+# 1.5.34 (04 August 2023)
+- #989 Fix MimeKitLite NuGet include [bug]
+- #988 v1.5.33  Returns always StatusCode 500 [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
