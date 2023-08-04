@@ -15,7 +15,7 @@ public class CSharpCodeMatcherTests
         var matcher = new CSharpCodeMatcher("return it == \"x\";");
 
         // Act
-        var score = matcher.IsMatch(input);
+        var score = matcher.IsMatch(input).Score;
 
         // Assert
         score.Should().Be(MatchScores.Perfect);

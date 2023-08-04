@@ -180,7 +180,10 @@ public class RequestMessage : IRequestMessage
 #if MIMEKIT
         try
         {
-            BodyAsMimeMessage = MimeKitUtils.GetMimeMessage(BodyData, headers![HttpKnownHeaderNames.ContentType].First());
+            if (headers?.TryGetValue(HttpKnownHeaderNames.ContentType, out var contentTypeHeader) == true && contentTypeHeader.Any())
+            {
+                BodyAsMimeMessage = MimeKitUtils.GetMimeMessage(BodyData, contentTypeHeader.First());
+            }
         }
         catch
         {

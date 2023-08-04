@@ -151,7 +151,7 @@ public class RequestMessageBodyMatcher : IRequestMatcher
 
     private MatchResult CalculateMatchScore(IRequestMessage requestMessage)
     {
-        if (Matchers != null)
+        if (Matchers != null && Matchers.Any())
         {
             var results = Matchers.Select(matcher => BodyDataMatchScoreCalculator.CalculateMatchScore(requestMessage.BodyData, matcher)).ToArray();
             return MatchResult.From(results, MatchOperator);

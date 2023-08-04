@@ -82,29 +82,17 @@ public class JsonMatcherTests
     }
 
     [Fact]
-    public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsFalse_Should_ReturnMismatch()
+    public void JsonMatcher_IsMatch_WithInvalidValue_Should_ReturnMismatch_And_Exception_ShouldBeSet()
     {
         // Assign
         var matcher = new JsonMatcher("");
 
         // Act
-        double match = matcher.IsMatch(new MemoryStream()).Score;
+        var result = matcher.IsMatch(new MemoryStream());
 
         // Assert 
-        Check.That(match).IsEqualTo(0);
-    }
-
-    [Fact]
-    public void JsonMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsTrue_Should_ReturnMismatch()
-    {
-        // Assign
-        var matcher = new JsonMatcher("", true);
-
-        // Act
-        Action action = () => matcher.IsMatch(new MemoryStream());
-
-        // Assert 
-        action.Should().Throw<JsonException>();
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception.Should().BeAssignableTo<JsonException>();
     }
 
     [Fact]

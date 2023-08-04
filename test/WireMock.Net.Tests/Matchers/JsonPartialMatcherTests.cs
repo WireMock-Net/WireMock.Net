@@ -60,29 +60,17 @@ public class JsonPartialMatcherTests
     }
 
     [Fact]
-    public void JsonPartialMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsFalse_Should_ReturnMismatch()
+    public void JsonPartialMatcher_IsMatch_WithInvalidValue_Should_ReturnMismatch_And_Exception_ShouldBeSet()
     {
         // Assign
         var matcher = new JsonPartialMatcher("");
 
         // Act
-        double match = matcher.IsMatch(new MemoryStream()).Score;
+        var result = matcher.IsMatch(new MemoryStream());
 
         // Assert 
-        Check.That(match).IsEqualTo(0);
-    }
-
-    [Fact]
-    public void JsonPartialMatcher_IsMatch_WithInvalidValue_And_ThrowExceptionIsTrue_Should_ReturnMismatch()
-    {
-        // Assign
-        var matcher = new JsonPartialMatcher("", false, true);
-
-        // Act
-        Action action = () => matcher.IsMatch(new MemoryStream());
-
-        // Assert 
-        action.Should().Throw<JsonException>();
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception.Should().BeAssignableTo<JsonException>();
     }
 
     [Fact]
@@ -203,7 +191,8 @@ public class JsonPartialMatcherTests
     public void JsonPartialMatcher_IsMatch_GuidAsString_UsingRegex()
     {
         var guid = new Guid("1111238e-b775-44a9-a263-95e570135c94");
-        var matcher = new JsonPartialMatcher(new {
+        var matcher = new JsonPartialMatcher(new
+        {
             Id = 1,
             Name = "^1111[a-fA-F0-9]{4}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}$"
         }, false, true);
@@ -305,20 +294,20 @@ public class JsonPartialMatcherTests
     [Fact]
     public void JsonPartialMatcher_IsMatch_GuidAsString()
     {
-    	// Assign
-    	var guid = Guid.NewGuid();
-    	var matcher = new JsonPartialMatcher(new { Id = 1, Name = guid });
+        // Assign
+        var guid = Guid.NewGuid();
+        var matcher = new JsonPartialMatcher(new { Id = 1, Name = guid });
 
-    	// Act
-    	var jObject = new JObject
-    	{
-    		{ "Id", new JValue(1) },
-    		{ "Name", new JValue(guid.ToString()) }
-    	};
-    	double match = matcher.IsMatch(jObject).Score;
+        // Act
+        var jObject = new JObject
+        {
+            { "Id", new JValue(1) },
+            { "Name", new JValue(guid.ToString()) }
+        };
+        double match = matcher.IsMatch(jObject).Score;
 
-    	// Assert
-    	Assert.Equal(1.0, match);
+        // Assert
+        Assert.Equal(1.0, match);
     }
 
     [Fact]

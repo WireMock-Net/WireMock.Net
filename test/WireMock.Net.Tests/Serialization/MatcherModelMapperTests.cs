@@ -43,14 +43,14 @@ public class MatcherModelMapperTests
 
         // Assert 1
         matcher1.Should().NotBeNull();
-        matcher1.IsMatch("x").Should().Be(1.0d);
+        matcher1.IsMatch("x").Score.Should().Be(1.0d);
 
         // Act 2
         var matcher2 = (ICSharpCodeMatcher)sut.Map(model)!;
 
         // Assert 2
         matcher2.Should().NotBeNull();
-        matcher2.IsMatch("x").Should().Be(1.0d);
+        matcher2.IsMatch("x").Score.Should().Be(1.0d);
     }
 
     [Fact]
@@ -210,7 +210,9 @@ public class MatcherModelMapperTests
 
         // Assert
         Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+
+        var result = matcher.IsMatch("X");
+        result.Score.Should().Be(expected);
     }
 
     [Theory]
@@ -233,7 +235,9 @@ public class MatcherModelMapperTests
 
         // Assert
         Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+
+        var result = matcher.IsMatch("X");
+        result.Score.Should().Be(expected);
     }
 
     [Fact]
@@ -267,7 +271,9 @@ public class MatcherModelMapperTests
 
         // Assert
         matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
-        matcher.IsMatch("c").Should().Be(1.0d);
+
+        var result = matcher.IsMatch("c");
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
