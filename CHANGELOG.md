@@ -1,3 +1,7 @@
+# 1.5.34 (04 August 2023)
+- [#989](https://github.com/WireMock-Net/WireMock.Net/pull/989) - Fix MimeKitLite NuGet include [bug] contributed by [StefH](https://github.com/StefH)
+- [#988](https://github.com/WireMock-Net/WireMock.Net/issues/988) - v1.5.33  Returns always StatusCode 500 [bug]
+
 # 1.5.33 (03 August 2023)
 - [#972](https://github.com/WireMock-Net/WireMock.Net/pull/972) - JsonPartialMatcher - match guid and string contributed by [timurnes](https://github.com/timurnes)
 - [#976](https://github.com/WireMock-Net/WireMock.Net/pull/976) - Upgrade to Handlebars.Net.Helpers 2.4.0 to update XPath.SelectTokens and XPath.EvaluateToString [feature] contributed by [StefH](https://github.com/StefH)
