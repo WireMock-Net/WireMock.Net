@@ -1,7 +1,7 @@
+using System.Net;
 #if OPENAPIPARSER
 using System;
 using System.Linq;
-using System.Net;
 using WireMock.Net.OpenApiParser;
 #endif
 
