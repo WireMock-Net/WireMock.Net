@@ -1,4 +1,3 @@
-using System.Net;
 #if OPENAPIPARSER
 using System;
 using System.Linq;
@@ -15,7 +14,7 @@ public partial class WireMockServer
 #if OPENAPIPARSER
         try
         {
-            var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body, out var diagnostic);
+            var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body!, out var diagnostic);
             return diagnostic.Errors.Any() ? ToJson(diagnostic, false, HttpStatusCode.BadRequest) : ToJson(mappingModels);
         }
         catch (Exception e)
@@ -33,7 +32,7 @@ public partial class WireMockServer
 #if OPENAPIPARSER
         try
         {
-            var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body, out var diagnostic);
+            var mappingModels = new WireMockOpenApiParser().FromText(requestMessage.Body!, out var diagnostic);
             if (diagnostic.Errors.Any())
             {
                 return ToJson(diagnostic, false, HttpStatusCode.BadRequest);

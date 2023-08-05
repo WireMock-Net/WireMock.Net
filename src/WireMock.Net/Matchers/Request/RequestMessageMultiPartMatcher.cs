@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
-using WireMock.Http;
 using WireMock.Util;
 
 namespace WireMock.Matchers.Request;

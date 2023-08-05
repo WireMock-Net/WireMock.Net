@@ -30,7 +30,7 @@ internal static class MimeKitUtils
                 _ => throw new NotSupportedException()
             };
 
-            var fixedBytes = FixBytes(bytes, contentTypeHeader.First());
+            var fixedBytes = FixBytes(bytes, contentTypeHeader[0]);
 
             mimeMessage = MimeMessage.Load(new MemoryStream(fixedBytes));
             return true;

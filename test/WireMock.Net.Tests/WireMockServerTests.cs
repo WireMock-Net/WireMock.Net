@@ -462,7 +462,7 @@ public partial class WireMockServerTests
         settings.CustomMatcherMappings = new Dictionary<string, Func<MatcherModel, IMatcher>>();
         settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
         {
-            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
+            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern!)!;
             return new CustomPathParamMatcher(
                 matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
                 matcherParams.Path, matcherParams.PathParams
@@ -509,7 +509,7 @@ public partial class WireMockServerTests
         settings.CustomMatcherMappings = new Dictionary<string, Func<MatcherModel, IMatcher>>();
         settings.CustomMatcherMappings[nameof(CustomPathParamMatcher)] = matcherModel =>
         {
-            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern);
+            var matcherParams = JsonConvert.DeserializeObject<CustomPathParamMatcherModel>((string)matcherModel.Pattern!)!;
             return new CustomPathParamMatcher(
                 matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
                 matcherParams.Path, matcherParams.PathParams
