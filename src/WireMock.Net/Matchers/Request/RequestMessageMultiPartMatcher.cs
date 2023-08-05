@@ -63,10 +63,13 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
             return requestMatchResult.AddScore(GetType(), score, null);
         }
 
+        if (!MimeKitUtils.TryGetMimeMessage(requestMessage, out var message))
+        {
+            return requestMatchResult.AddScore(GetType(), score, null);
+        }
+
         try
         {
-            var message = MimeKitUtils.GetMimeMessage(requestMessage.BodyData!, requestMessage.Headers![HttpKnownHeaderNames.ContentType].ToString());
-
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
             foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())

@@ -50,7 +50,7 @@ internal class MappingMatcher : IMappingMatcher
                 {
                     possibleMappings.Add(mappingMatcherResult);
                 }
-                else
+                else if (!request.AbsolutePath.StartsWith("/__admin", StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (var ex in exceptions)
                     {
