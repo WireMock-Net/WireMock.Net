@@ -1,6 +1,7 @@
 #if GRAPHQL
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using AnyOfTypes;
 using GraphQL;
@@ -75,35 +76,36 @@ public class GraphQLMatcher : IStringMatcher
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
-        try
+        if (input != null && TryGetGraphQLRequest(input, out var graphQLRequest))
         {
-            var graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input!)!;
-
-            var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
+            try
             {
-                _.ThrowOnUnhandledException = true;
-
-                _.Schema = _schema;
-                _.Query = graphQLRequest.Query;
-
-                if (graphQLRequest.Variables != null)
+                var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
                 {
-                    _.Variables = new Inputs(graphQLRequest.Variables);
-                }
-            }).GetAwaiter().GetResult();
+                    _.ThrowOnUnhandledException = true;
 
-            if (executionResult.Errors == null || executionResult.Errors.Count == 0)
-            {
-                score = MatchScores.Perfect;
+                    _.Schema = _schema;
+                    _.Query = graphQLRequest.Query;
+
+                    if (graphQLRequest.Variables != null)
+                    {
+                        _.Variables = new Inputs(graphQLRequest.Variables);
+                    }
+                }).GetAwaiter().GetResult();
+
+                if (executionResult.Errors == null || executionResult.Errors.Count == 0)
+                {
+                    score = MatchScores.Perfect;
+                }
+                else
+                {
+                    exception = executionResult.Errors.OfType<Exception>().ToArray().ToException();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                exception = executionResult.Errors.OfType<Exception>().ToArray().ToException();
+                exception = ex;
             }
-        }
-        catch (Exception ex)
-        {
-            exception = ex;
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
@@ -120,6 +122,20 @@ public class GraphQLMatcher : IStringMatcher
 
     /// <inheritdoc />
     public string Name => nameof(GraphQLMatcher);
+
+    private static bool TryGetGraphQLRequest(string input, [NotNullWhen(true)] out GraphQLRequest? graphQLRequest)
+    {
+        try
+        {
+            graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input);
+            return graphQLRequest != null;
+        }
+        catch
+        {
+            graphQLRequest = default;
+            return false;
+        }
+    }
 
     private static ISchema BuildSchema(string schema)
     {
