@@ -200,4 +200,128 @@ public class JsonPathMatcherTests
         // Assert
         Check.That(match).IsEqualTo(0.0);
     }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_ArrayOneLevel()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$.arr[0].line1");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [{
+                ""line1"": ""line1"",
+            }]
+        }"));
+
+        // Assert
+        Check.That(match).IsEqualTo(1.0); 
+    }
+    
+    [Fact]
+    public void JsonPathMatcher_IsMatch_ObjectMatch()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$.test");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [
+                {
+                    ""line1"": ""line1"",
+                }
+            ]
+        }"));
+
+        // Assert 
+         Check.That(match).IsEqualTo(1.0); 
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_DoesntMatch()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$.test3");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [
+                {
+                    ""line1"": ""line1"",
+                }
+            ]
+        }"));
+    
+        // Assert 
+        Check.That(match).IsEqualTo(0.0); 
+    }
+
+    [Fact]
+    public void  JsonPathMatcher_IsMatch_DoesntMatchInArray()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$arr[0].line1");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": []
+        }"));
+
+        // Assert 
+        Check.That(match).IsEqualTo(0.0); 
+    }
+    
+    [Fact]
+    public void  JsonPathMatcher_IsMatch_DoesntMatchNoObjetcsInArray()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$arr[2].line1");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": []
+        }"));
+
+        // Assert 
+        Check.That(match).IsEqualTo(0.0); 
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_NestedArrays()
+    {
+        // Arrange 
+        var matcher = new JsonPathMatcher("$.arr[0].sub[0].subline1");
+        
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [{
+                ""line1"": ""line1"",
+                ""sub"":[
+                {
+                    ""subline1"":""subline1""
+                }]
+            }]
+        }"));
+
+        // Assert 
+      Check.That(match).IsEqualTo(1.0); 
+    }
 }
