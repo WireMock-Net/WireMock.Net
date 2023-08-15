@@ -123,7 +123,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     {
         var array = ConvertJTokenToJArrayIfNeeded(jToken);
 
-        // The SelectToken method can accept string path to a child token ( i.e. “Manufacturers[0].Products[0].Price”) in that cat it will return a JValue(some type) which not implement the IEnumerable interface.
+        // The SelectToken method can accept a string path to a child token ( i.e. "Manufacturers[0].Products[0].Price"). In that case it will return a JValue (some type) which does not implement the IEnumerable interface.
         // Using ?.Any() == true relays that we use a JSONPath queries and the SelectToken will return a JObject ( implements the IEnumerable interface).
         // So the current code works only when the JSONPath is expression and not when we pass a valid string path to child. 
         // My suggestion is to roll back to != null to cover the both cases.
