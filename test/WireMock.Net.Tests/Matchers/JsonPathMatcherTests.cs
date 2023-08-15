@@ -266,7 +266,7 @@ public class JsonPathMatcherTests
     }
 
     [Fact]
-    public void  JsonPathMatcher_IsMatch_DoesntMatchInArray()
+    public void JsonPathMatcher_IsMatch_DoesntMatchInArray()
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$arr[0].line1");
@@ -284,7 +284,7 @@ public class JsonPathMatcherTests
     }
     
     [Fact]
-    public void  JsonPathMatcher_IsMatch_DoesntMatchNoObjetcsInArray()
+    public void JsonPathMatcher_IsMatch_DoesntMatchNoObjectsInArray()
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$arr[2].line1");
