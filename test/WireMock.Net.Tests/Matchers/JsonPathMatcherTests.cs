@@ -206,7 +206,7 @@ public class JsonPathMatcherTests
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$.arr[0].line1");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
@@ -215,18 +215,18 @@ public class JsonPathMatcherTests
             ""arr"": [{
                 ""line1"": ""line1"",
             }]
-        }"));
+        }")).Score;
 
         // Assert
-        Check.That(match).IsEqualTo(1.0); 
+        Check.That(match).IsEqualTo(1.0);
     }
-    
+
     [Fact]
     public void JsonPathMatcher_IsMatch_ObjectMatch()
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$.test");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
@@ -237,10 +237,10 @@ public class JsonPathMatcherTests
                     ""line1"": ""line1"",
                 }
             ]
-        }"));
+        }")).Score;
 
         // Assert 
-         Check.That(match).IsEqualTo(1.0); 
+        Check.That(match).IsEqualTo(1.0);
     }
 
     [Fact]
@@ -248,7 +248,7 @@ public class JsonPathMatcherTests
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$.test3");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
@@ -259,10 +259,10 @@ public class JsonPathMatcherTests
                     ""line1"": ""line1"",
                 }
             ]
-        }"));
-    
+        }")).Score;
+
         // Assert 
-        Check.That(match).IsEqualTo(0.0); 
+        Check.That(match).IsEqualTo(0.0);
     }
 
     [Fact]
@@ -270,35 +270,35 @@ public class JsonPathMatcherTests
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$arr[0].line1");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
             ""test"": ""test"",
             ""test2"": ""test2"",
             ""arr"": []
-        }"));
+        }")).Score;
 
         // Assert 
-        Check.That(match).IsEqualTo(0.0); 
+        Check.That(match).IsEqualTo(0.0);
     }
-    
+
     [Fact]
     public void JsonPathMatcher_IsMatch_DoesntMatchNoObjectsInArray()
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$arr[2].line1");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
             ""test"": ""test"",
             ""test2"": ""test2"",
             ""arr"": []
-        }"));
+        }")).Score;
 
         // Assert 
-        Check.That(match).IsEqualTo(0.0); 
+        Check.That(match).IsEqualTo(0.0);
     }
 
     [Fact]
@@ -306,7 +306,7 @@ public class JsonPathMatcherTests
     {
         // Arrange 
         var matcher = new JsonPathMatcher("$.arr[0].sub[0].subline1");
-        
+
         // Act 
         double match = matcher.IsMatch(JObject.Parse(@"{
             ""name"": ""PathSelectorTest"",
@@ -319,9 +319,9 @@ public class JsonPathMatcherTests
                     ""subline1"":""subline1""
                 }]
             }]
-        }"));
+        }")).Score;
 
         // Assert 
-      Check.That(match).IsEqualTo(1.0); 
+        Check.That(match).IsEqualTo(1.0);
     }
 }
