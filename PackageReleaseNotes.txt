@@ -1,5 +1,5 @@
-# 1.5.34 (04 August 2023)
-- #989 Fix MimeKitLite NuGet include [bug]
-- #988 v1.5.33  Returns always StatusCode 500 [bug]
+# 1.5.35 (19 August 2023)
+- #992 Add extra unit test for WithParam multiple values comma [test]
+- #993 Update JSONPathMatcher.cs to cover the string path selection to a child
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -1,3 +1,7 @@
+# 1.5.35 (19 August 2023)
+- [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
+- [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
+
 # 1.5.34 (04 August 2023)
 - [#989](https://github.com/WireMock-Net/WireMock.Net/pull/989) - Fix MimeKitLite NuGet include [bug] contributed by [StefH](https://github.com/StefH)
 - [#988](https://github.com/WireMock-Net/WireMock.Net/issues/988) - v1.5.33  Returns always StatusCode 500 [bug]
