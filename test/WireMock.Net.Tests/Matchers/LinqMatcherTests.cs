@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
@@ -17,7 +18,8 @@ public class LinqMatcherTests
         var matcher = new LinqMatcher("DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
 
         // Assert
-        Check.That(matcher.IsMatch(input)).IsEqualTo(1.0d);
+        var score = matcher.IsMatch(input).Score;
+        score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
@@ -30,7 +32,8 @@ public class LinqMatcherTests
         var matcher = new LinqMatcher("DateTime.Parse(it) > \"2019-01-01 00:00:00\"");
 
         // Assert
-        Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
+        var score = matcher.IsMatch(input).Score;
+        score.Should().Be(MatchScores.Mismatch);
     }
 
     [Fact]
@@ -43,7 +46,8 @@ public class LinqMatcherTests
         var matcher = new LinqMatcher(MatchBehaviour.RejectOnMatch, "DateTime.Parse(it) > \"2018-08-01 13:50:00\"");
 
         // Assert
-        Check.That(matcher.IsMatch(input)).IsEqualTo(0.0d);
+        var score = matcher.IsMatch(input).Score;
+        score.Should().Be(MatchScores.Mismatch);
     }
 
     [Fact]
@@ -58,7 +62,7 @@ public class LinqMatcherTests
 
         // Act
         var matcher = new LinqMatcher("Id > 1 AND Name == \"Test\"");
-        double match = matcher.IsMatch(input);
+        double match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -77,7 +81,7 @@ public class LinqMatcherTests
 
         // Act
         var matcher = new LinqMatcher("IntegerId > 1 AND LongId > 1 && Name == \"Test\"");
-        double match = matcher.IsMatch(input);
+        double match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);

@@ -43,14 +43,14 @@ public class MatcherModelMapperTests
 
         // Assert 1
         matcher1.Should().NotBeNull();
-        matcher1.IsMatch("x").Should().Be(1.0d);
+        matcher1.IsMatch("x").Score.Should().Be(1.0d);
 
         // Act 2
         var matcher2 = (ICSharpCodeMatcher)sut.Map(model)!;
 
         // Assert 2
         matcher2.Should().NotBeNull();
-        matcher2.IsMatch("x").Should().Be(1.0d);
+        matcher2.IsMatch("x").Score.Should().Be(1.0d);
     }
 
     [Fact]
@@ -96,7 +96,6 @@ public class MatcherModelMapperTests
 
         // Assert
         matcher.GetPatterns().Should().ContainSingle("x");
-        matcher.ThrowException.Should().BeFalse();
     }
 
     [Fact]
@@ -136,7 +135,6 @@ public class MatcherModelMapperTests
         matcher.IgnoreCase.Should().BeFalse();
         matcher.Value.Should().Be(pattern);
         matcher.Regex.Should().BeFalse();
-        matcher.ThrowException.Should().BeFalse();
     }
 
     [Fact]
@@ -159,43 +157,6 @@ public class MatcherModelMapperTests
         matcher.IgnoreCase.Should().BeFalse();
         matcher.Value.Should().Be(pattern);
         matcher.Regex.Should().BeTrue();
-        matcher.ThrowException.Should().BeFalse();
-    }
-
-    [Theory]
-    [InlineData(nameof(LinqMatcher))]
-    [InlineData(nameof(ExactMatcher))]
-    [InlineData(nameof(ExactObjectMatcher))]
-    [InlineData(nameof(RegexMatcher))]
-    [InlineData(nameof(JsonMatcher))]
-    [InlineData(nameof(JsonPartialMatcher))]
-    [InlineData(nameof(JsonPartialWildcardMatcher))]
-    [InlineData(nameof(JsonPathMatcher))]
-    [InlineData(nameof(JmesPathMatcher))]
-    [InlineData(nameof(XPathMatcher))]
-    [InlineData(nameof(WildcardMatcher))]
-    [InlineData(nameof(ContentTypeMatcher))]
-    [InlineData(nameof(SimMetricsMatcher))]
-    public void MatcherModelMapper_Map_ThrowExceptionWhenMatcherFails_True(string name)
-    {
-        // Assign
-        var settings = new WireMockServerSettings
-        {
-            ThrowExceptionWhenMatcherFails = true
-        };
-        var sut = new MatcherMapper(settings);
-        var model = new MatcherModel
-        {
-            Name = name,
-            Patterns = new[] { "" }
-        };
-
-        // Act
-        var matcher = sut.Map(model)!;
-
-        // Assert
-        matcher.Should().NotBeNull();
-        matcher.ThrowException.Should().BeTrue();
     }
 
     [Fact]
@@ -249,7 +210,9 @@ public class MatcherModelMapperTests
 
         // Assert
         Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+
+        var result = matcher.IsMatch("X");
+        result.Score.Should().Be(expected);
     }
 
     [Theory]
@@ -272,7 +235,9 @@ public class MatcherModelMapperTests
 
         // Assert
         Check.That(matcher.GetPatterns()).ContainsExactly("x", "y");
-        Check.That(matcher.IsMatch("X")).IsEqualTo(expected);
+
+        var result = matcher.IsMatch("X");
+        result.Score.Should().Be(expected);
     }
 
     [Fact]
@@ -306,7 +271,9 @@ public class MatcherModelMapperTests
 
         // Assert
         matcher.GetPatterns().Should().HaveCount(1).And.Contain(new AnyOf<string, StringPattern>(stringPattern));
-        matcher.IsMatch("c").Should().Be(1.0d);
+
+        var result = matcher.IsMatch("c");
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
@@ -395,8 +362,7 @@ public class MatcherModelMapperTests
             return new CustomPathParamMatcher(
                 matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch,
                 matcherParams.Path,
-                matcherParams.PathParams,
-                settings.ThrowExceptionWhenMatcherFails == true
+                matcherParams.PathParams
             );
         };
         var sut = new MatcherMapper(settings);

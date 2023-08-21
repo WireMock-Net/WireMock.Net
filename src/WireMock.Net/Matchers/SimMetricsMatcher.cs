@@ -18,11 +18,8 @@ public class SimMetricsMatcher : IStringMatcher
     private readonly AnyOf<string, StringPattern>[] _patterns;
     private readonly SimMetricType _simMetricType;
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
-
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
-    public bool ThrowException { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SimMetricsMatcher"/> class.
@@ -67,24 +64,21 @@ public class SimMetricsMatcher : IStringMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="patterns">The patterns.</param>
     /// <param name="simMetricType">The SimMetric Type</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public SimMetricsMatcher(
         MatchBehaviour matchBehaviour,
         AnyOf<string, StringPattern>[] patterns,
         SimMetricType simMetricType = SimMetricType.Levenstein,
-        bool throwException = false,
         MatchOperator matchOperator = MatchOperator.Average)
     {
         _patterns = Guard.NotNull(patterns);
         _simMetricType = simMetricType;
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
     }
 
-    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(string? input)
     {
         IStringMetric stringMetricType = GetStringMetricType();
 
@@ -94,48 +88,30 @@ public class SimMetricsMatcher : IStringMatcher
 
     private IStringMetric GetStringMetricType()
     {
-        switch (_simMetricType)
+        return _simMetricType switch
         {
-            case SimMetricType.BlockDistance:
-                return new BlockDistance();
-            case SimMetricType.ChapmanLengthDeviation:
-                return new ChapmanLengthDeviation();
-            case SimMetricType.CosineSimilarity:
-                return new CosineSimilarity();
-            case SimMetricType.DiceSimilarity:
-                return new DiceSimilarity();
-            case SimMetricType.EuclideanDistance:
-                return new EuclideanDistance();
-            case SimMetricType.JaccardSimilarity:
-                return new JaccardSimilarity();
-            case SimMetricType.Jaro:
-                return new Jaro();
-            case SimMetricType.JaroWinkler:
-                return new JaroWinkler();
-            case SimMetricType.MatchingCoefficient:
-                return new MatchingCoefficient();
-            case SimMetricType.MongeElkan:
-                return new MongeElkan();
-            case SimMetricType.NeedlemanWunch:
-                return new NeedlemanWunch();
-            case SimMetricType.OverlapCoefficient:
-                return new OverlapCoefficient();
-            case SimMetricType.QGramsDistance:
-                return new QGramsDistance();
-            case SimMetricType.SmithWaterman:
-                return new SmithWaterman();
-            case SimMetricType.SmithWatermanGotoh:
-                return new SmithWatermanGotoh();
-            case SimMetricType.SmithWatermanGotohWindowedAffine:
-                return new SmithWatermanGotohWindowedAffine();
-            case SimMetricType.ChapmanMeanLength:
-                return new ChapmanMeanLength();
-            default:
-                return new Levenstein();
-        }
+            SimMetricType.BlockDistance => new BlockDistance(),
+            SimMetricType.ChapmanLengthDeviation => new ChapmanLengthDeviation(),
+            SimMetricType.CosineSimilarity => new CosineSimilarity(),
+            SimMetricType.DiceSimilarity => new DiceSimilarity(),
+            SimMetricType.EuclideanDistance => new EuclideanDistance(),
+            SimMetricType.JaccardSimilarity => new JaccardSimilarity(),
+            SimMetricType.Jaro => new Jaro(),
+            SimMetricType.JaroWinkler => new JaroWinkler(),
+            SimMetricType.MatchingCoefficient => new MatchingCoefficient(),
+            SimMetricType.MongeElkan => new MongeElkan(),
+            SimMetricType.NeedlemanWunch => new NeedlemanWunch(),
+            SimMetricType.OverlapCoefficient => new OverlapCoefficient(),
+            SimMetricType.QGramsDistance => new QGramsDistance(),
+            SimMetricType.SmithWaterman => new SmithWaterman(),
+            SimMetricType.SmithWatermanGotoh => new SmithWatermanGotoh(),
+            SimMetricType.SmithWatermanGotohWindowedAffine => new SmithWatermanGotohWindowedAffine(),
+            SimMetricType.ChapmanMeanLength => new ChapmanMeanLength(),
+            _ => new Levenstein()
+        };
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
@@ -144,6 +120,6 @@ public class SimMetricsMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; } = MatchOperator.Average;
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => $"SimMetricsMatcher.{_simMetricType}";
 }

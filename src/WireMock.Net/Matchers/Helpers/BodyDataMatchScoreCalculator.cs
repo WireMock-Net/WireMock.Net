@@ -6,7 +6,7 @@ namespace WireMock.Matchers.Helpers;
 
 internal static class BodyDataMatchScoreCalculator
 {
-    public static double CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
+    public static MatchResult CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
     {
         Guard.NotNull(matcher);
 
@@ -23,7 +23,7 @@ internal static class BodyDataMatchScoreCalculator
                     return notNullOrEmptyMatcher.IsMatch(requestMessage.BodyAsBytes);
 
                 default:
-                    return MatchScores.Mismatch;
+                    return default;
             }
         }
 
@@ -63,16 +63,6 @@ internal static class BodyDataMatchScoreCalculator
             }
         }
 
-#if MIMEKIT_XXX
-        if (matcher is MultiPartMatcher multiPartMatcher)
-        {
-            // If the body is a String or MultiPart, use the BodyAsString to match on.
-            if (requestMessage?.DetectedBodyType is BodyType.String or BodyType.MultiPart)
-            {
-                return multiPartMatcher.IsMatch(requestMessage.BodyAsString);
-            }
-        }
-#endif
-        return MatchScores.Mismatch;
+        return default;
     }
 }

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
-using WireMock.Http;
 using WireMock.Util;
 
 namespace WireMock.Matchers.Request;
@@ -54,27 +54,31 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 #if !MIMEKIT
         throw new System.NotSupportedException("The MultiPartMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
-        var match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        Exception? exception = null;
 
         if (Matchers?.Any() != true)
         {
-            return requestMatchResult.AddScore(GetType(), match);
+            return requestMatchResult.AddScore(GetType(), score, null);
+        }
+
+        if (!MimeKitUtils.TryGetMimeMessage(requestMessage, out var message))
+        {
+            return requestMatchResult.AddScore(GetType(), score, null);
         }
 
         try
         {
-            var message = MimeKitUtils.GetMimeMessage(requestMessage.BodyData!, requestMessage.Headers![HttpKnownHeaderNames.ContentType].ToString());
-
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
             foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
             {
-                var matchesForMimePart = new List<double> { MatchScores.Mismatch };
+                var matchesForMimePart = new List<MatchResult> { default };
                 matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
 
-                match = matchesForMimePart.Max();
+                score = matchesForMimePart.Select(m => m.Score).Max();
 
-                if (MatchScores.IsPerfect(match))
+                if (MatchScores.IsPerfect(score))
                 {
                     if (MatchOperator == MatchOperator.Or)
                     {
@@ -83,17 +87,17 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
                 }
                 else
                 {
-                    match = MatchScores.Mismatch;
+                    score = MatchScores.Mismatch;
                     break;
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Empty
+            exception = ex;
         }
 
-        return requestMatchResult.AddScore(GetType(), match);
+        return requestMatchResult.AddScore(GetType(), score, exception);
 #endif
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using JetBrains.Annotations;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Authentication;
+using WireMock.Constants;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Http;
@@ -391,7 +393,7 @@ public partial class WireMockServer : IWireMockServer
         Given(Request.Create().WithPath("/*").UsingAnyMethod())
             .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
             .AtPriority(1000)
-            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create("No matching mapping found", 404)));
+            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound)));
     }
 
     /// <inheritdoc cref="IWireMockServer.Reset" />

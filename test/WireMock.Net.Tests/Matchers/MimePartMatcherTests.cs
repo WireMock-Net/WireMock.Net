@@ -55,7 +55,7 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
 
         // Assert
         matcher.Name.Should().Be("MimePartMatcher");
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
@@ -73,7 +73,7 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
         var result = matcher.IsMatch(part);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
         var result = matcher.IsMatch(part);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 }
 #endif

@@ -177,24 +177,28 @@ public class RequestMessage : IRequestMessage
         DetectedBodyTypeFromContentType = BodyData?.DetectedBodyTypeFromContentType.ToString();
         DetectedCompression = BodyData?.DetectedCompression;
 
-#if MIMEKIT
-        try
-        {
-            BodyAsMimeMessage = MimeKitUtils.GetMimeMessage(BodyData, headers![HttpKnownHeaderNames.ContentType].First());
-        }
-        catch
-        {
-            // Ignore exception from MimeMessage.Load
-        }
-#endif
-
         Headers = headers?.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
         Cookies = cookies;
         RawQuery = urlDetails.Url.Query;
         Query = QueryStringParser.Parse(RawQuery, options?.QueryParameterMultipleValueSupport);
         QueryIgnoreCase = new Dictionary<string, WireMockList<string>>(Query, StringComparer.OrdinalIgnoreCase);
+
 #if USE_ASPNETCORE
         ClientCertificate = clientCertificate;
+#endif
+
+#if MIMEKIT
+        try
+        {
+            if (MimeKitUtils.TryGetMimeMessage(this, out var mimeMessage))
+            {
+                BodyAsMimeMessage = mimeMessage;
+            }
+        }
+        catch
+        {
+            // Ignore exception from MimeMessage.Load
+        }
 #endif
     }
 

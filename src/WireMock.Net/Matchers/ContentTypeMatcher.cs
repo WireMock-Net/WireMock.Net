@@ -46,15 +46,13 @@ public class ContentTypeMatcher : WildcardMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="patterns">The patterns.</param>
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
-    public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false, bool throwException = false) :
-        base(matchBehaviour, patterns, ignoreCase, throwException)
+    public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false) : base(matchBehaviour, patterns, ignoreCase)
     {
         _patterns = patterns;
     }
 
-    /// <inheritdoc cref="RegexMatcher.IsMatch"/>
-    public override double IsMatch(string? input)
+    /// <inheritdoc />
+    public override MatchResult IsMatch(string? input)
     {
         if (string.IsNullOrEmpty(input) || !MediaTypeHeaderValue.TryParse(input, out var contentType))
         {
@@ -64,12 +62,12 @@ public class ContentTypeMatcher : WildcardMatcher
         return base.IsMatch(contentType.MediaType);
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public override AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
     }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
-    public override string Name => "ContentTypeMatcher";
+    /// <inheritdoc />
+    public override string Name => nameof(ContentTypeMatcher);
 }

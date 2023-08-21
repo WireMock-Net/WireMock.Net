@@ -139,13 +139,13 @@ public class Mapping : IMapping
         Probability = probability;
     }
 
-    /// <inheritdoc cref="IMapping.ProvideResponseAsync" />
+    /// <inheritdoc />
     public Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
     {
         return Provider.ProvideResponseAsync(this, requestMessage, Settings);
     }
 
-    /// <inheritdoc cref="IMapping.GetRequestMatchResult" />
+    /// <inheritdoc />
     public IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState)
     {
         var result = new RequestMatchResult();

@@ -35,15 +35,32 @@ internal class MappingMatcher : IMappingMatcher
             {
                 var nextState = GetNextState(mapping);
 
-                possibleMappings.Add(new MappingMatcherResult
+                var mappingMatcherResult = new MappingMatcherResult
                 {
                     Mapping = mapping,
                     RequestMatchResult = mapping.GetRequestMatchResult(request, nextState)
-                });
+                };
+
+                var exceptions = mappingMatcherResult.RequestMatchResult.MatchDetails
+                    .Where(md => md.Exception != null)
+                    .Select(md => md.Exception)
+                    .ToArray();
+
+                if (!exceptions.Any())
+                {
+                    possibleMappings.Add(mappingMatcherResult);
+                }
+                else if (!request.AbsolutePath.StartsWith("/__admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var ex in exceptions)
+                    {
+                        LogException(mapping, ex!);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _options.Logger.Error($"Getting a Request MatchResult for Mapping '{mapping.Guid}' failed. This mapping will not be evaluated. Exception: {ex}");
+                LogException(mapping, ex);
             }
         }
 
@@ -64,6 +81,11 @@ internal class MappingMatcher : IMappingMatcher
             .FirstOrDefault();
 
         return (match, partialMatch);
+    }
+
+    private void LogException(IMapping mapping, Exception ex)
+    {
+        _options.Logger.Error($"Getting a Request MatchResult for Mapping '{mapping.Guid}' failed. This mapping will not be evaluated. Exception: {ex}");
     }
 
     private string? GetNextState(IMapping mapping)

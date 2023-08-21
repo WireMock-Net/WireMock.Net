@@ -19,11 +19,13 @@ public class WildcardMatcherTest
             PatternAsFile = "pf"
         };
 
-        // Act
         var matcher = new WildcardMatcher(pattern);
 
+        // Act
+        var score = matcher.IsMatch("a").Score;
+
         // Assert
-        matcher.IsMatch("a").Should().Be(1.0d);
+        score.Should().Be(1.0d);
     }
 
     [Fact]
@@ -39,11 +41,13 @@ public class WildcardMatcherTest
             Pattern = "b"
         };
 
-        // Act
         var matcher = new WildcardMatcher(new [] { pattern1, pattern2 });
 
+        // Act
+        var score = matcher.IsMatch("a").Score;
+
         // Assert
-        matcher.IsMatch("a").Should().Be(1.0d);
+        score.Should().Be(1.0d);
     }
 
     [Fact]
@@ -69,7 +73,12 @@ public class WildcardMatcherTest
         foreach (var test in tests)
         {
             var matcher = new WildcardMatcher(test.p);
-            matcher.IsMatch(test.i).Should().Be(1.0d, $"Pattern '{test.p}' with value '{test.i}' should be 1.0");
+
+            // Act
+            var score = matcher.IsMatch(test.i).Score;
+
+            // Assert
+            score.Should().Be(MatchScores.Perfect, $"Pattern '{test.p}' with value '{test.i}' should be 1.0");
         }
     }
 
@@ -94,7 +103,12 @@ public class WildcardMatcherTest
         foreach (var test in tests)
         {
             var matcher = new WildcardMatcher(test.p);
-            Check.That(matcher.IsMatch(test.i)).IsEqualTo(0.0);
+
+            // Act
+            var score = matcher.IsMatch(test.i).Score;
+
+            // Assert
+            score.Should().Be(MatchScores.Mismatch);
         }
     }
 
@@ -105,7 +119,7 @@ public class WildcardMatcherTest
         var matcher = new WildcardMatcher("x");
 
         // Act
-        string name = matcher.Name;
+        var name = matcher.Name;
 
         // Assert
         Check.That(name).Equals("WildcardMatcher");
@@ -131,7 +145,7 @@ public class WildcardMatcherTest
         var matcher = new WildcardMatcher(MatchBehaviour.RejectOnMatch, "m");
 
         // Act
-        double result = matcher.IsMatch("m");
+        var result = matcher.IsMatch("m").Score;
 
         Check.That(result).IsEqualTo(0.0);
     }

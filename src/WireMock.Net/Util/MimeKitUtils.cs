@@ -1,8 +1,11 @@
 #if MIMEKIT
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using MimeKit;
+using Stef.Validation;
 using WireMock.Http;
 using WireMock.Types;
 
@@ -10,21 +13,31 @@ namespace WireMock.Util;
 
 internal static class MimeKitUtils
 {
-    public static MimeMessage GetMimeMessage(IBodyData? bodyData, string contentTypeHeaderValue)
+    public static bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeMessage? mimeMessage)
     {
-        var bytes = bodyData?.DetectedBodyType switch
+        Guard.NotNull(requestMessage);
+
+        if (requestMessage.BodyData != null && requestMessage.Headers?.TryGetValue(HttpKnownHeaderNames.ContentType, out var contentTypeHeader) == true && contentTypeHeader.Any())
         {
-            // If the body is bytes, use the BodyAsBytes to match on.
-            BodyType.Bytes => bodyData.BodyAsBytes!,
+            var bytes = requestMessage.BodyData?.DetectedBodyType switch
+            {
+                // If the body is bytes, use the BodyAsBytes to match on.
+                BodyType.Bytes => requestMessage.BodyData.BodyAsBytes!,
 
-            // If the body is a String or MultiPart, use the BodyAsString to match on.
-            BodyType.String or BodyType.MultiPart => Encoding.UTF8.GetBytes(bodyData.BodyAsString!),
+                // If the body is a String or MultiPart, use the BodyAsString to match on.
+                BodyType.String or BodyType.MultiPart => Encoding.UTF8.GetBytes(requestMessage.BodyData.BodyAsString!),
 
-            _ => throw new NotSupportedException()
-        };
+                _ => throw new NotSupportedException()
+            };
 
-        var fixedBytes = FixBytes(bytes, contentTypeHeaderValue);
-        return MimeMessage.Load(new MemoryStream(fixedBytes));
+            var fixedBytes = FixBytes(bytes, contentTypeHeader[0]);
+
+            mimeMessage = MimeMessage.Load(new MemoryStream(fixedBytes));
+            return true;
+        }
+
+        mimeMessage = null;
+        return false;
     }
 
     private static byte[] FixBytes(byte[] bytes, WireMockList<string> contentType)

@@ -30,10 +30,8 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         "Newtonsoft.Json.Linq"
     };
 
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
-
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
-    public bool ThrowException { get; }
 
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
@@ -55,37 +53,44 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     {
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
-        ThrowException = false;
         MatchOperator = matchOperator;
     }
 
-    public double IsMatch(string? input)
+    public MatchResult IsMatch(string? input)
     {
         return IsMatchInternal(input);
     }
 
-    public double IsMatch(object? input)
+    public MatchResult IsMatch(object? input)
     {
         return IsMatchInternal(input);
     }
 
-    public double IsMatchInternal(object? input)
+    public MatchResult IsMatchInternal(object? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        Exception? exception = null;
 
         if (input != null)
         {
-            match = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())).ToArray(), MatchOperator);
+            try
+            {
+                score = MatchScores.ToScore(_patterns.Select(pattern => IsMatch(input, pattern.GetPattern())).ToArray(), MatchOperator);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     private bool IsMatch(dynamic input, string pattern)
     {
-        bool isMatchWithString = input is string;
+        var isMatchWithString = input is string;
         var inputValue = isMatchWithString ? input : JObject.FromObject(input);
-        string source = GetSourceForIsMatchWithString(pattern, isMatchWithString);
+        var source = GetSourceForIsMatchWithString(pattern, isMatchWithString);
 
         object? result;
 
@@ -155,7 +160,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
             }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0)
-        Assembly assembly;
+            Assembly assembly;
             try
             {
                 assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
@@ -198,10 +203,10 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
 
     private string GetSourceForIsMatchWithString(string pattern, bool isMatchWithString)
     {
-        string template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithDynamic;
+        var template = isMatchWithString ? TemplateForIsMatchWithString : TemplateForIsMatchWithDynamic;
 
         var stringBuilder = new StringBuilder();
-        foreach (string @using in _usings)
+        foreach (var @using in _usings)
         {
             stringBuilder.AppendLine($"using {@using};");
         }
@@ -211,7 +216,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         return stringBuilder.ToString();
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
@@ -220,6 +225,6 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
-    public string Name => "CSharpCodeMatcher";
+    /// <inheritdoc />
+    public string Name => nameof(CSharpCodeMatcher);
 }

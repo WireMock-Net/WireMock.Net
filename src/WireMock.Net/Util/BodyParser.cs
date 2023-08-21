@@ -85,27 +85,27 @@ internal static class BodyParser
 
     public static BodyType DetectBodyTypeFromContentType(string? contentTypeValue)
     {
-        if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out MediaTypeHeaderValue contentType))
+        if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out MediaTypeHeaderValue? contentType))
         {
             return BodyType.Bytes;
         }
 
-        if (MatchScores.IsPerfect(FormUrlEncodedMatcher.IsMatch(contentType.MediaType)))
+        if (FormUrlEncodedMatcher.IsMatch(contentType.MediaType).IsPerfect())
         {
             return BodyType.FormUrlEncoded;
         }
 
-        if (TextContentTypeMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
+        if (TextContentTypeMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))
         {
             return BodyType.String;
         }
 
-        if (JsonContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
+        if (JsonContentTypesMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))
         {
             return BodyType.Json;
         }
 
-        if (MultipartContentTypesMatchers.Any(matcher => MatchScores.IsPerfect(matcher.IsMatch(contentType.MediaType))))
+        if (MultipartContentTypesMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))
         {
             return BodyType.MultiPart;
         }
