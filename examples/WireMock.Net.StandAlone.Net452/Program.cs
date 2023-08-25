@@ -13,7 +13,7 @@ public class Program
     {
         XmlConfigurator.Configure(new FileInfo("log4net.config"));
 
-        if (WireMockServerSettingsParser.TryParseArguments(args, out var settings))
+        if (WireMockServerSettingsParser.TryParseArguments(args, Environment.GetEnvironmentVariables(), out var settings))
         {
             Console.WriteLine("WireMock.Net server arguments [{0}]", string.Join(", ", args.Select(a => $"'{a}'")));
 

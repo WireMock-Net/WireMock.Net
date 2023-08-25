@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using Moq;
 using System.Threading.Tasks;
 using System.Threading;
+using FluentAssertions;
 using WireMock.Handlers;
 using WireMock.Owin.Mappers;
 using WireMock.ResponseBuilders;
@@ -236,6 +238,24 @@ namespace WireMock.Net.Tests.Owin.Mappers
         }
 
         [Fact]
+        public void OwinResponseMapper_MapAsync_BodyAsFile_ThrowsException()
+        {
+            // Arrange
+            var responseMessage = new ResponseMessage
+            {
+                Headers = new Dictionary<string, WireMockList<string>>(),
+                BodyData = new BodyData { DetectedBodyType = BodyType.File, BodyAsFile = string.Empty }
+            };
+            _fileSystemHandlerMock.Setup(f => f.ReadResponseBodyAsFile(It.IsAny<string>())).Throws<FileNotFoundException>();
+
+            // Act
+            Func<Task> action = () => _sut.MapAsync(responseMessage, _responseMock.Object);
+
+            // Assert
+            action.Should().ThrowAsync<FileNotFoundException>();
+        }
+
+        [Fact]
         public async Task OwinResponseMapper_MapAsync_WithFault_EMPTY_RESPONSE()
         {
             // Arrange
@@ -251,7 +271,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
             await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
             // Assert
-            _stream.Verify(s => s.WriteAsync(new byte[0], 0, 0, It.IsAny<CancellationToken>()), Times.Once);
+            _stream.Verify(s => s.WriteAsync(EmptyArray<byte>.Value, 0, 0, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Theory]

@@ -14,9 +14,4 @@ public interface IMatcher
     /// Gets the match behaviour.
     /// </summary>
     MatchBehaviour MatchBehaviour { get; }
-
-    /// <summary>
-    /// Should this matcher throw an exception?
-    /// </summary>
-    bool ThrowException { get; }
 }

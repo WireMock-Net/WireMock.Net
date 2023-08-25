@@ -149,15 +149,15 @@ public class WireMockAssertions
 
         using (new AssertionScope($"header \"{expectedKey}\" from requests sent with value(s)"))
         {
-            var headerValues = _headers.First(h => h.Key == expectedKey).Value;
+            var matchingHeaderValues = _headers.Where(h => h.Key == expectedKey).SelectMany(h => h.Value.ToArray()).ToArray();
 
             if (expectedValues.Length == 1)
             {
-                headerValues.Should().Contain(expectedValues.First(), because, becauseArgs);
+                matchingHeaderValues.Should().Contain(expectedValues.First(), because, becauseArgs);
             }
             else
             {
-                var trimmedHeaderValues = string.Join(",", headerValues.Select(x => x)).Split(',').Select(x => x.Trim()).ToList();
+                var trimmedHeaderValues = string.Join(",", matchingHeaderValues.Select(x => x)).Split(',').Select(x => x.Trim()).ToList();
                 foreach (var expectedValue in expectedValues)
                 {
                     trimmedHeaderValues.Should().Contain(expectedValue, because, becauseArgs);

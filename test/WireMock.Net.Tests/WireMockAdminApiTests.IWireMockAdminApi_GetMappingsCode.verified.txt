@@ -77,7 +77,6 @@ server
         .WithBody(new JsonPartialMatcher(
                                             value: "{ a = 1, b = 2 }",
                                             ignoreCase: false,
-                                            throwException: false,
                                             regex: false
                                          ))
     )

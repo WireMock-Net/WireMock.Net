@@ -63,11 +63,6 @@ public class SettingsModel
     public bool? HandleRequestsSynchronously { get; set; }
 
     /// <summary>
-    /// Throw an exception when the Matcher fails because of invalid input. (default set to <c>false</c>).
-    /// </summary>
-    public bool? ThrowExceptionWhenMatcherFails { get; set; }
-
-    /// <summary>
     /// Use the RegexExtended instead of the default <see cref="Regex"/>.  (default set to <c>true</c>).
     /// </summary>
     public bool? UseRegexExtended { get; set; }

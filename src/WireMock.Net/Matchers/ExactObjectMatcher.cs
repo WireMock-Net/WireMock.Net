@@ -19,11 +19,8 @@ public class ExactObjectMatcher : IObjectMatcher
     /// </summary>
     public byte[]? ValueAsBytes { get; }
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
-
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
-    public bool ThrowException { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
@@ -56,17 +53,15 @@ public class ExactObjectMatcher : IObjectMatcher
     /// Initializes a new instance of the <see cref="ExactObjectMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="value">The value.</param>
-    public ExactObjectMatcher(MatchBehaviour matchBehaviour, byte[] value, bool throwException = false)
+    public ExactObjectMatcher(MatchBehaviour matchBehaviour, byte[] value)
     {
         ValueAsBytes = Guard.NotNull(value);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object? input)
     {
         bool equals = false;
         if (ValueAsObject != null)
@@ -81,6 +76,6 @@ public class ExactObjectMatcher : IObjectMatcher
         return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(equals));
     }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => "ExactObjectMatcher";
 }

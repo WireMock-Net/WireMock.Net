@@ -47,9 +47,9 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
 
     /// <inheritdoc />
     [PublicAPI]
-    public IReadOnlyList<MappingModel> FromDocument(OpenApiDocument openApiDocument, WireMockOpenApiParserSettings? settings = null)
+    public IReadOnlyList<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null)
     {
-        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(openApiDocument.Paths, openApiDocument.Servers);
+        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(document.Paths, document.Servers);
     }
 
     /// <inheritdoc  />

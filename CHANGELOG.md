@@ -1,3 +1,44 @@
+# 1.5.35 (19 August 2023)
+- [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
+- [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
+
+# 1.5.34 (04 August 2023)
+- [#989](https://github.com/WireMock-Net/WireMock.Net/pull/989) - Fix MimeKitLite NuGet include [bug] contributed by [StefH](https://github.com/StefH)
+- [#988](https://github.com/WireMock-Net/WireMock.Net/issues/988) - v1.5.33  Returns always StatusCode 500 [bug]
+
+# 1.5.33 (03 August 2023)
+- [#972](https://github.com/WireMock-Net/WireMock.Net/pull/972) - JsonPartialMatcher - match guid and string contributed by [timurnes](https://github.com/timurnes)
+- [#976](https://github.com/WireMock-Net/WireMock.Net/pull/976) - Upgrade to Handlebars.Net.Helpers 2.4.0 to update XPath.SelectTokens and XPath.EvaluateToString [feature] contributed by [StefH](https://github.com/StefH)
+- [#981](https://github.com/WireMock-Net/WireMock.Net/pull/981) - Add MultiPart/MimePart Request Matcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#968](https://github.com/WireMock-Net/WireMock.Net/issues/968) - Using request multipart in response template [feature]
+- [#969](https://github.com/WireMock-Net/WireMock.Net/issues/969) - Multipart validation [feature]
+- [#970](https://github.com/WireMock-Net/WireMock.Net/issues/970) - Loop through xml elements in handlebars template [feature]
+- [#971](https://github.com/WireMock-Net/WireMock.Net/issues/971) - JsonPartialMatcher - match guid and string [feature]
+
+# 1.5.32 (15 July 2023)
+- [#966](https://github.com/WireMock-Net/WireMock.Net/pull/966) - Fixed JsonPathMatcher to match nested objects [bug] contributed by [StefH](https://github.com/StefH)
+- [#965](https://github.com/WireMock-Net/WireMock.Net/issues/965) - JsonPathMatcher does not match json body nested objects [bug]
+- [#967](https://github.com/WireMock-Net/WireMock.Net/issues/967) - &#11088;10 million downloads ! &#11088; [feature]
+
+# 1.5.31 (08 July 2023)
+- [#964](https://github.com/WireMock-Net/WireMock.Net/pull/964) - Add GraphQL Schema matching [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.5.30 (28 June 2023)
+- [#959](https://github.com/WireMock-Net/WireMock.Net/pull/959) - Fixed logic for FluentAssertions WithHeader [bug] contributed by [StefH](https://github.com/StefH)
+- [#961](https://github.com/WireMock-Net/WireMock.Net/pull/961) - Add unit-test for Param MatcherModel LinqMatcher [test] contributed by [StefH](https://github.com/StefH)
+- [#962](https://github.com/WireMock-Net/WireMock.Net/pull/962) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#963](https://github.com/WireMock-Net/WireMock.Net/pull/963) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#958](https://github.com/WireMock-Net/WireMock.Net/issues/958) - [FluentAssertions] Should().HaveReceivedACall().WithHeader() only checks the first header with the matching key. [bug]
+
+# 1.5.29 (22 June 2023)
+- [#954](https://github.com/WireMock-Net/WireMock.Net/pull/954) - Support setting WireMockServerSettings via Environment [feature] contributed by [StefH](https://github.com/StefH)
+- [#955](https://github.com/WireMock-Net/WireMock.Net/pull/955) - Fix some SonarCloud issues [refactor] contributed by [StefH](https://github.com/StefH)
+- [#953](https://github.com/WireMock-Net/WireMock.Net/issues/953) - How to use environment variable [feature]
+
+# 1.5.28 (11 June 2023)
+- [#948](https://github.com/WireMock-Net/WireMock.Net/pull/948) - WireMock.Net.Testcontainers [feature] contributed by [StefH](https://github.com/StefH)
+- [#951](https://github.com/WireMock-Net/WireMock.Net/pull/951) - Allow setting the Content-Length header for a HTTP method HEAD [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.27 (03 June 2023)
 - [#946](https://github.com/WireMock-Net/WireMock.Net/pull/946) - Add warning logging when sending a request to a Webhook does not return status 200 [feature] contributed by [StefH](https://github.com/StefH)
 - [#949](https://github.com/WireMock-Net/WireMock.Net/pull/949) - Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
@@ -946,7 +987,7 @@
 - [#86](https://github.com/WireMock-Net/WireMock.Net/issues/86) - Feature : Add FileSystemWatcher logic for watching static mapping files [feature]
 
 # 1.0.2.13 (23 January 2018)
-- [#79](https://github.com/WireMock-Net/WireMock.Net/pull/79) - Fix missed content headers contributed by [vladimir-fed](https://github.com/vladimir-fed)
+- [#79](https://github.com/WireMock-Net/WireMock.Net/pull/79) - Fix missed content headers contributed by [volodymyr-fed](https://github.com/volodymyr-fed)
 - [#57](https://github.com/WireMock-Net/WireMock.Net/issues/57) - ProxyAndRecord does not save query-parameters, headers and body [bug]
 - [#78](https://github.com/WireMock-Net/WireMock.Net/issues/78) - WireMock not working when attempting to access from anything other than localhost.
 
@@ -973,7 +1014,7 @@
 
 # 1.0.2.7 (18 November 2017)
 - [#62](https://github.com/WireMock-Net/WireMock.Net/pull/62) - Add the Host, Protocol, Port and Origin to the Request message so they can be used in templating contributed by [alastairtree](https://github.com/alastairtree)
-- [#63](https://github.com/WireMock-Net/WireMock.Net/pull/63) - Fix issue with concurrent logging contributed by [vladimir-fed](https://github.com/vladimir-fed)
+- [#63](https://github.com/WireMock-Net/WireMock.Net/pull/63) - Fix issue with concurrent logging contributed by [volodymyr-fed](https://github.com/volodymyr-fed)
 - [#27](https://github.com/WireMock-Net/WireMock.Net/issues/27) - New feature: Record and Save
 - [#42](https://github.com/WireMock-Net/WireMock.Net/issues/42) - Enhancement - Save/load request logs to/from disk [feature]
 - [#53](https://github.com/WireMock-Net/WireMock.Net/issues/53) - New feature request: Access to Owin pipeline

@@ -19,11 +19,8 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
-    /// <inheritdoc cref="IMatcher.MatchBehaviour"/>
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
-
-    /// <inheritdoc cref="IMatcher.ThrowException"/>
-    public bool ThrowException { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
@@ -37,7 +34,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
     /// <param name="patterns">The patterns.</param>
-    public LinqMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, patterns)
+    public LinqMatcher(params AnyOf<string, StringPattern>[] patterns) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, patterns)
     {
     }
 
@@ -46,7 +43,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="pattern">The pattern.</param>
-    public LinqMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> pattern) : this(matchBehaviour, false, MatchOperator.Or, pattern)
+    public LinqMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> pattern) : this(matchBehaviour, MatchOperator.Or, pattern)
     {
     }
 
@@ -54,25 +51,23 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     /// <param name="patterns">The patterns.</param>
     public LinqMatcher(
         MatchBehaviour matchBehaviour,
-        bool throwException = false,
         MatchOperator matchOperator = MatchOperator.Or,
         params AnyOf<string, StringPattern>[] patterns)
     {
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
     }
 
-    /// <inheritdoc cref="IStringMatcher.IsMatch"/>
-    public double IsMatch(string? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(string? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        Exception? error = null;
 
         // Convert a single input string to a Queryable string-list with 1 entry.
         IQueryable queryable = new[] { input }.AsQueryable();
@@ -80,25 +75,21 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         try
         {
             // Use the Any(...) method to check if the result matches
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
-
-            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+            score = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
         }
-        catch
+        catch (Exception e)
         {
-            if (ThrowException)
-            {
-                throw;
-            }
+            error = e;
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
-    /// <inheritdoc cref="IObjectMatcher.IsMatch"/>
-    public double IsMatch(object? input)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object? input)
     {
-        double match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        Exception? error = null;
 
         JArray jArray;
         try
@@ -107,59 +98,28 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         }
         catch
         {
-            jArray = new JArray { JToken.FromObject(input) };
+            jArray = input == null ? new JArray() : new JArray { JToken.FromObject(input) };
         }
 
-        //enumerable = jArray.ToDynamicClassArray();
-
-        //JObject value;
-        //switch (input)
-        //{
-        //    case JObject valueAsJObject:
-        //        value = valueAsJObject;
-        //        break;
-
-        //    case { } valueAsObject:
-        //        value = JObject.FromObject(valueAsObject);
-        //        break;
-
-        //    default:
-        //        return MatchScores.Mismatch;
-        //}
-
         // Convert a single object to a Queryable JObject-list with 1 entry.
-        //var queryable1 = new[] { value }.AsQueryable();
         var queryable = jArray.ToDynamicClassArray().AsQueryable();
 
         try
         {
-            // Generate the DynamicLinq select statement.
-            //string dynamicSelect = JsonUtils.GenerateDynamicLinqStatement(value);
-
-            // Execute DynamicLinq Select statement.
-            //var queryable2 = queryable1.Select(dynamicSelect);
-
-            // Use the Any(...) method to check if the result matches.
-
             var patternsAsStringArray = _patterns.Select(p => p.GetPattern()).ToArray();
             var scores = patternsAsStringArray.Select(p => queryable.Any(p)).ToArray();
 
-            match = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
-
-            return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+            score = MatchScores.ToScore(scores, MatchOperator);
         }
         catch (Exception e)
         {
-            if (ThrowException)
-            {
-                throw;
-            }
+            error = e;
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
-    /// <inheritdoc cref="IStringMatcher.GetPatterns"/>
+    /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
         return _patterns;
@@ -168,6 +128,6 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
-    public string Name => "LinqMatcher";
+    /// <inheritdoc />
+    public string Name => nameof(LinqMatcher);
 }

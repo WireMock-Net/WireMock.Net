@@ -320,14 +320,14 @@ internal class OpenApiPathsMapper
         var mappedHeaders = headers?.ToDictionary(
             item => item.Key,
             _ => GetExampleMatcherModel(null, _settings.HeaderPatternToUse).Pattern!
-        );
+        ) ?? new Dictionary<string, object>();
 
         if (!string.IsNullOrEmpty(responseContentType))
         {
             mappedHeaders.TryAdd(HeaderContentType, responseContentType!);
         }
 
-        return mappedHeaders?.Keys.Any() == true ? mappedHeaders : null;
+        return mappedHeaders.Keys.Any() ? mappedHeaders : null;
     }
 
     private IList<ParamModel>? MapQueryParameters(IEnumerable<OpenApiParameter> queryParameters)

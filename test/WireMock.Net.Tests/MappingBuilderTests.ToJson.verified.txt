@@ -14,6 +14,17 @@
       },
       Methods: [
         GET
+      ],
+      Params: [
+        {
+          Name: test,
+          Matchers: [
+            {
+              Name: LinqMatcher,
+              Pattern: it.Length < 10
+            }
+          ]
+        }
       ]
     },
     Response: {

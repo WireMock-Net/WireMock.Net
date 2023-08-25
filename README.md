@@ -42,6 +42,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**WireMock.Net.OpenApiParser** | [![NuGet Badge WireMock.Net.OpenApiParser](https://buildstats.info/nuget/WireMock.Net.OpenApiParser)](https://www.nuget.org/packages/WireMock.Net.OpenApiParser) | [![MyGet Badge WireMock.Net.OpenApiParser](https://buildstats.info/myget/wiremock-net/WireMock.Net.OpenApiParser?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.OpenApiParser)
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://buildstats.info/nuget/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://buildstats.info/myget/wiremock-net/WireMock.Net.RestClient?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
 | &nbsp;&nbsp;**WireMock.Net.xUnit** | [![NuGet Badge WireMock.Net.xUnit](https://buildstats.info/nuget/WireMock.Net.xUnit)](https://www.nuget.org/packages/WireMock.Net.xUnit) | [![MyGet Badge WireMock.Net.xUnit](https://buildstats.info/myget/wiremock-net/WireMock.Net.xUnit?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.xUnit)
+| &nbsp;&nbsp;**WireMock.Net.Testcontainers** | [![NuGet Badge WireMock.Net.Testcontainers](https://buildstats.info/nuget/WireMock.Net.Testcontainers)](https://www.nuget.org/packages/WireMock.Net.Testcontainers) | [![MyGet Badge WireMock.Net.Testcontainers](https://buildstats.info/myget/wiremock-net/WireMock.Net.Testcontainers?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Testcontainers)
 | &nbsp;&nbsp;**WireMock.Org.RestClient** | [![NuGet Badge WireMock.Org.RestClient](https://buildstats.info/nuget/WireMock.Org.RestClient)](https://www.nuget.org/packages/WireMock.Org.RestClient) | [![MyGet Badge WireMock.Org.RestClient](https://buildstats.info/myget/wiremock-net/WireMock.Org.RestClient?includePreReleases=true)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Org.RestClient)
 
 
@@ -68,12 +69,14 @@ WireMock.Net can be used in several ways:
 You can use your favorite test framework and use WireMock within your tests, see
 [Wiki : UnitTesting](https://github.com/StefH/WireMock.Net/wiki/Using-WireMock-in-UnitTests).
 
+### Unit/Integration Testing using Testcontainers.DotNet
+You can use [Wiki : WireMock.Net.Testcontainers](https://github.com/WireMock-Net/WireMock.Net/wiki/Using-WireMock.Net.Testcontainers) to build a WireMock.Net Docker container which can be used in Unit/Integration testing.
+
 ### As a dotnet tool
 It's simple to install WireMock.Net as (global) dotnet tool, see [Wiki : dotnet tool](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-dotnet-tool).
 
 ### As standalone process / console application
 This is quite straight forward to launch a mock server within a console application, see [Wiki : Standalone Process](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-a-standalone-process).
-
 
 ### As a Windows Service
 You can also run WireMock.Net as a Windows Service, follow this [WireMock-as-a-Windows-Service](https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-as-a-Windows-Service).

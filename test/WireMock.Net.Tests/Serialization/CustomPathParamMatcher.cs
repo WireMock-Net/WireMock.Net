@@ -15,8 +15,8 @@ namespace WireMock.Net.Tests.Serialization;
 public class CustomPathParamMatcher : IStringMatcher
 {
     public string Name => nameof(CustomPathParamMatcher);
+
     public MatchBehaviour MatchBehaviour { get; }
-    public bool ThrowException { get; }
 
     private readonly string _path;
     private readonly string[] _pathParts;
@@ -30,18 +30,16 @@ public class CustomPathParamMatcher : IStringMatcher
         MatchBehaviour matchBehaviour,
         string path,
         Dictionary<string, string> pathParams,
-        bool throwException = false,
         MatchOperator matchOperator = MatchOperator.Or)
     {
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         _path = path;
         _pathParts = GetPathParts(path);
         _pathParams = pathParams.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
         MatchOperator = matchOperator;
     }
 
-    public double IsMatch(string? input)
+    public MatchResult IsMatch(string? input)
     {
         var inputParts = GetPathParts(input);
         if (inputParts.Length != _pathParts.Length)
@@ -79,11 +77,6 @@ public class CustomPathParamMatcher : IStringMatcher
         }
         catch
         {
-            if (ThrowException)
-            {
-                throw;
-            }
-
             return MatchScores.Mismatch;
         }
 

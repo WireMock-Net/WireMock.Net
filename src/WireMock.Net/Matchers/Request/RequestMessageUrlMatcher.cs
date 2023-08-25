@@ -43,7 +43,7 @@ public class RequestMessageUrlMatcher : IRequestMatcher
         MatchOperator matchOperator,
         params string[] urls) :
         this(matchBehaviour, matchOperator, urls
-            .Select(url => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { url }, false, false, matchOperator))
+            .Select(url => new WildcardMatcher(matchBehaviour, new AnyOf<string, StringPattern>[] { url }, false, matchOperator))
             .Cast<IStringMatcher>().ToArray())
     {
         Behaviour = matchBehaviour;
@@ -75,16 +75,16 @@ public class RequestMessageUrlMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
         if (Matchers != null)
         {
             var results = Matchers.Select(m => m.IsMatch(requestMessage.Url)).ToArray();
-            return MatchScores.ToScore(results, MatchOperator);
+            return MatchResult.From(results, MatchOperator);
         }
 
         if (Funcs != null)
@@ -93,6 +93,6 @@ public class RequestMessageUrlMatcher : IRequestMatcher
             return MatchScores.ToScore(results, MatchOperator);
         }
 
-        return MatchScores.Mismatch;
+        return default;
     }
 }

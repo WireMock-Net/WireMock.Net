@@ -22,6 +22,8 @@ namespace WireMock.Settings;
 /// </summary>
 public class WireMockServerSettings
 {
+    internal const int DefaultStartTimeout = 10000;
+
     /// <summary>
     /// Gets or sets the http port.
     /// </summary>
@@ -81,7 +83,7 @@ public class WireMockServerSettings
     /// StartTimeout
     /// </summary>
     [PublicAPI]
-    public int StartTimeout { get; set; } = 10000;
+    public int StartTimeout { get; set; } = DefaultStartTimeout;
 
     /// <summary>
     /// Allow Partial Mapping (default set to false).
@@ -218,12 +220,6 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public bool? HandleRequestsSynchronously { get; set; }
-
-    /// <summary>
-    /// Throw an exception when the <see cref="IMatcher"/> fails because of invalid input. (default set to <c>false</c>).
-    /// </summary>
-    [PublicAPI]
-    public bool? ThrowExceptionWhenMatcherFails { get; set; }
 
     /// <summary>
     /// If https is used, these settings can be used to configure the CertificateSettings in case a custom certificate instead the default .NET certificate should be used.

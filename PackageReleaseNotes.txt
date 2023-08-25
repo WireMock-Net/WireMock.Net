@@ -1,7 +1,5 @@
-# 1.5.27 (03 June 2023)
-- #946 Add warning logging when sending a request to a Webhook does not return status 200 [feature]
-- #949 Add &quot;.NET Framework 4.7&quot; to WireMock.Net.FluentAssertions [feature]
-- #928 TypeLoadException when using WithHeader method. [bug]
-- #945 Webhook logging [feature]
+# 1.5.35 (19 August 2023)
+- #992 Add extra unit test for WithParam multiple values comma [test]
+- #993 Update JSONPathMatcher.cs to cover the string path selection to a child
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

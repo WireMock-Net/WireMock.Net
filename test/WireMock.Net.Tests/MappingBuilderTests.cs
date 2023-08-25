@@ -6,6 +6,7 @@ using VerifyTests;
 using VerifyXunit;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
 using WireMock.Net.Tests.VerifyExtensions;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
@@ -65,6 +66,7 @@ public class MappingBuilderTests
 
         _sut.Given(Request.Create()
             .WithPath("/foo")
+            .WithParam("test", new LinqMatcher("it.Length < 10"))
             .UsingGet()
         )
         .WithGuid(MappingGuid)

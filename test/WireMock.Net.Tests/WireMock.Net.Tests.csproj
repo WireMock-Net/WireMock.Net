@@ -24,8 +24,12 @@
         <DefineConstants>NETFRAMEWORK</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
+        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
-      <Compile Remove="Util\JsonUtilsTests.cs" />
+        <Compile Remove="Util\JsonUtilsTests.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -63,11 +67,8 @@
         </PackageReference>
 
         <PackageReference Include="Moq" Version="4.17.2" />
-
-        <!--<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.1" />-->
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
@@ -99,15 +100,14 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.4.0" />
-        <!--<PackageReference Include="JsonConverter.NewtonSoft.Json" Version="0.4.0" />-->
     </ItemGroup>
 
     <ItemGroup>
         <None Update="OpenApiParser\*.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="OpenApiParser\*.yml">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -137,5 +137,4 @@
     <ItemGroup>
         <Folder Include="Pact\files\" />
     </ItemGroup>
-
 </Project>

@@ -19,6 +19,7 @@ using WireMock.Types;
 using WireMock.Util;
 
 using static WireMock.Util.CSharpFormatter;
+
 namespace WireMock.Serialization;
 
 internal class MappingConverter
@@ -46,7 +47,9 @@ internal class MappingConverter
         var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
-        var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
 
         var sb = new StringBuilder();
 
@@ -105,27 +108,45 @@ internal class MappingConverter
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
 
-        if (bodyMatcher is { Matchers: { } })
+#if GRAPHQL
+        if (requestMessageGraphQLMatcher is { Matchers: { } })
         {
-            if (bodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
+            if (requestMessageGraphQLMatcher.Matchers.OfType<GraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
+            {
+                sb.AppendLine($"        .WithGraphQLSchema({GetString(graphQLMatcher)})");
+            }
+        }
+#endif
+
+#if MIMEKIT
+        if (requestMessageMultiPartMatcher is { Matchers: { } })
+        {
+            if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
+            {
+                sb.AppendLine("        // .WithMultiPart() is not yet supported");
+            }
+        }
+#endif
+
+        if (requestMessageBodyMatcher is { Matchers: { } })
+        {
+            if (requestMessageBodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
             }
-            else if (bodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
+            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
             {
                 sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
                                          ))");
             }
-            else if (bodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
+            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
             {
                 sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
                                          ))");
             }
@@ -174,7 +195,7 @@ internal class MappingConverter
                     {
                         sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyStringValue)})");
                     }
-                    else if(bodyData.BodyAsJson is {} jsonBody)
+                    else if (bodyData.BodyAsJson is { } jsonBody)
                     {
                         var anonymousObjectDefinition = ConvertToAnonymousObjectDefinition(jsonBody);
                         sb.AppendLine($"        .WithBodyAsJson({anonymousObjectDefinition})");
@@ -216,6 +237,8 @@ internal class MappingConverter
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -301,7 +324,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? new IWebhook[0];
+        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? EmptyArray<IWebhook>.Value;
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
@@ -311,18 +334,21 @@ internal class MappingConverter
             mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
         }
 
-        if (bodyMatcher?.Matchers != null)
+        var bodyMatchers = multiPartMatcher?.Matchers ?? graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
+        var matchOperator = multiPartMatcher?.MatchOperator ?? graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
+
+        if (bodyMatchers != null && matchOperator != null)
         {
             mappingModel.Request.Body = new BodyModel();
 
-            if (bodyMatcher.Matchers.Length == 1)
+            if (bodyMatchers.Length == 1)
             {
-                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatcher.Matchers[0]);
+                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0]);
             }
-            else if (bodyMatcher.Matchers.Length > 1)
+            else if (bodyMatchers.Length > 1)
             {
-                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatcher.Matchers);
-                mappingModel.Request.Body.MatchOperator = bodyMatcher.MatchOperator.ToString();
+                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers);
+                mappingModel.Request.Body.MatchOperator = matchOperator.ToString();
             }
         }
 
@@ -506,6 +532,4 @@ internal class MappingConverter
 
         return newDictionary;
     }
-
-
 }
