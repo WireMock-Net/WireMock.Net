@@ -96,32 +96,39 @@ public interface IRequestMessage
     /// <summary>
     /// The original body as string. Convenience getter for Handlebars.
     /// </summary>
-    string Body { get; }
+    string? Body { get; }
 
     /// <summary>
     /// The body (as JSON object). Convenience getter for Handlebars.
     /// </summary>
-    object BodyAsJson { get; }
+    object? BodyAsJson { get; }
 
     /// <summary>
     /// The body (as bytearray). Convenience getter for Handlebars.
     /// </summary>
-    byte[] BodyAsBytes { get; }
+    byte[]? BodyAsBytes { get; }
+
+#if MIMEKIT
+    /// <summary>
+    /// The original body as MimeMessage. Convenience getter for Handlebars.
+    /// </summary>
+    object? BodyAsMimeMessage { get; }
+#endif
 
     /// <summary>
     /// The detected body type. Convenience getter for Handlebars.
     /// </summary>
-    string DetectedBodyType { get; }
+    string? DetectedBodyType { get; }
 
     /// <summary>
     /// The detected body type from the Content-Type header. Convenience getter for Handlebars.
     /// </summary>
-    string DetectedBodyTypeFromContentType { get; }
+    string? DetectedBodyTypeFromContentType { get; }
 
     /// <summary>
     /// The detected compression from the Content-Encoding header. Convenience getter for Handlebars.
     /// </summary>
-    string DetectedCompression { get; }
+    string? DetectedCompression { get; }
 
     /// <summary>
     /// Gets the Host

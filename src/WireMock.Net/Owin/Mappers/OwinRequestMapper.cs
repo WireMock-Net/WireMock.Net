@@ -29,17 +29,13 @@ namespace WireMock.Owin.Mappers
 
             var headers = new Dictionary<string, string[]>();
             IEnumerable<string>? contentEncodingHeader = null;
-            if (request.Headers.Any())
+            foreach (var header in request.Headers)
             {
-                headers = new Dictionary<string, string[]>();
-                foreach (var header in request.Headers)
-                {
-                    headers.Add(header.Key, header.Value);
+                headers.Add(header.Key, header.Value!);
 
-                    if (string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase))
-                    {
-                        contentEncodingHeader = header.Value;
-                    }
+                if (string.Equals(header.Key, HttpKnownHeaderNames.ContentEncoding, StringComparison.OrdinalIgnoreCase))
+                {
+                    contentEncodingHeader = header.Value;
                 }
             }
 

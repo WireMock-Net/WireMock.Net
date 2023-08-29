@@ -56,6 +56,40 @@ public class MatcherMapperTests
         models.Should().HaveCount(2);
     }
 
+#if MIMEKIT
+    [Fact]
+    public void MatcherMapper_Map_MimePartMatcher()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("c3RlZg==");
+        var imagePngContentTypeMatcher = new ContentTypeMatcher("image/png");
+        var imagePngContentDispositionMatcher = new ExactMatcher("attachment; filename=\"image.png\"");
+        var imagePngContentTransferEncodingMatcher = new ExactMatcher("base64");
+        var imagePngContentMatcher = new ExactObjectMatcher(bytes);
+        var imagePngMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, imagePngContentTypeMatcher, imagePngContentDispositionMatcher, imagePngContentTransferEncodingMatcher, imagePngContentMatcher);
+
+        // Act
+        var model = _sut.Map(imagePngMatcher)!;
+
+        // Assert
+        model.Name.Should().Be(nameof(MimePartMatcher));
+        model.MatchOperator.Should().BeNull();
+        model.RejectOnMatch.Should().BeNull();
+
+        model.ContentTypeMatcher!.Name.Should().Be(nameof(ContentTypeMatcher));
+        model.ContentTypeMatcher.Pattern.Should().Be("image/png");
+
+        model.ContentDispositionMatcher!.Name.Should().Be(nameof(ExactMatcher));
+        model.ContentDispositionMatcher.Pattern.Should().Be("attachment; filename=\"image.png\"");
+
+        model.ContentTransferEncodingMatcher!.Name.Should().Be(nameof(ExactMatcher));
+        model.ContentTransferEncodingMatcher.Pattern.Should().Be("base64");
+
+        model.ContentMatcher!.Name.Should().Be(nameof(ExactObjectMatcher));
+        model.ContentMatcher.Pattern.Should().Be(bytes);
+    }
+#endif
+
     [Fact]
     public void MatcherMapper_Map_IStringMatcher()
     {
@@ -428,4 +462,64 @@ public class MatcherMapperTests
         matcher.GetPatterns().Should().Contain("p");
         matcher.IgnoreCase.Should().BeTrue();
     }
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_NotNullOrEmptyMatcher()
+    {
+        // Assign
+        var model = new MatcherModel
+        {
+            Name = "NotNullOrEmptyMatcher",
+            RejectOnMatch = true
+        };
+
+        // Act
+        var matcher = _sut.Map(model)!;
+
+        // Assert
+        matcher.Should().BeAssignableTo<NotNullOrEmptyMatcher>();
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.RejectOnMatch);
+    }
+
+#if MIMEKIT
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_MimePartMatcher()
+    {
+        // Assign
+        var model = new MatcherModel
+        {
+            Name = "MimePartMatcher",
+            ContentMatcher = new MatcherModel
+            {
+                Name = "ExactMatcher",
+                Pattern = "x"
+            },
+            ContentDispositionMatcher = new MatcherModel
+            {
+                Name = "WildcardMatcher",
+                Pattern = "y"
+            },
+            ContentTransferEncodingMatcher = new MatcherModel
+            {
+                Name = "RegexMatcher",
+                Pattern = "z"
+            },
+            ContentTypeMatcher = new MatcherModel
+            {
+                Name = "ContentTypeMatcher",
+                Pattern = "text/json"
+            }
+        };
+
+        // Act
+        var matcher = (MimePartMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.ContentMatcher.Should().BeAssignableTo<ExactMatcher>().Which.GetPatterns().Should().ContainSingle("x");
+        matcher.ContentDispositionMatcher.Should().BeAssignableTo<WildcardMatcher>().Which.GetPatterns().Should().ContainSingle("y");
+        matcher.ContentTransferEncodingMatcher.Should().BeAssignableTo<RegexMatcher>().Which.GetPatterns().Should().ContainSingle("z");
+        matcher.ContentTypeMatcher.Should().BeAssignableTo<ContentTypeMatcher>().Which.GetPatterns().Should().ContainSingle("text/json");
+    }
+#endif
 }

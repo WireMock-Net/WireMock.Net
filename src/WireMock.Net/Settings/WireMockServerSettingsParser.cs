@@ -57,7 +57,6 @@ public static class WireMockServerSettingsParser
             SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
             StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
             StartTimeout = parser.GetIntValue(nameof(WireMockServerSettings.StartTimeout), WireMockServerSettings.DefaultStartTimeout),
-            ThrowExceptionWhenMatcherFails = parser.GetBoolValue("ThrowExceptionWhenMatcherFails"),
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
             WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),

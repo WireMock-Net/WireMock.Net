@@ -8,4 +8,6 @@ internal static class WireMockConstants
 
     public const string ContentTypeJson = "application/json";
     public const string ContentTypeTextPlain = "text/plain";
+
+    public const string NoMatchingFound = "No matching mapping found";
 }

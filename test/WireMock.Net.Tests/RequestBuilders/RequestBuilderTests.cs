@@ -8,9 +8,9 @@ using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests;
+namespace WireMock.Net.Tests.RequestBuilders;
 
-public class RequestTests
+public class RequestBuilderTests
 {
     private const string ClientIp = "::1";
 

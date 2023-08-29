@@ -1,12 +1,14 @@
 #if GRAPHQL
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using AnyOfTypes;
 using GraphQL;
 using GraphQL.Types;
 using Newtonsoft.Json;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
 
 namespace WireMock.Matchers;
@@ -19,8 +21,10 @@ public class GraphQLMatcher : IStringMatcher
 {
     private sealed class GraphQLRequest
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public string? Query { get; set; }
 
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public Dictionary<string, object?>? Variables { get; set; }
     }
 
@@ -31,21 +35,16 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <inheritdoc />
-    public bool ThrowException { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
     /// <param name="schema">The schema.</param>
     /// <param name="matchBehaviour">The match behaviour.</param>
-    /// <param name="throwException">Throw an exception when the internal matching fails because of invalid input.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, bool throwException = false, MatchOperator matchOperator = MatchOperator.Or)
+    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, MatchOperator matchOperator = MatchOperator.Or)
     {
         Guard.NotNull(schema);
         MatchBehaviour = matchBehaviour;
-        ThrowException = throwException;
         MatchOperator = matchOperator;
 
         var patterns = new List<AnyOf<string, StringPattern>>();
@@ -72,51 +71,44 @@ public class GraphQLMatcher : IStringMatcher
     }
 
     /// <inheritdoc />
-    public double IsMatch(string? input)
+    public MatchResult IsMatch(string? input)
     {
-        var match = MatchScores.Mismatch;
+        var score = MatchScores.Mismatch;
+        Exception? exception = null;
 
-        try
+        if (input != null && TryGetGraphQLRequest(input, out var graphQLRequest))
         {
-            var graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input!)!;
-
-            var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
+            try
             {
-                _.ThrowOnUnhandledException = true;
-
-                _.Schema = _schema;
-                _.Query = graphQLRequest.Query;
-
-                if (graphQLRequest.Variables != null)
+                var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
                 {
-                    _.Variables = new Inputs(graphQLRequest.Variables);
-                }
-            }).GetAwaiter().GetResult();
+                    _.ThrowOnUnhandledException = true;
 
-            if (executionResult.Errors == null || executionResult.Errors.Count == 0)
-            {
-                match = MatchScores.Perfect;
-            }
-            else
-            {
-                var exceptions = executionResult.Errors.OfType<Exception>().ToArray();
-                if (exceptions.Length == 1)
+                    _.Schema = _schema;
+                    _.Query = graphQLRequest.Query;
+
+                    if (graphQLRequest.Variables != null)
+                    {
+                        _.Variables = new Inputs(graphQLRequest.Variables);
+                    }
+                }).GetAwaiter().GetResult();
+
+                if (executionResult.Errors == null || executionResult.Errors.Count == 0)
                 {
-                    throw exceptions[0];
+                    score = MatchScores.Perfect;
                 }
-
-                throw new AggregateException(exceptions);
+                else
+                {
+                    exception = executionResult.Errors.OfType<Exception>().ToArray().ToException();
+                }
             }
-        }
-        catch
-        {
-            if (ThrowException)
+            catch (Exception ex)
             {
-                throw;
+                exception = ex;
             }
         }
 
-        return MatchBehaviourHelper.Convert(MatchBehaviour, match);
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
     /// <inheritdoc />
@@ -128,8 +120,22 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
-    /// <inheritdoc cref="IMatcher.Name"/>
+    /// <inheritdoc />
     public string Name => nameof(GraphQLMatcher);
+
+    private static bool TryGetGraphQLRequest(string input, [NotNullWhen(true)] out GraphQLRequest? graphQLRequest)
+    {
+        try
+        {
+            graphQLRequest = JsonConvert.DeserializeObject<GraphQLRequest>(input);
+            return graphQLRequest != null;
+        }
+        catch
+        {
+            graphQLRequest = default;
+            return false;
+        }
+    }
 
     private static ISchema BuildSchema(string schema)
     {

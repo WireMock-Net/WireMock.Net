@@ -166,7 +166,7 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
-
+#if GRAPHQL
             server
                 .Given(Request.Create()
                     .WithPath("/graphql")
@@ -176,7 +176,41 @@ namespace WireMock.Net.ConsoleApplication
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")
                 );
+#endif
 
+#if MIMEKIT
+            var textPlainContentTypeMatcher = new ContentTypeMatcher("text/plain");
+            var textPlainContentMatcher = new ExactMatcher("This is some plain text");
+            var textPlainMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, textPlainContentTypeMatcher, null, null, textPlainContentMatcher);
+
+            var textJsonContentTypeMatcher = new ContentTypeMatcher("text/json");
+            var textJsonContentMatcher = new JsonMatcher(new { Key = "Value" }, true);
+            var textJsonMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, textJsonContentTypeMatcher, null, null, textJsonContentMatcher);
+
+            var imagePngContentTypeMatcher = new ContentTypeMatcher("image/png");
+            var imagePngContentDispositionMatcher = new ExactMatcher("attachment; filename=\"image.png\"");
+            var imagePngContentTransferEncodingMatcher = new ExactMatcher("base64");
+            var imagePngContentMatcher = new ExactObjectMatcher(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAADFBMVEX/tID/vpH/pWX/sHidUyjlAAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC"));
+            var imagePngMatcher = new MimePartMatcher(MatchBehaviour.AcceptOnMatch, imagePngContentTypeMatcher, imagePngContentDispositionMatcher, imagePngContentTransferEncodingMatcher, imagePngContentMatcher);
+
+            var matchers = new IMatcher[]
+            {
+                textPlainMatcher,
+                textJsonMatcher,
+                imagePngMatcher
+            };
+
+            server
+                .Given(Request.Create()
+                    .WithPath("/multipart")
+                    .UsingPost()
+                    .WithMultiPart(matchers)
+                )
+                .WithGuid("b9c82182-e469-41da-bcaf-b6e3157fefdb")
+                .RespondWith(Response.Create()
+                    .WithBody("MultiPart is ok")
+                );
+#endif
             // 400 ms
             server
                 .Given(Request.Create()
@@ -716,8 +750,9 @@ namespace WireMock.Net.ConsoleApplication
                 }));
 
             server.Given(Request.Create().WithPath(new WildcardMatcher("/multi-webhook", true)).UsingPost())
-                .WithWebhook(new[] {
-                    new Webhook()
+                .WithWebhook
+                (
+                    new Webhook
                     {
                         Request = new WebhookRequest
                         {
@@ -725,12 +760,13 @@ namespace WireMock.Net.ConsoleApplication
                             Method = "post",
                             BodyData = new BodyData
                             {
-                                BodyAsString = "OK 1!", DetectedBodyType = BodyType.String
+                                BodyAsString = "OK 1!",
+                                DetectedBodyType = BodyType.String
                             },
                             Delay = 1000
                         }
                     },
-                    new Webhook()
+                    new Webhook
                     {
                         Request = new WebhookRequest
                         {
@@ -745,7 +781,7 @@ namespace WireMock.Net.ConsoleApplication
                             MaximumRandomDelay = 7000
                         }
                     }
-                })
+                )
                 .WithWebhookFireAndForget(true)
                 .RespondWith(Response.Create().WithBody("a-response"));
 

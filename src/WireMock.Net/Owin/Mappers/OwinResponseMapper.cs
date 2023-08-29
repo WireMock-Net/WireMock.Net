@@ -50,7 +50,7 @@ namespace WireMock.Owin.Mappers
             _options = Guard.NotNull(options);
         }
 
-        /// <inheritdoc cref="IOwinResponseMapper.MapAsync"/>
+        /// <inheritdoc />
         public async Task MapAsync(IResponseMessage? responseMessage, IResponse response)
         {
             if (responseMessage == null)
@@ -134,10 +134,8 @@ namespace WireMock.Owin.Mappers
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString!);
 
                 case BodyType.Json:
-                    var formatting = responseMessage.BodyData.BodyAsJsonIndented == true
-                        ? Formatting.Indented
-                        : Formatting.None;
-                    string jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
+                    var formatting = responseMessage.BodyData.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+                    var jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
                 case BodyType.Bytes:

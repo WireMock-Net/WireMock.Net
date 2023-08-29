@@ -51,7 +51,7 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
 
         matcher.GetPatterns().Should().Contain(TestSchema);
     }
@@ -71,7 +71,7 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
 
         matcher.GetPatterns().Should().Contain(TestSchema);
     }
@@ -93,7 +93,7 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Mismatch);
+        result.Score.Should().Be(MatchScores.Mismatch);
     }
 
     [Fact]
@@ -111,21 +111,22 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWithError_WithThrowExceptionTrue_ThrowsException()
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWithError_WithThrowExceptionTrue_ReturnsError()
     {
         // Arrange
         var input = "{\"query\":\"{\\r\\n studentsX {\\r\\n fullName\\r\\n X\\r\\n }\\r\\n}\"}";
 
         // Act
-        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
-        Action action = () => matcher.IsMatch(input);
+        var matcher = new GraphQLMatcher(TestSchema);
+        var result = matcher.IsMatch(input);
 
         // Assert
-        action.Should().Throw<Exception>();
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception!.Message.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
     }
 
     [Fact]

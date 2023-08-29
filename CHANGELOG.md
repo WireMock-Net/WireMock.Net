@@ -1,3 +1,20 @@
+# 1.5.35 (19 August 2023)
+- [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
+- [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
+
+# 1.5.34 (04 August 2023)
+- [#989](https://github.com/WireMock-Net/WireMock.Net/pull/989) - Fix MimeKitLite NuGet include [bug] contributed by [StefH](https://github.com/StefH)
+- [#988](https://github.com/WireMock-Net/WireMock.Net/issues/988) - v1.5.33  Returns always StatusCode 500 [bug]
+
+# 1.5.33 (03 August 2023)
+- [#972](https://github.com/WireMock-Net/WireMock.Net/pull/972) - JsonPartialMatcher - match guid and string contributed by [timurnes](https://github.com/timurnes)
+- [#976](https://github.com/WireMock-Net/WireMock.Net/pull/976) - Upgrade to Handlebars.Net.Helpers 2.4.0 to update XPath.SelectTokens and XPath.EvaluateToString [feature] contributed by [StefH](https://github.com/StefH)
+- [#981](https://github.com/WireMock-Net/WireMock.Net/pull/981) - Add MultiPart/MimePart Request Matcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#968](https://github.com/WireMock-Net/WireMock.Net/issues/968) - Using request multipart in response template [feature]
+- [#969](https://github.com/WireMock-Net/WireMock.Net/issues/969) - Multipart validation [feature]
+- [#970](https://github.com/WireMock-Net/WireMock.Net/issues/970) - Loop through xml elements in handlebars template [feature]
+- [#971](https://github.com/WireMock-Net/WireMock.Net/issues/971) - JsonPartialMatcher - match guid and string [feature]
+
 # 1.5.32 (15 July 2023)
 - [#966](https://github.com/WireMock-Net/WireMock.Net/pull/966) - Fixed JsonPathMatcher to match nested objects [bug] contributed by [StefH](https://github.com/StefH)
 - [#965](https://github.com/WireMock-Net/WireMock.Net/issues/965) - JsonPathMatcher does not match json body nested objects [bug]

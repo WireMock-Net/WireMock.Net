@@ -1,6 +1,5 @@
-# 1.5.32 (15 July 2023)
-- #966 Fixed JsonPathMatcher to match nested objects [bug]
-- #965 JsonPathMatcher does not match json body nested objects [bug]
-- #967 &#11088;10 million downloads ! &#11088; [feature]
+# 1.5.35 (19 August 2023)
+- #992 Add extra unit test for WithParam multiple values comma [test]
+- #993 Update JSONPathMatcher.cs to cover the string path selection to a child
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -1,5 +1,3 @@
-using System;
-using JetBrains.Annotations;
 using WireMock.Matchers;
 
 namespace WireMock.RequestBuilders;

@@ -19,6 +19,7 @@ using WireMock.Types;
 using WireMock.Util;
 
 using static WireMock.Util.CSharpFormatter;
+
 namespace WireMock.Serialization;
 
 internal class MappingConverter
@@ -48,6 +49,7 @@ internal class MappingConverter
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
 
         var sb = new StringBuilder();
 
@@ -114,8 +116,18 @@ internal class MappingConverter
                 sb.AppendLine($"        .WithGraphQLSchema({GetString(graphQLMatcher)})");
             }
         }
-        else
 #endif
+
+#if MIMEKIT
+        if (requestMessageMultiPartMatcher is { Matchers: { } })
+        {
+            if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
+            {
+                sb.AppendLine("        // .WithMultiPart() is not yet supported");
+            }
+        }
+#endif
+
         if (requestMessageBodyMatcher is { Matchers: { } })
         {
             if (requestMessageBodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
@@ -127,7 +139,6 @@ internal class MappingConverter
                 sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
                                          ))");
             }
@@ -136,7 +147,6 @@ internal class MappingConverter
                 sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
                                             value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
                                             ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
-                                            throwException: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.ThrowException)},
                                             regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
                                          ))");
             }
@@ -185,7 +195,7 @@ internal class MappingConverter
                     {
                         sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyStringValue)})");
                     }
-                    else if(bodyData.BodyAsJson is {} jsonBody)
+                    else if (bodyData.BodyAsJson is { } jsonBody)
                     {
                         var anonymousObjectDefinition = ConvertToAnonymousObjectDefinition(jsonBody);
                         sb.AppendLine($"        .WithBodyAsJson({anonymousObjectDefinition})");
@@ -228,6 +238,7 @@ internal class MappingConverter
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -323,19 +334,20 @@ internal class MappingConverter
             mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
         }
 
-        var graphQLOrBodyMatchers = graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
-        var matchOperator = graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
-        if (graphQLOrBodyMatchers != null && matchOperator != null)
+        var bodyMatchers = multiPartMatcher?.Matchers ?? graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
+        var matchOperator = multiPartMatcher?.MatchOperator ?? graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
+
+        if (bodyMatchers != null && matchOperator != null)
         {
             mappingModel.Request.Body = new BodyModel();
 
-            if (graphQLOrBodyMatchers.Length == 1)
+            if (bodyMatchers.Length == 1)
             {
-                mappingModel.Request.Body.Matcher = _mapper.Map(graphQLOrBodyMatchers[0]);
+                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0]);
             }
-            else if (graphQLOrBodyMatchers.Length > 1)
+            else if (bodyMatchers.Length > 1)
             {
-                mappingModel.Request.Body.Matchers = _mapper.Map(graphQLOrBodyMatchers);
+                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers);
                 mappingModel.Request.Body.MatchOperator = matchOperator.ToString();
             }
         }
@@ -520,6 +532,4 @@ internal class MappingConverter
 
         return newDictionary;
     }
-
-
 }

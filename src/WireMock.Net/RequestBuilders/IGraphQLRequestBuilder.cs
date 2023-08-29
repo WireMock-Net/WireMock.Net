@@ -1,12 +1,11 @@
 using WireMock.Matchers;
-using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders;
 
 /// <summary>
 /// The GraphQLRequestBuilder interface.
 /// </summary>
-public interface IGraphQLRequestBuilder : IRequestMatcher
+public interface IGraphQLRequestBuilder : IMultiPartRequestBuilder
 {
     /// <summary>
     /// WithGraphQLSchema: The GraphQL schema as a string.
