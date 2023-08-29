@@ -1,3 +1,6 @@
+# 1.5.36 (28 August 2023)
+- [#986](https://github.com/WireMock-Net/WireMock.Net/pull/986) - Write logging in case a Matcher throws an exception [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.35 (19 August 2023)
 - [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
 - [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
