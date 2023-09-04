@@ -1,3 +1,7 @@
+#if MIMEKIT
+extern alias MimeKitLiteAlias;
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +75,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         {
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
-            foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
+            foreach (var mimePart in message.BodyParts.OfType<MimeKitLiteAlias::MimeKit.MimePart>())
             {
                 var matchesForMimePart = new List<MatchResult> { default };
                 matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));

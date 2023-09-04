@@ -1,9 +1,8 @@
 #if MIMEKIT
+extern alias MimeKitLiteAlias;
+
 using System;
-using MimeKit;
-using WireMock.Matchers;
 using WireMock.Matchers.Helpers;
-using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -13,7 +12,7 @@ namespace WireMock.Matchers;
 /// </summary>
 public class MimePartMatcher : IMatcher
 {
-    private readonly Func<MimePart, MatchResult>[] _funcs;
+    private readonly Func<MimeKitLiteAlias::MimeKit.MimePart, MatchResult>[] _funcs;
 
     /// <inheritdoc />
     public string Name => nameof(MimePartMatcher);
@@ -72,7 +71,7 @@ public class MimePartMatcher : IMatcher
     /// </summary>
     /// <param name="mimePart">The MimePart.</param>
     /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-    public MatchResult IsMatch(MimePart mimePart)
+    public MatchResult IsMatch(MimeKitLiteAlias::MimeKit.MimePart mimePart)
     {
         var score = MatchScores.Mismatch;
         Exception? exception = null;
@@ -92,7 +91,7 @@ public class MimePartMatcher : IMatcher
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
-    private MatchResult MatchOnContent(MimePart mimePart)
+    private MatchResult MatchOnContent(MimeKitLiteAlias::MimeKit.MimePart mimePart)
     {
         if (ContentMatcher == null)
         {
@@ -112,7 +111,7 @@ public class MimePartMatcher : IMatcher
         return BodyDataMatchScoreCalculator.CalculateMatchScore(bodyData, ContentMatcher);
     }
 
-    private static string? GetContentTypeAsString(ContentType? contentType)
+    private static string? GetContentTypeAsString(MimeKitLiteAlias::MimeKit.ContentType? contentType)
     {
         return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }

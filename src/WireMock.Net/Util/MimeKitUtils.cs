@@ -1,10 +1,11 @@
 #if MIMEKIT
+extern alias MimeKitLiteAlias;
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
-using MimeKit;
 using Stef.Validation;
 using WireMock.Http;
 using WireMock.Types;
@@ -13,7 +14,7 @@ namespace WireMock.Util;
 
 internal static class MimeKitUtils
 {
-    public static bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeMessage? mimeMessage)
+    public static bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeKitLiteAlias::MimeKit.MimeMessage? mimeMessage)
     {
         Guard.NotNull(requestMessage);
 
@@ -32,7 +33,7 @@ internal static class MimeKitUtils
 
             var fixedBytes = FixBytes(bytes, contentTypeHeader[0]);
 
-            mimeMessage = MimeMessage.Load(new MemoryStream(fixedBytes));
+            mimeMessage = MimeKitLiteAlias::MimeKit.MimeMessage.Load(new MemoryStream(fixedBytes));
             return true;
         }
 
