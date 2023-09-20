@@ -34,9 +34,10 @@ namespace WireMock.Net.Tests.Owin;
 
 public class WireMockMiddlewareTests
 {
-    private readonly DateTime _updatedAt = new(2022, 12, 4);
-    private readonly ConcurrentDictionary<Guid, IMapping> _mappings = new();
+    private static readonly Guid NewGuid = new("98fae52e-76df-47d9-876f-2ee32e931d9b");
+    private static readonly DateTime UpdatedAt = new(2022, 12, 4);
 
+    private readonly ConcurrentDictionary<Guid, IMapping> _mappings = new();
     private readonly Mock<IWireMockMiddlewareOptions> _optionsMock;
     private readonly Mock<IOwinRequestMapper> _requestMapperMock;
     private readonly Mock<IOwinResponseMapper> _responseMapperMock;
@@ -48,6 +49,9 @@ public class WireMockMiddlewareTests
 
     public WireMockMiddlewareTests()
     {
+        var guidUtilsMock = new Mock<IGuidUtils>();
+        guidUtilsMock.Setup(g => g.NewGuid()).Returns(NewGuid);
+
         _optionsMock = new Mock<IWireMockMiddlewareOptions>();
         _optionsMock.SetupAllProperties();
         _optionsMock.Setup(o => o.Mappings).Returns(_mappings);
@@ -74,7 +78,14 @@ public class WireMockMiddlewareTests
 
         _mappingMock = new Mock<IMapping>();
 
-        _sut = new WireMockMiddleware(null, _optionsMock.Object, _requestMapperMock.Object, _responseMapperMock.Object, _matcherMock.Object);
+        _sut = new WireMockMiddleware(
+            null,
+            _optionsMock.Object,
+            _requestMapperMock.Object,
+            _responseMapperMock.Object,
+            _matcherMock.Object,
+            guidUtilsMock.Object
+        );
     }
 
     [Fact]
@@ -86,8 +97,30 @@ public class WireMockMiddlewareTests
         // Assert and Verify
         _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-        Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 404 && ((StatusModel)r.BodyData.BodyAsJson).Status == "No matching mapping found";
+        Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode! == 404 && ((StatusModel)r.BodyData!.BodyAsJson!).Status == "No matching mapping found";
         _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task WireMockMiddleware_Invoke_NoMatch_When_SaveUnmatchedRequestsIsTrue_Should_Call_LocalFileSystemHandler_WriteUnmatchedRequest()
+    {
+        // Arrange
+        var fileSystemHandlerMock = new Mock<IFileSystemHandler>();
+        _optionsMock.Setup(o => o.FileSystemHandler).Returns(fileSystemHandlerMock.Object);
+        _optionsMock.Setup(o => o.SaveUnmatchedRequests).Returns(true);
+
+        // Act
+        await _sut.Invoke(_contextMock.Object).ConfigureAwait(false);
+
+        // Assert
+        _optionsMock.Verify(o => o.Logger.Warn(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+
+        Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode! == 404 && ((StatusModel)r.BodyData!.BodyAsJson!).Status == "No matching mapping found";
+        _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
+
+        // Verify
+        fileSystemHandlerMock.Verify(f => f.WriteUnmatchedRequest("98fae52e-76df-47d9-876f-2ee32e931d9b.LogEntry.json", It.IsAny<string>()));
+        fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -109,7 +142,7 @@ public class WireMockMiddlewareTests
         // Assert and Verify
         _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-        Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 401;
+        Expression<Func<ResponseMessage, bool>> match = r => (int?)r.StatusCode == 401;
         _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
     }
 
@@ -132,7 +165,7 @@ public class WireMockMiddlewareTests
         // Assert and Verify
         _optionsMock.Verify(o => o.Logger.Error(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
 
-        Expression<Func<ResponseMessage, bool>> match = r => (int)r.StatusCode == 401;
+        Expression<Func<ResponseMessage, bool>> match = r => (int?)r.StatusCode == 401;
         _responseMapperMock.Verify(m => m.MapAsync(It.Is(match), It.IsAny<IResponse>()), Times.Once);
     }
 
@@ -177,7 +210,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null, null);
+        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null, null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();
@@ -231,7 +264,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(Guid.NewGuid(), _updatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null, probability: null);
+        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null, probability: null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();
@@ -246,6 +279,6 @@ public class WireMockMiddlewareTests
         // Assert and Verify
         fileSystemHandlerMock.Verify(f => f.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
-        _mappings.Count.Should().Be(1);
+        _mappings.Should().HaveCount(1);
     }
 }

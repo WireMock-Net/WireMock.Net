@@ -9,9 +9,8 @@ using JetBrains.Annotations;
 using WireMock.Logging;
 using WireMock.Owin.Mappers;
 using Stef.Validation;
-using RandomDataGenerator.FieldOptions;
-using RandomDataGenerator.Randomizers;
 using WireMock.Services;
+using WireMock.Util;
 
 namespace WireMock.Owin;
 
@@ -63,7 +62,7 @@ internal class OwinSelfHost : IOwinSelfHost
     private void StartServers()
     {
 #if NET46
-        _logger.Info("Server using .net 4.6.1 or higher");
+        _logger.Info("Server using .net 4.6");
 #else
         _logger.Info("Server using .net 4.5.x");
 #endif
@@ -74,12 +73,13 @@ internal class OwinSelfHost : IOwinSelfHost
             var requestMapper = new OwinRequestMapper();
             var responseMapper = new OwinResponseMapper(_options);
             var matcher = new MappingMatcher(_options, new RandomizerDoubleBetween0And1());
+            var guidUtils = new GuidUtils();
 
             Action<IAppBuilder> startup = app =>
             {
                 app.Use<GlobalExceptionMiddleware>(_options, responseMapper);
                 _options.PreWireMockMiddlewareInit?.Invoke(app);
-                app.Use<WireMockMiddleware>(_options, requestMapper, responseMapper, matcher);
+                app.Use<WireMockMiddleware>(_options, requestMapper, responseMapper, matcher, guidUtils);
                 _options.PostWireMockMiddlewareInit?.Invoke(app);
             };
 
