@@ -137,6 +137,7 @@ namespace WireMock.Net.ConsoleApplication
                 Urls = new[] { url1, url2, url3 },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
+                SaveUnmatchedRequests = true,
                 WatchStaticMappings = true,
                 WatchStaticMappingsInSubdirectories = true,
                 //ProxyAndRecordSettings = new ProxyAndRecordSettings
