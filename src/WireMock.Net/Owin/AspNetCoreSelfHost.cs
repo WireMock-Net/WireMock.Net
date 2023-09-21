@@ -70,6 +70,7 @@ namespace WireMock.Owin
                     services.AddSingleton<IRandomizerDoubleBetween0And1, RandomizerDoubleBetween0And1>();
                     services.AddSingleton<IOwinRequestMapper, OwinRequestMapper>();
                     services.AddSingleton<IOwinResponseMapper, OwinResponseMapper>();
+                    services.AddSingleton<IGuidUtils, GuidUtils>();
 
 #if NETCOREAPP3_1 || NET5_0 || NET6_0 || NET7_0
                     AddCors(services);

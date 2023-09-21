@@ -30,29 +30,47 @@ namespace WireMock.Owin
     {
         private readonly object _lock = new();
         private static readonly Task CompletedTask = Task.FromResult(false);
+
         private readonly IWireMockMiddlewareOptions _options;
         private readonly IOwinRequestMapper _requestMapper;
         private readonly IOwinResponseMapper _responseMapper;
         private readonly IMappingMatcher _mappingMatcher;
         private readonly LogEntryMapper _logEntryMapper;
+        private readonly IGuidUtils _guidUtils;
 
 #if !USE_ASPNETCORE
-        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
+        public WireMockMiddleware(
+            Next next,
+            IWireMockMiddlewareOptions options,
+            IOwinRequestMapper requestMapper,
+            IOwinResponseMapper responseMapper,
+            IMappingMatcher mappingMatcher,
+            IGuidUtils guidUtils
+        ) : base(next)
         {
             _options = Guard.NotNull(options);
             _requestMapper = Guard.NotNull(requestMapper);
             _responseMapper = Guard.NotNull(responseMapper);
             _mappingMatcher = Guard.NotNull(mappingMatcher);
             _logEntryMapper = new LogEntryMapper(options);
+            _guidUtils = Guard.NotNull(guidUtils);
         }
 #else
-        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
+        public WireMockMiddleware(
+            Next next,
+            IWireMockMiddlewareOptions options,
+            IOwinRequestMapper requestMapper,
+            IOwinResponseMapper responseMapper,
+            IMappingMatcher mappingMatcher,
+            IGuidUtils guidUtils
+        )
         {
             _options = Guard.NotNull(options);
             _requestMapper = Guard.NotNull(requestMapper);
             _responseMapper = Guard.NotNull(responseMapper);
             _mappingMatcher = Guard.NotNull(mappingMatcher);
             _logEntryMapper = new LogEntryMapper(options);
+            _guidUtils = Guard.NotNull(guidUtils);
         }
 #endif
 
@@ -170,7 +188,7 @@ namespace WireMock.Owin
             {
                 var log = new LogEntry
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = _guidUtils.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
 
@@ -187,10 +205,10 @@ namespace WireMock.Owin
 
                 try
                 {
-                    if (_options.SaveUnmatchedRequests == true && result.Match?.RequestMatchResult.IsPerfectMatch != true)
+                    if (_options.SaveUnmatchedRequests == true && result.Match?.RequestMatchResult is not { IsPerfectMatch: true })
                     {
                         var filename = $"{log.Guid}.LogEntry.json";
-                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, Util.JsonUtils.Serialize(log));
+                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, JsonUtils.Serialize(log));
                     }
                 }
                 catch

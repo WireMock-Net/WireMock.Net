@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json;
 #if USE_ASPNETCORE
 using System.Security.Cryptography.X509Certificates;
 #endif
 using Stef.Validation;
-using WireMock.Http;
 using WireMock.Models;
 using WireMock.Owin;
 using WireMock.Types;
@@ -80,6 +80,7 @@ public class RequestMessage : IRequestMessage
 
 #if MIMEKIT
     /// <inheritdoc />
+    [JsonIgnore] // Issue 1001
     public object? BodyAsMimeMessage { get; }
 #endif
 
@@ -112,7 +113,7 @@ public class RequestMessage : IRequestMessage
     /// <summary>
     /// Used for Unit Testing
     /// </summary>
-    public RequestMessage(
+    internal RequestMessage(
         UrlDetails urlDetails,
         string method,
         string clientIP,
@@ -122,19 +123,6 @@ public class RequestMessage : IRequestMessage
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RequestMessage"/> class.
-    /// </summary>
-    /// <param name="options">The<seealso cref="IWireMockMiddlewareOptions"/>.</param>
-    /// <param name="urlDetails">The original url details.</param>
-    /// <param name="method">The HTTP method.</param>
-    /// <param name="clientIP">The client IP Address.</param>
-    /// <param name="bodyData">The BodyData.</param>
-    /// <param name="headers">The headers.</param>
-    /// <param name="cookies">The cookies.</param>
-#if USE_ASPNETCORE
-    /// <param name="clientCertificate">The client certificate</param>
-#endif
     internal RequestMessage(
         IWireMockMiddlewareOptions? options,
         UrlDetails urlDetails, string method,
