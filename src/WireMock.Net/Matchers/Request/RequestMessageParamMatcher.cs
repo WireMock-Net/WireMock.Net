@@ -29,7 +29,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <summary>
     /// Defines if the key should be matched using case-ignore.
     /// </summary>
-    public bool? IgnoreCase { get; }
+    public bool IgnoreCase { get; }
 
     /// <summary>
     /// The matchers.
@@ -96,7 +96,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
         }
 
-        var valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase ?? false);
+        var valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase);
         if (valuesPresentInRequestMessage == null)
         {
             // Key is not present at all, just return Mismatch
