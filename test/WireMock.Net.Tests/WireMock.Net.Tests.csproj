@@ -72,6 +72,7 @@
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">
@@ -134,7 +135,4 @@
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Pact\files\" />
-    </ItemGroup>
 </Project>

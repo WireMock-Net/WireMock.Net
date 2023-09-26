@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using VerifyXunit;
+using WireMock.Matchers;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -351,6 +352,60 @@ public partial class MappingConverterTests
         var request = Request.Create().WithClientIP("1.2.3.4");
         var response = Response.Create();
         var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_WithHeader_And_Cookie_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create()
+            .WithHeader("MatchBehaviour.RejectOnMatch", "hv-1", MatchBehaviour.RejectOnMatch)
+            .WithHeader("MatchBehaviour.AcceptOnMatch", "hv-2", MatchBehaviour.AcceptOnMatch)
+            .WithHeader("IgnoreCase_false", "hv-3", false)
+            .WithHeader("IgnoreCase_true", "hv-4")
+            .WithHeader("ExactMatcher", new ExactMatcher("h-exact"))
+
+            .WithCookie("MatchBehaviour.RejectOnMatch", "cv-1", MatchBehaviour.RejectOnMatch)
+            .WithCookie("MatchBehaviour.AcceptOnMatch", "cv-2", MatchBehaviour.AcceptOnMatch)
+            .WithCookie("IgnoreCase_false", "cv-3", false)
+            .WithCookie("IgnoreCase_true", "cv-4")
+            .WithCookie("ExactMatcher", new ExactMatcher("c-exact"))
+            ;
+        var response = Response.Create();
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_WithParam_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create()
+                .WithParam("MatchBehaviour.RejectOnMatch", MatchBehaviour.RejectOnMatch)
+                .WithParam("MatchBehaviour.RejectOnMatch|IgnoreCase_false", false, MatchBehaviour.RejectOnMatch)
+                .WithParam("IgnoreCase_false", false, "pv-3a", "pv-3b")
+                .WithParam("IgnoreCase_true", true, "pv-3a", "pv-3b")
+                .WithParam("ExactMatcher", new ExactMatcher("exact"))
+            ;
+        var response = Response.Create();
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);

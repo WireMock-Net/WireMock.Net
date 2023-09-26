@@ -1,5 +1,9 @@
-# 1.5.36 (28 August 2023)
+# 1.5.36 (21 September 2023)
 - [#986](https://github.com/WireMock-Net/WireMock.Net/pull/986) - Write logging in case a Matcher throws an exception [feature] contributed by [StefH](https://github.com/StefH)
+- [#996](https://github.com/WireMock-Net/WireMock.Net/pull/996) - Remove dependency on Microsoft.AspNet.WebApi.Client [feature] contributed by [StefH](https://github.com/StefH)
+- [#1002](https://github.com/WireMock-Net/WireMock.Net/pull/1002) - Fixed logic for SaveUnmatchedRequests [bug] contributed by [StefH](https://github.com/StefH)
+- [#974](https://github.com/WireMock-Net/WireMock.Net/issues/974) - HttpClient extension methods causes ambiguous invocations in .NET 7 [bug]
+- [#1001](https://github.com/WireMock-Net/WireMock.Net/issues/1001) - SaveUnmatchedRequests stopped working [bug]
 
 # 1.5.35 (19 August 2023)
 - [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)

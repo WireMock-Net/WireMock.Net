@@ -259,19 +259,24 @@ internal class MappingConverter
                 Headers = headerMatchers.Any() ? headerMatchers.Select(hm => new HeaderModel
                 {
                     Name = hm.Name,
-                    Matchers = _mapper.Map(hm.Matchers)
+                    IgnoreCase = hm.IgnoreCase ? true : null,
+                    RejectOnMatch = hm.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null,
+                    Matchers = _mapper.Map(hm.Matchers),
                 }).ToList() : null,
 
                 Cookies = cookieMatchers.Any() ? cookieMatchers.Select(cm => new CookieModel
                 {
                     Name = cm.Name,
+                    IgnoreCase = cm.IgnoreCase ? true : null,
+                    RejectOnMatch = cm.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null,
                     Matchers = _mapper.Map(cm.Matchers)
                 }).ToList() : null,
 
                 Params = paramsMatchers.Any() ? paramsMatchers.Select(pm => new ParamModel
                 {
                     Name = pm.Key,
-                    IgnoreCase = pm.IgnoreCase == true ? true : null,
+                    IgnoreCase = pm.IgnoreCase ? true : null,
+                    RejectOnMatch = pm.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null,
                     Matchers = _mapper.Map(pm.Matchers)
                 }).ToList() : null
             },
