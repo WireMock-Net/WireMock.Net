@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
@@ -162,5 +163,31 @@ public class JmesPathMatcherTests
 
         // Assert
         Check.That(match).IsEqualTo(0.0);
+    }
+
+    [Fact]
+    public void JmesPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorAnd()
+    {
+        // Assign 
+        var matcher = new JmesPathMatcher(MatchOperator.And, "things.x == 'RequiredThing'", "things.x == 'abc'");
+
+        // Act 
+        double score = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
+
+        // Assert 
+        score.Should().Be(0);
+    }
+
+    [Fact]
+    public void JmesPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorOr()
+    {
+        // Assign 
+        var matcher = new JmesPathMatcher(MatchOperator.Or, "things.x == 'RequiredThing'", "things.x == 'abc'");
+
+        // Act 
+        double score = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
+
+        // Assert 
+        score.Should().Be(1);
     }
 }

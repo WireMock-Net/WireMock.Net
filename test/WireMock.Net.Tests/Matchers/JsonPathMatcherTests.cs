@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
@@ -323,5 +324,53 @@ public class JsonPathMatcherTests
 
         // Assert 
         Check.That(match).IsEqualTo(1.0);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorAnd()
+    {
+        // Assign 
+        var matcher = new JsonPathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.And, "$.arr[0].sub[0].subline1", "$.arr[0].line2");
+
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [{
+                ""line1"": ""line1"",
+                ""sub"":[
+                {
+                    ""subline1"":""subline1""
+                }]
+            }]
+        }")).Score;
+
+        // Assert 
+        match.Should().Be(0);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorOr()
+    {
+        // Assign 
+        var matcher = new JsonPathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "$.arr[0].sub[0].subline2", "$.arr[0].line1");
+
+        // Act 
+        double match = matcher.IsMatch(JObject.Parse(@"{
+            ""name"": ""PathSelectorTest"",
+            ""test"": ""test"",
+            ""test2"": ""test2"",
+            ""arr"": [{
+                ""line1"": ""line1"",
+                ""sub"":[
+                {
+                    ""subline1"":""subline1""
+                }]
+            }]
+        }")).Score;
+
+        // Assert 
+        match.Should().Be(1);
     }
 }
