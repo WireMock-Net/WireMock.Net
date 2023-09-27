@@ -1,3 +1,8 @@
+# 1.5.37 (27 September 2023)
+- [#998](https://github.com/WireMock-Net/WireMock.Net/pull/998) - Add JmesPathMatcher UnitTests [test] contributed by [StefH](https://github.com/StefH)
+- [#1004](https://github.com/WireMock-Net/WireMock.Net/pull/1004) - Fix MappingModel to map IgnoreCase and RejectOnMatch for Headers, Cookies and Parameters [bug] contributed by [StefH](https://github.com/StefH)
+- [#1003](https://github.com/WireMock-Net/WireMock.Net/issues/1003) - Store Mapping per POST request ignores &quot;IgnoreCase&quot; property of HeaderModel [bug]
+
 # 1.5.36 (21 September 2023)
 - [#986](https://github.com/WireMock-Net/WireMock.Net/pull/986) - Write logging in case a Matcher throws an exception [feature] contributed by [StefH](https://github.com/StefH)
 - [#996](https://github.com/WireMock-Net/WireMock.Net/pull/996) - Remove dependency on Microsoft.AspNet.WebApi.Client [feature] contributed by [StefH](https://github.com/StefH)
