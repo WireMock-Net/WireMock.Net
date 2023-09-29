@@ -522,4 +522,48 @@ public class MatcherMapperTests
         matcher.ContentTypeMatcher.Should().BeAssignableTo<ContentTypeMatcher>().Which.GetPatterns().Should().ContainSingle("text/json");
     }
 #endif
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_XPathMatcher_WithXmlNamespaces_As_String()
+    {
+        // Assign
+        var pattern = "/s:Envelope/s:Body/*[local-name()='QueryRequest']";
+        var model = new MatcherModel
+        {
+            Name = "XPathMatcher",
+            Pattern = pattern,
+            XmlNamespaceMap = new[]
+            {
+                new XmlNamespace { Prefix = "s", Uri = "http://schemas.xmlsoap.org/soap/envelope/" }
+            }
+        };
+
+        // Act
+        var matcher = (XPathMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.XmlNamespaceMap.Should().NotBeNull();
+        matcher.XmlNamespaceMap.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_XPathMatcher_WithoutXmlNamespaces_As_String()
+    {
+        // Assign
+        var pattern = "/s:Envelope/s:Body/*[local-name()='QueryRequest']";
+        var model = new MatcherModel
+        {
+            Name = "XPathMatcher",
+            Pattern = pattern
+        };
+
+        // Act
+        var matcher = (XPathMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.XmlNamespaceMap.Should().NotBeNull();
+        matcher.XmlNamespaceMap.Should().HaveCount(0);
+    }
 }

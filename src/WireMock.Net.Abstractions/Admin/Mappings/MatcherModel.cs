@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 namespace WireMock.Admin.Mappings;
 
 /// <summary>
@@ -72,5 +74,11 @@ public class MatcherModel
     /// Content Matcher
     /// </summary>
     public MatcherModel? ContentMatcher { get; set; }
+    #endregion
+
+    #region XPathMatcher
+
+    public XmlNamespace[]? XmlNamespaceMap { get; set; }
+
     #endregion
 }

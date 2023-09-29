@@ -101,7 +101,8 @@ internal class MatcherMapper
                 return new JmesPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(XPathMatcher):
-                return new XPathMatcher(matchBehaviour, matchOperator, stringPatterns);
+                var xmlNamespaces = matcher.XmlNamespaceMap;
+                return new XPathMatcher(matchBehaviour, matchOperator, xmlNamespaces, stringPatterns);
 
             case nameof(WildcardMatcher):
                 return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, matchOperator);
