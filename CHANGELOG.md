@@ -1,3 +1,6 @@
+# 1.5.38 (02 October 2023)
+- [#1005](https://github.com/WireMock-Net/WireMock.Net/pull/1005) - Support for xml namespaces in XPathMatcher [feature] contributed by [cal-schleupen](https://github.com/cal-schleupen)
+
 # 1.5.37 (27 September 2023)
 - [#998](https://github.com/WireMock-Net/WireMock.Net/pull/998) - Add JmesPathMatcher UnitTests [test] contributed by [StefH](https://github.com/StefH)
 - [#1004](https://github.com/WireMock-Net/WireMock.Net/pull/1004) - Fix MappingModel to map IgnoreCase and RejectOnMatch for Headers, Cookies and Parameters [bug] contributed by [StefH](https://github.com/StefH)
