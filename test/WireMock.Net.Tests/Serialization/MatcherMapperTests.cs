@@ -583,7 +583,6 @@ public class MatcherMapperTests
 
         // Assert
         matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
-        matcher.XmlNamespaceMap.Should().NotBeNull();
-        matcher.XmlNamespaceMap.Should().HaveCount(0);
+        matcher.XmlNamespaceMap.Should().BeNull();
     }
 }
