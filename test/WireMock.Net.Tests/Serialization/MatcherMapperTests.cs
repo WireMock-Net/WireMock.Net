@@ -146,6 +146,26 @@ public class MatcherMapperTests
     }
 
     [Fact]
+    public void MatcherMapper_Map_XPathMatcher()
+    {
+        // Assign
+        var xmlNamespaceMap = new[]
+        {
+            new XmlNamespace { Prefix = "s", Uri = "http://schemas.xmlsoap.org/soap/envelope/" },
+            new XmlNamespace { Prefix = "i", Uri = "http://www.w3.org/2001/XMLSchema-instance" },
+            new XmlNamespace { Prefix = "q", Uri = "urn://MyWcfService" }
+        };
+        var matcher = new XPathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.And, xmlNamespaceMap);
+
+        // Act
+        var model = _sut.Map(matcher)!;
+
+        // Assert
+        model.XmlNamespaceMap.Should().NotBeNull();
+        model.XmlNamespaceMap.Should().BeEquivalentTo(xmlNamespaceMap);
+    }
+
+    [Fact]
     public void MatcherMapper_Map_MatcherModel_Null()
     {
         // Act

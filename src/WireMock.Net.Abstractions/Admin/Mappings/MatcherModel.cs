@@ -77,8 +77,6 @@ public class MatcherModel
     #endregion
 
     #region XPathMatcher
-
     public XmlNamespace[]? XmlNamespaceMap { get; set; }
-
     #endregion
 }

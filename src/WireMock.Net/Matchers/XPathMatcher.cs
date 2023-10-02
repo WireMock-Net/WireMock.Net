@@ -20,7 +20,7 @@ namespace WireMock.Matchers;
 /// <seealso cref="IStringMatcher" />
 public class XPathMatcher : IStringMatcher
 {
-    private readonly List<XmlNamespace> _xmlNamespaceMap;
+    private readonly XmlNamespace[]? _xmlNamespaceMap;
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     /// <inheritdoc />
@@ -29,7 +29,7 @@ public class XPathMatcher : IStringMatcher
     /// <summary>
     /// Array of namespace prefix and uri.
     /// </summary>
-    public XmlNamespace[] XmlNamespaceMap => _xmlNamespaceMap.ToArray();
+    public XmlNamespace[]? XmlNamespaceMap => _xmlNamespaceMap;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XPathMatcher"/> class.
@@ -52,12 +52,7 @@ public class XPathMatcher : IStringMatcher
         XmlNamespace[]? xmlNamespaceMap = null,
         params AnyOf<string, StringPattern>[] patterns)
     {
-        _xmlNamespaceMap = new List<XmlNamespace>();
-        if (xmlNamespaceMap != null)
-        {
-            _xmlNamespaceMap.AddRange(xmlNamespaceMap);
-        }
-
+        _xmlNamespaceMap = xmlNamespaceMap;
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
@@ -130,7 +125,7 @@ public class XPathMatcher : IStringMatcher
             }
         }
 
-        public bool[] Evaluate(AnyOf<string, StringPattern>[] patterns, IEnumerable<XmlNamespace> xmlNamespaceMap)
+        public bool[] Evaluate(AnyOf<string, StringPattern>[] patterns, IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
             XmlNamespaceManager? xmlNamespaceManager = GetXmlNamespaceManager(xmlNamespaceMap);
             return patterns
@@ -143,9 +138,9 @@ public class XPathMatcher : IStringMatcher
                 .ToArray();
         }
 
-        private XmlNamespaceManager? GetXmlNamespaceManager(IEnumerable<XmlNamespace> xmlNamespaceMap)
+        private XmlNamespaceManager? GetXmlNamespaceManager(IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
-            if (_xpathNavigator == null)
+            if (_xpathNavigator == null || xmlNamespaceMap == null)
             {
                 return default;
             }

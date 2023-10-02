@@ -4,6 +4,7 @@ namespace WireMock.Admin.Mappings;
 /// Defines an xml namespace consisting of prefix and uri.
 /// <example>xmlns:i="http://www.w3.org/2001/XMLSchema-instance"</example>
 /// </summary>
+[FluentBuilder.AutoGenerateBuilder]
 public class XmlNamespace
 {
     /// <summary>

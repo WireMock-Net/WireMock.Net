@@ -160,6 +160,10 @@ internal class MatcherMapper
             case JsonPartialWildcardMatcher jsonPartialWildcardMatcher:
                 model.Regex = jsonPartialWildcardMatcher.Regex;
                 break;
+
+            case XPathMatcher xpathMatcher:
+                model.XmlNamespaceMap = xpathMatcher.XmlNamespaceMap;
+                break;
         }
 
         switch (matcher)
