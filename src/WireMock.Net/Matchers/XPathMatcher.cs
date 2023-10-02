@@ -20,7 +20,6 @@ namespace WireMock.Matchers;
 /// <seealso cref="IStringMatcher" />
 public class XPathMatcher : IStringMatcher
 {
-    private readonly XmlNamespace[]? _xmlNamespaceMap;
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     /// <inheritdoc />
@@ -29,7 +28,7 @@ public class XPathMatcher : IStringMatcher
     /// <summary>
     /// Array of namespace prefix and uri.
     /// </summary>
-    public XmlNamespace[]? XmlNamespaceMap => _xmlNamespaceMap;
+    public XmlNamespace[]? XmlNamespaceMap { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XPathMatcher"/> class.
@@ -52,8 +51,8 @@ public class XPathMatcher : IStringMatcher
         XmlNamespace[]? xmlNamespaceMap = null,
         params AnyOf<string, StringPattern>[] patterns)
     {
-        _xmlNamespaceMap = xmlNamespaceMap;
         _patterns = Guard.NotNull(patterns);
+        XmlNamespaceMap = xmlNamespaceMap;
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
     }
@@ -78,7 +77,7 @@ public class XPathMatcher : IStringMatcher
                 return CreateMatchResult(score);
             }
         
-            score = MatchScores.ToScore(xPathEvaluator.Evaluate(_patterns, _xmlNamespaceMap), MatchOperator);
+            score = MatchScores.ToScore(xPathEvaluator.Evaluate(_patterns, XmlNamespaceMap), MatchOperator);
         }
         catch (Exception exception)
         {

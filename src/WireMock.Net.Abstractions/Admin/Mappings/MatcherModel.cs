@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 namespace WireMock.Admin.Mappings;
 
 /// <summary>
