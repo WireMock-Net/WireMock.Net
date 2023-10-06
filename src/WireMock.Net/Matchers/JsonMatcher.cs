@@ -53,7 +53,7 @@ public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
     public JsonMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false)
     {
-        Guard.NotNull(value, nameof(value));
+        Guard.NotNull(value);
 
         MatchBehaviour = matchBehaviour;
         IgnoreCase = ignoreCase;
