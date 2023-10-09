@@ -1,3 +1,7 @@
+# 1.5.39 (09 October 2023)
+- [#1006](https://github.com/WireMock-Net/WireMock.Net/pull/1006) - Fix RequestMessageParamMatcher : RejectOnMatch [bug] contributed by [StefH](https://github.com/StefH)
+- [#997](https://github.com/WireMock-Net/WireMock.Net/issues/997) - JmesPathMatcher or and MatchOperator working in version 1.5.34 but not 1.5.35 [bug]
+
 # 1.5.38 (02 October 2023)
 - [#1005](https://github.com/WireMock-Net/WireMock.Net/pull/1005) - Support for xml namespaces in XPathMatcher [feature] contributed by [cal-schleupen](https://github.com/cal-schleupen)
 
