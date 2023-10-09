@@ -85,11 +85,11 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        var (score, exception) = GetMatchResult(requestMessage).Expand();
-        return requestMatchResult.AddScore(GetType(), score, exception);
+        var score = GetMatchScore(requestMessage);
+        return requestMatchResult.AddScore(GetType(), MatchBehaviourHelper.Convert(MatchBehaviour, score), null);
     }
 
-    private MatchResult GetMatchResult(IRequestMessage requestMessage)
+    private double GetMatchScore(IRequestMessage requestMessage)
     {
         if (Funcs != null)
         {
@@ -100,7 +100,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
         if (valuesPresentInRequestMessage == null)
         {
             // Key is not present at all, just return Mismatch
-            return default;
+            return MatchScores.Mismatch;
         }
 
         if (Matchers != null && Matchers.Any())
@@ -115,10 +115,10 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.Perfect;
         }
 
-        return default;
+        return MatchScores.Mismatch;
     }
 
-    private static MatchResult CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
+    private static double CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
     {
         var total = new List<double>();
 
