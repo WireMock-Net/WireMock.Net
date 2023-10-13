@@ -1,5 +1,6 @@
 #if !NET452
 //using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -19,6 +20,53 @@ public partial class WireMockServerTests
     public class DummyClass
     {
         public string? Hi { get; set; }
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsJson_Using_PostAsJsonAsync_And_JmesPathMatchers_ShouldMatch()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+        server.Given(
+            Request.Create()
+                .WithPath("/a")
+                .WithBody(
+                    new IMatcher[]
+                    {
+                        new JmesPathMatcher("requestId == '1'"),
+                        new JmesPathMatcher("value == 'A'")
+                    },
+                    MatchOperator.And
+                )
+                .UsingPost()
+            )
+            .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
+
+        server.Given(
+                Request.Create()
+                    .WithPath("/a")
+                    .WithBody(
+                        new IMatcher[]
+                        {
+                            new JmesPathMatcher("requestId == '2'"),
+                            new JmesPathMatcher("value == 'A'")
+                        },
+                        MatchOperator.And
+                    )
+                    .UsingPost()
+            )
+            .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Moved));
+        
+        // Act
+        var requestUri = new Uri($"http://localhost:{server.Port}/a");
+
+        var json = new { requestId = "1", value = "A" };
+        var response = await server.CreateClient().PostAsJsonAsync(requestUri, json).ConfigureAwait(false);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        server.Stop();
     }
 
     [Fact]
