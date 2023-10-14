@@ -128,7 +128,7 @@ public partial class WireMockServerTests
         {
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true
         };
-        var client = new HttpClient(handler);
+        using var client = new HttpClient(handler);
 
         // Act
         var result = await client.GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);

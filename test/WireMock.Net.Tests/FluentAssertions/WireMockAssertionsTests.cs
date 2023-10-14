@@ -215,10 +215,13 @@ public class WireMockAssertionsTests : IDisposable
     {
         // Arrange
         using var server = WireMockServer.Start();
-        using var client = server.CreateClient();
+        using var client1 = server.CreateClient();
+
+        var handler = new HttpClientHandler();
+        using var client2 = server.CreateClient(handler);
 
         // Act 1
-        await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        await client1.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
         {
             Headers =
             {
@@ -227,7 +230,7 @@ public class WireMockAssertionsTests : IDisposable
         });
 
         // Act 2
-        await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        await client2.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
         {
             Headers =
             {
