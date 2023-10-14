@@ -101,6 +101,36 @@ public partial class WireMockServerTests
     }
 
     [Fact]
+    public async Task WireMockServer_Should_Support_Https()
+    {
+        // Arrange
+        const string body = "example";
+        var path = $"/foo_{Guid.NewGuid()}";
+        var settings = new WireMockServerSettings
+        {
+            UseSSL = true
+        };
+        var server = WireMockServer.Start(settings);
+
+        server
+            .Given(Request.Create()
+                .WithPath(path)
+                .UsingGet()
+            )
+            .RespondWith(Response.Create()
+                .WithBody(body)
+            );
+
+        // Act
+        var result = await new HttpClient().GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);
+
+        // Assert
+        result.Should().Be(body);
+
+        server.Stop();
+    }
+
+    [Fact]
     public async Task WireMockServer_Should_respond_a_redirect_without_body()
     {
         // Assign
