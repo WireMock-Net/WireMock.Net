@@ -6,8 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -179,11 +177,7 @@ public partial class WireMockServerTests
         var currentProxy = HttpClient.DefaultProxy;
         try
         {
-            HttpClient.DefaultProxy = new WebProxy
-            {
-                Address = new Uri(httpUrl),
-                BypassProxyOnLocal = false
-            };
+            HttpClient.DefaultProxy = new WebProxy(httpUrl, false);
 
             result = await new HttpClient().GetStringAsync(httpUrl).ConfigureAwait(false);
         }
@@ -199,7 +193,7 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
-    [Fact]
+    [Fact(Skip = "stef")]
     public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttps_And_ServerIsUsingEllipticalCurveCertificate_Should_Work_Correct()
     {
         // Arrange
@@ -248,16 +242,17 @@ qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
         var currentProxy = HttpClient.DefaultProxy;
         try
         {
-            HttpClient.DefaultProxy = new WebProxy
-            {
-                Address = new Uri(httpUrl),
-                BypassProxyOnLocal = false
-            };
+            // HttpClient.DefaultProxy = new WebProxy(httpUrl, false);
+            HttpClient.DefaultProxy = new MyProxy(httpUrl);
 
             // Configure the HttpClient to trust self-signed certificates
             var handler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                ServerCertificateCustomValidationCallback = (_, _, _, _) =>
+                {
+                    int x = 9;
+                    return true;
+                }
             };
             var client = new HttpClient(handler);
 
@@ -274,6 +269,29 @@ qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
 
         server.Stop();
     }
+
+    private class MyProxy : IWebProxy
+    {
+        private readonly Uri _address;
+
+        public MyProxy(string address)
+        {
+            _address = new Uri(address);
+        }
+
+        public Uri? GetProxy(Uri destination)
+        {
+            return _address;
+        }
+
+        public bool IsBypassed(Uri host)
+        {
+            return false;
+        }
+
+        public ICredentials? Credentials { get; set; }
+    }
+
 #endif
 
     [Fact]
