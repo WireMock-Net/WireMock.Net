@@ -12,8 +12,6 @@ internal class HostUrlOptions
 
     public int? Port { get; set; }
 
-    public int? HttpsPort { get; private set; }
-
     public HostingScheme HostingScheme { get; set; }
 
     public IReadOnlyList<HostUrlDetails> GetDetails()
@@ -35,7 +33,6 @@ internal class HostUrlOptions
 
                 var httpsPort = FindFreeTcpPort(); // In this scenario, always get a free port for https.
                 list.Add(new HostUrlDetails { IsHttps = true, Url = $"https://{Localhost}:{httpsPort}", Scheme = "https", Host = Localhost, Port = httpsPort });
-                HttpsPort = httpsPort;
             }
         }
         else
