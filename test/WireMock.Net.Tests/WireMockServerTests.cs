@@ -193,26 +193,14 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
-    [Fact(Skip = "stef")]
-    public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttps_And_ServerIsUsingEllipticalCurveCertificate_Should_Work_Correct()
+    [Fact]
+    public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttps_And_ServerActingAsASimpleProxyServer_Should_Work_Correct()
     {
         // Arrange
-        const string body = "example";
+        const string externalUrl = "https://www.google.com";
         var settings = new WireMockServerSettings
         {
-            HostingScheme = HostingScheme.HttpAndHttps,
-            CertificateSettings = new WireMockCertificateSettings
-            {
-                // https://www.scottbrady91.com/c-sharp/pem-loading-in-dotnet-core-and-dotnet
-                // https://www.scottbrady91.com/openssl/creating-elliptical-curve-keys-using-openssl
-                X509CertificateFilePath = "cert.pem",
-                X509CertificatePassword = @"
------BEGIN EC PRIVATE KEY-----
-MHcCAQEEIJZTv6ujGrEwxW+ab1+CtZouRd8PK7PsklVMvJwm1uDmoAoGCCqGSM49
-AwEHoUQDQgAE39VoI268uDuIeKmRzr9e9jgMSGeuJTvTG7+cSXmeDymrVgIGXQgm
-qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
------END EC PRIVATE KEY-----"
-            }
+            HostingScheme = HostingScheme.Http,
         };
         var server = WireMockServer.Start(settings);
 
@@ -231,32 +219,39 @@ qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
                 .UsingGet()
             )
             .RespondWith(Response.Create()
-                .WithBody(body)
-            );
+                .WithCallback(async request =>
+                {
+                    if (string.Equals(request.Method, "GET", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var responseAsString = await new HttpClient().GetStringAsync(externalUrl);
+                        return new ResponseMessage
+                        {
+                            BodyData = new BodyData
+                            {
+                                BodyAsString = responseAsString,
+                                DetectedBodyType = BodyType.String
+                            },
+                            StatusCode = HttpStatusCode.OK
+                        };
+                    }
 
-        var httpUrl = server.Urls.First(u => u.StartsWith("http://"));
-        var httpsUrl = server.Urls.First(u => u.StartsWith("https://"));
+                    return new ResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.HttpVersionNotSupported
+                    };
+                })
+            );
 
         // Act
         string result;
         var currentProxy = HttpClient.DefaultProxy;
         try
         {
-            // HttpClient.DefaultProxy = new WebProxy(httpUrl, false);
-            HttpClient.DefaultProxy = new MyProxy(httpUrl);
-
-            // Configure the HttpClient to trust self-signed certificates
-            var handler = new HttpClientHandler
+            HttpClient.DefaultProxy = new WebProxy(server.Url)
             {
-                ServerCertificateCustomValidationCallback = (_, _, _, _) =>
-                {
-                    int x = 9;
-                    return true;
-                }
+                BypassList = new[] { externalUrl }
             };
-            var client = new HttpClient(handler);
-
-            result = await client.GetStringAsync(httpsUrl).ConfigureAwait(false);
+            result = await new HttpClient().GetStringAsync(server.Url).ConfigureAwait(false);
         }
         finally
         {
@@ -265,33 +260,10 @@ qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
         }
 
         // Assert
-        result.Should().Be(body);
+        result.Should().Contain("window.google");
 
         server.Stop();
     }
-
-    private class MyProxy : IWebProxy
-    {
-        private readonly Uri _address;
-
-        public MyProxy(string address)
-        {
-            _address = new Uri(address);
-        }
-
-        public Uri? GetProxy(Uri destination)
-        {
-            return _address;
-        }
-
-        public bool IsBypassed(Uri host)
-        {
-            return false;
-        }
-
-        public ICredentials? Credentials { get; set; }
-    }
-
 #endif
 
     [Fact]
