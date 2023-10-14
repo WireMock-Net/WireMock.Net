@@ -133,7 +133,7 @@ public partial class WireMockServerTests
 
 #if NET6_0_OR_GREATER
     [Fact]
-    public async Task WireMockServer_WhenHttpClientWithWebProxy_CallsHttp_Should_Work_Correct()
+    public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttp_Should_Work_Correct()
     {
         // Arrange
         const string body = "example";
@@ -188,14 +188,26 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
-    [Fact(Skip = "https://github.com/WireMock-Net/WireMock.Net/issues/1007")]
-    public async Task WireMockServer_WhenHttpClientWithWebProxy_CallsHttps_Should_Work_Correct()
+    [Fact]
+    public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttps_And_ServerIsUsingEllipticalCurveCertificate_Should_Work_Correct()
     {
         // Arrange
         const string body = "example";
         var settings = new WireMockServerSettings
         {
-            HostingScheme = HostingScheme.HttpAndHttps
+            HostingScheme = HostingScheme.HttpAndHttps,
+            CertificateSettings = new WireMockCertificateSettings
+            {
+                // https://www.scottbrady91.com/c-sharp/pem-loading-in-dotnet-core-and-dotnet
+                // https://www.scottbrady91.com/openssl/creating-elliptical-curve-keys-using-openssl
+                X509CertificateFilePath = "cert.pem",
+                X509CertificatePassword = @"
+-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIJZTv6ujGrEwxW+ab1+CtZouRd8PK7PsklVMvJwm1uDmoAoGCCqGSM49
+AwEHoUQDQgAE39VoI268uDuIeKmRzr9e9jgMSGeuJTvTG7+cSXmeDymrVgIGXQgm
+qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
+-----END EC PRIVATE KEY-----"
+            }
         };
         var server = WireMockServer.Start(settings);
 
