@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -101,6 +103,7 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
+#if NET461_OR_GREATER || NET6_0_OR_GREATER
     [Fact]
     public async Task WireMockServer_Should_Support_Https()
     {
@@ -122,14 +125,22 @@ public partial class WireMockServerTests
                 .WithBody(body)
             );
 
+        // Configure the HttpClient to trust self-signed certificates
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+        var client = new HttpClient(handler);
+
         // Act
-        var result = await new HttpClient().GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);
+        var result = await client.GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);
 
         // Assert
         result.Should().Be(body);
 
         server.Stop();
     }
+#endif
 
 #if NET6_0_OR_GREATER
     [Fact]
@@ -243,7 +254,14 @@ qKA8TDXpJNrRhWMd/fpsnWu1JwJUjBmspQ==
                 BypassProxyOnLocal = false
             };
 
-            result = await new HttpClient().GetStringAsync(httpsUrl).ConfigureAwait(false);
+            // Configure the HttpClient to trust self-signed certificates
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            var client = new HttpClient(handler);
+
+            result = await client.GetStringAsync(httpsUrl).ConfigureAwait(false);
         }
         finally
         {
