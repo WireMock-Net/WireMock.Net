@@ -1,0 +1,59 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Request: {
+    Params: [
+      {
+        Name: MatchBehaviour.RejectOnMatch,
+        RejectOnMatch: true
+      },
+      {
+        Name: MatchBehaviour.RejectOnMatch|IgnoreCase_false,
+        RejectOnMatch: true
+      },
+      {
+        Name: IgnoreCase_false,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: pv-3a,
+            IgnoreCase: false
+          },
+          {
+            Name: ExactMatcher,
+            Pattern: pv-3b,
+            IgnoreCase: false
+          }
+        ]
+      },
+      {
+        Name: IgnoreCase_true,
+        IgnoreCase: true,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: pv-3a,
+            IgnoreCase: true
+          },
+          {
+            Name: ExactMatcher,
+            Pattern: pv-3b,
+            IgnoreCase: true
+          }
+        ]
+      },
+      {
+        Name: ExactMatcher,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: exact,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ]
+  },
+  Response: {},
+  UseWebhooksFireAndForget: false
+}

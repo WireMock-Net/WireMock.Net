@@ -12,8 +12,6 @@ internal class HostUrlOptions
 
     public int? Port { get; set; }
 
-    public int? HttpsPort { get; set; }
-
     public HostingScheme HostingScheme { get; set; }
 
     public IReadOnlyList<HostUrlDetails> GetDetails()

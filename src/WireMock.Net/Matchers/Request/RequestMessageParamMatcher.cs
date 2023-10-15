@@ -29,7 +29,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <summary>
     /// Defines if the key should be matched using case-ignore.
     /// </summary>
-    public bool? IgnoreCase { get; }
+    public bool IgnoreCase { get; }
 
     /// <summary>
     /// The matchers.
@@ -85,22 +85,22 @@ public class RequestMessageParamMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        var (score, exception) = GetMatchResult(requestMessage).Expand();
-        return requestMatchResult.AddScore(GetType(), score, exception);
+        var score = GetMatchScore(requestMessage);
+        return requestMatchResult.AddScore(GetType(), MatchBehaviourHelper.Convert(MatchBehaviour, score), null);
     }
 
-    private MatchResult GetMatchResult(IRequestMessage requestMessage)
+    private double GetMatchScore(IRequestMessage requestMessage)
     {
         if (Funcs != null)
         {
             return MatchScores.ToScore(requestMessage.Query != null && Funcs.Any(f => f(requestMessage.Query)));
         }
 
-        var valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase ?? false);
+        var valuesPresentInRequestMessage = ((RequestMessage)requestMessage).GetParameter(Key, IgnoreCase);
         if (valuesPresentInRequestMessage == null)
         {
             // Key is not present at all, just return Mismatch
-            return default;
+            return MatchScores.Mismatch;
         }
 
         if (Matchers != null && Matchers.Any())
@@ -115,10 +115,10 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.Perfect;
         }
 
-        return default;
+        return MatchScores.Mismatch;
     }
 
-    private static MatchResult CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
+    private static double CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
     {
         var total = new List<double>();
 

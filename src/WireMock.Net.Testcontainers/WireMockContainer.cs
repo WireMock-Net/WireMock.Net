@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RestEase;
 using Stef.Validation;
 using WireMock.Client;
+using WireMock.Http;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -71,7 +72,7 @@ public sealed class WireMockContainer : DockerContainer
     {
         ValidateIfRunning();
 
-        var client = HttpClientFactory.Create(handlers);
+        var client = HttpClientFactory2.Create(handlers);
         client.BaseAddress = GetPublicUri();
         return client;
     }
@@ -93,7 +94,7 @@ public sealed class WireMockContainer : DockerContainer
     {
         ValidateIfRunning();
 
-        var client = HttpClientFactory.Create(innerHandler, handlers);
+        var client = HttpClientFactory2.Create(innerHandler, handlers);
         client.BaseAddress = GetPublicUri();
         return client;
     }

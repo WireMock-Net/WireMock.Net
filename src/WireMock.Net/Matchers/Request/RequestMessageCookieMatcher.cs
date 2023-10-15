@@ -11,9 +11,15 @@ namespace WireMock.Matchers.Request;
 /// <inheritdoc cref="IRequestMatcher"/>
 public class RequestMessageCookieMatcher : IRequestMatcher
 {
-    private readonly MatchBehaviour _matchBehaviour;
+    /// <summary>
+    /// MatchBehaviour
+    /// </summary>
+    public MatchBehaviour MatchBehaviour { get; }
 
-    private readonly bool _ignoreCase;
+    /// <summary>
+    /// IgnoreCase
+    /// </summary>
+    public bool IgnoreCase { get; }
 
     /// <summary>
     /// The functions
@@ -39,8 +45,8 @@ public class RequestMessageCookieMatcher : IRequestMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     public RequestMessageCookieMatcher(MatchBehaviour matchBehaviour, string name, string pattern, bool ignoreCase)
     {
-        _matchBehaviour = matchBehaviour;
-        _ignoreCase = ignoreCase;
+        MatchBehaviour = matchBehaviour;
+        IgnoreCase = ignoreCase;
         Name = Guard.NotNull(name);
         Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, Guard.NotNull(pattern), ignoreCase) };
     }
@@ -67,10 +73,10 @@ public class RequestMessageCookieMatcher : IRequestMatcher
     /// <param name="ignoreCase">Ignore the case from the pattern.</param>
     public RequestMessageCookieMatcher(MatchBehaviour matchBehaviour, string name, bool ignoreCase, params IStringMatcher[] matchers)
     {
-        _matchBehaviour = matchBehaviour;
+        MatchBehaviour = matchBehaviour;
         Name = Guard.NotNull(name);
         Matchers = Guard.NotNull(matchers);
-        _ignoreCase = ignoreCase;
+        IgnoreCase = ignoreCase;
     }
 
     /// <summary>
@@ -96,11 +102,11 @@ public class RequestMessageCookieMatcher : IRequestMatcher
     {
         if (requestMessage.Cookies == null)
         {
-            return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
         }
 
         // Check if we want to use IgnoreCase to compare the Cookie-Name and Cookie-Value
-        var cookies = !_ignoreCase ? requestMessage.Cookies : new Dictionary<string, string>(requestMessage.Cookies, StringComparer.OrdinalIgnoreCase);
+        var cookies = !IgnoreCase ? requestMessage.Cookies : new Dictionary<string, string>(requestMessage.Cookies, StringComparer.OrdinalIgnoreCase);
 
         if (Funcs != null)
         {
@@ -114,7 +120,7 @@ public class RequestMessageCookieMatcher : IRequestMatcher
 
         if (!cookies.ContainsKey(Name))
         {
-            return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
         }
 
         return Matchers.Max(m => m.IsMatch(cookies[Name]));

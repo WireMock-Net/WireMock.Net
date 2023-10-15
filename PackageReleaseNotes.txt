@@ -1,5 +1,5 @@
-# 1.5.35 (19 August 2023)
-- #992 Add extra unit test for WithParam multiple values comma [test]
-- #993 Update JSONPathMatcher.cs to cover the string path selection to a child
+# 1.5.39 (09 October 2023)
+- #1006 Fix RequestMessageParamMatcher : RejectOnMatch [bug]
+- #997 JmesPathMatcher or and MatchOperator working in version 1.5.34 but not 1.5.35 [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

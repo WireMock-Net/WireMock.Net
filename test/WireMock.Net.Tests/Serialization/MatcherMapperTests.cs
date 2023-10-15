@@ -146,6 +146,26 @@ public class MatcherMapperTests
     }
 
     [Fact]
+    public void MatcherMapper_Map_XPathMatcher()
+    {
+        // Assign
+        var xmlNamespaceMap = new[]
+        {
+            new XmlNamespace { Prefix = "s", Uri = "http://schemas.xmlsoap.org/soap/envelope/" },
+            new XmlNamespace { Prefix = "i", Uri = "http://www.w3.org/2001/XMLSchema-instance" },
+            new XmlNamespace { Prefix = "q", Uri = "urn://MyWcfService" }
+        };
+        var matcher = new XPathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.And, xmlNamespaceMap);
+
+        // Act
+        var model = _sut.Map(matcher)!;
+
+        // Assert
+        model.XmlNamespaceMap.Should().NotBeNull();
+        model.XmlNamespaceMap.Should().BeEquivalentTo(xmlNamespaceMap);
+    }
+
+    [Fact]
     public void MatcherMapper_Map_MatcherModel_Null()
     {
         // Act
@@ -522,4 +542,47 @@ public class MatcherMapperTests
         matcher.ContentTypeMatcher.Should().BeAssignableTo<ContentTypeMatcher>().Which.GetPatterns().Should().ContainSingle("text/json");
     }
 #endif
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_XPathMatcher_WithXmlNamespaces_As_String()
+    {
+        // Assign
+        var pattern = "/s:Envelope/s:Body/*[local-name()='QueryRequest']";
+        var model = new MatcherModel
+        {
+            Name = "XPathMatcher",
+            Pattern = pattern,
+            XmlNamespaceMap = new[]
+            {
+                new XmlNamespace { Prefix = "s", Uri = "http://schemas.xmlsoap.org/soap/envelope/" }
+            }
+        };
+
+        // Act
+        var matcher = (XPathMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.XmlNamespaceMap.Should().NotBeNull();
+        matcher.XmlNamespaceMap.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_XPathMatcher_WithoutXmlNamespaces_As_String()
+    {
+        // Assign
+        var pattern = "/s:Envelope/s:Body/*[local-name()='QueryRequest']";
+        var model = new MatcherModel
+        {
+            Name = "XPathMatcher",
+            Pattern = pattern
+        };
+
+        // Act
+        var matcher = (XPathMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+        matcher.XmlNamespaceMap.Should().BeNull();
+    }
 }

@@ -73,4 +73,8 @@ public class MatcherModel
     /// </summary>
     public MatcherModel? ContentMatcher { get; set; }
     #endregion
+
+    #region XPathMatcher
+    public XmlNamespace[]? XmlNamespaceMap { get; set; }
+    #endregion
 }
