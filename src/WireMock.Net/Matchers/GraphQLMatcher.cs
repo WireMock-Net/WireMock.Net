@@ -6,10 +6,13 @@ using System.Linq;
 using AnyOfTypes;
 using GraphQL;
 using GraphQL.Types;
+using GraphQLParser;
+using GraphQLParser.AST;
 using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -137,14 +140,45 @@ public class GraphQLMatcher : IStringMatcher
         }
     }
 
+    /// <param name="typeDefinitions">A textual description of the schema in SDL (Schema Definition Language) format.</param>
     private static ISchema BuildSchema(string typeDefinitions)
     {
         var schema = Schema.For(typeDefinitions);
 
         // #984
-        schema.RegisterTypes(schema.BuiltInTypeMappings.Select(x => x.graphType).ToArray());
+        var graphTypes = schema.BuiltInTypeMappings.Select(tm => tm.graphType).ToList();
+        schema.RegisterTypes(graphTypes.ToArray());
+
+        var doc = Parser.Parse(typeDefinitions);
+        var scalarTypeDefinitions = doc.Definitions
+            .Where(d => d.Kind == ASTNodeKind.ScalarTypeDefinition)
+            .OfType<GraphQLTypeDefinition>()
+            .ToArray();
+
+        foreach (var scalarTypeDefinition in scalarTypeDefinitions)
+        {
+            var scalarGraphTypeName = $"{scalarTypeDefinition.Name.StringValue}GraphType";
+            if (graphTypes.All(t => t.Name != scalarGraphTypeName))
+            {
+                var dynamicType = ReflectionUtils.CreateType(scalarTypeDefinition.Name.StringValue, typeof(IntGraphType));
+
+                schema.RegisterType(dynamicType);
+
+                //schema.RegisterTypeMapping(typeof(int), dynamicType);
+            }
+        }
+        
+        //schema.RegisterType(typeof(MyCustomScalarGraphType));
 
         return schema;
+    }
+
+    internal class MyCustomScalarGraphType : IntGraphType
+    {
+        //public override object? ParseValue(object? value)
+        //{
+        //    return true;
+        //}
     }
 }
 #endif

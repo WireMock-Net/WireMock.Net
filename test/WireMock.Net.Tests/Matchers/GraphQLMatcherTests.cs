@@ -100,6 +100,37 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_UsingCustomType_Mutation_IsMatch()
+    {
+        // Arrange
+        const string testSchema = @"
+  scalar DateTime
+  scalar MyCustomScalar
+
+  type Message {
+    id: ID!
+  }
+
+  type Mutation {
+    createMessage(x: MyCustomScalar, dt: DateTime): Message
+  }";
+
+        var input = @"{
+    ""query"": ""mutation CreateMessage($x: MyCustomScalar!, $dt: DateTime!) { createMessage(x: $x, dt: $dt) { id } }"",
+    ""variables"": { ""x"": 100, ""dt"": ""2007-12-03T10:15:30Z"" }
+}";
+
+        // Act
+        var matcher = new GraphQLMatcher(testSchema);
+        var result = matcher.IsMatch(input);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Perfect);
+
+        matcher.GetPatterns().Should().Contain(testSchema);
+    }
+
+    [Fact]
     public void GraphQLMatcher_For_ValidSchema_And_IncorrectQuery_IsMismatch()
     {
         // Arrange
