@@ -16,6 +16,7 @@ using WireMock.Admin.Requests;
 using WireMock.Settings;
 using FluentAssertions;
 using WireMock.Handlers;
+using WireMock.Matchers.Request;
 using WireMock.ResponseBuilders;
 using WireMock.RequestBuilders;
 #if NET452
@@ -43,6 +44,7 @@ public class WireMockMiddlewareTests
     private readonly Mock<IOwinResponseMapper> _responseMapperMock;
     private readonly Mock<IMappingMatcher> _matcherMock;
     private readonly Mock<IMapping> _mappingMock;
+    private readonly Mock<IRequestMatchResult> _requestMatchResultMock;
     private readonly Mock<IContext> _contextMock;
 
     private readonly WireMockMiddleware _sut;
@@ -72,11 +74,15 @@ public class WireMockMiddlewareTests
 
         _matcherMock = new Mock<IMappingMatcher>();
         _matcherMock.SetupAllProperties();
-        _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((new MappingMatcherResult(), new MappingMatcherResult()));
+        // _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((new MappingMatcherResult(), new MappingMatcherResult()));
 
         _contextMock = new Mock<IContext>();
 
         _mappingMock = new Mock<IMapping>();
+
+        _requestMatchResultMock = new Mock<IRequestMatchResult>();
+        _requestMatchResultMock.Setup(r => r.TotalNumber).Returns(1);
+        _requestMatchResultMock.Setup(r => r.MatchDetails).Returns(new List<MatchDetail>());
 
         _sut = new WireMockMiddleware(
             null,
@@ -133,7 +139,7 @@ public class WireMockMiddlewareTests
         _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
         _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
 
-        var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+        var result = new MappingMatcherResult(_mappingMock.Object, _requestMatchResultMock.Object);
         _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
         // Act
@@ -156,7 +162,7 @@ public class WireMockMiddlewareTests
         _optionsMock.SetupGet(o => o.AuthenticationMatcher).Returns(new ExactMatcher());
         _mappingMock.SetupGet(m => m.IsAdminInterface).Returns(true);
 
-        var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+        var result = new MappingMatcherResult(_mappingMock.Object, _requestMatchResultMock.Object);
         _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
         // Act
@@ -216,7 +222,7 @@ public class WireMockMiddlewareTests
         var requestBuilder = Request.Create().UsingAnyMethod();
         _mappingMock.SetupGet(m => m.RequestMatcher).Returns(requestBuilder);
 
-        var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+        var result = new MappingMatcherResult(_mappingMock.Object, _requestMatchResultMock.Object);
         _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
         // Act
@@ -270,7 +276,7 @@ public class WireMockMiddlewareTests
         var requestBuilder = Request.Create().UsingAnyMethod();
         _mappingMock.SetupGet(m => m.RequestMatcher).Returns(requestBuilder);
 
-        var result = new MappingMatcherResult { Mapping = _mappingMock.Object };
+        var result = new MappingMatcherResult (_mappingMock.Object, _requestMatchResultMock.Object);
         _matcherMock.Setup(m => m.FindBestMatch(It.IsAny<RequestMessage>())).Returns((result, result));
 
         // Act
