@@ -11,7 +11,10 @@ namespace WireMock.Net.Tests.Matchers;
 public class GraphQLMatcherTests
 {
     private const string TestSchema = @"
+  scalar DateTime
+
   input MessageInput {
+    date: DateTime
     content: String
     author: String
   }
@@ -24,20 +27,21 @@ public class GraphQLMatcherTests
 
   type Mutation {
     createMessage(input: MessageInput): Message
+    createAnotherMessage(date: DateTime, content: String, author: String): Message
     updateMessage(id: ID!, input: MessageInput): Message
   }
 
   type Query {
-   greeting:String
-   students:[Student]
-   studentById(id:ID!):Student
+    greeting: String
+    students: [Student]
+    studentById(id: ID!):Student
   }
 
   type Student {
-   id:ID!
-   firstName:String
-   lastName:String
-   fullName:String 
+    id: ID!
+    firstName: String
+    lastName: String
+    fullName: String 
   }";
 
     [Fact]
@@ -57,7 +61,7 @@ public class GraphQLMatcherTests
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQLQuery_IsMatch()
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_Query_IsMatch()
     {
         // Arrange
         var input = @"{
@@ -66,6 +70,25 @@ public class GraphQLMatcherTests
 		""sid"": ""1""
 	}
 }";
+        // Act
+        var matcher = new GraphQLMatcher(TestSchema);
+        var result = matcher.IsMatch(input);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Perfect);
+
+        matcher.GetPatterns().Should().Contain(TestSchema);
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_Mutation_IsMatch()
+    {
+        // Arrange
+        var input = @"{
+    ""query"": ""mutation CreateAnotherMessage($date: DateTime!, $content: String!, $author: String!) { createAnotherMessage(date: $date, content: $content, author: $author) { id } }"",
+    ""variables"": { ""date"": ""2007-12-03T10:15:30Z"", ""content"": ""--content--"", ""author"": ""--author--"" }
+}";
+
         // Act
         var matcher = new GraphQLMatcher(TestSchema);
         var result = matcher.IsMatch(input);
