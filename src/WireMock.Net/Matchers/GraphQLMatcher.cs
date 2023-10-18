@@ -174,24 +174,23 @@ public class GraphQLMatcher : IStringMatcher
         var schema = Schema.For(typeDefinitions);
 
         // #984
-        var graphTypes = schema.BuiltInTypeMappings.Select(tm => tm.graphType).ToList();
-        schema.RegisterTypes(graphTypes.ToArray());
+        var graphTypes = schema.BuiltInTypeMappings.Select(tm => tm.graphType).ToArray();
+        schema.RegisterTypes(graphTypes);
 
         var doc = Parser.Parse(typeDefinitions);
         var scalarTypeDefinitions = doc.Definitions
             .Where(d => d.Kind == ASTNodeKind.ScalarTypeDefinition)
-            .OfType<GraphQLTypeDefinition>()
-            .ToArray();
+            .OfType<GraphQLTypeDefinition>();
 
-        foreach (var scalarTypeDefinition in scalarTypeDefinitions)
+        foreach (var scalarTypeDefinitionName in scalarTypeDefinitions.Select(s => s.Name.StringValue))
         {
-            var customScalarGraphTypeName = $"{scalarTypeDefinition.Name.StringValue}GraphType";
-            if (graphTypes.TrueForAll(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
+            var customScalarGraphTypeName = $"{scalarTypeDefinitionName}GraphType";
+            if (graphTypes.All(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
             {
                 // Check if this custom Scalar is defined in the dictionary
-                if (CustomScalars == null || !CustomScalars.TryGetValue(scalarTypeDefinition.Name.StringValue, out var clrType))
+                if (CustomScalars == null || !CustomScalars.TryGetValue(scalarTypeDefinitionName, out var clrType))
                 {
-                    throw new WireMockException($"The GraphQL Scalar type '{scalarTypeDefinition.Name.StringValue}' is not defined in the CustomScalars dictionary.");
+                    throw new WireMockException($"The GraphQL Scalar type '{scalarTypeDefinitionName}' is not defined in the CustomScalars dictionary.");
                 }
 
                 // Create a this custom Scalar GraphType (extending the WireMockCustomScalarGraphType<{clrType}> class)
