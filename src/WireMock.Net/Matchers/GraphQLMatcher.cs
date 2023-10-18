@@ -10,7 +10,9 @@ using GraphQLParser;
 using GraphQLParser.AST;
 using Newtonsoft.Json;
 using Stef.Validation;
+using WireMock.Exceptions;
 using WireMock.Extensions;
+using WireMock.Matchers.Models;
 using WireMock.Models;
 using WireMock.Util;
 
@@ -39,14 +41,40 @@ public class GraphQLMatcher : IStringMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
+    /// An optional dictionary defining the custom Scalar and the type.
+    /// </summary>
+    public IDictionary<string, Type>? CustomScalars { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
     /// </summary>
     /// <param name="schema">The schema.</param>
-    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, MatchOperator matchOperator = MatchOperator.Or)
+    public GraphQLMatcher(
+        AnyOf<string, StringPattern, ISchema> schema,
+        MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
+        MatchOperator matchOperator = MatchOperator.Or
+    ) : this(schema, null, matchBehaviour, matchOperator)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
+    /// </summary>
+    /// <param name="schema">The schema.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema.</param>
+    /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
+    public GraphQLMatcher(
+        AnyOf<string, StringPattern, ISchema> schema,
+        IDictionary<string, Type>? customScalars,
+        MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
+        MatchOperator matchOperator = MatchOperator.Or
+    )
     {
         Guard.NotNull(schema);
+        CustomScalars = customScalars;
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
 
@@ -141,7 +169,7 @@ public class GraphQLMatcher : IStringMatcher
     }
 
     /// <param name="typeDefinitions">A textual description of the schema in SDL (Schema Definition Language) format.</param>
-    private static ISchema BuildSchema(string typeDefinitions)
+    private ISchema BuildSchema(string typeDefinitions)
     {
         var schema = Schema.For(typeDefinitions);
 
@@ -157,28 +185,22 @@ public class GraphQLMatcher : IStringMatcher
 
         foreach (var scalarTypeDefinition in scalarTypeDefinitions)
         {
-            var scalarGraphTypeName = $"{scalarTypeDefinition.Name.StringValue}GraphType";
-            if (graphTypes.All(t => t.Name != scalarGraphTypeName))
+            var customScalarGraphTypeName = $"{scalarTypeDefinition.Name.StringValue}GraphType";
+            if (graphTypes.All(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
             {
-                var dynamicType = ReflectionUtils.CreateType(scalarTypeDefinition.Name.StringValue, typeof(IntGraphType));
+                // Check if this custom Scalar is defined in the dictionary
+                if (CustomScalars == null || !CustomScalars.TryGetValue(scalarTypeDefinition.Name.StringValue, out var clrType))
+                {
+                    throw new WireMockException($"The GraphQL Scalar type '{scalarTypeDefinition.Name.StringValue}' is not defined in the CustomScalars dictionary.");
+                }
 
-                schema.RegisterType(dynamicType);
-
-                //schema.RegisterTypeMapping(typeof(int), dynamicType);
+                // Create a this custom Scalar GraphType (extending the WireMockCustomScalarGraphType<{clrType}> class)
+                var customScalarGraphType = ReflectionUtils.CreateGenericType(customScalarGraphTypeName, typeof(WireMockCustomScalarGraphType<>), clrType);
+                schema.RegisterType(customScalarGraphType);
             }
         }
-        
-        //schema.RegisterType(typeof(MyCustomScalarGraphType));
 
         return schema;
-    }
-
-    internal class MyCustomScalarGraphType : IntGraphType
-    {
-        //public override object? ParseValue(object? value)
-        //{
-        //    return true;
-        //}
     }
 }
 #endif

@@ -1,5 +1,6 @@
 #if GRAPHQL
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using GraphQLParser.Exceptions;
 using WireMock.Matchers;
@@ -120,8 +121,10 @@ public class GraphQLMatcherTests
     ""variables"": { ""x"": 100, ""dt"": ""2007-12-03T10:15:30Z"" }
 }";
 
+        var customScalars = new Dictionary<string, Type> { { "MyCustomScalar", typeof(int) } };
+
         // Act
-        var matcher = new GraphQLMatcher(testSchema);
+        var matcher = new GraphQLMatcher(testSchema, customScalars);
         var result = matcher.IsMatch(input);
 
         // Assert
