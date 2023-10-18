@@ -186,7 +186,7 @@ public class GraphQLMatcher : IStringMatcher
         foreach (var scalarTypeDefinition in scalarTypeDefinitions)
         {
             var customScalarGraphTypeName = $"{scalarTypeDefinition.Name.StringValue}GraphType";
-            if (graphTypes.All(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
+            if (graphTypes.TrueForAll(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
             {
                 // Check if this custom Scalar is defined in the dictionary
                 if (CustomScalars == null || !CustomScalars.TryGetValue(scalarTypeDefinition.Name.StringValue, out var clrType))

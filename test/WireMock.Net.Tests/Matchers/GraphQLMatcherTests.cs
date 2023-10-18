@@ -1,8 +1,10 @@
 #if GRAPHQL
 using System;
 using System.Collections.Generic;
+using CSScripting;
 using FluentAssertions;
 using GraphQLParser.Exceptions;
+using WireMock.Exceptions;
 using WireMock.Matchers;
 using WireMock.Models;
 using Xunit;
@@ -131,6 +133,29 @@ public class GraphQLMatcherTests
         result.Score.Should().Be(MatchScores.Perfect);
 
         matcher.GetPatterns().Should().Contain(testSchema);
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_UsingCustomType_But_NoDefinedCustomScalars_Mutation_IsNoMatch()
+    {
+        // Arrange
+        const string testSchema = @"
+  scalar DateTime
+  scalar MyCustomScalar
+
+  type Message {
+    id: ID!
+  }
+
+  type Mutation {
+    createMessage(x: MyCustomScalar, dt: DateTime): Message
+  }";
+
+        // Act
+        Action action = () => _ = new GraphQLMatcher(testSchema);
+
+        // Assert
+        action.Should().Throw<WireMockException>().WithMessage("The GraphQL Scalar type 'MyCustomScalar' is not defined in the CustomScalars dictionary.");
     }
 
     [Fact]
