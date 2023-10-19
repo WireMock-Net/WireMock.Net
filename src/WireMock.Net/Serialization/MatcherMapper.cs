@@ -72,7 +72,7 @@ internal class MatcherMapper
                 return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
 #if GRAPHQL
             case nameof(GraphQLMatcher):
-                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matchBehaviour, matchOperator);
+                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcher.CustomScalars, matchBehaviour, matchOperator);
 #endif
 
 #if MIMEKIT
@@ -101,8 +101,7 @@ internal class MatcherMapper
                 return new JmesPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(XPathMatcher):
-                var xmlNamespaces = matcher.XmlNamespaceMap;
-                return new XPathMatcher(matchBehaviour, matchOperator, xmlNamespaces, stringPatterns);
+                return new XPathMatcher(matchBehaviour, matchOperator, matcher.XmlNamespaceMap, stringPatterns);
 
             case nameof(WildcardMatcher):
                 return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, matchOperator);
@@ -164,6 +163,11 @@ internal class MatcherMapper
             case XPathMatcher xpathMatcher:
                 model.XmlNamespaceMap = xpathMatcher.XmlNamespaceMap;
                 break;
+#if GRAPHQL
+            case GraphQLMatcher graphQLMatcher:
+                model.CustomScalars = graphQLMatcher.CustomScalars;
+                break;
+#endif
         }
 
         switch (matcher)

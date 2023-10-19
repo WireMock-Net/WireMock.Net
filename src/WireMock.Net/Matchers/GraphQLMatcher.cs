@@ -63,7 +63,7 @@ public class GraphQLMatcher : IStringMatcher
     /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
     /// </summary>
     /// <param name="schema">The schema.</param>
-    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. (optional)</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public GraphQLMatcher(

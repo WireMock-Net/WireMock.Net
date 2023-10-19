@@ -43,6 +43,9 @@ namespace WireMock.Net.ConsoleApplication
     public static class MainApp
     {
         private const string TestSchema = @"
+  scalar DateTime
+  scalar MyCustomScalar
+
   input MessageInput {
     content: String
     author: String
@@ -56,6 +59,7 @@ namespace WireMock.Net.ConsoleApplication
 
   type Mutation {
     createMessage(input: MessageInput): Message
+    createAnotherMessage(x: MyCustomScalar, dt: DateTime): Message
     updateMessage(id: ID!, input: MessageInput): Message
   }
 
@@ -168,11 +172,12 @@ namespace WireMock.Net.ConsoleApplication
 
             // server.AllowPartialMapping();
 #if GRAPHQL
+            var customScalars = new Dictionary<string, Type> { { "MyCustomScalar", typeof(int) } };
             server
                 .Given(Request.Create()
                     .WithPath("/graphql")
                     .UsingPost()
-                    .WithGraphQLSchema(TestSchema)
+                    .WithGraphQLSchema(TestSchema, customScalars)
                 )
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")

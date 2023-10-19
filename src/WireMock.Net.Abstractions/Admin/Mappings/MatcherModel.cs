@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System;
+
 namespace WireMock.Admin.Mappings;
 
 /// <summary>
@@ -75,6 +78,16 @@ public class MatcherModel
     #endregion
 
     #region XPathMatcher
+    /// <summary>
+    /// Array of namespace prefix and uri. (optional)
+    /// </summary>
     public XmlNamespace[]? XmlNamespaceMap { get; set; }
+    #endregion
+
+    #region GraphQLMatcher
+    /// <summary>
+    /// Mapping of custom GraphQL Scalar name to ClrType.  (optional)
+    /// </summary>
+    public IDictionary<string, Type>? CustomScalars { get; set; }
     #endregion
 }
