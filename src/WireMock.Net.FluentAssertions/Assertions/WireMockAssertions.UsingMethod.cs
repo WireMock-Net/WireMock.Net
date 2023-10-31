@@ -1,7 +1,5 @@
 #pragma warning disable CS1591
 using System;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using WireMock.Constants;
 
 // ReSharper disable once CheckNamespace

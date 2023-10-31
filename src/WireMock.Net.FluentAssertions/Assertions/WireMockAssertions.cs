@@ -1,8 +1,8 @@
 #pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using System.Linq.Expressions;
+using WireMock.Matchers;
 using WireMock.Server;
 using WireMock.Types;
 
@@ -26,9 +26,7 @@ public partial class WireMockAssertions
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> AtAbsoluteUrl(string absoluteUrl, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => string.Equals(request.AbsoluteUrl, absoluteUrl, StringComparison.OrdinalIgnoreCase);
-
-        var (filter, condition) = BuildFilterAndCondition(predicate);
+        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.AbsoluteUrl, absoluteUrl, StringComparison.OrdinalIgnoreCase));
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -53,9 +51,7 @@ public partial class WireMockAssertions
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> AtUrl(string url, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => string.Equals(request.Url, url, StringComparison.OrdinalIgnoreCase);
-
-        var (filter, condition) = BuildFilterAndCondition(predicate);
+        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.Url, url, StringComparison.OrdinalIgnoreCase));
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -81,9 +77,7 @@ public partial class WireMockAssertions
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> WithProxyUrl(string proxyUrl, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => string.Equals(request.ProxyUrl, proxyUrl, StringComparison.OrdinalIgnoreCase);
-
-        var (filter, condition) = BuildFilterAndCondition(predicate);
+        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.ProxyUrl, proxyUrl, StringComparison.OrdinalIgnoreCase));
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -109,9 +103,7 @@ public partial class WireMockAssertions
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> FromClientIP(string clientIP, string because = "", params object[] becauseArgs)
     {
-        Func<IRequestMessage, bool> predicate = request => string.Equals(request.ClientIP, clientIP, StringComparison.OrdinalIgnoreCase);
-
-        var (filter, condition) = BuildFilterAndCondition(predicate);
+        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.ClientIP, clientIP, StringComparison.OrdinalIgnoreCase));
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -171,5 +163,15 @@ public partial class WireMockAssertions
         Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> filter = requests => requests.Where(predicate).ToList();
 
         return (filter, requests => (_callsCount is null && filter(requests).Any()) || _callsCount == filter(requests).Count);
+    }
+
+    private (Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> Filter, Func<IReadOnlyList<IRequestMessage>, bool> Condition) BuildFilterAndCondition(Func<IRequestMessage, string?> expression, IStringMatcher matcher)
+    {
+        return BuildFilterAndCondition(r => matcher.IsMatch(expression(r)).IsPerfect());
+    }
+
+    private (Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> Filter, Func<IReadOnlyList<IRequestMessage>, bool> Condition) BuildFilterAndCondition(Func<IRequestMessage, object?> expression, IObjectMatcher matcher)
+    {
+        return BuildFilterAndCondition(r => matcher.IsMatch(expression(r)).IsPerfect());
     }
 }

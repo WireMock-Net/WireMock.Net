@@ -43,7 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
     </ItemGroup>
 
 </Project>

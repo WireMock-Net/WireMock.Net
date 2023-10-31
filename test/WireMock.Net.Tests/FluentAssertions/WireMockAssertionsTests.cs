@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using WireMock.FluentAssertions;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -641,8 +642,8 @@ public class WireMockAssertionsTests : IDisposable
 
         server
             .Given(Request.Create().WithPath("/a").UsingPost().WithBody("x"))
-            .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
-        
+            .RespondWith(Response.Create().WithBody("A response"));
+
         // Act
         var httpClient = new HttpClient();
 
@@ -684,32 +685,143 @@ public class WireMockAssertionsTests : IDisposable
         server.Stop();
     }
 
-    //[Fact]
-    //public async Task HaveReceived1Call_WithBodyAsJson()
-    //{
-    //    // Arrange
-    //    var server = WireMockServer.Start();
+    [Fact]
+    public async Task HaveReceived1Call_WithBodyAsJson()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
 
-    //    server
-    //        .Given(Request.Create().WithPath("/a").UsingPost().WithBodyAsJson(new { x = "y" }))
-    //        .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
+        server
+            .Given(Request.Create().WithPath("/a").UsingPost().WithBodyAsJson(new { x = "y" }))
+            .RespondWith(Response.Create().WithBody("A response"));
 
-    //    // Act
-    //    var httpClient = new HttpClient();
+        // Act
+        var httpClient = new HttpClient();
 
-    //    await httpClient.PostAsync($"{server.Url}/a", new StringContent(@"{ ""x"": ""y"" }"));
+        await httpClient.PostAsync($"{server.Url}/a", new StringContent(@"{ ""x"": ""y"" }"));
 
-    //    // Assert
-    //    server
-    //        .Should()
-    //        .HaveReceived(1)
-    //        .Calls()
-    //        .WithBodyAsJson(new { x = "y" })
-    //        .And
-    //        .UsingPost();
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBodyAsJson(new { x = "y" })
+            .And
+            .UsingPost();
 
-    //    server.Stop();
-    //}
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBodyAsJson(@"{ ""x"": ""y"" }")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBodyAsJson(new { x = "?" })
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBodyAsJson(@"{ ""x"": 1234 }")
+            .And
+            .UsingPost();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task HaveReceived1Call_WithBodyAsBytes()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingPut().WithBody(new byte[] { 100 }))
+            .RespondWith(Response.Create().WithBody("A response"));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.PutAsync($"{server.Url}/a", new ByteArrayContent(new byte[] { 100 }));
+
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBodyAsBytes(new byte[] { 100 })
+            .And
+            .UsingPut();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBodyAsBytes(new byte[0])
+            .And
+            .UsingPut();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBodyAsBytes(new byte[] { 42 })
+            .And
+            .UsingPut();
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task HaveReceived1Call_WithBodyAsString_UsingStringMatcher()
+    {
+        // Arrange
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingPost().WithBody("x"))
+            .RespondWith(Response.Create().WithBody("A response"));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.PostAsync($"{server.Url}/a", new StringContent("x"));
+
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBody(new ExactMatcher("x"))
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBody(new ExactMatcher(""))
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBody(new ExactMatcher("y"))
+            .And
+            .UsingPost();
+
+        server.Stop();
+    }
 
     public void Dispose()
     {
