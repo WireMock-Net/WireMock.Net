@@ -8,6 +8,9 @@ namespace WireMock.FluentAssertions;
 
 public partial class WireMockAssertions
 {
+    private const string MessageFormatNoCalls = "Expected {context:wiremockserver} to have been called using body {0}{reason}, but no calls were made.";
+    private const string MessageFormat = "Expected {context:wiremockserver} to have been called using body {0}{reason}, but didn't find it among the body {1}.";
+
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithBody(string body, string because = "", params object[] becauseArgs)
     {
@@ -70,13 +73,13 @@ public partial class WireMockAssertions
             .Given(() => _requestMessages)
             .ForCondition(requests => _callsCount == 0 || requests.Any())
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body matcher {0}{reason}, but no calls were made.",
+                MessageFormatNoCalls,
                 matcher.GetPatterns()
             )
             .Then
             .ForCondition(condition)
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body matcher {0}{reason}, but didn't find it among the body {1}.",
+                MessageFormat,
                 _ => matcher.GetPatterns(),
                 requests => requests.Select(expression)
             );
@@ -100,13 +103,13 @@ public partial class WireMockAssertions
             .Given(() => _requestMessages)
             .ForCondition(requests => _callsCount == 0 || requests.Any())
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body {0}{reason}, but no calls were made.",
+                MessageFormatNoCalls,
                 matcher.Value
             )
             .Then
             .ForCondition(condition)
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body {0}{reason}, but didn't find it among the body {1}.",
+                MessageFormat,
                 _ => matcher.Value,
                 requests => requests.Select(expression)
             );
@@ -130,13 +133,13 @@ public partial class WireMockAssertions
             .Given(() => _requestMessages)
             .ForCondition(requests => _callsCount == 0 || requests.Any())
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body {0}{reason}, but no calls were made.",
+                MessageFormatNoCalls,
                 matcher.ValueAsObject ?? matcher.ValueAsBytes
             )
             .Then
             .ForCondition(condition)
             .FailWith(
-                "Expected {context:wiremockserver} to have been called using body {0}{reason}, but didn't find it among the body {1}.",
+                MessageFormat,
                 _ => matcher.ValueAsObject ?? matcher.ValueAsBytes,
                 requests => requests.Select(expression)
             );
