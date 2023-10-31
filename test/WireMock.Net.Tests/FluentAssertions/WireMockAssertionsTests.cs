@@ -633,6 +633,84 @@ public class WireMockAssertionsTests : IDisposable
             .AtUrl(_server.Url ?? string.Empty);
     }
 
+    [Fact]
+    public async Task HaveReceived1Call_WithBodyAsString()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingPost().WithBody("x"))
+            .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
+        
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.PostAsync($"{server.Url}/a", new StringContent("x"));
+
+        // Assert
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBody("*")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBody("x")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBody("")
+            .And
+            .UsingPost();
+
+        server
+            .Should()
+            .HaveReceived(0)
+            .Calls()
+            .WithBody("y")
+            .And
+            .UsingPost();
+
+        server.Stop();
+    }
+
+    //[Fact]
+    //public async Task HaveReceived1Call_WithBodyAsJson()
+    //{
+    //    // Arrange
+    //    var server = WireMockServer.Start();
+
+    //    server
+    //        .Given(Request.Create().WithPath("/a").UsingPost().WithBodyAsJson(new { x = "y" }))
+    //        .RespondWith(Response.Create().WithBody("A response").WithStatusCode(HttpStatusCode.OK));
+
+    //    // Act
+    //    var httpClient = new HttpClient();
+
+    //    await httpClient.PostAsync($"{server.Url}/a", new StringContent(@"{ ""x"": ""y"" }"));
+
+    //    // Assert
+    //    server
+    //        .Should()
+    //        .HaveReceived(1)
+    //        .Calls()
+    //        .WithBodyAsJson(new { x = "y" })
+    //        .And
+    //        .UsingPost();
+
+    //    server.Stop();
+    //}
+
     public void Dispose()
     {
         _server?.Stop();

@@ -22,7 +22,7 @@
         <!--<DelaySign>true</DelaySign>-->
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
