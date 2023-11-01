@@ -17,7 +17,10 @@ internal static class MimeKitUtils
     {
         Guard.NotNull(requestMessage);
 
-        if (requestMessage.BodyData != null && requestMessage.Headers?.TryGetValue(HttpKnownHeaderNames.ContentType, out var contentTypeHeader) == true && contentTypeHeader.Any())
+        if (requestMessage.BodyData != null &&
+            requestMessage.Headers?.TryGetValue(HttpKnownHeaderNames.ContentType, out var contentTypeHeader) == true &&
+            StartsWithMultiPart(contentTypeHeader) // Only parse when "multipart/mixed"
+        )
         {
             var bytes = requestMessage.BodyData?.DetectedBodyType switch
             {
@@ -38,6 +41,11 @@ internal static class MimeKitUtils
 
         mimeMessage = null;
         return false;
+    }
+
+    private static bool StartsWithMultiPart(WireMockList<string> contentTypeHeader)
+    {
+        return contentTypeHeader.Any(ct => ct.TrimStart().StartsWith("multipart/", StringComparison.OrdinalIgnoreCase));
     }
 
     private static byte[] FixBytes(byte[] bytes, WireMockList<string> contentType)

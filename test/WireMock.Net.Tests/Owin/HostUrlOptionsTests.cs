@@ -1,0 +1,60 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using FluentAssertions;
+using WireMock.Owin;
+using WireMock.Types;
+using Xunit;
+
+namespace WireMock.Net.Tests.Owin;
+
+[ExcludeFromCodeCoverage]
+public class HostUrlOptionsTests
+{
+    [Fact]
+    public void GetDetails_WithNoUrlsAndHttpScheme_ShouldReturnCorrectDetails()
+    {
+        // Arrange
+        var options = new HostUrlOptions
+        {
+            HostingScheme = HostingScheme.Http,
+            Port = 8080
+        };
+
+        // Act
+        var details = options.GetDetails();
+
+        // Assert
+        details.Should().HaveCount(1);
+        var detail = details.Single();
+        detail.Should().Match<HostUrlDetails>(d =>
+            d.Scheme == "http" &&
+            d.Host == "localhost" &&
+            d.Port == 8080 &&
+            d.IsHttps == false
+        );
+    }
+
+    [Fact]
+    public void GetDetails_WithNoUrlsAndHttpsScheme_ShouldReturnCorrectDetails()
+    {
+        // Arrange
+        var options = new HostUrlOptions
+        {
+            HostingScheme = HostingScheme.Https,
+            Port = 8081
+        };
+
+        // Act
+        var details = options.GetDetails();
+
+        // Assert
+        details.Should().HaveCount(1);
+        var detail = details.Single();
+        detail.Should().Match<HostUrlDetails>(d =>
+            d.Scheme == "https" &&
+            d.Host == "localhost" &&
+            d.Port == 8081 &&
+            d.IsHttps == true
+        );
+    }
+}

@@ -137,9 +137,14 @@ public class GraphQLMatcher : IStringMatcher
         }
     }
 
-    private static ISchema BuildSchema(string schema)
+    private static ISchema BuildSchema(string typeDefinitions)
     {
-        return Schema.For(schema);
+        var schema = Schema.For(typeDefinitions);
+
+        // #984
+        schema.RegisterTypes(schema.BuiltInTypeMappings.Select(x => x.graphType).ToArray());
+
+        return schema;
     }
 }
 #endif

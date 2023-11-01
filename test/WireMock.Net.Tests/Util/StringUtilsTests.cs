@@ -1,4 +1,5 @@
 using FluentAssertions;
+using WireMock.Matchers;
 using WireMock.Util;
 using Xunit;
 
@@ -7,12 +8,38 @@ namespace WireMock.Net.Tests.Util;
 public class StringUtilsTests
 {
     [Theory]
+    [InlineData("And", MatchOperator.And)]
+    [InlineData("Or", MatchOperator.Or)]
+    public void ParseMatchOperator_ShouldReturnCorrectEnumValue_WhenValidStringIsProvided(string value, MatchOperator expected)
+    {
+        // Arrange & Act
+        var result = StringUtils.ParseMatchOperator(value);
+
+        // Assert
+        result.Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData(null, MatchOperator.Or)]
+    [InlineData("", MatchOperator.Or)]
+    [InlineData("and", MatchOperator.Or)]
+    [InlineData("InvalidValue", MatchOperator.Or)]
+    public void ParseMatchOperator_ShouldReturnDefaultEnumValue_WhenInvalidOrNullStringIsProvided(string? value, MatchOperator expected)
+    {
+        // Arrange & Act
+        var result = StringUtils.ParseMatchOperator(value);
+
+        // Assert
+        result.Should().Be(expected);
+    }
+
+    [Theory]
     [InlineData("'s")]
     [InlineData("\"s")]
     public void StringUtils_TryParseQuotedString_With_UnexpectedUnclosedString_Returns_False(string input)
     {
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out _, out _);
 
         // Assert
         valid.Should().BeFalse();
@@ -25,7 +52,7 @@ public class StringUtilsTests
     public void StringUtils_TryParseQuotedString_With_InvalidStringLength_Returns_False(string input)
     {
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out _, out _);
 
         // Assert
         valid.Should().BeFalse();
@@ -37,7 +64,7 @@ public class StringUtilsTests
     public void StringUtils_TryParseQuotedString_With_InvalidStringQuoteCharacter_Returns_False(string input)
     {
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out _, out _);
 
         // Assert
         valid.Should().BeFalse();
@@ -47,10 +74,10 @@ public class StringUtilsTests
     public void StringUtils_TryParseQuotedString_With_UnexpectedUnrecognizedEscapeSequence_Returns_False()
     {
         // Arrange
-        string input = new string(new[] { '"', '\\', 'u', '?', '"' });
+        var input = new string(new[] { '"', '\\', 'u', '?', '"' });
 
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out _, out _);
 
         // Assert
         valid.Should().BeFalse();
@@ -64,7 +91,7 @@ public class StringUtilsTests
     public void StringUtils_TryParseQuotedString_SingleQuotedString(string input, string expectedResult)
     {
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
 
         // Assert
         valid.Should().BeTrue();
@@ -93,7 +120,7 @@ public class StringUtilsTests
     public void StringUtils_TryParseQuotedString_DoubleQuotedString(string input, string expectedResult)
     {
         // Act
-        bool valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
+        var valid = StringUtils.TryParseQuotedString(input, out var result, out var quote);
 
         // Assert
         valid.Should().BeTrue();

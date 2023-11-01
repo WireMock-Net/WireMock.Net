@@ -35,11 +35,7 @@ internal class MappingMatcher : IMappingMatcher
             {
                 var nextState = GetNextState(mapping);
 
-                var mappingMatcherResult = new MappingMatcherResult
-                {
-                    Mapping = mapping,
-                    RequestMatchResult = mapping.GetRequestMatchResult(request, nextState)
-                };
+                var mappingMatcherResult = new MappingMatcherResult(mapping, mapping.GetRequestMatchResult(request, nextState));
 
                 var exceptions = mappingMatcherResult.RequestMatchResult.MatchDetails
                     .Where(md => md.Exception != null)
@@ -66,7 +62,10 @@ internal class MappingMatcher : IMappingMatcher
 
         var partialMappings = possibleMappings
             .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
-            .OrderBy(m => m.RequestMatchResult).ThenBy(m => m.Mapping.Priority).ThenByDescending(m => m.Mapping.UpdatedAt)
+            .OrderBy(m => m.RequestMatchResult)
+                .ThenBy(m => m.RequestMatchResult.TotalNumber)
+                .ThenBy(m => m.Mapping.Priority)
+                .ThenByDescending(m => m.Mapping.UpdatedAt)
             .ToList();
         var partialMatch = partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
 

@@ -1,0 +1,122 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Request: {
+    Headers: [
+      {
+        Name: MatchBehaviour.RejectOnMatch,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: hv-1,
+            IgnoreCase: true,
+            RejectOnMatch: true
+          }
+        ],
+        IgnoreCase: true,
+        RejectOnMatch: true
+      },
+      {
+        Name: MatchBehaviour.AcceptOnMatch,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: hv-2,
+            IgnoreCase: true
+          }
+        ],
+        IgnoreCase: true
+      },
+      {
+        Name: IgnoreCase_false,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: hv-3,
+            IgnoreCase: false
+          }
+        ]
+      },
+      {
+        Name: IgnoreCase_true,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: hv-4,
+            IgnoreCase: true
+          }
+        ],
+        IgnoreCase: true
+      },
+      {
+        Name: ExactMatcher,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: h-exact,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ],
+    Cookies: [
+      {
+        Name: MatchBehaviour.RejectOnMatch,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: cv-1,
+            IgnoreCase: true,
+            RejectOnMatch: true
+          }
+        ],
+        IgnoreCase: true,
+        RejectOnMatch: true
+      },
+      {
+        Name: MatchBehaviour.AcceptOnMatch,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: cv-2,
+            IgnoreCase: true
+          }
+        ],
+        IgnoreCase: true
+      },
+      {
+        Name: IgnoreCase_false,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: cv-3,
+            IgnoreCase: false
+          }
+        ]
+      },
+      {
+        Name: IgnoreCase_true,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: cv-4,
+            IgnoreCase: true
+          }
+        ],
+        IgnoreCase: true
+      },
+      {
+        Name: ExactMatcher,
+        Matchers: [
+          {
+            Name: ExactMatcher,
+            Pattern: c-exact,
+            IgnoreCase: false
+          }
+        ]
+      }
+    ]
+  },
+  Response: {},
+  UseWebhooksFireAndForget: false
+}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -99,6 +100,99 @@ public partial class WireMockServerTests
 
         server.Stop();
     }
+
+#if NET461_OR_GREATER || NET6_0_OR_GREATER
+    [Fact]
+    public async Task WireMockServer_Should_Support_Https()
+    {
+        // Arrange
+        const string body = "example";
+        var path = $"/foo_{Guid.NewGuid()}";
+        var settings = new WireMockServerSettings
+        {
+            UseSSL = true
+        };
+        var server = WireMockServer.Start(settings);
+
+        server
+            .Given(Request.Create()
+                .WithPath(path)
+                .UsingGet()
+            )
+            .RespondWith(Response.Create()
+                .WithBody(body)
+            );
+
+        // Configure the HttpClient to trust self-signed certificates
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+        using var client = new HttpClient(handler);
+
+        // Act
+        var result = await client.GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);
+
+        // Assert
+        result.Should().Be(body);
+
+        server.Stop();
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+    [Fact]
+    public async Task WireMockServer_When_HttpClientWithWebProxyCallsHttp_Should_Work_Correct()
+    {
+        // Arrange
+        const string body = "example";
+        var settings = new WireMockServerSettings
+        {
+            HostingScheme = HostingScheme.Http
+        };
+        var server = WireMockServer.Start(settings);
+
+        // The response to an HTTP CONNECT method, which is used to establish a tunnel with a proxy, should typically be a 200 OK status code if the connection is successful.
+        // This indicates that a tunnel has been established successfully between the client and the server via the proxy. 
+        server
+            .Given(Request.Create()
+                .UsingConnect()
+            )
+            .RespondWith(Response.Create()
+                .WithBody("Connection established")
+            );
+
+        server
+            .Given(Request.Create()
+                .UsingGet()
+            )
+            .RespondWith(Response.Create()
+                .WithBody(body)
+            );
+
+        var httpUrl = server.Urls.First();
+
+        // Act
+        string result;
+        var currentProxy = HttpClient.DefaultProxy;
+        try
+        {
+            HttpClient.DefaultProxy = new WebProxy(httpUrl, false);
+
+            result = await new HttpClient().GetStringAsync(httpUrl).ConfigureAwait(false);
+        }
+        finally
+        {
+            // Revert
+            HttpClient.DefaultProxy = currentProxy;
+        }
+
+        // Assert
+        result.Should().Be(body);
+
+        server.Stop();
+    }
+#endif
 
     [Fact]
     public async Task WireMockServer_Should_respond_a_redirect_without_body()
