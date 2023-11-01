@@ -56,7 +56,7 @@ public partial class WireMockAssertions
     {
         var (filter, condition) = BuildFilterAndCondition(r => r.BodyAsBytes, matcher);
 
-        return ExecuteAssertionWithBodyExactObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsBytes);
+        return ExecuteAssertionWithBodyAsBytesExactObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsBytes);
     }
 
     private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyStringMatcher(
@@ -119,7 +119,7 @@ public partial class WireMockAssertions
         return new AndConstraint<WireMockAssertions>(this);
     }
 
-    private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyExactObjectMatcher(
+    private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyAsBytesExactObjectMatcher(
         ExactObjectMatcher matcher,
         string because,
         object[] becauseArgs,

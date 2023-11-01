@@ -783,7 +783,6 @@ public class WireMockAssertionsTests : IDisposable
     public async Task HaveReceived1Call_WithBodyAsString_UsingStringMatcher()
     {
         // Arrange
-        // Arrange
         var server = WireMockServer.Start();
 
         server

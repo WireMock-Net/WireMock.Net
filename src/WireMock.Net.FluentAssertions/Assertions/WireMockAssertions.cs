@@ -1,7 +1,6 @@
 #pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using WireMock.Matchers;
 using WireMock.Server;
 using WireMock.Types;
