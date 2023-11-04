@@ -36,7 +36,7 @@ internal static class RegexUtils
         {
             if (useRegexExtended)
             {
-                var regexExtended = new RegexExtended(pattern, RegexOptions.None, RegexTimeOut);
+                var regexExtended = new RegexExtended(pattern!, RegexOptions.None, RegexTimeOut);
                 return (true, regexExtended.IsMatch(input));
             }
 
