@@ -45,7 +45,7 @@ namespace WireMock.FluentAssertions
             return new WireMockANumberOfCallsAssertions(Subject, callsCount);
         }
 
-        /// <inheritdoc cref="ReferenceTypeAssertions{IWireMockServer, WireMockReceivedAssertions}.Identifier"/>
+        /// <inheritdoc />
         protected override string Identifier => "wiremockserver";
     }
 }

@@ -30,8 +30,7 @@ public class RegexUtilsTests
     [InlineData(null, "test", false, false)]
     [InlineData(".*", "test", true, true)]
     [InlineData("invalid[", "test", false, false)]
-    public void MatchRegex_WithVariousPatterns_ReturnsExpectedResults(
-        string? pattern, string input, bool expectedIsValid, bool expectedResult)
+    public void MatchRegex_WithVariousPatterns_ReturnsExpectedResults(string? pattern, string input, bool expectedIsValid, bool expectedResult)
     {
         // Act
         var (isValidResult, matchResult) = RegexUtils.MatchRegex(pattern, input);
@@ -46,8 +45,7 @@ public class RegexUtilsTests
     [InlineData(null, "test", false, false)]
     [InlineData(".*", "test", true, true)]
     [InlineData("invalid[", "test", false, false)]
-    public void MatchRegex_WithVariousPatternsAndExtendedRegex_ReturnsExpectedResults(
-        string? pattern, string input, bool expectedIsValid, bool expectedResult)
+    public void MatchRegex_WithVariousPatternsAndExtendedRegex_ReturnsExpectedResults(string? pattern, string input, bool expectedIsValid, bool expectedResult)
     {
         // Act
         var (isValidResult, matchResult) = RegexUtils.MatchRegex(pattern, input, useRegexExtended: true);
