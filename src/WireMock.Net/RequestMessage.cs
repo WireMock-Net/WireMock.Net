@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json;
 #if USE_ASPNETCORE
 using System.Security.Cryptography.X509Certificates;
 #endif
@@ -20,40 +21,40 @@ namespace WireMock;
 /// </summary>
 public class RequestMessage : IRequestMessage
 {
-    /// <inheritdoc cref="IRequestMessage.ClientIP" />
+    /// <inheritdoc />
     public string ClientIP { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Url" />
+    /// <inheritdoc />
     public string Url { get; }
 
-    /// <inheritdoc cref="IRequestMessage.AbsoluteUrl" />
+    /// <inheritdoc />
     public string AbsoluteUrl { get; }
 
-    /// <inheritdoc cref="IRequestMessage.ProxyUrl" />
+    /// <inheritdoc />
     public string? ProxyUrl { get; set; }
 
-    /// <inheritdoc cref="IRequestMessage.DateTime" />
+    /// <inheritdoc />
     public DateTime DateTime { get; set; }
 
-    /// <inheritdoc cref="IRequestMessage.Path" />
+    /// <inheritdoc />
     public string Path { get; }
 
-    /// <inheritdoc cref="IRequestMessage.AbsolutePath" />
+    /// <inheritdoc />
     public string AbsolutePath { get; }
 
-    /// <inheritdoc cref="IRequestMessage.PathSegments" />
+    /// <inheritdoc />
     public string[] PathSegments { get; }
 
-    /// <inheritdoc cref="IRequestMessage.AbsolutePathSegments" />
+    /// <inheritdoc />
     public string[] AbsolutePathSegments { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Method" />
+    /// <inheritdoc />
     public string Method { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Headers" />
+    /// <inheritdoc />
     public IDictionary<string, WireMockList<string>>? Headers { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Cookies" />
+    /// <inheritdoc />
     public IDictionary<string, string>? Cookies { get; }
 
     /// <inheritdoc />
@@ -61,52 +62,58 @@ public class RequestMessage : IRequestMessage
 
     /// <inheritdoc />
     public IDictionary<string, WireMockList<string>>? QueryIgnoreCase { get; }
-    
-    /// <inheritdoc cref="IRequestMessage.RawQuery" />
+
+    /// <inheritdoc />
     public string RawQuery { get; }
 
-    /// <inheritdoc cref="IRequestMessage.BodyData" />
+    /// <inheritdoc />
     public IBodyData? BodyData { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Body" />
-    public string Body { get; }
+    /// <inheritdoc />
+    public string? Body { get; }
 
-    /// <inheritdoc cref="IRequestMessage.BodyAsJson" />
-    public object BodyAsJson { get; }
+    /// <inheritdoc />
+    public object? BodyAsJson { get; }
 
-    /// <inheritdoc cref="IRequestMessage.BodyAsBytes" />
-    public byte[] BodyAsBytes { get; }
+    /// <inheritdoc />
+    public byte[]? BodyAsBytes { get; }
 
-    /// <inheritdoc cref="IRequestMessage.DetectedBodyType" />
-    public string DetectedBodyType { get; }
+#if MIMEKIT
+    /// <inheritdoc />
+    [JsonIgnore] // Issue 1001
+    public object? BodyAsMimeMessage { get; }
+#endif
 
-    /// <inheritdoc cref="IRequestMessage.DetectedBodyTypeFromContentType" />
-    public string DetectedBodyTypeFromContentType { get; }
+    /// <inheritdoc />
+    public string? DetectedBodyType { get; }
 
-    /// <inheritdoc cref="IRequestMessage.DetectedCompression" />
-    public string DetectedCompression { get; }
+    /// <inheritdoc />
+    public string? DetectedBodyTypeFromContentType { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Host" />
+    /// <inheritdoc />
+    public string? DetectedCompression { get; }
+
+    /// <inheritdoc />
     public string Host { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Protocol" />
+    /// <inheritdoc />
     public string Protocol { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Port" />
+    /// <inheritdoc />
     public int Port { get; }
 
-    /// <inheritdoc cref="IRequestMessage.Origin" />
+    /// <inheritdoc />
     public string Origin { get; }
 
 #if USE_ASPNETCORE
-    /// <inheritdoc cref="IRequestMessage.ClientCertificate" />
+    /// <inheritdoc />
     public X509Certificate2? ClientCertificate { get; }
 #endif
 
     /// <summary>
     /// Used for Unit Testing
     /// </summary>
-    public RequestMessage(
+    internal RequestMessage(
         UrlDetails urlDetails,
         string method,
         string clientIP,
@@ -116,19 +123,6 @@ public class RequestMessage : IRequestMessage
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RequestMessage"/> class.
-    /// </summary>
-    /// <param name="options">The<seealso cref="IWireMockMiddlewareOptions"/>.</param>
-    /// <param name="urlDetails">The original url details.</param>
-    /// <param name="method">The HTTP method.</param>
-    /// <param name="clientIP">The client IP Address.</param>
-    /// <param name="bodyData">The BodyData.</param>
-    /// <param name="headers">The headers.</param>
-    /// <param name="cookies">The cookies.</param>
-#if USE_ASPNETCORE
-    /// <param name="clientCertificate">The client certificate</param>
-#endif
     internal RequestMessage(
         IWireMockMiddlewareOptions? options,
         UrlDetails urlDetails, string method,
@@ -139,11 +133,11 @@ public class RequestMessage : IRequestMessage
 #if USE_ASPNETCORE
         , X509Certificate2? clientCertificate = null
 #endif
-        )
+    )
     {
-        Guard.NotNull(urlDetails, nameof(urlDetails));
-        Guard.NotNull(method, nameof(method));
-        Guard.NotNull(clientIP, nameof(clientIP));
+        Guard.NotNull(urlDetails);
+        Guard.NotNull(method);
+        Guard.NotNull(clientIP);
 
         AbsoluteUrl = urlDetails.AbsoluteUrl.ToString();
         Url = urlDetails.Url.ToString();
@@ -166,6 +160,7 @@ public class RequestMessage : IRequestMessage
         Body = BodyData?.BodyAsString;
         BodyAsJson = BodyData?.BodyAsJson;
         BodyAsBytes = BodyData?.BodyAsBytes;
+
         DetectedBodyType = BodyData?.DetectedBodyType.ToString();
         DetectedBodyTypeFromContentType = BodyData?.DetectedBodyTypeFromContentType.ToString();
         DetectedCompression = BodyData?.DetectedCompression;
@@ -175,8 +170,23 @@ public class RequestMessage : IRequestMessage
         RawQuery = urlDetails.Url.Query;
         Query = QueryStringParser.Parse(RawQuery, options?.QueryParameterMultipleValueSupport);
         QueryIgnoreCase = new Dictionary<string, WireMockList<string>>(Query, StringComparer.OrdinalIgnoreCase);
+
 #if USE_ASPNETCORE
         ClientCertificate = clientCertificate;
+#endif
+
+#if MIMEKIT
+        try
+        {
+            if (MimeKitUtils.TryGetMimeMessage(this, out var mimeMessage))
+            {
+                BodyAsMimeMessage = mimeMessage;
+            }
+        }
+        catch
+        {
+            // Ignore exception from MimeMessage.Load
+        }
 #endif
     }
 

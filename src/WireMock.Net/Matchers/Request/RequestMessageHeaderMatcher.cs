@@ -12,8 +12,15 @@ namespace WireMock.Matchers.Request;
 /// <inheritdoc cref="IRequestMatcher"/>
 public class RequestMessageHeaderMatcher : IRequestMatcher
 {
-    private readonly MatchBehaviour _matchBehaviour;
-    private readonly bool _ignoreCase;
+    /// <summary>
+    /// MatchBehaviour
+    /// </summary>
+    public MatchBehaviour MatchBehaviour { get; }
+
+    /// <summary>
+    /// IgnoreCase
+    /// </summary>
+    public bool IgnoreCase { get; }
 
     /// <summary>
     /// The functions
@@ -47,8 +54,8 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
         Guard.NotNull(name);
         Guard.NotNull(pattern);
 
-        _matchBehaviour = matchBehaviour;
-        _ignoreCase = ignoreCase;
+        MatchBehaviour = matchBehaviour;
+        IgnoreCase = ignoreCase;
         Name = name;
         Matchers = new IStringMatcher[] { new WildcardMatcher(matchBehaviour, pattern, ignoreCase) };
     }
@@ -80,11 +87,11 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
         Guard.NotNull(name);
         Guard.NotNull(matchers);
 
-        _matchBehaviour = matchBehaviour;
+        MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
         Name = name;
         Matchers = matchers;
-        _ignoreCase = ignoreCase;
+        IgnoreCase = ignoreCase;
     }
 
     /// <summary>
@@ -100,19 +107,19 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        double score = IsMatch(requestMessage);
-        return requestMatchResult.AddScore(GetType(), score);
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception);
     }
 
-    private double IsMatch(IRequestMessage requestMessage)
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
         if (requestMessage.Headers == null)
         {
-            return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
+            return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
         }
 
         // Check if we want to use IgnoreCase to compare the Header-Name and Header-Value(s)
-        var headers = !_ignoreCase ? requestMessage.Headers : new Dictionary<string, WireMockList<string>>(requestMessage.Headers, StringComparer.OrdinalIgnoreCase);
+        var headers = !IgnoreCase ? requestMessage.Headers : new Dictionary<string, WireMockList<string>>(requestMessage.Headers, StringComparer.OrdinalIgnoreCase);
 
         if (Funcs != null)
         {
@@ -124,20 +131,20 @@ public class RequestMessageHeaderMatcher : IRequestMatcher
         {
             if (!headers.ContainsKey(Name))
             {
-                return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
+                return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
             }
 
-            var results = new List<double>();
+            var results = new List<MatchResult>();
             foreach (var matcher in Matchers)
             {
-                var resultsPerMatcher = headers[Name].Select(v => matcher.IsMatch(v)).ToArray();
+                var resultsPerMatcher = headers[Name].Select(matcher.IsMatch).ToArray();
 
-                results.Add(MatchScores.ToScore(resultsPerMatcher, MatchOperator.And));
+                results.Add(MatchResult.From(resultsPerMatcher, MatchOperator.And));
             }
 
-            return MatchScores.ToScore(results, MatchOperator);
+            return MatchResult.From(results, MatchOperator);
         }
 
-        return MatchBehaviourHelper.Convert(_matchBehaviour, MatchScores.Mismatch);
+        return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.Mismatch);
     }
 }

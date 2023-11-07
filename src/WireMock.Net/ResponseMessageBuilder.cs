@@ -16,12 +16,17 @@ internal static class ResponseMessageBuilder
         { HttpKnownHeaderNames.ContentType, new WireMockList<string> { WireMockConstants.ContentTypeJson } }
     };
 
-    internal static ResponseMessage Create(string? message, HttpStatusCode statusCode, Guid? guid = null)
+    internal static ResponseMessage Create(HttpStatusCode statusCode, string? status, Guid? guid = null)
     {
-        return Create(message, (int)statusCode, guid);
+        return Create((int)statusCode, status, guid);
     }
 
-    internal static ResponseMessage Create(string? message, int statusCode = 200, Guid? guid = null)
+    internal static ResponseMessage Create(int statusCode, string? status, Guid? guid = null)
+    {
+        return Create(statusCode, status, null, guid);
+    }
+
+    internal static ResponseMessage Create(int statusCode, string? status, string? error, Guid? guid = null)
     {
         var response = new ResponseMessage
         {
@@ -29,7 +34,7 @@ internal static class ResponseMessageBuilder
             Headers = ContentTypeJsonHeaders
         };
 
-        if (message != null)
+        if (status != null || error != null)
         {
             response.BodyData = new BodyData
             {
@@ -37,7 +42,8 @@ internal static class ResponseMessageBuilder
                 BodyAsJson = new StatusModel
                 {
                     Guid = guid,
-                    Status = message
+                    Status = status,
+                    Error = error
                 }
             };
         }
@@ -45,7 +51,7 @@ internal static class ResponseMessageBuilder
         return response;
     }
 
-    internal static ResponseMessage Create(int statusCode)
+    internal static ResponseMessage Create(HttpStatusCode statusCode)
     {
         return new ResponseMessage
         {

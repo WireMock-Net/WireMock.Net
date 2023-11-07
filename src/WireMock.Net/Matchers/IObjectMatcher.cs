@@ -9,6 +9,6 @@ public interface IObjectMatcher : IMatcher
     /// Determines whether the specified input is match.
     /// </summary>
     /// <param name="input">The input.</param>
-    /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-    double IsMatch(object? input);
+    /// <returns>MatchResult</returns>
+    MatchResult IsMatch(object? input);
 }

@@ -61,7 +61,7 @@ public interface IRespondWithAProvider
     /// <summary>
     /// Define the priority for this mapping.
     /// </summary>
-    /// <param name="priority">The priority.</param>
+    /// <param name="priority">The priority. (A lower value means a higher priority.)</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider AtPriority(int priority);
 

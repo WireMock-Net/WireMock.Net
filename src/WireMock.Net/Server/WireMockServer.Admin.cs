@@ -237,7 +237,6 @@ public partial class WireMockServer
             ReadStaticMappings = _settings.ReadStaticMappings,
             RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
             SaveUnmatchedRequests = _settings.SaveUnmatchedRequests,
-            ThrowExceptionWhenMatcherFails = _settings.ThrowExceptionWhenMatcherFails,
             UseRegexExtended = _settings.UseRegexExtended,
             WatchStaticMappings = _settings.WatchStaticMappings,
             WatchStaticMappingsInSubdirectories = _settings.WatchStaticMappingsInSubdirectories,
@@ -273,7 +272,6 @@ public partial class WireMockServer
         _settings.ReadStaticMappings = settings.ReadStaticMappings;
         _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
         _settings.SaveUnmatchedRequests = settings.SaveUnmatchedRequests;
-        _settings.ThrowExceptionWhenMatcherFails = settings.ThrowExceptionWhenMatcherFails;
         _settings.UseRegexExtended = settings.UseRegexExtended;
         _settings.WatchStaticMappings = settings.WatchStaticMappings;
         _settings.WatchStaticMappingsInSubdirectories = settings.WatchStaticMappingsInSubdirectories;
@@ -303,7 +301,7 @@ public partial class WireMockServer
         _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 #endif
 
-        return ResponseMessageBuilder.Create("Settings updated");
+        return ResponseMessageBuilder.Create(200, "Settings updated");
     }
     #endregion Settings
 
@@ -314,7 +312,7 @@ public partial class WireMockServer
         if (mapping == null)
         {
             _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-            return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+            return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Mapping not found");
         }
 
         var model = _mappingConverter.ToMappingModel(mapping);
@@ -330,14 +328,14 @@ public partial class WireMockServer
             if (code is null)
             {
                 _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-                return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+                return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Mapping not found");
             }
 
             return ToResponseMessage(code);
         }
 
         _settings.Logger.Warn("HttpStatusCode set to 400");
-        return ResponseMessageBuilder.Create("GUID is missing", HttpStatusCode.BadRequest);
+        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "GUID is missing");
     }
 
     private static MappingConverterType GetMappingConverterType(IRequestMessage requestMessage)
@@ -365,22 +363,22 @@ public partial class WireMockServer
             var mappingModel = DeserializeObject<MappingModel>(requestMessage);
             var guidFromPut = ConvertMappingAndRegisterAsRespondProvider(mappingModel, guid);
 
-            return ResponseMessageBuilder.Create("Mapping added or updated", HttpStatusCode.OK, guidFromPut);
+            return ResponseMessageBuilder.Create(HttpStatusCode.OK, "Mapping added or updated", guidFromPut);
         }
 
         _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-        return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+        return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Mapping not found");
     }
 
     private IResponseMessage MappingDelete(IRequestMessage requestMessage)
     {
         if (TryParseGuidFromRequestMessage(requestMessage, out var guid) && DeleteMapping(guid))
         {
-            return ResponseMessageBuilder.Create("Mapping removed", HttpStatusCode.OK, guid);
+            return ResponseMessageBuilder.Create(HttpStatusCode.OK, "Mapping removed", guid);
         }
 
         _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
-        return ResponseMessageBuilder.Create("Mapping not found", HttpStatusCode.NotFound);
+        return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Mapping not found");
     }
 
     private static bool TryParseGuidFromRequestMessage(IRequestMessage requestMessage, out Guid guid)
@@ -409,7 +407,7 @@ public partial class WireMockServer
     {
         SaveStaticMappings();
 
-        return ResponseMessageBuilder.Create("Mappings saved to disk");
+        return ResponseMessageBuilder.Create(200, "Mappings saved to disk");
     }
 
     private MappingModel[] ToMappingModels()
@@ -439,22 +437,22 @@ public partial class WireMockServer
             if (mappingModels.Length == 1)
             {
                 Guid? guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
-                return ResponseMessageBuilder.Create("Mapping added", 201, guid);
+                return ResponseMessageBuilder.Create(201, "Mapping added", guid);
             }
 
             ConvertMappingsAndRegisterAsRespondProvider(mappingModels);
 
-            return ResponseMessageBuilder.Create("Mappings added", 201);
+            return ResponseMessageBuilder.Create(201, "Mappings added");
         }
         catch (ArgumentException a)
         {
             _settings.Logger.Error("HttpStatusCode set to 400 {0}", a);
-            return ResponseMessageBuilder.Create(a.Message, 400);
+            return ResponseMessageBuilder.Create(400, a.Message);
         }
         catch (Exception e)
         {
             _settings.Logger.Error("HttpStatusCode set to 500 {0}", e);
-            return ResponseMessageBuilder.Create(e.ToString(), 500);
+            return ResponseMessageBuilder.Create(500, e.ToString());
         }
     }
 
@@ -465,18 +463,18 @@ public partial class WireMockServer
             var deletedGuids = MappingsDeleteMappingFromBody(requestMessage);
             if (deletedGuids != null)
             {
-                return ResponseMessageBuilder.Create($"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
+                return ResponseMessageBuilder.Create(200, $"Mappings deleted. Affected GUIDs: [{string.Join(", ", deletedGuids.ToArray())}]");
             }
 
             // return bad request
-            return ResponseMessageBuilder.Create("Poorly formed mapping JSON.", 400);
+            return ResponseMessageBuilder.Create(400, "Poorly formed mapping JSON.");
         }
 
         ResetMappings();
 
         ResetScenarios();
 
-        return ResponseMessageBuilder.Create("Mappings deleted");
+        return ResponseMessageBuilder.Create(200, "Mappings deleted");
     }
 
     private IEnumerable<Guid>? MappingsDeleteMappingFromBody(IRequestMessage requestMessage)
@@ -528,7 +526,7 @@ public partial class WireMockServer
             message = $"{message} and static mappings reloaded";
         }
 
-        return ResponseMessageBuilder.Create(message);
+        return ResponseMessageBuilder.Create(200, message);
     }
     #endregion Mappings
 
@@ -546,18 +544,18 @@ public partial class WireMockServer
         }
 
         _settings.Logger.Warn("HttpStatusCode set to 404 : Request not found");
-        return ResponseMessageBuilder.Create("Request not found", HttpStatusCode.NotFound);
+        return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Request not found");
     }
 
     private IResponseMessage RequestDelete(IRequestMessage requestMessage)
     {
         if (TryParseGuidFromRequestMessage(requestMessage, out var guid) && DeleteLogEntry(guid))
         {
-            return ResponseMessageBuilder.Create("Request removed");
+            return ResponseMessageBuilder.Create(200, "Request removed");
         }
 
         _settings.Logger.Warn("HttpStatusCode set to 404 : Request not found");
-        return ResponseMessageBuilder.Create("Request not found", HttpStatusCode.NotFound);
+        return ResponseMessageBuilder.Create(HttpStatusCode.NotFound, "Request not found");
     }
     #endregion Request/{guid}
 
@@ -576,7 +574,7 @@ public partial class WireMockServer
     {
         ResetLogEntries();
 
-        return ResponseMessageBuilder.Create("Requests deleted");
+        return ResponseMessageBuilder.Create(200, "Requests deleted");
     }
     #endregion Requests
 
@@ -623,7 +621,7 @@ public partial class WireMockServer
     {
         ResetScenarios();
 
-        return ResponseMessageBuilder.Create("Scenarios reset");
+        return ResponseMessageBuilder.Create(200, "Scenarios reset");
     }
 
     private IResponseMessage ScenarioReset(IRequestMessage requestMessage)
@@ -633,8 +631,8 @@ public partial class WireMockServer
             requestMessage.Path.Split('/').Reverse().Skip(1).First();
 
         return ResetScenario(name) ?
-            ResponseMessageBuilder.Create("Scenario reset") :
-            ResponseMessageBuilder.Create($"No scenario found by name '{name}'.", HttpStatusCode.NotFound);
+            ResponseMessageBuilder.Create(200, "Scenario reset") :
+            ResponseMessageBuilder.Create(HttpStatusCode.NotFound, $"No scenario found by name '{name}'.");
     }
     #endregion
 

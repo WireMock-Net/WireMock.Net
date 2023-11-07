@@ -39,7 +39,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher(true, "x");
 
         // Act
-        double result = matcher.IsMatch("X");
+        double result = matcher.IsMatch("X").Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -52,7 +52,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher("x");
 
         // Act
-        double result = matcher.IsMatch("x");
+        double result = matcher.IsMatch("x").Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -65,7 +65,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher("x");
 
         // Act
-        double result = matcher.IsMatch("y");
+        double result = matcher.IsMatch("y").Score;
 
         // Assert
         Check.That(result).IsEqualTo(0.0);
@@ -78,7 +78,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher("x", "y");
 
         // Act
-        double result = matcher.IsMatch("x");
+        double result = matcher.IsMatch("x").Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -91,7 +91,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher("x", "y");
 
         // Act
-        double result = matcher.IsMatch("x");
+        double result = matcher.IsMatch("x").Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -104,10 +104,10 @@ public class ExactMatcherTests
     public void ExactMatcher_IsMatch_WithMultiplePatterns_Average_ReturnsMatch(MatchOperator matchOperator, double score)
     {
         // Assign
-        var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, false, matchOperator, "x", "y");
+        var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, matchOperator, "x", "y");
 
         // Act
-        double result = matcher.IsMatch("x");
+        double result = matcher.IsMatch("x").Score;
 
         // Assert
         Check.That(result).IsEqualTo(score);
@@ -120,7 +120,7 @@ public class ExactMatcherTests
         var matcher = new ExactMatcher("cat");
 
         // Act
-        double result = matcher.IsMatch("caR");
+        double result = matcher.IsMatch("caR").Score;
 
         // Assert
         Check.That(result).IsEqualTo(0.0);
@@ -130,10 +130,10 @@ public class ExactMatcherTests
     public void ExactMatcher_IsMatch_SinglePattern_AcceptOnMatch()
     {
         // Assign
-        var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, false, MatchOperator.Or, "cat");
+        var matcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, "cat");
 
         // Act
-        double result = matcher.IsMatch("cat");
+        double result = matcher.IsMatch("cat").Score;
 
         // Assert
         Check.That(result).IsEqualTo(1.0);
@@ -143,10 +143,10 @@ public class ExactMatcherTests
     public void ExactMatcher_IsMatch_SinglePattern_RejectOnMatch()
     {
         // Assign
-        var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, false, false, MatchOperator.Or, "cat");
+        var matcher = new ExactMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "cat");
 
         // Act
-        double result = matcher.IsMatch("cat");
+        double result = matcher.IsMatch("cat").Score;
 
         // Assert
         Check.That(result).IsEqualTo(0.0);

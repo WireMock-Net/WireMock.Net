@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+      <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="__admin\mappings\array.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
@@ -36,15 +33,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\791a3f31-6946-4ce7-8e6f-0237c7443275.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Update="__admin\mappings\MyXmlResponse.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

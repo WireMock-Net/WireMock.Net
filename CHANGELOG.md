@@ -1,3 +1,45 @@
+# 1.5.40 (07 November 2023)
+- [#1009](https://github.com/WireMock-Net/WireMock.Net/pull/1009) - Add more tests for JmesPathMatchers and StringUtils.ParseMatchOperator [test] contributed by [StefH](https://github.com/StefH)
+- [#1010](https://github.com/WireMock-Net/WireMock.Net/pull/1010) - Add unit tests for HttpClient with WebProxy [test] contributed by [StefH](https://github.com/StefH)
+- [#1011](https://github.com/WireMock-Net/WireMock.Net/pull/1011) - GraphQL - add support for standard scalar types in the schema [feature] contributed by [StefH](https://github.com/StefH)
+- [#1014](https://github.com/WireMock-Net/WireMock.Net/pull/1014) - FluentAssertions - WithBody and WithBodyAsJson and WithBodyAsBytes contributed by [StefH](https://github.com/StefH)
+
+# 1.5.39 (09 October 2023)
+- [#1006](https://github.com/WireMock-Net/WireMock.Net/pull/1006) - Fix RequestMessageParamMatcher : RejectOnMatch [bug] contributed by [StefH](https://github.com/StefH)
+- [#997](https://github.com/WireMock-Net/WireMock.Net/issues/997) - JmesPathMatcher or and MatchOperator working in version 1.5.34 but not 1.5.35 [bug]
+
+# 1.5.38 (02 October 2023)
+- [#1005](https://github.com/WireMock-Net/WireMock.Net/pull/1005) - Support for xml namespaces in XPathMatcher [feature] contributed by [cal-schleupen](https://github.com/cal-schleupen)
+
+# 1.5.37 (27 September 2023)
+- [#998](https://github.com/WireMock-Net/WireMock.Net/pull/998) - Add JmesPathMatcher UnitTests [test] contributed by [StefH](https://github.com/StefH)
+- [#1004](https://github.com/WireMock-Net/WireMock.Net/pull/1004) - Fix MappingModel to map IgnoreCase and RejectOnMatch for Headers, Cookies and Parameters [bug] contributed by [StefH](https://github.com/StefH)
+- [#1003](https://github.com/WireMock-Net/WireMock.Net/issues/1003) - Store Mapping per POST request ignores &quot;IgnoreCase&quot; property of HeaderModel [bug]
+
+# 1.5.36 (21 September 2023)
+- [#986](https://github.com/WireMock-Net/WireMock.Net/pull/986) - Write logging in case a Matcher throws an exception [feature] contributed by [StefH](https://github.com/StefH)
+- [#996](https://github.com/WireMock-Net/WireMock.Net/pull/996) - Remove dependency on Microsoft.AspNet.WebApi.Client [feature] contributed by [StefH](https://github.com/StefH)
+- [#1002](https://github.com/WireMock-Net/WireMock.Net/pull/1002) - Fixed logic for SaveUnmatchedRequests [bug] contributed by [StefH](https://github.com/StefH)
+- [#974](https://github.com/WireMock-Net/WireMock.Net/issues/974) - HttpClient extension methods causes ambiguous invocations in .NET 7 [bug]
+- [#1001](https://github.com/WireMock-Net/WireMock.Net/issues/1001) - SaveUnmatchedRequests stopped working [bug]
+
+# 1.5.35 (19 August 2023)
+- [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
+- [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
+
+# 1.5.34 (04 August 2023)
+- [#989](https://github.com/WireMock-Net/WireMock.Net/pull/989) - Fix MimeKitLite NuGet include [bug] contributed by [StefH](https://github.com/StefH)
+- [#988](https://github.com/WireMock-Net/WireMock.Net/issues/988) - v1.5.33  Returns always StatusCode 500 [bug]
+
+# 1.5.33 (03 August 2023)
+- [#972](https://github.com/WireMock-Net/WireMock.Net/pull/972) - JsonPartialMatcher - match guid and string contributed by [timurnes](https://github.com/timurnes)
+- [#976](https://github.com/WireMock-Net/WireMock.Net/pull/976) - Upgrade to Handlebars.Net.Helpers 2.4.0 to update XPath.SelectTokens and XPath.EvaluateToString [feature] contributed by [StefH](https://github.com/StefH)
+- [#981](https://github.com/WireMock-Net/WireMock.Net/pull/981) - Add MultiPart/MimePart Request Matcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#968](https://github.com/WireMock-Net/WireMock.Net/issues/968) - Using request multipart in response template [feature]
+- [#969](https://github.com/WireMock-Net/WireMock.Net/issues/969) - Multipart validation [feature]
+- [#970](https://github.com/WireMock-Net/WireMock.Net/issues/970) - Loop through xml elements in handlebars template [feature]
+- [#971](https://github.com/WireMock-Net/WireMock.Net/issues/971) - JsonPartialMatcher - match guid and string [feature]
+
 # 1.5.32 (15 July 2023)
 - [#966](https://github.com/WireMock-Net/WireMock.Net/pull/966) - Fixed JsonPathMatcher to match nested objects [bug] contributed by [StefH](https://github.com/StefH)
 - [#965](https://github.com/WireMock-Net/WireMock.Net/issues/965) - JsonPathMatcher does not match json body nested objects [bug]

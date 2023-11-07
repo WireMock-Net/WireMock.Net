@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
 using WireMock.Matchers;
@@ -42,7 +43,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(bytes);
+        double match = matcher.IsMatch(bytes).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -56,7 +57,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(s);
+        double match = matcher.IsMatch(s).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -70,7 +71,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(o);
+        double match = matcher.IsMatch(o).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -83,7 +84,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("xxx");
 
         // Act 
-        double match = matcher.IsMatch("");
+        double match = matcher.IsMatch("").Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -96,7 +97,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch("x");
+        double match = matcher.IsMatch("x").Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -109,7 +110,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("things.name == 'RequiredThing'");
 
         // Act
-        double match = matcher.IsMatch(new { things = new { name = "RequiredThing" } });
+        double match = matcher.IsMatch(new { things = new { name = "RequiredThing" } }).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -132,7 +133,7 @@ public class JmesPathMatcherTests
             { "Id", new JValue(1) },
             { "things", sub }
         };
-        double match = matcher.IsMatch(jobject);
+        double match = matcher.IsMatch(jobject).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -145,7 +146,7 @@ public class JmesPathMatcherTests
         var matcher = new JmesPathMatcher("things.x == 'RequiredThing'");
 
         // Act 
-        double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }"));
+        double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(1);
@@ -155,12 +156,38 @@ public class JmesPathMatcherTests
     public void JmesPathMatcher_IsMatch_RejectOnMatch()
     {
         // Assign
-        var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, false, MatchOperator.Or, "things.x == 'RequiredThing'");
+        var matcher = new JmesPathMatcher(MatchBehaviour.RejectOnMatch, MatchOperator.Or, "things.x == 'RequiredThing'");
 
         // Act
-        double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }"));
+        double match = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
 
         // Assert
         Check.That(match).IsEqualTo(0.0);
+    }
+
+    [Fact]
+    public void JmesPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorAnd()
+    {
+        // Assign 
+        var matcher = new JmesPathMatcher(MatchOperator.And, "things.x == 'RequiredThing'", "things.x == 'abc'");
+
+        // Act 
+        double score = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
+
+        // Assert 
+        score.Should().Be(0);
+    }
+
+    [Fact]
+    public void JmesPathMatcher_IsMatch_MultiplePatternsUsingMatchOperatorOr()
+    {
+        // Assign 
+        var matcher = new JmesPathMatcher(MatchOperator.Or, "things.x == 'RequiredThing'", "things.x == 'abc'");
+
+        // Act 
+        double score = matcher.IsMatch(JObject.Parse("{ \"things\": { \"x\": \"RequiredThing\" } }")).Score;
+
+        // Assert 
+        score.Should().Be(1);
     }
 }

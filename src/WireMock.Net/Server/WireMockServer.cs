@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using JetBrains.Annotations;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Authentication;
+using WireMock.Constants;
 using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Http;
@@ -135,6 +137,31 @@ public partial class WireMockServer : IWireMockServer
         }
 
         var client = HttpClientFactory2.Create(handlers);
+        client.BaseAddress = new Uri(Url!);
+        return client;
+    }
+
+    /// <summary>
+    /// Create a <see cref="HttpClient"/> which can be used to call this instance.
+    /// <param name="handlers">
+    /// <param name="innerHandler">The inner handler represents the destination of the HTTP message channel.</param>
+    /// An ordered list of System.Net.Http.DelegatingHandler instances to be invoked
+    /// as an System.Net.Http.HttpRequestMessage travels from the System.Net.Http.HttpClient
+    /// to the network and an System.Net.Http.HttpResponseMessage travels from the network
+    /// back to System.Net.Http.HttpClient. The handlers are invoked in a top-down fashion.
+    /// That is, the first entry is invoked first for an outbound request message but
+    /// last for an inbound response message.
+    /// </param>
+    /// </summary>
+    [PublicAPI]
+    public HttpClient CreateClient(HttpMessageHandler innerHandler, params DelegatingHandler[] handlers)
+    {
+        if (!IsStarted)
+        {
+            throw new InvalidOperationException("Unable to create HttpClient because the service is not started.");
+        }
+
+        var client = HttpClientFactory2.Create(innerHandler, handlers);
         client.BaseAddress = new Uri(Url!);
         return client;
     }
@@ -391,7 +418,7 @@ public partial class WireMockServer : IWireMockServer
         Given(Request.Create().WithPath("/*").UsingAnyMethod())
             .WithGuid(Guid.Parse("90008000-0000-4444-a17e-669cd84f1f05"))
             .AtPriority(1000)
-            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create("No matching mapping found", 404)));
+            .RespondWith(new DynamicResponseProvider(_ => ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound)));
     }
 
     /// <inheritdoc cref="IWireMockServer.Reset" />

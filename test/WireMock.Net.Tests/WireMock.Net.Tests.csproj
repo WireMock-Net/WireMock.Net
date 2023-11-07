@@ -3,6 +3,8 @@
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <LangVersion>11</LangVersion>
+        <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>
         <AssemblyName>WireMock.Net.Tests</AssemblyName>
@@ -25,7 +27,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -72,6 +74,7 @@
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net452' or '$(TargetFramework)' == 'net461'">
@@ -100,7 +103,6 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.4.0" />
-        <!--<PackageReference Include="JsonConverter.NewtonSoft.Json" Version="0.4.0" />-->
     </ItemGroup>
 
     <ItemGroup>
@@ -109,6 +111,9 @@
         </None>
         <None Update="OpenApiParser\*.yml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="cert.pem">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -133,10 +138,6 @@
 
     <ItemGroup>
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Pact\files\" />
     </ItemGroup>
 
 </Project>

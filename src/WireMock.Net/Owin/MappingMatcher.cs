@@ -35,21 +35,37 @@ internal class MappingMatcher : IMappingMatcher
             {
                 var nextState = GetNextState(mapping);
 
-                possibleMappings.Add(new MappingMatcherResult
+                var mappingMatcherResult = new MappingMatcherResult(mapping, mapping.GetRequestMatchResult(request, nextState));
+
+                var exceptions = mappingMatcherResult.RequestMatchResult.MatchDetails
+                    .Where(md => md.Exception != null)
+                    .Select(md => md.Exception)
+                    .ToArray();
+
+                if (!exceptions.Any())
                 {
-                    Mapping = mapping,
-                    RequestMatchResult = mapping.GetRequestMatchResult(request, nextState)
-                });
+                    possibleMappings.Add(mappingMatcherResult);
+                }
+                else if (!request.AbsolutePath.StartsWith("/__admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var ex in exceptions)
+                    {
+                        LogException(mapping, ex!);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _options.Logger.Error($"Getting a Request MatchResult for Mapping '{mapping.Guid}' failed. This mapping will not be evaluated. Exception: {ex}");
+                LogException(mapping, ex);
             }
         }
 
         var partialMappings = possibleMappings
             .Where(pm => (pm.Mapping.IsAdminInterface && pm.RequestMatchResult.IsPerfectMatch) || !pm.Mapping.IsAdminInterface)
-            .OrderBy(m => m.RequestMatchResult).ThenBy(m => m.Mapping.Priority).ThenByDescending(m => m.Mapping.UpdatedAt)
+            .OrderBy(m => m.RequestMatchResult)
+                .ThenBy(m => m.RequestMatchResult.TotalNumber)
+                .ThenBy(m => m.Mapping.Priority)
+                .ThenByDescending(m => m.Mapping.UpdatedAt)
             .ToList();
         var partialMatch = partialMappings.FirstOrDefault(pm => pm.RequestMatchResult.AverageTotalScore > 0.0);
 
@@ -64,6 +80,11 @@ internal class MappingMatcher : IMappingMatcher
             .FirstOrDefault();
 
         return (match, partialMatch);
+    }
+
+    private void LogException(IMapping mapping, Exception ex)
+    {
+        _options.Logger.Error($"Getting a Request MatchResult for Mapping '{mapping.Guid}' failed. This mapping will not be evaluated. Exception: {ex}");
     }
 
     private string? GetNextState(IMapping mapping)

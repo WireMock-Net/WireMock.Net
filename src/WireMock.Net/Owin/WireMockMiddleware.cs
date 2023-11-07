@@ -12,6 +12,8 @@ using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using System.Collections.Generic;
+using WireMock.Constants;
+using WireMock.Util;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
 using OwinMiddleware = Microsoft.Owin.OwinMiddleware;
@@ -28,29 +30,47 @@ namespace WireMock.Owin
     {
         private readonly object _lock = new();
         private static readonly Task CompletedTask = Task.FromResult(false);
+
         private readonly IWireMockMiddlewareOptions _options;
         private readonly IOwinRequestMapper _requestMapper;
         private readonly IOwinResponseMapper _responseMapper;
         private readonly IMappingMatcher _mappingMatcher;
         private readonly LogEntryMapper _logEntryMapper;
+        private readonly IGuidUtils _guidUtils;
 
 #if !USE_ASPNETCORE
-        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher) : base(next)
+        public WireMockMiddleware(
+            Next next,
+            IWireMockMiddlewareOptions options,
+            IOwinRequestMapper requestMapper,
+            IOwinResponseMapper responseMapper,
+            IMappingMatcher mappingMatcher,
+            IGuidUtils guidUtils
+        ) : base(next)
         {
             _options = Guard.NotNull(options);
             _requestMapper = Guard.NotNull(requestMapper);
             _responseMapper = Guard.NotNull(responseMapper);
             _mappingMatcher = Guard.NotNull(mappingMatcher);
             _logEntryMapper = new LogEntryMapper(options);
+            _guidUtils = Guard.NotNull(guidUtils);
         }
 #else
-        public WireMockMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinRequestMapper requestMapper, IOwinResponseMapper responseMapper, IMappingMatcher mappingMatcher)
+        public WireMockMiddleware(
+            Next next,
+            IWireMockMiddlewareOptions options,
+            IOwinRequestMapper requestMapper,
+            IOwinResponseMapper responseMapper,
+            IMappingMatcher mappingMatcher,
+            IGuidUtils guidUtils
+        )
         {
             _options = Guard.NotNull(options);
             _requestMapper = Guard.NotNull(requestMapper);
             _responseMapper = Guard.NotNull(responseMapper);
             _mappingMatcher = Guard.NotNull(mappingMatcher);
             _logEntryMapper = new LogEntryMapper(options);
+            _guidUtils = Guard.NotNull(guidUtils);
         }
 #endif
 
@@ -105,7 +125,7 @@ namespace WireMock.Owin
                 {
                     logRequest = true;
                     _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
-                    response = ResponseMessageBuilder.Create("No matching mapping found", 404);
+                    response = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
                     return;
                 }
 
@@ -113,11 +133,11 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthenticationMatcher != null && request.Headers != null)
                 {
-                    bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string> authorization);
-                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization!.ToString()) < MatchScores.Perfect)
+                    bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string>? authorization);
+                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization!.ToString()).Score < MatchScores.Perfect)
                     {
                         _options.Logger.Error("HttpStatusCode set to 401");
-                        response = ResponseMessageBuilder.Create(null, HttpStatusCode.Unauthorized);
+                        response = ResponseMessageBuilder.Create(HttpStatusCode.Unauthorized, null);
                         return;
                     }
                 }
@@ -161,14 +181,14 @@ namespace WireMock.Owin
             }
             catch (Exception ex)
             {
-                _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping?.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
-                response = ResponseMessageBuilder.Create(ex.Message, 500);
+                _options.Logger.Error($"Providing a Response for Mapping '{result.Match?.Mapping.Guid}' failed. HttpStatusCode set to 500. Exception: {ex}");
+                response = ResponseMessageBuilder.Create(500, ex.Message);
             }
             finally
             {
                 var log = new LogEntry
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = _guidUtils.NewGuid(),
                     RequestMessage = request,
                     ResponseMessage = response,
 
@@ -185,10 +205,10 @@ namespace WireMock.Owin
 
                 try
                 {
-                    if (_options.SaveUnmatchedRequests == true && result.Match?.RequestMatchResult.IsPerfectMatch != true)
+                    if (_options.SaveUnmatchedRequests == true && result.Match?.RequestMatchResult is not { IsPerfectMatch: true })
                     {
                         var filename = $"{log.Guid}.LogEntry.json";
-                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, Util.JsonUtils.Serialize(log));
+                        _options.FileSystemHandler?.WriteUnmatchedRequest(filename, JsonUtils.Serialize(log));
                     }
                 }
                 catch
@@ -196,7 +216,17 @@ namespace WireMock.Owin
                     // Empty catch
                 }
 
-                await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
+                try
+                {
+                    await _responseMapper.MapAsync(response, ctx.Response).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _options.Logger.Error("HttpStatusCode set to 404 : No matching mapping found", ex);
+
+                    var notFoundResponse = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
+                    await _responseMapper.MapAsync(notFoundResponse, ctx.Response).ConfigureAwait(false);
+                }
             }
 
             await CompletedTask.ConfigureAwait(false);

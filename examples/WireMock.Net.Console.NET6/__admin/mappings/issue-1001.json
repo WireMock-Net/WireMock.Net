@@ -1,0 +1,48 @@
+[
+    {
+        "Guid": "12343f31-6946-4ce7-8e6f-0237c7001000",
+        "Title": "1",
+        "Request": {
+            "Path": {
+                "Matchers": [
+                    {
+                        "Name": "WildcardMatcher",
+                        "Pattern": "/mappings_static_1"
+                    }
+                ]
+            },
+            "Methods": [
+                "get"
+            ]
+        },
+        "Response": {
+            "BodyAsJson": { "result": "mappings static_1" },
+            "Headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    },
+    {
+        "Guid": "12343f31-6946-4ce7-8e6f-0237c7002000",
+        "Title": "2",
+        "Request": {
+            "Path": {
+                "Matchers": [
+                    {
+                        "Name": "WildcardMatcher",
+                        "Pattern": "/mappings_static_2"
+                    }
+                ]
+            },
+            "Methods": [
+                "get"
+            ]
+        },
+        "Response": {
+            "BodyAsJson": { "result": "mappings static_2" },
+            "Headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    }
+]

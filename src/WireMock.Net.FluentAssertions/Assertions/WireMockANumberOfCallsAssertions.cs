@@ -1,3 +1,4 @@
+using Stef.Validation;
 using WireMock.Server;
 
 // ReSharper disable once CheckNamespace
@@ -10,7 +11,7 @@ namespace WireMock.FluentAssertions
 
         public WireMockANumberOfCallsAssertions(IWireMockServer server, int callsCount)
         {
-            _server = server;
+            _server = Guard.NotNull(server);
             _callsCount = callsCount;
         }
 

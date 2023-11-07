@@ -11,7 +11,10 @@ namespace WireMock.Net.Tests.Matchers;
 public class GraphQLMatcherTests
 {
     private const string TestSchema = @"
+  scalar DateTime
+
   input MessageInput {
+    date: DateTime
     content: String
     author: String
   }
@@ -24,20 +27,21 @@ public class GraphQLMatcherTests
 
   type Mutation {
     createMessage(input: MessageInput): Message
+    createAnotherMessage(date: DateTime, content: String, author: String): Message
     updateMessage(id: ID!, input: MessageInput): Message
   }
 
   type Query {
-   greeting:String
-   students:[Student]
-   studentById(id:ID!):Student
+    greeting: String
+    students: [Student]
+    studentById(id: ID!):Student
   }
 
   type Student {
-   id:ID!
-   firstName:String
-   lastName:String
-   fullName:String 
+    id: ID!
+    firstName: String
+    lastName: String
+    fullName: String 
   }";
 
     [Fact]
@@ -51,13 +55,13 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
 
         matcher.GetPatterns().Should().Contain(TestSchema);
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQLQuery_IsMatch()
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_Query_IsMatch()
     {
         // Arrange
         var input = @"{
@@ -71,7 +75,26 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
+
+        matcher.GetPatterns().Should().Contain(TestSchema);
+    }
+
+    [Fact]
+    public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_Mutation_IsMatch()
+    {
+        // Arrange
+        var input = @"{
+    ""query"": ""mutation CreateAnotherMessage($date: DateTime!, $content: String!, $author: String!) { createAnotherMessage(date: $date, content: $content, author: $author) { id } }"",
+    ""variables"": { ""date"": ""2007-12-03T10:15:30Z"", ""content"": ""--content--"", ""author"": ""--author--"" }
+}";
+
+        // Act
+        var matcher = new GraphQLMatcher(TestSchema);
+        var result = matcher.IsMatch(input);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Perfect);
 
         matcher.GetPatterns().Should().Contain(TestSchema);
     }
@@ -93,7 +116,7 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Mismatch);
+        result.Score.Should().Be(MatchScores.Mismatch);
     }
 
     [Fact]
@@ -111,21 +134,22 @@ public class GraphQLMatcherTests
         var result = matcher.IsMatch(input);
 
         // Assert
-        result.Should().Be(MatchScores.Perfect);
+        result.Score.Should().Be(MatchScores.Perfect);
     }
 
     [Fact]
-    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWithError_WithThrowExceptionTrue_ThrowsException()
+    public void GraphQLMatcher_For_ValidSchema_And_IncorrectQueryWithError_WithThrowExceptionTrue_ReturnsError()
     {
         // Arrange
         var input = "{\"query\":\"{\\r\\n studentsX {\\r\\n fullName\\r\\n X\\r\\n }\\r\\n}\"}";
 
         // Act
-        var matcher = new GraphQLMatcher(TestSchema, MatchBehaviour.AcceptOnMatch, true);
-        Action action = () => matcher.IsMatch(input);
+        var matcher = new GraphQLMatcher(TestSchema);
+        var result = matcher.IsMatch(input);
 
         // Assert
-        action.Should().Throw<Exception>();
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception!.Message.Should().StartWith("Cannot query field 'studentsX' on type 'Query'");
     }
 
     [Fact]
