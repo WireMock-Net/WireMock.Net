@@ -1,5 +1,7 @@
-# 1.5.39 (09 October 2023)
-- #1006 Fix RequestMessageParamMatcher : RejectOnMatch [bug]
-- #997 JmesPathMatcher or and MatchOperator working in version 1.5.34 but not 1.5.35 [bug]
+# 1.5.40 (07 November 2023)
+- #1009 Add more tests for JmesPathMatchers and StringUtils.ParseMatchOperator [test]
+- #1010 Add unit tests for HttpClient with WebProxy [test]
+- #1011 GraphQL - add support for standard scalar types in the schema [feature]
+- #1014 FluentAssertions - WithBody and WithBodyAsJson and WithBodyAsBytes
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
