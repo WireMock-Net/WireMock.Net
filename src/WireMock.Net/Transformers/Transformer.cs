@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using HandlebarsDotNet.Helpers.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
@@ -309,6 +310,12 @@ internal class Transformer : ITransformer
 
     private static bool TryConvert(object? transformedValue, [NotNullWhen(true)] out object? convertedValue)
     {
+        if (transformedValue is string transformedValueAsString && OutputWithType.TryDeserialize(transformedValueAsString, out var outputWithType))
+        {
+            convertedValue = outputWithType.Value!;
+            return true;
+        }
+
         foreach (var supportedType in SupportedTypes)
         {
             try

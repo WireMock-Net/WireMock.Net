@@ -56,7 +56,7 @@ public class ResponseWithHandlebarsRandomTests
     }
 
     [Fact]
-    public async Task Response_ProvideResponseAsync_Handlebars_Random1_Boolean()
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_Boolean()
     {
         // Assign
         var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -74,6 +74,27 @@ public class ResponseWithHandlebarsRandomTests
         // Assert
         JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
         Check.That(j["Value"].Type).IsEqualTo(JTokenType.Boolean);
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_Boolean_GenerateAsOutputWithType()
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new
+            {
+                Value = "{{Random.GenerateAsOutputWithType Type=\"Boolean\"}}"
+            })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        JObject j = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
+        Check.That(j["Value"]!.Type).IsEqualTo(JTokenType.Boolean);
     }
 
     [Theory]
