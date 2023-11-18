@@ -41,7 +41,7 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.net7.0.opencover.xml
+        sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
@@ -80,7 +80,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish coverage file
     inputs:
-      PathtoPublish: './test/WireMock.Net.Tests/coverage.net7.0.opencover.xml'
+      PathtoPublish: './test/WireMock.Net.Tests/coverage.net8.0.opencover.xml'
 
 - job: Windows_Build_Test
 
