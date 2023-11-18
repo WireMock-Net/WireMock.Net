@@ -48,11 +48,11 @@ jobs:
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net7.0'
+      arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
     inputs:
-      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net7.0'
+      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
    
   - task: SonarCloudAnalyze@1
@@ -99,14 +99,14 @@ jobs:
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net7.0'
+      arguments: '--configuration Debug --framework net8.0'
   
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit Tests with Coverage'
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework net7.0 --collect:"XPlat Code Coverage" --logger trx'
+      arguments: '--no-build --configuration Debug --framework net8.0 --collect:"XPlat Code Coverage" --logger trx'
   
 - job: Windows_Release_to_MyGet
   dependsOn: Windows_Build_Test

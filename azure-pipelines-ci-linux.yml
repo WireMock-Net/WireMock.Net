@@ -12,7 +12,7 @@ steps:
     version: 8.0.x
 
 - script: |
-    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net7.0 --logger trx
+    dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration $(buildConfiguration) --framework net8.0 --logger trx
   displayName: 'Test'
 
 - task: PublishTestResults@2
