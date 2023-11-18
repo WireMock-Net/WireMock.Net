@@ -15,10 +15,10 @@ jobs:
     displayName: 'Print buildId'
 
   - task: UseDotNet@2
-    displayName: Use .NET 7.0
+    displayName: Use .NET 8.0
     inputs:
       packageType: 'sdk'
-      version: '7.0.x'    
+      version: '8.0.x'    
 
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
