@@ -76,6 +76,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Net472
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{1DAEFF47-D117-4E95-8B3E-4F7C8B92011A}"
 	ProjectSection(SolutionItems) = preProject
+		..\System.Linq.Dynamic.Core\.github\workflows\ci.yml = ..\System.Linq.Dynamic.Core\.github\workflows\ci.yml
 		.github\workflows\CreateRelease.yml = .github\workflows\CreateRelease.yml
 	EndProjectSection
 EndProject
@@ -107,7 +108,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMockAzureQueueProxy", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Testcontainers", "src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj", "{12B016A5-9D8B-4EFE-96C2-CA51BE43367D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.TestcontainersExample", "examples\WireMock.Net.TestcontainersExample\WireMock.Net.TestcontainersExample.csproj", "{56A38798-C48B-4A4A-B805-071E05C02CE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.TestcontainersExample", "examples\WireMock.Net.TestcontainersExample\WireMock.Net.TestcontainersExample.csproj", "{56A38798-C48B-4A4A-B805-071E05C02CE1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{0147029F-FA4A-44B3-B79A-3C3574054EE4}"
 EndProject
