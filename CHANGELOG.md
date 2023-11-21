@@ -1,4 +1,4 @@
-# 1.5.40 (07 November 2023)
+# 1.5.40 (07 November 2023) 
 - [#1009](https://github.com/WireMock-Net/WireMock.Net/pull/1009) - Add more tests for JmesPathMatchers and StringUtils.ParseMatchOperator [test] contributed by [StefH](https://github.com/StefH)
 - [#1010](https://github.com/WireMock-Net/WireMock.Net/pull/1010) - Add unit tests for HttpClient with WebProxy [test] contributed by [StefH](https://github.com/StefH)
 - [#1011](https://github.com/WireMock-Net/WireMock.Net/pull/1011) - GraphQL - add support for standard scalar types in the schema [feature] contributed by [StefH](https://github.com/StefH)
