@@ -1,9 +1,8 @@
-namespace WireMock.Org.Abstractions
-{
-    public class PostAdminRecordingsStopResult
-    {
-        public Mappings Mappings { get; set; }
+namespace WireMock.Org.Abstractions;
 
-        public Meta Meta { get; set; }
-    }
+public class PostAdminRecordingsStopResult
+{
+    public Mapping[] Mappings { get; set; }
+
+    public Meta Meta { get; set; }
 }
