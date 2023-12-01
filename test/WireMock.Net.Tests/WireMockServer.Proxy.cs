@@ -922,4 +922,56 @@ public class WireMockServerProxyTests
         server.LogEntries.Should().HaveCount(1);
         server.Stop();
     }
+
+    [Fact]
+    public async Task WireMockServer_ProxyAndRecordSettings_ShouldProxyAll()
+    {
+        WireMockServerSettings wireMockServerSettings = new WireMockServerSettings
+        {
+            Urls = new[] { "http://localhost:9091/" },
+            StartAdminInterface = false,
+            ReadStaticMappings = true,
+            WatchStaticMappings = true,
+            WatchStaticMappingsInSubdirectories = true,
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
+            {
+                Url = "http://postman-echo.com/post",
+                SaveMapping = true,
+                ProxyAll = false,
+                SaveMappingToFile = true,
+                ExcludedHeaders = new[] { "Postman-Token" },
+                ExcludedCookies = new[] { "sails.sid" }
+            }
+        };
+
+    WireMockServer server = WireMockServer.Start(wireMockServerSettings);
+            /*server
+                .Given(Request.Create().UsingPost().WithPath("/post"))
+                .RespondWith(Response.Create().WithProxy("ok"));
+                */
+
+            var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri("http://localhost:9091/post"),
+                Content = new StringContent(requestBody)
+            };
+            var request2 = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri("http://localhost:9091/post"),
+                Content = new StringContent(requestBody)
+            };
+            server.ResetMappings();
+
+            await new HttpClient().SendAsync(request);
+            Check.That(server.Mappings.Count()).IsEqualTo(2);
+
+            await new HttpClient().SendAsync(request2);
+            Check.That(server.Mappings.Count()).IsEqualTo(3);
+
+            server.Dispose();
+        }
 }
