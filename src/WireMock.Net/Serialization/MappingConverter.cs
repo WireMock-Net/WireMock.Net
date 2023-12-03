@@ -373,9 +373,11 @@ internal class MappingConverter
             mappingModel.Response.UseTransformerForBodyAsFile = null;
             mappingModel.Response.TransformerReplaceNodeOptions = null;
             mappingModel.Response.BodyEncoding = null;
-            mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
             mappingModel.Response.Fault = null;
-            mappingModel.Response.WebProxy = MapWebProxy(response.ProxyAndRecordSettings.WebProxySettings);
+
+            mappingModel.Response.WebProxy = TinyMapperUtils.Instance.Map(response.ProxyAndRecordSettings.WebProxySettings);
+            mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
+            mappingModel.Response.ProxyUrlReplaceSettings = TinyMapperUtils.Instance.Map(response.ProxyAndRecordSettings.ReplaceSettings);
         }
         else
         {
@@ -507,16 +509,6 @@ internal class MappingConverter
     private static string ToValueArguments(string[]? values, string defaultValue = "")
     {
         return values is { } ? string.Join(", ", values.Select(ToCSharpStringLiteral)) : ToCSharpStringLiteral(defaultValue);
-    }
-
-    private static WebProxyModel? MapWebProxy(WebProxySettings? settings)
-    {
-        return settings != null ? new WebProxyModel
-        {
-            Address = settings.Address,
-            UserName = settings.UserName,
-            Password = settings.Password
-        } : null;
     }
 
     private static IDictionary<string, object> MapHeaders(IDictionary<string, WireMockList<string>> dictionary)
