@@ -15,10 +15,10 @@ jobs:
     displayName: 'Print buildId'
 
   - task: UseDotNet@2
-    displayName: Use .NET 7.0
+    displayName: Use .NET 8.0
     inputs:
       packageType: 'sdk'
-      version: '7.0.x'    
+      version: '8.0.x'    
 
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
@@ -41,18 +41,18 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.net7.0.opencover.xml
+        sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net7.0'
+      arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
     inputs:
-      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net7.0'
+      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
    
   - task: SonarCloudAnalyze@1
@@ -68,7 +68,7 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.7.0.opencover.xml
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.8.0.opencover.xml
     displayName: 'codecov'
   
   - task: PublishTestResults@2
@@ -80,7 +80,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish coverage file
     inputs:
-      PathtoPublish: './test/WireMock.Net.Tests/coverage.net7.0.opencover.xml'
+      PathtoPublish: './test/WireMock.Net.Tests/coverage.net8.0.opencover.xml'
 
 - job: Windows_Build_Test
 
@@ -89,24 +89,24 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: Use .NET 7.0
+    displayName: Use .NET 8.0
     inputs:
       packageType: 'sdk'
-      version: '7.0.x'
+      version: '8.0.x'
 
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net7.0'
+      arguments: '--configuration Debug --framework net8.0'
   
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit Tests with Coverage'
     inputs:
       command: 'test'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--no-build --configuration Debug --framework net7.0 --collect:"XPlat Code Coverage" --logger trx'
+      arguments: '--no-build --configuration Debug --framework net8.0 --collect:"XPlat Code Coverage" --logger trx'
   
 - job: Windows_Release_to_MyGet
   dependsOn: Windows_Build_Test
@@ -116,10 +116,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: Use .NET 7.0
+    displayName: Use .NET 8.0
     inputs:
       packageType: 'sdk'
-      version: '7.0.x'
+      version: '8.0.x'
 
   - task: DotNetCoreCLI@2
     displayName: Build Release
