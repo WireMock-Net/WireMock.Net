@@ -1,7 +1,7 @@
-# 1.5.40 (07 November 2023)
-- #1009 Add more tests for JmesPathMatchers and StringUtils.ParseMatchOperator [test]
-- #1010 Add unit tests for HttpClient with WebProxy [test]
-- #1011 GraphQL - add support for standard scalar types in the schema [feature]
-- #1014 FluentAssertions - WithBody and WithBodyAsJson and WithBodyAsBytes
+# 1.5.41 (04 December 2023)
+- #1012 GraphQL - custom scalar support [feature]
+- #1018 Add .NET 8 [feature]
+- #1020 Add Github Action [test]
+- #984 GraphQL Schema validation with custom scalars [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
