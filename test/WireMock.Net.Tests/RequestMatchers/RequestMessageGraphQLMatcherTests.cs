@@ -16,7 +16,7 @@ public class RequestMessageGraphQLMatcherTests
     [Fact]
     public void RequestMessageGraphQLMatcher_GetMatchingScore_BodyAsString_IStringMatcher()
     {
-        // Assign
+        // Arrange
         var body = new BodyData
         {
             BodyAsString = "b",

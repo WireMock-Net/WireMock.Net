@@ -6,10 +6,15 @@ using System.Linq;
 using AnyOfTypes;
 using GraphQL;
 using GraphQL.Types;
+using GraphQLParser;
+using GraphQLParser.AST;
 using Newtonsoft.Json;
 using Stef.Validation;
+using WireMock.Exceptions;
 using WireMock.Extensions;
+using WireMock.Matchers.Models;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -36,14 +41,40 @@ public class GraphQLMatcher : IStringMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
+    /// An optional dictionary defining the custom Scalar and the type.
+    /// </summary>
+    public IDictionary<string, Type>? CustomScalars { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
     /// </summary>
     /// <param name="schema">The schema.</param>
-    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    public GraphQLMatcher(AnyOf<string, StringPattern, ISchema> schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch, MatchOperator matchOperator = MatchOperator.Or)
+    public GraphQLMatcher(
+        AnyOf<string, StringPattern, ISchema> schema,
+        MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
+        MatchOperator matchOperator = MatchOperator.Or
+    ) : this(schema, null, matchBehaviour, matchOperator)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
+    /// </summary>
+    /// <param name="schema">The schema.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. (optional)</param>
+    /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
+    public GraphQLMatcher(
+        AnyOf<string, StringPattern, ISchema> schema,
+        IDictionary<string, Type>? customScalars,
+        MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
+        MatchOperator matchOperator = MatchOperator.Or
+    )
     {
         Guard.NotNull(schema);
+        CustomScalars = customScalars;
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
 
@@ -137,12 +168,36 @@ public class GraphQLMatcher : IStringMatcher
         }
     }
 
-    private static ISchema BuildSchema(string typeDefinitions)
+    /// <param name="typeDefinitions">A textual description of the schema in SDL (Schema Definition Language) format.</param>
+    private ISchema BuildSchema(string typeDefinitions)
     {
         var schema = Schema.For(typeDefinitions);
 
         // #984
-        schema.RegisterTypes(schema.BuiltInTypeMappings.Select(x => x.graphType).ToArray());
+        var graphTypes = schema.BuiltInTypeMappings.Select(tm => tm.graphType).ToArray();
+        schema.RegisterTypes(graphTypes);
+
+        var doc = Parser.Parse(typeDefinitions);
+        var scalarTypeDefinitions = doc.Definitions
+            .Where(d => d.Kind == ASTNodeKind.ScalarTypeDefinition)
+            .OfType<GraphQLTypeDefinition>();
+
+        foreach (var scalarTypeDefinitionName in scalarTypeDefinitions.Select(s => s.Name.StringValue))
+        {
+            var customScalarGraphTypeName = $"{scalarTypeDefinitionName}GraphType";
+            if (graphTypes.All(t => t.Name != customScalarGraphTypeName)) // Only process when not built-in.
+            {
+                // Check if this custom Scalar is defined in the dictionary
+                if (CustomScalars == null || !CustomScalars.TryGetValue(scalarTypeDefinitionName, out var clrType))
+                {
+                    throw new WireMockException($"The GraphQL Scalar type '{scalarTypeDefinitionName}' is not defined in the CustomScalars dictionary.");
+                }
+
+                // Create a this custom Scalar GraphType (extending the WireMockCustomScalarGraphType<{clrType}> class)
+                var customScalarGraphType = ReflectionUtils.CreateGenericType(customScalarGraphTypeName, typeof(WireMockCustomScalarGraphType<>), clrType);
+                schema.RegisterType(customScalarGraphType);
+            }
+        }
 
         return schema;
     }
