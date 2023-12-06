@@ -1,9 +1,8 @@
-namespace WireMock.Org.Abstractions
-{
-    public class PostAdminRecordingsSnapshotResult
-    {
-        public Mappings Mappings { get; set; }
+namespace WireMock.Org.Abstractions;
 
-        public Meta Meta { get; set; }
-    }
+public class PostAdminRecordingsSnapshotResult
+{
+    public Mapping[] Mappings { get; set; }
+
+    public Meta Meta { get; set; }
 }
