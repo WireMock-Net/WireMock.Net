@@ -427,6 +427,8 @@ public partial class WireMockServer : IWireMockServer
     {
         ResetLogEntries();
 
+        ResetScenarios();
+
         ResetMappings();
     }
 
