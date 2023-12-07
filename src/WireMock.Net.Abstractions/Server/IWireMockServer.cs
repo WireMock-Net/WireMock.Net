@@ -134,7 +134,7 @@ public interface IWireMockServer : IDisposable
     void RemoveAuthentication();
 
     /// <summary>
-    /// Resets LogEntries and Mappings.
+    /// Resets LogEntries, Mappings and Scenarios.
     /// </summary>
     void Reset();
 
