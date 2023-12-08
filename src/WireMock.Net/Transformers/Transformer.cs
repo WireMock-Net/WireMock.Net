@@ -5,7 +5,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
-using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
@@ -250,7 +249,7 @@ internal class Transformer : ITransformer
                     return;
                 }
 
-                var transformed = transformerContext.ParseAndEvaluate(stringValue, model);
+                var transformed = transformerContext.ParseAndEvaluate(stringValue!, model);
                 if (!Equals(stringValue, transformed))
                 {
                     ReplaceNodeValue(options, node, transformed);
