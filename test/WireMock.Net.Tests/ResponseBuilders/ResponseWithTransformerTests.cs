@@ -556,7 +556,7 @@ public class ResponseWithTransformerTests
 
         var responseBuilder = Response.Create()
             .WithBodyAsJson(new { text = "{{request.bodyAsJson.x}}" })
-            .WithTransformer(transformerType, false, ReplaceNodeOptions.Evaluate);
+            .WithTransformer(transformerType, false, ReplaceNodeOptions.EvaluateAndTryToConvert);
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);

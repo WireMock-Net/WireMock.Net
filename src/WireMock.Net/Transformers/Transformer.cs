@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,7 +12,17 @@ namespace WireMock.Transformers;
 
 internal class Transformer : ITransformer
 {
-    private static readonly Type[] SupportedTypes = { typeof(bool), typeof(long), typeof(int), typeof(double), typeof(Guid), typeof(DateTime), typeof(TimeSpan), typeof(Uri) };
+    private static readonly Func<string, (bool IsConverted, object ConvertedValue)>[] ConversionsFunctions =
+    {
+        s => bool.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => int.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => long.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => double.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => Guid.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => DateTime.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => TimeSpan.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => Uri.TryCreate(s, UriKind.Absolute, out var result) ? (true, result) : (false, s)
+    };
 
     private readonly JsonSerializer _jsonSerializer;
     private readonly ITransformerContextFactory _factory;
@@ -268,9 +277,10 @@ internal class Transformer : ITransformer
                 return;
 
             case string transformedString:
-                if (TryConvert(transformedString, out var convertedFromStringValue))
+                var (isConvertedFromString, convertedValueFromString) = TryConvert(options, transformedString);
+                if (isConvertedFromString)
                 {
-                    node.Replace(JToken.FromObject(convertedFromStringValue, _jsonSerializer));
+                    node.Replace(JToken.FromObject(convertedValueFromString, _jsonSerializer));
                 }
                 else
                 {
@@ -292,7 +302,8 @@ internal class Transformer : ITransformer
                 break;
 
             case { }:
-                if (TryConvert(transformedValue, out var convertedValue))
+                var (isConverted, convertedValue) = TryConvert(options, transformedValue);
+                if (isConverted)
                 {
                     node.Replace(JToken.FromObject(convertedValue, _jsonSerializer));
                 }
@@ -308,23 +319,26 @@ internal class Transformer : ITransformer
         return JsonUtils.TryParseAsJObject(stringValue, out var parsedAsjObject) ? parsedAsjObject : stringValue;
     }
 
-    private static bool TryConvert(object? transformedValue, [NotNullWhen(true)] out object? convertedValue)
+    private static (bool IsConverted, object ConvertedValue) TryConvert(ReplaceNodeOptions options, object value)
     {
-        foreach (var supportedType in SupportedTypes)
+        if (options == ReplaceNodeOptions.EvaluateAndKeep)
         {
-            try
+            return (false, value);
+        }
+
+        if (value is string transformedString)
+        {
+            foreach (var func in ConversionsFunctions)
             {
-                convertedValue = Convert.ChangeType(transformedValue, supportedType);
-                return convertedValue is not null;
-            }
-            catch
-            {
-                // Ignore
+                var (isConverted, convertedValue) = func(transformedString);
+                if (isConverted)
+                {
+                    return (true, convertedValue);
+                }
             }
         }
 
-        convertedValue = null;
-        return false;
+        return (false, value);
     }
 
     private static IBodyData TransformBodyAsString(ITransformerContext transformerContext, object model, IBodyData original)

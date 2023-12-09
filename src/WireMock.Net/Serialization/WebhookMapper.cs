@@ -39,7 +39,7 @@ internal static class WebhookMapper
 
             if (!Enum.TryParse<ReplaceNodeOptions>(model.Request.TransformerReplaceNodeOptions, out var option))
             {
-                option = ReplaceNodeOptions.Evaluate;
+                option = ReplaceNodeOptions.EvaluateAndKeep;
             }
             webhook.Request.TransformerReplaceNodeOptions = option;
         }
