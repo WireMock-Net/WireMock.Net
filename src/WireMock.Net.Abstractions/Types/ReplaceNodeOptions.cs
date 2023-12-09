@@ -17,5 +17,6 @@ public enum ReplaceNodeOptions
     /// Parse templated string to a templated string.
     /// For example: keep a templated string value (which is always the case) as a string value.
     /// </summary>
-    Evaluate = 1
+    Evaluate = 1,
+    EvaluateAndKeep = Evaluate
 }
