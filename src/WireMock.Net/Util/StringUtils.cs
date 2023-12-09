@@ -8,6 +8,42 @@ namespace WireMock.Util;
 
 internal static class StringUtils
 {
+    private static readonly Func<string, (bool IsConverted, object ConvertedValue)>[] ConversionsFunctions =
+    {
+        s => bool.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => int.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => long.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => double.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => Guid.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => TimeSpan.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => DateTime.TryParse(s, out var result) ? (true, result) : (false, s),
+        s =>
+        {
+            try
+            {
+                return (true, new Uri(s));
+            }
+            catch
+            {
+                return (false, s);
+            }
+        }
+    };
+
+    public static (bool IsConverted, object ConvertedValue) TryConvertToKnownType(string value)
+    {
+        foreach (var func in ConversionsFunctions)
+        {
+            var result = func(value);
+            if (result.IsConverted)
+            {
+                return result;
+            }
+        }
+
+        return (false, value);
+    }
+
     public static MatchOperator ParseMatchOperator(string? value)
     {
         return value != null && Enum.TryParse<MatchOperator>(value, out var matchOperator)

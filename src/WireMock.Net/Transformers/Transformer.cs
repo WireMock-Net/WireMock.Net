@@ -12,18 +12,6 @@ namespace WireMock.Transformers;
 
 internal class Transformer : ITransformer
 {
-    private static readonly Func<string, (bool IsConverted, object ConvertedValue)>[] ConversionsFunctions =
-    {
-        s => bool.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => int.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => long.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => double.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => Guid.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => DateTime.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => TimeSpan.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => Uri.TryCreate(s, UriKind.Absolute, out var result) ? (true, result) : (false, s)
-    };
-
     private readonly JsonSerializer _jsonSerializer;
     private readonly ITransformerContextFactory _factory;
 
@@ -328,14 +316,7 @@ internal class Transformer : ITransformer
 
         if (value is string transformedString)
         {
-            foreach (var func in ConversionsFunctions)
-            {
-                var (isConverted, convertedValue) = func(transformedString);
-                if (isConverted)
-                {
-                    return (true, convertedValue);
-                }
-            }
+            return StringUtils.TryConvertToKnownType(transformedString);
         }
 
         return (false, value);
