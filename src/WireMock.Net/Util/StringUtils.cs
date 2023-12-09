@@ -8,6 +8,13 @@ namespace WireMock.Util;
 
 internal static class StringUtils
 {
+    private static readonly string[] ValidUriSchemes =
+    {
+        "ftp://",
+        "http://",
+        "https://"
+    };
+
     private static readonly Func<string, (bool IsConverted, object ConvertedValue)>[] ConversionsFunctions =
     {
         s => bool.TryParse(s, out var result) ? (true, result) : (false, s),
@@ -19,14 +26,13 @@ internal static class StringUtils
         s => DateTime.TryParse(s, out var result) ? (true, result) : (false, s),
         s =>
         {
-            try
+            if (ValidUriSchemes.Any(u => s.StartsWith(u, StringComparison.OrdinalIgnoreCase)) &&
+                Uri.TryCreate(s, UriKind.RelativeOrAbsolute, out var uri))
             {
-                return (true, new Uri(s));
+                return (true, uri);
             }
-            catch
-            {
-                return (false, s);
-            }
+
+            return (false, s);
         }
     };
 

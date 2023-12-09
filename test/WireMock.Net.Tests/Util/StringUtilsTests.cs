@@ -164,6 +164,8 @@ public class StringUtilsTests
     [Theory]
     [InlineData("http://example.com", true)]
     [InlineData("https://example.com/path?query=string#fragment", true)]
+    [InlineData("ftp://example.com", true)]
+    [InlineData("file://example.com", false)]
     [InlineData("not a uri", false)] // Invalid case
     public void TryConvertToUri_ShouldWorkCorrectly(string input, bool expectedConversion)
     {
