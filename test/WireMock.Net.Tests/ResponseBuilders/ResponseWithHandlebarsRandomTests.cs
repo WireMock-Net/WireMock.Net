@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -149,7 +150,7 @@ public class ResponseWithHandlebarsRandomTests
     }
 
     [Fact]
-    public async Task Response_ProvideResponseAsync_Handlebars_Random2()
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_Integer()
     {
         // Assign
         var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -167,5 +168,26 @@ public class ResponseWithHandlebarsRandomTests
         // Assert
         JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
         Check.That(j["Integer"].Value<int>()).IsStrictlyGreaterThan(10000000).And.IsStrictlyLessThan(99999999);
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_Long()
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new
+            {
+                Long = "{{#Random Type=\"Long\" Min=1000000000 Max=9999999999}}{{this}}{{/Random}}",
+            })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        var j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+        j["Long"].Value<long>().Should().BeInRange(1000000000, 9999999999);
     }
 }
