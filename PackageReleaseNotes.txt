@@ -1,7 +1,9 @@
-# 1.5.41 (04 December 2023)
-- #1012 GraphQL - custom scalar support [feature]
-- #1018 Add .NET 8 [feature]
-- #1020 Add Github Action [test]
-- #984 GraphQL Schema validation with custom scalars [feature]
+# 1.5.42 (09 December 2023)
+- #1023 Fix Mapping[] for WireMock.Org REST API [bug]
+- #1029 Add ResponseWithHandlebarsDateTimeTests [test]
+- #1031 Calling Reset also resets the scenarios [bug]
+- #1034 Workaround for: Random.Generate Type=&quot;Long&quot; [bug]
+- #1021 GetAdminMappingsResult in WireMock.Org.Abstractions should contain list of mappings [bug]
+- #1030 Reset resets only mappings and logentries, not scenarios. [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

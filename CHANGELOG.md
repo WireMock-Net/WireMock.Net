@@ -1,3 +1,11 @@
+# 1.5.42 (09 December 2023)
+- [#1023](https://github.com/WireMock-Net/WireMock.Net/pull/1023) - Fix Mapping[] for WireMock.Org REST API [bug] contributed by [StefH](https://github.com/StefH)
+- [#1029](https://github.com/WireMock-Net/WireMock.Net/pull/1029) - Add ResponseWithHandlebarsDateTimeTests [test] contributed by [StefH](https://github.com/StefH)
+- [#1031](https://github.com/WireMock-Net/WireMock.Net/pull/1031) - Calling Reset also resets the scenarios [bug] contributed by [StefH](https://github.com/StefH)
+- [#1034](https://github.com/WireMock-Net/WireMock.Net/pull/1034) - Workaround for: Random.Generate Type=&quot;Long&quot; [bug] contributed by [StefH](https://github.com/StefH)
+- [#1021](https://github.com/WireMock-Net/WireMock.Net/issues/1021) - GetAdminMappingsResult in WireMock.Org.Abstractions should contain list of mappings [bug]
+- [#1030](https://github.com/WireMock-Net/WireMock.Net/issues/1030) - Reset resets only mappings and logentries, not scenarios. [bug]
+
 # 1.5.41 (04 December 2023)
 - [#1012](https://github.com/WireMock-Net/WireMock.Net/pull/1012) - GraphQL - custom scalar support [feature] contributed by [StefH](https://github.com/StefH)
 - [#1018](https://github.com/WireMock-Net/WireMock.Net/pull/1018) - Add .NET 8 [feature] contributed by [StefH](https://github.com/StefH)
