@@ -31,7 +31,7 @@ public class ResponseWithHandlebarsDateTimeTests
 
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Integer)]
-    [InlineData(ReplaceNodeOptions.EvaluateAndKeep, JTokenType.String)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_DateTimeYear(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
@@ -55,7 +55,7 @@ public class ResponseWithHandlebarsDateTimeTests
 
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Date)]
-    [InlineData(ReplaceNodeOptions.EvaluateAndKeep, JTokenType.String)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_DateTime(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
@@ -78,7 +78,7 @@ public class ResponseWithHandlebarsDateTimeTests
 
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Integer)]
-    [InlineData(ReplaceNodeOptions.EvaluateAndKeep, JTokenType.String)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_DateTimeWithStringFormat(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign

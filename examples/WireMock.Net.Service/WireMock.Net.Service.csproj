@@ -79,8 +79,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="XPath2, Version=1.1.3.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\XPath2.1.1.3\lib\net452\XPath2.dll</HintPath>
+    <Reference Include="XPath2, Version=1.1.4.0, Culture=neutral, PublicKeyToken=463c6d7fb740c7e5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\XPath2.1.1.4\lib\net452\XPath2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

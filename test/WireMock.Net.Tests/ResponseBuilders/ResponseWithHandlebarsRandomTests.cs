@@ -79,7 +79,7 @@ public class ResponseWithHandlebarsRandomTests
 
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Integer)]
-    [InlineData(ReplaceNodeOptions.EvaluateAndKeep, JTokenType.String)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
@@ -102,7 +102,7 @@ public class ResponseWithHandlebarsRandomTests
 
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Guid)]
-    [InlineData(ReplaceNodeOptions.EvaluateAndKeep, JTokenType.String)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_ProvideResponseAsync_Handlebars_Random1_Guid(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign

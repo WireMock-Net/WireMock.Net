@@ -321,7 +321,7 @@ internal class Transformer : ITransformer
 
     private static (bool IsConverted, object ConvertedValue) TryConvert(ReplaceNodeOptions options, object value)
     {
-        if (options == ReplaceNodeOptions.EvaluateAndKeep)
+        if (options == ReplaceNodeOptions.Evaluate)
         {
             return (false, value);
         }

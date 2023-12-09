@@ -12,7 +12,6 @@
       DetectedBodyType: String,
       DetectedBodyTypeFromContentType: Bytes
     },
-    UseTransformer: true,
-    TransformerReplaceNodeOptions: Evaluate
+    UseTransformer: true
   }
 }

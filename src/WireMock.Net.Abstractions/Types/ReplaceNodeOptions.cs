@@ -8,7 +8,7 @@ public enum ReplaceNodeOptions
     /// <summary>
     /// Try to evaluate a templated value.
     /// In case this is valid, return the value and if the value can be converted to a supported (primitive) type, use that value.
-    /// 
+    ///
     /// [Default behaviour]
     /// </summary>
     EvaluateAndTryToConvert = 0,
@@ -17,5 +17,5 @@ public enum ReplaceNodeOptions
     /// Parse templated string to a templated string.
     /// For example: keep a templated string value (which is always the case) as a string value.
     /// </summary>
-    EvaluateAndKeep = 1
+    Evaluate = 1
 }

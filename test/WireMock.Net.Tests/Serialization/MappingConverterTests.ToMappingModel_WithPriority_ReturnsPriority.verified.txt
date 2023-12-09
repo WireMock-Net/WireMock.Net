@@ -11,7 +11,7 @@
     },
     UseTransformer: true,
     TransformerType: Handlebars,
-    TransformerReplaceNodeOptions: Evaluate
+    TransformerReplaceNodeOptions: EvaluateAndTryToConvert
   },
   UseWebhooksFireAndForget: false
 }
