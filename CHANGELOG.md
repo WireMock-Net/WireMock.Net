@@ -1,3 +1,4 @@
+
 # 1.5.42 (09 December 2023)
 - [#1023](https://github.com/WireMock-Net/WireMock.Net/pull/1023) - Fix Mapping[] for WireMock.Org REST API [bug] contributed by [StefH](https://github.com/StefH)
 - [#1029](https://github.com/WireMock-Net/WireMock.Net/pull/1029) - Add ResponseWithHandlebarsDateTimeTests [test] contributed by [StefH](https://github.com/StefH)
