@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using WireMock.Admin.Settings;
 
 namespace WireMock.Admin.Mappings;
 
@@ -102,6 +103,11 @@ public class ResponseModel
     /// Gets or sets the Proxy URL.
     /// </summary>
     public string? ProxyUrl { get; set; }
+
+    /// <summary>
+    /// Defines the Proxy Url Replace Settings.
+    /// </summary>
+    public ProxyUrlReplaceSettingsModel? ProxyUrlReplaceSettings { get; set; }
 
     /// <summary>
     /// The client X509Certificate2 Thumbprint or SubjectName to use.

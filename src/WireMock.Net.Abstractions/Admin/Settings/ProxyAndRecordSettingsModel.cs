@@ -70,7 +70,7 @@ public class ProxyAndRecordSettingsModel
     public bool AppendGuidToSavedMappingFile { get; set; }
 
     /// <summary>
-    /// Defines the Replace Settings
+    /// Defines the Replace Settings.
     /// </summary>
     public ProxyUrlReplaceSettingsModel? ReplaceSettings { get; set; }
 }

@@ -327,6 +327,23 @@ namespace WireMock.Net.ConsoleApplication
 
             server
                 .Given(Request.Create()
+                    .UsingGet()
+                    .WithPath("/proxy-replace")
+                )
+                .RespondWith(Response.Create()
+                    .WithProxy(new ProxyAndRecordSettings
+                    {
+                        Url = "http://localhost:9999",
+                        ReplaceSettings = new ProxyUrlReplaceSettings
+                        {
+                           OldValue = "old",
+                           NewValue = "new"
+                        }
+                    })
+                );
+
+            server
+                .Given(Request.Create()
                     .WithPath("/xpath").UsingPost()
                     .WithBody(new XPathMatcher("/todo-list[count(todo-item) = 3]"))
                 )
