@@ -1,9 +1,7 @@
-# 1.5.42 (09 December 2023)
-- #1023 Fix Mapping[] for WireMock.Org REST API [bug]
-- #1029 Add ResponseWithHandlebarsDateTimeTests [test]
-- #1031 Calling Reset also resets the scenarios [bug]
-- #1034 Workaround for: Random.Generate Type=&quot;Long&quot; [bug]
-- #1021 GetAdminMappingsResult in WireMock.Org.Abstractions should contain list of mappings [bug]
-- #1030 Reset resets only mappings and logentries, not scenarios. [bug]
+# 1.5.43 (11 December 2023)
+- #1026 Add ProxyUrlReplaceSettings to Response [feature]
+- #1038 Proxy all requests - even a repeated one [feature]
+- #592 Proxy all requests - even a repeated one [feature]
+- #1024 Scenario with proxy not removing route prefix [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -1,3 +1,9 @@
+# 1.5.43 (11 December 2023)
+- [#1026](https://github.com/WireMock-Net/WireMock.Net/pull/1026) - Add ProxyUrlReplaceSettings to Response [feature] contributed by [StefH](https://github.com/StefH)
+- [#1038](https://github.com/WireMock-Net/WireMock.Net/pull/1038) - Proxy all requests - even a repeated one [feature] contributed by [sameena-ops](https://github.com/sameena-ops)
+- [#592](https://github.com/WireMock-Net/WireMock.Net/issues/592) - Proxy all requests - even a repeated one [feature]
+- [#1024](https://github.com/WireMock-Net/WireMock.Net/issues/1024) - Scenario with proxy not removing route prefix [feature]
+
 # 1.5.42 (09 December 2023)
 - [#1023](https://github.com/WireMock-Net/WireMock.Net/pull/1023) - Fix Mapping[] for WireMock.Org REST API [bug] contributed by [StefH](https://github.com/StefH)
 - [#1029](https://github.com/WireMock-Net/WireMock.Net/pull/1029) - Add ResponseWithHandlebarsDateTimeTests [test] contributed by [StefH](https://github.com/StefH)
