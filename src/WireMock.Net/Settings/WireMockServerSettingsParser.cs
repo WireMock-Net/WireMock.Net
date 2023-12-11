@@ -125,7 +125,8 @@ public static class WireMockServerSettingsParser
                 {
                     StatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
                     // HttpMethods = new ProxySaveMappingSetting<string[]>(parser.GetValues("DoNotSaveMappingForHttpMethods", new string[0]), MatchBehaviour.RejectOnMatch)
-                }
+                },
+                ProxyAll = parser.GetBoolValue(nameof(ProxyAndRecordSettings.ProxyAll))
             };
 
             ParseWebProxyAddressSettings(proxyAndRecordSettings, parser);
