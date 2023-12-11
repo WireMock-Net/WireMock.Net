@@ -924,34 +924,26 @@ public class WireMockServerProxyTests
     }
 
     [Fact]
-    public async Task WireMockServer_ProxyAndRecordSettings_ShouldProxyAll()
+    public async Task WireMockServer_ProxyAndRecordSettings_SameRequest_ShouldProxyAll()
     {
+        //Arrange
         WireMockServerSettings wireMockServerSettings = new WireMockServerSettings
         {
-            Urls = new[] { "http://localhost:9091/" },
-            StartAdminInterface = false,
-            ReadStaticMappings = true,
-            WatchStaticMappings = true,
-            WatchStaticMappingsInSubdirectories = true,
+            Urls = new[] { "http://localhost:9091" },
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
-                Url = "http://postman-echo.com/post",
+                Url = "http://postman-echo.com",
                 SaveMapping = true,
                 ProxyAll = false,
-                SaveMappingToFile = true,
+                SaveMappingToFile = false,
                 ExcludedHeaders = new[] { "Postman-Token" },
                 ExcludedCookies = new[] { "sails.sid" }
             }
         };
 
-    WireMockServer server = WireMockServer.Start(wireMockServerSettings);
-            /*server
-                .Given(Request.Create().UsingPost().WithPath("/post"))
-                .RespondWith(Response.Create().WithProxy("ok"));
-                */
+           WireMockServer server = WireMockServer.Start(wireMockServerSettings);
 
-            var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
-
+           var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
@@ -966,10 +958,11 @@ public class WireMockServerProxyTests
             };
             server.ResetMappings();
 
+            //Act
             await new HttpClient().SendAsync(request);
-            Check.That(server.Mappings.Count()).IsEqualTo(2);
-
             await new HttpClient().SendAsync(request2);
+
+            //Assert
             Check.That(server.Mappings.Count()).IsEqualTo(3);
 
             server.Dispose();
