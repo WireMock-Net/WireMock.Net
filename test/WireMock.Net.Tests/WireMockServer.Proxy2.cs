@@ -45,6 +45,5 @@ namespace WireMock.Net.Tests
             server.Dispose();
             serverAsProxy.Dispose();
         }
-
     }
 }
