@@ -282,12 +282,8 @@ public partial class WireMockServer
             {
                 Url = responseModel.ProxyUrl!,
                 ClientX509Certificate2ThumbprintOrSubjectName = responseModel.X509Certificate2ThumbprintOrSubjectName,
-                WebProxySettings = responseModel.WebProxy != null ? new WebProxySettings
-                {
-                    Address = responseModel.WebProxy.Address,
-                    UserName = responseModel.WebProxy.UserName,
-                    Password = responseModel.WebProxy.Password
-                } : null
+                WebProxySettings = TinyMapperUtils.Instance.Map(responseModel.WebProxy),
+                ReplaceSettings = TinyMapperUtils.Instance.Map(responseModel.ProxyUrlReplaceSettings)
             };
 
             return responseBuilder.WithProxy(proxyAndRecordSettings);

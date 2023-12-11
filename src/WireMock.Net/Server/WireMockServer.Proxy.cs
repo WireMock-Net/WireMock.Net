@@ -31,6 +31,11 @@ public partial class WireMockServer
             proxyRespondProvider.AtPriority(WireMockConstants.ProxyPriority);
         }
 
+        if(settings.ProxyAndRecordSettings.ProxyAll)
+        {
+            proxyRespondProvider.AtPriority(int.MinValue);
+        }
+
         proxyRespondProvider.RespondWith(new ProxyAsyncResponseProvider(ProxyAndRecordAsync, settings));
     }
 

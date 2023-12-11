@@ -94,4 +94,10 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Append an unique GUID to the filename from the saved mapping file.
     /// </summary>
     public bool AppendGuidToSavedMappingFile { get; set; }
+
+    /// <summary>
+    /// Proxy all Api calls, irrespective of any condition
+    /// </summary>
+    [PublicAPI]
+    public bool ProxyAll { get; set; } = false;
 }
