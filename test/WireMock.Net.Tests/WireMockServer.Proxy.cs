@@ -934,7 +934,7 @@ public class WireMockServerProxyTests
             {
                 Url = "http://postman-echo.com",
                 SaveMapping = true,
-                ProxyAll = false,
+                ProxyAll = true,
                 SaveMappingToFile = false,
                 ExcludedHeaders = new[] { "Postman-Token" },
                 ExcludedCookies = new[] { "sails.sid" }
