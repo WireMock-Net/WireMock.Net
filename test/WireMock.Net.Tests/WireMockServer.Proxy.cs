@@ -927,7 +927,7 @@ public class WireMockServerProxyTests
     public async Task WireMockServer_ProxyAndRecordSettings_SameRequest_ShouldProxyAll()
     {
         //Arrange
-        WireMockServerSettings wireMockServerSettings = new WireMockServerSettings
+        var wireMockServerSettings = new WireMockServerSettings
         {
             Urls = new[] { "http://localhost:9091" },
             ProxyAndRecordSettings = new ProxyAndRecordSettings
@@ -941,30 +941,30 @@ public class WireMockServerProxyTests
             }
         };
 
-           WireMockServer server = WireMockServer.Start(wireMockServerSettings);
+        var server = WireMockServer.Start(wireMockServerSettings);
 
-           var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri("http://localhost:9091/post"),
-                Content = new StringContent(requestBody)
-            };
-            var request2 = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri("http://localhost:9091/post"),
-                Content = new StringContent(requestBody)
-            };
-            server.ResetMappings();
+        var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("http://localhost:9091/post"),
+            Content = new StringContent(requestBody)
+        };
+        var request2 = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("http://localhost:9091/post"),
+            Content = new StringContent(requestBody)
+        };
+        server.ResetMappings();
 
-            //Act
-            await new HttpClient().SendAsync(request);
-            await new HttpClient().SendAsync(request2);
+        //Act
+        await new HttpClient().SendAsync(request);
+        await new HttpClient().SendAsync(request2);
 
-            //Assert
-            Check.That(server.Mappings.Count()).IsEqualTo(3);
+        //Assert
+        Check.That(server.Mappings.Count()).IsEqualTo(3);
 
-            server.Dispose();
-        }
+        server.Dispose();
+    }
 }
