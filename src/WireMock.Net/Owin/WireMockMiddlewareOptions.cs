@@ -97,6 +97,5 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
     public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
 
     /// <inheritdoc />
-
     public bool ProxyAll { get; set; }
 }
