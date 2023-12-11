@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HandlebarsDotNet.Helpers.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
@@ -309,14 +310,23 @@ internal class Transformer : ITransformer
 
     private static (bool IsConverted, object ConvertedValue) TryConvert(ReplaceNodeOptions options, object value)
     {
+        var valueAsString = value as string;
+
         if (options == ReplaceNodeOptions.Evaluate)
         {
+            if (valueAsString != null && StringEncoder.TryDecode(valueAsString, out var decoded))
+            {
+                return (true, decoded);
+            }
+
             return (false, value);
         }
 
-        if (value is string transformedString)
+        if (valueAsString != null)
         {
-            return StringUtils.TryConvertToKnownType(transformedString);
+            return StringEncoder.TryDecode(valueAsString, out var decoded) ?
+                (true, decoded) :
+                StringUtils.TryConvertToKnownType(valueAsString);
         }
 
         return (false, value);

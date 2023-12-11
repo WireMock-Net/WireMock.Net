@@ -115,4 +115,27 @@ public class ResponseWithHandlebarsDateTimeTests
         // Assert
         response.Message.BodyData!.BodyAsString.Should().Contain($"DateTimeYear = \"{DateTime.Now.Year}\"");
     }
+
+    [Theory]
+    [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert)]
+    [InlineData(ReplaceNodeOptions.Evaluate)]
+    public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_DateTimeWithStringFormatAsString(ReplaceNodeOptions options)
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new
+            {
+                FormatAsString = "{{ String.FormatAsString (DateTime.UtcNow) \"yyMMddhhmmss\" }}"
+            })
+            .WithTransformer(options);
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
+        jObject["FormatAsString"]!.Type.Should().Be(JTokenType.String);
+    }
 }
