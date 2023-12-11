@@ -73,4 +73,9 @@ public class ProxyAndRecordSettingsModel
     /// Defines the Replace Settings.
     /// </summary>
     public ProxyUrlReplaceSettingsModel? ReplaceSettings { get; set; }
+
+    /// <summary>
+    /// Proxy all Api calls, irrespective of any condition
+    /// </summary>
+    public bool ProxyAll { get; set; } = false;
 }
