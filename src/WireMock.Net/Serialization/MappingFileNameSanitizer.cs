@@ -28,7 +28,7 @@ public class MappingFileNameSanitizer
         string name;
         if (!string.IsNullOrEmpty(mapping.Title))
         {
-            // remove 'Proxy Mapping for ' amd am extra space character after the HTTP request method
+            // remove 'Proxy Mapping for ' and an extra space character after the HTTP request method
             name = mapping.Title.Replace(mappingTitlePrefix, "").Replace(' '.ToString(), string.Empty);
             if (_settings.ProxyAndRecordSettings?.AppendGuidToSavedMappingFile == true)
             {
