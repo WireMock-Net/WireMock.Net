@@ -120,6 +120,7 @@ public static class WireMockServerSettingsParser
                 SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
                 UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 AppendGuidToSavedMappingFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
+                PrefixForSavedMappingFile = parser.GetStringValue("PrefixForSavedMappingFile", null),
                 Url = proxyUrl!,
                 SaveMappingSettings = new ProxySaveMappingSettings
                 {
