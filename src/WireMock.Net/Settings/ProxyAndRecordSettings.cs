@@ -94,7 +94,7 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Append an unique GUID to the filename from the saved mapping file.
     /// </summary>
     public bool AppendGuidToSavedMappingFile { get; set; }
-    
+
     /// <summary>
     /// Set prefix for saved mapping file.
     /// </summary>
@@ -105,5 +105,4 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// </summary>
     [PublicAPI]
     public bool ProxyAll { get; set; } = false;
-
 }
