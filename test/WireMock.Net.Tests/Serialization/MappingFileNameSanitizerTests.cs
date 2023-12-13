@@ -19,7 +19,7 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns(MappingTitle);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
@@ -27,7 +27,7 @@ public class MappingFileNameSanitizerTests
             }
         };
 
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
@@ -44,11 +44,11 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns((string?)null);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ()
         };
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
@@ -65,7 +65,7 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns(MappingTitle);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
@@ -73,7 +73,7 @@ public class MappingFileNameSanitizerTests
             }
         };
 
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
@@ -90,7 +90,7 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns(MappingTitle);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
@@ -98,7 +98,7 @@ public class MappingFileNameSanitizerTests
             }
         };
 
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
@@ -115,7 +115,7 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns(MappingTitle);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
@@ -123,7 +123,7 @@ public class MappingFileNameSanitizerTests
             }
         };
 
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
@@ -140,7 +140,7 @@ public class MappingFileNameSanitizerTests
         mappingMock.Setup(m => m.Title).Returns(MappingTitle);
         mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
-        var settingsMock = new WireMockServerSettings
+        var settings = new WireMockServerSettings
         {
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
@@ -149,7 +149,7 @@ public class MappingFileNameSanitizerTests
             }
         };
 
-        var sanitizer = new MappingFileNameSanitizer(settingsMock);
+        var sanitizer = new MappingFileNameSanitizer(settings);
 
         // Act
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
