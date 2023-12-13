@@ -8,17 +8,16 @@ namespace WireMock.Net.Tests.Serialization;
 
 public class MappingFileNameSanitizerTests
 {
-    private readonly string _mappingGuid = "ce216a13-e7d6-42d7-91ac-8ae709e2add1";
-    private readonly string _mappingTitle =
-        "Proxy Mapping for POST _ordermanagement_v1_orders_cancel";
+    private const string MappingGuid = "ce216a13-e7d6-42d7-91ac-8ae709e2add1";
+    private const string MappingTitle = "Proxy Mapping for POST _ordermanagement_v1_orders_cancel";
 
     [Fact]
     public void BuildSanitizedFileName_WithTitleAndGuid_AppendsGuid()
     {
         // Arrange
         var mappingMock = new Mock<IMapping>();
-        mappingMock.Setup(m => m.Title).Returns(_mappingTitle);
-        mappingMock.Setup(m => m.Guid).Returns(new Guid(_mappingGuid));
+        mappingMock.Setup(m => m.Title).Returns(MappingTitle);
+        mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
         var settingsMock = new WireMockServerSettings
         {
@@ -34,7 +33,7 @@ public class MappingFileNameSanitizerTests
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
 
         // Assert
-        Assert.Equal($"POST_ordermanagement_v1_orders_cancel_{_mappingGuid}.json", result);
+        Assert.Equal($"POST_ordermanagement_v1_orders_cancel_{MappingGuid}.json", result);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class MappingFileNameSanitizerTests
         // Arrange
         var mappingMock = new Mock<IMapping>();
         mappingMock.Setup(m => m.Title).Returns((string?)null);
-        mappingMock.Setup(m => m.Guid).Returns(new Guid(_mappingGuid));
+        mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
         var settingsMock = new WireMockServerSettings
         {
@@ -55,7 +54,7 @@ public class MappingFileNameSanitizerTests
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
 
         // Assert
-        Assert.Equal($"{_mappingGuid}.json", result);
+        Assert.Equal($"{MappingGuid}.json", result);
     }
 
     [Fact]
@@ -63,8 +62,8 @@ public class MappingFileNameSanitizerTests
     {
         // Arrange
         var mappingMock = new Mock<IMapping>();
-        mappingMock.Setup(m => m.Title).Returns(_mappingTitle);
-        mappingMock.Setup(m => m.Guid).Returns(new Guid(_mappingGuid));
+        mappingMock.Setup(m => m.Title).Returns(MappingTitle);
+        mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
         var settingsMock = new WireMockServerSettings
         {
@@ -88,8 +87,8 @@ public class MappingFileNameSanitizerTests
     {
         // Arrange
         var mappingMock = new Mock<IMapping>();
-        mappingMock.Setup(m => m.Title).Returns(_mappingTitle);
-        mappingMock.Setup(m => m.Guid).Returns(new Guid(_mappingGuid));
+        mappingMock.Setup(m => m.Title).Returns(MappingTitle);
+        mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
         var settingsMock = new WireMockServerSettings
         {
@@ -113,8 +112,8 @@ public class MappingFileNameSanitizerTests
     {
         // Arrange
         var mappingMock = new Mock<IMapping>();
-        mappingMock.Setup(m => m.Title).Returns(_mappingTitle);
-        mappingMock.Setup(m => m.Guid).Returns(new Guid(_mappingGuid));
+        mappingMock.Setup(m => m.Title).Returns(MappingTitle);
+        mappingMock.Setup(m => m.Guid).Returns(new Guid(MappingGuid));
 
         var settingsMock = new WireMockServerSettings
         {
@@ -131,6 +130,6 @@ public class MappingFileNameSanitizerTests
         var result = sanitizer.BuildSanitizedFileName(mappingMock.Object);
 
         // Assert
-        Assert.Equal($"Prefix_POST_ordermanagement_v1_orders_cancel_{_mappingGuid}.json", result);
+        Assert.Equal($"Prefix_POST_ordermanagement_v1_orders_cancel_{MappingGuid}.json", result);
     }
 }
