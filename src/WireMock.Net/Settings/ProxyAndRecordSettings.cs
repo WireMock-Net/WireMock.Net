@@ -98,7 +98,7 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// <summary>
     /// Set prefix for saved mapping file.
     /// </summary>
-    public string PrefixForSavedMappingFile { get; set; }
+    public string PrefixForSavedMappingFile { get; set; } = "Proxy Mapping for ";
 
     /// <summary>
     /// Proxy all Api calls, irrespective of any condition
