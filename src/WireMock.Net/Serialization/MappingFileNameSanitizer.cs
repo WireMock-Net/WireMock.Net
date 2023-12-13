@@ -10,7 +10,7 @@ namespace WireMock.Serialization;
 /// </summary>
 public class MappingFileNameSanitizer
 {
-    private readonly char _replaceChar = '_';
+    private const char ReplaceChar = '_';
 
     private readonly WireMockServerSettings _settings;
 
@@ -32,7 +32,7 @@ public class MappingFileNameSanitizer
             name = mapping.Title.Replace(mappingTitlePrefix, "").Replace(' '.ToString(), string.Empty);
             if (_settings.ProxyAndRecordSettings?.AppendGuidToSavedMappingFile == true)
             {
-                name += $"{_replaceChar}{mapping.Guid}";
+                name += $"{ReplaceChar}{mapping.Guid}";
             }
         }
         else
@@ -42,8 +42,8 @@ public class MappingFileNameSanitizer
 
         if (!string.IsNullOrEmpty(_settings.ProxyAndRecordSettings?.PrefixForSavedMappingFile))
         {
-            name = $"{_settings.ProxyAndRecordSettings.PrefixForSavedMappingFile}{_replaceChar}{name}";
+            name = $"{_settings.ProxyAndRecordSettings.PrefixForSavedMappingFile}{ReplaceChar}{name}";
         }
-        return $"{Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, _replaceChar))}.json";
+        return $"{Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, ReplaceChar))}.json";
     }
 }
