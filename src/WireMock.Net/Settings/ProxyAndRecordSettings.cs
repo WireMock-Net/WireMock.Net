@@ -8,6 +8,11 @@ namespace WireMock.Settings;
 public class ProxyAndRecordSettings : HttpClientSettings
 {
     /// <summary>
+    /// Default prefix value for saved mapping file
+    /// </summary>
+    public const string DefaultPrefixForSavedMappingFile = "Proxy Mapping for ";
+
+    /// <summary>
     /// The URL to proxy.
     /// </summary>
     [PublicAPI]
@@ -94,6 +99,11 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Append an unique GUID to the filename from the saved mapping file.
     /// </summary>
     public bool AppendGuidToSavedMappingFile { get; set; }
+
+    /// <summary>
+    /// Set prefix for saved mapping file.
+    /// </summary>
+    public string PrefixForSavedMappingFile { get; set; } = DefaultPrefixForSavedMappingFile;
 
     /// <summary>
     /// Proxy all Api calls, irrespective of any condition
