@@ -1,7 +1,6 @@
-# 1.5.43 (11 December 2023)
-- #1026 Add ProxyUrlReplaceSettings to Response [feature]
-- #1038 Proxy all requests - even a repeated one [feature]
-- #592 Proxy all requests - even a repeated one [feature]
-- #1024 Scenario with proxy not removing route prefix [feature]
+# 1.5.44 (14 December 2023)
+- #1040 Implement prefix for saved mapping file [feature]
+- #1033 How to get a Random Long? [bug]
+- #1037 Make mapping filenames more user friendly [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

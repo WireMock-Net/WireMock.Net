@@ -1,3 +1,8 @@
+# 1.5.44 (14 December 2023)
+- [#1040](https://github.com/WireMock-Net/WireMock.Net/pull/1040) - Implement prefix for saved mapping file [feature] contributed by [MindaugasLaganeckas](https://github.com/MindaugasLaganeckas)
+- [#1033](https://github.com/WireMock-Net/WireMock.Net/issues/1033) - How to get a Random Long? [bug]
+- [#1037](https://github.com/WireMock-Net/WireMock.Net/issues/1037) - Make mapping filenames more user friendly [feature]
+
 # 1.5.43 (11 December 2023)
 - [#1026](https://github.com/WireMock-Net/WireMock.Net/pull/1026) - Add ProxyUrlReplaceSettings to Response [feature] contributed by [StefH](https://github.com/StefH)
 - [#1038](https://github.com/WireMock-Net/WireMock.Net/pull/1038) - Proxy all requests - even a repeated one [feature] contributed by [sameena-ops](https://github.com/sameena-ops)
