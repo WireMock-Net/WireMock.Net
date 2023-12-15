@@ -20,14 +20,7 @@ internal class HandlebarsContext : IHandlebarsContext
     public string ParseAndRender(string text, object model)
     {
         var template = Handlebars.Compile(text);
-        var text = template(model);
-
-        if (WrappedString.TryDecode(text, out var decoded))
-        {
-            return (true, decoded);
-        }
-
-        return text;
+        return template(model);
     }
 
     public object? ParseAndEvaluate(string text, object model)
