@@ -314,7 +314,7 @@ internal class Transformer : ITransformer
 
         if (options == ReplaceNodeOptions.Evaluate)
         {
-            if (valueAsString != null && StringEncoder.TryDecode(valueAsString, out var decoded))
+            if (valueAsString != null && WrappedString.TryDecode(valueAsString, out var decoded))
             {
                 return (true, decoded);
             }
@@ -324,7 +324,7 @@ internal class Transformer : ITransformer
 
         if (valueAsString != null)
         {
-            return StringEncoder.TryDecode(valueAsString, out var decoded) ?
+            return WrappedString.TryDecode(valueAsString, out var decoded) ?
                 (true, decoded) :
                 StringUtils.TryConvertToKnownType(valueAsString);
         }
