@@ -154,12 +154,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public IRespondWithAProvider DefineGuid(string guid)
-    {
-        return WithGuid(guid);
-    }
-
-    /// <inheritdoc />
     public IRespondWithAProvider WithGuid(Guid guid)
     {
         Guid = guid;
@@ -169,6 +163,12 @@ internal class RespondWithAProvider : IRespondWithAProvider
 
     /// <inheritdoc />
     public IRespondWithAProvider DefineGuid(Guid guid)
+    {
+        return WithGuid(guid);
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider DefineGuid(string guid)
     {
         return WithGuid(guid);
     }
@@ -189,7 +189,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         return this;
     }
 
-    /// <see cref="IRespondWithAProvider.WithPath"/>
+    /// <inheritdoc />
     public IRespondWithAProvider WithPath(string path)
     {
         _path = path;

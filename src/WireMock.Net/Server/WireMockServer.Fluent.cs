@@ -27,7 +27,7 @@ public partial class WireMockServer
     /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     [PublicAPI]
-    public IRespondWithAProvider WithRequest(Action<IRequestBuilder> action, bool saveToFile = false)
+    public IRespondWithAProvider WhenRequest(Action<IRequestBuilder> action, bool saveToFile = false)
     {
         Guard.NotNull(action);
 

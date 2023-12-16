@@ -31,7 +31,21 @@ public interface IRespondWithAProvider
     /// </summary>
     /// <param name="guid">The unique identifier.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithGuid(string guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider DefineGuid(Guid guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider DefineGuid(string guid);
 
     /// <summary>
     /// Define the TimeSettings for this mapping.
@@ -60,20 +74,6 @@ public interface IRespondWithAProvider
     /// <param name="path">The full filepath.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithPath(string path);
-
-    /// <summary>
-    /// Define a unique identifier for this mapping.
-    /// </summary>
-    /// <param name="guid">The unique identifier.</param>
-    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    IRespondWithAProvider WithGuid(string guid);
-
-    /// <summary>
-    /// Define a unique identifier for this mapping.
-    /// </summary>
-    /// <param name="guid">The unique identifier.</param>
-    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    IRespondWithAProvider DefineGuid(string guid);
 
     /// <summary>
     /// Define the priority for this mapping.
