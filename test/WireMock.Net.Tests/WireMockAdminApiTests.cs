@@ -308,6 +308,23 @@ public class WireMockAdminApiTests
     }
 
     [Fact]
+    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_Invalid_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true,
+            Logger = new WireMockNullLogger()
+        });
+
+        // Act
+        var result = await server.CreateClient().GetAsync("/__admin/requests/find?mappingGuid=x");
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task IWireMockAdminApi_GetRequestsAsync()
     {
         // Arrange
