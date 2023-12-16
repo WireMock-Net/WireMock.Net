@@ -99,7 +99,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public void RespondWith(Action<IResponseBuilder> action)
+    public void ThenRespondWith(Action<IResponseBuilder> action)
     {
         var responseBuilder = Response.Create();
 
@@ -109,7 +109,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public void RespondWithOK()
+    public void ThenRespondWithOK()
     {
         var responseBuilder = Response.Create();
 
@@ -117,7 +117,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public void RespondWithStatusCode(int code)
+    public void ThenRespondWithStatusCode(int code)
     {
         var responseBuilder = Response.Create().WithStatusCode(code);
 
@@ -125,7 +125,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public void RespondWithStatusCode(string code)
+    public void ThenRespondWithStatusCode(string code)
     {
         var responseBuilder = Response.Create().WithStatusCode(code);
 
@@ -133,7 +133,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public void RespondWithStatusCode(HttpStatusCode code)
+    public void ThenRespondWithStatusCode(HttpStatusCode code)
     {
         var responseBuilder = Response.Create().WithStatusCode(code);
 

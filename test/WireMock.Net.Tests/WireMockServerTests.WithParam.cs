@@ -32,7 +32,7 @@ public partial class WireMockServerTests
                 .WithPath("/foo")
                 .WithParam("query", queryValue)
             )
-            .RespondWith(r => r
+            .ThenRespondWith(r => r
                 .WithStatusCode(HttpStatusCode.Accepted)
             );
 
@@ -58,7 +58,7 @@ public partial class WireMockServerTests
                 .WithPath("/foo")
                 .WithParam("query", "1", "2", "3")
             )
-            .RespondWithStatusCode(200);
+            .ThenRespondWithStatusCode(200);
 
         // Act
         var requestUri = new Uri($"http://localhost:{server.Port}/foo?query={queryValue}");
@@ -81,7 +81,7 @@ public partial class WireMockServerTests
                 .WithParam("delta_from", MatchBehaviour.RejectOnMatch)
                 .UsingGet()
             )
-            .RespondWithOK();
+            .ThenRespondWithOK();
 
         // Act
         var requestUri = new Uri($"http://localhost:{server.Port}/v1/person/workers?showsourcesystem=true&count=700&page=1&sections=personal%2Corganizations%2Cemployment");
@@ -104,7 +104,7 @@ public partial class WireMockServerTests
                 .WithParam("delta_from")
                 .UsingGet()
             )
-            .RespondWithStatusCode("300");
+            .ThenRespondWithStatusCode("300");
 
         // Act
         var requestUri = new Uri($"http://localhost:{server.Port}/v1/person/workers?showsourcesystem=true&count=700&page=1&sections=personal%2Corganizations%2Cemployment");

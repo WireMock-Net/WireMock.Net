@@ -92,33 +92,33 @@ public interface IRespondWithAProvider
     /// RespondWith
     /// </summary>
     /// <param name="action">The action to use the fluent <see cref="IResponseBuilder"/>.</param>
-    void RespondWith(Action<IResponseBuilder> action);
+    void ThenRespondWith(Action<IResponseBuilder> action);
 
     /// <summary>
     /// RespondWith a status code 200 (OK);
     /// </summary>
-    void RespondWithOK();
+    void ThenRespondWithOK();
 
     /// <summary>
     /// RespondWith a status code.
     /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
     /// </summary>
     /// <param name="code">The code.</param>
-    void RespondWithStatusCode(int code);
+    void ThenRespondWithStatusCode(int code);
 
     /// <summary>
     /// RespondWith a status code.
     /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
     /// </summary>
     /// <param name="code">The code.</param>
-    void RespondWithStatusCode(string code);
+    void ThenRespondWithStatusCode(string code);
 
     /// <summary>
     /// RespondWith a status code.
     /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
     /// </summary>
     /// <param name="code">The code.</param>
-    void RespondWithStatusCode(HttpStatusCode code);
+    void ThenRespondWithStatusCode(HttpStatusCode code);
 
     /// <summary>
     /// Sets the the scenario.
