@@ -41,8 +41,8 @@ public static class WireMockServerSettingsParser
         {
             AdminAzureADAudience = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADAudience)),
             AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
-            AdminPassword = parser.GetStringValue("AdminPassword"),
-            AdminUsername = parser.GetStringValue("AdminUsername"),
+            AdminPassword = parser.GetStringValue(nameof(WireMockServerSettings.AdminPassword)),
+            AdminUsername = parser.GetStringValue(nameof(WireMockServerSettings.AdminUsername)),
             AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods"),
             AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
@@ -110,21 +110,21 @@ public static class WireMockServerSettingsParser
         {
             var proxyAndRecordSettings = new ProxyAndRecordSettings
             {
-                AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect"),
-                ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
-                ExcludedCookies = parser.GetValues("ExcludedCookies"),
-                ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
+                AllowAutoRedirect = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AllowAutoRedirect)),
+                ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue(nameof(ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName)),
+                ExcludedCookies = parser.GetValues(nameof(ProxyAndRecordSettings.ExcludedCookies)),
+                ExcludedHeaders = parser.GetValues(nameof(ProxyAndRecordSettings.ExcludedHeaders)),
                 // PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
-                SaveMapping = parser.GetBoolValue("SaveMapping"),
-                SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
-                SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
+                SaveMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.SaveMapping)),
+                SaveMappingForStatusCodePattern = parser.GetStringValue(nameof(ProxyAndRecordSettings.SaveMappingForStatusCodePattern), "*"),
+                SaveMappingToFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.SaveMappingToFile)),
                 UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 AppendGuidToSavedMappingFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
-                PrefixForSavedMappingFile = parser.GetStringValue(nameof(ProxyAndRecordSettings.PrefixForSavedMappingFile), null),
+                PrefixForSavedMappingFile = parser.GetStringValue(nameof(ProxyAndRecordSettings.PrefixForSavedMappingFile), ProxyAndRecordSettings.DefaultPrefixForSavedMappingFile),
                 Url = proxyUrl!,
                 SaveMappingSettings = new ProxySaveMappingSettings
                 {
-                    StatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
+                    StatusCodePattern = parser.GetStringValue(nameof(ProxyAndRecordSettings.SaveMappingForStatusCodePattern), "*"),
                     // HttpMethods = new ProxySaveMappingSetting<string[]>(parser.GetValues("DoNotSaveMappingForHttpMethods", new string[0]), MatchBehaviour.RejectOnMatch)
                 },
                 ProxyAll = parser.GetBoolValue(nameof(ProxyAndRecordSettings.ProxyAll))
@@ -188,7 +188,7 @@ public static class WireMockServerSettingsParser
             settings.ReplaceSettings = new ProxyUrlReplaceSettings
             {
                 OldValue = proxyUrlReplaceOldValue!,
-                NewValue = proxyUrlReplaceNewValue!
+                NewValue = proxyUrlReplaceNewValue
             };
         }
     }

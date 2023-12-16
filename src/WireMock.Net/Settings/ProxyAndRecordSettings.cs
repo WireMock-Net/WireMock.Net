@@ -109,5 +109,5 @@ public class ProxyAndRecordSettings : HttpClientSettings
     /// Proxy all Api calls, irrespective of any condition
     /// </summary>
     [PublicAPI]
-    public bool ProxyAll { get; set; } = false;
+    public bool ProxyAll { get; set; }
 }
