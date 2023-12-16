@@ -2,10 +2,10 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Types;
@@ -70,10 +70,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         Guid = guidUtils.NewGuid();
     }
 
-    /// <summary>
-    /// The respond with.
-    /// </summary>
-    /// <param name="provider">The provider.</param>
+    /// <inheritdoc />
     public void RespondWith(IResponseProvider provider)
     {
         var mapping = new Mapping(
@@ -94,13 +91,23 @@ internal class RespondWithAProvider : IRespondWithAProvider
             _useWebhookFireAndForget,
             TimeSettings,
             Data,
-            _probability);
+            _probability
+        );
 
         _registrationCallback(mapping, _saveToFile);
     }
 
     /// <inheritdoc />
-    [PublicAPI]
+    public void RespondWith(Action<IResponseBuilder> action)
+    {
+        var responseBuilder = Response.Create();
+
+        action(responseBuilder);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
     public IRespondWithAProvider WithData(object data)
     {
         Data = data;
@@ -114,11 +121,23 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
+    public IRespondWithAProvider DefineGuid(string guid)
+    {
+        return WithGuid(guid);
+    }
+
+    /// <inheritdoc />
     public IRespondWithAProvider WithGuid(Guid guid)
     {
         Guid = guid;
 
         return this;
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider DefineGuid(Guid guid)
+    {
+        return WithGuid(guid);
     }
 
     /// <inheritdoc />

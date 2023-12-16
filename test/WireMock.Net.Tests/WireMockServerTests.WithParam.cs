@@ -26,14 +26,14 @@ public partial class WireMockServerTests
             QueryParameterMultipleValueSupport = QueryParameterMultipleValueSupport.NoComma
         };
         var server = WireMockServer.Start(settings);
-        server.Given(
-            Request.Create()
+        server
+            .WithRequest(r => r
                 .UsingGet()
                 .WithPath("/foo")
                 .WithParam("query", queryValue)
             )
-            .RespondWith(
-                Response.Create().WithStatusCode(200)
+            .RespondWith(r => r
+                .WithStatusCode(HttpStatusCode.Accepted)
             );
 
         // Act
@@ -41,7 +41,7 @@ public partial class WireMockServerTests
         var response = await server.CreateClient().GetAsync(requestUri).ConfigureAwait(false);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Accepted);
 
         server.Stop();
     }
@@ -52,14 +52,11 @@ public partial class WireMockServerTests
         // Arrange
         var queryValue = "1,2,3";
         var server = WireMockServer.Start();
-        server.Given(
-            Request.Create()
+        server
+            .WithRequest(r => r
                 .UsingGet()
                 .WithPath("/foo")
                 .WithParam("query", "1", "2", "3")
-            )
-            .RespondWith(
-                Response.Create().WithStatusCode(200)
             );
 
         // Act

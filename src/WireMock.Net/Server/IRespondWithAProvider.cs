@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using WireMock.Models;
+using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Types;
 
@@ -22,6 +23,13 @@ public interface IRespondWithAProvider
     /// <param name="guid">The unique identifier.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithGuid(Guid guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider DefineGuid(Guid guid);
 
     /// <summary>
     /// Define the TimeSettings for this mapping.
@@ -59,6 +67,13 @@ public interface IRespondWithAProvider
     IRespondWithAProvider WithGuid(string guid);
 
     /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider DefineGuid(string guid);
+
+    /// <summary>
     /// Define the priority for this mapping.
     /// </summary>
     /// <param name="priority">The priority. (A lower value means a higher priority.)</param>
@@ -66,10 +81,16 @@ public interface IRespondWithAProvider
     IRespondWithAProvider AtPriority(int priority);
 
     /// <summary>
-    /// The respond with.
+    /// RespondWith
     /// </summary>
     /// <param name="provider">The provider.</param>
     void RespondWith(IResponseProvider provider);
+
+    /// <summary>
+    /// RespondWith
+    /// </summary>
+    /// <param name="action">The action to use the fluent <see cref="IResponseBuilder"/>.</param>
+    void RespondWith(Action<IResponseBuilder> action);
 
     /// <summary>
     /// Sets the the scenario.
