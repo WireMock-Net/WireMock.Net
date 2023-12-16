@@ -2,6 +2,7 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -103,6 +104,38 @@ internal class RespondWithAProvider : IRespondWithAProvider
         var responseBuilder = Response.Create();
 
         action(responseBuilder);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void RespondWithOK()
+    {
+        var responseBuilder = Response.Create();
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void RespondWithStatusCode(int code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void RespondWithStatusCode(string code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void RespondWithStatusCode(HttpStatusCode code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
 
         RespondWith(responseBuilder);
     }

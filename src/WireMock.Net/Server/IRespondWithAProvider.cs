@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
+using WireMock.Settings;
 using WireMock.Types;
 
 namespace WireMock.Server;
@@ -91,6 +93,32 @@ public interface IRespondWithAProvider
     /// </summary>
     /// <param name="action">The action to use the fluent <see cref="IResponseBuilder"/>.</param>
     void RespondWith(Action<IResponseBuilder> action);
+
+    /// <summary>
+    /// RespondWith a status code 200 (OK);
+    /// </summary>
+    void RespondWithOK();
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void RespondWithStatusCode(int code);
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void RespondWithStatusCode(string code);
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void RespondWithStatusCode(HttpStatusCode code);
 
     /// <summary>
     /// Sets the the scenario.

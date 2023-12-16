@@ -57,7 +57,8 @@ public partial class WireMockServerTests
                 .UsingGet()
                 .WithPath("/foo")
                 .WithParam("query", "1", "2", "3")
-            );
+            )
+            .RespondWithOK();
 
         // Act
         var requestUri = new Uri($"http://localhost:{server.Port}/foo?query={queryValue}");
