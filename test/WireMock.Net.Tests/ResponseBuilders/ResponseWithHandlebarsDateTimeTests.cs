@@ -119,7 +119,7 @@ public class ResponseWithHandlebarsDateTimeTests
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert)]
     [InlineData(ReplaceNodeOptions.Evaluate)]
-    public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_DateTimeWithStringFormatAsString(ReplaceNodeOptions options)
+    public async Task Response_WithBodyAsJson_ProvideResponseAsync_Handlebars_WithStringFormatAsString(ReplaceNodeOptions options)
     {
         // Assign
         var request = new RequestMessage(new UrlDetails("http://localhost"), "GET", ClientIp);
@@ -129,8 +129,8 @@ public class ResponseWithHandlebarsDateTimeTests
             {
                 FormatAsString1 = "{{ String.FormatAsString (DateTime.UtcNow) \"yyMMddhhmmss\" }}",
                 FormatAsString2 = "{{ String.FormatAsString (DateTime.UtcNow) }}",
-                FormatAsString3 = "{{ String.FormatAsString (42) \"X\" }}",
-                FormatAsString4 = "{{ String.FormatAsString (42) }}"
+                FormatAsString3 = "{{ String.FormatAsString 42 \"X\" }}",
+                FormatAsString4 = "{{ String.FormatAsString 42 }}"
             })
             .WithTransformer(options);
 
@@ -144,7 +144,7 @@ public class ResponseWithHandlebarsDateTimeTests
 
         var formatAsString3 = jObject["FormatAsString3"]!;
         formatAsString3.Type.Should().Be(JTokenType.String);
-        formatAsString3.Value<string>().Should().Be("AA");
+        formatAsString3.Value<string>().Should().Be("2A");
 
         var formatAsString4 = jObject["FormatAsString4"]!;
         formatAsString4.Type.Should().Be(JTokenType.String);
