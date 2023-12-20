@@ -127,7 +127,10 @@ public class ResponseWithHandlebarsDateTimeTests
         var responseBuilder = Response.Create()
             .WithBodyAsJson(new
             {
-                FormatAsString = "{{ String.FormatAsString (DateTime.UtcNow) \"yyMMddhhmmss\" }}"
+                FormatAsString1 = "{{ String.FormatAsString (DateTime.UtcNow) \"yyMMddhhmmss\" }}",
+                FormatAsString2 = "{{ String.FormatAsString (DateTime.UtcNow) }}",
+                FormatAsString3 = "{{ String.FormatAsString (42) \"X\" }}",
+                FormatAsString4 = "{{ String.FormatAsString (42) }}"
             })
             .WithTransformer(options);
 
@@ -136,6 +139,15 @@ public class ResponseWithHandlebarsDateTimeTests
 
         // Assert
         var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
-        jObject["FormatAsString"]!.Type.Should().Be(JTokenType.String);
+        jObject["FormatAsString1"]!.Type.Should().Be(JTokenType.String);
+        jObject["FormatAsString2"]!.Type.Should().Be(JTokenType.String);
+
+        var formatAsString3 = jObject["FormatAsString3"]!;
+        formatAsString3.Type.Should().Be(JTokenType.String);
+        formatAsString3.Value<string>().Should().Be("AA");
+
+        var formatAsString4 = jObject["FormatAsString4"]!;
+        formatAsString4.Type.Should().Be(JTokenType.String);
+        formatAsString4.Value<string>().Should().Be("42");
     }
 }
