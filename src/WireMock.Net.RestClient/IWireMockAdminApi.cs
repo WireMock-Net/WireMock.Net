@@ -178,7 +178,7 @@ public interface IWireMockAdminApi
     /// Get a request based on the guid
     /// </summary>
     /// <param name="guid">The Guid</param>
-    /// <returns>MappingModel</returns>
+    /// <returns>LogEntryModel</returns>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Get("requests/{guid}")]
     Task<LogEntryModel> GetRequestAsync([Path] Guid guid, CancellationToken cancellationToken = default);
@@ -192,13 +192,21 @@ public interface IWireMockAdminApi
     Task<StatusModel> DeleteRequestAsync([Path] Guid guid, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Find a request based on the criteria
+    /// Find requests based on the criteria (<see cref="RequestModel"/>)
     /// </summary>
     /// <param name="model">The RequestModel</param>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Post("requests/find")]
     [Header("Content-Type", "application/json")]
     Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Find a request based on the Mapping Guid.
+    /// </summary>
+    /// <param name="mappingGuid">The Mapping Guid</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("requests/find")]
+    Task<LogEntryModel?> FindRequestByMappingGuidAsync([Query] Guid mappingGuid, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all scenarios

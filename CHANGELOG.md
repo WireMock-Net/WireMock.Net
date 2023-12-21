@@ -1,3 +1,8 @@
+# 1.5.45 (21 December 2023)
+- [#1036](https://github.com/WireMock-Net/WireMock.Net/pull/1036) - Update Handlebars Transformer logic (ReplaceNodeOptions) [feature] contributed by [StefH](https://github.com/StefH)
+- [#1043](https://github.com/WireMock-Net/WireMock.Net/pull/1043) - FindRequestByMappingGuidAsync [feature] contributed by [StefH](https://github.com/StefH)
+- [#1039](https://github.com/WireMock-Net/WireMock.Net/issues/1039) - [Admin API] Find a request that matched a given mapping [feature]
+
 # 1.5.44 (14 December 2023)
 - [#1040](https://github.com/WireMock-Net/WireMock.Net/pull/1040) - Implement prefix for saved mapping file [feature] contributed by [MindaugasLaganeckas](https://github.com/MindaugasLaganeckas)
 - [#1033](https://github.com/WireMock-Net/WireMock.Net/issues/1033) - How to get a Random Long? [bug]
