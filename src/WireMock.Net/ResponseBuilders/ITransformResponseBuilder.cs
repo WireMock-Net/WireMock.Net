@@ -29,5 +29,5 @@ public interface ITransformResponseBuilder : IDelayResponseBuilder
     /// <returns>
     /// The <see cref="IResponseBuilder"/>.
     /// </returns>
-    IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.Evaluate);
+    IResponseBuilder WithTransformer(TransformerType transformerType = TransformerType.Handlebars, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.EvaluateAndTryToConvert);
 }
