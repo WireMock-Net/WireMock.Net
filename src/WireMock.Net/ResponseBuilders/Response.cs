@@ -205,7 +205,7 @@ public partial class Response : IResponseBuilder
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.Evaluate)
+    public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.EvaluateAndTryToConvert)
     {
         UseTransformer = true;
         TransformerType = transformerType;

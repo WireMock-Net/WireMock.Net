@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
-    <PackageReference Include="WireMock.Net" Version="1.5.32" />
+    <PackageReference Include="WireMock.Net" Version="1.5.42" />
   </ItemGroup>
 
 </Project>

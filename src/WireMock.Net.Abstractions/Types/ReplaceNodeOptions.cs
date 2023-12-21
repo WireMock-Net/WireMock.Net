@@ -7,19 +7,16 @@ public enum ReplaceNodeOptions
 {
     /// <summary>
     /// Try to evaluate a templated value.
-    /// In case this is valid, return the value and if the value can be converted to a primitive type, use that value.
+    /// In case this is valid, return the value and if the value can be converted to a supported (primitive) type, use that value.
+    ///
+    /// [Default behaviour]
     /// </summary>
     EvaluateAndTryToConvert = 0,
 
     /// <summary>
-    /// Try to evaluate a templated value.
-    /// In case this is valid, return the value, else fallback to the parse behavior.
+    /// Parse templated string to a templated string.
+    /// For example: keep a templated string value (which is always the case) as a string value.
     /// </summary>
     Evaluate = 1,
-
-    /// <summary>
-    /// Parse templated string to a templated string.
-    /// (keep a templated string value as string value).
-    /// </summary>
-    Parse = 2
+    EvaluateAndKeep = Evaluate
 }

@@ -78,10 +78,8 @@ public class ResponseWithHandlebarsRandomTests
     }
 
     [Theory]
-    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.Integer)]
-    //[InlineData(ReplaceNodeOptions.Bool, JTokenType.String)]
-    //[InlineData(ReplaceNodeOptions.Integer, JTokenType.Integer)]
-    //[InlineData(ReplaceNodeOptions.Bool | ReplaceNodeOptions.Integer, JTokenType.Integer)]
+    [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Integer)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
     public async Task Response_ProvideResponseAsync_Handlebars_Random1_Integer(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
@@ -98,12 +96,14 @@ public class ResponseWithHandlebarsRandomTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
-        Check.That(j["Value"].Type).IsEqualTo(expected);
+        var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
+        jObject["Value"]!.Type.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task Response_ProvideResponseAsync_Handlebars_Random1_Guid()
+    [Theory]
+    [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Guid)]
+    [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
+    public async Task Response_ProvideResponseAsync_Handlebars_Random1_Guid(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
         var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -114,17 +114,15 @@ public class ResponseWithHandlebarsRandomTests
                 Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
                 Guid2 = "{{Random Type=\"Guid\"}}"
             })
-            .WithTransformer();
+            .WithTransformer(options);
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
-        string guid1 = j["Guid1"].Value<string>();
-        Check.That(guid1.ToUpper()).IsNotEqualTo(guid1);
-        string guid2 = j["Guid2"].Value<string>();
-        Check.That(guid2.ToUpper()).IsEqualTo(guid2);
+        var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
+        jObject["Guid1"]!.Type.Should().Be(expected);
+        jObject["Guid2"]!.Type.Should().Be(expected);
     }
 
     [Fact]

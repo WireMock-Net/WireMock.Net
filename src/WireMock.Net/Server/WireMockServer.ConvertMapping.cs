@@ -264,14 +264,16 @@ public partial class WireMockServer
                 transformerType = TransformerType.Handlebars;
             }
 
-            if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var option))
+            if (!Enum.TryParse<ReplaceNodeOptions>(responseModel.TransformerReplaceNodeOptions, out var replaceNodeOptions))
             {
-                option = ReplaceNodeOptions.Evaluate;
+                replaceNodeOptions = ReplaceNodeOptions.EvaluateAndTryToConvert;
             }
+
             responseBuilder = responseBuilder.WithTransformer(
                 transformerType,
                 responseModel.UseTransformerForBodyAsFile == true,
-                option);
+                replaceNodeOptions
+            );
         }
 
         if (!string.IsNullOrEmpty(responseModel.ProxyUrl))
