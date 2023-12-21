@@ -234,6 +234,10 @@ public class WireMockAdminApiTests
             StartAdminInterface = true,
             Logger = new WireMockNullLogger()
         });
+        server
+            .Given(Request.Create().WithPath("/foo").UsingGet())
+            .RespondWith(Response.Create());
+
         var serverUrl = "http://localhost:" + server.Ports[0];
         await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
         var api = RestClient.For<IWireMockAdminApi>(serverUrl);
@@ -242,11 +246,82 @@ public class WireMockAdminApiTests
         var requests = await api.FindRequestsAsync(new RequestModel { Methods = new[] { "GET" } }).ConfigureAwait(false);
 
         // Assert
-        Check.That(requests).HasSize(1);
+        requests.Should().HaveCount(1);
         var requestLogged = requests.First();
-        Check.That(requestLogged.Request.Method).IsEqualTo("GET");
-        Check.That(requestLogged.Request.Body).IsNull();
-        Check.That(requestLogged.Request.Path).IsEqualTo("/foo");
+        requestLogged.Request.Method.Should().Be("GET");
+        requestLogged.Request.Body.Should().BeNull();
+        requestLogged.Request.Path.Should().Be("/foo");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_Found()
+    {
+        // Arrange
+        var mappingGuid = Guid.NewGuid();
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true,
+            Logger = new WireMockNullLogger()
+        });
+        server
+            .Given(Request.Create().WithPath("/foo").UsingGet())
+            .WithGuid(mappingGuid)
+            .RespondWith(Response.Create());
+
+        var serverUrl = "http://localhost:" + server.Ports[0];
+        await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
+        var api = RestClient.For<IWireMockAdminApi>(serverUrl);
+
+        // Act
+        var logEntryModel = await api.FindRequestByMappingGuidAsync(mappingGuid).ConfigureAwait(false);
+
+        // Assert
+        logEntryModel.Should().NotBeNull();
+        logEntryModel!.Request.Method.Should().Be("GET");
+        logEntryModel!.Request.Body.Should().BeNull();
+        logEntryModel!.Request.Path.Should().Be("/foo");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_NotFound()
+    {
+        // Arrange
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true,
+            Logger = new WireMockNullLogger()
+        });
+        server
+            .Given(Request.Create().WithPath("/foo").UsingGet())
+            .WithGuid(Guid.NewGuid())
+            .RespondWith(Response.Create());
+
+        var serverUrl = "http://localhost:" + server.Ports[0];
+        await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
+        var api = RestClient.For<IWireMockAdminApi>(serverUrl);
+
+        // Act
+        var logEntryModel = await api.FindRequestByMappingGuidAsync(Guid.NewGuid()).ConfigureAwait(false);
+
+        // Assert
+        logEntryModel.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_Invalid_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var server = WireMockServer.Start(new WireMockServerSettings
+        {
+            StartAdminInterface = true,
+            Logger = new WireMockNullLogger()
+        });
+
+        // Act
+        var result = await server.CreateClient().GetAsync("/__admin/requests/find?mappingGuid=x");
+
+        // Assert
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -815,7 +890,7 @@ public class WireMockAdminApiTests
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.AlreadyReported)
-                    .WithBodyAsJson(new { @as = 1, b=1.2, d=true, e=false, f=new[]{1,2,3,4}, g= new{z1=1, z2=2, z3=new []{"a","b","c"}, z4=new[]{new {a=1, b=2},new {a=2, b=3}}}, date_field = new DateTime(2023,05,08,11,20,19), string_field_with_date="2021-03-13T21:04:00Z", multiline_text= @"This
+                    .WithBodyAsJson(new { @as = 1, b = 1.2, d = true, e = false, f = new[] { 1, 2, 3, 4 }, g = new { z1 = 1, z2 = 2, z3 = new[] { "a", "b", "c" }, z4 = new[] { new { a = 1, b = 2 }, new { a = 2, b = 3 } } }, date_field = new DateTime(2023, 05, 08, 11, 20, 19), string_field_with_date = "2021-03-13T21:04:00Z", multiline_text = @"This
 is
 multiline
 text
@@ -826,7 +901,7 @@ text
             .Given(
                 Request.Create()
                     .WithPath("/foo3")
-                    .WithBody(new JsonPartialMatcher(new { a=1, b=2}))
+                    .WithBody(new JsonPartialMatcher(new { a = 1, b = 2 }))
                     .UsingPost()
             )
             .WithGuid(guid4)

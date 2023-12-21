@@ -99,6 +99,7 @@ public partial class WireMockServer
 
         // __admin/requests/find
         Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFind));
+        Given(Request.Create().WithPath(AdminRequests + "/find").UsingGet().WithParam("mappingGuid", new NotNullOrEmptyMatcher())).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestFindByMappingGuid));
 
         // __admin/scenarios
         Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
@@ -436,7 +437,7 @@ public partial class WireMockServer
             var mappingModels = DeserializeRequestMessageToArray<MappingModel>(requestMessage);
             if (mappingModels.Length == 1)
             {
-                Guid? guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
+                var guid = ConvertMappingAndRegisterAsRespondProvider(mappingModels[0]);
                 return ResponseMessageBuilder.Create(201, "Mapping added", guid);
             }
 
@@ -535,7 +536,7 @@ public partial class WireMockServer
     {
         if (TryParseGuidFromRequestMessage(requestMessage, out var guid))
         {
-            var entry = LogEntries.FirstOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
+            var entry = LogEntries.SingleOrDefault(r => !r.RequestMessage.Path.StartsWith("/__admin/") && r.Guid == guid);
             if (entry is { })
             {
                 var model = new LogEntryMapper(_options).Map(entry);
@@ -599,6 +600,26 @@ public partial class WireMockServer
         var result = dict.OrderBy(x => x.Value.AverageTotalScore).Select(x => x.Key).Select(logEntryMapper.Map);
 
         return ToJson(result);
+    }
+
+    private IResponseMessage RequestFindByMappingGuid(IRequestMessage requestMessage)
+    {
+        if (requestMessage.Query != null &&
+            requestMessage.Query.TryGetValue("mappingGuid", out var value) &&
+            Guid.TryParse(value.ToString(), out var mappingGuid)
+        )
+        {
+            var logEntry = LogEntries.SingleOrDefault(le => !le.RequestMessage.Path.StartsWith("/__admin/") && le.MappingGuid == mappingGuid);
+            if (logEntry != null)
+            {
+                var logEntryMapper = new LogEntryMapper(_options);
+                return ToJson(logEntryMapper.Map(logEntry));
+            }
+
+            return ResponseMessageBuilder.Create(HttpStatusCode.OK);
+        }
+
+        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest);
     }
     #endregion Requests/find
 

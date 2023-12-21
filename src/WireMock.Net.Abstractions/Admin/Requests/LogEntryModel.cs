@@ -15,12 +15,12 @@ public class LogEntryModel
     /// <summary>
     /// The request.
     /// </summary>
-    public LogRequestModel Request { get; set; }
+    public required LogRequestModel Request { get; init; }
 
     /// <summary>
     /// The response.
     /// </summary>
-    public LogResponseModel Response { get; set; }
+    public required LogResponseModel Response { get; init; }
 
     /// <summary>
     /// The mapping unique identifier.
