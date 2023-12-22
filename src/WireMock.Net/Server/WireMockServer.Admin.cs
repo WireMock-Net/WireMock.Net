@@ -99,7 +99,7 @@ public partial class WireMockServer
 
         // __admin/requests/find
         Given(Request.Create().WithPath(AdminRequests + "/find").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFind));
-        Given(Request.Create().WithPath(AdminRequests + "/find").UsingGet().WithParam("mappingGuid", new NotNullOrEmptyMatcher())).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestFindByMappingGuid));
+        Given(Request.Create().WithPath(AdminRequests + "/find").UsingGet().WithParam("mappingGuid", new NotNullOrEmptyMatcher())).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(RequestsFindByMappingGuid));
 
         // __admin/scenarios
         Given(Request.Create().WithPath(AdminScenarios).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosGet));
@@ -602,21 +602,17 @@ public partial class WireMockServer
         return ToJson(result);
     }
 
-    private IResponseMessage RequestFindByMappingGuid(IRequestMessage requestMessage)
+    private IResponseMessage RequestsFindByMappingGuid(IRequestMessage requestMessage)
     {
         if (requestMessage.Query != null &&
             requestMessage.Query.TryGetValue("mappingGuid", out var value) &&
             Guid.TryParse(value.ToString(), out var mappingGuid)
         )
         {
-            var logEntry = LogEntries.SingleOrDefault(le => !le.RequestMessage.Path.StartsWith("/__admin/") && le.MappingGuid == mappingGuid);
-            if (logEntry != null)
-            {
-                var logEntryMapper = new LogEntryMapper(_options);
-                return ToJson(logEntryMapper.Map(logEntry));
-            }
-
-            return ResponseMessageBuilder.Create(HttpStatusCode.OK);
+            var logEntries = LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/") && le.MappingGuid == mappingGuid);
+            var logEntryMapper = new LogEntryMapper(_options);
+            var result = logEntries.Select(logEntryMapper.Map);
+            return ToJson(result);
         }
 
         return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest);
