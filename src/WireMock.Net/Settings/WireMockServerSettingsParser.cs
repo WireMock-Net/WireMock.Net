@@ -41,25 +41,25 @@ public static class WireMockServerSettingsParser
         {
             AdminAzureADAudience = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADAudience)),
             AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
-            AdminPassword = parser.GetStringValue("AdminPassword"),
-            AdminUsername = parser.GetStringValue("AdminUsername"),
-            AllowBodyForAllHttpMethods = parser.GetBoolValue("AllowBodyForAllHttpMethods"),
-            AllowCSharpCodeMatcher = parser.GetBoolValue("AllowCSharpCodeMatcher"),
-            AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue("AllowOnlyDefinedHttpStatusCodeInResponse"),
-            AllowPartialMapping = parser.GetBoolValue("AllowPartialMapping"),
-            DisableJsonBodyParsing = parser.GetBoolValue("DisableJsonBodyParsing"),
+            AdminPassword = parser.GetStringValue(nameof(WireMockServerSettings.AdminPassword)),
+            AdminUsername = parser.GetStringValue(nameof(WireMockServerSettings.AdminUsername)),
+            AllowBodyForAllHttpMethods = parser.GetBoolValue(nameof(WireMockServerSettings.AllowBodyForAllHttpMethods)),
+            AllowCSharpCodeMatcher = parser.GetBoolValue(nameof(WireMockServerSettings.AllowCSharpCodeMatcher)),
+            AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue(nameof(WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse)),
+            AllowPartialMapping = parser.GetBoolValue(nameof(WireMockServerSettings.AllowPartialMapping)),
+            DisableJsonBodyParsing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableJsonBodyParsing)),
             DisableRequestBodyDecompressing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableRequestBodyDecompressing)),
             DisableDeserializeFormUrlEncoded = parser.GetBoolValue(nameof(WireMockServerSettings.DisableDeserializeFormUrlEncoded)),
-            HandleRequestsSynchronously = parser.GetBoolValue("HandleRequestsSynchronously"),
-            MaxRequestLogCount = parser.GetIntValue("MaxRequestLogCount"),
-            ReadStaticMappings = parser.GetBoolValue("ReadStaticMappings"),
-            RequestLogExpirationDuration = parser.GetIntValue("RequestLogExpirationDuration"),
+            HandleRequestsSynchronously = parser.GetBoolValue(nameof(WireMockServerSettings.HandleRequestsSynchronously)),
+            MaxRequestLogCount = parser.GetIntValue(nameof(WireMockServerSettings.MaxRequestLogCount)),
+            ReadStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.ReadStaticMappings)),
+            RequestLogExpirationDuration = parser.GetIntValue(nameof(WireMockServerSettings.RequestLogExpirationDuration)),
             SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
-            StartAdminInterface = parser.GetBoolValue("StartAdminInterface", true),
+            StartAdminInterface = parser.GetBoolValue(nameof(WireMockServerSettings.StartAdminInterface), true),
             StartTimeout = parser.GetIntValue(nameof(WireMockServerSettings.StartTimeout), WireMockServerSettings.DefaultStartTimeout),
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
-            WatchStaticMappings = parser.GetBoolValue("WatchStaticMappings"),
-            WatchStaticMappingsInSubdirectories = parser.GetBoolValue("WatchStaticMappingsInSubdirectories"),
+            WatchStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappings)),
+            WatchStaticMappingsInSubdirectories = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappingsInSubdirectories)),
             HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
             DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
             QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
@@ -110,21 +110,21 @@ public static class WireMockServerSettingsParser
         {
             var proxyAndRecordSettings = new ProxyAndRecordSettings
             {
-                AllowAutoRedirect = parser.GetBoolValue("AllowAutoRedirect"),
-                ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue("ClientX509Certificate2ThumbprintOrSubjectName"),
-                ExcludedCookies = parser.GetValues("ExcludedCookies"),
-                ExcludedHeaders = parser.GetValues("ExcludedHeaders"),
+                AllowAutoRedirect = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AllowAutoRedirect)),
+                ClientX509Certificate2ThumbprintOrSubjectName = parser.GetStringValue(nameof(ProxyAndRecordSettings.ClientX509Certificate2ThumbprintOrSubjectName)),
+                ExcludedCookies = parser.GetValues(nameof(ProxyAndRecordSettings.ExcludedCookies)),
+                ExcludedHeaders = parser.GetValues(nameof(ProxyAndRecordSettings.ExcludedHeaders)),
                 // PreferProxyMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.PreferProxyMapping)),
-                SaveMapping = parser.GetBoolValue("SaveMapping"),
-                SaveMappingForStatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
-                SaveMappingToFile = parser.GetBoolValue("SaveMappingToFile"),
+                SaveMapping = parser.GetBoolValue(nameof(ProxyAndRecordSettings.SaveMapping)),
+                SaveMappingForStatusCodePattern = parser.GetStringValue(nameof(ProxyAndRecordSettings.SaveMappingForStatusCodePattern), "*"),
+                SaveMappingToFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.SaveMappingToFile)),
                 UseDefinedRequestMatchers = parser.GetBoolValue(nameof(ProxyAndRecordSettings.UseDefinedRequestMatchers)),
                 AppendGuidToSavedMappingFile = parser.GetBoolValue(nameof(ProxyAndRecordSettings.AppendGuidToSavedMappingFile)),
-                PrefixForSavedMappingFile = parser.GetStringValue(nameof(ProxyAndRecordSettings.PrefixForSavedMappingFile), null),
+                PrefixForSavedMappingFile = parser.GetStringValue(nameof(ProxyAndRecordSettings.PrefixForSavedMappingFile), ProxyAndRecordSettings.DefaultPrefixForSavedMappingFile),
                 Url = proxyUrl!,
                 SaveMappingSettings = new ProxySaveMappingSettings
                 {
-                    StatusCodePattern = parser.GetStringValue("SaveMappingForStatusCodePattern", "*"),
+                    StatusCodePattern = parser.GetStringValue(nameof(ProxyAndRecordSettings.SaveMappingForStatusCodePattern), "*"),
                     // HttpMethods = new ProxySaveMappingSetting<string[]>(parser.GetValues("DoNotSaveMappingForHttpMethods", new string[0]), MatchBehaviour.RejectOnMatch)
                 },
                 ProxyAll = parser.GetBoolValue(nameof(ProxyAndRecordSettings.ProxyAll))
@@ -188,7 +188,7 @@ public static class WireMockServerSettingsParser
             settings.ReplaceSettings = new ProxyUrlReplaceSettings
             {
                 OldValue = proxyUrlReplaceOldValue!,
-                NewValue = proxyUrlReplaceNewValue!
+                NewValue = proxyUrlReplaceNewValue
             };
         }
     }
