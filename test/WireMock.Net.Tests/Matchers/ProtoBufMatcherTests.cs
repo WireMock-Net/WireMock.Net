@@ -1,6 +1,7 @@
 #if PROTOBUF
 using System;
 using FluentAssertions;
+using ProtoBuf;
 using WireMock.Matchers;
 using Xunit;
 
@@ -27,10 +28,9 @@ message HelloReply {
 ";
 
     [Fact]
-    public void ProtoBufMatcher_For_ValidProtoBuf_And_CorrectMethod_And_CorrectBody_IsMatch()
+    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_NoJsonMatchers_IsMatch()
     {
         // Arrange
-        var jsonMatcher = new JsonMatcher(new { Name = "stef" });
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
@@ -39,6 +39,53 @@ message HelloReply {
 
         // Assert
         result.Score.Should().Be(MatchScores.Perfect);
+        result.Exception.Should().BeNull();
+    }
+
+    [Fact]
+    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Using_JsonMatcher_IsMatch()
+    {
+        // Arrange
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+
+        // Act
+        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.SayHello", jsonMatcher: jsonMatcher);
+        var result = matcher.IsMatch(bytes);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Perfect);
+        result.Exception.Should().BeNull();
+    }
+
+    [Fact]
+    public void ProtoBufMatcher_For_InvalidProtoBuf_IsNoMatch()
+    {
+        // Arrange
+        var bytes = new byte[] { 1, 2, 3 };
+
+        // Act
+        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.SayHello");
+        var result = matcher.IsMatch(bytes);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception.Should().BeOfType<ProtoException>();
+    }
+
+    [Fact]
+    public void ProtoBufMatcher_For_InvalidMethod_IsNoMatch()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+
+        // Act
+        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.X");
+        var result = matcher.IsMatch(bytes);
+
+        // Assert
+        result.Score.Should().Be(MatchScores.Mismatch);
+        result.Exception.Should().BeOfType<ArgumentException>();
     }
 }
 #endif

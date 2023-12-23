@@ -10,10 +10,10 @@ namespace WireMock.Matchers;
 /// <summary>
 /// JsonMatcher
 /// </summary>
-public class JsonMatcher : IValueMatcher, IIgnoreCaseMatcher
+public class JsonMatcher : IJsonMatcher
 {
     /// <inheritdoc />
-    public virtual string Name => "JsonMatcher";
+    public virtual string Name => nameof(JsonMatcher);
 
     /// <inheritdoc cref="IValueMatcher.Value"/>
     public object Value { get; }

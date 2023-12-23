@@ -79,6 +79,11 @@ internal class MatcherMapper
             case nameof(MimePartMatcher):
                 return CreateMimePartMatcher(matchBehaviour, matcher);
 #endif
+
+#if PROTOBUF
+            case nameof(ProtoBufMatcher):
+                return CreateProtoBufMatcher(matchBehaviour, stringPatterns[0].GetPattern(), matcher);
+#endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, useRegexExtended, matchOperator);
 
@@ -130,7 +135,7 @@ internal class MatcherMapper
 
     public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
     {
-        return matchers?.Where(m => m != null).Select(Map).ToArray();
+        return matchers?.Select(Map).OfType<MatcherModel>().ToArray();
     }
 
     public MatcherModel? Map(IMatcher? matcher)
@@ -268,6 +273,20 @@ internal class MatcherMapper
         var contentMatcher = Map(matcher?.ContentMatcher);
 
         return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
+    }
+#endif
+
+#if PROTOBUF
+    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string? protoDefinition,  MatcherModel? matcher)
+    {
+        var jsonMatcher = Map(matcher?.ContentMatcher) as IJsonMatcher;
+
+        return new ProtoBufMatcher(
+            protoDefinition ?? string.Empty,
+            matcher?.GrpcServiceMethod ?? string.Empty,
+            matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
+            jsonMatcher
+        );
     }
 #endif
 }

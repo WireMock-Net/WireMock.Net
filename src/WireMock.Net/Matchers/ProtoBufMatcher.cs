@@ -1,6 +1,5 @@
 #if PROTOBUF
 using System;
-using System.Linq;
 using ProtoBufJsonConverter;
 using ProtoBufJsonConverter.Models;
 using Stef.Validation;
@@ -8,7 +7,7 @@ using Stef.Validation;
 namespace WireMock.Matchers;
 
 /// <summary>
-/// GrpcMatcher ProtoBuf Matcher
+/// Grpc ProtoBuf Matcher
 /// </summary>
 /// <inheritdoc cref="IObjectMatcher"/>
 public class ProtoBufMatcher : IBytesMatcher
@@ -20,14 +19,19 @@ public class ProtoBufMatcher : IBytesMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// The MatchOperator
+    /// The proto definition as a string.
     /// </summary>
-    public MatchOperator MatchOperator { get; }
+    public string ProtoDefinition { get; }
 
+    /// <summary>
+    /// The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".
+    /// </summary>
+    public string GrpcServiceMethod { get; }
 
-    private readonly string _protoDefinition;
-    private readonly string _method;
-    private readonly IStringMatcher[] _matchers;
+    /// <summary>
+    /// The JsonMatcher to use (optional).
+    /// </summary>
+    public IJsonMatcher? JsonMatcher { get; }
 
     private static readonly IConverter ProtoBufToJsonConverter = new Converter();
 
@@ -37,21 +41,18 @@ public class ProtoBufMatcher : IBytesMatcher
     /// <param name="protoDefinition">The proto definition as a string.</param>
     /// <param name="method">The method which is called on service. Format is {package-name}.{service-name}-{method-name}</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
-    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
-    /// <param name="matchers">The matchers to use to match the ProtoBuf as JSON string.</param>
+    /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
         string protoDefinition,
         string method,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
-        MatchOperator matchOperator = MatchOperator.Or,
-        params IStringMatcher[] matchers
+        IJsonMatcher? jsonMatcher = null
     )
     {
-        _protoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
-        _method = Guard.NotNullOrWhiteSpace(method);
-        _matchers = Guard.NotNull(matchers);
+        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        GrpcServiceMethod = Guard.NotNullOrWhiteSpace(method);
+        JsonMatcher = jsonMatcher;
         MatchBehaviour = matchBehaviour;
-        MatchOperator = matchOperator;
     }
 
     /// <inheritdoc />
@@ -61,23 +62,13 @@ public class ProtoBufMatcher : IBytesMatcher
 
         if (input != null)
         {
-            var request = new ConvertToJsonRequest(_protoDefinition, _method, input);
+            var request = new ConvertToObjectRequest(ProtoDefinition, GrpcServiceMethod, input);
 
             try
             {
-                var json = ProtoBufToJsonConverter.ConvertToJson(request);
+                var instance = ProtoBufToJsonConverter.ConvertToObject(request);
 
-                // If no matchers are defined, just check if the ConvertToJson is fine.
-                if (_matchers.Length == 0)
-                {
-                    result = new MatchResult(MatchScores.Perfect);
-                }
-                else
-                {
-                    var results = _matchers.Select(m => m.IsMatch(json)).ToArray();
-
-                    result = MatchResult.From(results, MatchOperator);
-                }
+                result = JsonMatcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }
             catch (Exception e)
             {

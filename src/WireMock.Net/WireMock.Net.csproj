@@ -149,7 +149,7 @@
         <PackageReference Include="GraphQL" Version="7.5.0" />
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
-        <PackageReference Include="ProtoBufJsonConverter" Version="0.0.2" />
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.0.3" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">

@@ -70,11 +70,20 @@ public class MatcherModel
     /// ContentTransferEncoding Matcher (base64)
     /// </summary>
     public MatcherModel? ContentTransferEncodingMatcher { get; set; }
+    #endregion
 
+    #region MimePartMatcher + ProtoBufMatcher
     /// <summary>
     /// Content Matcher
     /// </summary>
     public MatcherModel? ContentMatcher { get; set; }
+    #endregion
+
+    #region ProtoBufMatcher
+    /// <summary>
+    /// The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".
+    /// </summary>
+    public string? GrpcServiceMethod { get; set; }
     #endregion
 
     #region XPathMatcher
@@ -86,7 +95,7 @@ public class MatcherModel
 
     #region GraphQLMatcher
     /// <summary>
-    /// Mapping of custom GraphQL Scalar name to ClrType.  (optional)
+    /// Mapping of custom GraphQL Scalar name to ClrType. (optional)
     /// </summary>
     public IDictionary<string, Type>? CustomScalars { get; set; }
     #endregion
