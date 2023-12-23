@@ -1,3 +1,7 @@
+# 1.5.46 (23 December 2023)
+- [#1044](https://github.com/WireMock-Net/WireMock.Net/pull/1044) - WireMockServerSettingsParser [refactor] contributed by [StefH](https://github.com/StefH)
+- [#1046](https://github.com/WireMock-Net/WireMock.Net/pull/1046) - Change FindRequestByMappingGuidAsync to return a collection of entries contributed by [tlevesque-ueat](https://github.com/tlevesque-ueat)
+
 # 1.5.45 (21 December 2023)
 - [#1036](https://github.com/WireMock-Net/WireMock.Net/pull/1036) - Update Handlebars Transformer logic (ReplaceNodeOptions) [feature] contributed by [StefH](https://github.com/StefH)
 - [#1043](https://github.com/WireMock-Net/WireMock.Net/pull/1043) - FindRequestByMappingGuidAsync [feature] contributed by [StefH](https://github.com/StefH)

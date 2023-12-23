@@ -1,5 +1,6 @@
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -25,6 +26,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests;
@@ -254,7 +256,7 @@ public class WireMockAdminApiTests
     }
 
     [Fact]
-    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_Found()
+    public async Task IWireMockAdminApi_FindRequestsByMappingGuidAsync_Found()
     {
         // Arrange
         var mappingGuid = Guid.NewGuid();
@@ -269,21 +271,33 @@ public class WireMockAdminApiTests
             .RespondWith(Response.Create());
 
         var serverUrl = "http://localhost:" + server.Ports[0];
-        await new HttpClient().GetAsync(serverUrl + "/foo").ConfigureAwait(false);
+        using var client = new HttpClient();
+        await client.GetAsync(serverUrl + "/foo").ConfigureAwait(false);
+        await client.GetAsync(serverUrl + "/foo?bar=baz").ConfigureAwait(false);
         var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
         // Act
-        var logEntryModel = await api.FindRequestByMappingGuidAsync(mappingGuid).ConfigureAwait(false);
+        var logEntryModels = await api.FindRequestsByMappingGuidAsync(mappingGuid).ConfigureAwait(false);
 
         // Assert
-        logEntryModel.Should().NotBeNull();
-        logEntryModel!.Request.Method.Should().Be("GET");
-        logEntryModel!.Request.Body.Should().BeNull();
-        logEntryModel!.Request.Path.Should().Be("/foo");
+        logEntryModels.Should().HaveCount(2);
+        logEntryModels[0].Should().NotBeNull();
+        logEntryModels[0]!.Request.Method.Should().Be("GET");
+        logEntryModels[0]!.Request.Body.Should().BeNull();
+        logEntryModels[0]!.Request.Path.Should().Be("/foo");
+        logEntryModels[0]!.Request.Query.Should().BeNullOrEmpty();
+        logEntryModels[1].Should().NotBeNull();
+        logEntryModels[1]!.Request.Method.Should().Be("GET");
+        logEntryModels[1]!.Request.Body.Should().BeNull();
+        logEntryModels[1]!.Request.Path.Should().Be("/foo");
+        logEntryModels[1]!.Request.Query.Should().BeEquivalentTo(new Dictionary<string, WireMockList<string>>
+        {
+            {"bar", new WireMockList<string>("baz")}
+        });
     }
 
     [Fact]
-    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_NotFound()
+    public async Task IWireMockAdminApi_FindRequestsByMappingGuidAsync_NotFound()
     {
         // Arrange
         var server = WireMockServer.Start(new WireMockServerSettings
@@ -301,14 +315,14 @@ public class WireMockAdminApiTests
         var api = RestClient.For<IWireMockAdminApi>(serverUrl);
 
         // Act
-        var logEntryModel = await api.FindRequestByMappingGuidAsync(Guid.NewGuid()).ConfigureAwait(false);
+        var logEntryModels = await api.FindRequestsByMappingGuidAsync(Guid.NewGuid()).ConfigureAwait(false);
 
         // Assert
-        logEntryModel.Should().BeNull();
+        logEntryModels.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task IWireMockAdminApi_FindRequestByMappingGuidAsync_Invalid_ShouldReturnBadRequest()
+    public async Task IWireMockAdminApi_FindRequestsByMappingGuidAsync_Invalid_ShouldReturnBadRequest()
     {
         // Arrange
         var server = WireMockServer.Start(new WireMockServerSettings
