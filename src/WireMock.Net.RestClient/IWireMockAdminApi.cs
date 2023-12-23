@@ -201,12 +201,12 @@ public interface IWireMockAdminApi
     Task<IList<LogEntryModel>> FindRequestsAsync([Body] RequestModel model, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Find a request based on the Mapping Guid.
+    /// Find requests based on the Mapping Guid.
     /// </summary>
     /// <param name="mappingGuid">The Mapping Guid</param>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Get("requests/find")]
-    Task<LogEntryModel?> FindRequestByMappingGuidAsync([Query] Guid mappingGuid, CancellationToken cancellationToken = default);
+    Task<IList<LogEntryModel>> FindRequestsByMappingGuidAsync([Query] Guid mappingGuid, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all scenarios

@@ -1,6 +1,5 @@
-# 1.5.45 (21 December 2023)
-- #1036 Update Handlebars Transformer logic (ReplaceNodeOptions) [feature]
-- #1043 FindRequestByMappingGuidAsync [feature]
-- #1039 [Admin API] Find a request that matched a given mapping [feature]
+# 1.5.46 (23 December 2023)
+- #1044 WireMockServerSettingsParser [refactor]
+- #1046 Change FindRequestByMappingGuidAsync to return a collection of entries
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
