@@ -94,8 +94,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
 #if GRAPHQL
     private static IMatcher[] CreateMatcherArray(
         MatchBehaviour matchBehaviour,
-        AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern,
-        GraphQL.Types.ISchema> schema,
+        AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, GraphQL.Types.ISchema> schema,
         IDictionary<string, Type>? customScalars
     )
     {

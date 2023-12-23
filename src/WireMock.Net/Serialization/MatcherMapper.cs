@@ -25,29 +25,25 @@ internal class MatcherMapper
 
     public IMatcher[]? Map(IEnumerable<MatcherModel>? matchers)
     {
-        if (matchers == null)
-        {
-            return null;
-        }
-        return matchers.Select(Map).Where(m => m != null).ToArray()!;
+        return matchers?.Select(Map).OfType<IMatcher>().ToArray();
     }
 
-    public IMatcher? Map(MatcherModel? matcher)
+    public IMatcher? Map(MatcherModel? matcherModel)
     {
-        if (matcher == null)
+        if (matcherModel == null)
         {
             return null;
         }
 
-        string[] parts = matcher.Name.Split('.');
+        string[] parts = matcherModel.Name.Split('.');
         string matcherName = parts[0];
         string? matcherType = parts.Length > 1 ? parts[1] : null;
-        var stringPatterns = ParseStringPatterns(matcher);
-        var matchBehaviour = matcher.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
-        var matchOperator = StringUtils.ParseMatchOperator(matcher.MatchOperator);
-        bool ignoreCase = matcher.IgnoreCase == true;
+        var stringPatterns = ParseStringPatterns(matcherModel);
+        var matchBehaviour = matcherModel.RejectOnMatch == true ? MatchBehaviour.RejectOnMatch : MatchBehaviour.AcceptOnMatch;
+        var matchOperator = StringUtils.ParseMatchOperator(matcherModel.MatchOperator);
+        bool ignoreCase = matcherModel.IgnoreCase == true;
         bool useRegexExtended = _settings.UseRegexExtended == true;
-        bool useRegex = matcher.Regex == true;
+        bool useRegex = matcherModel.Regex == true;
 
         switch (matcherName)
         {
@@ -72,31 +68,31 @@ internal class MatcherMapper
                 return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
 #if GRAPHQL
             case nameof(GraphQLMatcher):
-                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcher.CustomScalars, matchBehaviour, matchOperator);
+                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcherModel.CustomScalars, matchBehaviour, matchOperator);
 #endif
 
 #if MIMEKIT
             case nameof(MimePartMatcher):
-                return CreateMimePartMatcher(matchBehaviour, matcher);
+                return CreateMimePartMatcher(matchBehaviour, matcherModel);
 #endif
 
 #if PROTOBUF
             case nameof(ProtoBufMatcher):
-                return CreateProtoBufMatcher(matchBehaviour, stringPatterns[0].GetPattern(), matcher);
+                return CreateProtoBufMatcher(matchBehaviour, stringPatterns[0].GetPattern(), matcherModel);
 #endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, useRegexExtended, matchOperator);
 
             case nameof(JsonMatcher):
-                var valueForJsonMatcher = matcher.Pattern ?? matcher.Patterns;
+                var valueForJsonMatcher = matcherModel.Pattern ?? matcherModel.Patterns;
                 return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase);
 
             case nameof(JsonPartialMatcher):
-                var valueForJsonPartialMatcher = matcher.Pattern ?? matcher.Patterns;
+                var valueForJsonPartialMatcher = matcherModel.Pattern ?? matcherModel.Patterns;
                 return new JsonPartialMatcher(matchBehaviour, valueForJsonPartialMatcher!, ignoreCase, useRegex);
 
             case nameof(JsonPartialWildcardMatcher):
-                var valueForJsonPartialWildcardMatcher = matcher.Pattern ?? matcher.Patterns;
+                var valueForJsonPartialWildcardMatcher = matcherModel.Pattern ?? matcherModel.Patterns;
                 return new JsonPartialWildcardMatcher(matchBehaviour, valueForJsonPartialWildcardMatcher!, ignoreCase, useRegex);
 
             case nameof(JsonPathMatcher):
@@ -106,7 +102,7 @@ internal class MatcherMapper
                 return new JmesPathMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(XPathMatcher):
-                return new XPathMatcher(matchBehaviour, matchOperator, matcher.XmlNamespaceMap, stringPatterns);
+                return new XPathMatcher(matchBehaviour, matchOperator, matcherModel.XmlNamespaceMap, stringPatterns);
 
             case nameof(WildcardMatcher):
                 return new WildcardMatcher(matchBehaviour, stringPatterns, ignoreCase, matchOperator);
@@ -126,7 +122,7 @@ internal class MatcherMapper
             default:
                 if (_settings.CustomMatcherMappings != null && _settings.CustomMatcherMappings.ContainsKey(matcherName))
                 {
-                    return _settings.CustomMatcherMappings[matcherName](matcher);
+                    return _settings.CustomMatcherMappings[matcherName](matcherModel);
                 }
 
                 throw new NotSupportedException($"Matcher '{matcherName}' is not supported.");
@@ -217,6 +213,14 @@ internal class MatcherMapper
                 model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
                 break;
 #endif
+
+#if PROTOBUF
+            case ProtoBufMatcher protoBufMatcher:
+                model.GrpcServiceMethod = protoBufMatcher.GrpcServiceMethod;
+                model.ContentMatcher = Map(protoBufMatcher.JsonMatcher);
+                break;
+#endif
+
         }
 
         return model;

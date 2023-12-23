@@ -39,18 +39,18 @@ public class ProtoBufMatcher : IBytesMatcher
     /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
     /// </summary>
     /// <param name="protoDefinition">The proto definition as a string.</param>
-    /// <param name="method">The method which is called on service. Format is {package-name}.{service-name}-{method-name}</param>
+    /// <param name="grpcServiceMethod">The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
         string protoDefinition,
-        string method,
+        string grpcServiceMethod,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         IJsonMatcher? jsonMatcher = null
     )
     {
         ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
-        GrpcServiceMethod = Guard.NotNullOrWhiteSpace(method);
+        GrpcServiceMethod = Guard.NotNullOrWhiteSpace(grpcServiceMethod);
         JsonMatcher = jsonMatcher;
         MatchBehaviour = matchBehaviour;
     }

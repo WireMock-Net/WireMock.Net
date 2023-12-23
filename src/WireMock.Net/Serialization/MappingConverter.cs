@@ -14,7 +14,6 @@ using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -50,6 +49,7 @@ internal class MappingConverter
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
 
         var sb = new StringBuilder();
 
@@ -123,8 +123,15 @@ internal class MappingConverter
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
             {
-                sb.AppendLine("        // .WithMultiPart() is not yet supported");
+                sb.AppendLine("        // .WithMultiPart() is not yet supported"); // TODO
             }
+        }
+#endif
+
+#if PROTOBUF
+        if (requestMessageProtoBufMatcher is { Matcher: { } })
+        {
+            sb.AppendLine("        // .WithGrpcProto() is not yet supported"); // TODO
         }
 #endif
 
@@ -239,6 +246,7 @@ internal class MappingConverter
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -329,7 +337,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? EmptyArray<IWebhook>.Value;
+        var nonNullableWebHooks = mapping.Webhooks?.OfType<IWebhook>().ToArray() ?? EmptyArray<IWebhook>.Value;
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
@@ -339,8 +347,16 @@ internal class MappingConverter
             mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
         }
 
-        var bodyMatchers = multiPartMatcher?.Matchers ?? graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
-        var matchOperator = multiPartMatcher?.MatchOperator ?? graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
+        var bodyMatchers =
+            protoBufMatcher?.Matcher != null ? new[] { protoBufMatcher.Matcher } : null ??
+            multiPartMatcher?.Matchers ??
+            graphQLMatcher?.Matchers ??
+            bodyMatcher?.Matchers;
+
+        var matchOperator =
+            multiPartMatcher?.MatchOperator ??
+            graphQLMatcher?.MatchOperator ??
+            bodyMatcher?.MatchOperator;
 
         if (bodyMatchers != null && matchOperator != null)
         {
