@@ -220,7 +220,6 @@ internal class MatcherMapper
                 model.ContentMatcher = Map(protoBufMatcher.JsonMatcher);
                 break;
 #endif
-
         }
 
         return model;
@@ -281,7 +280,7 @@ internal class MatcherMapper
 #endif
 
 #if PROTOBUF
-    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string? protoDefinition,  MatcherModel? matcher)
+    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string? protoDefinition, MatcherModel? matcher)
     {
         var jsonMatcher = Map(matcher?.ContentMatcher) as IJsonMatcher;
 

@@ -9,7 +9,7 @@ namespace WireMock.Net.Tests.Matchers;
 
 public class ProtoBufMatcherTests
 {
-    private const string TestProtoDefinition = @"
+    private const string ProtoDefinition = @"
 syntax = ""proto3"";
 
 package greet;
@@ -34,7 +34,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.SayHello");
+        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello");
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -50,7 +50,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.SayHello", jsonMatcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello", jsonMatcher: jsonMatcher);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -65,7 +65,7 @@ message HelloReply {
         var bytes = new byte[] { 1, 2, 3 };
 
         // Act
-        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.SayHello");
+        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello");
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -80,7 +80,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(TestProtoDefinition, "greet.Greeter.X");
+        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.X");
         var result = matcher.IsMatch(bytes);
 
         // Assert
