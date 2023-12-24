@@ -8,7 +8,7 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// <summary>
     /// The ProtoBufMatcher.
     /// </summary>
-    public ProtoBufMatcher? Matcher { get; }
+    public IBytesMatcher? Matcher { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageProtoBufMatcher"/> class.
@@ -29,9 +29,12 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-        if (requestMessage.BodyAsBytes == null)
-        {
-            return requestMatchResult.AddScore(GetType(), MatchScores.Mismatch, null);
-        }
+        var (score, exception) = GetMatchResult(requestMessage).Expand();
+        return requestMatchResult.AddScore(GetType(), score, exception);
+    }
+
+    private MatchResult GetMatchResult(IRequestMessage requestMessage)
+    {
+        return Matcher?.IsMatch(requestMessage.BodyAsBytes) ?? default;
     }
 }
