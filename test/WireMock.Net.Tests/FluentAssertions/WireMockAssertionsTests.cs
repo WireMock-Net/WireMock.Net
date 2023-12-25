@@ -240,8 +240,13 @@ public class WireMockAssertionsTests : IDisposable
         });
 
         // Assert
-        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer invalidToken");
-        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer validToken");
+        server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Authorization", "Bearer invalidToken").And.WithoutHeader("x", "y");
+
+        server.Should().
+            HaveReceivedACall()
+            .WithHeader("Authorization", "Bearer validToken").And.WithoutHeader("Authorization", "y");
     }
 
     [Fact]
