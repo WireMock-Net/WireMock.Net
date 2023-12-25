@@ -10,7 +10,7 @@ namespace WireMock.Net.Tests.RequestBuilders;
 
 public class RequestBuilderWithProtoBufTests
 {
-    private const string GrpcServiceMethod = "greet.Greeter.SayHello";
+    private const string MessageType = "greet.HelloRequest";
     private const string TestProtoDefinition = @"
 syntax = ""proto3"";
 
@@ -33,7 +33,7 @@ message HelloReply {
     public void RequestBuilder_WithGrpcProto_Without_JsonMatcher()
     {
         // Act
-        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, GrpcServiceMethod);
+        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, MessageType);
 
         // Assert
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
@@ -41,7 +41,7 @@ message HelloReply {
 
         var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher;
         protoBufMatcher.ProtoDefinition.Should().Be(TestProtoDefinition);
-        protoBufMatcher.GrpcServiceMethod.Should().Be(GrpcServiceMethod);
+        protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.JsonMatcher.Should().BeNull();
     }
 
@@ -50,7 +50,7 @@ message HelloReply {
     {
         // Act
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
-        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, GrpcServiceMethod, jsonMatcher);
+        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, MessageType, jsonMatcher);
 
         // Assert
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
@@ -58,7 +58,7 @@ message HelloReply {
 
         var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher;
         protoBufMatcher.ProtoDefinition.Should().Be(TestProtoDefinition);
-        protoBufMatcher.GrpcServiceMethod.Should().Be(GrpcServiceMethod);
+        protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.JsonMatcher.Should().BeOfType<JsonMatcher>();
     }
 }

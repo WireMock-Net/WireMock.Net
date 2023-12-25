@@ -9,6 +9,7 @@ namespace WireMock.Net.Tests.Matchers;
 
 public class ProtoBufMatcherTests
 {
+    private const string MessageType = "greet.HelloRequest";
     private const string ProtoDefinition = @"
 syntax = ""proto3"";
 
@@ -34,7 +35,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello");
+        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -50,7 +51,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello", jsonMatcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType, jsonMatcher: jsonMatcher);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -65,7 +66,7 @@ message HelloReply {
         var bytes = new byte[] { 1, 2, 3 };
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.SayHello");
+        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert

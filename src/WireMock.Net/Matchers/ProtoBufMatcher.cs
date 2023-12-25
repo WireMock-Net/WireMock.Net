@@ -3,6 +3,7 @@ using System;
 using ProtoBufJsonConverter;
 using ProtoBufJsonConverter.Models;
 using Stef.Validation;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -26,31 +27,31 @@ public class ProtoBufMatcher : IBytesMatcher
     /// <summary>
     /// The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".
     /// </summary>
-    public string GrpcServiceMethod { get; }
+    public string MessageType { get; }
 
     /// <summary>
     /// The JsonMatcher to use (optional).
     /// </summary>
     public IJsonMatcher? JsonMatcher { get; }
 
-    private static readonly IConverter ProtoBufToJsonConverter = new Converter();
+    private static readonly IConverter ProtoBufToJsonConverter = SingletonFactory<Converter>.GetInstance();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
     /// </summary>
     /// <param name="protoDefinition">The proto definition as a string.</param>
-    /// <param name="grpcServiceMethod">The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".</param>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
         string protoDefinition,
-        string grpcServiceMethod,
+        string messageType,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         IJsonMatcher? jsonMatcher = null
     )
     {
         ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
-        GrpcServiceMethod = Guard.NotNullOrWhiteSpace(grpcServiceMethod);
+        MessageType = Guard.NotNullOrWhiteSpace(messageType);
         JsonMatcher = jsonMatcher;
         MatchBehaviour = matchBehaviour;
     }
@@ -62,11 +63,11 @@ public class ProtoBufMatcher : IBytesMatcher
 
         if (input != null)
         {
-            var request = new ConvertToObjectRequest(ProtoDefinition, GrpcServiceMethod, input);
+            var request = new ConvertToObjectRequest(ProtoDefinition, MessageType, input);
 
             try
             {
-                var instance = ProtoBufToJsonConverter.ConvertToObject(request);
+                var instance = ProtoBufToJsonConverter.Convert(request);
 
                 result = JsonMatcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }

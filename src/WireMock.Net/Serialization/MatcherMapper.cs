@@ -216,7 +216,7 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.GrpcServiceMethod = protoBufMatcher.GrpcServiceMethod;
+                model.GrpcServiceMethod = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.JsonMatcher);
                 break;
 #endif

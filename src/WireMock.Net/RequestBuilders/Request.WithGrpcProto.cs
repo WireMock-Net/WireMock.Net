@@ -6,16 +6,16 @@ namespace WireMock.RequestBuilders;
 public partial class Request
 {
     /// <inheritdoc />
-    public IRequestBuilder WithGrpcProto(string protoDefinition, string grpcServiceMethod, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    public IRequestBuilder WithGrpcProto(string protoDefinition, string messageType, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageProtoBufMatcher(matchBehaviour, protoDefinition, grpcServiceMethod));
+        _requestMatchers.Add(new RequestMessageProtoBufMatcher(matchBehaviour, protoDefinition, messageType));
         return this;
     }
 
     /// <inheritdoc />
-    public IRequestBuilder WithGrpcProto(string protoDefinition, string grpcServiceMethod, IJsonMatcher jsonMatcher, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
+    public IRequestBuilder WithGrpcProto(string protoDefinition, string messageType, IJsonMatcher jsonMatcher, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageProtoBufMatcher(matchBehaviour, protoDefinition, grpcServiceMethod, jsonMatcher));
+        _requestMatchers.Add(new RequestMessageProtoBufMatcher(matchBehaviour, protoDefinition, messageType, jsonMatcher));
         return this;
     }
 }

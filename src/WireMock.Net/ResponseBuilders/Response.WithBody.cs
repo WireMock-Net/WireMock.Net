@@ -185,25 +185,63 @@ public partial class Response
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null)
+    public IResponseBuilder WithBody(object body, IJsonConverter jsonConverter, JsonConverterOptions? options = null)
     {
-        return WithBody(body, null, converter, options);
+        return WithBody(body, null, jsonConverter, options);
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, JsonConverterOptions? options = null)
+    public IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter jsonConverter, JsonConverterOptions? options = null)
     {
         Guard.NotNull(body);
-        Guard.NotNull(converter);
+        Guard.NotNull(jsonConverter);
 
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
         {
             Encoding = encoding,
             DetectedBodyType = BodyType.String,
-            BodyAsString = converter.Serialize(body, options)
+            BodyAsString = jsonConverter.Serialize(body, options)
         };
 
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithBodyAsProtoBuf(
+        string protoDefinition,
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    )
+    {
+        Guard.NotNullOrWhiteSpace(protoDefinition);
+        Guard.NotNullOrWhiteSpace(messageType);
+        Guard.NotNull(value);
+
+#if !PROTOBUF
+        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+#else
+        var request = new ProtoBufJsonConverter.Models.ConvertToProtoBufRequest(protoDefinition, messageType, value);
+        if (jsonConverter != null)
+        {
+            request = request.WithJsonConverter(jsonConverter);
+            if (options != null)
+            {
+                request = request.WithJsonConverterOptions(options);
+            }
+        }
+
+        var bytes = SingletonFactory<ProtoBufJsonConverter.Converter>.GetInstance().Convert(request);
+
+        ResponseMessage.BodyDestination = null;
+        ResponseMessage.BodyData = new BodyData
+        {
+            DetectedBodyType = BodyType.Bytes,
+            BodyAsBytes = bytes
+        };
+#endif
         return this;
     }
 }

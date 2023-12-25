@@ -15,12 +15,12 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="protoDefinition">The proto definition as a string.</param>
-    /// <param name="grpcServiceMethod">The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".</param>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
-    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, string protoDefinition, string grpcServiceMethod, IJsonMatcher? jsonMatcher = null)
+    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, string protoDefinition, string messageType, IJsonMatcher? jsonMatcher = null)
     {
 #if PROTOBUF
-        Matcher = new ProtoBufMatcher(protoDefinition, grpcServiceMethod, matchBehaviour, jsonMatcher);
+        Matcher = new ProtoBufMatcher(protoDefinition, messageType, matchBehaviour, jsonMatcher);
 #else
         throw new System.NotSupportedException("The ProtoBufMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #endif

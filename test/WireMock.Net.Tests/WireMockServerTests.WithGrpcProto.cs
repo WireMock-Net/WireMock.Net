@@ -15,7 +15,6 @@ namespace WireMock.Net.Tests;
 
 public partial class WireMockServerTests
 {
-    private const string GrpcServiceMethod = "greet.Greeter.SayHello";
     private const string ProtoDefinition = @"
 syntax = ""proto3"";
 
@@ -47,9 +46,14 @@ message HelloReply {
                 Request.Create()
                     .UsingPost()
                     .WithPath("/grpc/greet-Greeter-SayHello")
-                    .WithGrpcProto(ProtoDefinition, GrpcServiceMethod, jsonMatcher)
+                    .WithGrpcProto(ProtoDefinition, "greet.HelloRequest", jsonMatcher)
             )
-            .RespondWith(Response.Create());
+            .RespondWith(Response.Create()
+                .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply", new
+                {
+                    message = "hello"
+                })
+            );
 
         // Act
         var protoBuf = new ByteArrayContent(bytes);
@@ -60,6 +64,9 @@ message HelloReply {
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await response.Content.ReadAsByteArrayAsync();
+
+        Convert.ToBase64String(responseBytes).Should().Be("CgVoZWxsbw==");
 
         server.Stop();
     }
