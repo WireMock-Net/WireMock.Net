@@ -39,7 +39,7 @@ message HelloReply {
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
         matchers.Should().HaveCount(1);
 
-        var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher;
+        var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher!;
         protoBufMatcher.ProtoDefinition.Should().Be(TestProtoDefinition);
         protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.JsonMatcher.Should().BeNull();
@@ -56,7 +56,7 @@ message HelloReply {
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
         matchers.Should().HaveCount(1);
 
-        var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher;
+        var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher!;
         protoBufMatcher.ProtoDefinition.Should().Be(TestProtoDefinition);
         protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.JsonMatcher.Should().BeOfType<JsonMatcher>();
