@@ -132,7 +132,7 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
-            .WitHeader("Authorization", ("", new object[] { 1, 2 }));
+            .WitHeaderKey("Authorization");
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should().Throw<Exception>()
             .And.Message.Should()
-            .Contain("to contain \"Authorization\".");
+            .Contain("\"Authorization\"");
     }
 
     [Fact]
@@ -253,7 +253,7 @@ public class WireMockAssertionsTests : IDisposable
         // Assert
         server.Should()
             .HaveReceivedACall()
-            .WithHeader("Authorization", "Bearer invalidToken").And.WithoutHeader("x", "y").And.WithoutHeader("a");
+            .WithHeader("Authorization", "Bearer invalidToken").And.WithoutHeader("x", "y").And.WithoutHeaderKey("a");
 
         server.Should().
             HaveReceivedACall()
