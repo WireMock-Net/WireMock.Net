@@ -125,20 +125,27 @@ public partial class WireMockAssertions
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string value, string because = "", params object[] becauseArgs)
-        => WithHeader(expectedKey, new[] { value }, because, becauseArgs);
-
-    [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
+    public AndConstraint<WireMockAssertions> WitHeaderKey(string expectedKey, string because = "", params object[] becauseArgs)
     {
         using (new AssertionScope("headers from requests sent"))
         {
             _headers.Select(h => h.Key).Should().Contain(expectedKey, because, becauseArgs);
         }
 
+        return new AndConstraint<WireMockAssertions>(this);
+    }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string value, string because = "", params object[] becauseArgs)
+        => WithHeader(expectedKey, new[] { value }, because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithHeader(string expectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
+    {
         using (new AssertionScope($"header \"{expectedKey}\" from requests sent with value(s)"))
         {
-            var matchingHeaderValues = _headers.Where(h => h.Key == expectedKey).SelectMany(h => h.Value.ToArray()).ToArray();
+            var matchingHeaderValues = _headers.Where(h => h.Key == expectedKey).SelectMany(h => h.Value.ToArray())
+                .ToArray();
 
             if (expectedValues.Length == 1)
             {
@@ -150,6 +157,45 @@ public partial class WireMockAssertions
                 foreach (var expectedValue in expectedValues)
                 {
                     trimmedHeaderValues.Should().Contain(expectedValue, because, becauseArgs);
+                }
+            }
+        }
+
+        return new AndConstraint<WireMockAssertions>(this);
+    }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithoutHeaderKey(string unexpectedKey, string because = "", params object[] becauseArgs)
+    {
+        using (new AssertionScope("headers from requests sent"))
+        {
+            _headers.Select(h => h.Key).Should().NotContain(unexpectedKey, because, becauseArgs);
+        }
+
+        return new AndConstraint<WireMockAssertions>(this);
+    }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithoutHeader(string unexpectedKey, string value, string because = "", params object[] becauseArgs)
+        => WithoutHeader(unexpectedKey, new[] { value }, because, becauseArgs);
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithoutHeader(string unexpectedKey, string[] expectedValues, string because = "", params object[] becauseArgs)
+    {
+        using (new AssertionScope($"header \"{unexpectedKey}\" from requests sent with value(s)"))
+        {
+            var matchingHeaderValues = _headers.Where(h => h.Key == unexpectedKey).SelectMany(h => h.Value.ToArray()).ToArray();
+
+            if (expectedValues.Length == 1)
+            {
+                matchingHeaderValues.Should().NotContain(expectedValues.First(), because, becauseArgs);
+            }
+            else
+            {
+                var trimmedHeaderValues = string.Join(",", matchingHeaderValues.Select(x => x)).Split(',').Select(x => x.Trim()).ToList();
+                foreach (var expectedValue in expectedValues)
+                {
+                    trimmedHeaderValues.Should().NotContain(expectedValue, because, becauseArgs);
                 }
             }
         }

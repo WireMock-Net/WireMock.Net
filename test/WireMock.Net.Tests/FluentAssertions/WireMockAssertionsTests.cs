@@ -132,6 +132,17 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
+            .WitHeaderKey("Authorization");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_WhenACallWasMadeWithExpectedHeaderWithValue_Should_BeOK()
+    {
+        _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer a");
+        await _httpClient.GetAsync("").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
             .WithHeader("Authorization", "Bearer a");
     }
 
@@ -163,7 +174,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should().Throw<Exception>()
             .And.Message.Should()
-            .Contain("to contain \"Authorization\".");
+            .Contain("\"Authorization\"");
     }
 
     [Fact]
@@ -240,8 +251,13 @@ public class WireMockAssertionsTests : IDisposable
         });
 
         // Assert
-        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer invalidToken");
-        server.Should().HaveReceivedACall().WithHeader("Authorization", "Bearer validToken");
+        server.Should()
+            .HaveReceivedACall()
+            .WithHeader("Authorization", "Bearer invalidToken").And.WithoutHeader("x", "y").And.WithoutHeaderKey("a");
+
+        server.Should().
+            HaveReceivedACall()
+            .WithHeader("Authorization", "Bearer validToken").And.WithoutHeader("Authorization", "y");
     }
 
     [Fact]
