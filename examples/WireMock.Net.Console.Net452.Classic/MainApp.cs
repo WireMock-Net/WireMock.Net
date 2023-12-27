@@ -199,13 +199,13 @@ message HelloReply {
                 )
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/grpc")
-                    //.WithHeader("grpc-status", "0")
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
                         new
                         {
                             message = "hello stef"
                         }
                     )
+                    .WithTrailingHeader("grpc-status", "0")
                 );
 #endif
 

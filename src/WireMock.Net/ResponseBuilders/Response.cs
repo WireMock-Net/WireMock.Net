@@ -155,43 +155,7 @@ public partial class Response : IResponseBuilder
     {
         return WithStatusCode((int)HttpStatusCode.NotFound);
     }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
-    public IResponseBuilder WithHeader(string name, params string[] values)
-    {
-        Guard.NotNull(name);
-
-        ResponseMessage.AddHeader(name, values);
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, WireMockList{string}})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, WireMockList<string>> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers;
-        return this;
-    }
-
+    
     /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
     public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile)
     {

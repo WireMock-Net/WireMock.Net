@@ -54,6 +54,10 @@
         <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
+        <DefineConstants>$(DefineConstants);TRAILINGHEADERS</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
         <PackageReference Include="JsonConverter.Abstractions" Version="0.5.0" />

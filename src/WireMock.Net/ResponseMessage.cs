@@ -14,8 +14,11 @@ namespace WireMock;
 /// </summary>
 public class ResponseMessage : IResponseMessage
 {
-    /// <inheritdoc cref="IResponseMessage.Headers" />
+    /// <inheritdoc />
     public IDictionary<string, WireMockList<string>>? Headers { get; set; } = new Dictionary<string, WireMockList<string>>();
+
+    /// <inheritdoc />
+    public IDictionary<string, WireMockList<string>>? TrailingHeaders { get; set; } = new Dictionary<string, WireMockList<string>>();
 
     /// <inheritdoc cref="IResponseMessage.StatusCode" />
     public object? StatusCode { get; set; }
@@ -35,23 +38,43 @@ public class ResponseMessage : IResponseMessage
     /// <inheritdoc cref="IResponseMessage.FaultPercentage" />
     public double? FaultPercentage { get; set; }
 
-    /// <inheritdoc cref="IResponseMessage.AddHeader(string, string)" />
+    /// <inheritdoc />
     public void AddHeader(string name, string value)
     {
         Headers ??= new Dictionary<string, WireMockList<string>>();
         Headers.Add(name, value);
     }
 
-    /// <inheritdoc cref="IResponseMessage.AddHeader(string, string[])" />
+    /// <inheritdoc />
     public void AddHeader(string name, params string[] values)
     {
         Guard.NotNullOrEmpty(values);
 
         Headers ??= new Dictionary<string, WireMockList<string>>();
-        var newHeaderValues = Headers.TryGetValue(name, out WireMockList<string>? existingValues)
+        var newHeaderValues = Headers.TryGetValue(name, out var existingValues)
             ? values.Union(existingValues).ToArray()
             : values;
 
         Headers[name] = newHeaderValues;
+    }
+
+    /// <inheritdoc />
+    public void AddTrailingHeader(string name, string value)
+    {
+        TrailingHeaders ??= new Dictionary<string, WireMockList<string>>();
+        TrailingHeaders.Add(name, value);
+    }
+
+    /// <inheritdoc />
+    public void AddTrailingHeader(string name, params string[] values)
+    {
+        Guard.NotNullOrEmpty(values);
+
+        TrailingHeaders ??= new Dictionary<string, WireMockList<string>>();
+        var newHeaderValues = TrailingHeaders.TryGetValue(name, out var existingValues)
+            ? values.Union(existingValues).ToArray()
+            : values;
+
+        TrailingHeaders[name] = newHeaderValues;
     }
 }

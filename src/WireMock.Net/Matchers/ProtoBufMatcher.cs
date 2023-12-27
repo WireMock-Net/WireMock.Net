@@ -25,7 +25,7 @@ public class ProtoBufMatcher : IBytesMatcher
     public string ProtoDefinition { get; }
 
     /// <summary>
-    /// The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".
+    /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
     /// </summary>
     public string MessageType { get; }
 

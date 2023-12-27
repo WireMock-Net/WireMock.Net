@@ -110,9 +110,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-#if NETCOREAPP3_1 || NET5_0_OR_GREATER || NET461_OR_GREATER || NETSTANDARD2_0 || NETSTANDARD2_1
-            // response.AppendTrailer("grpc-status", "0");
-#endif
+            SetResponseTrailingHeaders(responseMessage, response);
         }
 
         private int MapStatusCode(int code)
@@ -185,6 +183,34 @@ namespace WireMock.Owin.Mappers
                     }
                 }
             }
+        }
+
+        private static void SetResponseTrailingHeaders(IResponseMessage responseMessage, IResponse response)
+        {
+            if (responseMessage.TrailingHeaders == null)
+            {
+                return;
+            }
+
+#if TRAILINGHEADERS
+            foreach (var item in responseMessage.TrailingHeaders)
+            {
+                var headerName = item.Key;
+                var value = item.Value;
+                if (ResponseHeadersToFix.ContainsKey(headerName))
+                {
+                    ResponseHeadersToFix[headerName]?.Invoke(response, value);
+                }
+                else
+                {
+                    // Check if this response header can be added (#148 and #227)
+                    if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(headerName))
+                    {
+                        response.AppendTrailer(headerName, new Microsoft.Extensions.Primitives.StringValues(value.ToArray()));
+                    }
+                }
+            }
+#endif
         }
 
         private static void AppendResponseHeader(IResponse response, string headerName, string[] values)
