@@ -110,18 +110,22 @@ namespace WireMock.Owin
         {
             try
             {
+#if NETCOREAPP3_1 || NET5_0_OR_GREATER
+                var appLifetime = _host.Services.GetRequiredService<Microsoft.Extensions.Hosting.IHostApplicationLifetime>();
+#else
                 var appLifetime = _host.Services.GetRequiredService<IApplicationLifetime>();
+#endif
                 appLifetime.ApplicationStarted.Register(() =>
                 {
                     var addresses = _host.ServerFeatures
-                        .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()
+                        .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()!
                         .Addresses;
 
-                    foreach (string address in addresses)
+                    foreach (var address in addresses)
                     {
                         Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
 
-                        PortUtils.TryExtract(address, out _, out _, out _, out int port);
+                        PortUtils.TryExtract(address, out _, out _, out _, out _, out var port);
                         Ports.Add(port);
                     }
 

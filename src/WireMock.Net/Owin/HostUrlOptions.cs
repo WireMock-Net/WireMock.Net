@@ -37,11 +37,11 @@ internal class HostUrlOptions
         }
         else
         {
-            foreach (string url in Urls)
+            foreach (var url in Urls)
             {
-                if (PortUtils.TryExtract(url, out var isHttps, out var protocol, out var host, out var port))
+                if (PortUtils.TryExtract(url, out var isHttps, out var isGrpc, out var protocol, out var host, out var port))
                 {
-                    list.Add(new HostUrlDetails { IsHttps = isHttps, Url = url, Scheme = protocol, Host = host, Port = port });
+                    list.Add(new HostUrlDetails { IsHttps = isHttps, IsGrpc = isGrpc, Url = url, Scheme = protocol, Host = host, Port = port });
                 }
             }
         }

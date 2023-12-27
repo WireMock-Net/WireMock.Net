@@ -474,14 +474,9 @@ message HelloReply {
 ";
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
 
-        var protobufResponse = new
-        {
-            message = "hello"
-        };
-
         var request = Request.Create()
             .UsingPost()
-            .WithPath("/grpc/greet-Greeter-SayHello")
+            .WithPath("/grpc/greet.Greeter/SayHello")
             .WithBodyAsProtoBuf(protoDefinition, "greet.HelloRequest", jsonMatcher);
 
         var response = Response.Create();

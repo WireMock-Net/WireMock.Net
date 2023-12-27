@@ -32,11 +32,13 @@ message HelloReply {
   string message = 1;
 }
 ";
-    [Fact]
-    public async Task WireMockServer_WithBodyAsProtoBuf()
+    [Theory]
+    [InlineData("CgRzdGVm")]
+    [InlineData("AAAAAAYKBHN0ZWY=")]
+    public async Task WireMockServer_WithBodyAsProtoBuf(string data)
     {
         // Arrange
-        var bytes = Convert.FromBase64String("CgRzdGVm");
+        var bytes = Convert.FromBase64String(data);
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
 
         using var server = WireMockServer.Start();
@@ -44,7 +46,7 @@ message HelloReply {
         server
             .Given(Request.Create()
                 .UsingPost()
-                .WithPath("/grpc/greet-Greeter-SayHello")
+                .WithPath("/grpc/greet.Greeter/SayHello")
                 .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", jsonMatcher)
             )
             .RespondWith(Response.Create()
@@ -61,7 +63,7 @@ message HelloReply {
         protoBuf.Headers.ContentType = new MediaTypeHeaderValue("application/grpc-web");
 
         var client = server.CreateClient();
-        var response = await client.PostAsync("/grpc/greet-Greeter-SayHello", protoBuf);
+        var response = await client.PostAsync("/grpc/greet.Greeter/SayHello", protoBuf);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

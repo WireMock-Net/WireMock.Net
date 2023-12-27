@@ -48,6 +48,13 @@ namespace WireMock.Owin
                         });
                     });
                 }
+                else if (urlDetail.IsGrpc)
+                {
+                    kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http2;
+                    });
+                }
                 else
                 {
                     kestrelOptions.ListenAnyIP(urlDetail.Port);
