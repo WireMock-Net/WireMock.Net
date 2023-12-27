@@ -33,7 +33,7 @@ message HelloReply {
     public void RequestBuilder_WithGrpcProto_Without_JsonMatcher()
     {
         // Act
-        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, MessageType);
+        var requestBuilder = (Request)Request.Create().WithBodyAsProtoBuf(TestProtoDefinition, MessageType);
 
         // Assert
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");
@@ -50,7 +50,7 @@ message HelloReply {
     {
         // Act
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
-        var requestBuilder = (Request)Request.Create().WithGrpcProto(TestProtoDefinition, MessageType, jsonMatcher);
+        var requestBuilder = (Request)Request.Create().WithBodyAsProtoBuf(TestProtoDefinition, MessageType, jsonMatcher);
 
         // Assert
         var matchers = requestBuilder.GetPrivateFieldValue<IList<IRequestMatcher>>("_requestMatchers");

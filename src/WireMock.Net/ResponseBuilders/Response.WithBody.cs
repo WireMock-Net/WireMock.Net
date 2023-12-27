@@ -238,8 +238,11 @@ public partial class Response
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
         {
-            DetectedBodyType = BodyType.Bytes,
-            BodyAsBytes = bytes
+            DetectedBodyType = BodyType.ProtoBuf,
+            BodyAsBytes = bytes,
+            BodyAsProtoBufJson = value,
+            ProtoDefinition = protoDefinition,
+            ProtoBufMessageType = messageType
         };
 #endif
         return this;

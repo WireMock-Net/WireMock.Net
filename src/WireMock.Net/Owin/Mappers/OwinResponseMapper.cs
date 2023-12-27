@@ -138,6 +138,9 @@ namespace WireMock.Owin.Mappers
                     var jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
+                case BodyType.ProtoBuf:
+                    return responseMessage.BodyData.BodyAsBytes;
+
                 case BodyType.Bytes:
                     return responseMessage.BodyData.BodyAsBytes;
 

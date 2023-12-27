@@ -3,7 +3,7 @@
   UpdatedAt: DateTime_1,
   Title: ,
   Description: ,
-  Priority: 42,
+  Priority: 41,
   Request: {
     Path: {
       Matchers: [
@@ -48,8 +48,6 @@ message HelloReply {
       }
     }
   },
-  Response: {
-    BodyAsBytes: CgVoZWxsbw==
-  },
+  Response: {},
   UseWebhooksFireAndForget: false
 }

@@ -10,7 +10,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// Grpc ProtoBuf Matcher
 /// </summary>
-/// <inheritdoc cref="IObjectMatcher"/>
+/// <inheritdoc cref="IBytesMatcher"/>
 public class ProtoBufMatcher : IBytesMatcher
 {
     /// <inheritdoc />
@@ -20,7 +20,7 @@ public class ProtoBufMatcher : IBytesMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// The proto definition as a string.
+    /// The proto definition.
     /// </summary>
     public string ProtoDefinition { get; }
 
@@ -37,9 +37,9 @@ public class ProtoBufMatcher : IBytesMatcher
     private static readonly IConverter ProtoBufToJsonConverter = SingletonFactory<Converter>.GetInstance();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GraphQLMatcher"/> class.
+    /// Initializes a new instance of the <see cref="ProtoBufMatcher"/> class.
     /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinition">The proto definition.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>

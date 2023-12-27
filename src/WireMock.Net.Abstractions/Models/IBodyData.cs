@@ -10,7 +10,7 @@ namespace WireMock.Util;
 public interface IBodyData
 {
     /// <summary>
-    /// The body (as bytearray).
+    /// The body (as byte array).
     /// </summary>
     byte[]? BodyAsBytes { get; set; }
 
@@ -68,4 +68,21 @@ public interface IBodyData
     /// Defines if this BodyData is the result of a dynamically created response-string. (
     /// </summary>
     public string? IsFuncUsed { get; set; }
+
+    #region ProtoBuf
+    /// <summary>
+    /// Gets or sets the proto definition.
+    /// </summary>
+    public string? ProtoDefinition { get; set; }
+
+    /// <summary>
+    /// Gets or sets the full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
+    /// </summary>
+    public string? ProtoBufMessageType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the body as JSON object (which defines a ProtoBuf message byte array).
+    /// </summary>
+    public object? BodyAsProtoBufJson { get; set; }
+    #endregion
 }

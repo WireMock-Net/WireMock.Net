@@ -419,43 +419,7 @@ internal class MappingConverter
                 mappingModel.Response.UseTransformerForBodyAsFile = response.UseTransformerForBodyAsFile;
             }
 
-            if (response.ResponseMessage.BodyData != null)
-            {
-                switch (response.ResponseMessage.BodyData?.DetectedBodyType)
-                {
-                    case BodyType.String:
-                    case BodyType.FormUrlEncoded:
-                        mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
-                        break;
-
-                    case BodyType.Json:
-                        mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
-                        if (response.ResponseMessage.BodyData.BodyAsJsonIndented == true)
-                        {
-                            mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
-                        }
-                        break;
-
-                    case BodyType.Bytes:
-                        mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
-                        break;
-
-                    case BodyType.File:
-                        mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
-                        mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
-                        break;
-                }
-
-                if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
-                {
-                    mappingModel.Response.BodyEncoding = new EncodingModel
-                    {
-                        EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
-                        CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
-                        WebName = response.ResponseMessage.BodyData.Encoding.WebName
-                    };
-                }
-            }
+            MapResponse(response, mappingModel);
 
             if (response.ResponseMessage.FaultType != FaultType.NONE)
             {
@@ -468,6 +432,56 @@ internal class MappingConverter
         }
 
         return mappingModel;
+    }
+
+    private static void MapResponse(Response response, MappingModel mappingModel)
+    {
+        if (response.ResponseMessage.BodyData == null)
+        {
+            return;
+        }
+
+        switch (response.ResponseMessage.BodyData?.DetectedBodyType)
+        {
+            case BodyType.String:
+            case BodyType.FormUrlEncoded:
+                mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
+                break;
+
+            case BodyType.Json:
+                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
+                if (response.ResponseMessage.BodyData.BodyAsJsonIndented == true)
+                {
+                    mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                }
+                break;
+
+            case BodyType.ProtoBuf:
+                mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition;
+                mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
+                mappingModel.Response.BodyAsBytes = null;
+                mappingModel.Response.BodyAsProtoBufJson = response.ResponseMessage.BodyData.BodyAsProtoBufJson;
+                break;
+
+            case BodyType.Bytes:
+                mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
+                break;
+
+            case BodyType.File:
+                mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
+                mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
+                break;
+        }
+
+        if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+        {
+            mappingModel.Response.BodyEncoding = new EncodingModel
+            {
+                EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
+                CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
+                WebName = response.ResponseMessage.BodyData.Encoding.WebName
+            };
+        }
     }
 
     private static string GetString(IStringMatcher stringMatcher)

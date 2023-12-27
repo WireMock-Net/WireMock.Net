@@ -27,7 +27,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_IMatcher_Null()
+    public void MatcherMapper_Map_Matcher_IMatcher_Null()
     {
         // Act
         var model = _sut.Map((IMatcher?)null);
@@ -37,7 +37,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_IMatchers_Null()
+    public void MatcherMapper_Map_Matcher_IMatchers_Null()
     {
         // Act
         var model = _sut.Map((IMatcher[]?)null);
@@ -47,7 +47,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_IMatchers()
+    public void MatcherMapper_Map_Matcher_IMatchers()
     {
         // Assign
         var matcherMock1 = new Mock<IStringMatcher>();
@@ -62,7 +62,7 @@ public class MatcherMapperTests
 
 #if MIMEKIT
     [Fact]
-    public void MatcherMapper_Map_MimePartMatcher()
+    public void MatcherMapper_Map_Matcher_MimePartMatcher()
     {
         // Arrange
         var bytes = Convert.FromBase64String("c3RlZg==");
@@ -95,7 +95,7 @@ public class MatcherMapperTests
 #endif
 
     [Fact]
-    public void MatcherMapper_Map_IStringMatcher()
+    public void MatcherMapper_Map_Matcher_IStringMatcher()
     {
         // Assign
         var matcherMock = new Mock<IStringMatcher>();
@@ -115,7 +115,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_IStringMatcher_With_PatternAsFile()
+    public void MatcherMapper_Map_Matcher_IStringMatcher_With_PatternAsFile()
     {
         // Arrange
         var pattern = new StringPattern { Pattern = "p", PatternAsFile = "pf" };
@@ -136,7 +136,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_IIgnoreCaseMatcher()
+    public void MatcherMapper_Map_Matcher_IIgnoreCaseMatcher()
     {
         // Assign
         var matcherMock = new Mock<IIgnoreCaseMatcher>();
@@ -150,7 +150,7 @@ public class MatcherMapperTests
     }
 
     [Fact]
-    public void MatcherMapper_Map_XPathMatcher()
+    public void MatcherMapper_Map_Matcher_XPathMatcher()
     {
         // Assign
         var xmlNamespaceMap = new[]
@@ -171,7 +171,7 @@ public class MatcherMapperTests
 
 #if GRAPHQL
     [Fact]
-    public void MatcherMapper_Map_GraphQLMatcher()
+    public void MatcherMapper_Map_Matcher_GraphQLMatcher()
     {
         // Assign
         const string testSchema = @"
@@ -196,6 +196,47 @@ public class MatcherMapperTests
         model.Name.Should().Be(nameof(GraphQLMatcher));
         model.Pattern.Should().Be(testSchema);
         model.CustomScalars.Should().BeEquivalentTo(customScalars);
+    }
+#endif
+
+#if PROTOBUF
+    [Fact]
+    public void MatcherMapper_Map_Matcher_ProtoBufMatcher()
+    {
+        // Arrange
+        const string protoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
+        const string messageType = "greet.HelloRequest";
+
+        var jsonPattern = new { name = "stef" };
+        var jsonMatcher = new JsonMatcher(jsonPattern);
+
+        var matcher = new ProtoBufMatcher(protoDefinition, messageType, jsonMatcher: jsonMatcher);
+
+        // Act
+        var model = _sut.Map(matcher)!;
+
+        // Assert
+        model.Name.Should().Be(nameof(ProtoBufMatcher));
+        model.Pattern.Should().Be(protoDefinition);
+        model.ProtoBufMessageType.Should().Be(messageType);
+        model.ContentMatcher?.Name.Should().Be("JsonMatcher");
+        model.ContentMatcher?.Pattern.Should().Be(jsonPattern);
     }
 #endif
 

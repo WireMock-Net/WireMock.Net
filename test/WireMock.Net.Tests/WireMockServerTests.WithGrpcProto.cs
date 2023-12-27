@@ -33,7 +33,7 @@ message HelloReply {
 }
 ";
     [Fact]
-    public async Task WireMockServer_WithGrpcProto()
+    public async Task WireMockServer_WithBodyAsProtoBuf()
     {
         // Arrange
         var bytes = Convert.FromBase64String("CgRzdGVm");
@@ -45,7 +45,7 @@ message HelloReply {
             .Given(Request.Create()
                 .UsingPost()
                 .WithPath("/grpc/greet-Greeter-SayHello")
-                .WithGrpcProto(ProtoDefinition, "greet.HelloRequest", jsonMatcher)
+                .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", jsonMatcher)
             )
             .RespondWith(Response.Create()
                 .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",

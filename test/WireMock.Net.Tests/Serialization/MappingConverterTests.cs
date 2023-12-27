@@ -452,7 +452,7 @@ public partial class MappingConverterTests
 
 #if PROTOBUF
     [Fact]
-    public Task ToMappingModel_Request_WithGrpcProto_ReturnsCorrectModel()
+    public Task ToMappingModel_Request_WithBodyAsProtoBuf_ReturnsCorrectModel()
     {
         // Arrange
         const string protoDefinition = @"
@@ -482,12 +482,54 @@ message HelloReply {
         var request = Request.Create()
             .UsingPost()
             .WithPath("/grpc/greet-Greeter-SayHello")
-            .WithGrpcProto(protoDefinition, "greet.HelloRequest", jsonMatcher);
+            .WithBodyAsProtoBuf(protoDefinition, "greet.HelloRequest", jsonMatcher);
+
+        var response = Response.Create();
+
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 41, null, null, null, null, null, false, null, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithBodyAsProtoBuf_ReturnsCorrectModel()
+    {
+        // Arrange
+        const string protoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
+        var protobufResponse = new
+        {
+            message = "hello"
+        };
+
+        var request = Request.Create();
 
         var response = Response.Create()
             .WithBodyAsProtoBuf(protoDefinition, "greet.HelloReply", protobufResponse);
 
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 43, null, null, null, null, null, false, null, null, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
