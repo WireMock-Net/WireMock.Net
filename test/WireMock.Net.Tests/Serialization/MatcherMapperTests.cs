@@ -1024,9 +1024,9 @@ message HelloReply {
   string message = 1;
 }
 ";
-        var jsonMatcherPattern = new { name = "stef" };
+        const string messageType = "greet.HelloRequest";
 
-        var messageType = "greet.HelloRequest";
+        var jsonMatcherPattern = new { name = "stef" };
 
         var model = new MatcherModel
         {
@@ -1046,8 +1046,8 @@ message HelloReply {
         // Assert
         matcher.ProtoDefinition.Should().Be(protoDefinition);
         matcher.Name.Should().Be(nameof(ProtoBufMatcher));
-        matcher.MessageType.Should().BeEquivalentTo(messageType);
-        matcher.JsonMatcher?.Value.Should().BeEquivalentTo(jsonMatcherPattern);
+        matcher.MessageType.Should().Be(messageType);
+        matcher.JsonMatcher?.Value.Should().Be(jsonMatcherPattern);
     }
 #endif
 }
