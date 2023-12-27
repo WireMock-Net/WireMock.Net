@@ -111,7 +111,7 @@ namespace WireMock.Owin.Mappers
             }
 
 #if NETCOREAPP3_1 || NET5_0_OR_GREATER || NET461_OR_GREATER || NETSTANDARD2_0 || NETSTANDARD2_1
-            response.AppendTrailer("grpc-status", "0");
+            // response.AppendTrailer("grpc-status", "0");
 #endif
         }
 

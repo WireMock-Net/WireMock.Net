@@ -69,7 +69,7 @@ message HelloReply {
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
-        Convert.ToBase64String(responseBytes).Should().Be("CgVoZWxsbw==");
+        Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcKBWhlbGxv");
 
         server.Stop();
     }
