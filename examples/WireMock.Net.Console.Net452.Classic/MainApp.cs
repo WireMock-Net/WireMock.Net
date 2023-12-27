@@ -197,6 +197,7 @@ message HelloReply {
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
                 )
                 .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc+proto")
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
                         new
                         {
