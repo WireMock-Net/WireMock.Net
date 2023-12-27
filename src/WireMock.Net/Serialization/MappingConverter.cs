@@ -337,7 +337,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.OfType<IWebhook>().ToArray() ?? EmptyArray<IWebhook>.Value;
+        var nonNullableWebHooks = mapping.Webhooks?.ToArray() ?? EmptyArray<IWebhook>.Value;
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
@@ -356,9 +356,10 @@ internal class MappingConverter
         var matchOperator =
             multiPartMatcher?.MatchOperator ??
             graphQLMatcher?.MatchOperator ??
-            bodyMatcher?.MatchOperator;
+            bodyMatcher?.MatchOperator ??
+            MatchOperator.Or;
 
-        if (bodyMatchers != null && matchOperator != null)
+        if (bodyMatchers != null)
         {
             mappingModel.Request.Body = new BodyModel();
 

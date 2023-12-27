@@ -1,0 +1,24 @@
+{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          Name: WildcardMatcher,
+          Pattern: /grpc/greet-Greeter-SayHello,
+          IgnoreCase: false
+        }
+      ]
+    },
+    Methods: [
+      POST
+    ]
+  },
+  Response: {
+  },
+  UseWebhooksFireAndForget: false
+}

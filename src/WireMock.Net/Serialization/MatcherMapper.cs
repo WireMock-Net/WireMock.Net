@@ -216,7 +216,8 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.GrpcServiceMethod = protoBufMatcher.MessageType;
+                model.Pattern = protoBufMatcher.ProtoDefinition;
+                model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.JsonMatcher);
                 break;
 #endif
@@ -286,7 +287,7 @@ internal class MatcherMapper
 
         return new ProtoBufMatcher(
             protoDefinition ?? string.Empty,
-            matcher?.GrpcServiceMethod ?? string.Empty,
+            matcher?.ProtoBufMessageType ?? string.Empty,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
             jsonMatcher
         );

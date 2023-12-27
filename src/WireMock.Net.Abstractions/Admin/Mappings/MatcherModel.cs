@@ -81,9 +81,9 @@ public class MatcherModel
 
     #region ProtoBufMatcher
     /// <summary>
-    /// The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".
+    /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
     /// </summary>
-    public string? GrpcServiceMethod { get; set; }
+    public string? ProtoBufMessageType { get; set; }
     #endregion
 
     #region XPathMatcher

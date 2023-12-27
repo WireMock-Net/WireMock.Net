@@ -1001,4 +1001,53 @@ public class MatcherMapperTests
         matcher.CustomScalars.Should().BeEquivalentTo(customScalars);
     }
 #endif
+
+#if PROTOBUF
+    [Fact]
+    public void MatcherMapper_Map_MatcherModel_ProtoBufMatcher()
+    {
+        // Arrange
+        const string protoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
+        var jsonMatcherPattern = new { name = "stef" };
+
+        var messageType = "greet.HelloRequest";
+
+        var model = new MatcherModel
+        {
+            Name = nameof(ProtoBufMatcher),
+            Pattern = protoDefinition,
+            ProtoBufMessageType = messageType,
+            ContentMatcher = new MatcherModel
+            {
+                Name = nameof(JsonMatcher),
+                Pattern = jsonMatcherPattern
+            }
+        };
+
+        // Act
+        var matcher = (ProtoBufMatcher)_sut.Map(model)!;
+
+        // Assert
+        matcher.ProtoDefinition.Should().Be(protoDefinition);
+        matcher.Name.Should().Be(nameof(ProtoBufMatcher));
+        matcher.MessageType.Should().BeEquivalentTo(messageType);
+        matcher.JsonMatcher?.Value.Should().BeEquivalentTo(jsonMatcherPattern);
+    }
+#endif
 }

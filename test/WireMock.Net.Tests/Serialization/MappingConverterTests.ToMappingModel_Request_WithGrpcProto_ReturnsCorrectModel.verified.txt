@@ -1,0 +1,55 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 42,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          Name: WildcardMatcher,
+          Pattern: /grpc/greet-Greeter-SayHello,
+          IgnoreCase: false
+        }
+      ]
+    },
+    Methods: [
+      POST
+    ],
+    Body: {
+      Matcher: {
+        Name: ProtoBufMatcher,
+        Pattern:
+syntax = "proto3";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+,
+        ContentMatcher: {
+          Name: JsonMatcher,
+          Pattern: {
+            name: stef
+          },
+          IgnoreCase: false
+        },
+        ProtoBufMessageType: greet.HelloRequest
+      }
+    }
+  },
+  Response: {
+    BodyAsBytes: CgVoZWxsbw==
+  },
+  UseWebhooksFireAndForget: false
+}
