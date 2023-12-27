@@ -223,23 +223,12 @@ public partial class Response
 #if !PROTOBUF
         throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
-        var request = new ProtoBufJsonConverter.Models.ConvertToProtoBufRequest(protoDefinition, messageType, value);
-        if (jsonConverter != null)
-        {
-            request = request.WithJsonConverter(jsonConverter);
-            if (options != null)
-            {
-                request = request.WithJsonConverterOptions(options);
-            }
-        }
-
-        var bytes = SingletonFactory<ProtoBufJsonConverter.Converter>.GetInstance().Convert(request);
 
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
         {
             DetectedBodyType = BodyType.ProtoBuf,
-            BodyAsBytes = bytes,
+            BodyAsBytes = ProtoBufUtils.GetProtoBufMessageWithHeader(protoDefinition, messageType, value, jsonConverter, options),
             BodyAsProtoBufJson = value,
             ProtoDefinition = protoDefinition,
             ProtoBufMessageType = messageType

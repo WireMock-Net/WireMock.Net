@@ -31,6 +31,8 @@ internal partial class AspNetCoreSelfHost
                         {
                             corsPolicyBuilder.AllowAnyOrigin();
                         }
+
+                        corsPolicyBuilder.WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
                     }));
         }
     }

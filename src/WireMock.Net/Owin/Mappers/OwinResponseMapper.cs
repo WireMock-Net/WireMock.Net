@@ -13,6 +13,7 @@ using WireMock.Http;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 using Stef.Validation;
+
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
@@ -108,6 +109,10 @@ namespace WireMock.Owin.Mappers
                     _options.Logger.Warn("Error writing response body. Exception : {0}", ex);
                 }
             }
+
+#if NETCOREAPP3_1 || NET5_0_OR_GREATER || NET461_OR_GREATER || NETSTANDARD2_0 || NETSTANDARD2_1
+            response.AppendTrailer("grpc-status", "0");
+#endif
         }
 
         private int MapStatusCode(int code)

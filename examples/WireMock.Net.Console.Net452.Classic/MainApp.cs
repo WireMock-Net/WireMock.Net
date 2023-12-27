@@ -150,9 +150,10 @@ message HelloReply {
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
             string urlGrpc = "grpc://localhost:9093/";
-
+            
             server = WireMockServer.Start(new WireMockServerSettings
             {
+                CorsPolicyOptions = CorsPolicyOptions.AllowAll,
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3, urlGrpc },
                 StartAdminInterface = true,
@@ -197,11 +198,12 @@ message HelloReply {
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
                 )
                 .RespondWith(Response.Create()
-                    .WithHeader("Content-Type", "application/grpc+proto")
+                    .WithHeader("Content-Type", "application/grpc")
+                    //.WithHeader("grpc-status", "0")
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
                         new
                         {
-                            message = "hello"
+                            message = "hello stef"
                         }
                     )
                 );
