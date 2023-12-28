@@ -42,7 +42,6 @@ namespace WireMock.Owin.Mappers
             var cookies = new Dictionary<string, string>();
             if (request.Cookies.Any())
             {
-                cookies = new Dictionary<string, string>();
                 foreach (var cookie in request.Cookies)
                 {
                     cookies.Add(cookie.Key, cookie.Value);
