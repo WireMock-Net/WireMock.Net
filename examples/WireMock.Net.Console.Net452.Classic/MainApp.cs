@@ -150,7 +150,7 @@ message HelloReply {
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
             string urlGrpc = "grpc://localhost:9093/";
-            
+
             server = WireMockServer.Start(new WireMockServerSettings
             {
                 // CorsPolicyOptions = CorsPolicyOptions.AllowAll,
@@ -206,6 +206,7 @@ message HelloReply {
                         }
                     )
                     .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
                 );
 #endif
 
@@ -374,8 +375,8 @@ message HelloReply {
                         Url = "http://localhost:9999",
                         ReplaceSettings = new ProxyUrlReplaceSettings
                         {
-                           OldValue = "old",
-                           NewValue = "new"
+                            OldValue = "old",
+                            NewValue = "new"
                         }
                     })
                 );
