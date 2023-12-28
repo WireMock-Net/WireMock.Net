@@ -210,6 +210,23 @@ public partial class WireMockServer : IWireMockServer
     }
 
     /// <summary>
+    /// Starts this WireMockServer with the specified settings.
+    /// </summary>
+    /// <param name="action">The action to configure the WireMockServerSettings.</param>
+    /// <returns>The <see cref="WireMockServer"/>.</returns>
+    [PublicAPI]
+    public static WireMockServer Start(Action<WireMockServerSettings> action)
+    {
+        Guard.NotNull(action);
+
+        var settings = new WireMockServerSettings();
+
+        action(settings);
+
+        return new WireMockServer(settings);
+    }
+
+    /// <summary>
     /// Start this WireMockServer.
     /// </summary>
     /// <param name="port">The port.</param>

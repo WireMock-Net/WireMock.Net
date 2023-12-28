@@ -6,6 +6,9 @@
   Priority: 43,
   Request: {},
   Response: {
+    TrailingHeaders: {
+      grpc-status: 0
+    },
     ProtoDefinition:
 syntax = "proto3";
 

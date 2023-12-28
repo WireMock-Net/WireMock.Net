@@ -32,6 +32,7 @@ message HelloReply {
   string message = 1;
 }
 ";
+
     [Theory]
     [InlineData("CgRzdGVm")]
     [InlineData("AAAAAAYKBHN0ZWY=")]
@@ -56,6 +57,7 @@ message HelloReply {
                         message = "hello"
                     }
                 )
+                // .WithTrailingHeader("grpc-status", "0")
             );
 
         // Act

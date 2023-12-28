@@ -407,6 +407,11 @@ internal class MappingConverter
                 mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
             }
 
+            if (response.ResponseMessage.TrailingHeaders is { Count: > 0 })
+            {
+                mappingModel.Response.TrailingHeaders = MapHeaders(response.ResponseMessage.TrailingHeaders);
+            }
+
             if (response.UseTransformer)
             {
                 mappingModel.Response.UseTransformer = response.UseTransformer;

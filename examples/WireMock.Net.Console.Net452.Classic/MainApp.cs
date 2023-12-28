@@ -153,7 +153,7 @@ message HelloReply {
             
             server = WireMockServer.Start(new WireMockServerSettings
             {
-                CorsPolicyOptions = CorsPolicyOptions.AllowAll,
+                // CorsPolicyOptions = CorsPolicyOptions.AllowAll,
                 AllowCSharpCodeMatcher = true,
                 Urls = new[] { url1, url2, url3, urlGrpc },
                 StartAdminInterface = true,

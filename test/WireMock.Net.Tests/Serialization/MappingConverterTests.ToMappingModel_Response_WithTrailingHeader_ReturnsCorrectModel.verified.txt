@@ -1,0 +1,15 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Request: {},
+  Response: {
+    TrailingHeaders: {
+      x1: y,
+      x2: [
+        y,
+        z
+      ]
+    }
+  },
+  UseWebhooksFireAndForget: false
+}

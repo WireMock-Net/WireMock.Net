@@ -364,7 +364,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithHeader_And_Cookie_ReturnsCorrectModel()
+    public Task ToMappingModel_Request_WithHeader_And_Cookie_ReturnsCorrectModel()
     {
         // Assign
         var request = Request.Create()
@@ -380,7 +380,9 @@ public partial class MappingConverterTests
             .WithCookie("IgnoreCase_true", "cv-4")
             .WithCookie("ExactMatcher", new ExactMatcher("c-exact"))
             ;
+
         var response = Response.Create();
+
         var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
 
         // Act
@@ -392,6 +394,98 @@ public partial class MappingConverterTests
         // Verify
         return Verifier.Verify(model);
     }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithHeader_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithHeader("x1", "y")
+            .WithHeader("x2", "y", "z")
+            .WithHeaders(new Dictionary<string, string> { { "d", "test" } })
+            .WithHeaders(new Dictionary<string, string[]> { { "d[]", new[] { "v1", "v2" } } })
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w", new WireMockList<string>("x") } })
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithHeaders_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+#if TRAILINGHEADERS
+    [Fact]
+    public Task ToMappingModel_Response_WithTrailingHeader_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithTrailingHeader("x1", "y")
+            .WithTrailingHeader("x2", "y", "z");
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithTrailingHeaders_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithTrailingHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+#endif
 
     [Fact]
     public Task ToMappingModel_WithParam_ReturnsCorrectModel()
@@ -522,7 +616,8 @@ message HelloReply {
         var request = Request.Create();
 
         var response = Response.Create()
-            .WithBodyAsProtoBuf(protoDefinition, "greet.HelloReply", protobufResponse);
+            .WithBodyAsProtoBuf(protoDefinition, "greet.HelloReply", protobufResponse)
+            .WithTrailingHeader("grpc-status", "0");
 
         var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 43, null, null, null, null, null, false, null, null, null);
 

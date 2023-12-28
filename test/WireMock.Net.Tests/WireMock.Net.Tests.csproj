@@ -30,6 +30,10 @@
         <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
+        <DefineConstants>$(DefineConstants);TRAILINGHEADERS</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="Util\JsonUtilsTests.cs" />
     </ItemGroup>
@@ -103,6 +107,15 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
+
+        <PackageReference Include="Google.Protobuf" Version="3.25.1" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.60.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <Protobuf Include="Grpc\greet.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>
@@ -114,6 +127,9 @@
         </None>
         <None Update="cert.pem">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Grpc\greet.proto">
+          <GrpcServices>Client</GrpcServices>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,7 +1,7 @@
 using Greet;
 using Grpc.Net.Client;
 
-namespace WireMock.Net.GrpcClient;
+namespace WireMock.Net.Console.GrpcClient;
 
 internal class Program
 {
@@ -23,6 +23,6 @@ internal class Program
 
         var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
 
-        Console.WriteLine("Greeting: " + reply.Message);
+        System.Console.WriteLine("Greeting: " + reply.Message);
     }
 }

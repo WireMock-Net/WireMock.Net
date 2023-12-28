@@ -85,6 +85,11 @@ public class ResponseModel
     public string? HeadersRaw { get; set; }
 
     /// <summary>
+    /// Gets or sets the Trailing Headers.
+    /// </summary>
+    public IDictionary<string, object>? TrailingHeaders { get; set; }
+
+    /// <summary>
     /// Gets or sets the delay in milliseconds.
     /// </summary>
     public int? Delay { get; set; }
