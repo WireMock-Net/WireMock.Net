@@ -61,6 +61,7 @@ public static class WireMockServerSettingsParser
             WatchStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappings)),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappingsInSubdirectories)),
             HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
+            UseHttp2 = parser.GetBoolValue(nameof(WireMockServerSettings.UseHttp2)),
             DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
             QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
             Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture)
@@ -98,7 +99,6 @@ public static class WireMockServerSettingsParser
                 {
                     settings.Logger = logger;
                 }
-
                 break;
         }
     }

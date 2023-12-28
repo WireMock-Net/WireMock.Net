@@ -14,6 +14,8 @@ internal class HostUrlOptions
 
     public HostingScheme HostingScheme { get; set; }
 
+    public bool? UseHttp2 { get; set; }
+
     public IReadOnlyList<HostUrlDetails> GetDetails()
     {
         var list = new List<HostUrlDetails>();
@@ -23,16 +25,16 @@ internal class HostUrlOptions
             {
                 var port = Port > 0 ? Port.Value : FindFreeTcpPort();
                 var scheme = HostingScheme == HostingScheme.Https ? "https" : "http";
-                list.Add(new HostUrlDetails { IsHttps = HostingScheme == HostingScheme.Https, Url = $"{scheme}://{Localhost}:{port}", Scheme = scheme, Host = Localhost, Port = port });
+                list.Add(new HostUrlDetails { IsHttps = HostingScheme == HostingScheme.Https, IsHttp2 = UseHttp2 == true, Url = $"{scheme}://{Localhost}:{port}", Scheme = scheme, Host = Localhost, Port = port });
             }
 
             if (HostingScheme == HostingScheme.HttpAndHttps)
             {
                 var httpPort = Port > 0 ? Port.Value : FindFreeTcpPort();
-                list.Add(new HostUrlDetails { IsHttps = false, Url = $"http://{Localhost}:{httpPort}", Scheme = "http", Host = Localhost, Port = httpPort });
+                list.Add(new HostUrlDetails { IsHttps = false, IsHttp2 = UseHttp2 == true, Url = $"http://{Localhost}:{httpPort}", Scheme = "http", Host = Localhost, Port = httpPort });
 
                 var httpsPort = FindFreeTcpPort(); // In this scenario, always get a free port for https.
-                list.Add(new HostUrlDetails { IsHttps = true, Url = $"https://{Localhost}:{httpsPort}", Scheme = "https", Host = Localhost, Port = httpsPort });
+                list.Add(new HostUrlDetails { IsHttps = true, IsHttp2 = UseHttp2 == true, Url = $"https://{Localhost}:{httpsPort}", Scheme = "https", Host = Localhost, Port = httpsPort });
             }
         }
         else
@@ -41,7 +43,7 @@ internal class HostUrlOptions
             {
                 if (PortUtils.TryExtract(url, out var isHttps, out var isGrpc, out var protocol, out var host, out var port))
                 {
-                    list.Add(new HostUrlDetails { IsHttps = isHttps, IsGrpc = isGrpc, Url = url, Scheme = protocol, Host = host, Port = port });
+                    list.Add(new HostUrlDetails { IsHttps = isHttps, IsHttp2 = isGrpc, Url = url, Scheme = protocol, Host = host, Port = port });
                 }
             }
         }

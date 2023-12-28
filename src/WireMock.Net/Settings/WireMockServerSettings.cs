@@ -44,6 +44,12 @@ public class WireMockServerSettings
     public HostingScheme? HostingScheme { get; set; }
 
     /// <summary>
+    /// Gets or sets to use HTTP 2 (used for Grpc).
+    /// </summary>
+    [PublicAPI]
+    public bool? UseHttp2 { get; set; }
+
+    /// <summary>
     /// Gets or sets whether to start admin interface.
     /// </summary>
     [PublicAPI]

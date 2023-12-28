@@ -46,9 +46,14 @@ namespace WireMock.Owin
                                 options.ClientCertificateValidation = (_, _, _) => true;
                             }
                         });
+
+                        if (urlDetail.IsHttp2)
+                        {
+                            listenOptions.Protocols = HttpProtocols.Http2;
+                        }
                     });
                 }
-                else if (urlDetail.IsGrpc)
+                else if (urlDetail.IsHttp2)
                 {
                     kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
                     {

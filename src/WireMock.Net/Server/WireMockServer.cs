@@ -230,15 +230,17 @@ public partial class WireMockServer : IWireMockServer
     /// Start this WireMockServer.
     /// </summary>
     /// <param name="port">The port.</param>
-    /// <param name="ssl">The SSL support.</param>
+    /// <param name="useSSL">The SSL support.</param>
+    /// <param name="useHttp2">Use HTTP 2 (needed for Grpc).</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer Start(int? port = 0, bool ssl = false)
+    public static WireMockServer Start(int? port = 0, bool useSSL = false, bool useHttp2 = false)
     {
         return new WireMockServer(new WireMockServerSettings
         {
             Port = port,
-            UseSSL = ssl
+            UseSSL = useSSL,
+            UseHttp2 = useHttp2
         });
     }
 
@@ -262,15 +264,17 @@ public partial class WireMockServer : IWireMockServer
     /// Start this WireMockServer with the admin interface.
     /// </summary>
     /// <param name="port">The port.</param>
-    /// <param name="ssl">The SSL support.</param>
+    /// <param name="useSSL">The SSL support.</param>
+    /// <param name="useHttp2">Use HTTP 2 (needed for Grpc).</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer StartWithAdminInterface(int? port = 0, bool ssl = false)
+    public static WireMockServer StartWithAdminInterface(int? port = 0, bool useSSL = false, bool useHttp2 = false)
     {
         return new WireMockServer(new WireMockServerSettings
         {
             Port = port,
-            UseSSL = ssl,
+            UseSSL = useSSL,
+            UseHttp2 = useHttp2,
             StartAdminInterface = true
         });
     }
@@ -283,7 +287,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public static WireMockServer StartWithAdminInterface(params string[] urls)
     {
-        Guard.NotNullOrEmpty(urls, nameof(urls));
+        Guard.NotNullOrEmpty(urls);
 
         return new WireMockServer(new WireMockServerSettings
         {
@@ -346,6 +350,7 @@ public partial class WireMockServer : IWireMockServer
                 urlOptions = new HostUrlOptions
                 {
                     HostingScheme = settings.HostingScheme.Value,
+                    UseHttp2 = settings.UseHttp2,
                     Port = settings.Port
                 };
             }
@@ -354,6 +359,7 @@ public partial class WireMockServer : IWireMockServer
                 urlOptions = new HostUrlOptions
                 {
                     HostingScheme = settings.UseSSL == true ? HostingScheme.Https : HostingScheme.Http,
+                    UseHttp2 = settings.UseHttp2,
                     Port = settings.Port
                 };
             }

@@ -20,10 +20,7 @@ public partial class WireMockServerTests
         // Arrange
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
 
-        using var server = WireMockServer.Start(settings =>
-        {
-            settings.Urls = new[] { "grpc://localhost:9093" };
-        });
+        using var server = WireMockServer.Start(useHttp2: true);
 
         server
             .Given(Request.Create()
@@ -46,7 +43,7 @@ public partial class WireMockServerTests
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-        var channel = GrpcChannel.ForAddress("http://localhost:9093", new GrpcChannelOptions
+        var channel = GrpcChannel.ForAddress(server.Url!, new GrpcChannelOptions
         {
             HttpHandler = handler,
             Credentials = Grpc.Core.ChannelCredentials.Insecure
