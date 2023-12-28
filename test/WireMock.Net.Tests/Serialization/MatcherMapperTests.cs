@@ -226,7 +226,7 @@ message HelloReply {
         var jsonPattern = new { name = "stef" };
         var jsonMatcher = new JsonMatcher(jsonPattern);
 
-        var matcher = new ProtoBufMatcher(protoDefinition, messageType, jsonMatcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(protoDefinition, messageType, matcher: jsonMatcher);
 
         // Act
         var model = _sut.Map(matcher)!;
@@ -777,7 +777,7 @@ message HelloReply {
         var matcher = (ExactObjectMatcher)_sut.Map(model)!;
 
         // Assert
-        Check.That(matcher.ValueAsBytes).ContainsExactly(new byte[] { 115, 116, 101, 102 });
+        Check.That((byte[])matcher.Value).ContainsExactly(new byte[] { 115, 116, 101, 102 });
     }
 
     [Fact]
@@ -1088,7 +1088,7 @@ message HelloReply {
         matcher.ProtoDefinition.Should().Be(protoDefinition);
         matcher.Name.Should().Be(nameof(ProtoBufMatcher));
         matcher.MessageType.Should().Be(messageType);
-        matcher.JsonMatcher?.Value.Should().Be(jsonMatcherPattern);
+        matcher.Matcher?.Value.Should().Be(jsonMatcherPattern);
     }
 #endif
 }

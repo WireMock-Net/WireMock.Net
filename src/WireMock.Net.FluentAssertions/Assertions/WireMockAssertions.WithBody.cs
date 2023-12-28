@@ -44,11 +44,11 @@ public partial class WireMockAssertions
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithBodyAsJson(IValueMatcher matcher, string because = "", params object[] becauseArgs)
+    public AndConstraint<WireMockAssertions> WithBodyAsJson(IObjectMatcher matcher, string because = "", params object[] becauseArgs)
     {
         var (filter, condition) = BuildFilterAndCondition(r => r.BodyAsJson, matcher);
 
-        return ExecuteAssertionWithBodyAsJsonValueMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsJson);
+        return ExecuteAssertionWithBodyAsIObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsJson);
     }
 
     [CustomAssertion]
@@ -89,8 +89,8 @@ public partial class WireMockAssertions
         return new AndConstraint<WireMockAssertions>(this);
     }
 
-    private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyAsJsonValueMatcher(
-        IValueMatcher matcher,
+    private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyAsIObjectMatcher(
+        IObjectMatcher matcher,
         string because,
         object[] becauseArgs,
         Func<IReadOnlyList<IRequestMessage>, bool> condition,
@@ -134,13 +134,13 @@ public partial class WireMockAssertions
             .ForCondition(requests => _callsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
-                matcher.ValueAsObject ?? matcher.ValueAsBytes
+                matcher.Value
             )
             .Then
             .ForCondition(condition)
             .FailWith(
                 MessageFormat,
-                _ => matcher.ValueAsObject ?? matcher.ValueAsBytes,
+                _ => matcher.Value,
                 requests => requests.Select(expression)
             );
 

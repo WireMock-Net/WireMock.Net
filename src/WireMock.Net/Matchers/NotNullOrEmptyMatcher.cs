@@ -24,7 +24,10 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     public NotNullOrEmptyMatcher(MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
         MatchBehaviour = matchBehaviour;
+        Value = string.Empty;
     }
+
+    public object Value { get; }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)

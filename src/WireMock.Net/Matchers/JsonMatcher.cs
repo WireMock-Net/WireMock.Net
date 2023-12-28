@@ -15,7 +15,7 @@ public class JsonMatcher : IJsonMatcher
     /// <inheritdoc />
     public virtual string Name => nameof(JsonMatcher);
 
-    /// <inheritdoc cref="IValueMatcher.Value"/>
+    /// <inheritdoc cref="IObjectMatcher.Value"/>
     public object Value { get; }
 
     /// <inheritdoc />

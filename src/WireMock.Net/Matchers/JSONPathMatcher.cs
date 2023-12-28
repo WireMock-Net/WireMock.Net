@@ -52,6 +52,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     /// <inheritdoc />
@@ -75,6 +76,8 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
+
+    public object Value { get; }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)

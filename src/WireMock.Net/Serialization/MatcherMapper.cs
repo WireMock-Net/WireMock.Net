@@ -195,14 +195,9 @@ internal class MatcherMapper
                 }
                 break;
 
-            // If the matcher is a IValueMatcher, get the value (can be string or object).
-            case IValueMatcher valueMatcher:
-                model.Pattern = valueMatcher.Value;
-                break;
-
-            // If the matcher is a ExactObjectMatcher, get the ValueAsObject or ValueAsBytes.
-            case ExactObjectMatcher exactObjectMatcher:
-                model.Pattern = exactObjectMatcher.ValueAsObject ?? exactObjectMatcher.ValueAsBytes;
+            // If the matcher is a IObjectMatcher, get the value (can be string or object or byte[]).
+            case IObjectMatcher objectMatcher:
+                model.Pattern = objectMatcher.Value;
                 break;
 
 #if MIMEKIT
@@ -218,7 +213,7 @@ internal class MatcherMapper
             case ProtoBufMatcher protoBufMatcher:
                 model.Pattern = protoBufMatcher.ProtoDefinition;
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
-                model.ContentMatcher = Map(protoBufMatcher.JsonMatcher);
+                model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;
 #endif
         }
@@ -283,13 +278,13 @@ internal class MatcherMapper
 #if PROTOBUF
     private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string? protoDefinition, MatcherModel? matcher)
     {
-        var jsonMatcher = Map(matcher?.ContentMatcher) as IJsonMatcher;
+        var objectMatcher = Map(matcher?.ContentMatcher) as IObjectMatcher;
 
         return new ProtoBufMatcher(
             protoDefinition ?? string.Empty,
             matcher?.ProtoBufMessageType ?? string.Empty,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
-            jsonMatcher
+            objectMatcher
         );
     }
 #endif

@@ -10,15 +10,10 @@ namespace WireMock.Matchers;
 public class ExactObjectMatcher : IObjectMatcher
 {
     /// <summary>
-    /// Gets the value as object.
+    /// Gets the value.
     /// </summary>
-    public object? ValueAsObject { get; }
-
-    /// <summary>
-    /// Gets the value as byte[].
-    /// </summary>
-    public byte[]? ValueAsBytes { get; }
-
+    public object Value { get; }
+    
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
@@ -37,7 +32,7 @@ public class ExactObjectMatcher : IObjectMatcher
     /// <param name="value">The value.</param>
     public ExactObjectMatcher(MatchBehaviour matchBehaviour, object value)
     {
-        ValueAsObject = Guard.NotNull(value);
+        Value = Guard.NotNull(value);
         MatchBehaviour = matchBehaviour;
     }
 
@@ -56,21 +51,21 @@ public class ExactObjectMatcher : IObjectMatcher
     /// <param name="value">The value.</param>
     public ExactObjectMatcher(MatchBehaviour matchBehaviour, byte[] value)
     {
-        ValueAsBytes = Guard.NotNull(value);
+        Value = Guard.NotNull(value);
         MatchBehaviour = matchBehaviour;
     }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)
     {
-        bool equals = false;
-        if (ValueAsObject != null)
+        bool equals;
+        if (Value is byte[] valueAsBytes && input is byte[] inputAsBytes)
         {
-            equals = Equals(ValueAsObject, input);
+            equals = valueAsBytes.SequenceEqual(inputAsBytes);
         }
-        else if (input != null)
+        else
         {
-            equals = ValueAsBytes?.SequenceEqual((byte[])input) == true;
+            equals = Equals(Value, input);
         }
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, MatchScores.ToScore(equals));

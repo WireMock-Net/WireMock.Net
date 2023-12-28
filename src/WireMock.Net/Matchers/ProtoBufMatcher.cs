@@ -30,9 +30,9 @@ public class ProtoBufMatcher : IBytesMatcher
     public string MessageType { get; }
 
     /// <summary>
-    /// The JsonMatcher to use (optional).
+    /// The Matcher to use (optional).
     /// </summary>
-    public IJsonMatcher? JsonMatcher { get; }
+    public IObjectMatcher? Matcher { get; }
 
     private static readonly IConverter ProtoBufToJsonConverter = SingletonFactory<Converter>.GetInstance();
 
@@ -42,17 +42,17 @@ public class ProtoBufMatcher : IBytesMatcher
     /// <param name="protoDefinition">The proto definition.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
-    /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
+    /// <param name="matcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
         string protoDefinition,
         string messageType,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
-        IJsonMatcher? jsonMatcher = null
+        IObjectMatcher? matcher = null
     )
     {
         ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
         MessageType = Guard.NotNullOrWhiteSpace(messageType);
-        JsonMatcher = jsonMatcher;
+        Matcher = matcher;
         MatchBehaviour = matchBehaviour;
     }
 
@@ -69,7 +69,7 @@ public class ProtoBufMatcher : IBytesMatcher
             {
                 var instance = ProtoBufToJsonConverter.Convert(request);
 
-                result = JsonMatcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
+                result = Matcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }
             catch (Exception e)
             {

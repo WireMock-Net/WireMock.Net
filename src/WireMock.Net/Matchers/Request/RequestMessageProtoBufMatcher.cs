@@ -16,11 +16,11 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="protoDefinition">The proto definition as a string.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
-    /// <param name="jsonMatcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
-    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, string protoDefinition, string messageType, IJsonMatcher? jsonMatcher = null)
+    /// <param name="matcher">The optional matcher to use to match the ProtoBuf as (json) object.</param>
+    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, string protoDefinition, string messageType, IObjectMatcher? matcher = null)
     {
 #if PROTOBUF
-        Matcher = new ProtoBufMatcher(protoDefinition, messageType, matchBehaviour, jsonMatcher);
+        Matcher = new ProtoBufMatcher(protoDefinition, messageType, matchBehaviour, matcher);
 #else
         throw new System.NotSupportedException("The ProtoBufMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #endif

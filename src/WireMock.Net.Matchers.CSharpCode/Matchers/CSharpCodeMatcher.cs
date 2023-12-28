@@ -54,12 +54,15 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     public MatchResult IsMatch(string? input)
     {
         return IsMatchInternal(input);
     }
+
+    public object Value { get; }
 
     public MatchResult IsMatch(object? input)
     {

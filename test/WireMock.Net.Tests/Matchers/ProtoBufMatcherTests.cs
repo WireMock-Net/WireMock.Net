@@ -51,7 +51,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType, jsonMatcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType, matcher: jsonMatcher);
         var result = matcher.IsMatch(bytes);
 
         // Assert

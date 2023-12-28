@@ -61,6 +61,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     /// <inheritdoc />
@@ -84,6 +85,8 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
+
+    public object Value { get; }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)
