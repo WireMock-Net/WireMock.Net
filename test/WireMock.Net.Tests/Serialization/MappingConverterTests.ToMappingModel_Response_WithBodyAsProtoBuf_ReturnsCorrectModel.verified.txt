@@ -6,6 +6,9 @@
   Priority: 43,
   Request: {},
   Response: {
+    BodyAsJson: {
+      message: hello
+    },
     TrailingHeaders: {
       grpc-status: 0
     },
@@ -26,10 +29,7 @@ message HelloReply {
   string message = 1;
 }
 ,
-    ProtoBufMessageType: greet.HelloReply,
-    BodyAsProtoBufJson: {
-      message: hello
-    }
+    ProtoBufMessageType: greet.HelloReply
   },
   UseWebhooksFireAndForget: false
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using WireMock.Types;
 
+// ReSharper disable once CheckNamespace
 namespace WireMock.Util;
 
 /// <summary>
@@ -51,9 +52,5 @@ public class BodyData : IBodyData
 
     /// <inheritdoc />
     public string? ProtoBufMessageType { get; set; }
-
-    /// <inheritdoc />
-    public object? BodyAsProtoBufJson { get; set; }
-    
     #endregion
 }

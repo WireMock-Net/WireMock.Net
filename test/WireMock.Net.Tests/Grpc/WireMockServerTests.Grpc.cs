@@ -33,10 +33,11 @@ public partial class WireMockServerTests
                 .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
                     new
                     {
-                        message = "hello stef"
+                        message = "hello stef {{request.method}}"
                     }
                 )
                 .WithTrailingHeader("grpc-status", "0")
+                .WithTransformer()
             );
 
         // Act
@@ -54,7 +55,7 @@ public partial class WireMockServerTests
         var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
 
         // Assert
-        reply.Message.Should().Be("hello stef");
+        reply.Message.Should().Be("hello stef POST");
 
         server.Stop();
     }

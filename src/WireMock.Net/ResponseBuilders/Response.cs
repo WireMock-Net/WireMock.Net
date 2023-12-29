@@ -268,6 +268,12 @@ public partial class Response : IResponseBuilder
             {
                 responseMessage.Headers = ResponseMessage.Headers;
             }
+
+            // Copy TrailingHeaders from ResponseMessage (if defined)
+            if (ResponseMessage.TrailingHeaders?.Count > 0)
+            {
+                responseMessage.TrailingHeaders = ResponseMessage.TrailingHeaders;
+            }
         }
 
         if (UseTransformer)

@@ -13,6 +13,7 @@ using WireMock.Http;
 using WireMock.ResponseBuilders;
 using WireMock.Types;
 using Stef.Validation;
+using WireMock.Util;
 
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
@@ -141,8 +142,10 @@ namespace WireMock.Owin.Mappers
                     var jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
+#if PROTOBUF
                 case BodyType.ProtoBuf:
-                    return responseMessage.BodyData.BodyAsBytes;
+                    return ProtoBufUtils.GetProtoBufMessageWithHeader(responseMessage.BodyData.ProtoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson);
+#endif
 
                 case BodyType.Bytes:
                     return responseMessage.BodyData.BodyAsBytes;

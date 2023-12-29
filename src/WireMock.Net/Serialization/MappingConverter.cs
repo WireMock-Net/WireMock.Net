@@ -465,7 +465,7 @@ internal class MappingConverter
                 mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition;
                 mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
                 mappingModel.Response.BodyAsBytes = null;
-                mappingModel.Response.BodyAsProtoBufJson = response.ResponseMessage.BodyData.BodyAsProtoBufJson;
+                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
                 break;
 
             case BodyType.Bytes:

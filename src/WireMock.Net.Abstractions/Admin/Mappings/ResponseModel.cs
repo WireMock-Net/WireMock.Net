@@ -139,10 +139,5 @@ public class ResponseModel
     /// Gets or sets the full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
     /// </summary>
     public string? ProtoBufMessageType { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the body as JSON object (which defines a ProtoBuf message byte array).
-    /// </summary>
-    public object? BodyAsProtoBufJson { get; set; }
     #endregion
 }

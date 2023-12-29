@@ -92,17 +92,14 @@ internal class Transformer : ITransformer
         responseMessage.FaultPercentage = original.FaultPercentage;
 
         responseMessage.Headers = TransformHeaders(transformerContext, model, original.Headers);
+        responseMessage.TrailingHeaders = TransformHeaders(transformerContext, model, original.TrailingHeaders);
 
-        switch (original.StatusCode)
+        responseMessage.StatusCode = original.StatusCode switch
         {
-            case int statusCodeAsInteger:
-                responseMessage.StatusCode = statusCodeAsInteger;
-                break;
-
-            case string statusCodeAsString:
-                responseMessage.StatusCode = transformerContext.ParseAndRender(statusCodeAsString, model);
-                break;
-        }
+            int statusCodeAsInteger => statusCodeAsInteger,
+            string statusCodeAsString => transformerContext.ParseAndRender(statusCodeAsString, model),
+            _ => responseMessage.StatusCode
+        };
 
         return responseMessage;
     }
@@ -123,13 +120,13 @@ internal class Transformer : ITransformer
         switch (original.DetectedBodyType)
         {
             case BodyType.Json:
+            case BodyType.ProtoBuf:
                 return TransformBodyAsJson(transformerContext, options, model, original);
 
             case BodyType.File:
                 return TransformBodyAsFile(transformerContext, model, original, useTransformerForBodyAsFile);
 
-            case BodyType.String:
-            case BodyType.FormUrlEncoded:
+            case BodyType.String or BodyType.FormUrlEncoded:
                 return TransformBodyAsString(transformerContext, model, original);
 
             default:
@@ -191,6 +188,8 @@ internal class Transformer : ITransformer
             Encoding = original.Encoding,
             DetectedBodyType = original.DetectedBodyType,
             DetectedBodyTypeFromContentType = original.DetectedBodyTypeFromContentType,
+            ProtoDefinition = original.ProtoDefinition,
+            ProtoBufMessageType = original.ProtoBufMessageType,
             BodyAsJson = jToken
         };
     }
