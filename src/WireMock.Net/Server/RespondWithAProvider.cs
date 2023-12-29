@@ -43,6 +43,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
 
     public object? Data { get; private set; }
 
+    public string? ProtoDefinition { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
     /// </summary>
@@ -76,7 +78,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <param name="provider">The provider.</param>
     public void RespondWith(IResponseProvider provider)
     {
-        var mapping = new Mapping(
+        var mapping = new Mapping
+        (
             Guid,
             _dateTimeUtils.UtcNow,
             _title,
@@ -94,13 +97,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
             _useWebhookFireAndForget,
             TimeSettings,
             Data,
-            _probability);
+            _probability
+        );
 
         _registrationCallback(mapping, _saveToFile);
     }
 
     /// <inheritdoc />
-    [PublicAPI]
     public IRespondWithAProvider WithData(object data)
     {
         Data = data;
@@ -117,7 +120,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithGuid(Guid guid)
     {
         Guid = guid;
-
         return this;
     }
 
@@ -133,7 +135,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithDescription(string description)
     {
         _description = description;
-
         return this;
     }
 
@@ -141,7 +142,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithPath(string path)
     {
         _path = path;
-
         return this;
     }
 
@@ -149,15 +149,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider AtPriority(int priority)
     {
         _priority = priority;
-
         return this;
     }
 
     /// <inheritdoc />
     public IRespondWithAProvider InScenario(string scenario)
     {
-        _scenario = scenario;
-
+        _scenario = Guard.NotNullOrWhiteSpace(scenario);
         return this;
     }
 
@@ -209,9 +207,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public IRespondWithAProvider WithTimeSettings(ITimeSettings timeSettings)
     {
-        Guard.NotNull(timeSettings, nameof(timeSettings));
-
-        TimeSettings = timeSettings;
+        TimeSettings = Guard.NotNull(timeSettings);
 
         return this;
     }
@@ -219,10 +215,9 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
     {
-        Guard.HasNoNulls(webhooks, nameof(webhooks));
+        Guard.HasNoNulls(webhooks);
 
         Webhooks = webhooks;
-
         return this;
     }
 
@@ -283,14 +278,19 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget)
     {
         _useWebhookFireAndForget = useWebhooksFireAndForget;
-
         return this;
     }
 
     public IRespondWithAProvider WithProbability(double probability)
     {
         _probability = Guard.Condition(probability, p => p is >= 0 and <= 1.0);
+        return this;
+    }
 
+    /// <inheritdoc />
+    public IRespondWithAProvider WithProtoDefinition(string protoDefinition)
+    {
+        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
         return this;
     }
 
@@ -299,7 +299,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
         string method,
         IDictionary<string, WireMockList<string>>? headers,
         bool useTransformer,
-        TransformerType transformerType)
+        TransformerType transformerType
+    )
     {
         return new Webhook
         {

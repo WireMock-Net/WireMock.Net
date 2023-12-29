@@ -14,7 +14,7 @@ namespace WireMock.Net.Tests;
 public partial class WireMockServerTests
 {
     [Fact]
-    public async Task WireMockServer_WithBodyAsProtoBuf_UsingGrpcGeneratedClient()
+    public async Task WireMockServer_WithBodyAsProtoBuf_InlineProtoDefinition_UsingGrpcGeneratedClient()
     {
         // Arrange
         using var server = WireMockServer.Start(useHttp2: true);

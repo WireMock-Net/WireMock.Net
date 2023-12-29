@@ -184,4 +184,11 @@ public interface IRespondWithAProvider
     /// <param name="probability">The probability when this request should be matched. Value is between 0 and 1.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithProbability(double probability);
+
+    /// <summary>
+    /// Add a Grpc ProtoDefinition which is used for the request and the response.
+    /// </summary>
+    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithProtoDefinition(string protoDefinition);
 }
