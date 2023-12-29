@@ -48,7 +48,7 @@ internal static class PortUtils
         if (match.Success)
         {
             protocol = match.Groups["proto"].Value;
-            isHttps = protocol.StartsWith("https", StringComparison.OrdinalIgnoreCase);
+            isHttps = protocol.StartsWith("https", StringComparison.OrdinalIgnoreCase) || protocol.StartsWith("grpcs", StringComparison.OrdinalIgnoreCase);
             isHttp2 = protocol.StartsWith("grpc", StringComparison.OrdinalIgnoreCase);
             host = match.Groups["host"].Value;
 

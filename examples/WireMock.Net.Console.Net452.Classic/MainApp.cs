@@ -150,12 +150,13 @@ message HelloReply {
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
             string urlGrpc = "grpc://localhost:9093/";
+            string urlGrpcSSL = "grpcs://localhost:9094/";
 
             server = WireMockServer.Start(new WireMockServerSettings
             {
                 // CorsPolicyOptions = CorsPolicyOptions.AllowAll,
                 AllowCSharpCodeMatcher = true,
-                Urls = new[] { url1, url2, url3, urlGrpc },
+                Urls = new[] { url1, url2, url3, urlGrpc, urlGrpcSSL },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
                 SaveUnmatchedRequests = true,

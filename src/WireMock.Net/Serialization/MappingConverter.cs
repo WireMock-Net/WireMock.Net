@@ -123,7 +123,7 @@ internal class MappingConverter
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
             {
-                sb.AppendLine("        // .WithMultiPart() is not yet supported"); // TODO
+                sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
         }
 #endif
@@ -131,7 +131,7 @@ internal class MappingConverter
 #if PROTOBUF
         if (requestMessageProtoBufMatcher is { Matcher: { } })
         {
-            sb.AppendLine("        // .WithGrpcProto() is not yet supported"); // TODO
+            sb.AppendLine("        // .WithBodyAsProtoBuf() is not yet supported");
         }
 #endif
 
@@ -189,6 +189,14 @@ internal class MappingConverter
             }
         }
 
+        if (response.ResponseMessage.TrailingHeaders is { })
+        {
+            foreach (var header in response.ResponseMessage.TrailingHeaders)
+            {
+                sb.AppendLine($"        .WithTrailingHeader(\"{header.Key}\", {ToValueArguments(header.Value.ToArray())})");
+            }
+        }
+
         if (response.ResponseMessage.BodyData is { } bodyData)
         {
             switch (response.ResponseMessage.BodyData.DetectedBodyType)
@@ -197,6 +205,7 @@ internal class MappingConverter
                 case BodyType.FormUrlEncoded:
                     sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyData.BodyAsString)})");
                     break;
+
                 case BodyType.Json:
                     if (bodyData.BodyAsJson is string bodyStringValue)
                     {

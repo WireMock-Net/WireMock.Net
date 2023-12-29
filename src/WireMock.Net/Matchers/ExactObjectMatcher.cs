@@ -9,11 +9,9 @@ namespace WireMock.Matchers;
 /// <seealso cref="IObjectMatcher" />
 public class ExactObjectMatcher : IObjectMatcher
 {
-    /// <summary>
-    /// Gets the value.
-    /// </summary>
+    /// <inheritdoc />
     public object Value { get; }
-    
+
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 

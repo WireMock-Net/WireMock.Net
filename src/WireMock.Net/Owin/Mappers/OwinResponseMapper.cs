@@ -166,16 +166,17 @@ namespace WireMock.Owin.Mappers
                 new[]
                 {
                     DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture)
-                });
+                }
+            );
 
             // Set other headers
             foreach (var item in responseMessage.Headers!)
             {
                 var headerName = item.Key;
                 var value = item.Value;
-                if (ResponseHeadersToFix.ContainsKey(headerName))
+                if (ResponseHeadersToFix.TryGetValue(headerName, out var action))
                 {
-                    ResponseHeadersToFix[headerName]?.Invoke(response, value);
+                    action?.Invoke(response, value);
                 }
                 else
                 {
@@ -200,9 +201,9 @@ namespace WireMock.Owin.Mappers
             {
                 var headerName = item.Key;
                 var value = item.Value;
-                if (ResponseHeadersToFix.ContainsKey(headerName))
+                if (ResponseHeadersToFix.TryGetValue(headerName, out var action))
                 {
-                    ResponseHeadersToFix[headerName]?.Invoke(response, value);
+                    action?.Invoke(response, value);
                 }
                 else
                 {

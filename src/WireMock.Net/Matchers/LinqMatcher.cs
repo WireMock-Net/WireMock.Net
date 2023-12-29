@@ -22,6 +22,9 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
+    /// <inheritdoc />
+    public object Value { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
@@ -85,8 +88,6 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
-
-    public object Value { get; }
 
     /// <inheritdoc />
     public MatchResult IsMatch(object? input)
