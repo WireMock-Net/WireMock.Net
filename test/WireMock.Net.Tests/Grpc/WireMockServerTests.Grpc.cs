@@ -1,5 +1,4 @@
 #if PROTOBUF
-using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Greet;
@@ -18,9 +17,9 @@ public partial class WireMockServerTests
     public async Task WireMockServer_WithBodyAsProtoBuf_UsingGrpcGeneratedClient()
     {
         // Arrange
-        var jsonMatcher = new JsonMatcher(new { name = "stef" });
-
         using var server = WireMockServer.Start(useHttp2: true);
+
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
 
         server
             .Given(Request.Create()
@@ -41,14 +40,7 @@ public partial class WireMockServerTests
             );
 
         // Act
-        var handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-        var channel = GrpcChannel.ForAddress(server.Url!, new GrpcChannelOptions
-        {
-            HttpHandler = handler,
-            Credentials = Grpc.Core.ChannelCredentials.Insecure
-        });
+        var channel = GrpcChannel.ForAddress(server.Url!);
 
         var client = new Greeter.GreeterClient(channel);
 
