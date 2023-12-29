@@ -209,6 +209,25 @@ message HelloReply {
                     .WithTrailingHeader("grpc-status", "0")
                     .WithTransformer()
                 );
+
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/grpc2/greet.Greeter/SayHello")
+                    .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
+                )
+                .WithProtoDefinition(ProtoDefinition)
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf("greet.HelloReply",
+                        new
+                        {
+                            message = "hello stef"
+                        }
+                    )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
 #endif
 
 #if GRAPHQL

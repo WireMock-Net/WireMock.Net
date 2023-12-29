@@ -270,6 +270,7 @@ internal class MappingConverter
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
             Data = mapping.Data,
+            ProtoDefinition = mapping.ProtoDefinition,
             Probability = mapping.Probability,
             Request = new RequestModel
             {
@@ -370,15 +371,26 @@ internal class MappingConverter
 
         if (bodyMatchers != null)
         {
+            void AfterMap(MatcherModel matcherModel)
+            {
+#if PROTOBUF
+                // In case the ProtoDefinition is defined at the Mapping level, clear the Pattern at the Matcher level
+                if (bodyMatchers?.OfType<ProtoBufMatcher>().Any() == true && mappingModel.ProtoDefinition != null)
+                {
+                    matcherModel.Pattern = null;
+                }
+#endif
+            }
+
             mappingModel.Request.Body = new BodyModel();
 
             if (bodyMatchers.Length == 1)
             {
-                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0]);
+                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0], AfterMap);
             }
             else if (bodyMatchers.Length > 1)
             {
-                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers);
+                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers, AfterMap);
                 mappingModel.Request.Body.MatchOperator = matchOperator.ToString();
             }
         }
@@ -471,7 +483,12 @@ internal class MappingConverter
                 break;
 
             case BodyType.ProtoBuf:
-                mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke();
+                // If the ProtoDefinition is not defined at the MappingModel, get the ProtoDefinition from the ResponseMessage.
+                if (mappingModel.ProtoDefinition == null)
+                {
+                    mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke();
+                }
+
                 mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
                 mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;

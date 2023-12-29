@@ -129,12 +129,12 @@ internal class MatcherMapper
         }
     }
 
-    public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers)
+    public MatcherModel[]? Map(IEnumerable<IMatcher>? matchers, Action<MatcherModel>? afterMap = null)
     {
-        return matchers?.Select(Map).OfType<MatcherModel>().ToArray();
+        return matchers?.Select(m => Map(m, afterMap)).OfType<MatcherModel>().ToArray();
     }
 
-    public MatcherModel? Map(IMatcher? matcher)
+    public MatcherModel? Map(IMatcher? matcher, Action<MatcherModel>? afterMap = null)
     {
         if (matcher == null)
         {
@@ -217,6 +217,8 @@ internal class MatcherMapper
                 break;
 #endif
         }
+
+        afterMap?.Invoke(model);
 
         return model;
     }

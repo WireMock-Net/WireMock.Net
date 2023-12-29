@@ -22,6 +22,23 @@ public partial class MappingConverterTests
     private readonly Guid _guid = new("c8eeaf99-d5c4-4341-8543-4597c3fd40d9");
     private readonly DateTime _updatedAt = new(2022, 12, 4, 11, 12, 13);
     private readonly WireMockServerSettings _settings = new();
+    private const string ProtoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
 
     private readonly MappingConverter _sut;
 
@@ -550,29 +567,12 @@ public partial class MappingConverterTests
     public Task ToMappingModel_Request_WithBodyAsProtoBuf_ReturnsCorrectModel()
     {
         // Arrange
-        const string protoDefinition = @"
-syntax = ""proto3"";
-
-package greet;
-
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
-}
-";
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
 
         var request = Request.Create()
             .UsingPost()
             .WithPath("/grpc/greet.Greeter/SayHello")
-            .WithBodyAsProtoBuf(protoDefinition, "greet.HelloRequest", jsonMatcher);
+            .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", jsonMatcher);
 
         var response = Response.Create();
 
@@ -592,23 +592,6 @@ message HelloReply {
     public Task ToMappingModel_Response_WithBodyAsProtoBuf_ReturnsCorrectModel()
     {
         // Arrange
-        const string protoDefinition = @"
-syntax = ""proto3"";
-
-package greet;
-
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
-}
-";
         var protobufResponse = new
         {
             message = "hello"
@@ -617,10 +600,45 @@ message HelloReply {
         var request = Request.Create();
 
         var response = Response.Create()
-            .WithBodyAsProtoBuf(protoDefinition, "greet.HelloReply", protobufResponse)
+            .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply", protobufResponse)
             .WithTrailingHeader("grpc-status", "0");
 
         var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 43, null, null, null, null, null, false, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Mapping_WithBodyAsProtoBuf_ReturnsCorrectModel()
+    {
+        // Arrange
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+        var protobufResponse = new
+        {
+            message = "hello"
+        };
+
+        var request = Request.Create()
+            .UsingPost()
+            .WithPath("/grpc/greet.Greeter/SayHello")
+            .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher);
+
+        var response = Response.Create()
+            .WithBodyAsProtoBuf("greet.HelloReply", protobufResponse)
+            .WithTrailingHeader("grpc-status", "0");
+
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 41, null, null, null, null, null, false, null, null)
+            .WithProtoDefinition(ProtoDefinition);
+
+        ((Request)request).Mapping = mapping;
+        ((Response)response).Mapping = mapping;
 
         // Act
         var model = _sut.ToMappingModel(mapping);

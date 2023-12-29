@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using Stef.Validation;
+using WireMock.Exceptions;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -254,7 +255,7 @@ public partial class Response
         {
             DetectedBodyType = BodyType.ProtoBuf,
             BodyAsJson = value,
-            ProtoDefinition = () => Mapping.ProtoDefinition,
+            ProtoDefinition = () => Mapping.ProtoDefinition ?? throw new WireMockException("ProtoDefinition cannot be resolved. You probably forgot to call .WithProtoDefinition(...) on the mapping."),
             ProtoBufMessageType = messageType
         };
 #endif
