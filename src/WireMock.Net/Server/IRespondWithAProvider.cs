@@ -186,7 +186,7 @@ public interface IRespondWithAProvider
     IRespondWithAProvider WithProbability(double probability);
 
     /// <summary>
-    /// Add a Grpc ProtoDefinition which is used for the request and the response.
+    /// Define a Grpc ProtoDefinition which is used for the request and the response.
     /// </summary>
     /// <param name="protoDefinition">The proto definition as a string.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>

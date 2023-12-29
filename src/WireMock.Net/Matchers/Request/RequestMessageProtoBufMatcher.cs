@@ -1,3 +1,5 @@
+using System;
+
 namespace WireMock.Matchers.Request;
 
 /// <summary>
@@ -14,10 +16,10 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// Initializes a new instance of the <see cref="RequestMessageProtoBufMatcher"/> class.
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinition">The Func to define the proto definition as a string.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matcher">The optional matcher to use to match the ProtoBuf as (json) object.</param>
-    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, string protoDefinition, string messageType, IObjectMatcher? matcher = null)
+    public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, Func<string> protoDefinition, string messageType, IObjectMatcher? matcher = null)
     {
 #if PROTOBUF
         Matcher = new ProtoBufMatcher(protoDefinition, messageType, matchBehaviour, matcher);

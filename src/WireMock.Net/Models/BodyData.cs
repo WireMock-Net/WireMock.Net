@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using WireMock.Types;
@@ -48,7 +49,7 @@ public class BodyData : IBodyData
 
     #region ProtoBuf
     /// <inheritdoc />
-    public string? ProtoDefinition { get; set; }
+    public Func<string?>? ProtoDefinition { get; set; }
 
     /// <inheritdoc />
     public string? ProtoBufMessageType { get; set; }

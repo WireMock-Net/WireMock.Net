@@ -471,7 +471,7 @@ internal class MappingConverter
                 break;
 
             case BodyType.ProtoBuf:
-                mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition;
+                mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke();
                 mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
                 mappingModel.Response.BodyAsBytes = null;
                 mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;

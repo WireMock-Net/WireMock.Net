@@ -20,9 +20,9 @@ public class ProtoBufMatcher : IBytesMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// The proto definition.
+    /// The Func to define the proto definition as a string.
     /// </summary>
-    public string ProtoDefinition { get; }
+    public Func<string> ProtoDefinition { get; }
 
     /// <summary>
     /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
@@ -44,13 +44,13 @@ public class ProtoBufMatcher : IBytesMatcher
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
-        string protoDefinition,
+        Func<string> protoDefinition,
         string messageType,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         IObjectMatcher? matcher = null
     )
     {
-        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        ProtoDefinition = Guard.NotNull(protoDefinition);
         MessageType = Guard.NotNullOrWhiteSpace(messageType);
         Matcher = matcher;
         MatchBehaviour = matchBehaviour;
@@ -63,7 +63,7 @@ public class ProtoBufMatcher : IBytesMatcher
 
         if (input != null)
         {
-            var request = new ConvertToObjectRequest(ProtoDefinition, MessageType, input);
+            var request = new ConvertToObjectRequest(ProtoDefinition(), MessageType, input);
 
             try
             {

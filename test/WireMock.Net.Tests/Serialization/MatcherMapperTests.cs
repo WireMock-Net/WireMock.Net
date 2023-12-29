@@ -226,7 +226,7 @@ message HelloReply {
         var jsonPattern = new { name = "stef" };
         var jsonMatcher = new JsonMatcher(jsonPattern);
 
-        var matcher = new ProtoBufMatcher(protoDefinition, messageType, matcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(() => protoDefinition, messageType, matcher: jsonMatcher);
 
         // Act
         var model = _sut.Map(matcher)!;
@@ -1085,7 +1085,7 @@ message HelloReply {
         var matcher = (ProtoBufMatcher)_sut.Map(model)!;
 
         // Assert
-        matcher.ProtoDefinition.Should().Be(protoDefinition);
+        matcher.ProtoDefinition().Should().Be(protoDefinition);
         matcher.Name.Should().Be(nameof(ProtoBufMatcher));
         matcher.MessageType.Should().Be(messageType);
         matcher.Matcher?.Value.Should().Be(jsonMatcherPattern);

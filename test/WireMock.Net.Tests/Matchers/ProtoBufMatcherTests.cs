@@ -35,7 +35,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType);
+        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -51,7 +51,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType, matcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType, matcher: jsonMatcher);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -66,7 +66,7 @@ message HelloReply {
         var bytes = new byte[] { 1, 2, 3 };
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, MessageType);
+        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -81,7 +81,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(ProtoDefinition, "greet.Greeter.X");
+        var matcher = new ProtoBufMatcher(() => ProtoDefinition, "greet.Greeter.X");
         var result = matcher.IsMatch(bytes);
 
         // Assert

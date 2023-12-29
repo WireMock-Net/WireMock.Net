@@ -1,8 +1,6 @@
 // This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +23,9 @@ public partial class Response : IResponseBuilder
     private static readonly ThreadLocal<Random> Random = new(() => new Random(DateTime.UtcNow.Millisecond));
 
     private TimeSpan? _delay;
+
+    /// <inheritdoc />
+    public IMapping Mapping { get; set; } = null!;
 
     /// <summary>
     /// The minimum random delay in milliseconds.

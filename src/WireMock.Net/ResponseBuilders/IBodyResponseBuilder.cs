@@ -110,13 +110,28 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
     /// </summary>
     /// <param name="protoDefinition">The proto definition as a string.</param>
-    /// <param name="messageType">The method which is called on service. Format is "{package-name}.{service-name}-{method-name}".</param>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="value">The object to convert to protobuf byte[].</param>
-    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is <see cref="JsonConverter.Newtonsoft.Json.NewtonsoftJsonConverter"/></param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>
     /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBodyAsProtoBuf(
         string protoDefinition,
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    );
+
+    /// <summary>
+    /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
+    /// </summary>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
+    /// <param name="value">The object to convert to protobuf byte[].</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsProtoBuf(
         string messageType,
         object value,
         IJsonConverter? jsonConverter = null,

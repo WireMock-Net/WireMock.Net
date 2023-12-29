@@ -6,6 +6,8 @@ using Stef.Validation;
 using WireMock.Admin.Mappings;
 using WireMock.Matchers.Request;
 using WireMock.Owin;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Server;
 using WireMock.Settings;
@@ -145,6 +147,15 @@ public class MappingBuilder : IMappingBuilder
         if (saveToFile)
         {
             _mappingToFileSaver.SaveMappingToFile(mapping);
+        }
+
+        // Link this mapping to the Request
+        ((Request)mapping.RequestMatcher).Mapping = mapping;
+
+        // Link this mapping to the Response
+        if (mapping.Provider is Response response)
+        {
+            response.Mapping = mapping;
         }
     }
 

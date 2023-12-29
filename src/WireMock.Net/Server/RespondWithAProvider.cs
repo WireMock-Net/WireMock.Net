@@ -2,7 +2,6 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
@@ -34,6 +33,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
     private double? _probability;
+    private string? _protoDefinition;
 
     public Guid Guid { get; private set; }
 
@@ -42,8 +42,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public ITimeSettings? TimeSettings { get; private set; }
 
     public object? Data { get; private set; }
-
-    public string? ProtoDefinition { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -96,10 +94,19 @@ internal class RespondWithAProvider : IRespondWithAProvider
             Webhooks,
             _useWebhookFireAndForget,
             TimeSettings,
-            Data,
-            _probability
+            Data
         );
 
+        if (_probability != null)
+        {
+            mapping.WithProbability(_probability.Value);
+        }
+
+        if (_protoDefinition != null)
+        {
+            mapping.WithProtoDefinition(_protoDefinition);
+        }
+        
         _registrationCallback(mapping, _saveToFile);
     }
 
@@ -290,7 +297,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public IRespondWithAProvider WithProtoDefinition(string protoDefinition)
     {
-        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        _protoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
         return this;
     }
 

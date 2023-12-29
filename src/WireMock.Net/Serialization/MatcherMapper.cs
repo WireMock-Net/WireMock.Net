@@ -211,7 +211,7 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.Pattern = protoBufMatcher.ProtoDefinition;
+                model.Pattern = protoBufMatcher.ProtoDefinition();
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;
@@ -264,7 +264,7 @@ internal class MatcherMapper
     }
 
 #if MIMEKIT
-    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel? matcher)
+    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
     {
         var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
         var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
@@ -276,13 +276,13 @@ internal class MatcherMapper
 #endif
 
 #if PROTOBUF
-    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string? protoDefinition, MatcherModel? matcher)
+    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinition, MatcherModel matcher)
     {
         var objectMatcher = Map(matcher?.ContentMatcher) as IObjectMatcher;
 
         return new ProtoBufMatcher(
-            protoDefinition ?? string.Empty,
-            matcher?.ProtoBufMessageType ?? string.Empty,
+            () => protoDefinition,
+            matcher!.ProtoBufMessageType!,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
             objectMatcher
         );
