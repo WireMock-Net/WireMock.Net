@@ -234,6 +234,7 @@ public partial class WireMockServer
             HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
             HostingScheme = _settings.HostingScheme,
             MaxRequestLogCount = _settings.MaxRequestLogCount,
+            ProtoDefinitions = _settings.ProtoDefinitions,
             QueryParameterMultipleValueSupport = _settings.QueryParameterMultipleValueSupport,
             ReadStaticMappings = _settings.ReadStaticMappings,
             RequestLogExpirationDuration = _settings.RequestLogExpirationDuration,
@@ -268,6 +269,7 @@ public partial class WireMockServer
         _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
         _settings.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _settings.MaxRequestLogCount = settings.MaxRequestLogCount;
+        _settings.ProtoDefinitions = settings.ProtoDefinitions;
         _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
         _settings.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
         _settings.ReadStaticMappings = settings.ReadStaticMappings;

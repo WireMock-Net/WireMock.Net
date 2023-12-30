@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -64,7 +65,8 @@ public static class WireMockServerSettingsParser
             UseHttp2 = parser.GetBoolValue(nameof(WireMockServerSettings.UseHttp2)),
             DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
             QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
-            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture)
+            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture),
+            ProtoDefinitions = parser.GetObjectValueFromJson<Dictionary<string,string>>(nameof(settings.ProtoDefinitions))
         };
 
 #if USE_ASPNETCORE
