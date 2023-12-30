@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Stef.Validation;
-using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
