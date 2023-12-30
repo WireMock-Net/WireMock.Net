@@ -222,7 +222,27 @@ message HelloReply {
                     .WithBodyAsProtoBuf("greet.HelloReply",
                         new
                         {
-                            message = "hello stef"
+                            message = "hello {{request.BodyAsJson.name}}"
+                        }
+                    )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
+
+            server
+                .AddProtoDefinition("my-greeter", ProtoDefinition)
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/grpc3/greet.Greeter/SayHello")
+                    .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
+                )
+                .WithProtoDefinition("my-greeter")
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf("greet.HelloReply",
+                        new
+                        {
+                            message = "hello {{request.BodyAsJson.name}}"
                         }
                     )
                     .WithTrailingHeader("grpc-status", "0")

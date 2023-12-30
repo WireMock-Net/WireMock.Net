@@ -134,7 +134,7 @@ internal class MatcherMapper
         return matchers?.Select(m => Map(m, afterMap)).OfType<MatcherModel>().ToArray();
     }
 
-    public static MatcherModel? Map(IMatcher? matcher, Action<MatcherModel>? afterMap = null)
+    public MatcherModel? Map(IMatcher? matcher, Action<MatcherModel>? afterMap = null)
     {
         if (matcher == null)
         {

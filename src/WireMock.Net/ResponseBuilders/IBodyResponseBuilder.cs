@@ -109,7 +109,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <summary>
     /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
     /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinition">The proto definition as text.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="value">The object to convert to protobuf byte[].</param>
     /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>

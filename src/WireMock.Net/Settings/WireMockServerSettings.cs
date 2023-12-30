@@ -307,4 +307,10 @@ public class WireMockServerSettings
     /// </summary>
 	[JsonIgnore]
     public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+
+    /// <summary>
+    /// A list of Grpc ProtoDefinitions which can be used.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<string, string>? ProtoDefinitions { get; set; }
 }

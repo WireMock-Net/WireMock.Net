@@ -157,13 +157,6 @@ public interface IMapping
     IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState);
 
     /// <summary>
-    /// Define a Grpc ProtoDefinition which is used for this mapping (request and response).
-    /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
-    /// <returns>The <see cref="IMapping"/>.</returns>
-    IMapping WithProtoDefinition(string protoDefinition);
-
-    /// <summary>
     /// Define the scenario.
     /// </summary>
     /// <param name="scenario">The scenario.</param>
@@ -176,6 +169,13 @@ public interface IMapping
     /// <param name="probability">The probability.</param>
     /// <returns>The <see cref="IMapping"/>.</returns>
     IMapping WithProbability(double probability);
+
+    /// <summary>
+    /// Define a Grpc ProtoDefinition which is used for this mapping (request and response).
+    /// </summary>
+    /// <param name="protoDefinition">The proto definition as text.</param>
+    /// <returns>The <see cref="IMapping"/>.</returns>
+    IMapping WithProtoDefinition(string protoDefinition);
 }
 
 /*

@@ -20,7 +20,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// The Func to define the proto definition as a string.
+    /// The Func to define The proto definition as text.
     /// </summary>
     public Func<string> ProtoDefinition { get; }
 

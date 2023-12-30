@@ -596,6 +596,24 @@ public partial class WireMockServer : IWireMockServer
         return _mappingBuilder.Given(requestMatcher, saveToFile);
     }
 
+    /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <returns><see cref="WireMockServer"/></returns>
+    public WireMockServer AddProtoDefinition(string id, string protoDefinition)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrWhiteSpace(protoDefinition);
+
+        _settings.ProtoDefinitions ??= new Dictionary<string, string>();
+
+        _settings.ProtoDefinitions[id] = protoDefinition;
+
+        return this;
+    }
+
     /// <inheritdoc />
     [PublicAPI]
     public string? MappingToCSharpCode(Guid guid, MappingConverterType converterType)

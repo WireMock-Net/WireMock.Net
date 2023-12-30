@@ -295,9 +295,15 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public IRespondWithAProvider WithProtoDefinition(string protoDefinition)
+    public IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId)
     {
-        _protoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        Guard.NotNullOrWhiteSpace(protoDefinitionOrId);
+
+        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out _protoDefinition) != true)
+        {
+            _protoDefinition = protoDefinitionOrId;
+        }
+
         return this;
     }
 

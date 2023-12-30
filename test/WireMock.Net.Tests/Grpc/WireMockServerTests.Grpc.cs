@@ -1,4 +1,5 @@
 #if PROTOBUF
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Greet;
@@ -67,6 +68,49 @@ public partial class WireMockServerTests
                 .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher)
             )
             .WithProtoDefinition(ProtoDefinition)
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithBodyAsProtoBuf("greet.HelloReply",
+                    new
+                    {
+                        message = "hello {{request.BodyAsJson.name}} {{request.method}}"
+                    }
+                )
+                .WithTrailingHeader("grpc-status", "0")
+                .WithTransformer()
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+
+        var client = new Greeter.GreeterClient(channel);
+
+        var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+
+        // Assert
+        reply.Message.Should().Be("hello stef POST");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinition_UsingGrpcGeneratedClient()
+    {
+        // Arrange
+        var id = $"test-{Guid.NewGuid()}";
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+
+        server
+            .AddProtoDefinition(id, ProtoDefinition)
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/greet.Greeter/SayHello")
+                .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher)
+            )
+            .WithProtoDefinition(id)
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithBodyAsProtoBuf("greet.HelloReply",

@@ -187,8 +187,9 @@ public interface IRespondWithAProvider
 
     /// <summary>
     /// Define a Grpc ProtoDefinition which is used for the request and the response.
+    /// This can be a ProtoDefinition as a string, or an id when the ProtoDefinitions are defined at the WireMockServer.
     /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinitionOrId">The proto definition as text or as id.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    IRespondWithAProvider WithProtoDefinition(string protoDefinition);
+    IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId);
 }

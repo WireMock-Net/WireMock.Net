@@ -10,7 +10,7 @@ public interface IProtoBufRequestBuilder : IGraphQLRequestBuilder
     /// <summary>
     /// WithGrpcProto
     /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinition">The proto definition as text.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
@@ -19,7 +19,7 @@ public interface IProtoBufRequestBuilder : IGraphQLRequestBuilder
     /// <summary>
     /// WithGrpcProto
     /// </summary>
-    /// <param name="protoDefinition">The proto definition as a string.</param>
+    /// <param name="protoDefinition">The proto definition as text.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matcher">The matcher to use to match the ProtoBuf as (json) object.</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
