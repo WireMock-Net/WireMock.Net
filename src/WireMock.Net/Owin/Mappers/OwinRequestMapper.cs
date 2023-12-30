@@ -8,7 +8,6 @@ using WireMock.Util;
 #if !USE_ASPNETCORE
 using IRequest = Microsoft.Owin.IOwinRequest;
 #else
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using IRequest = Microsoft.AspNetCore.Http.HttpRequest;
 #endif

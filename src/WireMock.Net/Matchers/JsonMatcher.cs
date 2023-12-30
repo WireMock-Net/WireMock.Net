@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
@@ -59,7 +58,7 @@ public class JsonMatcher : IJsonMatcher
         IgnoreCase = ignoreCase;
 
         Value = value;
-        _valueAsJToken = ConvertValueToJToken(value);
+        _valueAsJToken = JsonUtils.ConvertValueToJToken(value);
         _jTokenConverter = ignoreCase ? Rename : jToken => jToken;
     }
 
@@ -74,7 +73,7 @@ public class JsonMatcher : IJsonMatcher
         {
             try
             {
-                var inputAsJToken = ConvertValueToJToken(input);
+                var inputAsJToken = JsonUtils.ConvertValueToJToken(input);
 
                 var match = IsMatch(_jTokenConverter(_valueAsJToken), _jTokenConverter(inputAsJToken));
                 score = MatchScores.ToScore(match);
@@ -97,25 +96,6 @@ public class JsonMatcher : IJsonMatcher
     protected virtual bool IsMatch(JToken value, JToken input)
     {
         return JToken.DeepEquals(value, input);
-    }
-
-    private static JToken ConvertValueToJToken(object value)
-    {
-        // Check if JToken, string, IEnumerable or object
-        switch (value)
-        {
-            case JToken tokenValue:
-                return tokenValue;
-
-            case string stringValue:
-                return JsonUtils.Parse(stringValue);
-
-            case IEnumerable enumerableValue:
-                return JArray.FromObject(enumerableValue);
-
-            default:
-                return JObject.FromObject(value);
-        }
     }
 
     private static string? ToUpper(string? input)

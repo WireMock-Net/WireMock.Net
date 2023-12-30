@@ -29,6 +29,20 @@ message HelloReply {
 ";
 
     [Fact]
+    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Decode()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+
+        // Act
+        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
+        var result = matcher.Decode(bytes);
+
+        // Assert
+        result.Should().BeEquivalentTo(new { name = "stef" });
+    }
+
+    [Fact]
     public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_NoJsonMatchers_IsMatch()
     {
         // Arrange

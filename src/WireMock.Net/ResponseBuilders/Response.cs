@@ -6,12 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Stef.Validation;
+using WireMock.Matchers;
+using WireMock.Matchers.Request;
 using WireMock.Proxy;
+using WireMock.RequestBuilders;
 using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Transformers.Handlebars;
 using WireMock.Transformers.Scriban;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.ResponseBuilders;
 
@@ -24,7 +28,9 @@ public partial class Response : IResponseBuilder
 
     private TimeSpan? _delay;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The link back to the mapping.
+    /// </summary>
     public IMapping Mapping { get; set; } = null!;
 
     /// <summary>
@@ -113,7 +119,7 @@ public partial class Response : IResponseBuilder
     {
         ResponseMessage = responseMessage;
     }
-    
+
     /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(int)"/>
     [PublicAPI]
     public IResponseBuilder WithStatusCode(int code)
@@ -156,7 +162,7 @@ public partial class Response : IResponseBuilder
     {
         return WithStatusCode((int)HttpStatusCode.NotFound);
     }
-    
+
     /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
     public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile)
     {
@@ -279,6 +285,17 @@ public partial class Response : IResponseBuilder
 
         if (UseTransformer)
         {
+            // Check if the body matcher is a RequestMessageProtoBufMatcher
+            if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
+            {
+                var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
+                var decoded = protoBufMatcher?.Decode(request.BodyData?.BodyAsBytes);
+                if (decoded != null)
+                {
+                    request.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
+                }
+            }
+
             ITransformer responseMessageTransformer;
             switch (TransformerType)
             {

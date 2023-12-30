@@ -73,7 +73,7 @@ public class RequestMessage : IRequestMessage
     public string? Body { get; }
 
     /// <inheritdoc />
-    public object? BodyAsJson { get; }
+    public object? BodyAsJson { get; set; }
 
     /// <inheritdoc />
     public byte[]? BodyAsBytes { get; }

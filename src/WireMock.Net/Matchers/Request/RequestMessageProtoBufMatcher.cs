@@ -10,7 +10,7 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// <summary>
     /// The ProtoBufMatcher.
     /// </summary>
-    public IBytesMatcher? Matcher { get; }
+    public IProtoBufMatcher? Matcher { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageProtoBufMatcher"/> class.

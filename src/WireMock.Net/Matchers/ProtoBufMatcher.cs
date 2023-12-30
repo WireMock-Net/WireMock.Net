@@ -10,8 +10,8 @@ namespace WireMock.Matchers;
 /// <summary>
 /// Grpc ProtoBuf Matcher
 /// </summary>
-/// <inheritdoc cref="IBytesMatcher"/>
-public class ProtoBufMatcher : IBytesMatcher
+/// <inheritdoc cref="IProtoBufMatcher"/>
+public class ProtoBufMatcher : IProtoBufMatcher
 {
     /// <inheritdoc />
     public string Name => nameof(ProtoBufMatcher);
@@ -63,11 +63,9 @@ public class ProtoBufMatcher : IBytesMatcher
 
         if (input != null)
         {
-            var request = new ConvertToObjectRequest(ProtoDefinition(), MessageType, input);
-
             try
             {
-                var instance = ProtoBufToJsonConverter.Convert(request);
+                var instance = Decode(input, true);
 
                 result = Matcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }
@@ -78,6 +76,36 @@ public class ProtoBufMatcher : IBytesMatcher
         }
 
         return MatchBehaviourHelper.Convert(MatchBehaviour, result);
+    }
+
+    /// <inheritdoc />
+    public object? Decode(byte[]? input)
+    {
+        return Decode(input, false);
+    }
+
+    private object? Decode(byte[]? input, bool throwException)
+    {
+        if (input == null)
+        {
+            return null;
+        }
+
+        var request = new ConvertToObjectRequest(ProtoDefinition(), MessageType, input);
+
+        try
+        {
+            return ProtoBufToJsonConverter.Convert(request);
+        }
+        catch
+        {
+            if (throwException)
+            {
+                throw;
+            }
+
+            return null;
+        }
     }
 }
 #endif

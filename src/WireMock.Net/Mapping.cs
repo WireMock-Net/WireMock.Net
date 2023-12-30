@@ -102,7 +102,8 @@ public class Mapping : IMapping
     /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
     /// <param name="data">The data object. [Optional]</param>
-    public Mapping(
+    public Mapping
+    (
         Guid guid,
         DateTime updatedAt,
         string? title,
@@ -140,7 +141,7 @@ public class Mapping : IMapping
         TimeSettings = timeSettings;
         Data = data;
     }
-    
+
     /// <inheritdoc />
     public Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IRequestMessage requestMessage)
     {
@@ -172,9 +173,9 @@ public class Mapping : IMapping
     }
 
     /// <inheritdoc />
-    public IMapping WithProtoDefinition(string protoDefinition)
+    public IMapping WithProbability(double probability)
     {
-        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        Probability = Guard.NotNull(probability);
         return this;
     }
 
@@ -186,9 +187,9 @@ public class Mapping : IMapping
     }
 
     /// <inheritdoc />
-    public IMapping WithProbability(double probability)
+    public IMapping WithProtoDefinition(string protoDefinition)
     {
-        Probability = Guard.NotNull(probability);
+        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
         return this;
     }
 }

@@ -72,7 +72,7 @@ public partial class WireMockServerTests
                 .WithBodyAsProtoBuf("greet.HelloReply",
                     new
                     {
-                        message = "hello stef {{request.method}}"
+                        message = "hello {{request.BodyAsJson.name}} {{request.method}}"
                     }
                 )
                 .WithTrailingHeader("grpc-status", "0")
