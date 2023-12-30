@@ -134,7 +134,7 @@ internal class MatcherMapper
         return matchers?.Select(m => Map(m, afterMap)).OfType<MatcherModel>().ToArray();
     }
 
-    public MatcherModel? Map(IMatcher? matcher, Action<MatcherModel>? afterMap = null)
+    public static MatcherModel? Map(IMatcher? matcher, Action<MatcherModel>? afterMap = null)
     {
         if (matcher == null)
         {
@@ -280,7 +280,7 @@ internal class MatcherMapper
 #if PROTOBUF
     private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinition, MatcherModel matcher)
     {
-        var objectMatcher = Map(matcher?.ContentMatcher) as IObjectMatcher;
+        var objectMatcher = Map(matcher.ContentMatcher) as IObjectMatcher;
 
         return new ProtoBufMatcher(
             () => protoDefinition,
