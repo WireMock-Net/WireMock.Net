@@ -285,7 +285,7 @@ public partial class Response : IResponseBuilder
 
         if (UseTransformer)
         {
-            // Check if the body matcher is a RequestMessageProtoBufMatcher
+            // Check if the body matcher is a RequestMessageProtoBufMatcher and try to to decode the byte-array to a BodyAsJson.
             if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
             {
                 var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
