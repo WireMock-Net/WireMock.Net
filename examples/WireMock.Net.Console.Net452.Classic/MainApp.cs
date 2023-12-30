@@ -191,7 +191,7 @@ message HelloReply {
             // server.AllowPartialMapping();
 
 #if PROTOBUF
-            var protoBufJsonMatcher = new JsonMatcher(new { name = "stef" });
+            var protoBufJsonMatcher = new JsonPartialWildcardMatcher(new { name = "*" });
             server
                 .Given(Request.Create()
                     .UsingPost()
@@ -203,7 +203,7 @@ message HelloReply {
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
                         new
                         {
-                            message = "hello stef"
+                            message = "hello {{request.BodyAsJson.name}}"
                         }
                     )
                     .WithTrailingHeader("grpc-status", "0")

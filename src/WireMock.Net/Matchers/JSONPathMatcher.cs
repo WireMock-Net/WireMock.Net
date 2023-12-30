@@ -11,7 +11,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// JsonPathMatcher
 /// </summary>
-/// <seealso cref="IMatcher" />
+/// <seealso cref="IStringMatcher" />
 /// <seealso cref="IObjectMatcher" />
 public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 {
