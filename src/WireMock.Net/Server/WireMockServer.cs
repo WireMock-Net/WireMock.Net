@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Stef.Validation;
@@ -18,6 +19,7 @@ using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
@@ -611,6 +613,30 @@ public partial class WireMockServer : IWireMockServer
         _settings.ProtoDefinitions ??= new Dictionary<string, string>();
 
         _settings.ProtoDefinitions[id] = protoDefinition;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Add a GraphQL Schema at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the GraphQL Schema.</param>
+    /// <param name="graphQLSchema">The GraphQL Schema as string or StringPattern.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
+    /// <returns><see cref="WireMockServer"/></returns>
+    [PublicAPI]
+    public WireMockServer AddGraphQLSchema(string id, AnyOf<string, StringPattern> graphQLSchema, Dictionary<string, Type>? customScalars = null)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrWhiteSpace(graphQLSchema);
+
+        _settings.GraphQLSchemas ??= new Dictionary<string, GraphQLSchemaDetails>();
+
+        _settings.GraphQLSchemas[id] = new GraphQLSchemaDetails
+        {
+            SchemaAsString = graphQLSchema,
+            CustomScalars = customScalars
+        };
 
         return this;
     }

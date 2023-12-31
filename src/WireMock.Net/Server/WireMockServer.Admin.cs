@@ -231,6 +231,7 @@ public partial class WireMockServer
             DisableRequestBodyDecompressing = _settings.DisableRequestBodyDecompressing,
             DoNotSaveDynamicResponseInLogEntry = _settings.DoNotSaveDynamicResponseInLogEntry,
             GlobalProcessingDelay = (int?)_options.RequestProcessingDelay?.TotalMilliseconds,
+            // GraphQLSchemas TODO
             HandleRequestsSynchronously = _settings.HandleRequestsSynchronously,
             HostingScheme = _settings.HostingScheme,
             MaxRequestLogCount = _settings.MaxRequestLogCount,

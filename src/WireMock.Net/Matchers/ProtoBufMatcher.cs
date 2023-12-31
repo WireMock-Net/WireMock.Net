@@ -34,7 +34,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// </summary>
     public IObjectMatcher? Matcher { get; }
 
-    private static readonly IConverter ProtoBufToJsonConverter = SingletonFactory<Converter>.GetInstance();
+    private static readonly Converter ProtoBufToJsonConverter = SingletonFactory<Converter>.GetInstance();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProtoBufMatcher"/> class.

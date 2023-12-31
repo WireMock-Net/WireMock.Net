@@ -10,30 +10,26 @@ public partial class Request
     /// <inheritdoc />
     public IRequestBuilder WithGraphQLSchema(string schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
-        return this;
+        return Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
     }
 
     /// <inheritdoc />
     public IRequestBuilder WithGraphQLSchema(string schema, IDictionary<string, Type>? customScalars, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema, customScalars));
-        return this;
+        return Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema, customScalars));
     }
 
 #if GRAPHQL
     /// <inheritdoc />
     public IRequestBuilder WithGraphQLSchema(GraphQL.Types.ISchema schema, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
-        return this;
+        return Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema));
     }
 
     /// <inheritdoc />
     public IRequestBuilder WithGraphQLSchema(GraphQL.Types.ISchema schema, IDictionary<string, Type>? customScalars, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        _requestMatchers.Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema, customScalars));
-        return this;
+        return Add(new RequestMessageGraphQLMatcher(matchBehaviour, schema, customScalars));
     }
 #endif
 }

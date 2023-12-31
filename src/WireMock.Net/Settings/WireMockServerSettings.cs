@@ -11,6 +11,7 @@ using WireMock.Matchers;
 using WireMock.RegularExpressions;
 using WireMock.Types;
 using System.Globalization;
+using WireMock.Models;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -313,4 +314,10 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public Dictionary<string, string>? ProtoDefinitions { get; set; }
+
+    /// <summary>
+    /// A list of GraphQL Schemas which can be used.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<string, GraphQLSchemaDetails>? GraphQLSchemas { get; set; }
 }

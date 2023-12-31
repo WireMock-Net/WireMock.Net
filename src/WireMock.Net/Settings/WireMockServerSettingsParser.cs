@@ -6,6 +6,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Logging;
+using WireMock.Models;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -48,25 +49,26 @@ public static class WireMockServerSettingsParser
             AllowCSharpCodeMatcher = parser.GetBoolValue(nameof(WireMockServerSettings.AllowCSharpCodeMatcher)),
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue(nameof(WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse)),
             AllowPartialMapping = parser.GetBoolValue(nameof(WireMockServerSettings.AllowPartialMapping)),
+            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture),
             DisableJsonBodyParsing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableJsonBodyParsing)),
             DisableRequestBodyDecompressing = parser.GetBoolValue(nameof(WireMockServerSettings.DisableRequestBodyDecompressing)),
             DisableDeserializeFormUrlEncoded = parser.GetBoolValue(nameof(WireMockServerSettings.DisableDeserializeFormUrlEncoded)),
+            DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
+            GraphQLSchemas = parser.GetObjectValueFromJson<Dictionary<string, GraphQLSchemaDetails>>(nameof(settings.GraphQLSchemas)),
             HandleRequestsSynchronously = parser.GetBoolValue(nameof(WireMockServerSettings.HandleRequestsSynchronously)),
+            HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
             MaxRequestLogCount = parser.GetIntValue(nameof(WireMockServerSettings.MaxRequestLogCount)),
+            ProtoDefinitions = parser.GetObjectValueFromJson<Dictionary<string, string>>(nameof(settings.ProtoDefinitions)),
+            QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
             ReadStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.ReadStaticMappings)),
             RequestLogExpirationDuration = parser.GetIntValue(nameof(WireMockServerSettings.RequestLogExpirationDuration)),
             SaveUnmatchedRequests = parser.GetBoolValue(nameof(WireMockServerSettings.SaveUnmatchedRequests)),
             StartAdminInterface = parser.GetBoolValue(nameof(WireMockServerSettings.StartAdminInterface), true),
             StartTimeout = parser.GetIntValue(nameof(WireMockServerSettings.StartTimeout), WireMockServerSettings.DefaultStartTimeout),
+            UseHttp2 = parser.GetBoolValue(nameof(WireMockServerSettings.UseHttp2)),
             UseRegexExtended = parser.GetBoolValue(nameof(WireMockServerSettings.UseRegexExtended), true),
             WatchStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappings)),
             WatchStaticMappingsInSubdirectories = parser.GetBoolValue(nameof(WireMockServerSettings.WatchStaticMappingsInSubdirectories)),
-            HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
-            UseHttp2 = parser.GetBoolValue(nameof(WireMockServerSettings.UseHttp2)),
-            DoNotSaveDynamicResponseInLogEntry = parser.GetBoolValue(nameof(WireMockServerSettings.DoNotSaveDynamicResponseInLogEntry)),
-            QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
-            Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture),
-            ProtoDefinitions = parser.GetObjectValueFromJson<Dictionary<string,string>>(nameof(settings.ProtoDefinitions))
         };
 
 #if USE_ASPNETCORE
