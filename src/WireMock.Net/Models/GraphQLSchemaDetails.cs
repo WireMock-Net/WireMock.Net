@@ -57,5 +57,5 @@ public class GraphQLSchemaDetails
     /// <summary>
     /// The custom Scalars to define for this schema.
     /// </summary>
-    public Dictionary<string, Type>? CustomScalars { get; set; }
+    public IDictionary<string, Type>? CustomScalars { get; set; }
 }

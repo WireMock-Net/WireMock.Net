@@ -192,4 +192,13 @@ public interface IRespondWithAProvider
     /// <param name="protoDefinitionOrId">The proto definition as text or as id.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId);
+
+    /// <summary>
+    /// Define a GraphQL Schema which is used for the request and the response.
+    /// This can be a GraphQL Schema as a string, or an id when the GraphQL Schema are defined at the WireMockServer.
+    /// </summary>
+    /// <param name="graphQLSchemaOrId">The GraphQL Schema as text or as id.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithGraphQLSchema(string graphQLSchemaOrId, IDictionary<string, Type>? customScalars = null);
 }

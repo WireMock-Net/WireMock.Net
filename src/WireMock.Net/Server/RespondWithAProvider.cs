@@ -34,6 +34,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private bool? _useWebhookFireAndForget;
     private double? _probability;
     private string? _protoDefinition;
+    private GraphQLSchemaDetails? _graphQLSchemaDetails;
 
     public Guid Guid { get; private set; }
 
@@ -106,7 +107,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         {
             mapping.WithProtoDefinition(_protoDefinition);
         }
-        
+
         _registrationCallback(mapping, _saveToFile);
     }
 
@@ -302,6 +303,23 @@ internal class RespondWithAProvider : IRespondWithAProvider
         if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out _protoDefinition) != true)
         {
             _protoDefinition = protoDefinitionOrId;
+        }
+
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider WithGraphQLSchema(string graphQLSchemaOrId, IDictionary<string, Type>? customScalars = null)
+    {
+        Guard.NotNullOrWhiteSpace(graphQLSchemaOrId);
+
+        if (_settings.GraphQLSchemas?.TryGetValue(graphQLSchemaOrId, out _graphQLSchemaDetails) != true)
+        {
+            _graphQLSchemaDetails = new GraphQLSchemaDetails
+            {
+                SchemaAsString = graphQLSchemaOrId,
+                CustomScalars = customScalars
+            };
         }
 
         return this;

@@ -256,11 +256,22 @@ message HelloReply {
                 .Given(Request.Create()
                     .WithPath("/graphql")
                     .UsingPost()
-                    .WithGraphQLSchema(TestSchema, customScalars)
+                    .WithBodyAsGraphQL(TestSchema, customScalars)
                 )
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")
                 );
+
+            //server
+            //    .AddGraphQLSchema("my-graphql", TestSchema, customScalars)
+            //    .Given(Request.Create()
+            //        .WithPath("/graphql2")
+            //        .UsingPost()
+            //    )
+            //    .WithGraphQLSchema("my-graphql")
+            //    .RespondWith(Response.Create()
+            //        .WithBody("GraphQL is ok")
+            //    );
 #endif
 
 #if MIMEKIT
