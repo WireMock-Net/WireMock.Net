@@ -211,7 +211,7 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.Pattern = protoBufMatcher.ProtoDefinition().Val;
+                model.Pattern = protoBufMatcher.ProtoDefinition().Value;
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;

@@ -270,7 +270,7 @@ internal class MappingConverter
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
             Data = mapping.Data,
-            ProtoDefinition = mapping.ProtoDefinition?.Val,
+            ProtoDefinition = mapping.ProtoDefinition?.Value,
             Probability = mapping.Probability,
             Request = new RequestModel
             {
@@ -486,7 +486,7 @@ internal class MappingConverter
                 // If the ProtoDefinition is not defined at the MappingModel, get the ProtoDefinition from the ResponseMessage.
                 if (mappingModel.ProtoDefinition == null)
                 {
-                    mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke().Val;
+                    mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke().Value;
                 }
 
                 mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
