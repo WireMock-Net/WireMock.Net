@@ -139,7 +139,7 @@ public interface IMapping
     /// <summary>
     /// The Grpc ProtoDefinition which is used for this mapping (request and response). [Optional]
     /// </summary>
-    string? ProtoDefinition { get; }
+    IdOrText? ProtoDefinition { get; }
 
     /// <summary>
     /// ProvideResponseAsync
@@ -175,7 +175,7 @@ public interface IMapping
     /// </summary>
     /// <param name="protoDefinition">The proto definition as text.</param>
     /// <returns>The <see cref="IMapping"/>.</returns>
-    IMapping WithProtoDefinition(string protoDefinition);
+    IMapping WithProtoDefinition(IdOrText protoDefinition);
 }
 
 /*

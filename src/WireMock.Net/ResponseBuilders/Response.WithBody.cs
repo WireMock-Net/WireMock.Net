@@ -229,7 +229,7 @@ public partial class Response
         {
             DetectedBodyType = BodyType.ProtoBuf,
             BodyAsJson = value,
-            ProtoDefinition = () => protoDefinition,
+            ProtoDefinition = () => new (null, protoDefinition),
             ProtoBufMessageType = messageType
         };
 #endif

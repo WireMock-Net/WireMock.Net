@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WireMock.Models;
 using WireMock.Types;
 
 // ReSharper disable once CheckNamespace
@@ -49,7 +50,7 @@ public class BodyData : IBodyData
 
     #region ProtoBuf
     /// <inheritdoc />
-    public Func<string>? ProtoDefinition { get; set; }
+    public Func<IdOrText>? ProtoDefinition { get; set; }
 
     /// <inheritdoc />
     public string? ProtoBufMessageType { get; set; }

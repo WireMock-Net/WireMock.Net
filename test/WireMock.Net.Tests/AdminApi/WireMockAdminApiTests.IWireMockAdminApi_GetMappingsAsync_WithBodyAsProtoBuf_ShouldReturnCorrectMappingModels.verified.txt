@@ -190,23 +190,7 @@ message HelloReply {
       },
       ProtoBufMessageType: greet.HelloReply
     },
-    ProtoDefinition:
-syntax = "proto3";
-
-package greet;
-
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
-}
-
+    ProtoDefinition: my-greeter
   },
   {
     Guid: Guid_4,
@@ -246,22 +230,6 @@ message HelloReply {
       },
       ProtoBufMessageType: greet.HelloReply
     },
-    ProtoDefinition:
-syntax = "proto3";
-
-package greet;
-
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
-}
-
+    ProtoDefinition: my-greeter
   }
 ]

@@ -635,7 +635,7 @@ message HelloReply {
             .WithTrailingHeader("grpc-status", "0");
 
         var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 41, null, null, null, null, null, false, null, null)
-            .WithProtoDefinition(ProtoDefinition);
+            .WithProtoDefinition(new (null, ProtoDefinition));
 
         ((Request)request).Mapping = mapping;
         ((Response)response).Mapping = mapping;

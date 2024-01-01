@@ -211,7 +211,7 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.Pattern = protoBufMatcher.ProtoDefinition();
+                model.Pattern = protoBufMatcher.ProtoDefinition().Val;
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;
@@ -278,9 +278,19 @@ internal class MatcherMapper
 #endif
 
 #if PROTOBUF
-    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinition, MatcherModel matcher)
+    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinitionOrId, MatcherModel matcher)
     {
         var objectMatcher = Map(matcher.ContentMatcher) as IObjectMatcher;
+
+        IdOrText protoDefinition;
+        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out var protoDefinitionFromSettings) == true)
+        {
+            protoDefinition = new(protoDefinitionOrId, protoDefinitionFromSettings);
+        }
+        else
+        {
+            protoDefinition = new(null, protoDefinitionOrId);
+        }
 
         return new ProtoBufMatcher(
             () => protoDefinition,

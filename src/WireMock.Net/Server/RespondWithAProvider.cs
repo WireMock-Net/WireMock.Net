@@ -33,7 +33,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
     private double? _probability;
-    private string? _protoDefinition;
+    private IdOrText? _protoDefinition;
     private GraphQLSchemaDetails? _graphQLSchemaDetails;
 
     public Guid Guid { get; private set; }
@@ -105,7 +105,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
 
         if (_protoDefinition != null)
         {
-            mapping.WithProtoDefinition(_protoDefinition);
+            mapping.WithProtoDefinition(_protoDefinition.Value);
         }
 
         _registrationCallback(mapping, _saveToFile);
@@ -300,9 +300,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
     {
         Guard.NotNullOrWhiteSpace(protoDefinitionOrId);
 
-        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out _protoDefinition) != true)
+        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out var protoDefinition) == true)
         {
-            _protoDefinition = protoDefinitionOrId;
+            _protoDefinition = new (protoDefinitionOrId, protoDefinition);
+        }
+        else
+        {
+            _protoDefinition = new(null, protoDefinitionOrId);
         }
 
         return this;

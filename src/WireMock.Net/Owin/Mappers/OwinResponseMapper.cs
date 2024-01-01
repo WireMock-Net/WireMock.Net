@@ -144,7 +144,7 @@ namespace WireMock.Owin.Mappers
 
 #if PROTOBUF
                 case BodyType.ProtoBuf:
-                    var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke();
+                    var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke().Text;
                     return ProtoBufUtils.GetProtoBufMessageWithHeader(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson);
 #endif
 

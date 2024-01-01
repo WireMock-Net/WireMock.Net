@@ -80,7 +80,7 @@ public class Mapping : IMapping
     public double? Probability { get; private set; }
 
     /// <inheritdoc />
-    public string? ProtoDefinition { get; private set; }
+    public IdOrText? ProtoDefinition { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -187,9 +187,9 @@ public class Mapping : IMapping
     }
 
     /// <inheritdoc />
-    public IMapping WithProtoDefinition(string protoDefinition)
+    public IMapping WithProtoDefinition(IdOrText protoDefinition)
     {
-        ProtoDefinition = Guard.NotNullOrWhiteSpace(protoDefinition);
+        ProtoDefinition = protoDefinition;
         return this;
     }
 }

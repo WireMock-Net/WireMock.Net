@@ -40,7 +40,7 @@ message HelloReply {
         matchers.Should().HaveCount(1);
 
         var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher!;
-        protoBufMatcher.ProtoDefinition().Should().Be(TestProtoDefinition);
+        protoBufMatcher.ProtoDefinition().Text.Should().Be(TestProtoDefinition);
         protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.Matcher.Should().BeNull();
     }
@@ -57,7 +57,7 @@ message HelloReply {
         matchers.Should().HaveCount(1);
 
         var protoBufMatcher = (ProtoBufMatcher)((RequestMessageProtoBufMatcher)matchers[0]).Matcher!;
-        protoBufMatcher.ProtoDefinition().Should().Be(TestProtoDefinition);
+        protoBufMatcher.ProtoDefinition().Text.Should().Be(TestProtoDefinition);
         protoBufMatcher.MessageType.Should().Be(MessageType);
         protoBufMatcher.Matcher.Should().BeOfType<JsonMatcher>();
     }

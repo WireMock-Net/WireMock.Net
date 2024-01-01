@@ -204,7 +204,7 @@ public class MatcherMapperTests
     public void MatcherMapper_Map_Matcher_ProtoBufMatcher()
     {
         // Arrange
-        const string protoDefinition = @"
+        IdOrText protoDefinition = new(null, @"
 syntax = ""proto3"";
 
 package greet;
@@ -220,7 +220,7 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
 }
-";
+");
         const string messageType = "greet.HelloRequest";
 
         var jsonPattern = new { name = "stef" };
@@ -233,7 +233,47 @@ message HelloReply {
 
         // Assert
         model.Name.Should().Be(nameof(ProtoBufMatcher));
-        model.Pattern.Should().Be(protoDefinition);
+        model.Pattern.Should().Be(protoDefinition.Text);
+        model.ProtoBufMessageType.Should().Be(messageType);
+        model.ContentMatcher?.Name.Should().Be("JsonMatcher");
+        model.ContentMatcher?.Pattern.Should().Be(jsonPattern);
+    }
+
+    [Fact]
+    public void MatcherMapper_Map_Matcher_ProtoBufMatcher_WithId()
+    {
+        // Arrange
+        string id = "abc123";
+        IdOrText protoDefinition = new(id, @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+");
+        const string messageType = "greet.HelloRequest";
+
+        var jsonPattern = new { name = "stef" };
+        var jsonMatcher = new JsonMatcher(jsonPattern);
+
+        var matcher = new ProtoBufMatcher(() => protoDefinition, messageType, matcher: jsonMatcher);
+
+        // Act
+        var model = _sut.Map(matcher)!;
+
+        // Assert
+        model.Name.Should().Be(nameof(ProtoBufMatcher));
+        model.Pattern.Should().Be(id);
         model.ProtoBufMessageType.Should().Be(messageType);
         model.ContentMatcher?.Name.Should().Be("JsonMatcher");
         model.ContentMatcher?.Pattern.Should().Be(jsonPattern);
@@ -1085,7 +1125,7 @@ message HelloReply {
         var matcher = (ProtoBufMatcher)_sut.Map(model)!;
 
         // Assert
-        matcher.ProtoDefinition().Should().Be(protoDefinition);
+        matcher.ProtoDefinition().Text.Should().Be(protoDefinition);
         matcher.Name.Should().Be(nameof(ProtoBufMatcher));
         matcher.MessageType.Should().Be(messageType);
         matcher.Matcher?.Value.Should().Be(jsonMatcherPattern);

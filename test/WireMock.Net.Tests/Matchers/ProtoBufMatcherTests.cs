@@ -3,6 +3,7 @@ using System;
 using FluentAssertions;
 using ProtoBuf;
 using WireMock.Matchers;
+using WireMock.Models;
 using Xunit;
 
 namespace WireMock.Net.Tests.Matchers;
@@ -10,7 +11,7 @@ namespace WireMock.Net.Tests.Matchers;
 public class ProtoBufMatcherTests
 {
     private const string MessageType = "greet.HelloRequest";
-    private const string ProtoDefinition = @"
+    private readonly IdOrText ProtoDefinition = new(null, @"
 syntax = ""proto3"";
 
 package greet;
@@ -26,7 +27,7 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
 }
-";
+");
 
     [Fact]
     public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Decode()

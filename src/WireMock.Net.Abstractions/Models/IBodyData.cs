@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WireMock.Models;
 using WireMock.Types;
 
 // ReSharper disable once CheckNamespace
@@ -76,7 +77,7 @@ public interface IBodyData
     /// <summary>
     /// Gets or sets the proto definition.
     /// </summary>
-    public Func<string>? ProtoDefinition { get; set; }
+    public Func<IdOrText>? ProtoDefinition { get; set; }
 
     /// <summary>
     /// Gets or sets the full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".

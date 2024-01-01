@@ -3,6 +3,7 @@ using System;
 using ProtoBufJsonConverter;
 using ProtoBufJsonConverter.Models;
 using Stef.Validation;
+using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -22,7 +23,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// <summary>
     /// The Func to define The proto definition as text.
     /// </summary>
-    public Func<string> ProtoDefinition { get; }
+    public Func<IdOrText> ProtoDefinition { get; }
 
     /// <summary>
     /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
@@ -44,7 +45,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
-        Func<string> protoDefinition,
+        Func<IdOrText> protoDefinition,
         string messageType,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         IObjectMatcher? matcher = null
@@ -91,7 +92,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
             return null;
         }
 
-        var request = new ConvertToObjectRequest(ProtoDefinition(), MessageType, input);
+        var request = new ConvertToObjectRequest(ProtoDefinition().Text, MessageType, input);
 
         try
         {
