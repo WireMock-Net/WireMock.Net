@@ -1,5 +1,6 @@
 #if PROTOBUF
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ProtoBufJsonConverter;
 using ProtoBufJsonConverter.Models;
@@ -59,7 +60,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     }
 
     /// <inheritdoc />
-    public MatchResult IsMatch(byte[]? input)
+    public async Task<MatchResult> IsMatchAsync(byte[]? input, CancellationToken cancellationToken = default)
     {
         var result = new MatchResult();
 
@@ -67,7 +68,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
         {
             try
             {
-                var instance = DecodeAsync(input, true).ConfigureAwait(false).GetAwaiter().GetResult();
+                var instance = await DecodeAsync(input, true, cancellationToken).ConfigureAwait(false);
 
                 result = Matcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }
@@ -81,12 +82,12 @@ public class ProtoBufMatcher : IProtoBufMatcher
     }
 
     /// <inheritdoc />
-    public Task<object?> DecodeAsync(byte[]? input)
+    public Task<object?> DecodeAsync(byte[]? input, CancellationToken cancellationToken = default)
     {
-        return DecodeAsync(input, false);
+        return DecodeAsync(input, false, cancellationToken);
     }
 
-    private async Task<object?> DecodeAsync(byte[]? input, bool throwException)
+    private async Task<object?> DecodeAsync(byte[]? input, bool throwException, CancellationToken cancellationToken)
     {
         if (input == null)
         {
@@ -97,7 +98,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
 
         try
         {
-            return await ProtoBufToJsonConverter.ConvertAsync(request).ConfigureAwait(false);
+            return await ProtoBufToJsonConverter.ConvertAsync(request, cancellationToken).ConfigureAwait(false);
         }
         catch
         {

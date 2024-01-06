@@ -1,5 +1,6 @@
 #if PROTOBUF
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using ProtoBufJsonConverter;
@@ -14,7 +15,8 @@ internal static class ProtoBufUtils
         string? messageType,
         object? value,
         IJsonConverter? jsonConverter = null,
-        JsonConverterOptions? options = null
+        JsonConverterOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
         if (string.IsNullOrWhiteSpace(protoDefinition) || string.IsNullOrWhiteSpace(messageType) || value is null)
@@ -33,7 +35,7 @@ internal static class ProtoBufUtils
             }
         }
 
-        return await SingletonFactory<Converter>.GetInstance().ConvertAsync(request).ConfigureAwait(false);
+        return await SingletonFactory<Converter>.GetInstance().ConvertAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }
 #endif

@@ -45,14 +45,14 @@ message HelloReply {
     }
 
     [Fact]
-    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_NoJsonMatchers_IsMatch()
+    public async Task ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_NoJsonMatchers_IsMatchAsync()
     {
         // Arrange
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
         var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType);
-        var result = matcher.IsMatch(bytes);
+        var result = await matcher.IsMatchAsync(bytes).ConfigureAwait(false);
 
         // Assert
         result.Score.Should().Be(MatchScores.Perfect);
@@ -60,7 +60,7 @@ message HelloReply {
     }
 
     [Fact]
-    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Using_JsonMatcher_IsMatch()
+    public async Task ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Using_JsonMatcher_IsMatchAsync()
     {
         // Arrange
         var jsonMatcher = new JsonMatcher(new { name = "stef" });
@@ -68,7 +68,7 @@ message HelloReply {
 
         // Act
         var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType, matcher: jsonMatcher);
-        var result = matcher.IsMatch(bytes);
+        var result = await matcher.IsMatchAsync(bytes);
 
         // Assert
         result.Score.Should().Be(MatchScores.Perfect);
@@ -76,14 +76,14 @@ message HelloReply {
     }
 
     [Fact]
-    public void ProtoBufMatcher_For_InvalidProtoBuf_IsNoMatch()
+    public async Task ProtoBufMatcher_For_InvalidProtoBuf_IsNoMatch()
     {
         // Arrange
         var bytes = new byte[] { 1, 2, 3 };
 
         // Act
         var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType);
-        var result = matcher.IsMatch(bytes);
+        var result = await matcher.IsMatchAsync(bytes);
 
         // Assert
         result.Score.Should().Be(MatchScores.Mismatch);
@@ -91,14 +91,14 @@ message HelloReply {
     }
 
     [Fact]
-    public void ProtoBufMatcher_For_InvalidMethod_IsNoMatch()
+    public async Task ProtoBufMatcher_For_InvalidMethod_IsNoMatchAsync()
     {
         // Arrange
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
         var matcher = new ProtoBufMatcher(() => _protoDefinition, "greet.Greeter.X");
-        var result = matcher.IsMatch(bytes);
+        var result = await matcher.IsMatchAsync(bytes);
 
         // Assert
         result.Score.Should().Be(MatchScores.Mismatch);

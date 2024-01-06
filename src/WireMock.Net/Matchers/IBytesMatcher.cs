@@ -1,3 +1,6 @@
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace WireMock.Matchers;
 
 /// <summary>
@@ -9,6 +12,7 @@ public interface IBytesMatcher : IMatcher
     /// Determines whether the specified input is match.
     /// </summary>
     /// <param name="input">The input byte array.</param>
+    /// <param name="cancellationToken">The CancellationToken [optional].</param>
     /// <returns>MatchResult</returns>
-    MatchResult IsMatch(byte[]? input);
+    Task<MatchResult> IsMatchAsync(byte[]? input, CancellationToken cancellationToken = default);
 }

@@ -38,6 +38,6 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
 
     private MatchResult GetMatchResult(IRequestMessage requestMessage)
     {
-        return Matcher?.IsMatch(requestMessage.BodyAsBytes) ?? default;
+        return Matcher?.IsMatchAsync(requestMessage.BodyAsBytes).GetAwaiter().GetResult() ?? default;
     }
 }
