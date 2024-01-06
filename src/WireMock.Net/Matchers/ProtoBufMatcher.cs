@@ -1,5 +1,6 @@
 #if PROTOBUF
 using System;
+using System.Threading.Tasks;
 using ProtoBufJsonConverter;
 using ProtoBufJsonConverter.Models;
 using Stef.Validation;
@@ -66,7 +67,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
         {
             try
             {
-                var instance = Decode(input, true);
+                var instance = DecodeAsync(input, true).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 result = Matcher?.IsMatch(instance) ?? new MatchResult(MatchScores.Perfect);
             }
@@ -80,12 +81,12 @@ public class ProtoBufMatcher : IProtoBufMatcher
     }
 
     /// <inheritdoc />
-    public object? Decode(byte[]? input)
+    public Task<object?> DecodeAsync(byte[]? input)
     {
-        return Decode(input, false);
+        return DecodeAsync(input, false);
     }
 
-    private object? Decode(byte[]? input, bool throwException)
+    private async Task<object?> DecodeAsync(byte[]? input, bool throwException)
     {
         if (input == null)
         {
@@ -96,7 +97,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
 
         try
         {
-            return ProtoBufToJsonConverter.Convert(request);
+            return await ProtoBufToJsonConverter.ConvertAsync(request).ConfigureAwait(false);
         }
         catch
         {

@@ -288,10 +288,13 @@ public partial class Response : IResponseBuilder
             if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
             {
                 var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
-                var decoded = protoBufMatcher?.Decode(request.BodyData?.BodyAsBytes);
-                if (decoded != null)
+                if (protoBufMatcher != null)
                 {
-                    request.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
+                    var decoded = await protoBufMatcher.DecodeAsync(request.BodyData?.BodyAsBytes).ConfigureAwait(false);
+                    if (decoded != null)
+                    {
+                        request.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
+                    }
                 }
             }
 

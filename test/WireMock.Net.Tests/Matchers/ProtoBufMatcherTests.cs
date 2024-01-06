@@ -1,5 +1,6 @@
 #if PROTOBUF
 using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using ProtoBuf;
 using WireMock.Matchers;
@@ -11,7 +12,7 @@ namespace WireMock.Net.Tests.Matchers;
 public class ProtoBufMatcherTests
 {
     private const string MessageType = "greet.HelloRequest";
-    private readonly IdOrText ProtoDefinition = new(null, @"
+    private readonly IdOrText _protoDefinition = new(null, @"
 syntax = ""proto3"";
 
 package greet;
@@ -30,14 +31,14 @@ message HelloReply {
 ");
 
     [Fact]
-    public void ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_Decode()
+    public async Task ProtoBufMatcher_For_ValidProtoBuf_And_ValidMethod_DecodeAsync()
     {
         // Arrange
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
-        var result = matcher.Decode(bytes);
+        var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType);
+        var result = await matcher.DecodeAsync(bytes).ConfigureAwait(false);
 
         // Assert
         result.Should().BeEquivalentTo(new { name = "stef" });
@@ -50,7 +51,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
+        var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -66,7 +67,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType, matcher: jsonMatcher);
+        var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType, matcher: jsonMatcher);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -81,7 +82,7 @@ message HelloReply {
         var bytes = new byte[] { 1, 2, 3 };
 
         // Act
-        var matcher = new ProtoBufMatcher(() => ProtoDefinition, MessageType);
+        var matcher = new ProtoBufMatcher(() => _protoDefinition, MessageType);
         var result = matcher.IsMatch(bytes);
 
         // Assert
@@ -96,7 +97,7 @@ message HelloReply {
         var bytes = Convert.FromBase64String("CgRzdGVm");
 
         // Act
-        var matcher = new ProtoBufMatcher(() => ProtoDefinition, "greet.Greeter.X");
+        var matcher = new ProtoBufMatcher(() => _protoDefinition, "greet.Greeter.X");
         var result = matcher.IsMatch(bytes);
 
         // Assert

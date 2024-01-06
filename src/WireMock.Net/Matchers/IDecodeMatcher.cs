@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace WireMock.Matchers;
 
 /// <summary>
@@ -10,5 +12,5 @@ public interface IDecodeBytesMatcher
     /// </summary>
     /// <param name="input">The byte array</param>
     /// <returns>object</returns>
-    object? Decode(byte[]? input);
+    Task<object?> DecodeAsync(byte[]? input);
 }

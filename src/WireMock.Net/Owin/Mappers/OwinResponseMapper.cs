@@ -64,11 +64,11 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.FaultType)
             {
                 case FaultType.EMPTY_RESPONSE:
-                    bytes = IsFault(responseMessage) ? EmptyArray<byte>.Value : GetNormalBody(responseMessage);
+                    bytes = IsFault(responseMessage) ? EmptyArray<byte>.Value : await GetNormalBodyAsync(responseMessage).ConfigureAwait(false);
                     break;
 
                 case FaultType.MALFORMED_RESPONSE_CHUNK:
-                    bytes = GetNormalBody(responseMessage) ?? EmptyArray<byte>.Value;
+                    bytes = await GetNormalBodyAsync(responseMessage).ConfigureAwait(false) ?? EmptyArray<byte>.Value;
                     if (IsFault(responseMessage))
                     {
                         bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();
@@ -76,18 +76,18 @@ namespace WireMock.Owin.Mappers
                     break;
 
                 default:
-                    bytes = GetNormalBody(responseMessage);
+                    bytes = await GetNormalBodyAsync(responseMessage).ConfigureAwait(false);
                     break;
             }
 
             var statusCodeType = responseMessage.StatusCode?.GetType();
             switch (statusCodeType)
             {
-                case { } typeAsIntOrEnum when typeAsIntOrEnum == typeof(int) || typeAsIntOrEnum == typeof(int?) || typeAsIntOrEnum.GetTypeInfo().IsEnum:
+                case { } when statusCodeType == typeof(int) || statusCodeType == typeof(int?) || statusCodeType.GetTypeInfo().IsEnum:
                     response.StatusCode = MapStatusCode((int)responseMessage.StatusCode!);
                     break;
 
-                case { } typeAsString when typeAsString == typeof(string):
+                case { } when statusCodeType == typeof(string):
                     // Note: this case will also match on null 
                     int.TryParse(responseMessage.StatusCode as string, out var result);
                     response.StatusCode = MapStatusCode(result);
@@ -129,7 +129,7 @@ namespace WireMock.Owin.Mappers
             return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
         }
 
-        private byte[]? GetNormalBody(IResponseMessage responseMessage)
+        private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage)
         {
             switch (responseMessage.BodyData?.DetectedBodyType)
             {
@@ -145,7 +145,7 @@ namespace WireMock.Owin.Mappers
 #if PROTOBUF
                 case BodyType.ProtoBuf:
                     var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke().Text;
-                    return ProtoBufUtils.GetProtoBufMessageWithHeader(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson);
+                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
 #endif
 
                 case BodyType.Bytes:
