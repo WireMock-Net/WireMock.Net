@@ -69,7 +69,7 @@
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="JmesPath.Net" Version="1.0.125" />
         <PackageReference Include="AnyOf" Version="0.3.0" />
-        <PackageReference Include="TinyMapper.Signed" Version="3.0.4-preview-01" />
+        <PackageReference Include="TinyMapper.Signed" Version="3.0.4-preview-01" /> <!-- ok? -->
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
