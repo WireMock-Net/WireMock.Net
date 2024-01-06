@@ -249,7 +249,7 @@ public partial class WireMockServer
 #endif
         };
 
-        model.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(_settings.ProxyAndRecordSettings);
+        model.ProxyAndRecordSettings = MapperUtils.Instance.Map(_settings.ProxyAndRecordSettings);
 
         return ToJson(model);
     }
@@ -268,7 +268,7 @@ public partial class WireMockServer
         _settings.DoNotSaveDynamicResponseInLogEntry = settings.DoNotSaveDynamicResponseInLogEntry;
         _settings.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
         _settings.MaxRequestLogCount = settings.MaxRequestLogCount;
-        _settings.ProxyAndRecordSettings = TinyMapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
+        _settings.ProxyAndRecordSettings = MapperUtils.Instance.Map(settings.ProxyAndRecordSettings);
         _settings.QueryParameterMultipleValueSupport = settings.QueryParameterMultipleValueSupport;
         _settings.ReadStaticMappings = settings.ReadStaticMappings;
         _settings.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
