@@ -208,8 +208,8 @@ namespace WireMock.Owin.Mappers
                 }
                 else
                 {
-                    // Check if this response header can be added (#148 and #227)
-                    if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(headerName))
+                    // Check if this trailing header can be added to the response
+                    if (response.SupportsTrailers() && !HttpKnownHeaderNames.IsRestrictedResponseHeader(headerName))
                     {
                         response.AppendTrailer(headerName, new Microsoft.Extensions.Primitives.StringValues(value.ToArray()));
                     }
