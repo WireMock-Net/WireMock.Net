@@ -25,6 +25,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 
     private readonly Lazy<Task<bool>> _isWindowsAsLazy = new(async () =>
     {
+        if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
+        {
+            throw new InvalidOperationException($"The {nameof(TestcontainersSettings.OS.DockerEndpointAuthConfig)} is null. Check if Docker is started.");
+        }
+
         using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
         using var dockerClient = dockerClientConfig.CreateClient();
 

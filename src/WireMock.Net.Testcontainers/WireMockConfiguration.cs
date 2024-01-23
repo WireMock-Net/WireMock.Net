@@ -16,10 +16,7 @@ public sealed class WireMockConfiguration : ContainerConfiguration
 
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 
-    public WireMockConfiguration(
-        string? username = null,
-        string? password = null
-    )
+    public WireMockConfiguration(string? username = null, string? password = null)
     {
         Username = username;
         Password = password;

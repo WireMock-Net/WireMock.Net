@@ -105,6 +105,10 @@
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.4.0" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+        <ProjectReference Include="..\..\src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj" />
+    </ItemGroup>
+
     <ItemGroup>
         <None Update="OpenApiParser\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
