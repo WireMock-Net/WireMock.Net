@@ -1,7 +1,5 @@
 #if NET6_0_OR_GREATER
-using System;
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
