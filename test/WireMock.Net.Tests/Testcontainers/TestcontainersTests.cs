@@ -1,5 +1,7 @@
 #if NET6_0_OR_GREATER
+using System;
 using System.Threading.Tasks;
+using DotNet.Testcontainers.Containers;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
@@ -10,25 +12,33 @@ namespace WireMock.Net.Tests.Testcontainers;
 public class TestcontainersTests
 {
     [Fact]
-    public async Task Build_and_StartAsync()
+    public async Task WireMockContainer_Build_and_StartAsync_and_StopAsync()
     {
         // Act
         var wireMockContainer = new WireMockContainerBuilder()
             .WithAutoRemove(true)
+            .WithCleanUp(true)
             .Build();
 
-        await wireMockContainer.StartAsync().ConfigureAwait(false);
-
-        // Assert
-        using (new AssertionScope())
+        try
         {
-            var url = wireMockContainer.GetPublicUrl();
-            url.Should().NotBeNullOrWhiteSpace();
+            await wireMockContainer.StartAsync().ConfigureAwait(false);
 
-            var adminClient = wireMockContainer.CreateWireMockAdminClient();
+            // Assert
+            using (new AssertionScope())
+            {
+                var url = wireMockContainer.GetPublicUrl();
+                url.Should().NotBeNullOrWhiteSpace();
 
-            var settings = await adminClient.GetSettingsAsync();
-            settings.Should().NotBeNull();
+                var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+                var settings = await adminClient.GetSettingsAsync();
+                settings.Should().NotBeNull();
+            }
+        }
+        finally
+        {
+            await wireMockContainer.StopAsync();
         }
     }
 }
