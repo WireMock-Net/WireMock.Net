@@ -7,15 +7,8 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        // The port number must match the port of the gRPC server.
-        //using var channel = GrpcChannel.ForAddress("http://localhost:9093");
-
-        var handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-        var channel = GrpcChannel.ForAddress("http://localhost:9093", new GrpcChannelOptions
+        var channel = GrpcChannel.ForAddress("http://localhost:9093/grpc3", new GrpcChannelOptions
         {
-            HttpHandler = handler,
             Credentials = Grpc.Core.ChannelCredentials.Insecure
         });
 
