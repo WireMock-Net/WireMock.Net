@@ -118,6 +118,10 @@
         <Protobuf Include="Grpc\greet.proto" GrpcServices="Client" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+        <ProjectReference Include="..\..\src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj" />
+    </ItemGroup>
+
     <ItemGroup>
         <None Update="OpenApiParser\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

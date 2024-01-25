@@ -1,3 +1,11 @@
+# 1.5.47 (25 January 2024)
+- [#1049](https://github.com/WireMock-Net/WireMock.Net/pull/1049) - Add WithoutHeader to WireMock.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
+- [#1053](https://github.com/WireMock-Net/WireMock.Net/pull/1053) - [Snyk] Security upgrade Microsoft.IdentityModel.Protocols.OpenIdConnect from 6.12.2 to 6.34.0 [security] contributed by [StefH](https://github.com/StefH)
+- [#1057](https://github.com/WireMock-Net/WireMock.Net/pull/1057) - Pin the version from Testcontainers to 3.7.0 in WireMock.Net.Testcontainers [bug] contributed by [StefH](https://github.com/StefH)
+- [#1048](https://github.com/WireMock-Net/WireMock.Net/issues/1048) - WithoutHeader fluent assertion [feature]
+- [#1054](https://github.com/WireMock-Net/WireMock.Net/issues/1054) - WireMock.Net 1.5.46 is incompatible with TestContainers 3.7.0 (issue 1) [bug]
+- [#1059](https://github.com/WireMock-Net/WireMock.Net/issues/1059) - WireMock.Net 1.5.46 is incompatible with TestContainers 3.7.0 (issue 2) [bug]
+
 # 1.5.46 (23 December 2023)
 - [#1044](https://github.com/WireMock-Net/WireMock.Net/pull/1044) - WireMockServerSettingsParser [refactor] contributed by [StefH](https://github.com/StefH)
 - [#1046](https://github.com/WireMock-Net/WireMock.Net/pull/1046) - Change FindRequestByMappingGuidAsync to return a collection of entries contributed by [tlevesque-ueat](https://github.com/tlevesque-ueat)
@@ -178,7 +186,6 @@
 # 1.5.13 (11 December 2022)
 - [#858](https://github.com/WireMock-Net/WireMock.Net/pull/858) - Update Transformer functionality to return value instead of string [feature] contributed by [StefH](https://github.com/StefH)
 - [#859](https://github.com/WireMock-Net/WireMock.Net/pull/859) - Add UpdatedAt property to Mapping [feature] contributed by [StefH](https://github.com/StefH)
-- [#861](https://github.com/WireMock-Net/WireMock.Net/pull/861) - Add extra functionality for issue 55 contributed by [StefH](https://github.com/StefH)
 - [#862](https://github.com/WireMock-Net/WireMock.Net/pull/862) - Add client certificate support [feature] contributed by [billybraga](https://github.com/billybraga)
 - [#863](https://github.com/WireMock-Net/WireMock.Net/pull/863) - Update WireMockServer.CreateClient/CreateClients to include handlers [feature] contributed by [StefH](https://github.com/StefH)
 - [#856](https://github.com/WireMock-Net/WireMock.Net/issues/856) - Inconsistent result with overlapping (duplicate) request [bug]
@@ -222,8 +229,6 @@
 
 # 1.5.6 (12 September 2022)
 - [#803](https://github.com/WireMock-Net/WireMock.Net/pull/803) - WebHook : UseFireAndForget + Delay [feature] contributed by [StefH](https://github.com/StefH)
-- [#804](https://github.com/WireMock-Net/WireMock.Net/pull/804) - Change nuget to package reference for WireMock.Net.Console.Net472.Cla&#8230; [feature] contributed by [mattisking](https://github.com/mattisking)
-- [#806](https://github.com/WireMock-Net/WireMock.Net/pull/806) - Tweak middleware and fix bug in example [feature] contributed by [mattisking](https://github.com/mattisking)
 - [#801](https://github.com/WireMock-Net/WireMock.Net/issues/801) - Webhook Delays [feature]
 
 # 1.5.5 (03 September 2022)
@@ -795,7 +800,6 @@
 
 # 1.0.15.0 (04 May 2019)
 - [#271](https://github.com/WireMock-Net/WireMock.Net/pull/271) - Support Dynamic response files using Handlebars templating [bug, feature] contributed by [StefH](https://github.com/StefH)
-- [#272](https://github.com/WireMock-Net/WireMock.Net/pull/272) - Add unit test for JsonPath and BodyAsFile mapping contributed by [denstorti](https://github.com/denstorti)
 - [#273](https://github.com/WireMock-Net/WireMock.Net/pull/273) - Dynamic response handlebars templating (2) [bug, feature] contributed by [StefH](https://github.com/StefH)
 
 # 1.0.14.0 (20 April 2019)
@@ -866,7 +870,6 @@
 - [#208](https://github.com/WireMock-Net/WireMock.Net/pull/208) - Refactor contributed by [StefH](https://github.com/StefH)
 - [#209](https://github.com/WireMock-Net/WireMock.Net/pull/209) - NET Core 2.1 + support for Service Fabric commandline parameters contributed by [StefH](https://github.com/StefH)
 - [#212](https://github.com/WireMock-Net/WireMock.Net/pull/212) - Update BodyParser logic contributed by [StefH](https://github.com/StefH)
-- [#216](https://github.com/WireMock-Net/WireMock.Net/pull/216) - ResponseBodyData contributed by [StefH](https://github.com/StefH)
 - [#217](https://github.com/WireMock-Net/WireMock.Net/pull/217) - Enable Source Link contributed by [kashifsoofi](https://github.com/kashifsoofi)
 - [#218](https://github.com/WireMock-Net/WireMock.Net/pull/218) - remove appveyor contributed by [StefH](https://github.com/StefH)
 - [#107](https://github.com/WireMock-Net/WireMock.Net/issues/107) - Feature: increase code coverage [feature]
@@ -984,7 +987,6 @@
 
 # 1.0.3.17 (16 May 2018)
 - [#134](https://github.com/WireMock-Net/WireMock.Net/pull/134) - Stef negate matcher contributed by [alastairtree](https://github.com/alastairtree)
-- [#135](https://github.com/WireMock-Net/WireMock.Net/pull/135) - Merge into the stef_negate_matcher branch (solves issue #133) contributed by [StefH](https://github.com/StefH)
 - [#138](https://github.com/WireMock-Net/WireMock.Net/pull/138) - Added Negate matcher logic contributed by [StefH](https://github.com/StefH)
 - [#130](https://github.com/WireMock-Net/WireMock.Net/issues/130) - ...
 

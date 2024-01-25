@@ -29,15 +29,12 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
-        <PackageReference Include="Testcontainers" Version="3.6.0" />
+        <PackageReference Include="Testcontainers" Version="[3.7.0]" />
         <PackageReference Include="JetBrains.Annotations" VersionOverride="2022.3.1" PrivateAssets="All" Version="2023.3.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Http\" />
-    </ItemGroup>
+    
 </Project>
