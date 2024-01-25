@@ -1,5 +1,10 @@
-# 1.5.46 (23 December 2023)
-- #1044 WireMockServerSettingsParser [refactor]
-- #1046 Change FindRequestByMappingGuidAsync to return a collection of entries
+# 1.5.47 (25 January 2024)
+- #1049 Add WithoutHeader to WireMock.FluentAssertions [feature]
+- #1053 [Snyk] Security upgrade Microsoft.IdentityModel.Protocols.OpenIdConnect from 6.12.2 to 6.34.0 [security]
+- #1055 Bump System.IdentityModel.Tokens.Jwt from 6.25.0 to 6.34.0 in /examples/WireMock.Net.Console.Net472.Classic [example]
+- #1057 Pin the version from Testcontainers to 3.7.0 in WireMock.Net.Testcontainers [bug]
+- #1048 WithoutHeader fluent assertion [feature]
+- #1054 WireMock.Net 1.5.46 is incompatible with TestContainers 3.7.0 (issue 1) [bug]
+- #1059 WireMock.Net 1.5.46 is incompatible with TestContainers 3.7.0 (issue 2) [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
