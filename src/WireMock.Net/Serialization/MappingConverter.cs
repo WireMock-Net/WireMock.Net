@@ -375,9 +375,9 @@ internal class MappingConverter
             mappingModel.Response.BodyEncoding = null;
             mappingModel.Response.Fault = null;
 
-            mappingModel.Response.WebProxy = TinyMapperUtils.Instance.Map(response.ProxyAndRecordSettings.WebProxySettings);
+            mappingModel.Response.WebProxy = MapperUtils.Instance.Map(response.ProxyAndRecordSettings.WebProxySettings);
             mappingModel.Response.ProxyUrl = response.ProxyAndRecordSettings.Url;
-            mappingModel.Response.ProxyUrlReplaceSettings = TinyMapperUtils.Instance.Map(response.ProxyAndRecordSettings.ReplaceSettings);
+            mappingModel.Response.ProxyUrlReplaceSettings = MapperUtils.Instance.Map(response.ProxyAndRecordSettings.ReplaceSettings);
         }
         else
         {
