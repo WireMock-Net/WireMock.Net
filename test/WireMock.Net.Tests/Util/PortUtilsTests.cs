@@ -1,5 +1,4 @@
 using FluentAssertions;
-using NFluent;
 using WireMock.Util;
 using Xunit;
 
@@ -11,44 +10,44 @@ public class PortUtilsTests
     public void PortUtils_TryExtract_InvalidUrl_Returns_False()
     {
         // Assign
-        string url = "test";
+        var url = "test";
 
         // Act
-        bool result = PortUtils.TryExtract(url, out bool isHttps, out string proto, out string host, out int port);
+        var result = PortUtils.TryExtract(url, out var isHttps, out var proto, out var host, out var port);
 
         // Assert
         result.Should().BeFalse();
         isHttps.Should().BeFalse();
         proto.Should().BeNull();
         host.Should().BeNull();
-        port.Should().Be(default(int));
+        port.Should().Be(default);
     }
 
     [Fact]
     public void PortUtils_TryExtract_UrlIsMissingPort_Returns_False()
     {
         // Assign
-        string url = "http://0.0.0.0";
+        var url = "http://0.0.0.0";
 
         // Act
-        bool result = PortUtils.TryExtract(url, out bool isHttps, out string proto, out string host, out int port);
+        var result = PortUtils.TryExtract(url, out var isHttps, out var proto, out var host, out var port);
 
         // Assert
         result.Should().BeFalse();
         isHttps.Should().BeFalse();
         proto.Should().BeNull();
         host.Should().BeNull();
-        port.Should().Be(default(int));
+        port.Should().Be(default);
     }
 
     [Fact]
     public void PortUtils_TryExtract_Http_Returns_True()
     {
         // Assign
-        string url = "http://wiremock.net:1234";
+        var url = "http://wiremock.net:1234";
 
         // Act
-        bool result = PortUtils.TryExtract(url, out bool isHttps, out string proto, out string host, out int port);
+        var result = PortUtils.TryExtract(url, out var isHttps, out var proto, out var host, out var port);
 
         // Assert
         result.Should().BeTrue();
@@ -62,10 +61,10 @@ public class PortUtilsTests
     public void PortUtils_TryExtract_Https_Returns_True()
     {
         // Assign
-        string url = "https://wiremock.net:5000";
+        var url = "https://wiremock.net:5000";
 
         // Act
-        bool result = PortUtils.TryExtract(url, out bool isHttps, out string proto, out string host, out int port);
+        var result = PortUtils.TryExtract(url, out var isHttps, out var proto, out var host, out var port);
 
         // Assert
         result.Should().BeTrue();
@@ -79,10 +78,10 @@ public class PortUtilsTests
     public void PortUtils_TryExtract_Https0_0_0_0_Returns_True()
     {
         // Assign
-        string url = "https://0.0.0.0:5000";
+        var url = "https://0.0.0.0:5000";
 
         // Act
-        bool result = PortUtils.TryExtract(url, out bool isHttps, out string proto, out string host, out int port);
+        var result = PortUtils.TryExtract(url, out var isHttps, out var proto, out var host, out var port);
 
         // Assert
         result.Should().BeTrue();
