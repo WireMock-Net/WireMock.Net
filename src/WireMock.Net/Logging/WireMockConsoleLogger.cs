@@ -10,6 +10,9 @@ namespace WireMock.Logging;
 /// <seealso cref="IWireMockLogger" />
 public class WireMockConsoleLogger : IWireMockLogger
 {
+    private const string NewlineWindows = "\r\n";
+    private const string NewlineUnix = "\n";
+
     private readonly bool _removeNewLines;
 
     /// <summary>
@@ -81,6 +84,6 @@ public class WireMockConsoleLogger : IWireMockLogger
     /// <param name="value">The value to write.</param>
     private void WriteLine(string value)
     {
-        Console.WriteLine(!_removeNewLines ? value : value.Replace(Environment.NewLine, string.Empty));
+        Console.WriteLine(!_removeNewLines ? value : value.Replace(NewlineWindows, string.Empty).Replace(NewlineUnix, string.Empty));
     }
 }

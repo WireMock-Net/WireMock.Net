@@ -157,7 +157,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
-            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("WireMock.Net server running"));
     }
 
     /// <inheritdoc />
