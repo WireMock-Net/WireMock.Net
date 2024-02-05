@@ -64,6 +64,11 @@ public interface IRequestMessage
     string Method { get; }
 
     /// <summary>
+    /// Gets the HTTP Version.
+    /// </summary>
+    string HttpVersion { get; }
+
+    /// <summary>
     /// Gets the headers.
     /// </summary>
     IDictionary<string, WireMockList<string>>? Headers { get; }

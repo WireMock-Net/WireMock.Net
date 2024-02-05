@@ -47,6 +47,7 @@ internal class MappingConverter
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageHttpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
         var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
@@ -106,6 +107,11 @@ internal class MappingConverter
         foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
         {
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
+        }
+
+        if (requestMessageHttpVersionMatcher?.HttpVersion != null)
+        {
+            sb.AppendLine($"        .WithHttpVersion({requestMessageHttpVersionMatcher.HttpVersion})");
         }
 
 #if GRAPHQL
@@ -256,6 +262,7 @@ internal class MappingConverter
         var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
         var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
+        var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -306,6 +313,11 @@ internal class MappingConverter
             mappingModel.Request.Methods = methodMatcher.Methods;
             mappingModel.Request.MethodsRejectOnMatch = methodMatcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null;
             mappingModel.Request.MethodsMatchOperator = methodMatcher.Methods.Length > 1 ? methodMatcher.MatchOperator.ToString() : null;
+        }
+
+        if (httpVersionMatcher?.HttpVersion != null)
+        {
+            mappingModel.Request.HttpVersion = httpVersionMatcher.HttpVersion;
         }
 
         if (clientIPMatcher is { Matchers: { } })

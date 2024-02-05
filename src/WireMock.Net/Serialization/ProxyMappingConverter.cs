@@ -41,6 +41,7 @@ internal class ProxyMappingConverter
         var paramMatchers = request?.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request?.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request?.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var httpVersionMatcher = request?.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
 
         var newRequest = Request.Create();
 
@@ -68,6 +69,16 @@ internal class ProxyMappingConverter
         else
         {
             newRequest.UsingMethod(requestMessage.Method);
+        }
+
+        // HttpVersion
+        if (useDefinedRequestMatchers && httpVersionMatcher?.HttpVersion is not null)
+        {
+            newRequest.WithHttpVersion(httpVersionMatcher.HttpVersion);
+        }
+        else
+        {
+            newRequest.WithHttpVersion(requestMessage.HttpVersion);
         }
 
         // QueryParams

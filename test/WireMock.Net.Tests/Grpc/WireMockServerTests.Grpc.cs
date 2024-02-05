@@ -58,7 +58,7 @@ message HelloReply {
                             message = "hello"
                         }
                     )
-            // .WithTrailingHeader("grpc-status", "0")
+            .WithTrailingHeader("grpc-status", "0")
             );
 
         // Act
@@ -127,6 +127,7 @@ message HelloReply {
         server
             .Given(Request.Create()
                 .UsingPost()
+                .WithHttpVersion("2")
                 .WithPath("/greet.Greeter/SayHello")
                 .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher)
             )
@@ -170,6 +171,7 @@ message HelloReply {
             .AddProtoDefinition(id, ProtoDefinition)
             .Given(Request.Create()
                 .UsingPost()
+                .WithHttpVersion("2")
                 .WithPath("/greet.Greeter/SayHello")
                 .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher)
             )
