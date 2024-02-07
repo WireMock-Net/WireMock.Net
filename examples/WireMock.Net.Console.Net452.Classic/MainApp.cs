@@ -195,6 +195,7 @@ message HelloReply {
             server
                 .Given(Request.Create()
                     .UsingPost()
+                    .WithHttpVersion("2")
                     .WithPath("/grpc/greet.Greeter/SayHello")
                     .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
                 )
@@ -213,6 +214,7 @@ message HelloReply {
             server
                 .Given(Request.Create()
                     .UsingPost()
+                    .WithHttpVersion("2")
                     .WithPath("/grpc2/greet.Greeter/SayHello")
                     .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
                 )
