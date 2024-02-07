@@ -34,6 +34,7 @@ message HelloReply {
   string message = 1;
 }
 ";
+
     [Theory]
     [InlineData("CgRzdGVm")]
     [InlineData("AAAAAAYKBHN0ZWY=")]
