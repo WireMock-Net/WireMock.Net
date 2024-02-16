@@ -26,10 +26,8 @@ public abstract class RequestMessageCompositeMatcher : IRequestMatcher
     /// <param name="type">The CompositeMatcherType type (Defaults to 'And')</param>
     protected RequestMessageCompositeMatcher(IEnumerable<IRequestMatcher> requestMatchers, CompositeMatcherType type = CompositeMatcherType.And)
     {
-        Guard.NotNull(requestMatchers);
-
+        RequestMatchers = Guard.NotNull(requestMatchers);
         _type = type;
-        RequestMatchers = requestMatchers;
     }
 
     /// <inheritdoc />

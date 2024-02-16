@@ -91,18 +91,50 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// WithBody : Create a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
     /// </summary>
     /// <param name="body">The body.</param>
-    /// <param name="converter">The JsonConverter.</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/>.</param>
     /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithBody(object body, IJsonConverter converter, JsonConverterOptions? options = null);
+    IResponseBuilder WithBody(object body, IJsonConverter jsonConverter, JsonConverterOptions? options = null);
 
     /// <summary>
     /// WithBody : Create a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
     /// </summary>
     /// <param name="body">The body.</param>
     /// <param name="encoding">The body encoding, can be <c>null</c>.</param>
-    /// <param name="converter">The JsonConverter.</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/>.</param>
     /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter converter, JsonConverterOptions? options = null);
+    IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter jsonConverter, JsonConverterOptions? options = null);
+
+    /// <summary>
+    /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
+    /// </summary>
+    /// <param name="protoDefinition">The proto definition as text.</param>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
+    /// <param name="value">The object to convert to protobuf byte[].</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsProtoBuf(
+        string protoDefinition,
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    );
+
+    /// <summary>
+    /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
+    /// </summary>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
+    /// <param name="value">The object to convert to protobuf byte[].</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsProtoBuf(
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    );
 }

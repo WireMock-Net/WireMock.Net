@@ -41,10 +41,15 @@ public interface IResponseMessage
     IDictionary<string, WireMockList<string>>? Headers { get; }
 
     /// <summary>
+    /// Gets the trailing headers.
+    /// </summary>
+    IDictionary<string, WireMockList<string>>? TrailingHeaders { get; }
+
+    /// <summary>
     /// Gets or sets the status code.
     /// </summary>
     object? StatusCode { get; }
-    
+
     /// <summary>
     /// Adds the header.
     /// </summary>
@@ -53,9 +58,23 @@ public interface IResponseMessage
     void AddHeader(string name, string value);
 
     /// <summary>
-    /// Adds the header.
+    /// Adds the trailing header.
     /// </summary>
     /// <param name="name">The name.</param>
     /// <param name="values">The values.</param>
     void AddHeader(string name, params string[] values);
+
+    /// <summary>
+    /// Adds the trailing header.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="value">The value.</param>
+    void AddTrailingHeader(string name, string value);
+
+    /// <summary>
+    /// Adds the header.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="values">The values.</param>
+    void AddTrailingHeader(string name, params string[] values);
 }

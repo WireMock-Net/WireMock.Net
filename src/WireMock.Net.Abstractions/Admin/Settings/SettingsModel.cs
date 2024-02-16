@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using WireMock.Handlers;
 using WireMock.Types;
 
@@ -113,6 +115,11 @@ public class SettingsModel
     /// Default value = "All".
     /// </summary>
     public QueryParameterMultipleValueSupport? QueryParameterMultipleValueSupport { get; set; }
+
+    /// <summary>
+    /// A list of Grpc ProtoDefinitions which can be used.
+    /// </summary>
+    public Dictionary<string, string>? ProtoDefinitions { get; set; }
 
 #if NETSTANDARD1_3_OR_GREATER || NET461
     /// <summary>

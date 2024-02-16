@@ -34,11 +34,12 @@ internal static class PortUtils
     }
 
     /// <summary>
-    /// Extract the if-isHttps, protocol, host and port from a URL.
+    /// Extract the isHttps, isHttp2, protocol, host and port from a URL.
     /// </summary>
-    public static bool TryExtract(string url, out bool isHttps, [NotNullWhen(true)] out string? protocol, [NotNullWhen(true)] out string? host, out int port)
+    public static bool TryExtract(string url, out bool isHttps, out bool isHttp2, [NotNullWhen(true)] out string? protocol, [NotNullWhen(true)] out string? host, out int port)
     {
         isHttps = false;
+        isHttp2 = false;
         protocol = null;
         host = null;
         port = default;
@@ -47,7 +48,8 @@ internal static class PortUtils
         if (match.Success)
         {
             protocol = match.Groups["proto"].Value;
-            isHttps = protocol.StartsWith("https", StringComparison.OrdinalIgnoreCase);
+            isHttps = protocol.StartsWith("https", StringComparison.OrdinalIgnoreCase) || protocol.StartsWith("grpcs", StringComparison.OrdinalIgnoreCase);
+            isHttp2 = protocol.StartsWith("grpc", StringComparison.OrdinalIgnoreCase);
             host = match.Groups["host"].Value;
 
             return int.TryParse(match.Groups["port"].Value, out port);

@@ -202,7 +202,7 @@ namespace WireMock.Net.Tests.Owin.Mappers
         public async Task OwinResponseMapper_MapAsync_BodyAsJson()
         {
             // Arrange
-            var json = new { t = "x", i = (string)null };
+            var json = new { t = "x", i = (string?)null };
             var responseMessage = new ResponseMessage
             {
                 Headers = new Dictionary<string, WireMockList<string>>(),

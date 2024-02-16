@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Stef.Validation;
 using WireMock.Settings;
 
 namespace WireMock.ResponseProviders;
@@ -10,7 +11,7 @@ internal class DynamicAsyncResponseProvider : IResponseProvider
 
     public DynamicAsyncResponseProvider(Func<IRequestMessage, Task<IResponseMessage>> responseMessageFunc)
     {
-        _responseMessageFunc = responseMessageFunc;
+        _responseMessageFunc = Guard.NotNull(responseMessageFunc);
     }
 
     public async Task<(IResponseMessage Message, IMapping? Mapping)> ProvideResponseAsync(IMapping mapping, IRequestMessage requestMessage, WireMockServerSettings settings)

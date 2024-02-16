@@ -7,6 +7,8 @@ internal struct HostUrlDetails
 {
     public bool IsHttps { get; set; }
 
+    public bool IsHttp2 { get; set; }
+
     public string Url { get; set; }
         
     public string Scheme { get; set; }

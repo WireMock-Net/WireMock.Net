@@ -11,6 +11,7 @@ using WireMock.Matchers;
 using WireMock.RegularExpressions;
 using WireMock.Types;
 using System.Globalization;
+using WireMock.Models;
 #if USE_ASPNETCORE
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -42,6 +43,12 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public HostingScheme? HostingScheme { get; set; }
+
+    /// <summary>
+    /// Gets or sets to use HTTP 2 (used for Grpc).
+    /// </summary>
+    [PublicAPI]
+    public bool? UseHttp2 { get; set; }
 
     /// <summary>
     /// Gets or sets whether to start admin interface.
@@ -301,4 +308,16 @@ public class WireMockServerSettings
     /// </summary>
 	[JsonIgnore]
     public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+
+    /// <summary>
+    /// A list of Grpc ProtoDefinitions which can be used.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<string, string>? ProtoDefinitions { get; set; }
+
+    /// <summary>
+    /// A list of GraphQL Schemas which can be used.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<string, GraphQLSchemaDetails>? GraphQLSchemas { get; set; }
 }

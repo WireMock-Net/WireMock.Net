@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.ResponseProviders;
@@ -31,7 +32,7 @@ public class Mapping : IMapping
     public int Priority { get; }
 
     /// <inheritdoc />
-    public string? Scenario { get; }
+    public string? Scenario { get; private set; }
 
     /// <inheritdoc />
     public string? ExecutionConditionState { get; }
@@ -76,7 +77,10 @@ public class Mapping : IMapping
     public object? Data { get; }
 
     /// <inheritdoc />
-    public double? Probability { get; }
+    public double? Probability { get; private set; }
+
+    /// <inheritdoc />
+    public IdOrText? ProtoDefinition { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -98,8 +102,8 @@ public class Mapping : IMapping
     /// <param name="useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]</param>
     /// <param name="timeSettings">The TimeSettings. [Optional]</param>
     /// <param name="data">The data object. [Optional]</param>
-    /// <param name="probability">Define the probability when this request should be matched. [Optional]</param>
-    public Mapping(
+    public Mapping
+    (
         Guid guid,
         DateTime updatedAt,
         string? title,
@@ -116,8 +120,8 @@ public class Mapping : IMapping
         IWebhook[]? webhooks,
         bool? useWebhooksFireAndForget,
         ITimeSettings? timeSettings,
-        object? data,
-        double? probability)
+        object? data
+    )
     {
         Guid = guid;
         UpdatedAt = updatedAt;
@@ -136,7 +140,6 @@ public class Mapping : IMapping
         UseWebhooksFireAndForget = useWebhooksFireAndForget;
         TimeSettings = timeSettings;
         Data = data;
-        Probability = probability;
     }
 
     /// <inheritdoc />
@@ -167,5 +170,26 @@ public class Mapping : IMapping
         }
 
         return result;
+    }
+
+    /// <inheritdoc />
+    public IMapping WithProbability(double probability)
+    {
+        Probability = Guard.NotNull(probability);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IMapping WithScenario(string scenario)
+    {
+        Scenario = Guard.NotNullOrWhiteSpace(scenario);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IMapping WithProtoDefinition(IdOrText protoDefinition)
+    {
+        ProtoDefinition = protoDefinition;
+        return this;
     }
 }

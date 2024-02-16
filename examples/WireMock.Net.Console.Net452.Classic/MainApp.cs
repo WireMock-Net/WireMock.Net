@@ -42,6 +42,24 @@ namespace WireMock.Net.ConsoleApplication
 
     public static class MainApp
     {
+        private const string ProtoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
+
         private const string TestSchema = @"
   scalar DateTime
   scalar MyCustomScalar
@@ -115,17 +133,14 @@ namespace WireMock.Net.ConsoleApplication
                     .WithBodyAsJson(rm => todos[int.Parse(rm.Query!["id"].ToString())])
                 );
 
-            var httpClient = server.CreateClient();
-            //server.Stop();
-
-            var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
+            using var httpAndHttpsWithPort = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps,
                 Port = 12399
             });
             httpAndHttpsWithPort.Stop();
 
-            var httpAndHttpsFree = WireMockServer.Start(new WireMockServerSettings
+            using var httpAndHttpsFree = WireMockServer.Start(new WireMockServerSettings
             {
                 HostingScheme = HostingScheme.HttpAndHttps
             });
@@ -134,11 +149,14 @@ namespace WireMock.Net.ConsoleApplication
             string url1 = "http://localhost:9091/";
             string url2 = "http://localhost:9092/";
             string url3 = "https://localhost:9443/";
+            string urlGrpc = "grpc://localhost:9093/";
+            string urlGrpcSSL = "grpcs://localhost:9094/";
 
             server = WireMockServer.Start(new WireMockServerSettings
             {
+                // CorsPolicyOptions = CorsPolicyOptions.AllowAll,
                 AllowCSharpCodeMatcher = true,
-                Urls = new[] { url1, url2, url3 },
+                Urls = new[] { url1, url2, url3, urlGrpc, urlGrpcSSL },
                 StartAdminInterface = true,
                 ReadStaticMappings = true,
                 SaveUnmatchedRequests = true,
@@ -171,17 +189,91 @@ namespace WireMock.Net.ConsoleApplication
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
             // server.AllowPartialMapping();
+
+#if PROTOBUF
+            var protoBufJsonMatcher = new JsonPartialWildcardMatcher(new { name = "*" });
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithHttpVersion("2")
+                    .WithPath("/grpc/greet.Greeter/SayHello")
+                    .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
+                )
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
+                        new
+                        {
+                            message = "hello {{request.BodyAsJson.name}}"
+                        }
+                    )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithHttpVersion("2")
+                    .WithPath("/grpc2/greet.Greeter/SayHello")
+                    .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
+                )
+                .WithProtoDefinition(ProtoDefinition)
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf("greet.HelloReply",
+                        new
+                        {
+                            message = "hello {{request.BodyAsJson.name}}"
+                        }
+                    )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
+
+            server
+                .AddProtoDefinition("my-greeter", ProtoDefinition)
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/grpc3/greet.Greeter/SayHello")
+                    .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
+                )
+                .WithProtoDefinition("my-greeter")
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf("greet.HelloReply",
+                        new
+                        {
+                            message = "hello {{request.BodyAsJson.name}}"
+                        }
+                    )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
+#endif
+
 #if GRAPHQL
             var customScalars = new Dictionary<string, Type> { { "MyCustomScalar", typeof(int) } };
             server
                 .Given(Request.Create()
                     .WithPath("/graphql")
                     .UsingPost()
-                    .WithGraphQLSchema(TestSchema, customScalars)
+                    .WithBodyAsGraphQL(TestSchema, customScalars)
                 )
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")
                 );
+
+            //server
+            //    .AddGraphQLSchema("my-graphql", TestSchema, customScalars)
+            //    .Given(Request.Create()
+            //        .WithPath("/graphql2")
+            //        .UsingPost()
+            //    )
+            //    .WithGraphQLSchema("my-graphql")
+            //    .RespondWith(Response.Create()
+            //        .WithBody("GraphQL is ok")
+            //    );
 #endif
 
 #if MIMEKIT
@@ -336,8 +428,8 @@ namespace WireMock.Net.ConsoleApplication
                         Url = "http://localhost:9999",
                         ReplaceSettings = new ProxyUrlReplaceSettings
                         {
-                           OldValue = "old",
-                           NewValue = "new"
+                            OldValue = "old",
+                            NewValue = "new"
                         }
                     })
                 );

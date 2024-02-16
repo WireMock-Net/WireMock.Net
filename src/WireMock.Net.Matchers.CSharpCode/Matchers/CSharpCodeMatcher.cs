@@ -33,6 +33,9 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
+    /// <inheritdoc />
+    public object Value { get; }
+
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     /// <summary>
@@ -54,6 +57,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     public MatchResult IsMatch(string? input)
@@ -160,34 +164,34 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
             }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0_OR_GREATER)
-            Assembly assembly;
-            try
-            {
-                assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
-            }
-            catch (Exception ex)
-            {
-                throw new WireMockException($"CSharpCodeMatcher: Unable to compile code `{source}` for WireMock.CodeHelper", ex);
-            }
+        Assembly assembly;
+        try
+        {
+            assembly = CSScriptLib.CSScript.Evaluator.CompileCode(source);
+        }
+        catch (Exception ex)
+        {
+            throw new WireMockException($"CSharpCodeMatcher: Unable to compile code `{source}` for WireMock.CodeHelper", ex);
+        }
 
-            dynamic script;
-            try
-            {
-                script = CSScripting.ReflectionExtensions.CreateObject(assembly, "*");
-            }
-            catch (Exception ex)
-            {
-                throw new WireMockException("CSharpCodeMatcher: Unable to create object from assembly", ex);
-            }
+        dynamic script;
+        try
+        {
+            script = CSScripting.ReflectionExtensions.CreateObject(assembly, "*");
+        }
+        catch (Exception ex)
+        {
+            throw new WireMockException("CSharpCodeMatcher: Unable to create object from assembly", ex);
+        }
 
-            try
-            {
-                result = script.IsMatch(inputValue);
-            }
-            catch (Exception ex)
-            {
-                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
-            }
+        try
+        {
+            result = script.IsMatch(inputValue);
+        }
+        catch (Exception ex)
+        {
+            throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
+        }
 #else
             throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif

@@ -26,7 +26,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="schema">The schema.</param>
-    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. (optional)</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
     public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, string schema, IDictionary<string, Type>? customScalars = null) :
         this(CreateMatcherArray(matchBehaviour, schema, customScalars))
     {
@@ -38,7 +38,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="schema">The schema.</param>
-    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. (optional)</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
     public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, GraphQL.Types.ISchema schema, IDictionary<string, Type>? customScalars = null) :
         this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, GraphQL.Types.ISchema>(schema), customScalars))
     {
@@ -94,8 +94,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
 #if GRAPHQL
     private static IMatcher[] CreateMatcherArray(
         MatchBehaviour matchBehaviour,
-        AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern,
-        GraphQL.Types.ISchema> schema,
+        AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, GraphQL.Types.ISchema> schema,
         IDictionary<string, Type>? customScalars
     )
     {
