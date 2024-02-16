@@ -9,7 +9,7 @@ namespace WireMock.RequestBuilders;
 /// <summary>
 /// The BodyRequestBuilder interface.
 /// </summary>
-public interface IBodyRequestBuilder : IGraphQLRequestBuilder
+public interface IBodyRequestBuilder : IProtoBufRequestBuilder
 {
     /// <summary>
     /// WithBody: IMatcher

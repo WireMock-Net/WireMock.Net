@@ -108,11 +108,10 @@ public partial class WireMockServerTests
         // Arrange
         const string body = "example";
         var path = $"/foo_{Guid.NewGuid()}";
-        var settings = new WireMockServerSettings
+        var server = WireMockServer.Start(settings =>
         {
-            UseSSL = true
-        };
-        var server = WireMockServer.Start(settings);
+            settings.UseSSL = true;
+        });
 
         server
             .Given(Request.Create()

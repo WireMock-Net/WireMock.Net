@@ -6,7 +6,7 @@ namespace WireMock.RequestBuilders;
 /// <summary>
 /// The MultiPartRequestBuilder interface.
 /// </summary>
-public interface IMultiPartRequestBuilder : IRequestMatcher
+public interface IMultiPartRequestBuilder : IHttpVersionBuilder
 {
     /// <summary>
     /// WithMultiPart: IMatcher

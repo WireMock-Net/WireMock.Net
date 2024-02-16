@@ -102,7 +102,7 @@ public partial class MappingConverterTests
         return Verifier.Verify(code, VerifySettings);
     }
 
-    private Mapping CreateMapping()
+    private IMapping CreateMapping()
     {
         var guid = new Guid("8e7b9ab7-e18e-4502-8bc9-11e6679811cc");
         var request = Request.Create()
@@ -119,7 +119,8 @@ public partial class MappingConverterTests
             .WithDelay(12345)
             .WithTransformer();
 
-        return new Mapping(
+        return new Mapping
+        (
             guid,
             _updatedAt,
             string.Empty,
@@ -136,9 +137,8 @@ public partial class MappingConverterTests
             null,
             false,
             null,
-            data: null,
-            probability: 0.3
-        );
+            data: null
+        ).WithProbability(0.3);
     }
 }
 #endif

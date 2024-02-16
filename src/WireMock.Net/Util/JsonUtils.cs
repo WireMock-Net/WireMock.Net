@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Newtonsoft.Json;
@@ -105,5 +106,24 @@ internal static class JsonUtils
 
             _ => throw new NotSupportedException($"Unable to convert value to {typeof(T)}.")
         };
+    }
+
+    public static JToken ConvertValueToJToken(object value)
+    {
+        // Check if JToken, string, IEnumerable or object
+        switch (value)
+        {
+            case JToken tokenValue:
+                return tokenValue;
+
+            case string stringValue:
+                return Parse(stringValue);
+
+            case IEnumerable enumerableValue:
+                return JArray.FromObject(enumerableValue);
+
+            default:
+                return JObject.FromObject(value);
+        }
     }
 }

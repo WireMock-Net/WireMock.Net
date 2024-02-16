@@ -20,6 +20,15 @@ public class ExactMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
     /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param> 
+    /// <param name="value">The string value.</param>
+    public ExactMatcher(MatchBehaviour matchBehaviour, string value) : this(matchBehaviour, true, MatchOperator.Or, new AnyOf<string, StringPattern>(value))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExactMatcher"/> class.
+    /// </summary>
     /// <param name="values">The values.</param>
     public ExactMatcher(params AnyOf<string, StringPattern>[] values) : this(MatchBehaviour.AcceptOnMatch, false, MatchOperator.Or, values)
     {

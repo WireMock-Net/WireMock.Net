@@ -6,6 +6,7 @@
     Url: http://localhost/,
     AbsoluteUrl: http://localhost/,
     Method: post,
+    HttpVersion: 1.1,
     BodyAsBytes: AA==,
     DetectedBodyType: Bytes
   },

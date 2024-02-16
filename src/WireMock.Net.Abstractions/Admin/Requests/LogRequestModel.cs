@@ -56,6 +56,11 @@ public class LogRequestModel
     public string Method { get; set; }
 
     /// <summary>
+    /// The HTTP Version.
+    /// </summary>
+    public string HttpVersion { get; set; } = null!;
+
+    /// <summary>
     /// The Headers.
     /// </summary>
     public IDictionary<string, WireMockList<string>>? Headers { get; set; }

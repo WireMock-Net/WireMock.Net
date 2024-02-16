@@ -64,6 +64,11 @@ public interface IRequestMessage
     string Method { get; }
 
     /// <summary>
+    /// Gets the HTTP Version.
+    /// </summary>
+    string HttpVersion { get; }
+
+    /// <summary>
     /// Gets the headers.
     /// </summary>
     IDictionary<string, WireMockList<string>>? Headers { get; }
@@ -94,23 +99,27 @@ public interface IRequestMessage
     IBodyData? BodyData { get; }
 
     /// <summary>
-    /// The original body as string. Convenience getter for Handlebars and WireMockAssertions.
+    /// The original body as string.
+    /// Convenience getter for Handlebars and WireMockAssertions.
     /// </summary>
     string? Body { get; }
 
     /// <summary>
-    /// The body (as JSON object). Convenience getter for Handlebars and WireMockAssertions.
+    /// The body (as JSON object).
+    /// Convenience getter for Handlebars and WireMockAssertions.
     /// </summary>
     object? BodyAsJson { get; }
 
     /// <summary>
-    /// The body (as bytearray). Convenience getter for Handlebars and WireMockAssertions.
+    /// The body (as bytearray).
+    /// Convenience getter for Handlebars and WireMockAssertions.
     /// </summary>
     byte[]? BodyAsBytes { get; }
 
 #if MIMEKIT
     /// <summary>
-    /// The original body as MimeMessage. Convenience getter for Handlebars and WireMockAssertions.
+    /// The original body as MimeMessage.
+    /// Convenience getter for Handlebars and WireMockAssertions.
     /// </summary>
     object? BodyAsMimeMessage { get; }
 #endif

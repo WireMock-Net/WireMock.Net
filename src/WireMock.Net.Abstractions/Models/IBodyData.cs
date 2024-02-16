@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using WireMock.Models;
 using WireMock.Types;
 
+// ReSharper disable once CheckNamespace
 namespace WireMock.Util;
 
 /// <summary>
@@ -10,7 +13,7 @@ namespace WireMock.Util;
 public interface IBodyData
 {
     /// <summary>
-    /// The body (as bytearray).
+    /// The body (as byte array).
     /// </summary>
     byte[]? BodyAsBytes { get; set; }
 
@@ -26,6 +29,7 @@ public interface IBodyData
 
     /// <summary>
     /// The body (as JSON object).
+    /// Also used for ProtoBuf.
     /// </summary>
     object? BodyAsJson { get; set; }
 
@@ -68,4 +72,16 @@ public interface IBodyData
     /// Defines if this BodyData is the result of a dynamically created response-string. (
     /// </summary>
     public string? IsFuncUsed { get; set; }
+
+    #region ProtoBuf
+    /// <summary>
+    /// Gets or sets the proto definition.
+    /// </summary>
+    public Func<IdOrText>? ProtoDefinition { get; set; }
+
+    /// <summary>
+    /// Gets or sets the full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
+    /// </summary>
+    public string? ProtoBufMessageType { get; set; }
+    #endregion
 }

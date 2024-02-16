@@ -1,19 +1,20 @@
 // This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Stef.Validation;
+using WireMock.Matchers.Request;
 using WireMock.Proxy;
+using WireMock.RequestBuilders;
 using WireMock.Settings;
 using WireMock.Transformers;
 using WireMock.Transformers.Handlebars;
 using WireMock.Transformers.Scriban;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.ResponseBuilders;
 
@@ -25,6 +26,11 @@ public partial class Response : IResponseBuilder
     private static readonly ThreadLocal<Random> Random = new(() => new Random(DateTime.UtcNow.Millisecond));
 
     private TimeSpan? _delay;
+
+    /// <summary>
+    /// The link back to the mapping.
+    /// </summary>
+    public IMapping Mapping { get; set; } = null!;
 
     /// <summary>
     /// The minimum random delay in milliseconds.
@@ -112,7 +118,7 @@ public partial class Response : IResponseBuilder
     {
         ResponseMessage = responseMessage;
     }
-    
+
     /// <inheritdoc cref="IStatusCodeResponseBuilder.WithStatusCode(int)"/>
     [PublicAPI]
     public IResponseBuilder WithStatusCode(int code)
@@ -154,42 +160,6 @@ public partial class Response : IResponseBuilder
     public IResponseBuilder WithNotFound()
     {
         return WithStatusCode((int)HttpStatusCode.NotFound);
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeader(string, string[])"/>
-    public IResponseBuilder WithHeader(string name, params string[] values)
-    {
-        Guard.NotNull(name);
-
-        ResponseMessage.AddHeader(name, values);
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, string> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, string[]})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, string[]> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers.ToDictionary(header => header.Key, header => new WireMockList<string>(header.Value));
-        return this;
-    }
-
-    /// <inheritdoc cref="IHeadersResponseBuilder.WithHeaders(IDictionary{string, WireMockList{string}})"/>
-    public IResponseBuilder WithHeaders(IDictionary<string, WireMockList<string>> headers)
-    {
-        Guard.NotNull(headers);
-
-        ResponseMessage.Headers = headers;
-        return this;
     }
 
     /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
@@ -304,10 +274,30 @@ public partial class Response : IResponseBuilder
             {
                 responseMessage.Headers = ResponseMessage.Headers;
             }
+
+            // Copy TrailingHeaders from ResponseMessage (if defined)
+            if (ResponseMessage.TrailingHeaders?.Count > 0)
+            {
+                responseMessage.TrailingHeaders = ResponseMessage.TrailingHeaders;
+            }
         }
 
         if (UseTransformer)
         {
+            // Check if the body matcher is a RequestMessageProtoBufMatcher and try to to decode the byte-array to a BodyAsJson.
+            if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
+            {
+                var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
+                if (protoBufMatcher != null)
+                {
+                    var decoded = await protoBufMatcher.DecodeAsync(request.BodyData?.BodyAsBytes).ConfigureAwait(false);
+                    if (decoded != null)
+                    {
+                        request.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
+                    }
+                }
+            }
+
             ITransformer responseMessageTransformer;
             switch (TransformerType)
             {

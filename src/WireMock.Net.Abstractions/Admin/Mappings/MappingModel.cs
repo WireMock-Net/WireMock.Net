@@ -98,4 +98,9 @@ public class MappingModel
     /// The probability when this request should be matched. Value is between 0 and 1. [Optional]
     /// </summary>
     public double? Probability { get; set; }
+
+    /// <summary>
+    /// The Grpc ProtoDefinition which is used for this mapping (request and response). [Optional]
+    /// </summary>
+    public string? ProtoDefinition { get; set; }
 }

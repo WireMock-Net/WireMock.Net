@@ -195,6 +195,11 @@ public partial class WireMockServer
             requestBuilder = requestBuilder.UsingMethod(matchBehaviour, matchOperator, requestModel.Methods);
         }
 
+        if (requestModel.HttpVersion != null)
+        {
+            requestBuilder = requestBuilder.WithHttpVersion(requestModel.HttpVersion);
+        }
+
         if (requestModel.Headers != null)
         {
             foreach (var headerModel in requestModel.Headers.Where(h => h.Matchers != null))

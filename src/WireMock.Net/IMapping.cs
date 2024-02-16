@@ -69,12 +69,12 @@ public interface IMapping
     int? StateTimes { get; }
 
     /// <summary>
-    /// The Request matcher.
+    /// The RequestMatcher.
     /// </summary>
     IRequestMatcher RequestMatcher { get; }
 
     /// <summary>
-    /// The Provider.
+    /// The ResponseProvider.
     /// </summary>
     IResponseProvider Provider { get; }
 
@@ -137,6 +137,11 @@ public interface IMapping
     double? Probability { get; }
 
     /// <summary>
+    /// The Grpc ProtoDefinition which is used for this mapping (request and response). [Optional]
+    /// </summary>
+    IdOrText? ProtoDefinition { get; }
+
+    /// <summary>
     /// ProvideResponseAsync
     /// </summary>
     /// <param name="requestMessage">The request message.</param>
@@ -150,4 +155,44 @@ public interface IMapping
     /// <param name="nextState">The Next State.</param>
     /// <returns>The <see cref="IRequestMatchResult"/>.</returns>
     IRequestMatchResult GetRequestMatchResult(IRequestMessage requestMessage, string? nextState);
+
+    /// <summary>
+    /// Define the scenario.
+    /// </summary>
+    /// <param name="scenario">The scenario.</param>
+    /// <returns>The <see cref="IMapping"/>.</returns>
+    IMapping WithScenario(string scenario);
+
+    /// <summary>
+    /// Define the probability when this request should be matched. [Optional]
+    /// </summary>
+    /// <param name="probability">The probability.</param>
+    /// <returns>The <see cref="IMapping"/>.</returns>
+    IMapping WithProbability(double probability);
+
+    /// <summary>
+    /// Define a Grpc ProtoDefinition which is used for this mapping (request and response).
+    /// </summary>
+    /// <param name="protoDefinition">The proto definition as text.</param>
+    /// <returns>The <see cref="IMapping"/>.</returns>
+    IMapping WithProtoDefinition(IdOrText protoDefinition);
 }
+
+/*
+    executionConditionState">State in which the current mapping can occur. [Optional]
+    nextState">The next state which will occur after the current mapping execution. [Optional]
+    stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]
+    webhooks">The Webhooks. [Optional]
+    useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]
+    timeSettings">The TimeSettings. [Optional]
+    data">The data object. [Optional]
+    
+ 
+    string? executionConditionState,
+    string? nextState,
+    int? stateTimes,
+    IWebhook[]? webhooks,
+    bool? useWebhooksFireAndForget,
+    ITimeSettings? timeSettings,
+    object? data,
+*/

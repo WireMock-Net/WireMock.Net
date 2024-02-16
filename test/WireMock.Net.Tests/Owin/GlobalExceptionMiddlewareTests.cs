@@ -28,7 +28,7 @@ namespace WireMock.Net.Tests.Owin
 
             _responseMapperMock = new Mock<IOwinResponseMapper>();
             _responseMapperMock.SetupAllProperties();
-            _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
+            _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage?>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
 
             _sut = new GlobalExceptionMiddleware(null, _optionsMock.Object, _responseMapperMock.Object);
         }

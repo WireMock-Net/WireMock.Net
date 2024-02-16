@@ -59,6 +59,11 @@ internal static class BodyParser
         FormUrlEncodedMatcher
     };
 
+    private static readonly IStringMatcher[] GrpcContentTypesMatchers = {
+        new WildcardMatcher("application/grpc", true),
+        new WildcardMatcher("application/grpc+proto", true)
+    };
+
     public static bool ShouldParseBody(string? httpMethod, bool allowBodyForAllHttpMethods)
     {
         if (string.IsNullOrEmpty(httpMethod))
@@ -85,7 +90,7 @@ internal static class BodyParser
 
     public static BodyType DetectBodyTypeFromContentType(string? contentTypeValue)
     {
-        if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out MediaTypeHeaderValue? contentType))
+        if (string.IsNullOrEmpty(contentTypeValue) || !MediaTypeHeaderValue.TryParse(contentTypeValue, out var contentType))
         {
             return BodyType.Bytes;
         }
@@ -103,6 +108,11 @@ internal static class BodyParser
         if (JsonContentTypesMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))
         {
             return BodyType.Json;
+        }
+
+        if (GrpcContentTypesMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))
+        {
+            return BodyType.ProtoBuf;
         }
 
         if (MultipartContentTypesMatchers.Any(matcher => matcher.IsMatch(contentType.MediaType).IsPerfect()))

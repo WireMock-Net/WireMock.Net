@@ -9,7 +9,7 @@ namespace WireMock.ResponseBuilders;
 public interface IHeadersResponseBuilder : IBodyResponseBuilder
 {
     /// <summary>
-    /// The with header.
+    /// The WithHeader.
     /// </summary>
     /// <param name="name">The name.</param>
     /// <param name="values">The values.</param>
@@ -17,23 +17,52 @@ public interface IHeadersResponseBuilder : IBodyResponseBuilder
     IResponseBuilder WithHeader(string name, params string[] values);
 
     /// <summary>
-    /// The with headers.
+    /// The WithHeaders.
     /// </summary>
     /// <param name="headers">The headers.</param>
     /// <returns>The <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithHeaders(IDictionary<string, string> headers);
 
     /// <summary>
-    /// The with headers.
+    /// The WithHeaders.
     /// </summary>
     /// <param name="headers">The headers.</param>
     /// <returns>The <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithHeaders(IDictionary<string, string[]> headers);
 
     /// <summary>
-    /// The with headers.
+    /// The WithHeaders.
     /// </summary>
     /// <param name="headers">The headers.</param>
     /// <returns>The <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithHeaders(IDictionary<string, WireMockList<string>> headers);
+
+    /// <summary>
+    /// The WithTrailingHeader.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="values">The values.</param>
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithTrailingHeader(string name, params string[] values);
+
+    /// <summary>
+    /// The WithTrailingHeaders.
+    /// </summary>
+    /// <param name="headers">The headers.</param>
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithTrailingHeaders(IDictionary<string, string> headers);
+
+    /// <summary>
+    /// The WithTrailingHeaders.
+    /// </summary>
+    /// <param name="headers">The headers.</param>
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithTrailingHeaders(IDictionary<string, string[]> headers);
+
+    /// <summary>
+    /// The WithTrailingHeaders.
+    /// </summary>
+    /// <param name="headers">The headers.</param>
+    /// <returns>The <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithTrailingHeaders(IDictionary<string, WireMockList<string>> headers);
 }

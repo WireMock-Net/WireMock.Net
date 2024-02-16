@@ -22,6 +22,9 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
+    /// <inheritdoc />
+    public object Value { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
@@ -61,6 +64,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     /// <inheritdoc />

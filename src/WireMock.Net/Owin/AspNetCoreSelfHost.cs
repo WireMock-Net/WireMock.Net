@@ -106,24 +106,28 @@ internal partial class AspNetCoreSelfHost : IOwinSelfHost
         return RunHost(_cts.Token);
     }
 
-    private Task RunHost(CancellationToken token)
-    {
-        try
+        private Task RunHost(CancellationToken token)
         {
-            var appLifetime = _host.Services.GetRequiredService<IApplicationLifetime>();
-            appLifetime.ApplicationStarted.Register(() =>
+            try
             {
-                var addresses = _host.ServerFeatures
-                    .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()
-                    .Addresses;
-
-                foreach (string address in addresses)
+#if NETCOREAPP3_1 || NET5_0_OR_GREATER
+                var appLifetime = _host.Services.GetRequiredService<Microsoft.Extensions.Hosting.IHostApplicationLifetime>();
+#else
+                var appLifetime = _host.Services.GetRequiredService<IApplicationLifetime>();
+#endif
+                appLifetime.ApplicationStarted.Register(() =>
                 {
-                    Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
+                    var addresses = _host.ServerFeatures
+                        .Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>()!
+                        .Addresses;
 
-                    PortUtils.TryExtract(address, out _, out _, out _, out int port);
-                    Ports.Add(port);
-                }
+                    foreach (var address in addresses)
+                    {
+                        Urls.Add(address.Replace("0.0.0.0", "localhost").Replace("[::]", "localhost"));
+
+                        PortUtils.TryExtract(address, out _, out _, out _, out _, out var port);
+                        Ports.Add(port);
+                    }
 
                 IsStarted = true;
             });

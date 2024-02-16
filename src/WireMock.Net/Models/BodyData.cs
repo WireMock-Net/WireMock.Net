@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using WireMock.Models;
 using WireMock.Types;
 
+// ReSharper disable once CheckNamespace
 namespace WireMock.Util;
 
 /// <summary>
@@ -9,7 +12,7 @@ namespace WireMock.Util;
 /// </summary>
 public class BodyData : IBodyData
 {
-    /// <inheritdoc cref="IBodyData.Encoding" />
+    /// <inheritdoc />
     public Encoding? Encoding { get; set; }
 
     /// <inheritdoc />
@@ -18,30 +21,38 @@ public class BodyData : IBodyData
     /// <inheritdoc />
     public IDictionary<string, string>? BodyAsFormUrlEncoded { get; set; }
 
-    /// <inheritdoc cref="IBodyData.BodyAsJson" />
+    /// <inheritdoc />
     public object? BodyAsJson { get; set; }
 
-    /// <inheritdoc cref="IBodyData.BodyAsBytes" />
+    /// <inheritdoc />
     public byte[]? BodyAsBytes { get; set; }
-
-    /// <inheritdoc cref="IBodyData.BodyAsJsonIndented" />
+    
+    /// <inheritdoc />
     public bool? BodyAsJsonIndented { get; set; }
 
-    /// <inheritdoc cref="IBodyData.BodyAsFile" />
+    /// <inheritdoc />
     public string? BodyAsFile { get; set; }
 
-    /// <inheritdoc cref="IBodyData.BodyAsFileIsCached" />
+    /// <inheritdoc />
     public bool? BodyAsFileIsCached { get; set; }
 
-    /// <inheritdoc cref="IBodyData.DetectedBodyType" />
+    /// <inheritdoc />
     public BodyType? DetectedBodyType { get; set; }
 
-    /// <inheritdoc cref="IBodyData.DetectedBodyTypeFromContentType" />
+    /// <inheritdoc />
     public BodyType? DetectedBodyTypeFromContentType { get; set; }
 
-    /// <inheritdoc cref="IRequestMessage.DetectedCompression" />
+    /// <inheritdoc />
     public string? DetectedCompression { get; set; }
 
     /// <inheritdoc />
     public string? IsFuncUsed { get; set; }
+
+    #region ProtoBuf
+    /// <inheritdoc />
+    public Func<IdOrText>? ProtoDefinition { get; set; }
+
+    /// <inheritdoc />
+    public string? ProtoBufMessageType { get; set; }
+    #endregion
 }

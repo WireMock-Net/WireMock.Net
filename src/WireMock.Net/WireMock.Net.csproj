@@ -51,17 +51,16 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT</DefineConstants>
+        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
+        <DefineConstants>$(DefineConstants);TRAILINGHEADERS</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Matchers\MultiPartMatcher.cs" />
-        <Compile Remove="Util\FileSystemWatcherExtensions.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
-        <PackageReference Include="JsonConverter.Abstractions" Version="0.4.0" />
+        <PackageReference Include="JsonConverter.Abstractions" Version="0.5.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="NJsonSchema.Extensions" Version="0.1.0" />
@@ -154,6 +153,7 @@
         <PackageReference Include="GraphQL" Version="7.5.0" />
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
