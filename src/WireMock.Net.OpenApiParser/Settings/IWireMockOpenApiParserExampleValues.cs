@@ -11,47 +11,47 @@ public interface IWireMockOpenApiParserExampleValues
     /// <summary>
     /// An example value for a Boolean.
     /// </summary>
-    bool Boolean { get; set; }
+    bool Boolean { get; }
 
     /// <summary>
     /// An example value for an Integer.
     /// </summary>
-    int Integer { get; set; }
+    int Integer { get; }
 
     /// <summary>
     /// An example value for a Float.
     /// </summary>
-    float Float { get; set; }
+    float Float { get; }
 
     /// <summary>
     /// An example value for a Double.
     /// </summary>
-    double Double { get; set; }
+    double Double { get; }
 
     /// <summary>
     /// An example value for a Date.
     /// </summary>
-    Func<DateTime> Date { get; set; }
+    Func<DateTime> Date { get; }
 
     /// <summary>
     /// An example value for a DateTime.
     /// </summary>
-    Func<DateTime> DateTime { get; set; }
+    Func<DateTime> DateTime { get; }
 
     /// <summary>
     /// An example value for Bytes.
     /// </summary>
-    byte[] Bytes { get; set; }
+    byte[] Bytes { get; }
 
     /// <summary>
     /// An example value for a Object.
     /// </summary>
-    object Object { get; set; }
+    object Object { get; }
 
     /// <summary>
     /// An example value for a String.
     /// </summary>
-    string String { get; set; }
+    string String { get; }
 
     /// <summary>
     /// OpenApi Schema to generate dynamic examples more accurate

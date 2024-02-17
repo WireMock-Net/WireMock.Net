@@ -79,7 +79,7 @@ public partial class WireMockServer
 
     private NotifyCollectionChangedEventHandler? _logEntriesChanged;
 
-    private void LogEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void LogEntries_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_logEntriesChanged is { })
         {

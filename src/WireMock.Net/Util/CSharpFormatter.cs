@@ -121,8 +121,7 @@ internal static class CSharpFormatter
                 JTokenType.Boolean => jValue.Value != null ? string.Format(CultureInfo.InvariantCulture, "{0}", jValue.Value).ToLower() : Null,
                 JTokenType.Null => Null,
                 JTokenType.Undefined => Null,
-                JTokenType.Date when jValue.Value is DateTime dateValue =>
-                    $"DateTime.Parse({ToCSharpStringLiteral(dateValue.ToString("s"))})",
+                JTokenType.Date when jValue.Value is DateTime dateValue => $"DateTime.Parse({ToCSharpStringLiteral(dateValue.ToString("s"))})",
                 _ => $"UNHANDLED_CASE: {jValue.Type}"
             },
             _ => $"UNHANDLED_CASE: {token}"
@@ -140,12 +139,12 @@ internal static class CSharpFormatter
 
         if (value.Contains('\n'))
         {
-            var escapedValue = value?.Replace("\"", "\"\"") ?? string.Empty;
+            var escapedValue = value.Replace("\"", "\"\"");
             return $"@\"{escapedValue}\"";
         }
         else
         {
-            var escapedValue = value?.Replace("\"", "\\\"") ?? string.Empty;
+            var escapedValue = value.Replace("\"", "\\\"");
             return $"\"{escapedValue}\"";
         }
     }
