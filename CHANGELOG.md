@@ -1,3 +1,7 @@
+# 1.5.48 (17 February 2024)
+- [#1047](https://github.com/WireMock-Net/WireMock.Net/pull/1047) - Add Grpc ProtoBuf support (request-response) [feature] contributed by [StefH](https://github.com/StefH)
+- [#1058](https://github.com/WireMock-Net/WireMock.Net/pull/1058) - Fix some SonarCloud issues [refactor] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.47 (25 January 2024)
 - [#1049](https://github.com/WireMock-Net/WireMock.Net/pull/1049) - Add WithoutHeader to WireMock.FluentAssertions [feature] contributed by [StefH](https://github.com/StefH)
 - [#1053](https://github.com/WireMock-Net/WireMock.Net/pull/1053) - [Snyk] Security upgrade Microsoft.IdentityModel.Protocols.OpenIdConnect from 6.12.2 to 6.34.0 [security] contributed by [StefH](https://github.com/StefH)
