@@ -10,12 +10,20 @@ namespace WireMock.Net.Tests.Plugin;
 
 public class PluginLoaderTests
 {
-    public interface IDummy
+    public interface IDummyInterfaceNoImplementation
+    {
+    }
+
+    public interface IDummyInterfaceWithImplementation
+    {
+    }
+
+    public class DummyClass : IDummyInterfaceWithImplementation
     {
     }
 
     [Fact]
-    public void Load_Valid()
+    public void Load_ByInterface()
     {
         // Act
         AnyOf<string, StringPattern> pattern = "x";
@@ -26,12 +34,32 @@ public class PluginLoaderTests
     }
 
     [Fact]
-    public void Load_Invalid_ThrowsException()
+    public void Load_ByInterfaceAndFullName()
     {
         // Act
-        Action a = () => PluginLoader.Load<IDummy>();
+        var result = PluginLoader.LoadByFullName<IDummyInterfaceWithImplementation>(typeof(DummyClass).FullName);
 
         // Assert
-        a.Should().Throw<DllNotFoundException>();
+        result.Should().BeOfType<DummyClass>();
+    }
+
+    [Fact]
+    public void Load_ByInterface_ButNoImplementationFoundForInterface_ThrowsException()
+    {
+        // Act
+        Action a = () => PluginLoader.Load<IDummyInterfaceNoImplementation>();
+
+        // Assert
+        a.Should().Throw<DllNotFoundException>().WithMessage("No dll found which implements Interface 'WireMock.Net.Tests.Plugin.PluginLoaderTests+IDummyInterfaceNoImplementation'.");
+    }
+
+    [Fact]
+    public void Load_ByInterfaceAndFullName_ButNoImplementationFoundForInterface_ThrowsException()
+    {
+        // Act
+        Action a = () => PluginLoader.LoadByFullName<IDummyInterfaceWithImplementation>("xyz");
+
+        // Assert
+        a.Should().Throw<DllNotFoundException>().WithMessage("No dll found which implements Interface 'WireMock.Net.Tests.Plugin.PluginLoaderTests+IDummyInterfaceWithImplementation' and has FullName 'xyz'.");
     }
 }
