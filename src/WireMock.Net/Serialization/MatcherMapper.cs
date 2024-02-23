@@ -8,7 +8,6 @@ using WireMock.Admin.Mappings;
 using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Models;
-using WireMock.Plugin;
 using WireMock.Settings;
 using WireMock.Util;
 
@@ -53,7 +52,7 @@ internal class MatcherMapper
             case "CSharpCodeMatcher":
                 if (_settings.AllowCSharpCodeMatcher == true)
                 {
-                    return PluginLoader.Load<ICSharpCodeMatcher>(matchBehaviour, matchOperator, stringPatterns);
+                    return TypeLoader.Load<ICSharpCodeMatcher>(matchBehaviour, matchOperator, stringPatterns);
                 }
 
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
