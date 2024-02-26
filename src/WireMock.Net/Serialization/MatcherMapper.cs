@@ -70,10 +70,8 @@ internal class MatcherMapper
                 var schema = new AnyOf<string, StringPattern, object?>(stringPatterns[0].GetPattern());
                 return TypeLoader.Load<IGraphQLMatcher>(schema, matcherModel.CustomScalars, matchBehaviour, matchOperator);
 
-#if MIMEKIT
-            case nameof(MimePartMatcher):
+            case "MimePartMatcher":
                 return CreateMimePartMatcher(matchBehaviour, matcherModel);
-#endif
 
 #if PROTOBUF
             case nameof(ProtoBufMatcher):
@@ -198,14 +196,12 @@ internal class MatcherMapper
                 model.Pattern = objectMatcher.Value;
                 break;
 
-#if MIMEKIT
-            case MimePartMatcher mimePartMatcher:
+            case IMimePartMatcher mimePartMatcher:
                 model.ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher);
                 model.ContentMatcher = Map(mimePartMatcher.ContentMatcher);
                 model.ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher);
                 model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
                 break;
-#endif
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
@@ -263,17 +259,15 @@ internal class MatcherMapper
         return new ExactObjectMatcher(matchBehaviour, bytePattern);
     }
 
-#if MIMEKIT
-    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
+    private IMimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
     {
-        var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
-        var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
-        var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
-        var contentMatcher = Map(matcher?.ContentMatcher);
+        var contentTypeMatcher = Map(matcher.ContentTypeMatcher) as IStringMatcher;
+        var contentDispositionMatcher = Map(matcher.ContentDispositionMatcher) as IStringMatcher;
+        var contentTransferEncodingMatcher = Map(matcher.ContentTransferEncodingMatcher) as IStringMatcher;
+        var contentMatcher = Map(matcher.ContentMatcher);
 
-        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
+        return TypeLoader.Load<IMimePartMatcher>(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
     }
-#endif
 
 #if PROTOBUF
     private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinitionOrId, MatcherModel matcher)

@@ -35,10 +35,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Util\JsonUtilsTests.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
         <!-- https://stackoverflow.com/questions/59406201/filenesting-not-working-for-class-or-shared-library-projects -->
         <ProjectCapability Include="ConfigurableFileNesting" />
         <ProjectCapability Include="ConfigurableFileNestingFeatureEnabled" />
@@ -46,6 +42,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <ProjectReference Include="..\..\src\WireMock.Net.GraphQL\WireMock.Net.GraphQL.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net.MimeKitLite\WireMock.Net.MimeKitLite.csproj" />
     </ItemGroup>
 
     <!--<ItemGroup>

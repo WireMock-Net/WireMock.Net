@@ -1,9 +1,6 @@
-#if MIMEKIT
 using System;
 using MimeKit;
-using WireMock.Matchers;
 using WireMock.Matchers.Helpers;
-using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -11,31 +8,23 @@ namespace WireMock.Matchers;
 /// <summary>
 /// MimePartMatcher
 /// </summary>
-public class MimePartMatcher : IMatcher
+public class MimePartMatcher : IMimePartMatcher
 {
     private readonly Func<MimePart, MatchResult>[] _funcs;
 
     /// <inheritdoc />
     public string Name => nameof(MimePartMatcher);
 
-    /// <summary>
-    /// ContentType Matcher (image/png; name=image.png.)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentTypeMatcher { get; }
 
-    /// <summary>
-    /// ContentDisposition Matcher (attachment; filename=image.png)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentDispositionMatcher { get; }
 
-    /// <summary>
-    /// ContentTransferEncoding Matcher (base64)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentTransferEncodingMatcher { get; }
 
-    /// <summary>
-    /// Content Matcher
-    /// </summary>
+    /// <inheritdoc />
     public IMatcher? ContentMatcher { get; }
 
     /// <inheritdoc />
@@ -117,4 +106,3 @@ public class MimePartMatcher : IMatcher
         return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }
 }
-#endif

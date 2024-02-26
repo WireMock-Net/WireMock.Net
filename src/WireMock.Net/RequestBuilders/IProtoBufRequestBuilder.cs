@@ -5,7 +5,7 @@ namespace WireMock.RequestBuilders;
 /// <summary>
 /// The ProtoBufRequestBuilder interface.
 /// </summary>
-public interface IProtoBufRequestBuilder : IMultiPartRequestBuilder
+public interface IProtoBufRequestBuilder : IHttpVersionBuilder
 {
     /// <summary>
     /// WithGrpcProto

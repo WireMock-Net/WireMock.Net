@@ -51,7 +51,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);MIMEKIT;PROTOBUF</DefineConstants>
+        <DefineConstants>$(DefineConstants);PROTOBUF</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
@@ -150,9 +150,6 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <!--<PackageReference Include="GraphQL" Version="7.5.0" />
-        <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />-->
-        <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
         <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
     </ItemGroup>
 

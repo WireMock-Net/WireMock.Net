@@ -49,7 +49,7 @@ internal class MappingConverter
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var requestMessageHttpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
-        var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<IRequestMessageMultiPartMatcher>();
         var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
 
         var sb = new StringBuilder();
@@ -122,15 +122,13 @@ internal class MappingConverter
             }
         }
 
-#if MIMEKIT
         if (requestMessageMultiPartMatcher is { Matchers: { } })
         {
-            if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
+            if (requestMessageMultiPartMatcher.Matchers.OfType<IMimePartMatcher>().Any())
             {
                 sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
         }
-#endif
 
 #if PROTOBUF
         if (requestMessageProtoBufMatcher is { Matcher: { } })
@@ -258,7 +256,7 @@ internal class MappingConverter
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var graphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
-        var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var multiPartMatcher = request.GetRequestMessageMatcher<IRequestMessageMultiPartMatcher>();
         var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
         var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
 

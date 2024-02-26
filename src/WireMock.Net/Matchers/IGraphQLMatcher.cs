@@ -6,7 +6,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// GraphQLMatcher
 /// </summary>
-/// <inheritdoc cref="IGraphQLMatcher"/>
+/// <inheritdoc cref="IStringMatcher"/>
 public interface IGraphQLMatcher : IStringMatcher
 {
     /// <summary>

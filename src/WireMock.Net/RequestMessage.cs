@@ -80,11 +80,9 @@ public class RequestMessage : IRequestMessage
     /// <inheritdoc />
     public byte[]? BodyAsBytes { get; }
 
-#if MIMEKIT
     /// <inheritdoc />
     [Newtonsoft.Json.JsonIgnore] // Issue 1001
     public object? BodyAsMimeMessage { get; }
-#endif
 
     /// <inheritdoc />
     public string? DetectedBodyType { get; }
@@ -180,19 +178,17 @@ public class RequestMessage : IRequestMessage
         ClientCertificate = clientCertificate;
 #endif
 
-#if MIMEKIT
         try
         {
-            if (MimeKitUtils.TryGetMimeMessage(this, out var mimeMessage))
+            if (TypeLoader.TryFindType<IMimeKitUtils>(out _) && TypeLoader.Load<IMimeKitUtils>().TryGetMimeMessage(this, out var mimeMessage))
             {
                 BodyAsMimeMessage = mimeMessage;
             }
         }
         catch
         {
-            // Ignore exception from MimeMessage.Load
+            // Ignore exception from IMimeKitUtils.TryGetMimeMessage
         }
-#endif
     }
 
     /// <inheritdoc />
