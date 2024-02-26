@@ -1,4 +1,3 @@
-#if PROTOBUF
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +7,9 @@ using ProtoBufJsonConverter.Models;
 
 namespace WireMock.Util;
 
-internal static class ProtoBufUtils
+internal class ProtoBufUtils : IProtoBufUtils
 {
-    internal static async Task<byte[]> GetProtoBufMessageWithHeaderAsync(
+    public async Task<byte[]> GetProtoBufMessageWithHeaderAsync(
         string? protoDefinition,
         string? messageType,
         object? value,
@@ -38,4 +37,3 @@ internal static class ProtoBufUtils
         return await SingletonFactory<Converter>.GetInstance().ConvertAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }
-#endif

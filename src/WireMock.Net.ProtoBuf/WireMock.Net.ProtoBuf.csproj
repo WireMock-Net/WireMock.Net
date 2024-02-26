@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>MultiPart Mime support for WireMock.Net</Description>
-        <AssemblyTitle>WireMock.Net.MimeKitLite</AssemblyTitle>
+        <Description>ProtoBuf and gRPC support for WireMock.Net</Description>
+        <AssemblyTitle>WireMock.Net.ProtoBuf</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net47;net48;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net6.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <PackageTags>wiremock;matchers;matcher;mime;multipart;mimekit</PackageTags>
+        <PackageTags>wiremock;matchers;matcher;protobuf;grpc</PackageTags>
         <RootNamespace>WireMock</RootNamespace>
-        <ProjectGuid>{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}</ProjectGuid>
+        <ProjectGuid>{B47413AA-55D3-49A7-896A-17ADBFF72407}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -28,7 +28,7 @@
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-        <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
 
         <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
     </ItemGroup>

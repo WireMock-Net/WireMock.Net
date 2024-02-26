@@ -16,9 +16,7 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
 {
     private readonly IList<IRequestMatcher> _requestMatchers;
 
-    /// <summary>
-    /// The link back to the Mapping.
-    /// </summary>
+    /// <inheritdoc />
     public IMapping Mapping { get; set; } = null!;
 
     /// <summary>

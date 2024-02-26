@@ -287,7 +287,7 @@ public partial class Response : IResponseBuilder
             // Check if the body matcher is a RequestMessageProtoBufMatcher and try to to decode the byte-array to a BodyAsJson.
             if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
             {
-                var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
+                var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<IRequestMessageProtoBufMatcher>()?.Matcher;
                 if (protoBufMatcher != null)
                 {
                     var decoded = await protoBufMatcher.DecodeAsync(request.BodyData?.BodyAsBytes).ConfigureAwait(false);

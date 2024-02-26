@@ -221,18 +221,15 @@ public partial class Response
         Guard.NotNullOrWhiteSpace(messageType);
         Guard.NotNull(value);
 
-#if !PROTOBUF
-        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#else
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
         {
             DetectedBodyType = BodyType.ProtoBuf,
             BodyAsJson = value,
-            ProtoDefinition = () => new (null, protoDefinition),
+            ProtoDefinition = () => new(null, protoDefinition),
             ProtoBufMessageType = messageType
         };
-#endif
+
         return this;
     }
 
@@ -247,9 +244,6 @@ public partial class Response
         Guard.NotNullOrWhiteSpace(messageType);
         Guard.NotNull(value);
 
-#if !PROTOBUF
-        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#else
         ResponseMessage.BodyDestination = null;
         ResponseMessage.BodyData = new BodyData
         {
@@ -258,7 +252,7 @@ public partial class Response
             ProtoDefinition = () => Mapping.ProtoDefinition ?? throw new WireMockException("ProtoDefinition cannot be resolved. You probably forgot to call .WithProtoDefinition(...) on the mapping."),
             ProtoBufMessageType = messageType
         };
-#endif
+
         return this;
     }
 }

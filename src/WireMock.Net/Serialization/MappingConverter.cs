@@ -50,7 +50,7 @@ internal class MappingConverter
         var requestMessageHttpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<IRequestMessageMultiPartMatcher>();
-        var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
+        var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<IRequestMessageProtoBufMatcher>();
 
         var sb = new StringBuilder();
 
@@ -130,12 +130,10 @@ internal class MappingConverter
             }
         }
 
-#if PROTOBUF
         if (requestMessageProtoBufMatcher is { Matcher: { } })
         {
             sb.AppendLine("        // .WithBodyAsProtoBuf() is not yet supported");
         }
-#endif
 
         if (requestMessageBodyMatcher is { Matchers: { } })
         {
@@ -254,11 +252,11 @@ internal class MappingConverter
         var cookieMatchers = request.GetRequestMessageMatchers<RequestMessageCookieMatcher>();
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
+        var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var graphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
         var multiPartMatcher = request.GetRequestMessageMatcher<IRequestMessageMultiPartMatcher>();
-        var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
-        var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
+        var protoBufMatcher = request.GetRequestMessageMatcher<IRequestMessageProtoBufMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -381,13 +379,11 @@ internal class MappingConverter
         {
             void AfterMap(MatcherModel matcherModel)
             {
-#if PROTOBUF
                 // In case the ProtoDefinition is defined at the Mapping level, clear the Pattern at the Matcher level
-                if (bodyMatchers?.OfType<ProtoBufMatcher>().Any() == true && mappingModel.ProtoDefinition != null)
+                if (bodyMatchers?.OfType<IProtoBufMatcher>().Any() == true && mappingModel.ProtoDefinition != null)
                 {
                     matcherModel.Pattern = null;
                 }
-#endif
             }
 
             mappingModel.Request.Body = new BodyModel();

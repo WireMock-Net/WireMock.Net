@@ -73,10 +73,9 @@ internal class MatcherMapper
             case "MimePartMatcher":
                 return CreateMimePartMatcher(matchBehaviour, matcherModel);
 
-#if PROTOBUF
-            case nameof(ProtoBufMatcher):
+            case "ProtoBufMatcher":
                 return CreateProtoBufMatcher(matchBehaviour, stringPatterns[0].GetPattern(), matcherModel);
-#endif
+
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, useRegexExtended, matchOperator);
 
@@ -203,13 +202,11 @@ internal class MatcherMapper
                 model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
                 break;
 
-#if PROTOBUF
-            case ProtoBufMatcher protoBufMatcher:
+            case IProtoBufMatcher protoBufMatcher:
                 model.Pattern = protoBufMatcher.ProtoDefinition().Value;
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;
-#endif
         }
 
         afterMap?.Invoke(model);
@@ -269,8 +266,7 @@ internal class MatcherMapper
         return TypeLoader.Load<IMimePartMatcher>(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
     }
 
-#if PROTOBUF
-    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinitionOrId, MatcherModel matcher)
+    private IProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinitionOrId, MatcherModel matcher)
     {
         var objectMatcher = Map(matcher.ContentMatcher) as IObjectMatcher;
 
@@ -284,12 +280,11 @@ internal class MatcherMapper
             protoDefinition = new(null, protoDefinitionOrId);
         }
 
-        return new ProtoBufMatcher(
+        return TypeLoader.Load<IProtoBufMatcher>(
             () => protoDefinition,
-            matcher!.ProtoBufMessageType!,
+            matcher.ProtoBufMessageType!,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
             objectMatcher
         );
     }
-#endif
 }
