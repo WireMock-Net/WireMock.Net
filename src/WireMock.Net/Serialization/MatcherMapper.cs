@@ -163,11 +163,10 @@ internal class MatcherMapper
             case XPathMatcher xpathMatcher:
                 model.XmlNamespaceMap = xpathMatcher.XmlNamespaceMap;
                 break;
-#if GRAPHQL
+
             case IGraphQLMatcher graphQLMatcher:
                 model.CustomScalars = graphQLMatcher.CustomScalars;
                 break;
-#endif
         }
 
         switch (matcher)

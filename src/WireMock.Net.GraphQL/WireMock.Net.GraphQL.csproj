@@ -26,10 +26,6 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
-    <!--<PropertyGroup>
-        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
-    </PropertyGroup>-->
-
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />

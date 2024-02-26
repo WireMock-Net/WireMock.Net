@@ -86,15 +86,8 @@ public class RequestMessageGraphQLMatcher : IRequestMessageGraphQLMatcher
         return Matchers == null ? new[] { new MatchResult() } : Matchers.Select(matcher => CalculateMatchResult(requestMessage, matcher)).ToArray();
     }
 
-    //#if GRAPHQL
     private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, object?> schema, IDictionary<string, Type>? customScalars)
     {
         return new[] { TypeLoader.Load<IGraphQLMatcher>(schema, customScalars, matchBehaviour, MatchOperator.Or) }.Cast<IMatcher>().ToArray();
     }
-    //#else
-    //    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, object schema, IDictionary<string, Type>? customScalars)
-    //    {
-    //        throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-    //    }
-    //#endif
 }
