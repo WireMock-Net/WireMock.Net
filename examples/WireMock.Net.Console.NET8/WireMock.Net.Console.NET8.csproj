@@ -23,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
+    <ProjectReference Include="..\..\src\WireMock.Net.Matchers.GraphQL\WireMock.Net.Matchers.GraphQL.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />

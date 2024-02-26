@@ -69,7 +69,8 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
         return _requestMatchers.OfType<T>().FirstOrDefault(func);
     }
 
-    private IRequestBuilder Add<T>(T requestMatcher) where T : IRequestMatcher
+    /// <inheritdoc />
+    public IRequestBuilder Add<T>(T requestMatcher) where T : IRequestMatcher
     {
         foreach (var existing in _requestMatchers.OfType<T>().ToArray())
         {

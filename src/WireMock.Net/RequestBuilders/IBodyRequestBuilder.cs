@@ -102,12 +102,4 @@ public interface IBodyRequestBuilder : IProtoBufRequestBuilder
     /// <param name="func">The form-urlencoded values.</param>
     /// <returns>The <see cref="IRequestBuilder"/>.</returns>
     IRequestBuilder WithBody(Func<IDictionary<string, string>?, bool> func);
-
-    /// <summary>
-    /// WithBodyAsGraphQLSchema: Body as GraphQL schema as a string.
-    /// </summary>
-    /// <param name="body">The GraphQL schema.</param>
-    /// <param name="matchBehaviour">The match behaviour. (Default is <c>MatchBehaviour.AcceptOnMatch</c>).</param>
-    /// <returns>The <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBodyAsGraphQLSchema(string body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 }

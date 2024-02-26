@@ -3,22 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Matchers.Request;
 
 /// <summary>
 /// The request body GraphQL matcher.
 /// </summary>
-public class RequestMessageGraphQLMatcher : IRequestMatcher
+public class RequestMessageGraphQLMatcher : IRequestMessageGraphQLMatcher
 {
-    /// <summary>
-    /// The matchers.
-    /// </summary>
+    /// <inheritdoc />
     public IMatcher[]? Matchers { get; }
 
-    /// <summary>
-    /// The <see cref="MatchOperator"/>
-    /// </summary>
+    /// <inheritdoc />
     public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 
     /// <summary>
@@ -32,7 +29,6 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     {
     }
 
-#if GRAPHQL
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
     /// </summary>
@@ -40,10 +36,9 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
     /// <param name="schema">The schema.</param>
     /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
     public RequestMessageGraphQLMatcher(MatchBehaviour matchBehaviour, GraphQL.Types.ISchema schema, IDictionary<string, Type>? customScalars = null) :
-        this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, GraphQL.Types.ISchema>(schema), customScalars))
+        this(CreateMatcherArray(matchBehaviour, new AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, object?>(schema), customScalars))
     {
     }
-#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageGraphQLMatcher"/> class.
@@ -91,19 +86,15 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
         return Matchers == null ? new[] { new MatchResult() } : Matchers.Select(matcher => CalculateMatchResult(requestMessage, matcher)).ToArray();
     }
 
-#if GRAPHQL
-    private static IMatcher[] CreateMatcherArray(
-        MatchBehaviour matchBehaviour,
-        AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, GraphQL.Types.ISchema> schema,
-        IDictionary<string, Type>? customScalars
-    )
+    //#if GRAPHQL
+    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, AnyOfTypes.AnyOf<string, WireMock.Models.StringPattern, object?> schema, IDictionary<string, Type>? customScalars)
     {
-        return new[] { new GraphQLMatcher(schema, customScalars, matchBehaviour) }.Cast<IMatcher>().ToArray();
+        return new[] { TypeLoader.Load<IGraphQLMatcher>(schema, customScalars, matchBehaviour, MatchOperator.Or) }.Cast<IMatcher>().ToArray();
     }
-#else
-    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, object schema, IDictionary<string, Type>? customScalars)
-    {
-        throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-    }
-#endif
+    //#else
+    //    private static IMatcher[] CreateMatcherArray(MatchBehaviour matchBehaviour, object schema, IDictionary<string, Type>? customScalars)
+    //    {
+    //        throw new System.NotSupportedException("The GrapQLMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+    //    }
+    //#endif
 }

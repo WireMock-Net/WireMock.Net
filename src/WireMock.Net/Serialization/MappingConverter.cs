@@ -48,7 +48,7 @@ internal class MappingConverter
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var requestMessageHttpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
-        var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
         var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
 
@@ -114,15 +114,13 @@ internal class MappingConverter
             sb.AppendLine($"        .WithHttpVersion({requestMessageHttpVersionMatcher.HttpVersion})");
         }
 
-#if GRAPHQL
         if (requestMessageGraphQLMatcher is { Matchers: { } })
         {
-            if (requestMessageGraphQLMatcher.Matchers.OfType<GraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
+            if (requestMessageGraphQLMatcher.Matchers.OfType<IGraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithGraphQLSchema({GetString(graphQLMatcher)})");
             }
         }
-#endif
 
 #if MIMEKIT
         if (requestMessageMultiPartMatcher is { Matchers: { } })
@@ -259,7 +257,7 @@ internal class MappingConverter
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
-        var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
+        var graphQLMatcher = request.GetRequestMessageMatcher<IRequestMessageGraphQLMatcher>();
         var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
         var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
         var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();

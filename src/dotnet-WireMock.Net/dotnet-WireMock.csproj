@@ -21,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WireMock.Net.GraphQL\WireMock.Net.GraphQL.csproj" />
+    <ProjectReference Include="..\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
     <ProjectReference Include="..\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj" />
   </ItemGroup>
 

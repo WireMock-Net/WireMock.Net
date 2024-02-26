@@ -1,4 +1,3 @@
-#if GRAPHQL
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -21,8 +20,8 @@ namespace WireMock.Matchers;
 /// <summary>
 /// GrapQLMatcher Schema Matcher
 /// </summary>
-/// <inheritdoc cref="IStringMatcher"/>
-public class GraphQLMatcher : IStringMatcher
+/// <inheritdoc cref="IGraphQLMatcher"/>
+public class GraphQLMatcher : IGraphQLMatcher
 {
     private sealed class GraphQLRequest
     {
@@ -40,9 +39,7 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    /// <summary>
-    /// An optional dictionary defining the custom Scalar and the type.
-    /// </summary>
+    /// <inheritdoc />
     public IDictionary<string, Type>? CustomScalars { get; }
 
     /// <summary>
@@ -52,7 +49,7 @@ public class GraphQLMatcher : IStringMatcher
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public GraphQLMatcher(
-        AnyOf<string, StringPattern, ISchema> schema,
+        AnyOf<string, StringPattern, object?> schema,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         MatchOperator matchOperator = MatchOperator.Or
     ) : this(schema, null, matchBehaviour, matchOperator)
@@ -67,7 +64,7 @@ public class GraphQLMatcher : IStringMatcher
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public GraphQLMatcher(
-        AnyOf<string, StringPattern, ISchema> schema,
+        AnyOf<string, StringPattern, object?> schema,
         IDictionary<string, Type>? customScalars,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         MatchOperator matchOperator = MatchOperator.Or
@@ -92,7 +89,7 @@ public class GraphQLMatcher : IStringMatcher
                 break;
 
             case AnyOfType.Third:
-                _schema = schema.Third;
+                _schema = schema.Third as ISchema ?? throw new NotSupportedException();
                 break;
 
             default:
@@ -202,4 +199,3 @@ public class GraphQLMatcher : IStringMatcher
         return schema;
     }
 }
-#endif

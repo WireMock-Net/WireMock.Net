@@ -65,10 +65,10 @@ internal class MatcherMapper
 
             case nameof(ExactObjectMatcher):
                 return CreateExactObjectMatcher(matchBehaviour, stringPatterns[0]);
-#if GRAPHQL
-            case nameof(GraphQLMatcher):
-                return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcherModel.CustomScalars, matchBehaviour, matchOperator);
-#endif
+
+            case "GraphQLMatcher":
+                var schema = new AnyOf<string, StringPattern, object?>(stringPatterns[0].GetPattern());
+                return TypeLoader.Load<IGraphQLMatcher>(schema, matcherModel.CustomScalars, matchBehaviour, matchOperator);
 
 #if MIMEKIT
             case nameof(MimePartMatcher):
@@ -164,7 +164,7 @@ internal class MatcherMapper
                 model.XmlNamespaceMap = xpathMatcher.XmlNamespaceMap;
                 break;
 #if GRAPHQL
-            case GraphQLMatcher graphQLMatcher:
+            case IGraphQLMatcher graphQLMatcher:
                 model.CustomScalars = graphQLMatcher.CustomScalars;
                 break;
 #endif

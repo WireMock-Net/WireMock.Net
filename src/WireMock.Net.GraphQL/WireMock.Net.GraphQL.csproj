@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>A GraphQL which can be used to match WireMock.Net Requests.</Description>
+        <AssemblyTitle>WireMock.Net.Matchers.GraphQL</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net6.0;net8.0</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageTags>wiremock;matchers;matcher;graphql</PackageTags>
+        <RootNamespace>WireMock</RootNamespace>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-444DED3D9A45}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!--<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>-->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <!--<PropertyGroup>
+        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+    </PropertyGroup>-->
+
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="GraphQL" Version="7.5.0" />
+        <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
+
+        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
+
+</Project>
