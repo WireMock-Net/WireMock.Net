@@ -1,42 +1,46 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-      <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
-    <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
-    <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
+        <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
+        <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="__admin\mappings\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="__admin\mappings\*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="__admin\mappings\1.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="__admin\mappings\1.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
+    <ItemGroup>
+        <!--<ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
     <ProjectReference Include="..\..\src\WireMock.Net.Matchers.GraphQL\WireMock.Net.Matchers.GraphQL.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
-    <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-  </ItemGroup>
+    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />-->
+        <PackageReference Include="log4net" Version="2.0.15" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="log4net.config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="nlog.config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>
