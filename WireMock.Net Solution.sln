@@ -70,7 +70,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.Net472
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{1DAEFF47-D117-4E95-8B3E-4F7C8B92011A}"
 	ProjectSection(SolutionItems) = preProject
-		..\System.Linq.Dynamic.Core\.github\workflows\ci.yml = ..\System.Linq.Dynamic.Core\.github\workflows\ci.yml
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 		.github\workflows\CreateRelease.yml = .github\workflows\CreateRelease.yml
 	EndProjectSection
 EndProject
