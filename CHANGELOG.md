@@ -1,3 +1,4 @@
+
 # 1.5.48 (17 February 2024)
 - [#1047](https://github.com/WireMock-Net/WireMock.Net/pull/1047) - Add Grpc ProtoBuf support (request-response) [feature] contributed by [StefH](https://github.com/StefH)
 - [#1058](https://github.com/WireMock-Net/WireMock.Net/pull/1058) - Fix some SonarCloud issues [refactor] contributed by [StefH](https://github.com/StefH)
