@@ -1,3 +1,4 @@
+#if PROTOBUF
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,3 +38,4 @@ internal class ProtoBufUtils : IProtoBufUtils
         return await SingletonFactory<Converter>.GetInstance().ConvertAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }
+#endif

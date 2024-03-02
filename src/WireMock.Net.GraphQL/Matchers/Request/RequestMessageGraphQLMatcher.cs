@@ -1,3 +1,4 @@
+#if GRAPHQL
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,3 +92,4 @@ public class RequestMessageGraphQLMatcher : IRequestMessageGraphQLMatcher
         return new[] { TypeLoader.Load<IGraphQLMatcher>(schema, customScalars, matchBehaviour, MatchOperator.Or) }.Cast<IMatcher>().ToArray();
     }
 }
+#endif

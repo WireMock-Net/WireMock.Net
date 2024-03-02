@@ -1,3 +1,4 @@
+//#if CSHARPMATCHER
 using System;
 using System.Linq;
 using System.Reflection;
@@ -232,3 +233,4 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     /// <inheritdoc />
     public string Name => nameof(CSharpCodeMatcher);
 }
+//#endif

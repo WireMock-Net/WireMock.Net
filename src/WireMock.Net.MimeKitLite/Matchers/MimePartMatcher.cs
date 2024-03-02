@@ -1,3 +1,4 @@
+#if MIMEKIT
 using System;
 using MimeKit;
 using WireMock.Matchers.Helpers;
@@ -106,3 +107,4 @@ public class MimePartMatcher : IMimePartMatcher
         return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PROTOBUF
 using System;
 using WireMock.Models;
 
@@ -37,3 +38,4 @@ public class RequestMessageProtoBufMatcher : IRequestMessageProtoBufMatcher
         return Matcher?.IsMatchAsync(requestMessage.BodyAsBytes).GetAwaiter().GetResult() ?? default;
     }
 }
+#endif

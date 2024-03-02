@@ -1,3 +1,4 @@
+#if GRAPHQL
 using System;
 using GraphQL.Types;
 
@@ -26,3 +27,4 @@ public abstract class WireMockCustomScalarGraphType<T> : ScalarGraphType
         return (T)Convert.ChangeType(value, typeof(T));
     }
 }
+#endif

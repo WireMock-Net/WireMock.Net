@@ -1,3 +1,4 @@
+#if PROTOBUF
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,3 +105,4 @@ public class ProtoBufMatcher : IProtoBufMatcher
         }
     }
 }
+#endif

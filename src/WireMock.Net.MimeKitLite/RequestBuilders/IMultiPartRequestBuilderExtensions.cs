@@ -1,3 +1,4 @@
+#if MIMEKIT
 // ReSharper disable InconsistentNaming
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -7,7 +8,7 @@ namespace WireMock.RequestBuilders;
 /// <summary>
 /// IRequestBuilderExtensions extensions for MultiPart Mime using MimeKitLite.
 /// </summary>
-public static class IRequestBuilderExtensions
+public static class IMultiPartRequestBuilderExtensions
 {
     /// <summary>
     /// WithMultiPart: IMatcher
@@ -45,3 +46,4 @@ public static class IRequestBuilderExtensions
         return requestBuilder.Add(new RequestMessageMultiPartMatcher(matchBehaviour, MatchOperator.Or, matchers));
     }
 }
+#endif

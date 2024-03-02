@@ -1,3 +1,4 @@
+#if MIMEKIT
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -66,3 +67,4 @@ internal class MimeKitUtils : IMimeKitUtils
         return result;
     }
 }
+#endif

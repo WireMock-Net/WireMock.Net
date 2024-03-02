@@ -1,3 +1,4 @@
+#if MIMEKIT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,3 +97,4 @@ public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
         return requestMatchResult.AddScore(GetType(), score, exception);
     }
 }
+#endif

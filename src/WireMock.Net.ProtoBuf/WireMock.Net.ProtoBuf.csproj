@@ -30,7 +30,7 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
 
-        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj" />
     </ItemGroup>
 
 </Project>

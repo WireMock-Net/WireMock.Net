@@ -30,7 +30,7 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
 
-        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj" />
     </ItemGroup>
 
 </Project>

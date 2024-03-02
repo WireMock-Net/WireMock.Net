@@ -1,3 +1,4 @@
+#if GRAPHQL
 // ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace WireMock.RequestBuilders;
 /// <summary>
 /// IRequestBuilderExtensions extensions for GraphQL.
 /// </summary>
-public static class IRequestBuilderExtensions
+public static class IGraphQLRequestBuilderExtensions
 {
     /// <summary>
     /// WithGraphQLSchema: The GraphQL schema as a string.
@@ -124,3 +125,4 @@ public static class IRequestBuilderExtensions
         return WithGraphQLSchema(requestBuilder, body, matchBehaviour);
     }
 }
+#endif

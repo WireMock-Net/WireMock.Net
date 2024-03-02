@@ -1,3 +1,4 @@
+#if PROTOBUF
 // ReSharper disable InconsistentNaming
 using Stef.Validation;
 using WireMock.Matchers;
@@ -6,9 +7,9 @@ using WireMock.Matchers.Request;
 namespace WireMock.RequestBuilders;
 
 /// <summary>
-/// IRequestBuilderExtensions extensions for GraphQL.
+/// IRequestBuilderExtensions extensions for ProtoBuf.
 /// </summary>
-public static class IRequestBuilderExtensions
+public static class IProtoBufRequestBuilderExtensions
 {
     /// <summary>
     /// WithGrpcProto
@@ -62,3 +63,4 @@ public static class IRequestBuilderExtensions
         return Guard.NotNull(requestBuilder).Add(new RequestMessageProtoBufMatcher(matchBehaviour, () => requestBuilder.Mapping.ProtoDefinition!.Value, messageType, matcher));
     }
 }
+#endif
