@@ -1,4 +1,9 @@
-# 1.5.48 (17 February 2024)
+# 1.5.49 (06 March 2024)
+- [#1069](https://github.com/WireMock-Net/WireMock.Net/pull/1069) - Extend TypeLoader [feature] contributed by [StefH](https://github.com/StefH)
+- [#1078](https://github.com/WireMock-Net/WireMock.Net/pull/1078) - Upgrade ProtoBufJsonConverter to fix issue with dot(s) in package name [bug] contributed by [StefH](https://github.com/StefH)
+- [#1077](https://github.com/WireMock-Net/WireMock.Net/issues/1077) - ProtoBufMatcher not working when proto package name contains dots [bug]
+
+# 1.5.48 (22 February 2024)
 - [#1047](https://github.com/WireMock-Net/WireMock.Net/pull/1047) - Add Grpc ProtoBuf support (request-response) [feature] contributed by [StefH](https://github.com/StefH)
 - [#1058](https://github.com/WireMock-Net/WireMock.Net/pull/1058) - Fix some SonarCloud issues [refactor] contributed by [StefH](https://github.com/StefH)
 
