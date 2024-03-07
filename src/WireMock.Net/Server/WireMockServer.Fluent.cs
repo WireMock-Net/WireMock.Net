@@ -9,7 +9,7 @@ namespace WireMock.Server;
 public partial class WireMockServer
 {
     /// <summary>
-    /// The given.
+    /// Given
     /// </summary>
     /// <param name="requestMatcher">The request matcher.</param>
     /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
@@ -21,7 +21,7 @@ public partial class WireMockServer
     }
 
     /// <summary>
-    /// WithRequest
+    /// WhenRequest
     /// </summary>
     /// <param name="action">The action to use the fluent <see cref="IRequestBuilder"/>.</param>
     /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using WireMock.Extensions;
+using WireMock.Util;
 
 namespace WireMock.Settings;
 
@@ -147,5 +148,11 @@ internal class SimpleSettingsParser
     public string? GetStringValue(string name)
     {
         return GetValue(name, values => values.FirstOrDefault());
+    }
+
+    public T? GetObjectValueFromJson<T>(string name)
+    {
+        var value = GetValue(name, values => values.FirstOrDefault());
+        return string.IsNullOrWhiteSpace(value) ? default : JsonUtils.DeserializeObject<T>(value);
     }
 }

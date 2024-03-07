@@ -9,31 +9,31 @@ namespace WireMock.Net.OpenApiParser.Settings;
 public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleValues
 {
     /// <inheritdoc />
-    public virtual bool Boolean { get; set; } = true;
+    public virtual bool Boolean => true;
 
     /// <inheritdoc />
-    public virtual int Integer { get; set; } = 42;
+    public virtual int Integer => 42;
 
     /// <inheritdoc />
-    public virtual float Float { get; set; } = 4.2f;
+    public virtual float Float => 4.2f;
 
     /// <inheritdoc />
-    public virtual double Double { get; set; } = 4.2d;
+    public virtual double Double => 4.2d;
 
     /// <inheritdoc />
-    public virtual Func<DateTime> Date { get; set; } = () => System.DateTime.UtcNow.Date;
+    public virtual Func<DateTime> Date { get; } = () => System.DateTime.UtcNow.Date;
 
     /// <inheritdoc />
-    public virtual Func<DateTime> DateTime { get; set; } = () => System.DateTime.UtcNow;
+    public virtual Func<DateTime> DateTime { get; } = () => System.DateTime.UtcNow;
 
     /// <inheritdoc />
-    public virtual byte[] Bytes { get; set; } = { 48, 49, 50 };
+    public virtual byte[] Bytes { get; } = { 48, 49, 50 };
 
     /// <inheritdoc />
-    public virtual object Object { get; set; } = "example-object";
+    public virtual object Object => "example-object";
 
     /// <inheritdoc />
-    public virtual string String { get; set; } = "example-string";
+    public virtual string String => "example-string";
 
     /// <inheritdoc />
     public virtual OpenApiSchema? Schema { get; set; } = new();

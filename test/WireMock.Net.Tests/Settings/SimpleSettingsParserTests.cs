@@ -174,4 +174,22 @@ public class SimpleSettingsParserTests
         Check.That(value3).IsEqualTo(100);
         Check.That(value4).IsNull();
     }
+
+    [Fact]
+    public void SimpleCommandLineParser_Parse_GetObjectValueFromJson()
+    {
+        // Assign
+        _parser.Parse(new[] { @"--json {""k1"":""v1"",""k2"":""v2""}" });
+
+        // Act
+        var value = _parser.GetObjectValueFromJson<Dictionary<string, string>>("json");
+
+        // Assert
+        var expected = new Dictionary<string, string>
+        {
+            { "k1", "v1" },
+            { "k2", "v2" }
+        };
+        value.Should().BeEquivalentTo(expected);
+    }
 }

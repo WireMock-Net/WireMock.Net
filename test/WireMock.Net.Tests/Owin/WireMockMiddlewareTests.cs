@@ -70,7 +70,7 @@ public class WireMockMiddlewareTests
 
         _responseMapperMock = new Mock<IOwinResponseMapper>();
         _responseMapperMock.SetupAllProperties();
-        _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
+        _responseMapperMock.Setup(m => m.MapAsync(It.IsAny<ResponseMessage?>(), It.IsAny<IResponse>())).Returns(Task.FromResult(true));
 
         _matcherMock = new Mock<IMappingMatcher>();
         _matcherMock.SetupAllProperties();
@@ -216,7 +216,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null, null);
+        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, string.Empty, string.Empty, null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();
@@ -270,7 +270,7 @@ public class WireMockMiddlewareTests
         _mappingMock.SetupGet(m => m.Provider).Returns(responseBuilder);
         _mappingMock.SetupGet(m => m.Settings).Returns(settings);
 
-        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null, probability: null);
+        var newMappingFromProxy = new Mapping(NewGuid, UpdatedAt, "my-title", "my-description", null, settings, Request.Create(), Response.Create(), 0, null, null, null, null, null, false, null, data: null);
         _mappingMock.Setup(m => m.ProvideResponseAsync(It.IsAny<RequestMessage>())).ReturnsAsync((new ResponseMessage(), newMappingFromProxy));
 
         var requestBuilder = Request.Create().UsingAnyMethod();

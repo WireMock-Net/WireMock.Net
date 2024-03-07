@@ -1,0 +1,235 @@
+﻿[
+  {
+    Guid: Guid_1,
+    UpdatedAt: DateTime_1,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /grpc/greet.Greeter/SayHello,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: ProtoBufMatcher,
+          Pattern:
+syntax = "proto3";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+,
+          ContentMatcher: {
+            Name: JsonPartialWildcardMatcher,
+            Pattern: {
+              name: *
+            },
+            IgnoreCase: false,
+            Regex: false
+          },
+          ProtoBufMessageType: greet.HelloRequest
+        }
+      }
+    },
+    Response: {
+      BodyAsJson: {
+        message: hello {{request.BodyAsJson.name}}
+      },
+      UseTransformer: true,
+      TransformerType: Handlebars,
+      TransformerReplaceNodeOptions: EvaluateAndTryToConvert,
+      Headers: {
+        Content-Type: application/grpc
+      },
+      TrailingHeaders: {
+        grpc-status: 0
+      },
+      ProtoDefinition:
+syntax = "proto3";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+,
+      ProtoBufMessageType: greet.HelloReply
+    }
+  },
+  {
+    Guid: Guid_2,
+    UpdatedAt: DateTime_2,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /grpc2/greet.Greeter/SayHello,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: ProtoBufMatcher,
+          ContentMatcher: {
+            Name: JsonPartialWildcardMatcher,
+            Pattern: {
+              name: *
+            },
+            IgnoreCase: false,
+            Regex: false
+          },
+          ProtoBufMessageType: greet.HelloRequest
+        }
+      }
+    },
+    Response: {
+      BodyAsJson: {
+        message: hello {{request.BodyAsJson.name}}
+      },
+      UseTransformer: true,
+      TransformerType: Handlebars,
+      TransformerReplaceNodeOptions: EvaluateAndTryToConvert,
+      Headers: {
+        Content-Type: application/grpc
+      },
+      TrailingHeaders: {
+        grpc-status: 0
+      },
+      ProtoBufMessageType: greet.HelloReply
+    },
+    ProtoDefinition:
+syntax = "proto3";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+  },
+  {
+    Guid: Guid_3,
+    UpdatedAt: DateTime_3,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /grpc3/greet.Greeter/SayHello,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: ProtoBufMatcher,
+          ContentMatcher: {
+            Name: JsonPartialWildcardMatcher,
+            Pattern: {
+              name: *
+            },
+            IgnoreCase: false,
+            Regex: false
+          },
+          ProtoBufMessageType: greet.HelloRequest
+        }
+      }
+    },
+    Response: {
+      BodyAsJson: {
+        message: hello {{request.BodyAsJson.name}}
+      },
+      UseTransformer: true,
+      TransformerType: Handlebars,
+      TransformerReplaceNodeOptions: EvaluateAndTryToConvert,
+      Headers: {
+        Content-Type: application/grpc
+      },
+      TrailingHeaders: {
+        grpc-status: 0
+      },
+      ProtoBufMessageType: greet.HelloReply
+    },
+    ProtoDefinition: my-greeter
+  },
+  {
+    Guid: Guid_4,
+    UpdatedAt: DateTime_4,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /grpc4/greet.Greeter/SayHello,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: ProtoBufMatcher,
+          ProtoBufMessageType: greet.HelloRequest
+        }
+      }
+    },
+    Response: {
+      BodyAsJson: {
+        message: hello {{request.BodyAsJson.name}}
+      },
+      UseTransformer: true,
+      TransformerType: Handlebars,
+      TransformerReplaceNodeOptions: EvaluateAndTryToConvert,
+      Headers: {
+        Content-Type: application/grpc
+      },
+      TrailingHeaders: {
+        grpc-status: 0
+      },
+      ProtoBufMessageType: greet.HelloReply
+    },
+    ProtoDefinition: my-greeter
+  }
+]

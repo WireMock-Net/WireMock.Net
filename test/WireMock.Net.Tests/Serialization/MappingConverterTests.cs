@@ -22,6 +22,23 @@ public partial class MappingConverterTests
     private readonly Guid _guid = new("c8eeaf99-d5c4-4341-8543-4597c3fd40d9");
     private readonly DateTime _updatedAt = new(2022, 12, 4, 11, 12, 13);
     private readonly WireMockServerSettings _settings = new();
+    private const string ProtoDefinition = @"
+syntax = ""proto3"";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+";
 
     private readonly MappingConverter _sut;
 
@@ -58,7 +75,7 @@ public partial class MappingConverterTests
                 }
             }
         };
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -131,7 +148,7 @@ public partial class MappingConverterTests
                 }
             }
         };
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, true, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 0, null, null, null, null, webhooks, true, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -169,7 +186,7 @@ public partial class MappingConverterTests
         var description = "my-description";
         var request = Request.Create();
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, title, description, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, title, description, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -189,7 +206,7 @@ public partial class MappingConverterTests
         // Assign
         var request = Request.Create();
         var response = Response.Create().WithBodyAsJson(new { x = "x" }).WithTransformer();
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -218,7 +235,7 @@ public partial class MappingConverterTests
             End = end,
             TTL = ttl
         };
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, timeSettings, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, timeSettings, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -249,7 +266,7 @@ public partial class MappingConverterTests
         {
             var request = Request.Create();
             var response = Response.Create().WithDelay(test.Delay);
-            var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, string.Empty, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: null);
+            var mapping = new Mapping(Guid.NewGuid(), _updatedAt, string.Empty, string.Empty, string.Empty, _settings, request, response, 42, null, null, null, null, null, false, null, data: null);
 
             // Act
             var model = _sut.ToMappingModel(mapping);
@@ -267,7 +284,7 @@ public partial class MappingConverterTests
         var delay = 1000;
         var request = Request.Create();
         var response = Response.Create().WithDelay(delay);
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -287,7 +304,7 @@ public partial class MappingConverterTests
         int minimumDelay = 1000;
         var request = Request.Create();
         var response = Response.Create().WithRandomDelay(minimumDelay);
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -310,7 +327,7 @@ public partial class MappingConverterTests
         int maximumDelay = 2000;
         var request = Request.Create();
         var response = Response.Create().WithRandomDelay(minimumDelay, maximumDelay);
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -332,7 +349,8 @@ public partial class MappingConverterTests
         double probability = 0.4;
         var request = Request.Create();
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null, probability: probability);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, data: null)
+            .WithProbability(probability);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -351,7 +369,7 @@ public partial class MappingConverterTests
         // Arrange
         var request = Request.Create().WithClientIP("1.2.3.4");
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -364,7 +382,7 @@ public partial class MappingConverterTests
     }
 
     [Fact]
-    public Task ToMappingModel_WithHeader_And_Cookie_ReturnsCorrectModel()
+    public Task ToMappingModel_Request_WithHeader_And_Cookie_ReturnsCorrectModel()
     {
         // Assign
         var request = Request.Create()
@@ -380,8 +398,10 @@ public partial class MappingConverterTests
             .WithCookie("IgnoreCase_true", "cv-4")
             .WithCookie("ExactMatcher", new ExactMatcher("c-exact"))
             ;
+
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -392,6 +412,98 @@ public partial class MappingConverterTests
         // Verify
         return Verifier.Verify(model);
     }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithHeader_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithHeader("x1", "y")
+            .WithHeader("x2", "y", "z")
+            .WithHeaders(new Dictionary<string, string> { { "d", "test" } })
+            .WithHeaders(new Dictionary<string, string[]> { { "d[]", new[] { "v1", "v2" } } })
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w", new WireMockList<string>("x") } })
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithHeaders_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+#if TRAILINGHEADERS
+    [Fact]
+    public Task ToMappingModel_Response_WithTrailingHeader_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithTrailingHeader("x1", "y")
+            .WithTrailingHeader("x2", "y", "z");
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithTrailingHeaders_ReturnsCorrectModel()
+    {
+        // Assign
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithTrailingHeaders(new Dictionary<string, WireMockList<string>> { { "w[]", new WireMockList<string>("x", "y") } });
+
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+#endif
 
     [Fact]
     public Task ToMappingModel_WithParam_ReturnsCorrectModel()
@@ -405,7 +517,7 @@ public partial class MappingConverterTests
                 .WithParam("ExactMatcher", new ExactMatcher("exact"))
             ;
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null, probability: null);
+        var mapping = new Mapping(_guid, _updatedAt, null, null, null, _settings, request, response, 0, null, null, null, null, null, false, null, data: null);
 
         // Act
         var model = _sut.ToMappingModel(mapping);
@@ -422,7 +534,7 @@ public partial class MappingConverterTests
     public Task ToMappingModel_Request_WithBodyAsGraphQLSchema_ReturnsCorrectModel()
     {
         // Arrange
-        var schema = @"
+        const string schema = @"
   type Query {
    greeting:String
    students:[Student]
@@ -437,7 +549,96 @@ public partial class MappingConverterTests
   }";
         var request = Request.Create().WithBodyAsGraphQLSchema(schema);
         var response = Response.Create();
-        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null, null);
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 42, null, null, null, null, null, false, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+#endif
+
+#if PROTOBUF
+    [Fact]
+    public Task ToMappingModel_Request_WithBodyAsProtoBuf_ReturnsCorrectModel()
+    {
+        // Arrange
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+
+        var request = Request.Create()
+            .UsingPost()
+            .WithPath("/grpc/greet.Greeter/SayHello")
+            .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", jsonMatcher);
+
+        var response = Response.Create();
+
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 41, null, null, null, null, null, false, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Response_WithBodyAsProtoBuf_ReturnsCorrectModel()
+    {
+        // Arrange
+        var protobufResponse = new
+        {
+            message = "hello"
+        };
+
+        var request = Request.Create();
+
+        var response = Response.Create()
+            .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply", protobufResponse)
+            .WithTrailingHeader("grpc-status", "0");
+
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 43, null, null, null, null, null, false, null, null);
+
+        // Act
+        var model = _sut.ToMappingModel(mapping);
+
+        // Assert
+        model.Should().NotBeNull();
+
+        // Verify
+        return Verifier.Verify(model);
+    }
+
+    [Fact]
+    public Task ToMappingModel_Mapping_WithBodyAsProtoBuf_ReturnsCorrectModel()
+    {
+        // Arrange
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+        var protobufResponse = new
+        {
+            message = "hello"
+        };
+
+        var request = Request.Create()
+            .UsingPost()
+            .WithPath("/grpc/greet.Greeter/SayHello")
+            .WithBodyAsProtoBuf("greet.HelloRequest", jsonMatcher);
+
+        var response = Response.Create()
+            .WithBodyAsProtoBuf("greet.HelloReply", protobufResponse)
+            .WithTrailingHeader("grpc-status", "0");
+
+        var mapping = new Mapping(_guid, _updatedAt, string.Empty, string.Empty, null, _settings, request, response, 41, null, null, null, null, null, false, null, null)
+            .WithProtoDefinition(new (null, ProtoDefinition));
+
+        ((Request)request).Mapping = mapping;
+        ((Response)response).Mapping = mapping;
 
         // Act
         var model = _sut.ToMappingModel(mapping);

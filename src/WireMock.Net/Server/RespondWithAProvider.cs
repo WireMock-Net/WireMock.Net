@@ -35,6 +35,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
     private double? _probability;
+    private IdOrText? _protoDefinition;
+    private GraphQLSchemaDetails? _graphQLSchemaDetails;
 
     public Guid Guid { get; private set; }
 
@@ -74,7 +76,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public void RespondWith(IResponseProvider provider)
     {
-        var mapping = new Mapping(
+        var mapping = new Mapping
+        (
             Guid,
             _dateTimeUtils.UtcNow,
             _title,
@@ -91,9 +94,18 @@ internal class RespondWithAProvider : IRespondWithAProvider
             Webhooks,
             _useWebhookFireAndForget,
             TimeSettings,
-            Data,
-            _probability
+            Data
         );
+
+        if (_probability != null)
+        {
+            mapping.WithProbability(_probability.Value);
+        }
+
+        if (_protoDefinition != null)
+        {
+            mapping.WithProtoDefinition(_protoDefinition.Value);
+        }
 
         _registrationCallback(mapping, _saveToFile);
     }
@@ -157,7 +169,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithGuid(Guid guid)
     {
         Guid = guid;
-
         return this;
     }
 
@@ -185,7 +196,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithDescription(string description)
     {
         _description = description;
-
         return this;
     }
 
@@ -193,7 +203,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithPath(string path)
     {
         _path = path;
-
         return this;
     }
 
@@ -201,15 +210,13 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider AtPriority(int priority)
     {
         _priority = priority;
-
         return this;
     }
 
     /// <inheritdoc />
     public IRespondWithAProvider InScenario(string scenario)
     {
-        _scenario = scenario;
-
+        _scenario = Guard.NotNullOrWhiteSpace(scenario);
         return this;
     }
 
@@ -261,9 +268,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public IRespondWithAProvider WithTimeSettings(ITimeSettings timeSettings)
     {
-        Guard.NotNull(timeSettings, nameof(timeSettings));
-
-        TimeSettings = timeSettings;
+        TimeSettings = Guard.NotNull(timeSettings);
 
         return this;
     }
@@ -271,10 +276,9 @@ internal class RespondWithAProvider : IRespondWithAProvider
     /// <inheritdoc />
     public IRespondWithAProvider WithWebhook(params IWebhook[] webhooks)
     {
-        Guard.HasNoNulls(webhooks, nameof(webhooks));
+        Guard.HasNoNulls(webhooks);
 
         Webhooks = webhooks;
-
         return this;
     }
 
@@ -335,13 +339,45 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public IRespondWithAProvider WithWebhookFireAndForget(bool useWebhooksFireAndForget)
     {
         _useWebhookFireAndForget = useWebhooksFireAndForget;
-
         return this;
     }
 
     public IRespondWithAProvider WithProbability(double probability)
     {
         _probability = Guard.Condition(probability, p => p is >= 0 and <= 1.0);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId)
+    {
+        Guard.NotNullOrWhiteSpace(protoDefinitionOrId);
+
+        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out var protoDefinition) == true)
+        {
+            _protoDefinition = new (protoDefinitionOrId, protoDefinition);
+        }
+        else
+        {
+            _protoDefinition = new(null, protoDefinitionOrId);
+        }
+
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider WithGraphQLSchema(string graphQLSchemaOrId, IDictionary<string, Type>? customScalars = null)
+    {
+        Guard.NotNullOrWhiteSpace(graphQLSchemaOrId);
+
+        if (_settings.GraphQLSchemas?.TryGetValue(graphQLSchemaOrId, out _graphQLSchemaDetails) != true)
+        {
+            _graphQLSchemaDetails = new GraphQLSchemaDetails
+            {
+                SchemaAsString = graphQLSchemaOrId,
+                CustomScalars = customScalars
+            };
+        }
 
         return this;
     }
@@ -351,7 +387,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
         string method,
         IDictionary<string, WireMockList<string>>? headers,
         bool useTransformer,
-        TransformerType transformerType)
+        TransformerType transformerType
+    )
     {
         return new Webhook
         {

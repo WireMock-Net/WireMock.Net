@@ -17,6 +17,9 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     /// <inheritdoc />
+    public object Value { get; }
+
+    /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
@@ -59,6 +62,7 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     /// <inheritdoc />

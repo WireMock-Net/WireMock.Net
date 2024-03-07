@@ -1,0 +1,35 @@
+﻿{
+  Guid: Guid_1,
+  UpdatedAt: DateTime_1,
+  Title: ,
+  Description: ,
+  Priority: 43,
+  Request: {},
+  Response: {
+    BodyAsJson: {
+      message: hello
+    },
+    TrailingHeaders: {
+      grpc-status: 0
+    },
+    ProtoDefinition:
+syntax = "proto3";
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+,
+    ProtoBufMessageType: greet.HelloReply
+  },
+  UseWebhooksFireAndForget: false
+}

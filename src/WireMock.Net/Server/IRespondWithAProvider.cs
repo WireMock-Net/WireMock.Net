@@ -233,4 +233,21 @@ public interface IRespondWithAProvider
     /// <param name="probability">The probability when this request should be matched. Value is between 0 and 1.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithProbability(double probability);
+
+    /// <summary>
+    /// Define a Grpc ProtoDefinition which is used for the request and the response.
+    /// This can be a ProtoDefinition as a string, or an id when the ProtoDefinitions are defined at the WireMockServer.
+    /// </summary>
+    /// <param name="protoDefinitionOrId">The proto definition as text or as id.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId);
+
+    /// <summary>
+    /// Define a GraphQL Schema which is used for the request and the response.
+    /// This can be a GraphQL Schema as a string, or an id when the GraphQL Schema are defined at the WireMockServer.
+    /// </summary>
+    /// <param name="graphQLSchemaOrId">The GraphQL Schema as text or as id.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithGraphQLSchema(string graphQLSchemaOrId, IDictionary<string, Type>? customScalars = null);
 }

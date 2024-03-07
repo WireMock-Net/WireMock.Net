@@ -14,7 +14,6 @@ using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -48,8 +47,10 @@ internal class MappingConverter
         var paramsMatchers = request.GetRequestMessageMatchers<RequestMessageParamMatcher>();
         var methodMatcher = request.GetRequestMessageMatcher<RequestMessageMethodMatcher>();
         var requestMessageBodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        var requestMessageHttpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
         var requestMessageGraphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var requestMessageMultiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var requestMessageProtoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
 
         var sb = new StringBuilder();
 
@@ -108,6 +109,11 @@ internal class MappingConverter
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
 
+        if (requestMessageHttpVersionMatcher?.HttpVersion != null)
+        {
+            sb.AppendLine($"        .WithHttpVersion({requestMessageHttpVersionMatcher.HttpVersion})");
+        }
+
 #if GRAPHQL
         if (requestMessageGraphQLMatcher is { Matchers: { } })
         {
@@ -125,6 +131,13 @@ internal class MappingConverter
             {
                 sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
+        }
+#endif
+
+#if PROTOBUF
+        if (requestMessageProtoBufMatcher is { Matcher: { } })
+        {
+            sb.AppendLine("        // .WithBodyAsProtoBuf() is not yet supported");
         }
 #endif
 
@@ -182,6 +195,14 @@ internal class MappingConverter
             }
         }
 
+        if (response.ResponseMessage.TrailingHeaders is { })
+        {
+            foreach (var header in response.ResponseMessage.TrailingHeaders)
+            {
+                sb.AppendLine($"        .WithTrailingHeader(\"{header.Key}\", {ToValueArguments(header.Value.ToArray())})");
+            }
+        }
+
         if (response.ResponseMessage.BodyData is { } bodyData)
         {
             switch (response.ResponseMessage.BodyData.DetectedBodyType)
@@ -190,6 +211,7 @@ internal class MappingConverter
                 case BodyType.FormUrlEncoded:
                     sb.AppendLine($"        .WithBody({ToCSharpStringLiteral(bodyData.BodyAsString)})");
                     break;
+
                 case BodyType.Json:
                     if (bodyData.BodyAsJson is string bodyStringValue)
                     {
@@ -239,6 +261,8 @@ internal class MappingConverter
         var bodyMatcher = request.GetRequestMessageMatcher<RequestMessageBodyMatcher>();
         var graphQLMatcher = request.GetRequestMessageMatcher<RequestMessageGraphQLMatcher>();
         var multiPartMatcher = request.GetRequestMessageMatcher<RequestMessageMultiPartMatcher>();
+        var protoBufMatcher = request.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>();
+        var httpVersionMatcher = request.GetRequestMessageMatcher<RequestMessageHttpVersionMatcher>();
 
         var mappingModel = new MappingModel
         {
@@ -253,6 +277,7 @@ internal class MappingConverter
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
             Data = mapping.Data,
+            ProtoDefinition = mapping.ProtoDefinition?.Value,
             Probability = mapping.Probability,
             Request = new RequestModel
             {
@@ -288,6 +313,11 @@ internal class MappingConverter
             mappingModel.Request.Methods = methodMatcher.Methods;
             mappingModel.Request.MethodsRejectOnMatch = methodMatcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null;
             mappingModel.Request.MethodsMatchOperator = methodMatcher.Methods.Length > 1 ? methodMatcher.MatchOperator.ToString() : null;
+        }
+
+        if (httpVersionMatcher?.HttpVersion != null)
+        {
+            mappingModel.Request.HttpVersion = httpVersionMatcher.HttpVersion;
         }
 
         if (clientIPMatcher is { Matchers: { } })
@@ -329,7 +359,7 @@ internal class MappingConverter
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.Where(wh => wh != null).ToArray() ?? EmptyArray<IWebhook>.Value;
+        var nonNullableWebHooks = mapping.Webhooks?.ToArray() ?? EmptyArray<IWebhook>.Value;
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);
@@ -339,20 +369,40 @@ internal class MappingConverter
             mappingModel.Webhooks = mapping.Webhooks.Select(WebhookMapper.Map).ToArray();
         }
 
-        var bodyMatchers = multiPartMatcher?.Matchers ?? graphQLMatcher?.Matchers ?? bodyMatcher?.Matchers;
-        var matchOperator = multiPartMatcher?.MatchOperator ?? graphQLMatcher?.MatchOperator ?? bodyMatcher?.MatchOperator;
+        var bodyMatchers =
+            protoBufMatcher?.Matcher != null ? new[] { protoBufMatcher.Matcher } : null ??
+            multiPartMatcher?.Matchers ??
+            graphQLMatcher?.Matchers ??
+            bodyMatcher?.Matchers;
 
-        if (bodyMatchers != null && matchOperator != null)
+        var matchOperator =
+            multiPartMatcher?.MatchOperator ??
+            graphQLMatcher?.MatchOperator ??
+            bodyMatcher?.MatchOperator ??
+            MatchOperator.Or;
+
+        if (bodyMatchers != null)
         {
+            void AfterMap(MatcherModel matcherModel)
+            {
+#if PROTOBUF
+                // In case the ProtoDefinition is defined at the Mapping level, clear the Pattern at the Matcher level
+                if (bodyMatchers?.OfType<ProtoBufMatcher>().Any() == true && mappingModel.ProtoDefinition != null)
+                {
+                    matcherModel.Pattern = null;
+                }
+#endif
+            }
+
             mappingModel.Request.Body = new BodyModel();
 
             if (bodyMatchers.Length == 1)
             {
-                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0]);
+                mappingModel.Request.Body.Matcher = _mapper.Map(bodyMatchers[0], AfterMap);
             }
             else if (bodyMatchers.Length > 1)
             {
-                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers);
+                mappingModel.Request.Body.Matchers = _mapper.Map(bodyMatchers, AfterMap);
                 mappingModel.Request.Body.MatchOperator = matchOperator.ToString();
             }
         }
@@ -390,6 +440,11 @@ internal class MappingConverter
                 mappingModel.Response.Headers = MapHeaders(response.ResponseMessage.Headers);
             }
 
+            if (response.ResponseMessage.TrailingHeaders is { Count: > 0 })
+            {
+                mappingModel.Response.TrailingHeaders = MapHeaders(response.ResponseMessage.TrailingHeaders);
+            }
+
             if (response.UseTransformer)
             {
                 mappingModel.Response.UseTransformer = response.UseTransformer;
@@ -402,43 +457,7 @@ internal class MappingConverter
                 mappingModel.Response.UseTransformerForBodyAsFile = response.UseTransformerForBodyAsFile;
             }
 
-            if (response.ResponseMessage.BodyData != null)
-            {
-                switch (response.ResponseMessage.BodyData?.DetectedBodyType)
-                {
-                    case BodyType.String:
-                    case BodyType.FormUrlEncoded:
-                        mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
-                        break;
-
-                    case BodyType.Json:
-                        mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
-                        if (response.ResponseMessage.BodyData.BodyAsJsonIndented == true)
-                        {
-                            mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
-                        }
-                        break;
-
-                    case BodyType.Bytes:
-                        mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
-                        break;
-
-                    case BodyType.File:
-                        mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
-                        mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
-                        break;
-                }
-
-                if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
-                {
-                    mappingModel.Response.BodyEncoding = new EncodingModel
-                    {
-                        EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
-                        CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
-                        WebName = response.ResponseMessage.BodyData.Encoding.WebName
-                    };
-                }
-            }
+            MapResponse(response, mappingModel);
 
             if (response.ResponseMessage.FaultType != FaultType.NONE)
             {
@@ -451,6 +470,61 @@ internal class MappingConverter
         }
 
         return mappingModel;
+    }
+
+    private static void MapResponse(Response response, MappingModel mappingModel)
+    {
+        if (response.ResponseMessage.BodyData == null)
+        {
+            return;
+        }
+
+        switch (response.ResponseMessage.BodyData?.DetectedBodyType)
+        {
+            case BodyType.String:
+            case BodyType.FormUrlEncoded:
+                mappingModel.Response.Body = response.ResponseMessage.BodyData.BodyAsString;
+                break;
+
+            case BodyType.Json:
+                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
+                if (response.ResponseMessage.BodyData.BodyAsJsonIndented == true)
+                {
+                    mappingModel.Response.BodyAsJsonIndented = response.ResponseMessage.BodyData.BodyAsJsonIndented;
+                }
+                break;
+
+            case BodyType.ProtoBuf:
+                // If the ProtoDefinition is not defined at the MappingModel, get the ProtoDefinition from the ResponseMessage.
+                if (mappingModel.ProtoDefinition == null)
+                {
+                    mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke().Value;
+                }
+
+                mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;
+                mappingModel.Response.BodyAsBytes = null;
+                mappingModel.Response.BodyAsJson = response.ResponseMessage.BodyData.BodyAsJson;
+                break;
+
+            case BodyType.Bytes:
+                mappingModel.Response.BodyAsBytes = response.ResponseMessage.BodyData.BodyAsBytes;
+                break;
+
+            case BodyType.File:
+                mappingModel.Response.BodyAsFile = response.ResponseMessage.BodyData.BodyAsFile;
+                mappingModel.Response.BodyAsFileIsCached = response.ResponseMessage.BodyData.BodyAsFileIsCached;
+                break;
+        }
+
+        if (response.ResponseMessage.BodyData?.Encoding != null && response.ResponseMessage.BodyData.Encoding.WebName != "utf-8")
+        {
+            mappingModel.Response.BodyEncoding = new EncodingModel
+            {
+                EncodingName = response.ResponseMessage.BodyData.Encoding.EncodingName,
+                CodePage = response.ResponseMessage.BodyData.Encoding.CodePage,
+                WebName = response.ResponseMessage.BodyData.Encoding.WebName
+            };
+        }
     }
 
     private static string GetString(IStringMatcher stringMatcher)

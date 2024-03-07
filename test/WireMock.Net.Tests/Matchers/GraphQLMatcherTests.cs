@@ -1,7 +1,6 @@
 #if GRAPHQL
 using System;
 using System.Collections.Generic;
-using CSScripting;
 using FluentAssertions;
 using GraphQLParser.Exceptions;
 using WireMock.Exceptions;

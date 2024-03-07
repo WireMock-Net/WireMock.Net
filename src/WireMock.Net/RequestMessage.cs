@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json;
 #if USE_ASPNETCORE
 using System.Security.Cryptography.X509Certificates;
 #endif
@@ -52,6 +51,9 @@ public class RequestMessage : IRequestMessage
     public string Method { get; }
 
     /// <inheritdoc />
+    public string HttpVersion { get; }
+
+    /// <inheritdoc />
     public IDictionary<string, WireMockList<string>>? Headers { get; }
 
     /// <inheritdoc />
@@ -73,14 +75,14 @@ public class RequestMessage : IRequestMessage
     public string? Body { get; }
 
     /// <inheritdoc />
-    public object? BodyAsJson { get; }
+    public object? BodyAsJson { get; set; }
 
     /// <inheritdoc />
     public byte[]? BodyAsBytes { get; }
 
 #if MIMEKIT
     /// <inheritdoc />
-    [JsonIgnore] // Issue 1001
+    [Newtonsoft.Json.JsonIgnore] // Issue 1001
     public object? BodyAsMimeMessage { get; }
 #endif
 
@@ -125,11 +127,13 @@ public class RequestMessage : IRequestMessage
 
     internal RequestMessage(
         IWireMockMiddlewareOptions? options,
-        UrlDetails urlDetails, string method,
+        UrlDetails urlDetails,
+        string method,
         string clientIP,
         IBodyData? bodyData = null,
         IDictionary<string, string[]>? headers = null,
-        IDictionary<string, string>? cookies = null
+        IDictionary<string, string>? cookies = null,
+        string httpVersion = "1.1"
 #if USE_ASPNETCORE
         , X509Certificate2? clientCertificate = null
 #endif
@@ -152,6 +156,7 @@ public class RequestMessage : IRequestMessage
         AbsolutePathSegments = AbsolutePath.Split('/').Skip(1).ToArray();
 
         Method = method;
+        HttpVersion = httpVersion;
         ClientIP = clientIP;
 
         BodyData = bodyData;

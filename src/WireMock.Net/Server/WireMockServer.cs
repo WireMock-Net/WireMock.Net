@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using AnyOfTypes;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Stef.Validation;
@@ -18,6 +19,7 @@ using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers.Request;
+using WireMock.Models;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
@@ -210,18 +212,37 @@ public partial class WireMockServer : IWireMockServer
     }
 
     /// <summary>
+    /// Starts this WireMockServer with the specified settings.
+    /// </summary>
+    /// <param name="action">The action to configure the WireMockServerSettings.</param>
+    /// <returns>The <see cref="WireMockServer"/>.</returns>
+    [PublicAPI]
+    public static WireMockServer Start(Action<WireMockServerSettings> action)
+    {
+        Guard.NotNull(action);
+
+        var settings = new WireMockServerSettings();
+
+        action(settings);
+
+        return new WireMockServer(settings);
+    }
+
+    /// <summary>
     /// Start this WireMockServer.
     /// </summary>
     /// <param name="port">The port.</param>
-    /// <param name="ssl">The SSL support.</param>
+    /// <param name="useSSL">The SSL support.</param>
+    /// <param name="useHttp2">Use HTTP 2 (needed for Grpc).</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer Start(int? port = 0, bool ssl = false)
+    public static WireMockServer Start(int? port = 0, bool useSSL = false, bool useHttp2 = false)
     {
         return new WireMockServer(new WireMockServerSettings
         {
             Port = port,
-            UseSSL = ssl
+            UseSSL = useSSL,
+            UseHttp2 = useHttp2
         });
     }
 
@@ -245,15 +266,17 @@ public partial class WireMockServer : IWireMockServer
     /// Start this WireMockServer with the admin interface.
     /// </summary>
     /// <param name="port">The port.</param>
-    /// <param name="ssl">The SSL support.</param>
+    /// <param name="useSSL">The SSL support.</param>
+    /// <param name="useHttp2">Use HTTP 2 (needed for Grpc).</param>
     /// <returns>The <see cref="WireMockServer"/>.</returns>
     [PublicAPI]
-    public static WireMockServer StartWithAdminInterface(int? port = 0, bool ssl = false)
+    public static WireMockServer StartWithAdminInterface(int? port = 0, bool useSSL = false, bool useHttp2 = false)
     {
         return new WireMockServer(new WireMockServerSettings
         {
             Port = port,
-            UseSSL = ssl,
+            UseSSL = useSSL,
+            UseHttp2 = useHttp2,
             StartAdminInterface = true
         });
     }
@@ -266,7 +289,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public static WireMockServer StartWithAdminInterface(params string[] urls)
     {
-        Guard.NotNullOrEmpty(urls, nameof(urls));
+        Guard.NotNullOrEmpty(urls);
 
         return new WireMockServer(new WireMockServerSettings
         {
@@ -329,6 +352,7 @@ public partial class WireMockServer : IWireMockServer
                 urlOptions = new HostUrlOptions
                 {
                     HostingScheme = settings.HostingScheme.Value,
+                    UseHttp2 = settings.UseHttp2,
                     Port = settings.Port
                 };
             }
@@ -337,6 +361,7 @@ public partial class WireMockServer : IWireMockServer
                 urlOptions = new HostUrlOptions
                 {
                     HostingScheme = settings.UseSSL == true ? HostingScheme.Https : HostingScheme.Http,
+                    UseHttp2 = settings.UseHttp2,
                     Port = settings.Port
                 };
             }
@@ -557,6 +582,49 @@ public partial class WireMockServer : IWireMockServer
         {
             ConvertMappingAndRegisterAsRespondProvider(mappingModel, mappingModel.Guid ?? Guid.NewGuid());
         }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <returns><see cref="WireMockServer"/></returns>
+    [PublicAPI]
+    public WireMockServer AddProtoDefinition(string id, string protoDefinition)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrWhiteSpace(protoDefinition);
+
+        _settings.ProtoDefinitions ??= new Dictionary<string, string>();
+
+        _settings.ProtoDefinitions[id] = protoDefinition;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Add a GraphQL Schema at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the GraphQL Schema.</param>
+    /// <param name="graphQLSchema">The GraphQL Schema as string or StringPattern.</param>
+    /// <param name="customScalars">A dictionary defining the custom scalars used in this schema. [optional]</param>
+    /// <returns><see cref="WireMockServer"/></returns>
+    [PublicAPI]
+    public WireMockServer AddGraphQLSchema(string id, AnyOf<string, StringPattern> graphQLSchema, Dictionary<string, Type>? customScalars = null)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrWhiteSpace(graphQLSchema);
+
+        _settings.GraphQLSchemas ??= new Dictionary<string, GraphQLSchemaDetails>();
+
+        _settings.GraphQLSchemas[id] = new GraphQLSchemaDetails
+        {
+            SchemaAsString = graphQLSchema,
+            CustomScalars = customScalars
+        };
 
         return this;
     }

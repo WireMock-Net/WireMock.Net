@@ -29,6 +29,11 @@ public class RequestModel
     public string[]? Methods { get; set; }
 
     /// <summary>
+    /// The HTTP Version
+    /// </summary>
+    public string? HttpVersion { get; set; }
+
+    /// <summary>
     /// Reject on match for Methods.
     /// </summary>
     public bool? MethodsRejectOnMatch { get; set; }

@@ -5,7 +5,8 @@
     AbsolutePath: /,
     Url: http://localhost/,
     AbsoluteUrl: http://localhost/,
-    Method: get
+    Method: get,
+    HttpVersion: 1.1
   },
   Response: {
     BodyAsFile: test,

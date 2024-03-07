@@ -11,7 +11,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// JsonPathMatcher
 /// </summary>
-/// <seealso cref="IMatcher" />
+/// <seealso cref="IStringMatcher" />
 /// <seealso cref="IObjectMatcher" />
 public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 {
@@ -19,6 +19,9 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
+
+    /// <inheritdoc />
+    public object Value { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonPathMatcher"/> class.
@@ -52,6 +55,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
+        Value = patterns;
     }
 
     /// <inheritdoc />
@@ -119,7 +123,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         // The SelectToken method can accept a string path to a child token ( i.e. "Manufacturers[0].Products[0].Price").
         // In that case it will return a JValue (some type) which does not implement the IEnumerable interface.
         var values = _patterns.Select(pattern => array.SelectToken(pattern.GetPattern()) != null).ToArray();
-        
+
         return MatchScores.ToScore(values, MatchOperator);
     }
 
