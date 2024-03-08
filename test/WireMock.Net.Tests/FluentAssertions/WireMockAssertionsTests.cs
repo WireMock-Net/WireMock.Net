@@ -12,7 +12,6 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using Xunit;
-using static System.Environment;
 
 namespace WireMock.Net.Tests.FluentAssertions;
 
@@ -103,10 +102,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .AtAbsoluteUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called at address matching the absolute url \"anyurl\", but no calls were made.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called at address matching the absolute url \"anyurl\", but no calls were made.");
     }
 
     [Fact]
@@ -118,10 +116,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .AtAbsoluteUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                $"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage($"Expected _server to have been called at address matching the absolute url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
     }
 
     [Fact]
@@ -172,9 +169,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .WithHeader("Authorization", "value");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Contain("\"Authorization\"");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("*\"Authorization\"*");
     }
 
     [Fact]
@@ -188,38 +185,27 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .WithHeader("Accept", "missing-value");
 
-        var sentHeaders = _server.LogEntries.SelectMany(x => x.RequestMessage.Headers)
-            .ToDictionary(x => x.Key, x => x.Value)["Accept"]
-            .Select(x => $"\"{x}\"")
-            .ToList();
-
-        var sentHeaderString = "{" + string.Join(", ", sentHeaders) + "}";
-
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                $"Expected header \"Accept\" from requests sent with value(s) {sentHeaderString} to contain \"missing-value\".{NewLine}");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value\"}, but didn't find it among the calls with Header(s) {{[\"Accept\"] = {\"application/xml, application/json\"}, [\"Host\"] = {\"localhost:*\"}}}.");
     }
 
     [Fact]
     public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenNoCallsMatchingTheHeaderWithMultipleValuesWereMade()
     {
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        await _httpClient.GetAsync("").ConfigureAwait(false);
+        using var httpClient = new HttpClient { BaseAddress = new Uri(_server.Url!) };
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        await httpClient.GetAsync("").ConfigureAwait(false);
 
         Action act = () => _server.Should()
             .HaveReceivedACall()
             .WithHeader("Accept", new[] { "missing-value1", "missing-value2" });
 
-        const string missingValue1Message =
-            "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value1\".";
-        const string missingValue2Message =
-            "Expected header \"Accept\" from requests sent with value(s) {\"application/xml\", \"application/json\"} to contain \"missing-value2\".";
-
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be($"{string.Join(NewLine, missingValue1Message, missingValue2Message)}{NewLine}");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value1\", \"missing-value2\"}, but didn't find it among the calls with Header(s) {{[\"Accept\"] = {\"application/xml, application/json\"}, [\"Host\"] = {\"localhost:*\"}}}.");
     }
 
     [Fact]
@@ -277,10 +263,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .AtUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called at address matching the url \"anyurl\", but no calls were made.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called at address matching the url \"anyurl\", but no calls were made.");
     }
 
     [Fact]
@@ -292,10 +277,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .AtUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                $"Expected _server to have been called at address matching the url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage($"Expected _server to have been called at address matching the url \"anyurl\", but didn't find it among the calls to {{\"http://localhost:{_portUsed}/\"}}.");
     }
 
     [Fact]
@@ -309,7 +293,7 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
-            .WithProxyUrl($"http://localhost:9999");
+            .WithProxyUrl("http://localhost:9999");
     }
 
     [Fact]
@@ -323,10 +307,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .WithProxyUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called with proxy url \"anyurl\", but no calls were made.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called with proxy url \"anyurl\", but no calls were made.");
     }
 
     [Fact]
@@ -342,10 +325,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .WithProxyUrl("anyurl");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                $"Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {{\"http://localhost:9999\"}}.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called with proxy url \"anyurl\", but didn't find it among the calls with {\"http://localhost:9999\"}.");
     }
 
     [Fact]
@@ -366,10 +348,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .FromClientIP("different-ip");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called from client IP \"different-ip\", but no calls were made.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called from client IP \"different-ip\", but no calls were made.");
     }
 
     [Fact]
@@ -382,10 +363,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .FromClientIP("different-ip");
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                $"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage($"Expected _server to have been called from client IP \"different-ip\", but didn't find it among the calls from IP(s) {{\"{clientIP}\"}}.");
     }
 
     [Fact]
@@ -419,10 +399,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .UsingPatch();
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called using method \"PATCH\", but no calls were made.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called using method \"PATCH\", but no calls were made.");
     }
 
     [Fact]
@@ -434,10 +413,9 @@ public class WireMockAssertionsTests : IDisposable
             .HaveReceivedACall()
             .UsingOptions();
 
-        act.Should().Throw<Exception>()
-            .And.Message.Should()
-            .Be(
-                "Expected _server to have been called using method \"OPTIONS\", but didn't find it among the methods {\"POST\"}.");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected _server to have been called using method \"OPTIONS\", but didn't find it among the methods {\"POST\"}.");
     }
 
 #if !NET452
@@ -836,6 +814,56 @@ public class WireMockAssertionsTests : IDisposable
             .UsingPost();
 
         server.Stop();
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenHttpMethodDoesNotMatch()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+
+        // Act : HTTP GET
+        using var httpClient = new HttpClient();
+        await httpClient.GetAsync(server.Url!);
+
+        // Act : HTTP POST
+        var request = new HttpRequestMessage(HttpMethod.Post, server.Url!);
+        request.Headers.Add("TestHeader", new[] { "Value", "Value2" });
+
+        await httpClient.SendAsync(request);
+
+        // Assert
+        server.Should().HaveReceivedACall().UsingPost().And.WithHeader("TestHeader", new[] { "Value", "Value2" });
+
+        Action act = () => server.Should().HaveReceivedACall().UsingGet().And.WithHeader("TestHeader", "Value");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected server to have been called with Header \"TestHeader\" and Values {\"Value\"}, but didn't find it among the calls with Header(s) {{[\"Host\"] = {\"localhost:*\"}}}.");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_WithHeaderKey_Should_ThrowWhenHttpMethodDoesNotMatch()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+
+        // Act : HTTP GET
+        using var httpClient = new HttpClient();
+        await httpClient.GetAsync(server.Url!);
+
+        // Act : HTTP POST
+        var request = new HttpRequestMessage(HttpMethod.Post, server.Url!);
+        request.Headers.Add("TestHeader", new[] { "Value", "Value2" });
+
+        await httpClient.SendAsync(request);
+
+        // Assert
+        server.Should().HaveReceivedACall().UsingPost().And.WitHeaderKey("TestHeader");
+
+        Action act = () => server.Should().HaveReceivedACall().UsingGet().And.WitHeaderKey("TestHeader");
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected server to have been called with Header \"TestHeader\", but didn't find it among the calls with Header(s) {{[\"Host\"] = {\"localhost:*\"}}}.");
     }
 
     public void Dispose()
