@@ -124,8 +124,6 @@ public partial class WireMockAssertions
         return new AndWhichConstraint<WireMockAssertions, string>(this, clientIP);
     }
 
-    
-
     private (Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> Filter, Func<IReadOnlyList<IRequestMessage>, bool> Condition) BuildFilterAndCondition(Func<IRequestMessage, bool> predicate)
     {
         Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> filter = requests => requests.Where(predicate).ToList();
