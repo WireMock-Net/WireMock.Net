@@ -8,7 +8,7 @@ namespace WireMock.FluentAssertions;
 public partial class WireMockAssertions
 {
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WitHeaderKey(string expectedKey, string because = "", params object[] becauseArgs)
+    public AndWhichConstraint<WireMockAssertions, string> WitHeaderKey(string expectedKey, string because = "", params object[] becauseArgs)
     {
         var (filter, condition) = BuildFilterAndCondition(request =>
         {
@@ -17,8 +17,8 @@ public partial class WireMockAssertions
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with Header {0}{reason}.",
                 expectedKey
@@ -31,9 +31,9 @@ public partial class WireMockAssertions
                 requests => requests.Select(request => request.Headers)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
-        return new AndConstraint<WireMockAssertions>(this);
+        return new AndWhichConstraint<WireMockAssertions, string>(this, expectedKey);
     }
 
     [CustomAssertion]
@@ -60,8 +60,8 @@ public partial class WireMockAssertions
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called with Header {0} and Values {1}{reason}.",
                 expectedKey,
@@ -76,7 +76,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(request => request.Headers)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -91,8 +91,8 @@ public partial class WireMockAssertions
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} not to have been called with Header {0}{reason}.",
                 unexpectedKey
@@ -105,7 +105,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(request => request.Headers)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -134,8 +134,8 @@ public partial class WireMockAssertions
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} not to have been called with Header {0} and Values {1}{reason}.",
                 unexpectedKey,
@@ -150,7 +150,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(request => request.Headers)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }

@@ -70,8 +70,8 @@ public partial class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
                 matcher.GetPatterns()
@@ -84,7 +84,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(expression)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -100,8 +100,8 @@ public partial class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
                 matcher.Value
@@ -114,7 +114,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(expression)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
@@ -130,8 +130,8 @@ public partial class WireMockAssertions
     {
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
                 matcher.Value
@@ -144,7 +144,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(expression)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
