@@ -62,6 +62,16 @@ public class WireMockAssertionsTests : IDisposable
     }
 
     [Fact]
+    public async Task HaveReceived1Calls_AtAbsoluteUrl2_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceived(1).Calls()
+            .AtAbsoluteUrl2($"http://localhost:{_portUsed}/anyurl");
+    }
+
+    [Fact]
     public async Task HaveReceived1Calls_AtAbsoluteUrlUsingPost_WhenAPostCallWasMadeToAbsoluteUrl_Should_BeOK()
     {
         await _httpClient.PostAsync("anyurl", new StringContent("")).ConfigureAwait(false);
@@ -129,7 +139,7 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
-            .WitHeaderKey("Authorization");
+            .WitHeaderKey("Authorization").Which.Should().StartWith("A");
     }
 
     [Fact]

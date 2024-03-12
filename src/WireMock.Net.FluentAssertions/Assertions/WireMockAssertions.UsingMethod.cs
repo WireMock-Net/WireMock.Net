@@ -58,8 +58,8 @@ public partial class WireMockAssertions
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
-            .Given(() => _requestMessages)
-            .ForCondition(requests => _callsCount == 0 || requests.Any())
+            .Given(() => RequestMessages)
+            .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 "Expected {context:wiremockserver} to have been called using method {0}{reason}, but no calls were made.",
                 method
@@ -72,7 +72,7 @@ public partial class WireMockAssertions
                 requests => requests.Select(request => request.Method)
             );
 
-        _requestMessages = filter(_requestMessages).ToList();
+        FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
     }
