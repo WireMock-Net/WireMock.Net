@@ -1,3 +1,9 @@
+# 1.5.50 (12 March 2024)
+- [#1080](https://github.com/WireMock-Net/WireMock.Net/pull/1080) - Fix FluentAssertions on Header(s) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1082](https://github.com/WireMock-Net/WireMock.Net/pull/1082) - Make WireMockAssertions extendable [feature] contributed by [StefH](https://github.com/StefH)
+- [#1074](https://github.com/WireMock-Net/WireMock.Net/issues/1074) - FluentAssertions extensions do not filter headers correctly [bug]
+- [#1075](https://github.com/WireMock-Net/WireMock.Net/issues/1075) - FluentAssertions extensions are not open for extension [feature]
+
 # 1.5.49 (06 March 2024)
 - [#1069](https://github.com/WireMock-Net/WireMock.Net/pull/1069) - Extend TypeLoader [feature] contributed by [StefH](https://github.com/StefH)
 - [#1078](https://github.com/WireMock-Net/WireMock.Net/pull/1078) - Upgrade ProtoBufJsonConverter to fix issue with dot(s) in package name [bug] contributed by [StefH](https://github.com/StefH)

@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using WireMock.FluentAssertions;
 
-// ReSharper disable once CheckNamespace
-namespace WireMock.FluentAssertions;
+namespace WireMock.Net.Tests.FluentAssertions;
 
 public static class WireMockAssertionsExtensions
 {

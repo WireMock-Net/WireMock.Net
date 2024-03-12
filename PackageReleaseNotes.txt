@@ -1,6 +1,7 @@
-# 1.5.49 (06 March 2024)
-- #1069 Extend TypeLoader [feature]
-- #1078 Upgrade ProtoBufJsonConverter to fix issue with dot(s) in package name [bug]
-- #1077 ProtoBufMatcher not working when proto package name contains dots [bug]
+# 1.5.50 (12 March 2024)
+- #1080 Fix FluentAssertions on Header(s) [bug]
+- #1082 Make WireMockAssertions extendable [feature]
+- #1074 FluentAssertions extensions do not filter headers correctly [bug]
+- #1075 FluentAssertions extensions are not open for extension [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
