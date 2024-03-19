@@ -162,7 +162,7 @@ public partial class WireMockAssertions
         };
     }
 
-    private static string? FormatBodies(IEnumerable<object?> bodies)
+    private static string FormatBodies(IEnumerable<object?> bodies)
     {
         return string.Join(", ", bodies.Select(FormatBody));
     }
