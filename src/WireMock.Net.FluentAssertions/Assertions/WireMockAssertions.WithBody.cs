@@ -1,6 +1,8 @@
 #pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WireMock.Matchers;
 
 // ReSharper disable once CheckNamespace
@@ -9,7 +11,7 @@ namespace WireMock.FluentAssertions;
 public partial class WireMockAssertions
 {
     private const string MessageFormatNoCalls = "Expected {context:wiremockserver} to have been called using body {0}{reason}, but no calls were made.";
-    private const string MessageFormat = "Expected {context:wiremockserver} to have been called using body {0}{reason}, but didn't find it among the body {1}.";
+    private const string MessageFormat = "Expected {context:wiremockserver} to have been called using body {0}{reason}, but didn't find it among the body/bodies {1}.";
 
     [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithBody(string body, string because = "", params object[] becauseArgs)
@@ -104,14 +106,14 @@ public partial class WireMockAssertions
             .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
-                matcher.Value
+                FormatBody(matcher.Value)
             )
             .Then
             .ForCondition(condition)
             .FailWith(
                 MessageFormat,
-                _ => matcher.Value,
-                requests => requests.Select(expression)
+                _ => FormatBody(matcher.Value),
+                requests => FormatBodies(requests.Select(expression))
             );
 
         FilterRequestMessages(filter);
@@ -147,5 +149,21 @@ public partial class WireMockAssertions
         FilterRequestMessages(filter);
 
         return new AndConstraint<WireMockAssertions>(this);
+    }
+
+    private static string? FormatBody(object? body)
+    {
+        return body switch
+        {
+            null => null,
+            JObject jObject => jObject.ToString(Formatting.None),
+            JToken jToken => jToken.ToString(Formatting.None),
+            _ => JToken.FromObject(body).ToString(Formatting.None)
+        };
+    }
+
+    private static string? FormatBodies(IEnumerable<object?> bodies)
+    {
+        return string.Join(", ", bodies.Select(FormatBody));
     }
 }
