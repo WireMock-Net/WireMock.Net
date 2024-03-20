@@ -11,9 +11,16 @@ using WireMock.Types;
 
 namespace WireMock.Util;
 
-internal static class MimeKitUtils
+internal class MimeKitUtils : IMimeKitUtils
 {
-    public static bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeMessage? mimeMessage)
+    public bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out object? mimeMessage)
+    {
+        var result = TryGetMimeMessage(requestMessage, out MimeMessage? value);
+        mimeMessage = value;
+        return result;
+    }
+
+    public bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeMessage? mimeMessage)
     {
         Guard.NotNull(requestMessage);
 

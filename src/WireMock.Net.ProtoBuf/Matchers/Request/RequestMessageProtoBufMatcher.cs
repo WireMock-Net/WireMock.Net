@@ -1,3 +1,4 @@
+#if PROTOBUF
 using System;
 using WireMock.Models;
 
@@ -6,7 +7,7 @@ namespace WireMock.Matchers.Request;
 /// <summary>
 /// The request body Grpc ProtoBuf matcher.
 /// </summary>
-public class RequestMessageProtoBufMatcher : IRequestMatcher
+public class RequestMessageProtoBufMatcher : IRequestMessageProtoBufMatcher
 {
     /// <summary>
     /// The ProtoBufMatcher.
@@ -22,11 +23,7 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
     /// <param name="matcher">The optional matcher to use to match the ProtoBuf as (json) object.</param>
     public RequestMessageProtoBufMatcher(MatchBehaviour matchBehaviour, Func<IdOrText> protoDefinition, string messageType, IObjectMatcher? matcher = null)
     {
-#if PROTOBUF
         Matcher = new ProtoBufMatcher(protoDefinition, messageType, matchBehaviour, matcher);
-#else
-        throw new System.NotSupportedException("The ProtoBufMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#endif
     }
 
     /// <inheritdoc />
@@ -41,3 +38,4 @@ public class RequestMessageProtoBufMatcher : IRequestMatcher
         return Matcher?.IsMatchAsync(requestMessage.BodyAsBytes).GetAwaiter().GetResult() ?? default;
     }
 }
+#endif
