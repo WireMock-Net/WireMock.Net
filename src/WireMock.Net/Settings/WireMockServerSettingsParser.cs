@@ -88,10 +88,16 @@ public static class WireMockServerSettingsParser
     private static void ParseLoggerSettings(WireMockServerSettings settings, IWireMockLogger? logger, SimpleSettingsParser parser)
     {
         var loggerType = parser.GetStringValue("WireMockLogger");
+        var removeNewLines = parser.GetBoolValue("RemoveNewLines");
+
         switch (loggerType)
         {
             case nameof(WireMockConsoleLogger):
-                settings.Logger = new WireMockConsoleLogger();
+                settings.Logger = new WireMockConsoleLogger(removeNewLines);
+                break;
+
+            case "WireMockNoNewLinesConsoleLogger":
+                settings.Logger = new WireMockConsoleLogger(true);
                 break;
 
             case nameof(WireMockNullLogger):

@@ -1,5 +1,5 @@
-using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json;
 using WireMock.Admin.Requests;
 
 namespace WireMock.Logging;
@@ -10,58 +10,65 @@ namespace WireMock.Logging;
 /// <seealso cref="IWireMockLogger" />
 public class WireMockConsoleLogger : IWireMockLogger
 {
+    private const string NewlineWindows = "\r\n";
+    private const string NewlineUnix = "\n";
+
+    private readonly bool _removeNewLines;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockConsoleLogger"/> class.
     /// </summary>
-    public WireMockConsoleLogger()
+    public WireMockConsoleLogger(bool removeNewLines = false)
     {
+        _removeNewLines = removeNewLines;
+
         Console.OutputEncoding = System.Text.Encoding.UTF8;
     }
 
-    /// <see cref="IWireMockLogger.Debug"/>
+    /// <inheritdoc />
     public void Debug(string formatString, params object[] args)
     {
-        Console.WriteLine(Format("Debug", formatString, args));
+        WriteLine(Format("Debug", formatString, args));
     }
 
-    /// <see cref="IWireMockLogger.Info"/>
+    /// <inheritdoc />
     public void Info(string formatString, params object[] args)
     {
-        Console.WriteLine(Format("Info", formatString, args));
+        WriteLine(Format("Info", formatString, args));
     }
 
-    /// <see cref="IWireMockLogger.Warn"/>
+    /// <inheritdoc />
     public void Warn(string formatString, params object[] args)
     {
-        Console.WriteLine(Format("Warn", formatString, args));
+        WriteLine(Format("Warn", formatString, args));
     }
 
-    /// <see cref="IWireMockLogger.Error(string, object[])"/>
+    /// <inheritdoc />
     public void Error(string formatString, params object[] args)
     {
-        Console.WriteLine(Format("Error", formatString, args));
+        WriteLine(Format("Error", formatString, args));
     }
 
-    /// <see cref="IWireMockLogger.Error(string, Exception)"/>
+    /// <inheritdoc />
     public void Error(string formatString, Exception exception)
     {
-        Console.WriteLine(Format("Error", formatString, exception.Message));
+        WriteLine(Format("Error", formatString, exception.Message));
 
         if (exception is AggregateException ae)
         {
             ae.Handle(ex =>
             {
-                Console.WriteLine(Format("Error", "Exception {0}", ex.Message));
+                WriteLine(Format("Error", "Exception {0}", ex.Message));
                 return true;
             });
         }
     }
 
-    /// <see cref="IWireMockLogger.DebugRequestResponse"/>
+    /// <inheritdoc />
     public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
     {
         string message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
-        Console.WriteLine(Format("DebugRequestResponse", "Admin[{0}] {1}", isAdminRequest, message));
+        WriteLine(Format("DebugRequestResponse", "Admin[{0}] {1}", isAdminRequest, message));
     }
 
     private static string Format(string level, string formatString, params object[] args)
@@ -69,5 +76,14 @@ public class WireMockConsoleLogger : IWireMockLogger
         var message = args.Length > 0 ? string.Format(formatString, args) : formatString;
 
         return $"{DateTime.UtcNow} [{level}] : {message}";
+    }
+
+    /// <summary>
+    /// Writes the specified string value, followed by the current line terminator, to the console.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
+    private void WriteLine(string value)
+    {
+        Console.WriteLine(!_removeNewLines ? value : value.Replace(NewlineWindows, string.Empty).Replace(NewlineUnix, string.Empty));
     }
 }
