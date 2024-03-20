@@ -774,7 +774,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected wiremockserver to have been called using body \"{\"x\":\"y\"}\", but didn't find it among the body/bodies \"{\"x\":\"123\"}\".");
+            .WithMessage("""Expected wiremockserver to have been called using body "{"x":"y"}", but didn't find it among the body/bodies "{"x":"123"}".""");
 
         server.Stop();
     }
@@ -805,7 +805,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected wiremockserver to have been called using body \"abc\", but didn't find it among the body/bodies \"123\".");
+            .WithMessage("""Expected wiremockserver to have been called using body "abc", but didn't find it among the body/bodies "123".""");
 
         server.Stop();
     }
@@ -836,7 +836,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected wiremockserver to have been called using body \"byte[1] {...}\", but didn't find it among the body/bodies \"byte[1] {...}\".");
+            .WithMessage("""Expected wiremockserver to have been called using body "byte[1] {...}", but didn't find it among the body/bodies "byte[1] {...}".""");
 
         server.Stop();
     }

@@ -132,7 +132,6 @@ public partial class WireMockAssertions
             string str => str,
             AnyOf<string, StringPattern>[] stringPatterns => FormatBodies(stringPatterns.Select(p => p.GetPattern())),
             byte[] bytes => $"byte[{bytes.Length}] {{...}}",
-            JObject jObject => jObject.ToString(Formatting.None),
             JToken jToken => jToken.ToString(Formatting.None),
             _ => JToken.FromObject(body).ToString(Formatting.None)
         };
