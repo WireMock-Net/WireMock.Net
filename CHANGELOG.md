@@ -1,3 +1,7 @@
+# 1.5.51 (20 March 2024)
+- [#1085](https://github.com/WireMock-Net/WireMock.Net/pull/1085) - Fix FluentAssertions (actual body is not displayed in error message) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1084](https://github.com/WireMock-Net/WireMock.Net/issues/1084) - FluentAssertions - Actual body is not displayed in error message when using Json Body [bug]
+
 # 1.5.50 (12 March 2024)
 - [#1080](https://github.com/WireMock-Net/WireMock.Net/pull/1080) - Fix FluentAssertions on Header(s) [bug] contributed by [StefH](https://github.com/StefH)
 - [#1082](https://github.com/WireMock-Net/WireMock.Net/pull/1082) - Make WireMockAssertions extendable [feature] contributed by [StefH](https://github.com/StefH)
