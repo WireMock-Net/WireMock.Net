@@ -108,9 +108,9 @@
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
 
-        <PackageReference Include="Google.Protobuf" Version="3.25.1" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.60.0">
+        <PackageReference Include="Google.Protobuf" Version="3.26.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.62.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
