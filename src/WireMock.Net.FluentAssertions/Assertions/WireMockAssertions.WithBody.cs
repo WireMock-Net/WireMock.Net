@@ -1,9 +1,12 @@
 #pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
+using AnyOfTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WireMock.Extensions;
 using WireMock.Matchers;
+using WireMock.Models;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions;
@@ -58,7 +61,7 @@ public partial class WireMockAssertions
     {
         var (filter, condition) = BuildFilterAndCondition(r => r.BodyAsBytes, matcher);
 
-        return ExecuteAssertionWithBodyAsBytesExactObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsBytes);
+        return ExecuteAssertionWithBodyAsIObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsBytes);
     }
 
     private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyStringMatcher(
@@ -76,14 +79,14 @@ public partial class WireMockAssertions
             .ForCondition(requests => CallsCount == 0 || requests.Any())
             .FailWith(
                 MessageFormatNoCalls,
-                matcher.GetPatterns()
+                FormatBody(matcher.GetPatterns())
             )
             .Then
             .ForCondition(condition)
             .FailWith(
                 MessageFormat,
-                _ => matcher.GetPatterns(),
-                requests => requests.Select(expression)
+                _ => FormatBody(matcher.GetPatterns()),
+                requests => FormatBodies(requests.Select(expression))
             );
 
         FilterRequestMessages(filter);
@@ -121,49 +124,23 @@ public partial class WireMockAssertions
         return new AndConstraint<WireMockAssertions>(this);
     }
 
-    private AndConstraint<WireMockAssertions> ExecuteAssertionWithBodyAsBytesExactObjectMatcher(
-        ExactObjectMatcher matcher,
-        string because,
-        object[] becauseArgs,
-        Func<IReadOnlyList<IRequestMessage>, bool> condition,
-        Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> filter,
-        Func<IRequestMessage, object?> expression
-    )
-    {
-        Execute.Assertion
-            .BecauseOf(because, becauseArgs)
-            .Given(() => RequestMessages)
-            .ForCondition(requests => CallsCount == 0 || requests.Any())
-            .FailWith(
-                MessageFormatNoCalls,
-                matcher.Value
-            )
-            .Then
-            .ForCondition(condition)
-            .FailWith(
-                MessageFormat,
-                _ => matcher.Value,
-                requests => requests.Select(expression)
-            );
-
-        FilterRequestMessages(filter);
-
-        return new AndConstraint<WireMockAssertions>(this);
-    }
-
     private static string? FormatBody(object? body)
     {
         return body switch
         {
             null => null,
+            string str => str,
+            AnyOf<string, StringPattern>[] stringPatterns => FormatBodies(stringPatterns.Select(p => p.GetPattern())),
+            byte[] bytes => $"byte[{bytes.Length}] {{...}}",
             JObject jObject => jObject.ToString(Formatting.None),
             JToken jToken => jToken.ToString(Formatting.None),
             _ => JToken.FromObject(body).ToString(Formatting.None)
         };
     }
 
-    private static string FormatBodies(IEnumerable<object?> bodies)
+    private static string? FormatBodies(IEnumerable<object?> bodies)
     {
-        return string.Join(", ", bodies.Select(FormatBody));
+        var valueAsArray = bodies as object[] ?? bodies.ToArray();
+        return valueAsArray.Length == 1 ? FormatBody(valueAsArray.First()) : $"[ {string.Join(", ", valueAsArray.Select(FormatBody))} ]";
     }
 }

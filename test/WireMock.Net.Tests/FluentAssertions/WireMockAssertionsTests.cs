@@ -751,7 +751,7 @@ public class WireMockAssertionsTests : IDisposable
         var server = WireMockServer.Start();
 
         server
-            .Given(Request.Create().WithPath("/a").UsingPost().WithBodyAsJson(new { x = "y" }))
+            .Given(Request.Create().WithPath("/a").UsingPost())
             .RespondWith(Response.Create().WithBody("A response"));
 
         // Act
@@ -775,6 +775,68 @@ public class WireMockAssertionsTests : IDisposable
         act.Should()
             .Throw<Exception>()
             .WithMessage("Expected wiremockserver to have been called using body \"{\"x\":\"y\"}\", but didn't find it among the body/bodies \"{\"x\":\"123\"}\".");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WithBodyAsString_When_NoMatch_ShouldHaveCorrectErrorMessage()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingPost())
+            .RespondWith(Response.Create().WithBody("A response"));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.PostAsync($"{server.Url}/a", new StringContent("123"));
+
+        // Assert
+        Action act = () => server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBody("abc")
+            .And
+            .UsingPost();
+
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected wiremockserver to have been called using body \"abc\", but didn't find it among the body/bodies \"123\".");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WithBodyAsBytes_When_NoMatch_ShouldHaveCorrectErrorMessage()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath("/a").UsingPost())
+            .RespondWith(Response.Create().WithBody("A response"));
+
+        // Act
+        var httpClient = new HttpClient();
+
+        await httpClient.PostAsync($"{server.Url}/a", new ByteArrayContent(new byte[] { 5 }));
+
+        // Assert
+        Action act = () => server
+            .Should()
+            .HaveReceived(1)
+            .Calls()
+            .WithBodyAsBytes(new byte[] { 1 })
+            .And
+            .UsingPost();
+
+        act.Should()
+            .Throw<Exception>()
+            .WithMessage("Expected wiremockserver to have been called using body \"byte[1] {...}\", but didn't find it among the body/bodies \"byte[1] {...}\".");
 
         server.Stop();
     }
