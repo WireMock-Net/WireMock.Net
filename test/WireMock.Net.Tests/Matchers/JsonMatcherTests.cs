@@ -341,4 +341,22 @@ public class JsonMatcherTests
         // Assert 
         match.Should().Be(1.0);
     }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithRegexTrue()
+    {
+        // Assign 
+        var matcher = new JsonMatcher(new { Id = "^\\d+$", Name = "Test" }, false, true);
+
+        // Act 
+        var jObject = new JObject
+        {
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") }
+        };
+        var score = matcher.IsMatch(jObject).Score;
+
+        // Assert 
+        Assert.Equal(1.0, score);
+    }
 }

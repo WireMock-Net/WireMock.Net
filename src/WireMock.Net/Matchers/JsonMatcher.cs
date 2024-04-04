@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
@@ -23,6 +24,11 @@ public class JsonMatcher : IJsonMatcher
     /// <inheritdoc cref="IIgnoreCaseMatcher.IgnoreCase"/>
     public bool IgnoreCase { get; }
 
+    /// <summary>
+    /// Support Regex
+    /// </summary>
+    public bool Regex { get; }
+
     private readonly JToken _valueAsJToken;
     private readonly Func<JToken, JToken> _jTokenConverter;
 
@@ -31,7 +37,8 @@ public class JsonMatcher : IJsonMatcher
     /// </summary>
     /// <param name="value">The string value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    public JsonMatcher(string value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
+    /// <param name="regex">Support Regex.</param>
+    public JsonMatcher(string value, bool ignoreCase = false, bool regex = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, regex)
     {
     }
 
@@ -40,7 +47,8 @@ public class JsonMatcher : IJsonMatcher
     /// </summary>
     /// <param name="value">The object value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    public JsonMatcher(object value, bool ignoreCase = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase)
+    /// <param name="regex">Support Regex.</param>
+    public JsonMatcher(object value, bool ignoreCase = false, bool regex = false) : this(MatchBehaviour.AcceptOnMatch, value, ignoreCase, regex)
     {
     }
 
@@ -50,12 +58,14 @@ public class JsonMatcher : IJsonMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="value">The value to check for equality.</param>
     /// <param name="ignoreCase">Ignore the case from the PropertyName and PropertyValue (string only).</param>
-    public JsonMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false)
+    /// <param name="regex">Support Regex.</param>
+    public JsonMatcher(MatchBehaviour matchBehaviour, object value, bool ignoreCase = false, bool regex = false)
     {
         Guard.NotNull(value);
 
         MatchBehaviour = matchBehaviour;
         IgnoreCase = ignoreCase;
+        Regex = regex;
 
         Value = value;
         _valueAsJToken = JsonUtils.ConvertValueToJToken(value);
@@ -93,9 +103,74 @@ public class JsonMatcher : IJsonMatcher
     /// <param name="value">Matcher value</param>
     /// <param name="input">Input value</param>
     /// <returns></returns>
-    protected virtual bool IsMatch(JToken value, JToken input)
+    protected virtual bool IsMatch(JToken? value, JToken? input)
     {
-        return JToken.DeepEquals(value, input);
+        // If both are null, return true.
+        if (input == null && value == null)
+        {
+            return true;
+        }
+
+        // If one of them is null, return false.
+        if (input == null || value == null)
+        {
+            return false;
+        }
+
+        // If not using Regex, use JToken.DeepEquals().
+        if (!Regex)
+        {
+            return JToken.DeepEquals(value, input);
+        }
+
+        // If using Regex, use the MatchRegex method.
+        if (Regex && value.Type == JTokenType.String)
+        {
+            var valueAsString = value.ToString();
+
+            var (valid, result) = RegexUtils.MatchRegex(valueAsString, input.ToString());
+            if (valid)
+            {
+                return result;
+            }
+        }
+
+        // If the value is a Guid and the input is a string, or vice versa, convert them to strings and compare the string values.
+        if ((value.Type == JTokenType.Guid && input.Type == JTokenType.String) || (value.Type == JTokenType.String && input.Type == JTokenType.Guid))
+        {
+            return IsMatch(value.ToString(), input.ToString());
+        }
+
+        // If the types are different, return false.
+        if (value.Type != input.Type)
+        {
+            return false;
+        }
+
+        switch (value.Type)
+        {
+            // If the value is an object, compare the properties.
+            case JTokenType.Object:
+                var nestedValues = value.ToObject<Dictionary<string, JToken>>();
+                return nestedValues?.Any() != true ||
+                       nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
+
+            // If the value is an array, compare the elements.
+            case JTokenType.Array:
+                var valuesArray = value.ToObject<JToken[]>();
+                var tokenArray = input.ToObject<JToken[]>();
+
+                if (valuesArray?.Any() != true)
+                {
+                    return true;
+                }
+
+                return tokenArray?.Any() == true && valuesArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
+
+            default:
+                // Last resort, convert the values to strings and compare them.
+                return IsMatch(value.ToString(), input.ToString());
+        }
     }
 
     private static string? ToUpper(string? input)
