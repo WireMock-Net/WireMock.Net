@@ -103,27 +103,21 @@ public class JsonMatcher : IJsonMatcher
     /// <param name="value">Matcher value</param>
     /// <param name="input">Input value</param>
     /// <returns></returns>
-    protected virtual bool IsMatch(JToken? value, JToken? input)
+    protected virtual bool IsMatch(JToken value, JToken? input)
     {
-        // If both are null, return true.
-        if (input == null && value == null)
+        // If equal, return true.
+        if (input == value)
         {
             return true;
         }
 
-        // If one of them is null, return false.
-        if (input == null || value == null)
+        // If input, return false.
+        if (input == null)
         {
             return false;
         }
 
-        // If not using Regex, use JToken.DeepEquals().
-        if (!Regex)
-        {
-            return JToken.DeepEquals(value, input);
-        }
-
-        // If using Regex, use the MatchRegex method.
+        // If using Regex and the value is a string, use the MatchRegex method.
         if (Regex && value.Type == JTokenType.String)
         {
             var valueAsString = value.ToString();
@@ -138,13 +132,7 @@ public class JsonMatcher : IJsonMatcher
         // If the value is a Guid and the input is a string, or vice versa, convert them to strings and compare the string values.
         if ((value.Type == JTokenType.Guid && input.Type == JTokenType.String) || (value.Type == JTokenType.String && input.Type == JTokenType.Guid))
         {
-            return IsMatch(value.ToString(), input.ToString());
-        }
-
-        // If the types are different, return false.
-        if (value.Type != input.Type)
-        {
-            return false;
+            return JToken.DeepEquals(value.ToString().ToUpperInvariant(), input.ToString().ToUpperInvariant());
         }
 
         switch (value.Type)
@@ -152,8 +140,7 @@ public class JsonMatcher : IJsonMatcher
             // If the value is an object, compare the properties.
             case JTokenType.Object:
                 var nestedValues = value.ToObject<Dictionary<string, JToken>>();
-                return nestedValues?.Any() != true ||
-                       nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
+                return nestedValues?.Any() != true || nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
 
             // If the value is an array, compare the elements.
             case JTokenType.Array:
@@ -168,8 +155,8 @@ public class JsonMatcher : IJsonMatcher
                 return tokenArray?.Any() == true && valuesArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
 
             default:
-                // Last resort, convert the values to strings and compare them.
-                return IsMatch(value.ToString(), input.ToString());
+                // Use JToken.DeepEquals() for all other types.
+                return JToken.DeepEquals(value, input);
         }
     }
 

@@ -45,9 +45,9 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     }
 
     /// <inheritdoc />
-    protected override bool IsMatch(JToken? value, JToken? input)
+    protected override bool IsMatch(JToken value, JToken? input)
     {
-        if (value == null || value == input)
+        if (value == input)
         {
             return true;
         }
@@ -67,7 +67,7 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
             ((value.Type == JTokenType.Guid && input.Type == JTokenType.String) ||
             (value.Type == JTokenType.String && input.Type == JTokenType.Guid)))
         {
-            return IsMatch(value.ToString(), input.ToString());
+            return IsMatch(value.ToString().ToUpperInvariant(), input.ToString().ToUpperInvariant());
         }
 
         if (input == null || value.Type != input.Type)
