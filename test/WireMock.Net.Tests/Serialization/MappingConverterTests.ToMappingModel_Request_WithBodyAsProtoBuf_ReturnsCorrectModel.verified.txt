@@ -42,7 +42,8 @@ message HelloReply {
           Pattern: {
             name: stef
           },
-          IgnoreCase: false
+          IgnoreCase: false,
+          Regex: false
         },
         ProtoBufMessageType: greet.HelloRequest
       }

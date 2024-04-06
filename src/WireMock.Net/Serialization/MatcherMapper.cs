@@ -84,7 +84,7 @@ internal class MatcherMapper
 
             case nameof(JsonMatcher):
                 var valueForJsonMatcher = matcherModel.Pattern ?? matcherModel.Patterns;
-                return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase);
+                return new JsonMatcher(matchBehaviour, valueForJsonMatcher!, ignoreCase, useRegex);
 
             case nameof(JsonPartialMatcher):
                 var valueForJsonPartialMatcher = matcherModel.Pattern ?? matcherModel.Patterns;
@@ -152,12 +152,8 @@ internal class MatcherMapper
 
         switch (matcher)
         {
-            case JsonPartialMatcher jsonPartialMatcher:
-                model.Regex = jsonPartialMatcher.Regex;
-                break;
-
-            case JsonPartialWildcardMatcher jsonPartialWildcardMatcher:
-                model.Regex = jsonPartialWildcardMatcher.Regex;
+            case JsonMatcher jsonMatcher:
+                model.Regex = jsonMatcher.Regex;
                 break;
 
             case XPathMatcher xpathMatcher:
