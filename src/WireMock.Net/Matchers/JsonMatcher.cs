@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using WireMock.Util;
+using JsonUtils = WireMock.Util.JsonUtils;
 
 namespace WireMock.Matchers;
 
@@ -137,22 +138,40 @@ public class JsonMatcher : IJsonMatcher
 
         switch (value.Type)
         {
-            // If the value is an object, compare the properties.
+            // If the value is an object, compare all properties.
             case JTokenType.Object:
-                var nestedValues = value.ToObject<Dictionary<string, JToken>>();
-                return nestedValues?.Any() != true || nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
+                var valueProperties = value.ToObject<Dictionary<string, JToken>>() ?? new Dictionary<string, JToken>();
+                var inputProperties = input.ToObject<Dictionary<string, JToken>>() ?? new Dictionary<string, JToken>();
 
-            // If the value is an array, compare the elements.
-            case JTokenType.Array:
-                var valuesArray = value.ToObject<JToken[]>();
-                var tokenArray = input.ToObject<JToken[]>();
-
-                if (valuesArray?.Any() != true)
+                // If the number of properties is different, return false.
+                if (valueProperties.Count != inputProperties.Count)
                 {
-                    return true;
+                    return false;
                 }
 
-                return tokenArray?.Any() == true && valuesArray.All(subFilter => tokenArray.Any(subToken => IsMatch(subFilter, subToken)));
+                // Compare all properties. The input must match all properties of the value.
+                foreach (var pair in valueProperties)
+                {
+                    if (!IsMatch(pair.Value, inputProperties[pair.Key]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+
+            // If the value is an array, compare all elements.
+            case JTokenType.Array:
+                var valueArray = value.ToObject<JToken[]>() ?? EmptyArray<JToken>.Value;
+                var inputArray = input.ToObject<JToken[]>() ?? EmptyArray<JToken>.Value;
+
+                // If the number of elements is different, return false.
+                if (valueArray.Length != inputArray.Length)
+                {
+                    return false;
+                }
+
+                return !valueArray.Where((valueToken, index) => !IsMatch(valueToken, inputArray[index])).Any();
 
             default:
                 // Use JToken.DeepEquals() for all other types.

@@ -40,7 +40,7 @@ public class JsonMatcherTests
         var matcher = new JsonMatcher("{}");
 
         // Act
-        string name = matcher.Name;
+        var name = matcher.Name;
 
         // Assert
         Check.That(name).Equals("JsonMatcher");
@@ -53,7 +53,7 @@ public class JsonMatcherTests
         var matcher = new JsonMatcher("{}");
 
         // Act
-        object value = matcher.Value;
+        var value = matcher.Value;
 
         // Assert
         Check.That(value).Equals("{}");
@@ -103,7 +103,7 @@ public class JsonMatcherTests
         var matcher = new JsonMatcher("");
 
         // Act
-        double match = matcher.IsMatch(bytes).Score;
+        var match = matcher.IsMatch(bytes).Score;
 
         // Assert
         Check.That(match).IsEqualTo(0);
@@ -117,7 +117,7 @@ public class JsonMatcherTests
         var matcher = new JsonMatcher("");
 
         // Act
-        double match = matcher.IsMatch(s).Score;
+        var match = matcher.IsMatch(s).Score;
 
         // Assert
         Check.That(match).IsEqualTo(0);
@@ -131,7 +131,7 @@ public class JsonMatcherTests
         var matcher = new JsonMatcher("");
 
         // Act
-        double match = matcher.IsMatch(o).Score;
+        var match = matcher.IsMatch(o).Score;
 
         // Assert
         Check.That(match).IsEqualTo(0);
@@ -149,14 +149,14 @@ public class JsonMatcherTests
             "x",
             "y"
         };
-        double match = matcher.IsMatch(jArray).Score;
+        var match = matcher.IsMatch(jArray).Score;
 
         // Assert
         Assert.Equal(1.0, match);
     }
 
     [Fact]
-    public void JsonMatcher_IsMatch_JObject()
+    public void JsonMatcher_IsMatch_JObject_ShouldMatch()
     {
         // Assign
         var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
@@ -167,10 +167,29 @@ public class JsonMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_JObject_ShouldNotMatch()
+    {
+        // Assign
+        var matcher = new JsonMatcher(new { Id = 1, Name = "Test" });
+
+        // Act
+        var jObject = new JObject
+        {
+            { "Id", new JValue(1) },
+            { "Name", new JValue("Test") },
+            { "Other", new JValue("abc") }
+        };
+        var score = matcher.IsMatch(jObject).Score;
+
+        // Assert
+        Assert.Equal(MatchScores.Mismatch, score);
     }
 
     [Fact]
@@ -185,7 +204,7 @@ public class JsonMatcherTests
             { "Id", new JValue(1) },
             { "NaMe", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -199,7 +218,7 @@ public class JsonMatcherTests
 
         // Act
         var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -213,7 +232,7 @@ public class JsonMatcherTests
 
         // Act
         var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -231,7 +250,7 @@ public class JsonMatcherTests
             "x",
             "y"
         };
-        double match = matcher.IsMatch(jArray).Score;
+        var match = matcher.IsMatch(jArray).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -249,7 +268,7 @@ public class JsonMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -267,7 +286,7 @@ public class JsonMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -285,7 +304,7 @@ public class JsonMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(0.0, match);
@@ -302,7 +321,7 @@ public class JsonMatcherTests
         {
             { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -319,7 +338,7 @@ public class JsonMatcherTests
         {
             { "NormalEnum", new JValue(0) }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         match.Should().Be(1.0);
@@ -336,14 +355,14 @@ public class JsonMatcherTests
         {
             { "EnumWithJsonConverter", new JValue("Type1") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert
         match.Should().Be(1.0);
     }
 
     [Fact]
-    public void JsonMatcher_IsMatch_WithRegexTrue()
+    public void JsonMatcher_IsMatch_WithRegexTrue_ShouldMatch()
     {
         // Assign
         var matcher = new JsonMatcher(new { Id = "^\\d+$", Name = "Test" }, regex: true);
@@ -361,15 +380,23 @@ public class JsonMatcherTests
     }
 
     [Fact]
-    public void JsonMatcher_IsMatch_WithRegexTrue_Complex()
+    public void JsonMatcher_IsMatch_WithRegexTrue_Complex_ShouldMatch()
     {
         // Assign
-        var matcher = new JsonMatcher(new { Complex = new { Id = "^\\d+$", Name = ".*" } }, regex: true);
+        var matcher = new JsonMatcher(new
+        {
+            Complex = new
+            {
+                Id = "^\\d+$",
+                Name = ".*"
+            }
+        }, regex: true);
 
         // Act
         var jObject = new JObject
         {
-            { "Complex", new JObject
+            {
+                "Complex", new JObject
                 {
                     { "Id", new JValue(42) },
                     { "Name", new JValue("Test") }
@@ -383,10 +410,48 @@ public class JsonMatcherTests
     }
 
     [Fact]
-    public void JsonMatcher_IsMatch_WithRegexTrue_Array()
+    public void JsonMatcher_IsMatch_WithRegexTrue_Complex_ShouldNotMatch()
     {
         // Assign
-        var matcher = new JsonMatcher(new { Array = new[] { "^\\d+$", ".*" } }, regex: true);
+        var matcher = new JsonMatcher(new
+        {
+            Complex = new
+            {
+                Id = "^\\d+$",
+                Name = ".*"
+            }
+        }, regex: true);
+
+        // Act
+        var jObject = new JObject
+        {
+            {
+                "Complex", new JObject
+                {
+                    { "Id", new JValue(42) },
+                    { "Name", new JValue("Test") },
+                    { "Other", new JValue("Other") }
+                }
+            }
+        };
+        var score = matcher.IsMatch(jObject).Score;
+
+        // Assert
+        Assert.Equal(MatchScores.Mismatch, score);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithRegexTrue_Array_ShouldMatch()
+    {
+        // Assign
+        var matcher = new JsonMatcher(new
+        {
+            Array = new[]
+            {
+                "^\\d+$",
+                ".*"
+            }
+        }, regex: true);
 
         // Act
         var jObject = new JObject
@@ -397,6 +462,30 @@ public class JsonMatcherTests
 
         // Assert
         Assert.Equal(1.0, score);
+    }
+
+    [Fact]
+    public void JsonMatcher_IsMatch_WithRegexTrue_Array_ShouldNotMatch()
+    {
+        // Assign
+        var matcher = new JsonMatcher(new
+        {
+            Array = new[]
+            {
+                "^\\d+$",
+                ".*"
+            }
+        }, regex: true);
+
+        // Act
+        var jObject = new JObject
+        {
+            { "Array", new JArray("42", "test", "other") }
+        };
+        var score = matcher.IsMatch(jObject).Score;
+
+        // Assert
+        Assert.Equal(MatchScores.Mismatch, score);
     }
 
     [Fact]
