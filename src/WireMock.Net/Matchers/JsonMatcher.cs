@@ -112,7 +112,7 @@ public class JsonMatcher : IJsonMatcher
             return true;
         }
 
-        // If input, return false.
+        // If input is null, return false.
         if (input == null)
         {
             return false;

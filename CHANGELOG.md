@@ -1,3 +1,7 @@
+# 1.5.52 (06 April 2024)
+- [#1091](https://github.com/WireMock-Net/WireMock.Net/pull/1091) - Add RegEx support to JsonMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#1088](https://github.com/WireMock-Net/WireMock.Net/issues/1088) - Regex support for JsonMatcher  [feature]
+
 # 1.5.51 (20 March 2024)
 - [#1085](https://github.com/WireMock-Net/WireMock.Net/pull/1085) - Fix FluentAssertions (actual body is not displayed in error message) [bug] contributed by [StefH](https://github.com/StefH)
 - [#1084](https://github.com/WireMock-Net/WireMock.Net/issues/1084) - FluentAssertions - Actual body is not displayed in error message when using Json Body [bug]
