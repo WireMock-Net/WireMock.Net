@@ -72,7 +72,6 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
-        <PackageReference Include="XPath2.Extensions" Version="1.1.4" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.34.0" />
     </ItemGroup>
 
@@ -182,13 +181,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Handlebars.Net.Helpers" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.4.1.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.4.1.4" />
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.4.2.1" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.4.2.1" />
     </ItemGroup>
 
     <ItemGroup>
