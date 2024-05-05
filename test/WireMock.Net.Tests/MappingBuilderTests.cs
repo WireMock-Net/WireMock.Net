@@ -73,6 +73,16 @@ public class MappingBuilderTests
         .RespondWith(Response.Create()
             .WithBody(@"{ msg: ""Hello world!""}")
         );
+
+        _sut.Given(Request.Create()
+            .WithPath("/users/post")
+            .UsingPost()
+            .WithBodyAsJson(new
+            {
+                Response = "Hello world!"
+            })
+            .WithHeader("User-Agent", "PostmanRuntime/7.37.3")
+        ).RespondWith(Response.Create());
     }
 
     [Fact]
