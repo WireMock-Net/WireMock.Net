@@ -967,4 +967,42 @@ public class WireMockServerProxyTests
 
         server.Dispose();
     }
+
+    [Fact]
+    public async Task WireMockServer_Proxy_Should_Keep_UrlEncoding()
+    {
+        // Assign
+        string path = $"/prx_{Guid.NewGuid()}";
+        var serverForProxyForwarding = WireMockServer.Start();
+        serverForProxyForwarding
+            .Given(Request.Create().WithPath(path))
+            .RespondWith(Response.Create());
+
+        var settings = new WireMockServerSettings
+        {
+            ProxyAndRecordSettings = new ProxyAndRecordSettings
+            {
+                Url = serverForProxyForwarding.Urls[0],
+                SaveMapping = true,
+                SaveMappingToFile = false
+            }
+        };
+        var server = WireMockServer.Start(settings);
+
+        // Act
+        var requestUri = $"{server.Urls[0]}{path}with%20space_and_%3A_colon";
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(requestUri)
+        };
+        await new HttpClient().SendAsync(requestMessage).ConfigureAwait(false);
+
+        // Assert
+        var receivedRequest = serverForProxyForwarding.LogEntries.First().RequestMessage;
+        receivedRequest.AbsolutePath.Should().EndWith("with space_and_:_colon");
+
+        // check that new proxied mapping is added
+        server.Mappings.Should().HaveCount(2);
+    }
 }
