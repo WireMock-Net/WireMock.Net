@@ -968,6 +968,8 @@ public class WireMockServerProxyTests
         server.Dispose();
     }
 
+    // #1097
+    // https://stackoverflow.com/questions/52106567/how-to-stop-httprequestmessage-from-unencoding-3a-to-a-colon-in-the-request-uri
     [Fact]
     public async Task WireMockServer_Proxy_Should_Keep_UrlEncoding()
     {
