@@ -1,9 +1,8 @@
-using NFluent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NFluent;
 using WireMock.Http;
 using WireMock.Models;
 using WireMock.Types;

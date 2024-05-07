@@ -96,6 +96,13 @@ message HelloReply {
 
         public static void Run()
         {
+            var serverOnPrivateIPAddress = WireMockServer.Start(new WireMockServerSettings
+            {
+                Urls = new[] { "http://192.168.50.156:8102" }
+            });
+            System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress.Urls)}");
+            serverOnPrivateIPAddress.Stop();
+
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
                 .Given(Request
