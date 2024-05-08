@@ -75,13 +75,22 @@ public class MappingBuilderTests
         );
 
         _sut.Given(Request.Create()
-            .WithPath("/users/post")
+            .WithPath("/users/post1")
             .UsingPost()
             .WithBodyAsJson(new
             {
-                Response = "Hello world!"
+                Request = "Hello?"
             })
-            .WithHeader("User-Agent", "PostmanRuntime/7.37.3")
+        ).RespondWith(Response.Create());
+
+        _sut.Given(Request.Create()
+            .WithPath("/users/post2")
+            .UsingPost()
+            .WithBody(new JsonMatcher(new
+            {
+                city = "Amsterdam",
+                country = "The Netherlands"
+            }))
         ).RespondWith(Response.Create());
     }
 
@@ -151,9 +160,9 @@ public class MappingBuilderTests
         _sut.SaveMappingsToFolder(null);
 
         // Verify
-        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 
@@ -169,8 +178,8 @@ public class MappingBuilderTests
 
         // Verify
         _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Never);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 }
