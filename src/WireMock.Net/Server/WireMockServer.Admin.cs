@@ -344,15 +344,13 @@ public partial class WireMockServer
 
     private static MappingConverterType GetMappingConverterType(IRequestMessage requestMessage)
     {
-        var mappingConverterType = MappingConverterType.Server;
-
         if (requestMessage.QueryIgnoreCase?.TryGetValue(nameof(MappingConverterType), out var values) == true &&
             Enum.TryParse(values.FirstOrDefault(), true, out MappingConverterType parsed))
         {
-            mappingConverterType = parsed;
+            return parsed;
         }
 
-        return mappingConverterType;
+        return MappingConverterType.Server;
     }
 
     private IMapping? FindMappingByGuid(IRequestMessage requestMessage)
