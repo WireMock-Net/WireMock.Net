@@ -48,19 +48,6 @@
       Methods: [
         POST
       ],
-      Headers: [
-        {
-          Name: User-Agent,
-          Matchers: [
-            {
-              Name: WildcardMatcher,
-              Pattern: PostmanRuntime/7.37.3,
-              IgnoreCase: true
-            }
-          ],
-          IgnoreCase: true
-        }
-      ],
       Body: {
         Matcher: {
           Name: JsonMatcher,
