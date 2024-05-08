@@ -491,7 +491,7 @@ public partial class WireMockAdminApiTests
 
         server.Stop();
     }
-    
+
     [Fact]
     public async Task IWireMockAdminApi_GetRequestsAsync_Json()
     {
@@ -854,10 +854,8 @@ public partial class WireMockAdminApiTests
         server.Stop();
     }
 
-    [Theory]
-    [InlineData(MappingConverterType.Server)]
-    [InlineData(MappingConverterType.Builder)]
-    public async Task IWireMockAdminApi_GetMappingsCode(MappingConverterType mappingConverterType)
+    [Fact]
+    public async Task IWireMockAdminApi_GetMappingsCode()
     {
         // Arrange
         var guid1 = Guid.Parse("90356dba-b36c-469a-a17e-669cd84f1f05");
@@ -865,8 +863,35 @@ public partial class WireMockAdminApiTests
         var guid3 = Guid.Parse("f74fd144-df53-404f-8e35-da22a640bd5f");
         var guid4 = Guid.Parse("4126DEC8-470B-4EFF-93BB-C24F83B8B1FD");
         var guid5 = Guid.Parse("c9929240-7ae8-4a5d-8ed8-0913479f6eeb");
-        var guid6 = Guid.Parse("397f64ea-b36c-496a-9a32-b96988194724");
         var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/users/post1")
+                    .UsingPost()
+                    .WithBody(new JsonMatcher(new
+                    {
+                        city = "Amsterdam",
+                        country = "The Netherlands"
+                    }))
+            )
+            .WithGuid(guid1)
+            .RespondWith(Response.Create());
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/users/post2")
+                    .UsingPost()
+                    .WithBody(new JsonPartialMatcher(new
+                    {
+                        city = "City",
+                        country = "Country"
+                    }))
+            )
+            .WithGuid(guid2)
+            .RespondWith(Response.Create().WithBody("Line1\r\nSome \"value\" in Line2"));
 
         server
             .Given(
@@ -875,7 +900,7 @@ public partial class WireMockAdminApiTests
                     .WithParam("p1", "xyz")
                     .UsingGet()
             )
-            .WithGuid(guid1)
+            .WithGuid(guid3)
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(200)
@@ -890,7 +915,7 @@ public partial class WireMockAdminApiTests
                     .WithHeader("h1", "W/\"234f2q3r\"")
                     .UsingPost()
             )
-            .WithGuid(guid2)
+            .WithGuid(guid4)
             .RespondWith(
                 Response.Create()
                     .WithStatusCode("201")
@@ -898,33 +923,6 @@ public partial class WireMockAdminApiTests
                     .WithHeader("ETag", "W/\"168d8e\"")
                     .WithBody("2")
             );
-
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("/users/post1")
-                    .UsingPost()
-                    .WithBodyAsJson(new
-                    {
-                        Request = "Hello?"
-                    })
-            )
-            .WithGuid(guid3)
-            .RespondWith(Response.Create());
-
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("/users/post2")
-                    .UsingPost()
-                    .WithBody(new JsonMatcher(new
-                    {
-                        city = "Amsterdam",
-                        country = "The Netherlands"
-                    }))
-            )
-            .WithGuid(guid4)
-            .RespondWith(Response.Create());
 
         server
             .Given(
@@ -960,30 +958,17 @@ public partial class WireMockAdminApiTests
 is
 multiline
 text
-" })
-            );
-
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("/foo3")
-                    .WithBody(new JsonPartialMatcher(new { a = 1, b = 2 }))
-                    .UsingPost()
-            )
-            .WithGuid(guid6)
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody("Line1\r\nSome \"value\" in Line2")
+"
+                    })
             );
 
         // Act
         var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
-        mappings.Should().HaveCount(6);
+        mappings.Should().HaveCount(5);
 
-        var code = await api.GetMappingsCodeAsync(mappingConverterType).ConfigureAwait(false);
+        var code = await api.GetMappingsCodeAsync().ConfigureAwait(false);
 
         // Assert
         await Verifier.Verify(code).DontScrubDateTimes().DontScrubGuids();

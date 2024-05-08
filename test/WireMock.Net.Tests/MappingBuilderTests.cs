@@ -13,6 +13,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
@@ -112,6 +113,26 @@ public class MappingBuilderTests
 
         // Verify
         return Verifier.VerifyJson(json, VerifySettings);
+    }
+
+    [Fact]
+    public Task ToCSharpCode_Server()
+    {
+        // Act
+        var code = _sut.ToCSharpCode(MappingConverterType.Server);
+
+        // Verify
+        return Verifier.Verify(code, VerifySettings);
+    }
+
+    [Fact]
+    public Task ToCSharpCode_Builder()
+    {
+        // Act
+        var code = _sut.ToCSharpCode(MappingConverterType.Builder);
+
+        // Verify
+        return Verifier.Verify(code, VerifySettings);
     }
 
     [Fact]
