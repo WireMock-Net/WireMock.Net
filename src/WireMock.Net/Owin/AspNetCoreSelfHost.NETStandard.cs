@@ -1,5 +1,7 @@
 #if USE_ASPNETCORE && !NETSTANDARD1_3
+using System;
 using System.Collections.Generic;
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
@@ -25,7 +27,7 @@ namespace WireMock.Owin
             {
                 if (urlDetail.IsHttps)
                 {
-                    kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
+                    Listen(kestrelOptions, urlDetail, listenOptions =>
                     {
                         listenOptions.UseHttps(options =>
                         {
@@ -37,10 +39,11 @@ namespace WireMock.Owin
                                     wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
                                     wireMockMiddlewareOptions.X509CertificateFilePath,
                                     wireMockMiddlewareOptions.X509CertificatePassword,
-                                    urlDetail.Host);
+                                    urlDetail.Host
+                                );
                             }
 
-                            options.ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode;
+                            options.ClientCertificateMode = (ClientCertificateMode)wireMockMiddlewareOptions.ClientCertificateMode;
                             if (wireMockMiddlewareOptions.AcceptAnyClientCertificate)
                             {
                                 options.ClientCertificateValidation = (_, _, _) => true;
@@ -52,19 +55,40 @@ namespace WireMock.Owin
                             listenOptions.Protocols = HttpProtocols.Http2;
                         }
                     });
+                    continue;
                 }
-                else if (urlDetail.IsHttp2)
+
+                if (urlDetail.IsHttp2)
                 {
-                    kestrelOptions.ListenAnyIP(urlDetail.Port, listenOptions =>
+                    Listen(kestrelOptions, urlDetail, listenOptions =>
                     {
                         listenOptions.Protocols = HttpProtocols.Http2;
                     });
+                    continue;
                 }
-                else
-                {
-                    kestrelOptions.ListenAnyIP(urlDetail.Port);
-                }
+
+                Listen(kestrelOptions, urlDetail, _ => { });
             }
+        }
+
+        private static void Listen(KestrelServerOptions kestrelOptions, HostUrlDetails urlDetail, Action<ListenOptions> configure)
+        {
+            // Listens on ::1 and 127.0.0.1 with the given port.
+            if (urlDetail is { Port: > 0, Host: "localhost" or "127.0.0.1" or "0.0.0.0" or "::1" })
+            {
+                kestrelOptions.ListenLocalhost(urlDetail.Port, configure);
+                return;
+            }
+
+            // Try to parse the host as a valid IP address and bind to the given IP address and port.
+            if (IPAddress.TryParse(urlDetail.Host, out var ipAddress))
+            {
+                kestrelOptions.Listen(ipAddress, urlDetail.Port, configure);
+                return;
+            }
+
+            // Otherwise, listen on all IPs.
+            kestrelOptions.ListenAnyIP(urlDetail.Port, configure);
         }
     }
 
