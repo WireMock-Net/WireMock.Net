@@ -1,5 +1,6 @@
-# 1.5.52 (06 April 2024)
-- #1091 Add RegEx support to JsonMatcher [feature]
-- #1088 Regex support for JsonMatcher  [feature]
+# 1.5.53 (08 May 2024)
+- #1093 Update Handlebars.Net [feature]
+- #1101 Fix MappingConverter to support Body with JsonMatcher [bug]
+- #1095 When using C# code generation WithBody() matcher is not generated for POST Request [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

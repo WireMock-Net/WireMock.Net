@@ -491,7 +491,7 @@ public partial class WireMockAdminApiTests
 
         server.Stop();
     }
-    
+
     [Fact]
     public async Task IWireMockAdminApi_GetRequestsAsync_Json()
     {
@@ -862,7 +862,36 @@ public partial class WireMockAdminApiTests
         var guid2 = Guid.Parse("1b731398-4a5b-457f-a6e3-d65e541c428f");
         var guid3 = Guid.Parse("f74fd144-df53-404f-8e35-da22a640bd5f");
         var guid4 = Guid.Parse("4126DEC8-470B-4EFF-93BB-C24F83B8B1FD");
+        var guid5 = Guid.Parse("c9929240-7ae8-4a5d-8ed8-0913479f6eeb");
         var server = WireMockServer.StartWithAdminInterface();
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/users/post1")
+                    .UsingPost()
+                    .WithBody(new JsonMatcher(new
+                    {
+                        city = "Amsterdam",
+                        country = "The Netherlands"
+                    }))
+            )
+            .WithGuid(guid1)
+            .RespondWith(Response.Create());
+
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/users/post2")
+                    .UsingPost()
+                    .WithBody(new JsonPartialMatcher(new
+                    {
+                        city = "City",
+                        country = "Country"
+                    }))
+            )
+            .WithGuid(guid2)
+            .RespondWith(Response.Create().WithBody("Line1\r\nSome \"value\" in Line2"));
 
         server
             .Given(
@@ -871,7 +900,7 @@ public partial class WireMockAdminApiTests
                     .WithParam("p1", "xyz")
                     .UsingGet()
             )
-            .WithGuid(guid1)
+            .WithGuid(guid3)
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(200)
@@ -886,7 +915,7 @@ public partial class WireMockAdminApiTests
                     .WithHeader("h1", "W/\"234f2q3r\"")
                     .UsingPost()
             )
-            .WithGuid(guid2)
+            .WithGuid(guid4)
             .RespondWith(
                 Response.Create()
                     .WithStatusCode("201")
@@ -901,36 +930,43 @@ public partial class WireMockAdminApiTests
                     .WithUrl("https://localhost/test")
                     .UsingDelete()
             )
-            .WithGuid(guid3)
+            .WithGuid(guid5)
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.AlreadyReported)
-                    .WithBodyAsJson(new { @as = 1, b = 1.2, d = true, e = false, f = new[] { 1, 2, 3, 4 }, g = new { z1 = 1, z2 = 2, z3 = new[] { "a", "b", "c" }, z4 = new[] { new { a = 1, b = 2 }, new { a = 2, b = 3 } } }, date_field = new DateTime(2023, 05, 08, 11, 20, 19), string_field_with_date = "2021-03-13T21:04:00Z", multiline_text = @"This
+                    .WithBodyAsJson(new
+                    {
+                        @as = 1,
+                        b = 1.2,
+                        d = true,
+                        e = false,
+                        f = new[] { 1, 2, 3, 4 },
+                        g = new
+                        {
+                            z1 = 1,
+                            z2 = 2,
+                            z3 = new[] { "a", "b", "c" },
+                            z4 = new[]
+                            {
+                                new { a = 1, b = 2 },
+                                new { a = 2, b = 3 }
+                            }
+                        },
+                        date_field = new DateTime(2023, 05, 08, 11, 20, 19),
+                        string_field_with_date = "2021-03-13T21:04:00Z",
+                        multiline_text = @"This
 is
 multiline
 text
-" })
-            );
-
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("/foo3")
-                    .WithBody(new JsonPartialMatcher(new { a = 1, b = 2 }))
-                    .UsingPost()
-            )
-            .WithGuid(guid4)
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody("Line1\r\nSome \"value\" in Line2")
+"
+                    })
             );
 
         // Act
         var api = RestClient.For<IWireMockAdminApi>(server.Url);
 
         var mappings = await api.GetMappingsAsync().ConfigureAwait(false);
-        mappings.Should().HaveCount(4);
+        mappings.Should().HaveCount(5);
 
         var code = await api.GetMappingsCodeAsync().ConfigureAwait(false);
 

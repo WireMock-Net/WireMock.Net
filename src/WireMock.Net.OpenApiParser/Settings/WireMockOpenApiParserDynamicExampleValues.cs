@@ -23,10 +23,10 @@ public class WireMockOpenApiParserDynamicExampleValues : IWireMockOpenApiParserE
     public virtual double Double => RandomizerFactory.GetRandomizer(new FieldOptionsDouble()).Generate() ?? 4.2d;
 
     /// <inheritdoc />
-    public virtual Func<DateTime> Date { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow.Date; } }
+    public virtual Func<DateTime> Date => () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow.Date;
 
     /// <inheritdoc />
-    public virtual Func<DateTime> DateTime { get { return () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow; } }
+    public virtual Func<DateTime> DateTime => () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow;
 
     /// <inheritdoc />
     public virtual byte[] Bytes => RandomizerFactory.GetRandomizer(new FieldOptionsBytes()).Generate();
