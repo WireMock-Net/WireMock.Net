@@ -94,14 +94,40 @@ message HelloReply {
    fullName:String 
   }";
 
+        private static void RunOnLocal()
+        {
+            try
+            {
+                var serverOnPrivateIPAddress192 = WireMockServer.Start(new WireMockServerSettings
+                {
+                    Urls = new[] { "http://192.168.50.156:8102" }
+                });
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress192.Urls)}");
+                serverOnPrivateIPAddress192.Stop();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
+
+            try
+            {
+                var serverOnPrivateIPAddress172 = WireMockServer.Start(new WireMockServerSettings
+                {
+                    Urls = new[] { "https://172.29.32.100:8103" }
+                });
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress172.Urls)}");
+                serverOnPrivateIPAddress172.Stop();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
+        }
+
         public static void Run()
         {
-            var serverOnPrivateIPAddress = WireMockServer.Start(new WireMockServerSettings
-            {
-                Urls = new[] { "http://192.168.50.156:8102" }
-            });
-            System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress.Urls)}");
-            serverOnPrivateIPAddress.Stop();
+            RunOnLocal();
 
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
