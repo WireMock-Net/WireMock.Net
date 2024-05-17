@@ -98,36 +98,37 @@ message HelloReply {
         {
             try
             {
-                var serverOnPrivateIPAddress192 = WireMockServer.Start(new WireMockServerSettings
+                var serverOnPrivateIPAddress192_168_1 = WireMockServer.Start(new WireMockServerSettings
                 {
-                    Urls = new[] { "http://192.168.50.156:8102" }
+                    Urls = new[] { "http://192.168.1.166:8102" }
                 });
-                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress192.Urls)}");
-                serverOnPrivateIPAddress192.Stop();
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress192_168_1.Urls)}");
+                serverOnPrivateIPAddress192_168_1.Stop();
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e);
+                System.Console.WriteLine("serverOnPrivateIPAddress192: " + e);
             }
 
             try
             {
-                var serverOnPrivateIPAddress172 = WireMockServer.Start(new WireMockServerSettings
+                var serverOnPrivateIPAddress172_19 = WireMockServer.Start(new WireMockServerSettings
                 {
-                    Urls = new[] { "https://172.29.32.100:8103" }
+                    Urls = new[] { "https://172.19.80.1:8103" }
                 });
-                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress172.Urls)}");
-                serverOnPrivateIPAddress172.Stop();
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress172_19.Urls)}");
+                serverOnPrivateIPAddress172_19.Stop();
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e);
+                System.Console.WriteLine("serverOnPrivateIPAddress172_19: " + e);
             }
         }
 
         public static void Run()
         {
             RunOnLocal();
+            return;
 
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
