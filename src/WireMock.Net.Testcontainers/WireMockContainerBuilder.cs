@@ -21,7 +21,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         { true, new ContainerInfo("sheyenrath/wiremock.net-windows:latest", @"c:\app\__admin\mappings") }
     };
 
-    private const string DefaultLogger = "WireMockConsoleLogger";
+    private const string DefaultLogger = "WireMockNoNewLinesConsoleLogger";
 
     private readonly Lazy<Task<bool>> _isWindowsAsLazy = new(async () =>
     {
@@ -157,7 +157,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
-            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("WireMock.Net server running"));
     }
 
     /// <inheritdoc />
