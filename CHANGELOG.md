@@ -1,3 +1,7 @@
+# 1.5.54 (18 May 2024)
+- [#1100](https://github.com/WireMock-Net/WireMock.Net/pull/1100) - Add support to bind to ip-address instead of only localhost [feature] contributed by [StefH](https://github.com/StefH)
+- [#1104](https://github.com/WireMock-Net/WireMock.Net/pull/1104) - Use try..catch to set encoding in WireMockConsoleLogger [feature] contributed by [asherber](https://github.com/asherber)
+
 # 1.5.53 (08 May 2024)
 - [#1093](https://github.com/WireMock-Net/WireMock.Net/pull/1093) - Update Handlebars.Net [feature] contributed by [StefH](https://github.com/StefH)
 - [#1101](https://github.com/WireMock-Net/WireMock.Net/pull/1101) - Fix MappingConverter to support Body with JsonMatcher [bug] contributed by [StefH](https://github.com/StefH)

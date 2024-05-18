@@ -1,6 +1,5 @@
-# 1.5.53 (08 May 2024)
-- #1093 Update Handlebars.Net [feature]
-- #1101 Fix MappingConverter to support Body with JsonMatcher [bug]
-- #1095 When using C# code generation WithBody() matcher is not generated for POST Request [bug]
+# 1.5.54 (18 May 2024)
+- #1100 Add support to bind to ip-address instead of only localhost [feature]
+- #1104 Use try..catch to set encoding in WireMockConsoleLogger [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
