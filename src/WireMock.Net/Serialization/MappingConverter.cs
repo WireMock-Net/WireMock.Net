@@ -137,25 +137,21 @@ internal class MappingConverter
 
         if (requestMessageBodyMatcher is { Matchers: { } })
         {
-            if (requestMessageBodyMatcher.Matchers.OfType<WildcardMatcher>().FirstOrDefault() is { } wildcardMatcher && wildcardMatcher.GetPatterns().Any())
+            var firstMatcher = requestMessageBodyMatcher.Matchers.FirstOrDefault();
+
+            if (firstMatcher is WildcardMatcher wildcardMatcher && wildcardMatcher.GetPatterns().Any())
             {
                 sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
             }
-            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialMatcher>().FirstOrDefault() is { Value: { } } jsonPartialMatcher)
+
+            if (firstMatcher is JsonMatcher jsonMatcher)
             {
-                sb.AppendLine(@$"        .WithBody(new JsonPartialMatcher(
-                                            value: {ToCSharpStringLiteral(jsonPartialMatcher.Value.ToString())},
-                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialMatcher.IgnoreCase)},
-                                            regex: {ToCSharpBooleanLiteral(jsonPartialMatcher.Regex)}
-                                         ))");
-            }
-            else if (requestMessageBodyMatcher.Matchers.OfType<JsonPartialWildcardMatcher>().FirstOrDefault() is { Value: { } } jsonPartialWildcardMatcher)
-            {
-                sb.AppendLine(@$"        .WithBody(new JsonPartialWildcardMatcher(
-                                            value: {ToCSharpStringLiteral(jsonPartialWildcardMatcher.Value.ToString())},
-                                            ignoreCase: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.IgnoreCase)},
-                                            regex: {ToCSharpBooleanLiteral(jsonPartialWildcardMatcher.Regex)}
-                                         ))");
+                var matcherType = jsonMatcher.GetType().Name;
+                sb.AppendLine($"        .WithBody(new {matcherType}(");
+                sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
+                sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
+                sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
+                sb.AppendLine(@"        ))");
             }
         }
 

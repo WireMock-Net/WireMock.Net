@@ -10,6 +10,8 @@ namespace WireMock.Util;
 
 internal static class CSharpFormatter
 {
+    private const string Null = "null";
+
     #region Reserved Keywords
     private static readonly HashSet<string> CSharpReservedKeywords = new(new[]
     {
@@ -92,17 +94,15 @@ internal static class CSharpFormatter
         "while"
     });
     #endregion
-
-    private const string Null = "null";
-
-    public static object ConvertToAnonymousObjectDefinition(object jsonBody)
+    
+    public static object ConvertToAnonymousObjectDefinition(object jsonBody, int ind = 2)
     {
         var serializedBody = JsonConvert.SerializeObject(jsonBody);
         using var jsonReader = new JsonTextReader(new StringReader(serializedBody));
         jsonReader.DateParseHandling = DateParseHandling.None;
         var deserializedBody = JObject.Load(jsonReader);
 
-        return ConvertJsonToAnonymousObjectDefinition(deserializedBody, 2);
+        return ConvertJsonToAnonymousObjectDefinition(deserializedBody, ind);
     }
 
     public static string ConvertJsonToAnonymousObjectDefinition(JToken token, int ind = 0)

@@ -94,8 +94,42 @@ message HelloReply {
    fullName:String 
   }";
 
+        private static void RunOnLocal()
+        {
+            try
+            {
+                var serverOnPrivateIPAddress192_168_1 = WireMockServer.Start(new WireMockServerSettings
+                {
+                    Urls = new[] { "http://192.168.1.166:8102" }
+                });
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress192_168_1.Urls)}");
+                serverOnPrivateIPAddress192_168_1.Stop();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine("serverOnPrivateIPAddress192: " + e);
+            }
+
+            try
+            {
+                var serverOnPrivateIPAddress172_19 = WireMockServer.Start(new WireMockServerSettings
+                {
+                    Urls = new[] { "https://172.19.80.1:8103" }
+                });
+                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress172_19.Urls)}");
+                serverOnPrivateIPAddress172_19.Stop();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine("serverOnPrivateIPAddress172_19: " + e);
+            }
+        }
+
         public static void Run()
         {
+            RunOnLocal();
+            return;
+
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
                 .Given(Request

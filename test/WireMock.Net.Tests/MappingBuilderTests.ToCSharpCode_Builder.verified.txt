@@ -1,0 +1,30 @@
+﻿var builder = new MappingBuilder();
+builder
+    .Given(Request.Create()
+        .UsingMethod("GET")
+        .WithPath("/foo")
+        .WithParam("test", "it.Length < 10")
+    )
+    .WithGuid("41372914-1838-4c67-916b-b9aacdd096ce")
+    .RespondWith(Response.Create()
+        .WithBody("{ msg: \"Hello world!\"}")
+    );
+
+builder
+    .Given(Request.Create()
+        .UsingMethod("POST")
+        .WithPath("/users/post2")
+        .WithBody(new JsonMatcher(
+            value: new
+            {
+                city = "Amsterdam",
+                country = "The Netherlands"
+            },
+            ignoreCase: false,
+            regex: false
+        ))
+    )
+    .WithGuid("98fae52e-76df-47d9-876f-2ee32e931d9b")
+    .RespondWith(Response.Create()
+    );
+

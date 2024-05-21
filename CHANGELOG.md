@@ -1,3 +1,16 @@
+# 1.5.54 (18 May 2024)
+- [#1100](https://github.com/WireMock-Net/WireMock.Net/pull/1100) - Add support to bind to ip-address instead of only localhost [feature] contributed by [StefH](https://github.com/StefH)
+- [#1104](https://github.com/WireMock-Net/WireMock.Net/pull/1104) - Use try..catch to set encoding in WireMockConsoleLogger [feature] contributed by [asherber](https://github.com/asherber)
+
+# 1.5.53 (08 May 2024)
+- [#1093](https://github.com/WireMock-Net/WireMock.Net/pull/1093) - Update Handlebars.Net [feature] contributed by [StefH](https://github.com/StefH)
+- [#1101](https://github.com/WireMock-Net/WireMock.Net/pull/1101) - Fix MappingConverter to support Body with JsonMatcher [bug] contributed by [StefH](https://github.com/StefH)
+- [#1095](https://github.com/WireMock-Net/WireMock.Net/issues/1095) - When using C# code generation WithBody() matcher is not generated for POST Request [bug]
+
+# 1.5.52 (06 April 2024)
+- [#1091](https://github.com/WireMock-Net/WireMock.Net/pull/1091) - Add RegEx support to JsonMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#1088](https://github.com/WireMock-Net/WireMock.Net/issues/1088) - Regex support for JsonMatcher  [feature]
+
 # 1.5.51 (20 March 2024)
 - [#1085](https://github.com/WireMock-Net/WireMock.Net/pull/1085) - Fix FluentAssertions (actual body is not displayed in error message) [bug] contributed by [StefH](https://github.com/StefH)
 - [#1084](https://github.com/WireMock-Net/WireMock.Net/issues/1084) - FluentAssertions - Actual body is not displayed in error message when using Json Body [bug]

@@ -31,5 +31,35 @@
       BodyDestination: SameAsSource,
       Body: { msg: "Hello world!"}
     }
+  },
+  {
+    Guid: Guid_2,
+    UpdatedAt: 2023-01-14 15:16:17,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /users/post2,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: JsonMatcher,
+          Pattern: {
+            city: Amsterdam,
+            country: The Netherlands
+          },
+          IgnoreCase: false,
+          Regex: false
+        }
+      }
+    },
+    Response: {}
   }
 ]
