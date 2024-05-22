@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Logging;
@@ -96,33 +97,61 @@ message HelloReply {
 
         private static void RunOnLocal()
         {
-            try
-            {
-                var serverOnPrivateIPAddress192_168_1 = WireMockServer.Start(new WireMockServerSettings
-                {
-                    Urls = new[] { "http://192.168.1.166:8102" }
-                });
-                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress192_168_1.Urls)}");
-                serverOnPrivateIPAddress192_168_1.Stop();
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine("serverOnPrivateIPAddress192: " + e);
-            }
+            var localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(a => a.AddressFamily == AddressFamily.InterNetwork);
+
+            //try
+            //{
+            //    var server = WireMockServer.Start(new WireMockServerSettings
+            //    {
+            //        Urls = new[] { $"http://{localIP}:9091" },
+            //        StartAdminInterface = true
+            //    });
+            //    System.Console.WriteLine($"1: {string.Join(", ", server.Urls)}");
+
+            //    System.Console.WriteLine("Press any key to stop...");
+            //    System.Console.ReadKey();
+            //    server.Stop();
+            //}
+            //catch (Exception e)
+            //{
+            //    System.Console.WriteLine(e);
+            //}
 
             try
             {
-                var serverOnPrivateIPAddress172_19 = WireMockServer.Start(new WireMockServerSettings
+                var server = WireMockServer.Start(new WireMockServerSettings
                 {
-                    Urls = new[] { "https://172.19.80.1:8103" }
+                    Port = 9091,
+                    StartAdminInterface = true
                 });
-                System.Console.WriteLine($"{string.Join(", ", serverOnPrivateIPAddress172_19.Urls)}");
-                serverOnPrivateIPAddress172_19.Stop();
+                System.Console.WriteLine($"2: {string.Join(", ", server.Urls)}");
+
+                System.Console.WriteLine("Press any key to stop...");
+                System.Console.ReadKey();
+                server.Stop();
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("serverOnPrivateIPAddress172_19: " + e);
+                System.Console.WriteLine(e);
             }
+
+            //try
+            //{
+            //    var server = WireMockServer.Start(new WireMockServerSettings
+            //    {
+            //        Urls = new[] { "http://*:9091" },
+            //        StartAdminInterface = true
+            //    });
+            //    System.Console.WriteLine($"3: {string.Join(", ", server.Urls)}");
+
+            //    System.Console.WriteLine("Press any key to stop...");
+            //    System.Console.ReadKey();
+            //    server.Stop();
+            //}
+            //catch (Exception e)
+            //{
+            //    System.Console.WriteLine(e);
+            //}
         }
 
         public static void Run()
