@@ -1,3 +1,6 @@
+# 1.5.55 (22 May 2024)
+- [#1107](https://github.com/WireMock-Net/WireMock.Net/pull/1107) - When only Port is provided, bind to * (Fixes #1100) [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.54 (18 May 2024)
 - [#1100](https://github.com/WireMock-Net/WireMock.Net/pull/1100) - Add support to bind to ip-address instead of only localhost [feature] contributed by [StefH](https://github.com/StefH)
 - [#1104](https://github.com/WireMock-Net/WireMock.Net/pull/1104) - Use try..catch to set encoding in WireMockConsoleLogger [feature] contributed by [asherber](https://github.com/asherber)

@@ -11,7 +11,7 @@ namespace WireMock.Net.Tests.Owin;
 public class HostUrlOptionsTests
 {
     [Fact]
-    public void GetDetails_WithNoUrlsAndHttpScheme_ShouldReturnCorrectDetails()
+    public void GetDetails_WithHostingSchemeHttpAndPort_ShouldReturnCorrectDetails()
     {
         // Arrange
         var options = new HostUrlOptions
@@ -28,14 +28,14 @@ public class HostUrlOptionsTests
         var detail = details.Single();
         detail.Should().Match<HostUrlDetails>(d =>
             d.Scheme == "http" &&
-            d.Host == "localhost" &&
+            d.Host == "*" &&
             d.Port == 8080 &&
             d.IsHttps == false
         );
     }
 
     [Fact]
-    public void GetDetails_WithNoUrlsAndHttpsScheme_ShouldReturnCorrectDetails()
+    public void GetDetails_WithHostingSchemeHttpsAndPort_ShouldReturnCorrectDetails()
     {
         // Arrange
         var options = new HostUrlOptions
@@ -52,7 +52,7 @@ public class HostUrlOptionsTests
         var detail = details.Single();
         detail.Should().Match<HostUrlDetails>(d =>
             d.Scheme == "https" &&
-            d.Host == "localhost" &&
+            d.Host == "*" &&
             d.Port == 8081 &&
             d.IsHttps == true
         );
