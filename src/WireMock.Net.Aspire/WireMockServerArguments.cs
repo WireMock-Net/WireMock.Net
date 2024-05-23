@@ -4,16 +4,28 @@ using System.Collections.Generic;
 namespace Aspire.Hosting;
 
 /// <summary>
-/// Represents the arguments required to configure and start a WireMock Server.
+/// Represents the arguments required to configure and start a WireMock.Net Server.
 /// </summary>
 public class WireMockServerArguments
 {
-    private const int DefaultExternalPort = 9091;
+    private const string DefaultLogger = "WireMockConsoleLogger";
+    internal const int DefaultPort = 9091;
 
-    public int Port { get; set; } = DefaultExternalPort;
+    /// <summary>
+    /// The port where WireMock.Net is listening.
+    ///
+    /// Default value is <c>9091</c>.
+    /// </summary>
+    public int Port { get; set; } = DefaultPort;
 
+    /// <summary>
+    /// The admin username.
+    /// </summary>
     public string? AdminUsername { get; set; }
 
+    /// <summary>
+    /// The admin password.
+    /// </summary>
     public string? AdminPassword { get; set; }
 
     /// <summary>
@@ -36,56 +48,58 @@ public class WireMockServerArguments
     public string? MappingsPath { get; set; }
 
     /// <summary>
-    /// Indicates whether the server should use basic authentication.
+    /// Indicates whether the admin interface has Basic Authentication.
     /// </summary>
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(AdminUsername) && !string.IsNullOrEmpty(AdminPassword);
 
     /// <summary>
-    /// Converts the current instance's properties to an array of command-line arguments for starting the Temporal server.
+    /// Converts the current instance's properties to an array of command-line arguments for starting the WireMock.Net server.
     /// </summary>
     /// <returns>An array of strings representing the command-line arguments.</returns>
     public string[] GetArgs()
     {
-        var result = new List<string>();
+        var args = new List<string>();
+
+        AddAlways(args, "--WireMockLogger", DefaultLogger);
 
         if (HasBasicAuthentication)
         {
-            AddAlways(result, "--AdminUserName", AdminUsername!);
-            AddAlways(result, "--AdminPassword", AdminPassword!);
+            AddAlways(args, "--AdminUserName", AdminUsername!);
+            AddAlways(args, "--AdminPassword", AdminPassword!);
         }
-        
-        AddIfTrue(result, "--ReadStaticMappings", ReadStaticMappings);
-    
+
+        AddIfTrue(args, "--ReadStaticMappings", ReadStaticMappings);
+
         if (WithWatchStaticMappings)
         {
-            AddAlways(result, "--WatchStaticMappings", "true");
-            AddAlways(result, "--WatchStaticMappingsInSubdirectories", "true");
+            AddAlways(args, "--WatchStaticMappings", "true");
+            AddAlways(args, "--WatchStaticMappingsInSubdirectories", "true");
         }
 
-        return result.ToArray();
+        return args.ToArray();
     }
 
-    private static void AddIfNotNull(ICollection<string> list, string argument, string? value)
+    private static void AddIfNotNull(ICollection<string> args, string argument, string? value)
     {
         if (value is not null)
         {
-            list.Add(argument);
-            list.Add(value);
+            args.Add(argument);
+            args.Add(value);
         }
     }
 
-    private static void AddAlways(ICollection<string> list, string argument, string value)
+    private static void AddAlways(ICollection<string> args, string argument, string value)
     {
-        list.Add(argument);
-        list.Add(value);
+        args.Add(argument);
+        args.Add(value);
     }
 
-    private static void AddIfTrue(ICollection<string> list, string argument, bool value)
+    private static void AddIfTrue(ICollection<string> args, string argument, bool value)
     {
         if (value)
         {
-            list.Add(argument);
-            list.Add("true");
+            args.Add(argument);
+            args.Add("true");
         }
     }
 }

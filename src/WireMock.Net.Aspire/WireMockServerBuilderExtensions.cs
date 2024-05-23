@@ -9,39 +9,50 @@ namespace Aspire.Hosting;
 /// </summary>
 public static class WireMockServerBuilderExtensions
 {
-    private const int DefaultContainerPort = 80;
+    private const int ContainerPort = 80;
 
     // https://github.com/dotnet/aspire/issues/854
     private const string DefaultLinuxImage = "sheyenrath/wiremock.net";
     private const string DefaultLinuxMappingsPath = "/app/__admin/mappings";
 
-
     /// <summary>
-    /// Adds a SQL Server resource to the application model. A container is used for local development.
+    /// Adds a WireMock.Net Server resource to the application model.
     /// </summary>
     /// <param name="builder">The <see cref="IDistributedApplicationBuilder"/>.</param>
     /// <param name="name">The name of the resource. This name will be used as the connection string name when referenced in a dependency.</param>
     /// <param name="port">The port for the WireMock Server.</param>
-    /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
-    public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, int? port = null)
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, int port = WireMockServerArguments.DefaultPort)
     {
-        var args = new WireMockServerArguments();
-        if (port > 0)
-        {
-            args.Port = port.Value;
-        }
+        Guard.NotNull(builder);
+        Guard.NotNullOrWhiteSpace(name);
+        Guard.Condition(port, p => p > 0);
 
-        return builder.AddWireMock(name, args);
+        var arguments = new WireMockServerArguments
+        {
+            Port = port
+        };
+
+        return builder.AddWireMock(name, arguments);
     }
 
+    /// <summary>
+    /// Adds a WireMock.Net Server resource to the application model.
+    /// </summary>
+    /// <param name="builder">The <see cref="IDistributedApplicationBuilder"/>.</param>
+    /// <param name="name">The name of the resource. This name will be used as the connection string name when referenced in a dependency.</param>
+    /// <param name="arguments">The arguments to start the WireMock.Net Server.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, WireMockServerArguments arguments)
     {
+        Guard.NotNull(builder);
+        Guard.NotNullOrWhiteSpace(name);
         Guard.NotNull(arguments);
 
-        var wireMockContainerResource = new WireMockServerResource(name);
+        var wireMockContainerResource = new WireMockServerResource(name, arguments);
         var resource = builder
             .AddResource(wireMockContainerResource)
-            .WithHttpEndpoint(targetPort: DefaultContainerPort, port: arguments.Port)
+            .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port)
             .WithImage(DefaultLinuxImage);
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
@@ -49,12 +60,69 @@ public static class WireMockServerBuilderExtensions
             resource = resource.WithBindMount(arguments.MappingsPath, DefaultLinuxMappingsPath);
         }
 
-        var containerArgs = arguments.GetArgs();
-        if (containerArgs.Length > 0)
+        resource = resource.WithArgs(context =>
         {
-            resource = resource.WithArgs(containerArgs);
-        }
+            foreach (var arg in arguments.GetArgs())
+            {
+                context.Args.Add(arg);
+            }
+        });
 
         return resource;
+    }
+
+    /// <summary>
+    /// Defines if the static mappings should be read at startup.
+    ///
+    /// Default set to <c>false</c>.
+    /// </summary>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> WithReadStaticMappings(this IResourceBuilder<WireMockServerResource> wiremock)
+    {
+        wiremock.Resource.Arguments.ReadStaticMappings = true;
+        return wiremock;
+    }
+
+    /// <summary>
+    /// Watch the static mapping files + folder for changes when running.
+    ///
+    /// Default set to <c>false</c>.
+    /// </summary>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> WithWatchStaticMappings(this IResourceBuilder<WireMockServerResource> wiremock)
+    {
+        wiremock.Resource.Arguments.WithWatchStaticMappings = true;
+        return wiremock;
+    }
+
+    /// <summary>
+    /// Specifies the path for the (static) mapping json files.
+    /// </summary>
+    /// <param name="wiremock">The <see cref="IResourceBuilder{WireMockServerResource}"/>.</param>
+    /// <param name="mappingsPath">The local path.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> WithMappingsPath(this IResourceBuilder<WireMockServerResource> wiremock, string mappingsPath)
+    {
+        Guard.NotNull(wiremock);
+        Guard.NotNullOrWhiteSpace(mappingsPath);
+
+        return wiremock.WithBindMount(mappingsPath, DefaultLinuxMappingsPath);
+    }
+
+    /// <summary>
+    /// Set the admin username and password for WireMock.Net (basic authentication).
+    /// </summary>
+    /// <param name="wiremock">The <see cref="IResourceBuilder{WireMockServerResource}"/>.</param>
+    /// <param name="username">The admin username.</param>
+    /// <param name="password">The admin password.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> WithAdminUserNameAndPassword(this IResourceBuilder<WireMockServerResource> wiremock, string username, string password)
+    {
+        Guard.NotNull(username);
+        Guard.NotNull(password);
+
+        wiremock.Resource.Arguments.AdminUsername = username;
+        wiremock.Resource.Arguments.AdminPassword = password;
+        return wiremock;
     }
 }
