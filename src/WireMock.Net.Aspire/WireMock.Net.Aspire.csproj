@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>Aspire extension to start a WireMock.Net server to stub an api.</Description>
+        <AssemblyTitle>WireMock.Net.Aspire</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFramework>net8</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <!--<NoWarn>$(NoWarn);1591;8603</NoWarn>-->
+        <AssemblyName>WireMock.Net.Aspire</AssemblyName>
+        <PackageId>WireMock.Net.Aspire</PackageId>
+        <PackageTags>dotnet;aspire;wiremock;extension</PackageTags>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A12}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+        <PackageReference Include="Stef.Validation" Version="0.1.1" />
+    </ItemGroup>
+
+</Project>

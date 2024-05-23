@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsAspireHost>true</IsAspireHost>
+        <UserSecretsId>82852bd6-0bf0-4992-9343-d3f5d09b0c06</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AspireApp1.ApiService\AspireApp1.ApiService.csproj" />
+        <ProjectReference Include="..\AspireApp1.Web\AspireApp1.Web.csproj" />
+
+        <!-- https://learn.microsoft.com/en-us/dotnet/aspire/extensibility/custom-resources?tabs=windows#create-library-for-resource-extension -->
+        <ProjectReference Include="..\..\src\WireMock.Net.Aspire\WireMock.Net.Aspire.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="WireMockMappings\873d495f-940e-4b86-a1f4-4f0fc7be8b8b.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
