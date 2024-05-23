@@ -79,7 +79,7 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithReadStaticMappings(this IResourceBuilder<WireMockServerResource> wiremock)
     {
-        wiremock.Resource.Arguments.ReadStaticMappings = true;
+        Guard.NotNull(wiremock).Resource.Arguments.ReadStaticMappings = true;
         return wiremock;
     }
 
@@ -91,7 +91,7 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithWatchStaticMappings(this IResourceBuilder<WireMockServerResource> wiremock)
     {
-        wiremock.Resource.Arguments.WithWatchStaticMappings = true;
+        Guard.NotNull(wiremock).Resource.Arguments.WithWatchStaticMappings = true;
         return wiremock;
     }
 
@@ -103,10 +103,8 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithMappingsPath(this IResourceBuilder<WireMockServerResource> wiremock, string mappingsPath)
     {
-        Guard.NotNull(wiremock);
-        Guard.NotNullOrWhiteSpace(mappingsPath);
-
-        return wiremock.WithBindMount(mappingsPath, DefaultLinuxMappingsPath);
+        return Guard.NotNull(wiremock)
+            .WithBindMount(Guard.NotNullOrWhiteSpace(mappingsPath), DefaultLinuxMappingsPath);
     }
 
     /// <summary>
@@ -118,11 +116,10 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithAdminUserNameAndPassword(this IResourceBuilder<WireMockServerResource> wiremock, string username, string password)
     {
-        Guard.NotNull(username);
-        Guard.NotNull(password);
+        Guard.NotNull(wiremock);
 
-        wiremock.Resource.Arguments.AdminUsername = username;
-        wiremock.Resource.Arguments.AdminPassword = password;
+        wiremock.Resource.Arguments.AdminUsername = Guard.NotNull(username);
+        wiremock.Resource.Arguments.AdminPassword = Guard.NotNull(password);
         return wiremock;
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/weather"
+@page "/weather"
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 5)]
 
@@ -10,7 +10,7 @@
 
 <p>This component demonstrates showing data loaded from a backend API service.</p>
 
-<p>@WeatherApi.GetBaseAddress()</p>
+<p>HttpClient.BaseAddress = </p><pre>@WeatherApi.GetBaseAddress()</pre>
 
 @if (forecasts == null)
 {

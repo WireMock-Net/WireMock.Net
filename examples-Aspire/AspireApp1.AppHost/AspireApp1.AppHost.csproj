@@ -21,10 +21,4 @@
         <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="WireMockMappings\873d495f-940e-4b86-a1f4-4f0fc7be8b8b.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>

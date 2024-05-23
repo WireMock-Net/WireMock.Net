@@ -68,10 +68,13 @@ public class WireMockServerArguments
             AddAlways(args, "--AdminPassword", AdminPassword!);
         }
 
-        AddIfTrue(args, "--ReadStaticMappings", ReadStaticMappings);
-
-        if (WithWatchStaticMappings)
+        if (ReadStaticMappings)
         {
+            AddAlways(args, "--ReadStaticMappings", "true");
+        }
+        else if (WithWatchStaticMappings)
+        {
+            AddAlways(args, "--ReadStaticMappings", "true");
             AddAlways(args, "--WatchStaticMappings", "true");
             AddAlways(args, "--WatchStaticMappingsInSubdirectories", "true");
         }
