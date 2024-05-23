@@ -15,7 +15,11 @@ public class WireMockConsoleLogger : IWireMockLogger
     /// </summary>
     public WireMockConsoleLogger()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        try
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+        }
+        catch { }
     }
 
     /// <see cref="IWireMockLogger.Debug"/>

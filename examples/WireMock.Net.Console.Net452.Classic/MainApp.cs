@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Logging;
@@ -94,8 +95,70 @@ message HelloReply {
    fullName:String 
   }";
 
+        private static void RunOnLocal()
+        {
+            var localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(a => a.AddressFamily == AddressFamily.InterNetwork);
+
+            //try
+            //{
+            //    var server = WireMockServer.Start(new WireMockServerSettings
+            //    {
+            //        Urls = new[] { $"http://{localIP}:9091" },
+            //        StartAdminInterface = true
+            //    });
+            //    System.Console.WriteLine($"1: {string.Join(", ", server.Urls)}");
+
+            //    System.Console.WriteLine("Press any key to stop...");
+            //    System.Console.ReadKey();
+            //    server.Stop();
+            //}
+            //catch (Exception e)
+            //{
+            //    System.Console.WriteLine(e);
+            //}
+
+            try
+            {
+                var server = WireMockServer.Start(new WireMockServerSettings
+                {
+                    Port = 9091,
+                    StartAdminInterface = true
+                });
+                System.Console.WriteLine($"2: {string.Join(", ", server.Urls)}");
+
+                System.Console.WriteLine("Press any key to stop...");
+                System.Console.ReadKey();
+                server.Stop();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
+
+            //try
+            //{
+            //    var server = WireMockServer.Start(new WireMockServerSettings
+            //    {
+            //        Urls = new[] { "http://*:9091" },
+            //        StartAdminInterface = true
+            //    });
+            //    System.Console.WriteLine($"3: {string.Join(", ", server.Urls)}");
+
+            //    System.Console.WriteLine("Press any key to stop...");
+            //    System.Console.ReadKey();
+            //    server.Stop();
+            //}
+            //catch (Exception e)
+            //{
+            //    System.Console.WriteLine(e);
+            //}
+        }
+
         public static void Run()
         {
+            RunOnLocal();
+            return;
+
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
                 .Given(Request

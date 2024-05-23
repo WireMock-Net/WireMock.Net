@@ -48,7 +48,7 @@ public class MatcherModel
     /// </summary>
     public string? MatchOperator { get; set; }
 
-    #region JsonPartialMatcher and JsonPartialWildcardMatcher
+    #region JsonMatcher, JsonPartialMatcher and JsonPartialWildcardMatcher
     /// <summary>
     /// Support Regex.
     /// </summary>

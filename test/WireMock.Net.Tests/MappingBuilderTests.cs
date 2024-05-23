@@ -13,6 +13,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Serialization;
 using WireMock.Settings;
+using WireMock.Types;
 using WireMock.Util;
 using Xunit;
 
@@ -73,6 +74,25 @@ public class MappingBuilderTests
         .RespondWith(Response.Create()
             .WithBody(@"{ msg: ""Hello world!""}")
         );
+
+        _sut.Given(Request.Create()
+            .WithPath("/users/post1")
+            .UsingPost()
+            .WithBodyAsJson(new
+            {
+                Request = "Hello?"
+            })
+        ).RespondWith(Response.Create());
+
+        _sut.Given(Request.Create()
+            .WithPath("/users/post2")
+            .UsingPost()
+            .WithBody(new JsonMatcher(new
+            {
+                city = "Amsterdam",
+                country = "The Netherlands"
+            }))
+        ).RespondWith(Response.Create());
     }
 
     [Fact]
@@ -93,6 +113,26 @@ public class MappingBuilderTests
 
         // Verify
         return Verifier.VerifyJson(json, VerifySettings);
+    }
+
+    [Fact]
+    public Task ToCSharpCode_Server()
+    {
+        // Act
+        var code = _sut.ToCSharpCode(MappingConverterType.Server);
+
+        // Verify
+        return Verifier.Verify(code, VerifySettings);
+    }
+
+    [Fact]
+    public Task ToCSharpCode_Builder()
+    {
+        // Act
+        var code = _sut.ToCSharpCode(MappingConverterType.Builder);
+
+        // Verify
+        return Verifier.Verify(code, VerifySettings);
     }
 
     [Fact]
@@ -141,9 +181,9 @@ public class MappingBuilderTests
         _sut.SaveMappingsToFolder(null);
 
         // Verify
-        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 
@@ -159,8 +199,8 @@ public class MappingBuilderTests
 
         // Verify
         _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Never);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Once);
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 }

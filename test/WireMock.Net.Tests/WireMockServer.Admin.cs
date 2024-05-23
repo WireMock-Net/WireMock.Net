@@ -499,4 +499,24 @@ public class WireMockServerAdminTests
         Check.That(response.StatusCode).Equals(HttpStatusCode.OK);
         Check.That(await response.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals($"{{\"Status\":\"Mappings deleted. Affected GUIDs: [{guid1}, {guid2}]\"}}");
     }
+
+    [Fact]
+    public async Task WireMockServer_Admin_()
+    {
+        // given
+        var server = WireMockServer.Start();
+
+        server.CreateClient();
+
+        // when
+        await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+
+        // then
+        Check.That(server.LogEntries).HasSize(1);
+        var requestLogged = server.LogEntries.First();
+        Check.That(requestLogged.RequestMessage.Method).IsEqualTo("GET");
+        Check.That(requestLogged.RequestMessage.BodyData).IsNull();
+
+        server.Stop();
+    }
 }

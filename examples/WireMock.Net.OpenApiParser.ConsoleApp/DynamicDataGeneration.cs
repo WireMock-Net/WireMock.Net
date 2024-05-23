@@ -18,6 +18,5 @@ public class DynamicDataGeneration : WireMockOpenApiParserDynamicExampleValues
                 Pattern = $"[0-9A-Z]{{{maxLength}}}"
             }).Generate() ?? "example-string";
         }
-        set { }
     }
 }
