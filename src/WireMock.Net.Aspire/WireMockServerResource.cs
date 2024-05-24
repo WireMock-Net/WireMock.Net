@@ -17,7 +17,6 @@ public class WireMockServerResource : ContainerResource, IResourceWithServiceDis
     /// <param name="arguments">The arguments to start the WireMock.Net Server.</param>
     public WireMockServerResource(string name, WireMockServerArguments arguments) : base(name)
     {
-        Guard.NotNullOrWhiteSpace(name);
         Arguments = Guard.NotNull(arguments);
     }
 }

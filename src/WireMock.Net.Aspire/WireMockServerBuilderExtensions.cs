@@ -49,17 +49,17 @@ public static class WireMockServerBuilderExtensions
         Guard.NotNull(arguments);
 
         var wireMockContainerResource = new WireMockServerResource(name, arguments);
-        var resource = builder
+        var resourceBuilder = builder
             .AddResource(wireMockContainerResource)
-            .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port)
-            .WithImage(DefaultLinuxImage);
+            .WithImage(DefaultLinuxImage)
+            .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port);
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
         {
-            resource = resource.WithBindMount(arguments.MappingsPath, DefaultLinuxMappingsPath);
+            resourceBuilder = resourceBuilder.WithBindMount(arguments.MappingsPath, DefaultLinuxMappingsPath);
         }
 
-        resource = resource.WithArgs(context =>
+        resourceBuilder = resourceBuilder.WithArgs(context =>
         {
             foreach (var arg in arguments.GetArgs())
             {
@@ -67,7 +67,7 @@ public static class WireMockServerBuilderExtensions
             }
         });
 
-        return resource;
+        return resourceBuilder;
     }
 
     /// <summary>
