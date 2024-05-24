@@ -71,7 +71,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
@@ -109,7 +108,7 @@
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
 
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
         <PackageReference Include="Grpc.Tools" Version="2.60.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -120,6 +119,10 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
         <ProjectReference Include="..\..\src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <ProjectReference Include="..\..\src\WireMock.Net.Aspire\WireMock.Net.Aspire.csproj" />
     </ItemGroup>
 
     <ItemGroup>
