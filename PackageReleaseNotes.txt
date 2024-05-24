@@ -1,4 +1,2 @@
-# 1.5.55 (22 May 2024)
-- #1107 When only Port is provided, bind to * (Fixes #1100) [bug]
-
-The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
+# 0.0.1-preview-01
+preview...

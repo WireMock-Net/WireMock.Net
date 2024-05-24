@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Version>0.0.1-preview-01</Version>
         <Description>Aspire extension to start a WireMock.Net server to stub an api.</Description>
         <AssemblyTitle>WireMock.Net.Aspire</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFramework>net8</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <!--<NoWarn>$(NoWarn);1591;8603</NoWarn>-->
         <AssemblyName>WireMock.Net.Aspire</AssemblyName>
         <PackageId>WireMock.Net.Aspire</PackageId>
         <PackageTags>dotnet;aspire;wiremock;extension</PackageTags>
@@ -21,7 +21,14 @@
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>WireMock.Net-LogoAspire.png</PackageIcon>
+        <ApplicationIcon>../../resources/WireMock.Net-LogoAspire.ico</ApplicationIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="../../resources/WireMock.Net-Logo.png" />
+        <None Include="../../resources/WireMock.Net-LogoAspire.png" Pack="true" PackagePath="" />
+    </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

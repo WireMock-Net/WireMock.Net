@@ -1,3 +1,4 @@
+using System;
 using Aspire.Hosting.ApplicationModel;
 using Stef.Validation;
 
@@ -11,7 +12,7 @@ public static class WireMockServerBuilderExtensions
 {
     private const int ContainerPort = 80;
 
-    // https://github.com/dotnet/aspire/issues/854
+    // Linux only (https://github.com/dotnet/aspire/issues/854)
     private const string DefaultLinuxImage = "sheyenrath/wiremock.net";
     private const string DefaultLinuxMappingsPath = "/app/__admin/mappings";
 
@@ -28,12 +29,10 @@ public static class WireMockServerBuilderExtensions
         Guard.NotNullOrWhiteSpace(name);
         Guard.Condition(port, p => p > 0);
 
-        var arguments = new WireMockServerArguments
+        return builder.AddWireMock(name, callback =>
         {
-            Port = port
-        };
-
-        return builder.AddWireMock(name, arguments);
+            callback.Port = port;
+        });
     }
 
     /// <summary>
@@ -69,6 +68,25 @@ public static class WireMockServerBuilderExtensions
         });
 
         return resource;
+    }
+
+    /// <summary>
+    /// Adds a WireMock.Net Server resource to the application model.
+    /// </summary>
+    /// <param name="builder">The <see cref="IDistributedApplicationBuilder"/>.</param>
+    /// <param name="name">The name of the resource. This name will be used as the connection string name when referenced in a dependency.</param>
+    /// <param name="callback">A callback that allows for setting the <see cref="WireMockServerArguments"/>.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
+    public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, Action<WireMockServerArguments> callback)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNullOrWhiteSpace(name);
+        Guard.NotNull(callback);
+
+        var arguments = new WireMockServerArguments();
+        callback(arguments);
+
+        return builder.AddWireMock(name, arguments);
     }
 
     /// <summary>

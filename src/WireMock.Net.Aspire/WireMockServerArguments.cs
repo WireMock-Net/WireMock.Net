@@ -82,6 +82,12 @@ public class WireMockServerArguments
         return args.ToArray();
     }
 
+    private static void AddAlways(ICollection<string> args, string argument, string value)
+    {
+        args.Add(argument);
+        args.Add(value);
+    }
+
     private static void AddIfNotNull(ICollection<string> args, string argument, string? value)
     {
         if (value is not null)
@@ -89,12 +95,6 @@ public class WireMockServerArguments
             args.Add(argument);
             args.Add(value);
         }
-    }
-
-    private static void AddAlways(ICollection<string> args, string argument, string value)
-    {
-        args.Add(argument);
-        args.Add(value);
     }
 
     private static void AddIfTrue(ICollection<string> args, string argument, bool value)
