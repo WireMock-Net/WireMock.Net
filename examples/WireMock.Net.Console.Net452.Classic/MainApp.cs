@@ -229,7 +229,6 @@ message HelloReply {
             server.SetBasicAuthentication("a", "b");
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
-
             //var http = new HttpClient();
             //var response = await http.GetAsync($"{_wireMockServer.Url}/pricing");
             //var value = await response.Content.ReadAsStringAsync();
@@ -375,7 +374,6 @@ message HelloReply {
                         .WithBody("return 500")
                         .WithHeader("Content-Type", "text/plain")
                 );
-
 
             server
                 .Given(Request.Create()
