@@ -97,34 +97,30 @@ message HelloReply {
 
         private static void RunOnLocal()
         {
-            var localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(a => a.AddressFamily == AddressFamily.InterNetwork);
-
-            //try
-            //{
-            //    var server = WireMockServer.Start(new WireMockServerSettings
-            //    {
-            //        Urls = new[] { $"http://{localIP}:9091" },
-            //        StartAdminInterface = true
-            //    });
-            //    System.Console.WriteLine($"1: {string.Join(", ", server.Urls)}");
-
-            //    System.Console.WriteLine("Press any key to stop...");
-            //    System.Console.ReadKey();
-            //    server.Stop();
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Console.WriteLine(e);
-            //}
-
             try
             {
                 var server = WireMockServer.Start(new WireMockServerSettings
                 {
                     Port = 9091,
-                    StartAdminInterface = true
+                    StartAdminInterface = true,
+                    Logger = new WireMockConsoleLogger()
                 });
-                System.Console.WriteLine($"2: {string.Join(", ", server.Urls)}");
+                System.Console.WriteLine(string.Join(", ", server.Urls));
+
+                var requestJson = new { PricingContext = new { Market = "USA" } };
+                var responseJson = new { Market = "{{JsonPath.SelectToken request.body \"$.PricingContext.Market\"}}" };
+                server
+                    .Given(Request.Create()
+                        //.WithBody(new JsonMatcher(requestJson))
+                        .WithBodyAsJson(requestJson)
+                        .WithPath("/pricing")
+                        .UsingPost()
+                    )
+                    .RespondWith(Response.Create()
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBodyAsJson(responseJson)
+                        .WithTransformer(true)
+                    );
 
                 System.Console.WriteLine("Press any key to stop...");
                 System.Console.ReadKey();
@@ -134,24 +130,6 @@ message HelloReply {
             {
                 System.Console.WriteLine(e);
             }
-
-            //try
-            //{
-            //    var server = WireMockServer.Start(new WireMockServerSettings
-            //    {
-            //        Urls = new[] { "http://*:9091" },
-            //        StartAdminInterface = true
-            //    });
-            //    System.Console.WriteLine($"3: {string.Join(", ", server.Urls)}");
-
-            //    System.Console.WriteLine("Press any key to stop...");
-            //    System.Console.ReadKey();
-            //    server.Stop();
-            //}
-            //catch (Exception e)
-            //{
-            //    System.Console.WriteLine(e);
-            //}
         }
 
         public static void Run()
@@ -251,7 +229,10 @@ message HelloReply {
             server.SetBasicAuthentication("a", "b");
             //server.SetAzureADAuthentication("6c2a4722-f3b9-4970-b8fc-fac41e29stef", "8587fde1-7824-42c7-8592-faf92b04stef");
 
-            // server.AllowPartialMapping();
+
+            //var http = new HttpClient();
+            //var response = await http.GetAsync($"{_wireMockServer.Url}/pricing");
+            //var value = await response.Content.ReadAsStringAsync();
 
 #if PROTOBUF
             var protoBufJsonMatcher = new JsonPartialWildcardMatcher(new { name = "*" });
