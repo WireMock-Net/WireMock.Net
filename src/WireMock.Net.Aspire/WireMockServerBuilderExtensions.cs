@@ -27,7 +27,7 @@ public static class WireMockServerBuilderExtensions
     {
         Guard.NotNull(builder);
         Guard.NotNullOrWhiteSpace(name);
-        Guard.Condition(port, p => p > 0);
+        Guard.Condition(port, p => p is > 0 and <= ushort.MaxValue);
 
         return builder.AddWireMock(name, callback =>
         {
