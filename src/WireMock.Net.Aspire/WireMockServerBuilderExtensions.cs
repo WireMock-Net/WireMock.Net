@@ -52,6 +52,7 @@ public static class WireMockServerBuilderExtensions
         var resourceBuilder = builder
             .AddResource(wireMockContainerResource)
             .WithImage(DefaultLinuxImage)
+            .WithEnvironment("DOTNET_USE_POLLING_FILE_WATCHER", "1") // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
             .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port);
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
