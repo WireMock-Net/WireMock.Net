@@ -1,16 +1,18 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using Projects;
+using Xunit.Abstractions;
 
 namespace WireMock.Net.Aspire.Tests;
 
-public class IntegrationTest
+public class IntegrationTest(ITestOutputHelper output)
 {
     [Fact]
     public async Task StartAppHostWithWireMock()
     {
-        if (!OperatingSystem.IsLinux())
+        if (!DockerUtils.IsDockerRunningLinuxContainerMode())
         {
+            output.WriteLine("Docker is not running in Linux container mode. Skipping test.");
             return;
         }
 

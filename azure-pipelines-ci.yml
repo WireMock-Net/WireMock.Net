@@ -53,7 +53,7 @@ jobs:
       arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
-    condition: and(eq('x', 'y'))
+    condition: and(succeeded(), eq('x', 'y'))
     inputs:
       script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
