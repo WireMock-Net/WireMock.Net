@@ -18,7 +18,12 @@ jobs:
     displayName: Use .NET 8.0
     inputs:
       packageType: 'sdk'
-      version: '8.0.x'    
+      version: '8.0.x'
+
+  - task: CmdLine@2
+    displayName: 'Install aspire workload'
+    inputs:
+      script: 'dotnet workload install aspire'
 
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
