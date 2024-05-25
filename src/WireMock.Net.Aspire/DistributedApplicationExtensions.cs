@@ -21,7 +21,7 @@ public static class DistributedApplicationExtensions
     /// <summary>
     /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
     /// </summary>
-    /// <param name="app">The <see cref="IResourceBuilder{T}"/>.</param>
+    /// <param name="app">The <see cref="DistributedApplication"/>.</param>
     /// <param name="resourceName">The resourceName of the resource.</param>
     /// <param name="endpointName">The resourceName of the endpoint on the resource to communicate with.</param>
     /// <returns>A <see cref="IWireMockAdminApi"/></returns>
