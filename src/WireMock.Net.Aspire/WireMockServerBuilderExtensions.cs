@@ -10,7 +10,7 @@ namespace Aspire.Hosting;
 /// </summary>
 public static class WireMockServerBuilderExtensions
 {
-    private const int ContainerPort = 80;
+    private const int HttpContainerPort = 80;
 
     // Linux only (https://github.com/dotnet/aspire/issues/854)
     private const string DefaultLinuxImage = "sheyenrath/wiremock.net";
@@ -21,17 +21,17 @@ public static class WireMockServerBuilderExtensions
     /// </summary>
     /// <param name="builder">The <see cref="IDistributedApplicationBuilder"/>.</param>
     /// <param name="name">The name of the resource. This name will be used as the connection string name when referenced in a dependency.</param>
-    /// <param name="port">The port for the WireMock Server.</param>
+    /// <param name="port">The HTTP port for the WireMock Server.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
-    public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, int port = WireMockServerArguments.DefaultPort)
+    public static IResourceBuilder<WireMockServerResource> AddWireMock(this IDistributedApplicationBuilder builder, string name, int? port = null)
     {
         Guard.NotNull(builder);
         Guard.NotNullOrWhiteSpace(name);
-        Guard.Condition(port, p => p is > 0 and <= ushort.MaxValue);
+        Guard.Condition(port, p => p is null or > 0 and <= ushort.MaxValue);
 
         return builder.AddWireMock(name, callback =>
         {
-            callback.Port = port;
+            callback.HttpPort = port;
         });
     }
 
@@ -53,7 +53,7 @@ public static class WireMockServerBuilderExtensions
             .AddResource(wireMockContainerResource)
             .WithImage(DefaultLinuxImage)
             .WithEnvironment(ctx => ctx.EnvironmentVariables.Add("DOTNET_USE_POLLING_FILE_WATCHER", "1")) // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
-            .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port);
+            .WithHttpEndpoint(port: arguments.HttpPort, targetPort: HttpContainerPort);
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
         {

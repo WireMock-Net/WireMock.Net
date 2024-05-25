@@ -52,6 +52,8 @@ public class IntegrationTests(ITestOutputHelper output)
         // Act
         var adminClient = app.CreateWireMockAdminClient("wiremock-service");
         var settings = await adminClient.GetSettingsAsync();
+
+        // Assert
         settings.Should().NotBeNull();
     }
 }

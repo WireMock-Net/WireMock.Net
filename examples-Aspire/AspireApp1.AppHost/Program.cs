@@ -7,7 +7,7 @@ var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappin
 Console.WriteLine($"MappingsPath: {mappingsPath}");
 
 var wiremock = builder
-    .AddWireMock("apiservice")
+    .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
     .WithMappingsPath(mappingsPath)
     // .WithReadStaticMappings()
     .WithWatchStaticMappings();

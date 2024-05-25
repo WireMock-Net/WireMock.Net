@@ -63,7 +63,7 @@ public class WireMockServerBuilderExtensionsTests
             ReadStaticMappings = true,
             WithWatchStaticMappings = false,
             MappingsPath = null,
-            Port = port
+            HttpPort = port
         });
         wiremock.Resource.Annotations.Should().HaveCount(4);
 

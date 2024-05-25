@@ -9,15 +9,15 @@ namespace Aspire.Hosting;
 /// </summary>
 public class WireMockServerArguments
 {
+    public const int DefaultPort = 9091;
+
     private const string DefaultLogger = "WireMockConsoleLogger";
-    internal const int DefaultPort = 9091;
 
     /// <summary>
-    /// The port where WireMock.Net is listening.
-    ///
-    /// Default value is <c>9091</c>.
+    /// The HTTP port where WireMock.Net is listening.
+    /// If not defined, .NET Aspire automatically assigns a random port.
     /// </summary>
-    public int Port { get; set; } = DefaultPort;
+    public int? HttpPort { get; set; }
 
     /// <summary>
     /// The admin username.
