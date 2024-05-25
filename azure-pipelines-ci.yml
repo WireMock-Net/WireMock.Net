@@ -64,6 +64,7 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       command: 'test'
+      projects: '**/test/**/*.csproj'
       arguments: '--no-build --configuration Debug --framework net8.0'
    
   - task: SonarCloudAnalyze@1

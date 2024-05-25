@@ -10,13 +10,14 @@ public class WireMockServerBuilderExtensionsTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void AddWireMock_WithInvalidName_ShouldThrowException(string name)
+    [InlineData("\t")]
+    public void AddWireMock_WithNullOrWhiteSpaceName_ShouldThrowException(string? name)
     {
         // Arrange
         var builder = Mock.Of<IDistributedApplicationBuilder>();
 
         // Act
-        Action act = () => builder.AddWireMock(name, 12345);
+        Action act = () => builder.AddWireMock(name!, 12345);
 
         // Assert
         act.Should().Throw<Exception>();
