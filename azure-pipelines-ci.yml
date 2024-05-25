@@ -48,8 +48,8 @@ jobs:
     inputs:
       command: 'build'
       projects: |
-        './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-        './test/WireMock.Net.Aspire.Tests/WireMock.Net.Tests.Aspire.csproj'
+        '**/WireMock.Net.Tests.csproj'
+        '**/WireMock.Net.Aspire.Tests.csproj'
       arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
