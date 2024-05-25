@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 // ReSharper disable once CheckNamespace
 namespace Aspire.Hosting;
@@ -58,51 +59,35 @@ public class WireMockServerArguments
     /// <returns>An array of strings representing the command-line arguments.</returns>
     public string[] GetArgs()
     {
-        var args = new List<string>();
+        var args = new Dictionary<string, string>();
 
-        AddAlways(args, "--WireMockLogger", DefaultLogger);
+        Add(args, "--WireMockLogger", DefaultLogger);
 
         if (HasBasicAuthentication)
         {
-            AddAlways(args, "--AdminUserName", AdminUsername!);
-            AddAlways(args, "--AdminPassword", AdminPassword!);
+            Add(args, "--AdminUserName", AdminUsername!);
+            Add(args, "--AdminPassword", AdminPassword!);
         }
 
         if (ReadStaticMappings)
         {
-            AddAlways(args, "--ReadStaticMappings", "true");
-        }
-        else if (WithWatchStaticMappings)
-        {
-            AddAlways(args, "--ReadStaticMappings", "true");
-            AddAlways(args, "--WatchStaticMappings", "true");
-            AddAlways(args, "--WatchStaticMappingsInSubdirectories", "true");
+            Add(args, "--ReadStaticMappings", "true");
         }
 
-        return args.ToArray();
+        if (WithWatchStaticMappings)
+        {
+            Add(args, "--ReadStaticMappings", "true");
+            Add(args, "--WatchStaticMappings", "true");
+            Add(args, "--WatchStaticMappingsInSubdirectories", "true");
+        }
+
+        return args
+            .SelectMany(k => new [] { k.Key, k.Value })
+            .ToArray();
     }
 
-    private static void AddAlways(ICollection<string> args, string argument, string value)
+    private static void Add(IDictionary<string, string> args, string argument, string value)
     {
-        args.Add(argument);
-        args.Add(value);
-    }
-
-    private static void AddIfNotNull(ICollection<string> args, string argument, string? value)
-    {
-        if (value is not null)
-        {
-            args.Add(argument);
-            args.Add(value);
-        }
-    }
-
-    private static void AddIfTrue(ICollection<string> args, string argument, bool value)
-    {
-        if (value)
-        {
-            args.Add(argument);
-            args.Add("true");
-        }
+        args[argument] = value;
     }
 }

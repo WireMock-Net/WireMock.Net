@@ -52,7 +52,7 @@ public static class WireMockServerBuilderExtensions
         var resourceBuilder = builder
             .AddResource(wireMockContainerResource)
             .WithImage(DefaultLinuxImage)
-            .WithEnvironment("DOTNET_USE_POLLING_FILE_WATCHER", "1") // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
+            .WithEnvironment(ctx => ctx.EnvironmentVariables.Add("DOTNET_USE_POLLING_FILE_WATCHER", "1")) // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
             .WithHttpEndpoint(targetPort: ContainerPort, port: arguments.Port);
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
@@ -60,11 +60,11 @@ public static class WireMockServerBuilderExtensions
             resourceBuilder = resourceBuilder.WithBindMount(arguments.MappingsPath, DefaultLinuxMappingsPath);
         }
 
-        resourceBuilder = resourceBuilder.WithArgs(context =>
+        resourceBuilder = resourceBuilder.WithArgs(ctx =>
         {
             foreach (var arg in arguments.GetArgs())
             {
-                context.Args.Add(arg);
+                ctx.Args.Add(arg);
             }
         });
 
@@ -127,7 +127,7 @@ public static class WireMockServerBuilderExtensions
     }
 
     /// <summary>
-    /// Set the admin username and password for WireMock.Net (basic authentication).
+    /// Set the admin username and password for accessing the admin interface from WireMock.Net via HTTP.
     /// </summary>
     /// <param name="wiremock">The <see cref="IResourceBuilder{WireMockServerResource}"/>.</param>
     /// <param name="username">The admin username.</param>

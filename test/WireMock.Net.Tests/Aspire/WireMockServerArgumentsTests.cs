@@ -80,14 +80,16 @@ public class WireMockServerArgumentsTests
         commandLineArgs.Should().NotContain("--ReadStaticMappings", "true");
     }
 
-    [Fact]
-    public void GetArgs_WhenWithWatchStaticMappingsIsTrue_ShouldContainWatchStaticMappingsTrue()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GetArgs_WhenWithWatchStaticMappingsIsTrue_ShouldContainWatchStaticMappingsTrue(bool readStaticMappings)
     {
         // Arrange
         var args = new WireMockServerArguments
         {
             WithWatchStaticMappings = true,
-            ReadStaticMappings = false  // This needs to be false to check the independent effect of WithWatchStaticMappings
+            ReadStaticMappings = readStaticMappings
         };
 
         // Act
