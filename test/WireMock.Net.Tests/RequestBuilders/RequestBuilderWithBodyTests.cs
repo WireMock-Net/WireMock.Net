@@ -3,8 +3,6 @@ using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JsonConverter.Abstractions;
-using Moq;
 using Newtonsoft.Json;
 using NFluent;
 using WireMock.Matchers;
@@ -293,7 +291,7 @@ public class RequestBuilderWithBodyTests
     }
 
     [Fact]
-    public void Request_WithBodyAsJson_Object_JsonPathMatcher_true()
+    public void Request_WithBody_Object_JsonPathMatcher_true()
     {
         // Arrange
         var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..things[?(@.name == 'RequiredThing')]"));
@@ -316,7 +314,7 @@ public class RequestBuilderWithBodyTests
     }
 
     [Fact]
-    public void Request_WithBodyAsJson_Array_JsonPathMatcher_1()
+    public void Request_WithBody_Array_JsonPathMatcher_1()
     {
         // Arrange
         var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..books[?(@.price < 10)]"));
@@ -339,7 +337,7 @@ public class RequestBuilderWithBodyTests
     }
 
     [Fact]
-    public void Request_WithBodyAsJson_Array_JsonPathMatcher_2()
+    public void Request_WithBody_Array_JsonPathMatcher_2()
     {
         // Arrange
         var spec = Request.Create().UsingAnyMethod().WithBody(new JsonPathMatcher("$..[?(@.Id == 1)]"));
@@ -363,7 +361,7 @@ public class RequestBuilderWithBodyTests
     }
 
     [Fact]
-    public void Request_WithBodyAsObject_ExactObjectMatcher_true()
+    public void Request_WithBody_ExactObjectMatcher_true()
     {
         // Assign
         object body = DateTime.MinValue;
@@ -384,7 +382,7 @@ public class RequestBuilderWithBodyTests
     }
 
     [Fact]
-    public void Request_WithBodyAsJson_UsingObject()
+    public void Request_WithBodyAsJson_UsingObject_UsesJsonMatcher()
     {
         // Assign
         object body = new
@@ -395,34 +393,8 @@ public class RequestBuilderWithBodyTests
 
         var bodyData = new BodyData
         {
-            BodyAsString = JsonConvert.SerializeObject(body),
-            DetectedBodyType = BodyType.String
-        };
-
-        // Act
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
-
-        // Assert
-        var requestMatchResult = new RequestMatchResult();
-        Check.That(requestBuilder.GetMatchingScore(request, requestMatchResult)).IsEqualTo(1.0);
-    }
-
-    [Fact]
-    public void Request_WithBodyAsJson_WithIJsonConverter_UsingObject()
-    {
-        // Assign
-        var jsonConverterMock = new Mock<IJsonConverter>();
-        jsonConverterMock.Setup(j => j.Serialize(It.IsAny<object>(), It.IsAny<JsonConverterOptions>())).Returns("test");
-        object body = new
-        {
-            Any = "key"
-        };
-        var requestBuilder = Request.Create().UsingAnyMethod().WithBodyAsJson(body, jsonConverterMock.Object);
-
-        var bodyData = new BodyData
-        {
-            BodyAsString = "test",
-            DetectedBodyType = BodyType.String
+            BodyAsJson = body,
+            DetectedBodyType = BodyType.Json
         };
 
         // Act
