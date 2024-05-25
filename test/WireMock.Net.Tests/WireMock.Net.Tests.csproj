@@ -14,7 +14,6 @@
 
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
 
         <!--https://developercommunity.visualstudio.com/content/problem/26347/unit-tests-fail-with-fileloadexception-newtonsoftj-1.html-->
@@ -121,10 +120,6 @@
         <ProjectReference Include="..\..\src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <ProjectReference Include="..\..\src\WireMock.Net.Aspire\WireMock.Net.Aspire.csproj" />
-    </ItemGroup>
-
     <ItemGroup>
         <None Update="OpenApiParser\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -133,10 +128,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="cert.pem">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Grpc\greet.proto">
-          <GrpcServices>Client</GrpcServices>
+            <GrpcServices>Client</GrpcServices>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

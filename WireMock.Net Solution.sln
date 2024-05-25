@@ -126,6 +126,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspireApp1.Web", "examples-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspireApp1.AppHost", "examples-Aspire\AspireApp1.AppHost\AspireApp1.AppHost.csproj", "{7373B7DC-47ED-45A5-969D-D7DDBA529B53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Aspire.Tests", "test\WireMock.Net.Aspire.Tests\WireMock.Net.Aspire.Tests.csproj", "{CE602F57-FEF8-4559-A9E0-6200BE1BF398}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Aspire.TestAppHost", "test\WireMock.Net.Aspire.TestAppHost\WireMock.Net.Aspire.TestAppHost.csproj", "{F1B5999D-D22E-48A6-AB86-18A7876BD32E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -300,6 +304,14 @@ Global
 		{7373B7DC-47ED-45A5-969D-D7DDBA529B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7373B7DC-47ED-45A5-969D-D7DDBA529B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7373B7DC-47ED-45A5-969D-D7DDBA529B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE602F57-FEF8-4559-A9E0-6200BE1BF398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE602F57-FEF8-4559-A9E0-6200BE1BF398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE602F57-FEF8-4559-A9E0-6200BE1BF398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE602F57-FEF8-4559-A9E0-6200BE1BF398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1B5999D-D22E-48A6-AB86-18A7876BD32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B5999D-D22E-48A6-AB86-18A7876BD32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1B5999D-D22E-48A6-AB86-18A7876BD32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1B5999D-D22E-48A6-AB86-18A7876BD32E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -349,6 +361,8 @@ Global
 		{84624E1F-DF07-4315-89B0-51776BE99E13} = {AD474543-0715-49F2-A284-936B060BF736}
 		{A34F1575-7C33-4548-8CEF-8D8D8B84153C} = {AD474543-0715-49F2-A284-936B060BF736}
 		{7373B7DC-47ED-45A5-969D-D7DDBA529B53} = {AD474543-0715-49F2-A284-936B060BF736}
+		{CE602F57-FEF8-4559-A9E0-6200BE1BF398} = {0BB8B634-407A-4610-A91F-11586990767A}
+		{F1B5999D-D22E-48A6-AB86-18A7876BD32E} = {0BB8B634-407A-4610-A91F-11586990767A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}

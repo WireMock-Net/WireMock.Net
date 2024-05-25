@@ -1,9 +1,6 @@
-#if NET8_0_OR_GREATER
-using Aspire.Hosting;
 using FluentAssertions;
-using Xunit;
 
-namespace WireMock.Net.Tests.Aspire;
+namespace WireMock.Net.Aspire.Tests;
 
 public class WireMockServerArgumentsTests
 {
@@ -133,4 +130,3 @@ public class WireMockServerArgumentsTests
         commandLineArgs.Should().Contain("--AdminPassword", "password");
     }
 }
-#endif

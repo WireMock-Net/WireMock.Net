@@ -47,13 +47,21 @@ jobs:
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
-      projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+      projects: |
+        './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
+        './test/WireMock.Net.Aspire.Tests/WireMock.Net.Tests.Aspire.csproj'
       arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
+    condition: and(eq('x', 'y'))
     inputs:
       script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      arguments: '--no-build --configuration Debug --framework net8.0'
    
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'

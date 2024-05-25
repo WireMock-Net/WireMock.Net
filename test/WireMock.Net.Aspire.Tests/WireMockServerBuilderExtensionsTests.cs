@@ -1,14 +1,8 @@
-#if NET8_0_OR_GREATER
-using System;
-using System.Linq;
 using System.Net.Sockets;
-using Aspire.Hosting;
-using Aspire.Hosting.ApplicationModel;
 using FluentAssertions;
 using Moq;
-using Xunit;
 
-namespace WireMock.Net.Tests.Aspire;
+namespace WireMock.Net.Aspire.Tests;
 
 public class WireMockServerBuilderExtensionsTests
 {
@@ -97,4 +91,3 @@ public class WireMockServerBuilderExtensionsTests
         wiremock.Resource.Annotations.OfType<CommandLineArgsCallbackAnnotation>().FirstOrDefault().Should().NotBeNull();
     }
 }
-#endif
