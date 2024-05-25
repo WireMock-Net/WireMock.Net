@@ -5,6 +5,6 @@ var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappin
 builder
     .AddWireMock("wiremock-service")
     .WithMappingsPath(mappingsPath)
-    .WithReadStaticMappings();
+    .WithWatchStaticMappings();
 
 await builder.Build().RunAsync();
