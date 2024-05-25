@@ -18,7 +18,7 @@ jobs:
     steps:  
     - uses: actions/checkout@v4
 
-    - uses: actions/setup-dotnet@v3
+    - uses: actions/setup-dotnet@v5
       with:
        dotnet-version: |
          7.0.x
@@ -41,15 +41,16 @@ jobs:
     steps:  
     - uses: actions/checkout@v4
 
-    - uses: actions/setup-dotnet@v3
+    - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: |
-            7.0.x
-            8.0.x
+        dotnet-version: 8.0.x
+
+    - name: Install .NET Aspire workload
+      run: dotnet workload install aspire
                 
     - name: 'Build Unit Tests'
       run: |
-        dotnet build './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
+        dotnet build './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
         dotnet build './test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj' -c Release --framework net8.0
 
     - name: 'Run Unit Tests'

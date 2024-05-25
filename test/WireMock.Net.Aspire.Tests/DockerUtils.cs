@@ -49,7 +49,7 @@ internal static class DockerUtils
             var output = process?.StandardOutput.ReadToEnd();
             process?.WaitForExit();
 
-            return output?.Trim().Contains("linux", StringComparison.OrdinalIgnoreCase) == true;
+            return output?.Contains("linux", StringComparison.OrdinalIgnoreCase) == true;
         }
         catch (Exception ex)
         {
