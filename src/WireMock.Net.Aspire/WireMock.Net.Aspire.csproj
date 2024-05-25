@@ -36,7 +36,10 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting" Version="8.0.0" />
-        <PackageReference Include="Stef.Validation" Version="0.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
     </ItemGroup>
 
 </Project>
