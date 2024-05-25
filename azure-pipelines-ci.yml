@@ -25,6 +25,11 @@ jobs:
     inputs:
       script: 'dotnet workload install aspire'
 
+  - task: CmdLine@2
+    displayName: 'Install dotnet-coverage tool'
+    inputs:
+      script: 'dotnet tool install --global dotnet-coverage'
+
   - task: PowerShell@2
     displayName: "Use JDK11 by default"
     inputs:
@@ -46,7 +51,7 @@ jobs:
       projectKey: 'WireMock-Net_WireMock.Net'
       projectName: 'WireMock.Net'
       extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml
+        sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
@@ -55,17 +60,17 @@ jobs:
       projects: '**/test/**/*.csproj'
       arguments: '--configuration Debug --framework net8.0'
 
-  - task: CmdLine@2
-    condition: and(succeeded(), eq('x', 'y'))
-    inputs:
-      script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
-    displayName: 'Execute Unit Tests with Coverage'
-
   - task: DotNetCoreCLI@2
+    displayName: 'Execute Unit Tests with Coverage'
     inputs:
       command: 'test'
       projects: '**/test/**/*.csproj'
       arguments: '--no-build --configuration Debug --framework net8.0'
+
+  - task: CmdLine@2
+    displayName: 'Merge coverage files'
+    inputs:
+      script: 'dotnet coverage merge *.opencover.xml --recursive --output ./test/coverage.opencover.xml --output-format xml'
    
   - task: SonarCloudAnalyze@1
     displayName: 'SonarCloud: Run Code Analysis'
@@ -80,8 +85,8 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/WireMock.Net.Tests/coverage.8.0.opencover.xml
-    displayName: 'codecov'
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/coverage.opencover.xml
+    displayName: 'Upload coverage results to codecov'
   
   - task: PublishTestResults@2
     condition: and(succeeded(), eq(variables['PUBLISH_TESTRESULTS'], 'yes'))
@@ -90,7 +95,7 @@ jobs:
       testResultsFiles: '**/*.trx'
   
   - task: PublishBuildArtifacts@1
-    displayName: Publish coverage file
+    displayName: Publish coverage files
     inputs:
       PathtoPublish: './test/WireMock.Net.Tests/coverage.net8.0.opencover.xml'
 
