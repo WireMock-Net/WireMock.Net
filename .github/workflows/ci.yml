@@ -55,5 +55,5 @@ jobs:
 
     - name: 'Run Unit Tests'
       run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
         dotnet test './test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj' -c Release --framework net8.0

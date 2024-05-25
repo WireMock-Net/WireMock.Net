@@ -47,9 +47,7 @@ jobs:
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
-      projects: |
-        '**/WireMock.Net.Tests.csproj'
-        '**/WireMock.Net.Aspire.Tests.csproj'
+      projects: '**/test/**/*.csproj'
       arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
