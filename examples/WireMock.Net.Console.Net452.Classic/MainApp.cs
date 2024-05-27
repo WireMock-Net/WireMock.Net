@@ -376,7 +376,6 @@ message HelloReply {
                         .WithHeader("Content-Type", "text/plain")
                 );
 
-
             server
                 .Given(Request.Create()
                     .UsingMethod("GET")

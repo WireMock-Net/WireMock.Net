@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -354,7 +355,7 @@ public class ResponseWithHandlebarsJsonPathTests
     public async Task Response_ProvideResponse_Transformer_WithBodyAsFile_JsonPath()
     {
         // Assign
-        string jsonString = "{ \"MyUniqueNumber\": \"1\" }";
+        const string jsonString = "{ \"MyUniqueNumber\": \"1\" }";
         var bodyData = new BodyData
         {
             BodyAsString = jsonString,
@@ -365,15 +366,17 @@ public class ResponseWithHandlebarsJsonPathTests
         };
         var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData);
 
-        string jsonPath = "\"$.MyUniqueNumber\"";
         var responseBuilder = Response.Create()
             .WithTransformer()
-            .WithBodyFromFile(@"c:\\{{JsonPath.SelectToken request.body " + jsonPath + "}}\\test.json"); // why use a \\ here ?
+
+            // We need to use `c:\\\\` here because when just using `c:\\\`, the `\\` it will be interpreted as an escape character to skip / exclude / escape the whole {{}} expression.
+            // See https://handlebarsjs.com/guide/expressions.html#escaping-handlebars-expressions
+            .WithBodyFromFile("c:\\\\{{JsonPath.SelectToken request.body \"$.MyUniqueNumber\" }}\\test.json");
 
         // Act
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        Check.That(response.Message.BodyData.BodyAsFile).Equals(@"c:\1\test.json");
+        response.Message.BodyData?.BodyAsFile.Should().Be(@"c:\1\test.json");
     }
 }
