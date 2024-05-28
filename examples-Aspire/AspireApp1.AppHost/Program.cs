@@ -9,8 +9,7 @@ Console.WriteLine($"MappingsPath: {mappingsPath}");
 var wiremock = builder
     .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
     .WithMappingsPath(mappingsPath)
-    // .WithReadStaticMappings()
-    .WithWatchStaticMappings();
+    .WithReadStaticMappings();
 
 builder.AddProject<Projects.AspireApp1_Web>("webfrontend")
     .WithExternalHttpEndpoints()

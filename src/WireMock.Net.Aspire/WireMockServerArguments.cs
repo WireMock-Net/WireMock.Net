@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,12 @@ namespace Aspire.Hosting;
 /// </summary>
 public class WireMockServerArguments
 {
+    internal const int HttpContainerPort = 80;
+    internal const int HttpsContainerPort = 443;
+
+    /// <summary>
+    /// The default HTTP port where WireMock.Net is listening.
+    /// </summary>
     public const int DefaultPort = 9091;
 
     private const string DefaultLogger = "WireMockConsoleLogger";
@@ -18,6 +25,17 @@ public class WireMockServerArguments
     /// If not defined, .NET Aspire automatically assigns a random port.
     /// </summary>
     public int? HttpPort { get; set; }
+
+    /// <summary>
+    /// The HTTPS port where WireMock.Net is listening.
+    /// If not defined, .NET Aspire automatically assigns a random port.
+    /// </summary>
+    public int? HttpsPort { get; set; }
+
+    /// <summary>
+    /// Also listen on HTTPS URL.
+    /// </summary>
+    public bool UseHttps { get; set; }
 
     /// <summary>
     /// The admin username.
@@ -61,6 +79,18 @@ public class WireMockServerArguments
     {
         var args = new Dictionary<string, string>();
 
+        Add(args, "--Urls", () =>
+            {
+                var urls = $"http://*:{HttpContainerPort}";
+                if (UseHttps || HttpsPort > 0)
+                {
+                    urls += $", https://*:{HttpsContainerPort}";
+                }
+
+                return urls;
+            }
+        );
+
         Add(args, "--WireMockLogger", DefaultLogger);
 
         if (HasBasicAuthentication)
@@ -82,12 +112,17 @@ public class WireMockServerArguments
         }
 
         return args
-            .SelectMany(k => new [] { k.Key, k.Value })
+            .SelectMany(k => new[] { k.Key, k.Value })
             .ToArray();
     }
 
     private static void Add(IDictionary<string, string> args, string argument, string value)
     {
         args[argument] = value;
+    }
+
+    private static void Add(IDictionary<string, string> args, string argument, Func<string> action)
+    {
+        args[argument] = action();
     }
 }

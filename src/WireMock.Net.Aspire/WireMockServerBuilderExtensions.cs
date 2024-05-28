@@ -10,8 +10,6 @@ namespace Aspire.Hosting;
 /// </summary>
 public static class WireMockServerBuilderExtensions
 {
-    private const int HttpContainerPort = 80;
-
     // Linux only (https://github.com/dotnet/aspire/issues/854)
     private const string DefaultLinuxImage = "sheyenrath/wiremock.net";
     private const string DefaultLinuxMappingsPath = "/app/__admin/mappings";
@@ -53,7 +51,12 @@ public static class WireMockServerBuilderExtensions
             .AddResource(wireMockContainerResource)
             .WithImage(DefaultLinuxImage)
             .WithEnvironment(ctx => ctx.EnvironmentVariables.Add("DOTNET_USE_POLLING_FILE_WATCHER", "1")) // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
-            .WithHttpEndpoint(port: arguments.HttpPort, targetPort: HttpContainerPort);
+            .WithHttpEndpoint(port: arguments.HttpPort, targetPort: WireMockServerArguments.HttpContainerPort);
+
+        if (arguments.UseHttps || arguments.HttpsPort > 0)
+        {
+            resourceBuilder = resourceBuilder.WithHttpsEndpoint(port: arguments.HttpsPort, targetPort: WireMockServerArguments.HttpsContainerPort);
+        }
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
         {
@@ -62,6 +65,13 @@ public static class WireMockServerBuilderExtensions
 
         resourceBuilder = resourceBuilder.WithArgs(ctx =>
         {
+            //var urls = new List<string>
+            //{
+            //    $"http://*:{HttpContainerPort}"
+            //};
+
+            //ctx.Args.Add($"--URLS http://*:{HttpContainerPort}, https://*:{HttpsContainerPort}");
+
             foreach (var arg in arguments.GetArgs())
             {
                 ctx.Args.Add(arg);
@@ -141,4 +151,10 @@ public static class WireMockServerBuilderExtensions
         wiremock.Resource.Arguments.AdminPassword = Guard.NotNull(password);
         return wiremock;
     }
+
+    //public static IResourceBuilder<WireMockServerResource> UseHttps(this IResourceBuilder<WireMockServerResource> wiremock)
+    //{
+    //    Guard.NotNull(wiremock).Resource.Arguments.UseHttps = true;
+    //    return wiremock;
+    //}
 }

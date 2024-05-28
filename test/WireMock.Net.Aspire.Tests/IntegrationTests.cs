@@ -31,7 +31,7 @@ public class IntegrationTests(ITestOutputHelper output)
         weatherForecasts.Should().BeEquivalentTo(new[]
         {
             new WeatherForecast(new DateOnly(2024, 5, 24), -10, "Freezing"),
-            new WeatherForecast(new DateOnly(2024, 5, 25), 33, "Hot")
+            new WeatherForecast(new DateOnly(2024, 5, 25), +33, "Hot")
         });
     }
 
