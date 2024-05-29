@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using WireMock.Client.Builders;
 
 // ReSharper disable once CheckNamespace
 namespace Aspire.Hosting;
@@ -11,7 +13,6 @@ namespace Aspire.Hosting;
 public class WireMockServerArguments
 {
     internal const int HttpContainerPort = 80;
-    internal const int HttpsContainerPort = 443;
 
     /// <summary>
     /// The default HTTP port where WireMock.Net is listening.
@@ -25,17 +26,6 @@ public class WireMockServerArguments
     /// If not defined, .NET Aspire automatically assigns a random port.
     /// </summary>
     public int? HttpPort { get; set; }
-
-    /// <summary>
-    /// The HTTPS port where WireMock.Net is listening.
-    /// If not defined, .NET Aspire automatically assigns a random port.
-    /// </summary>
-    public int? HttpsPort { get; set; }
-
-    /// <summary>
-    /// Also listen on HTTPS URL.
-    /// </summary>
-    public bool UseHttps { get; set; }
 
     /// <summary>
     /// The admin username.
@@ -72,24 +62,17 @@ public class WireMockServerArguments
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(AdminUsername) && !string.IsNullOrEmpty(AdminPassword);
 
     /// <summary>
+    /// Optional delegate that will be invoked to configure the WireMock.Net resource using the <see cref="AdminApiMappingBuilder"/>.
+    /// </summary>
+    public Func<AdminApiMappingBuilder, Task>? ApiMappingBuilder { get; set; }
+
+    /// <summary>
     /// Converts the current instance's properties to an array of command-line arguments for starting the WireMock.Net server.
     /// </summary>
     /// <returns>An array of strings representing the command-line arguments.</returns>
     public string[] GetArgs()
     {
         var args = new Dictionary<string, string>();
-
-        Add(args, "--Urls", () =>
-            {
-                var urls = $"http://*:{HttpContainerPort}";
-                if (UseHttps || HttpsPort > 0)
-                {
-                    urls += $", https://*:{HttpsContainerPort}";
-                }
-
-                return urls;
-            }
-        );
 
         Add(args, "--WireMockLogger", DefaultLogger);
 

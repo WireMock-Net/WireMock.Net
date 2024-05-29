@@ -1,6 +1,10 @@
 using System;
+using System.Threading.Tasks;
 using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Lifecycle;
 using Stef.Validation;
+using WireMock.Client.Builders;
+using WireMock.Net.Aspire;
 
 // ReSharper disable once CheckNamespace
 namespace Aspire.Hosting;
@@ -52,11 +56,6 @@ public static class WireMockServerBuilderExtensions
             .WithImage(DefaultLinuxImage)
             .WithEnvironment(ctx => ctx.EnvironmentVariables.Add("DOTNET_USE_POLLING_FILE_WATCHER", "1")) // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
             .WithHttpEndpoint(port: arguments.HttpPort, targetPort: WireMockServerArguments.HttpContainerPort);
-
-        if (arguments.UseHttps || arguments.HttpsPort > 0)
-        {
-            resourceBuilder = resourceBuilder.WithHttpsEndpoint(port: arguments.HttpsPort, targetPort: WireMockServerArguments.HttpsContainerPort);
-        }
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
         {
@@ -152,9 +151,19 @@ public static class WireMockServerBuilderExtensions
         return wiremock;
     }
 
-    //public static IResourceBuilder<WireMockServerResource> UseHttps(this IResourceBuilder<WireMockServerResource> wiremock)
-    //{
-    //    Guard.NotNull(wiremock).Resource.Arguments.UseHttps = true;
-    //    return wiremock;
-    //}
+    /// <summary>
+    /// Use WireMock Client's AdminApiMappingBuilder to configure the WireMock.Net resource.
+    /// </summary>
+    /// <param name="wiremock">The <see cref="IResourceBuilder{WireMockServerResource}"/>.</param>
+    /// <param name="configure">Delegate that will be invoked to configure the WireMock.Net resource.</param>
+    /// <returns></returns>
+    public static IResourceBuilder<WireMockServerResource> WithApiMappingBuilder(this IResourceBuilder<WireMockServerResource> wiremock, Func<AdminApiMappingBuilder, Task> configure)
+    {
+        Guard.NotNull(wiremock);
+
+        wiremock.ApplicationBuilder.Services.TryAddLifecycleHook<WireMockServerMappingBuilderHook>();
+        wiremock.Resource.Arguments.ApiMappingBuilder = configure;
+
+        return wiremock;
+    }
 }
