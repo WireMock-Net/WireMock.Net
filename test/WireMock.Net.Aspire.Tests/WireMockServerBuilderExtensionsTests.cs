@@ -70,7 +70,7 @@ public class WireMockServerBuilderExtensionsTests
         var containerImageAnnotation = wiremock.Resource.Annotations.OfType<ContainerImageAnnotation>().FirstOrDefault();
         containerImageAnnotation.Should().BeEquivalentTo(new ContainerImageAnnotation
         {
-            Image = "sheyenrath/wiremock.net",
+            Image = "sheyenrath/wiremock.net-alpine",
             Registry = null,
             Tag = "latest"
         });
