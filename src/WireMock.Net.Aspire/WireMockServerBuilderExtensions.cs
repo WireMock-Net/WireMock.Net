@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using Stef.Validation;
@@ -15,7 +13,7 @@ namespace Aspire.Hosting;
 public static class WireMockServerBuilderExtensions
 {
     // Linux only (https://github.com/dotnet/aspire/issues/854)
-    private const string DefaultLinuxImage = "sheyenrath/wiremock.net";
+    private const string DefaultLinuxImage = "sheyenrath/wiremock.net-alpine";
     private const string DefaultLinuxMappingsPath = "/app/__admin/mappings";
 
     /// <summary>
@@ -64,13 +62,6 @@ public static class WireMockServerBuilderExtensions
 
         resourceBuilder = resourceBuilder.WithArgs(ctx =>
         {
-            //var urls = new List<string>
-            //{
-            //    $"http://*:{HttpContainerPort}"
-            //};
-
-            //ctx.Args.Add($"--URLS http://*:{HttpContainerPort}, https://*:{HttpsContainerPort}");
-
             foreach (var arg in arguments.GetArgs())
             {
                 ctx.Args.Add(arg);

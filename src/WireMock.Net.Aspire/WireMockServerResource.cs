@@ -8,15 +8,7 @@ namespace Aspire.Hosting.ApplicationModel;
 /// </summary>
 public class WireMockServerResource : ContainerResource, IResourceWithServiceDiscovery
 {
-    private const string PrimaryEndpointName = "http";
-    private EndpointReference? _primaryEndpoint;
-
     internal WireMockServerArguments Arguments { get; }
-
-    /// <summary>
-    /// Gets the primary endpoint for the server.
-    /// </summary>
-    public EndpointReference PrimaryEndpoint => _primaryEndpoint ??= new(this, PrimaryEndpointName);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockServerResource"/> class.

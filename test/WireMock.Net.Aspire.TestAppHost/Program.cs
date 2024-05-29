@@ -1,3 +1,5 @@
+using WireMock.Net.Aspire.TestAppHost;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappings");
@@ -5,6 +7,9 @@ var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappin
 builder
     .AddWireMock("wiremock-service")
     .WithMappingsPath(mappingsPath)
-    .WithWatchStaticMappings();
+    .WithWatchStaticMappings()
+    .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);
 
-await builder.Build().RunAsync();
+await builder
+    .Build()
+    .RunAsync();

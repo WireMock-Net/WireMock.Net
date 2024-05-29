@@ -23,16 +23,23 @@ public class IntegrationTests(ITestOutputHelper output)
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
-        // Act
         using var httpClient = app.CreateHttpClient("wiremock-service");
-        var weatherForecasts = await httpClient.GetFromJsonAsync<WeatherForecast[]>("/weatherforecast");
 
-        // Assert
-        weatherForecasts.Should().BeEquivalentTo(new[]
+        // Act 1
+        var weatherForecasts1 = await httpClient.GetFromJsonAsync<WeatherForecast[]>("/weatherforecast");
+
+        // Assert 1
+        weatherForecasts1.Should().BeEquivalentTo(new[]
         {
             new WeatherForecast(new DateOnly(2024, 5, 24), -10, "Freezing"),
             new WeatherForecast(new DateOnly(2024, 5, 25), +33, "Hot")
         });
+
+        // Act 2
+        var weatherForecasts2 = await httpClient.GetFromJsonAsync<WeatherForecast[]>("/weatherforecast2");
+
+        // Assert 2
+        weatherForecasts2.Should().HaveCount(5);
     }
 
     [Fact]
@@ -49,11 +56,18 @@ public class IntegrationTests(ITestOutputHelper output)
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
-        // Act
         var adminClient = app.CreateWireMockAdminClient("wiremock-service");
+
+        // Act 1
         var settings = await adminClient.GetSettingsAsync();
 
-        // Assert
+        // Assert 1
         settings.Should().NotBeNull();
+
+        // Act 2
+        var mappings = await adminClient.GetMappingsAsync();
+
+        // Assert 2
+        mappings.Should().HaveCount(2);
     }
 }

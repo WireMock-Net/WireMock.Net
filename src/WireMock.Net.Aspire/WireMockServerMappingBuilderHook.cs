@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using RestEase;
@@ -25,9 +21,11 @@ internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecyc
 
         foreach (var wireMockInstance in wireMockInstances)
         {
-            if (wireMockInstance.PrimaryEndpoint.IsAllocated)
+            var endpoint = wireMockInstance.GetEndpoint("http");
+            if (endpoint.IsAllocated)
             {
-                var adminApi = RestClient.For<IWireMockAdminApi>(new Uri(wireMockInstance.PrimaryEndpoint.Url, UriKind.Absolute));
+                var adminApi = RestClient.For<IWireMockAdminApi>(endpoint.Url);
+
                 var mappingBuilder = adminApi.GetMappingBuilder();
                 wireMockInstance.Arguments.ApiMappingBuilder?.Invoke(mappingBuilder);
             }
