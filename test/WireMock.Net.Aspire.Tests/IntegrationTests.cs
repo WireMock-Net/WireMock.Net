@@ -23,8 +23,8 @@ public class IntegrationTests(ITestOutputHelper output)
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
-        // Wait 1 second to ensure mappings are created via the MappingBuilder
-        await Task.Delay(1000);
+        // Wait 2 seconds to ensure mappings are created via the MappingBuilder
+        await Task.Delay(2000);
 
         using var httpClient = app.CreateHttpClient("wiremock-service");
 
@@ -59,8 +59,8 @@ public class IntegrationTests(ITestOutputHelper output)
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
-        // Wait 1 second to ensure mappings are created via the MappingBuilder
-        await Task.Delay(1000);
+        // Wait 2 seconds to ensure mappings are created via the MappingBuilder
+        await Task.Delay(2000);
 
         var adminClient = app.CreateWireMockAdminClient("wiremock-service");
 
