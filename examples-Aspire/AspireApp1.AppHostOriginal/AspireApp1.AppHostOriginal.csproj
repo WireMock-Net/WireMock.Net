@@ -11,9 +11,6 @@
     <ItemGroup>
         <ProjectReference Include="..\AspireApp1.ApiService\AspireApp1.ApiService.csproj" />
         <ProjectReference Include="..\AspireApp1.Web\AspireApp1.Web.csproj" />
-
-        <!-- https://learn.microsoft.com/en-us/dotnet/aspire/extensibility/custom-resources?tabs=windows#create-library-for-resource-extension -->
-        <ProjectReference Include="..\..\src\WireMock.Net.Aspire\WireMock.Net.Aspire.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 
     <ItemGroup>

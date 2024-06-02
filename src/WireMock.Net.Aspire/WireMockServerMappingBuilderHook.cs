@@ -12,6 +12,7 @@ internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecyc
     {
         var wireMockInstances = appModel.Resources
             .OfType<WireMockServerResource>()
+            .Where(i => i.Arguments.ApiMappingBuilder is not null)
             .ToArray();
 
         if (!wireMockInstances.Any())
@@ -27,7 +28,7 @@ internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecyc
                 var adminApi = RestClient.For<IWireMockAdminApi>(endpoint.Url);
 
                 var mappingBuilder = adminApi.GetMappingBuilder();
-                wireMockInstance.Arguments.ApiMappingBuilder?.Invoke(mappingBuilder);
+                wireMockInstance.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
             }
         }
 
