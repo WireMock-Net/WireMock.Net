@@ -8,7 +8,7 @@ namespace WireMock.Net.Aspire;
 
 internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecycleHook
 {
-    public Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
+    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
     {
         var wireMockInstances = appModel.Resources
             .OfType<WireMockServerResource>()
@@ -17,7 +17,7 @@ internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecyc
 
         if (!wireMockInstances.Any())
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var wireMockInstance in wireMockInstances)
@@ -28,10 +28,8 @@ internal class WireMockServerMappingBuilderHook : IDistributedApplicationLifecyc
                 var adminApi = RestClient.For<IWireMockAdminApi>(endpoint.Url);
 
                 var mappingBuilder = adminApi.GetMappingBuilder();
-                wireMockInstance.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
+                await wireMockInstance.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
             }
         }
-
-        return Task.CompletedTask;
     }
 }
