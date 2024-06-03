@@ -6,6 +6,7 @@ var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappin
 
 builder
     .AddWireMock("wiremock-service")
+    .WithAdminUserNameAndPassword($"user-{Guid.NewGuid()}", $"pwd-{Guid.NewGuid()}")
     .WithMappingsPath(mappingsPath)
     .WithWatchStaticMappings()
     .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);

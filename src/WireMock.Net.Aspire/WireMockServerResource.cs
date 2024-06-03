@@ -19,4 +19,13 @@ public class WireMockServerResource : ContainerResource, IResourceWithServiceDis
     {
         Arguments = Guard.NotNull(arguments);
     }
+
+    /// <summary>
+    /// Gets an endpoint reference.
+    /// </summary>
+    /// <returns>An <see cref="EndpointReference"/> object representing the endpoint reference.</returns>
+    public EndpointReference GetEndpoint()
+    {
+        return new EndpointReference(this, "http");
+    }
 }

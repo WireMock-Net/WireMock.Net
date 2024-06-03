@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Text;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -15,40 +17,51 @@ internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerServ
 
     public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
     {
-        var wireMockInstances = appModel.Resources
+        var wireMockServerResources = appModel.Resources
             .OfType<WireMockServerResource>()
             .Where(i => i.Arguments.ApiMappingBuilder is not null)
             .ToArray();
 
-        if (!wireMockInstances.Any())
+        if (!wireMockServerResources.Any())
         {
             return;
         }
 
-        foreach (var wireMockInstance in wireMockInstances)
+        foreach (var wireMockServerResource in wireMockServerResources)
         {
-            var endpoint = wireMockInstance.GetEndpoint("http");
+            var endpoint = wireMockServerResource.GetEndpoint();
             if (endpoint.IsAllocated)
             {
-                var logger = loggerService.GetLogger(wireMockInstance);
+                var adminApi = CreateWireMockAdminApi(wireMockServerResource);
+
+                var logger = loggerService.GetLogger(wireMockServerResource);
                 logger.LogInformation("Checking Health status from WireMock.Net");
 
-                var adminApi = await WaitForHealthAsync(endpoint, cancellationToken);
+                await WaitForHealthAsync(adminApi, cancellationToken);
 
                 logger.LogInformation("Calling ApiMappingBuilder to add mappings to WireMock.Net");
                 var mappingBuilder = adminApi.GetMappingBuilder();
-                await wireMockInstance.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
+                await wireMockServerResource.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
             }
         }
     }
 
-    private static async Task<IWireMockAdminApi> WaitForHealthAsync(EndpointReference endpoint, CancellationToken cancellationToken)
+    private static IWireMockAdminApi CreateWireMockAdminApi(WireMockServerResource resource)
     {
-        var adminApi = RestClient.For<IWireMockAdminApi>(endpoint.Url);
+        var adminApi = RestClient.For<IWireMockAdminApi>(resource.GetEndpoint().Url);
+        if (resource.Arguments.HasBasicAuthentication)
+        {
+            adminApi.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{resource.Arguments.AdminUsername}:{resource.Arguments.AdminPassword}")));
+        }
 
+        return adminApi;
+    }
+
+    private static async Task WaitForHealthAsync(IWireMockAdminApi adminApi, CancellationToken cancellationToken)
+    {
         var retries = 0;
         var isHealthy = await GetHealthAsync(adminApi, cancellationToken);
-        while (!isHealthy && retries < MaxRetries)
+        while (!isHealthy && retries < MaxRetries && !cancellationToken.IsCancellationRequested)
         {
             await Task.Delay((int)(InitialWaitingTimeInMilliSeconds * Math.Pow(2, retries)), cancellationToken);
             isHealthy = await GetHealthAsync(adminApi, cancellationToken);
@@ -59,8 +72,6 @@ internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerServ
         {
             throw new InvalidOperationException($"Unable to check the /__admin/health endpoint after {MaxRetries} retries.");
         }
-
-        return adminApi;
     }
 
     private static async Task<bool> GetHealthAsync(IWireMockAdminApi adminApi, CancellationToken cancellationToken)
