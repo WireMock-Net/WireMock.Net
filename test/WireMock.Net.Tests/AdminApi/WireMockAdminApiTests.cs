@@ -42,6 +42,18 @@ public partial class WireMockAdminApiTests
     }
 
     [Fact]
+    public async Task IWireMockAdminApi_GetHealthAsync()
+    {
+        // Arrange
+        var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        var status = await api.GetHealthAsync().ConfigureAwait(false);
+        status.Should().Be("Healthy");
+    }
+
+    [Fact]
     public async Task IWireMockAdminApi_GetSettingsAsync()
     {
         // Arrange
