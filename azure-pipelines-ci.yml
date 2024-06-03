@@ -21,7 +21,7 @@ jobs:
       version: '8.0.x'
 
   - task: CmdLine@2
-    displayName: 'Install aspire workload'
+    displayName: 'Install .NET Aspire workload'
     inputs:
       script: 'dotnet workload install aspire'
 

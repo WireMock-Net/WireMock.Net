@@ -19,7 +19,7 @@ internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerServ
     {
         var wireMockServerResources = appModel.Resources
             .OfType<WireMockServerResource>()
-            .Where(i => i.Arguments.ApiMappingBuilder is not null)
+            .Where(resource => resource.Arguments.ApiMappingBuilder is not null)
             .ToArray();
 
         if (!wireMockServerResources.Any())
