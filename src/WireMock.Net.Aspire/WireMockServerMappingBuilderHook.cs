@@ -1,6 +1,5 @@
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using RestEase;
 using WireMock.Client;
@@ -11,10 +10,11 @@ namespace WireMock.Net.Aspire;
 internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerService) : IDistributedApplicationLifecycleHook
 {
     private const int MaxRetries = 5;
+    private const int InitialWaitingTimeInMilliSeconds = 1000;
 
     public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
     {
-        
+
 
         var wireMockInstances = appModel.Resources
             .OfType<WireMockServerResource>()
@@ -51,7 +51,7 @@ internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerServ
     //    var healthStatusResponse = await adminApi.GetHealthAsync(cancellationToken);
     //    while ((!healthStatusResponse.ResponseMessage.IsSuccessStatusCode || healthStatusResponse.GetContent() != nameof(HealthStatus.Healthy)) && retries < MaxRetries)
     //    {
-    //        await Task.Delay(1000, cancellationToken);
+    //        await Task.Delay(InitialWaitingTimeInMilliSeconds * (retries + 1), cancellationToken);
     //        healthStatusResponse = await adminApi.GetHealthAsync(cancellationToken);
     //        retries++;
     //    }
@@ -67,9 +67,14 @@ internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerServ
         var mappingsOk = await GetMappingsAsync(adminApi, cancellationToken);
         while (!mappingsOk && retries < MaxRetries)
         {
-            await Task.Delay(1000, cancellationToken);
+            await Task.Delay(InitialWaitingTimeInMilliSeconds * (retries + 1), cancellationToken);
             mappingsOk = await GetMappingsAsync(adminApi, cancellationToken);
             retries++;
+        }
+
+        if (retries >= MaxRetries)
+        {
+            throw new InvalidOperationException($"Unable to check the /__admin/health endpoint after {MaxRetries} retries");
         }
 
         return adminApi;

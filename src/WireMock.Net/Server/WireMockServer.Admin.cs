@@ -31,7 +31,6 @@ public partial class WireMockServer
 {
     private const int EnhancedFileSystemWatcherTimeoutMs = 1000;
     private const string AdminFiles = "/__admin/files";
-    private const string AdminHealth = "/__admin/health";
     private const string AdminMappings = "/__admin/mappings";
     private const string AdminMappingsCode = "/__admin/mappings/code";
     private const string AdminMappingsWireMockOrg = "/__admin/mappings/wiremock.org";
@@ -55,9 +54,6 @@ public partial class WireMockServer
     #region InitAdmin
     private void InitAdmin()
     {
-        // __admin/health
-        Given(Request.Create().WithPath(AdminHealth).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(HealthGet));
-
         // __admin/settings
         Given(Request.Create().WithPath(AdminSettings).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SettingsGet));
         Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, AdminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(SettingsUpdate));
@@ -219,22 +215,6 @@ public partial class WireMockServer
         }
 
         return false;
-    }
-    #endregion
-
-    #region Health
-    private IResponseMessage HealthGet(IRequestMessage requestMessage)
-    {
-        return new ResponseMessage
-        {
-            BodyData = new BodyData
-            {
-                DetectedBodyType = BodyType.String,
-                BodyAsString = "Healthy"
-            },
-            StatusCode = (int)HttpStatusCode.OK,
-            Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>(WireMockConstants.ContentTypeTextPlain) } }
-        };
     }
     #endregion
 
