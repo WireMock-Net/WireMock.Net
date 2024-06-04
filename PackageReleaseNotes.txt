@@ -1,2 +1,4 @@
-# 0.0.1-preview-01
-preview...
+# 1.5.57 (04 June 2024)
+- #1113 Add some Extension methods to IWireMockAdminApi [feature]
+
+The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

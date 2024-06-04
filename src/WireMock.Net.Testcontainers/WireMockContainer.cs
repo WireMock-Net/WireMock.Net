@@ -47,13 +47,8 @@ public sealed class WireMockContainer : DockerContainer
     {
         ValidateIfRunning();
 
-        var adminApi = RestClient.For<IWireMockAdminApi>(GetPublicUri());
-        if (_configuration.HasBasicAuthentication)
-        {
-            adminApi.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_configuration.Username}:{_configuration.Password}")));
-        }
-
-        return adminApi;
+        var api = RestClient.For<IWireMockAdminApi>(GetPublicUri());
+        return _configuration.HasBasicAuthentication ? api.WithAuthorization(_configuration.Username!, _configuration.Password!) : api;
     }
 
     /// <summary>
