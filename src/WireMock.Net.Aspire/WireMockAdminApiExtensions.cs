@@ -44,12 +44,12 @@ internal static class WireMockAdminApiExtensions
 
         var retries = 0;
         var waitTime = TimeSpan.FromMilliseconds(InitialWaitingTimeInMilliSeconds);
-        var isHealthy = await GetHealthAsync(adminApi, cancellationToken);
+        var isHealthy = await IsHealthyAsync(adminApi, cancellationToken);
         while (!isHealthy && retries < MaxRetries && !cancellationToken.IsCancellationRequested)
         {
             waitTime = TimeSpan.FromMilliseconds((int)(InitialWaitingTimeInMilliSeconds * Math.Pow(2, retries)));
             await Task.Delay(waitTime, cancellationToken);
-            isHealthy = await GetHealthAsync(adminApi, cancellationToken);
+            isHealthy = await IsHealthyAsync(adminApi, cancellationToken);
             retries++;
         }
 
@@ -59,7 +59,7 @@ internal static class WireMockAdminApiExtensions
         }
     }
 
-    private static async Task<bool> GetHealthAsync(IWireMockAdminApi adminApi, CancellationToken cancellationToken)
+    private static async Task<bool> IsHealthyAsync(IWireMockAdminApi adminApi, CancellationToken cancellationToken)
     {
         try
         {
