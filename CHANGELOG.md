@@ -1,3 +1,6 @@
+# 1.5.57 (04 June 2024)
+- [#1113](https://github.com/WireMock-Net/WireMock.Net/pull/1113) - Add some Extension methods to IWireMockAdminApi [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.5.56 (03 June 2024)
 - [#1111](https://github.com/WireMock-Net/WireMock.Net/pull/1111) - Fix Request.Create().WithBodyAsJson(...) [bug] contributed by [StefH](https://github.com/StefH)
 - [#1112](https://github.com/WireMock-Net/WireMock.Net/pull/1112) - Add &quot;/__admin/health&quot; endpoint [feature] contributed by [StefH](https://github.com/StefH)
