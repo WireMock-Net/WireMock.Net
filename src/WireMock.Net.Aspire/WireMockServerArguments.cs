@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using WireMock.Client.Builders;
 
 // ReSharper disable once CheckNamespace
@@ -26,11 +27,13 @@ public class WireMockServerArguments
     /// <summary>
     /// The admin username.
     /// </summary>
+    [MemberNotNullWhen(true, nameof(HasBasicAuthentication))]
     public string? AdminUsername { get; set; }
 
     /// <summary>
     /// The admin password.
     /// </summary>
+    [MemberNotNullWhen(true, nameof(HasBasicAuthentication))]
     public string? AdminPassword { get; set; }
 
     /// <summary>
