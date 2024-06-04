@@ -1,5 +1,7 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
@@ -46,9 +48,12 @@ public sealed class WireMockContainer : DockerContainer
         ValidateIfRunning();
 
         var adminApi = RestClient.For<IWireMockAdminApi>(GetPublicUri());
-        return _configuration.HasBasicAuthentication ?
-            adminApi.WithAuthorization(_configuration.Username!, _configuration.Password!) :
-            adminApi;
+        if (_configuration.HasBasicAuthentication)
+        {
+            adminApi.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_configuration.Username}:{_configuration.Password}")));
+        }
+
+        return adminApi;
     }
 
     /// <summary>

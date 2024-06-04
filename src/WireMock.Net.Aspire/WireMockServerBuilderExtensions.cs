@@ -152,7 +152,7 @@ public static class WireMockServerBuilderExtensions
     {
         Guard.NotNull(wiremock);
 
-        wiremock.ApplicationBuilder.Services.TryAddLifecycleHook<WireMockServerMappingBuilderHook>();
+        wiremock.ApplicationBuilder.Services.TryAddLifecycleHook<WireMockServerLifecycleHook>();
         wiremock.Resource.Arguments.ApiMappingBuilder = configure;
 
         return wiremock;

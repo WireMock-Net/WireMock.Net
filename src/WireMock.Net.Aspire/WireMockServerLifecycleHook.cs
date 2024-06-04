@@ -7,7 +7,7 @@ using WireMock.Client.Extensions;
 
 namespace WireMock.Net.Aspire;
 
-internal class WireMockServerMappingBuilderHook(ResourceLoggerService loggerService) : IDistributedApplicationLifecycleHook
+internal class WireMockServerLifecycleHook(ResourceLoggerService loggerService) : IDistributedApplicationLifecycleHook
 {
     public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
     {
