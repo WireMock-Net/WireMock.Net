@@ -19,8 +19,8 @@ public class IntegrationTests(ITestOutputHelper output)
         }
 
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
-        await using var app = await appHost.BuildAsync();
+        var appHostBuilder = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
+        await using var app = await appHostBuilder.BuildAsync();
         await app.StartAsync();
 
         using var httpClient = app.CreateHttpClient("wiremock-service");
@@ -52,8 +52,8 @@ public class IntegrationTests(ITestOutputHelper output)
         }
 
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
-        await using var app = await appHost.BuildAsync();
+        var appHostBuilder = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
+        await using var app = await appHostBuilder.BuildAsync();
         await app.StartAsync();
 
         var adminClient = app.CreateWireMockAdminClient("wiremock-service");
