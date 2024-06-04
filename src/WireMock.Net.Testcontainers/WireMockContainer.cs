@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RestEase;
 using Stef.Validation;
 using WireMock.Client;
+using WireMock.Client.Extensions;
 using WireMock.Http;
 
 namespace WireMock.Net.Testcontainers;
@@ -47,13 +48,7 @@ public sealed class WireMockContainer : DockerContainer
         ValidateIfRunning();
 
         var api = RestClient.For<IWireMockAdminApi>(GetPublicUri());
-
-        if (_configuration.HasBasicAuthentication)
-        {
-            api.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_configuration.Username}:{_configuration.Password}")));
-        }
-
-        return api;
+        return _configuration.HasBasicAuthentication ? api.WithAuthorization(_configuration.Username!, _configuration.Password!) : api;
     }
 
     /// <summary>
