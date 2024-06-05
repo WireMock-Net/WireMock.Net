@@ -17,6 +17,7 @@ using VerifyXunit;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Client;
+using WireMock.Client.Extensions;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.Matchers;
@@ -39,6 +40,47 @@ public partial class WireMockAdminApiTests
     static WireMockAdminApiTests()
     {
         VerifyNewtonsoftJson.Enable(VerifySettings);
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_WaitForHealthAsync_AndCall_GetHealthAsync_OK()
+    {
+        // Arrange
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
+        var server = WireMockServer.Start(w =>
+        {
+            w.StartAdminInterface = true;
+            w.AdminUsername = adminUsername;
+            w.AdminPassword = adminPassword;
+        });
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0])
+            .WithAuthorization(adminUsername, adminPassword);
+
+        // Act 1
+        await api.WaitForHealthAsync().ConfigureAwait(false);
+
+        // Act 2
+        var status = await api.GetHealthAsync().ConfigureAwait(false);
+        status.Should().Be("Healthy");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_WaitForHealthAsync_AndCall_GetHealthAsync_ThrowsException()
+    {
+        // Arrange
+        var server = WireMockServer.Start(w =>
+        {
+            w.StartAdminInterface = true;
+            w.AdminUsername = $"username_{Guid.NewGuid()}";
+            w.AdminPassword = $"password_{Guid.NewGuid()}";
+        });
+
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        Func<Task> act = () => api.WaitForHealthAsync(maxRetries: 3);
+        await act.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]

@@ -25,11 +25,23 @@ public interface IWireMockAdminApi
     AuthenticationHeaderValue Authorization { get; set; }
 
     /// <summary>
+    /// Get health status.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    /// <returns>
+    /// Returns HttpStatusCode <c>200</c> with a value <c>Healthy</c> to indicate that WireMock.Net is healthy.
+    /// Else it returns HttpStatusCode <c>404</c>.
+    /// </returns>
+    [Get("health")]
+    [AllowAnyStatusCode]
+    Task<string> GetHealthAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Get the settings.
     /// </summary>
     /// <returns>SettingsModel</returns>
     [Get("settings")]
-    Task<SettingsModel> GetSettingsAsync();
+    Task<SettingsModel> GetSettingsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update the settings.
