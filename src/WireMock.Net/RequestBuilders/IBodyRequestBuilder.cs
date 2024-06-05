@@ -51,22 +51,12 @@ public interface IBodyRequestBuilder : IProtoBufRequestBuilder
     IRequestBuilder WithBody(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
     /// <summary>
-    /// WithBody : Body as a string response based on a object (which will be converted to a JSON string using NewtonSoft.Json).
+    /// WithBodyAsJson: A <see cref="JsonMatcher"/> will be used to match this object.
     /// </summary>
     /// <param name="body">The body.</param>
     /// <param name="matchBehaviour">The match behaviour [default is AcceptOnMatch].</param>
     /// <returns>A <see cref="IRequestBuilder"/>.</returns>
     IRequestBuilder WithBodyAsJson(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
-
-    /// <summary>
-    /// WithBody : Body as a string response based on a object (which will be converted to a JSON string using the <see cref="IJsonConverter"/>).
-    /// </summary>
-    /// <param name="body">The body.</param>
-    /// <param name="converter">The JsonConverter.</param>
-    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
-    /// <param name="matchBehaviour">The match behaviour [default is AcceptOnMatch].</param>
-    /// <returns>A <see cref="IRequestBuilder"/>.</returns>
-    IRequestBuilder WithBodyAsJson(object body, IJsonConverter converter, JsonConverterOptions? options = null, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch);
 
     /// <summary>
     /// WithBody: func (string)

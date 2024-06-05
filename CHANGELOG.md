@@ -1,3 +1,11 @@
+# 1.5.57 (04 June 2024)
+- [#1113](https://github.com/WireMock-Net/WireMock.Net/pull/1113) - Add some Extension methods to IWireMockAdminApi [feature] contributed by [StefH](https://github.com/StefH)
+
+# 1.5.56 (03 June 2024)
+- [#1111](https://github.com/WireMock-Net/WireMock.Net/pull/1111) - Fix Request.Create().WithBodyAsJson(...) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1112](https://github.com/WireMock-Net/WireMock.Net/pull/1112) - Add &quot;/__admin/health&quot; endpoint [feature] contributed by [StefH](https://github.com/StefH)
+- [#1110](https://github.com/WireMock-Net/WireMock.Net/issues/1110) - Connection prematurely closed BEFORE response  [bug]
+
 # 1.5.55 (22 May 2024)
 - [#1107](https://github.com/WireMock-Net/WireMock.Net/pull/1107) - When only Port is provided, bind to * (Fixes #1100) [bug] contributed by [StefH](https://github.com/StefH)
 

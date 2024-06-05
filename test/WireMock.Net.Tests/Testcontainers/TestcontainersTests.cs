@@ -1,4 +1,5 @@
 #if NET6_0_OR_GREATER
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -13,9 +14,12 @@ public class TestcontainersTests
     public async Task WireMockContainer_Build_and_StartAsync_and_StopAsync()
     {
         // Act
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainer = new WireMockContainerBuilder()
             .WithAutoRemove(true)
             .WithCleanUp(true)
+            .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .Build();
 
         try
