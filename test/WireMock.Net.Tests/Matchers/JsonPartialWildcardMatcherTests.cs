@@ -385,4 +385,22 @@ public class JsonPartialWildcardMatcherTests
         // Assert
         Assert.Equal(0.0, match);
     }
+
+    [Fact]
+    public void JsonPartialWildcardMatcher_IsMatch_WithIgnoreCaseTrueAndRegexTrue_JObject()
+    {
+        // Assign 
+        var matcher = new JsonPartialWildcardMatcher(new { id = 1, Number = "^\\d+$" }, ignoreCase: true, regex: true);
+
+        // Act 
+        var jObject = new JObject
+        {
+            { "Id", new JValue(1) },
+            { "Number", new JValue(1) }
+        };
+        double match = matcher.IsMatch(jObject).Score;
+
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
 }
