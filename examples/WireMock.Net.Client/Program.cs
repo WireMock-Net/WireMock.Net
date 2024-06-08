@@ -14,10 +14,13 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        // Start WireMock.Net tool with Admin interface
+        // dotnet-wiremock --StartAdminInterface
+
         // Create an implementation of the IWireMockAdminApi and pass in the base URL for the API.
         var api = RestClient.For<IWireMockAdminApi>("http://localhost:9091");
 
-        // await api.ResetMappingsAsync().ConfigureAwait(false);
+        await api.ResetMappingsAsync().ConfigureAwait(false);
 
         var mappingBuilder = api.GetMappingBuilder();
         mappingBuilder.Given(m => m
@@ -51,9 +54,28 @@ class Program
                 .WithPath("/bla3")
             )
             .WithResponse(rsp => rsp
-                .WithBodyAsJson(new 
+                .WithBodyAsJson(new
                 {
                     x = "test"
+                }, true)
+            )
+        );
+
+        mappingBuilder.Given(m => m
+            .WithRequest(req => req
+                .WithPath("/test1")
+                .UsingPost()
+                .WithBody(b => b
+                    .WithJmesPathMatcher("things.name == 'RequiredThing'")
+                )
+            )
+            .WithResponse(rsp => rsp
+                .WithHeaders(h => h.Add("Content-Type", "application/json"))
+                .WithDelay(TimeSpan.FromMilliseconds(50))
+                .WithStatusCode(200)
+                .WithBodyAsJson(new
+                {
+                    status = "ok"
                 }, true)
             )
         );
@@ -111,6 +133,9 @@ class Program
 
         var getFileResult = await api.GetFileAsync("1.cs");
         Console.WriteLine($"getFileResult = {getFileResult}");
+
+        Console.WriteLine("Press any key to reset mappings");
+        Console.ReadKey();
 
         var resetMappingsAsync = await api.ResetMappingsAsync();
         Console.WriteLine($"resetMappingsAsync = {resetMappingsAsync.Status}");
