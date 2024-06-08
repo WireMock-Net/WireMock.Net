@@ -13,7 +13,7 @@ public partial class BodyModelBuilder
     {
         return WithMatcher(mb => mb
             .WithName("NotNullOrEmptyMatcher")
-            .WithRejectOnMatch(true)
+            .WithRejectOnMatch(rejectOnMatch)
         );
     }
 
