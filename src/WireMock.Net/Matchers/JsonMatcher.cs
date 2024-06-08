@@ -31,7 +31,6 @@ public class JsonMatcher : IJsonMatcher
     public bool Regex { get; }
 
     private readonly JToken _valueAsJToken;
-    private readonly Func<JToken, JToken> _jTokenConverter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonMatcher"/> class.
@@ -70,7 +69,6 @@ public class JsonMatcher : IJsonMatcher
 
         Value = value;
         _valueAsJToken = JsonUtils.ConvertValueToJToken(value);
-        _jTokenConverter = ignoreCase ? Rename : jToken => jToken;
     }
 
     /// <inheritdoc />
@@ -86,7 +84,7 @@ public class JsonMatcher : IJsonMatcher
             {
                 var inputAsJToken = JsonUtils.ConvertValueToJToken(input);
 
-                var match = IsMatch(_jTokenConverter(_valueAsJToken), _jTokenConverter(inputAsJToken));
+                var match = IsMatch(RenameJToken(_valueAsJToken), RenameJToken(inputAsJToken));
                 score = MatchScores.ToScore(match);
             }
             catch (Exception ex)
@@ -179,38 +177,59 @@ public class JsonMatcher : IJsonMatcher
         }
     }
 
+    // https://stackoverflow.com/questions/11679804/json-net-rename-properties
+    private JToken RenameJToken(JToken input)
+    {
+        if (!IgnoreCase)
+        {
+            return input;
+        }
+
+        return input switch
+        {
+            JProperty property => RenameJProperty(property),
+            JArray array => RenameJArray(array),
+            JObject obj => RenameJObject(obj),
+            _ => input
+        };
+    }
+
+    private JProperty RenameJProperty(JProperty property)
+    {
+        if (!IgnoreCase)
+        {
+            return property;
+        }
+
+        var propertyValue = property.Value;
+        if (propertyValue.Type == JTokenType.String && !Regex)
+        {
+            var stringValue = propertyValue.Value<string>()!;
+            propertyValue = ToUpper(stringValue);
+        }
+
+        return new JProperty(ToUpper(property.Name)!, RenameJToken(propertyValue));
+    }
+
+    private JArray RenameJArray(JArray array)
+    {
+        if (Regex)
+        {
+            return array;
+        }
+
+        var renamedValues = array.Select(RenameJToken);
+        return new JArray(renamedValues);
+    }
+
+    private JObject RenameJObject(JObject obj)
+    {
+        var renamedProperties = obj.Properties().Select(RenameJProperty);
+        return new JObject(renamedProperties);
+    }
+
     private static string? ToUpper(string? input)
     {
         return input?.ToUpperInvariant();
-    }
-
-    // https://stackoverflow.com/questions/11679804/json-net-rename-properties
-    private static JToken Rename(JToken json)
-    {
-        if (json is JProperty property)
-        {
-            JToken propertyValue = property.Value;
-            if (propertyValue.Type == JTokenType.String)
-            {
-                string stringValue = propertyValue.Value<string>()!;
-                propertyValue = ToUpper(stringValue);
-            }
-
-            return new JProperty(ToUpper(property.Name)!, Rename(propertyValue));
-        }
-
-        if (json is JArray array)
-        {
-            var renamedValues = array.Select(Rename);
-            return new JArray(renamedValues);
-        }
-
-        if (json is JObject obj)
-        {
-            var renamedProperties = obj.Properties().Select(Rename);
-            return new JObject(renamedProperties);
-        }
-
-        return json;
     }
 }
