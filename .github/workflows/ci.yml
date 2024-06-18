@@ -19,9 +19,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: 'Run Unit Tests'
+    - name: 'Execute Tests'
       run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0    
 
   linux-build-and-run:
     name: Run Tests on Linux
@@ -33,6 +33,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: 'Run Unit Tests'
+    - name: 'Execute Tests'
       run: |
         dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+
+    - name: 'Execute Aspire Tests'
+      run: |
+        dotnet test './test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj' -c Release
