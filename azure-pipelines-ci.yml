@@ -31,7 +31,7 @@ jobs:
     displayName: 'dotnet dev-certs https'
   
   - script: |
-      dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.pullrequest.base=master /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml /d:sonar.verbose=true 
+      dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.pullrequest.base=master /d:sonar.pullrequest.branch=$(Build.SourceBranch) /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml /d:sonar.verbose=true 
     displayName: 'Begin analysis on SonarCloud'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
     # inputs:
