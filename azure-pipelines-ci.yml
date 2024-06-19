@@ -14,42 +14,53 @@ jobs:
       echo "BuildId = $(buildId)"
     displayName: 'Print buildId'
 
-  - script: |
-      dotnet tool install --global dotnet-sonarscanner
-    displayName: 'Install SonarScanner tool'
+  - task: UseDotNet@2
+    displayName: Use .NET 8.0
+    inputs:
+      packageType: 'sdk'
+      version: '8.0.x'    
 
   - task: PowerShell@2
-    displayName: "Use JDK17 by default"
+    displayName: "Use JDK11 by default"
     inputs:
       targetType: 'inline'
       script: |
-        $jdkPath = $env:JAVA_HOME_17_X64
+        $jdkPath = $env:JAVA_HOME_11_X64
         Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
   - script: |
       dotnet dev-certs https --trust || true
     displayName: 'dotnet dev-certs https'
   
-  - script: |
-      dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml /d:sonar.verbose=true 
-    displayName: 'Begin analysis on SonarCloud'
+  - task: SonarCloudPrepare@1
+    displayName: 'Prepare analysis on SonarCloud'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+    inputs:
+      SonarCloud: SonarCloud
+      organization: wiremock-net
+      projectKey: 'WireMock-Net_WireMock.Net'
+      projectName: 'WireMock.Net'
+      extraProperties: |
+        sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
       projects: './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj'
-      arguments: '--configuration Debug --framework net8.0 --no-incremental'
+      arguments: '--configuration Debug --framework net8.0'
 
   - task: CmdLine@2
     inputs:
       script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
+   
+  - task: SonarCloudAnalyze@1
+    displayName: 'SonarCloud: Run Code Analysis'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
-  - script: |
-      dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"
-    displayName: 'End analysis on SonarCloud'
+  - task: SonarCloudPublish@1
+    displayName: 'SonarCloud: Publish Quality Gate Result'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
