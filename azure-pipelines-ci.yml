@@ -33,7 +33,7 @@ jobs:
   - script: |
       dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.opencover.reportsPaths=**/coverage.net8.0.opencover.xml /d:sonar.verbose=true 
     displayName: 'Begin analysis on SonarCloud'
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+    condition: and(false, succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
@@ -50,7 +50,7 @@ jobs:
   - script: |
       dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"
     displayName: 'End analysis on SonarCloud'
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
+    condition: and(false, succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
     displayName: 'WhiteSource Bolt'
