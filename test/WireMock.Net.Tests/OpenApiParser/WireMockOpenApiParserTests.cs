@@ -27,7 +27,7 @@ public class WireMockOpenApiParserTests
         _exampleValuesMock.SetupGet(e => e.Object).Returns("example-object");
         _exampleValuesMock.SetupGet(e => e.Bytes).Returns("Stef"u8.ToArray());
         _exampleValuesMock.SetupGet(e => e.Date).Returns(() => new DateTime(2024, 6, 19));
-        _exampleValuesMock.SetupGet(e => e.DateTime).Returns(() => new DateTime(2024, 6, 19, 12, 34, 56));
+        _exampleValuesMock.SetupGet(e => e.DateTime).Returns(() => new DateTime(2024, 6, 19, 12, 34, 56, DateTimeKind.Utc));
     }
 
     [Fact]
