@@ -59,13 +59,15 @@ jobs:
 
   - task: CmdLine@2
     inputs:
-      script: 'dotnet-coverage collect "dotnet test **/test/**/*.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage.xml"'
+      script: |
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-1.xml"
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-2.xml"
     displayName: 'Execute Unit Tests with Coverage'
 
   - task: CmdLine@2
     displayName: 'Merge coverage files'
     inputs:
-      script: 'dotnet coverage merge *.wiremock-coverage.xml --recursive --output ./test/wiremock-coverage.xml --output-format xml'
+      script: 'dotnet coverage merge *.wiremock-coverage-*.xml --recursive --output ./test/wiremock-coverage.xml --output-format xml'
 
   - script: |
       dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"
