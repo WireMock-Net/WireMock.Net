@@ -32,7 +32,7 @@ jobs:
       dotnet dev-certs https --trust || true
     displayName: 'dotnet dev-certs https'
 
-    # dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.branch.name=$(Build.SourceBranchName) /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.opencover.reportsPaths=coverage.xml /d:sonar.verbose=true
+    # See: https://docs.sonarsource.com/sonarcloud/enriching/test-coverage/dotnet-test-coverage
   - script: |
       dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.branch.name=$(Build.SourceBranchName) /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.vscoveragexml.reportsPaths=**/wiremock-coverage.xml /d:sonar.verbose=true
     displayName: 'Begin analysis on SonarCloud'
@@ -48,8 +48,6 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: 'dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage.xml"'
-      # script: coverlet ./test/WireMock.Net.Tests/bin/Debug/net8.0/WireMock.Net.Tests.dll --target "dotnet" --targetargs "test --no-build --configuration Debug --framework net8.0" -f=opencover -o="coverage.xml"
-      # script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
   
   - script: |
