@@ -9,14 +9,14 @@ namespace WireMock.Net.Aspire;
 
 internal class WireMockServerLifecycleHook(ResourceLoggerService loggerService) : IDistributedApplicationLifecycleHook
 {
-    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
+    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = default)
     {
         var wireMockServerResources = appModel.Resources
             .OfType<WireMockServerResource>()
             .Where(resource => resource.Arguments.ApiMappingBuilder is not null)
             .ToArray();
 
-        if (!wireMockServerResources.Any())
+        if (wireMockServerResources.Length == 0)
         {
             return;
         }
