@@ -50,13 +50,6 @@ jobs:
       projects: '**/test/**/*.csproj'
       arguments: '--configuration Debug --framework net8.0 --no-incremental'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Execute Unit Tests with Coverage'
-    inputs:
-      command: 'test'
-      projects: '**/test/**/*.csproj'
-      arguments: '--no-build --configuration Debug --framework net8.0'
-
   - task: CmdLine@2
     inputs:
       script: |
