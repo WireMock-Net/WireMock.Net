@@ -22,7 +22,6 @@ jobs:
   - script: |
       dotnet tool install --global dotnet-sonarscanner
       dotnet tool install --global dotnet-coverage
-      dotnet tool install --global coverlet.console
     displayName: 'Install dotnet tools'
 
   - task: PowerShell@2
