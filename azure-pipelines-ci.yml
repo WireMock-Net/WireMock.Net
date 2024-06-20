@@ -46,11 +46,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        coverlet ./test/WireMock.Net.Tests/bin/Debug/net8.0/WireMock.Net.Tests.dll
-        --target "dotnet" 
-        --targetargs "test --no-build --configuration Debug --framework net8.0"
-        -f=opencover 
-        -o="coverage.xml"
+        coverlet ./test/WireMock.Net.Tests/bin/Debug/net8.0/WireMock.Net.Tests.dll --target "dotnet" --targetargs "test --no-build --configuration Debug --framework net8.0" -f=opencover -o="coverage.xml"
       # script: 'dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --no-build --configuration Debug --framework net8.0'
     displayName: 'Execute Unit Tests with Coverage'
   
