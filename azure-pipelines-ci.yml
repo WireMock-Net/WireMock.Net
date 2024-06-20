@@ -14,51 +14,41 @@ jobs:
       echo "BuildId = $(buildId)"
     displayName: 'Print buildId'
 
-  - task: UseDotNet@2
-    displayName: Use .NET 8.0
-    inputs:
-      packageType: 'sdk'
-      version: '8.0.x'
-
   - task: CmdLine@2
     displayName: 'Install .NET Aspire workload'
     inputs:
       script: 'dotnet workload install aspire'
 
-  - task: CmdLine@2
-    displayName: 'Install dotnet-coverage tool'
-    inputs:
-      script: 'dotnet tool install --global dotnet-coverage'
+  - script: |
+      dotnet tool install --global dotnet-sonarscanner
+      dotnet tool install --global dotnet-coverage
+      dotnet tool install --global coverlet.console
+    displayName: 'Install dotnet tools'
 
   - task: PowerShell@2
-    displayName: "Use JDK11 by default"
+    displayName: "Use JDK17 by default"
     inputs:
       targetType: 'inline'
       script: |
-        $jdkPath = $env:JAVA_HOME_11_X64
+        $jdkPath = $env:JAVA_HOME_17_X64
         Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
 
   - script: |
       dotnet dev-certs https --trust || true
     displayName: 'dotnet dev-certs https'
   
-  - task: SonarCloudPrepare@1
-    displayName: 'Prepare analysis on SonarCloud'
+  # See: https://docs.sonarsource.com/sonarcloud/enriching/test-coverage/dotnet-test-coverage
+  - script: |
+      dotnet sonarscanner begin /k:"WireMock-Net_WireMock.Net" /o:"wiremock-net" /d:sonar.branch.name=$(Build.SourceBranchName) /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$(SONAR_TOKEN)" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.cs.vscoveragexml.reportsPaths=**/wiremock-coverage.xml /d:sonar.verbose=true
+    displayName: 'Begin analysis on SonarCloud'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
-    inputs:
-      SonarCloud: SonarCloud
-      organization: wiremock-net
-      projectKey: 'WireMock-Net_WireMock.Net'
-      projectName: 'WireMock.Net'
-      extraProperties: |
-        sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
   
   - task: DotNetCoreCLI@2
     displayName: 'Build Unit tests'
     inputs:
       command: 'build'
       projects: '**/test/**/*.csproj'
-      arguments: '--configuration Debug --framework net8.0'
+      arguments: '--configuration Debug --framework net8.0 --no-incremental'
 
   - task: DotNetCoreCLI@2
     displayName: 'Execute Unit Tests with Coverage'
@@ -68,16 +58,18 @@ jobs:
       arguments: '--no-build --configuration Debug --framework net8.0'
 
   - task: CmdLine@2
+    inputs:
+      script: 'dotnet-coverage collect "dotnet test **/test/**/*.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage.xml"'
+    displayName: 'Execute Unit Tests with Coverage'
+
+  - task: CmdLine@2
     displayName: 'Merge coverage files'
     inputs:
-      script: 'dotnet coverage merge *.opencover.xml --recursive --output ./test/coverage.opencover.xml --output-format xml'
-   
-  - task: SonarCloudAnalyze@1
-    displayName: 'SonarCloud: Run Code Analysis'
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
-  
-  - task: SonarCloudPublish@1
-    displayName: 'SonarCloud: Publish Quality Gate Result'
+      script: 'dotnet coverage merge *.wiremock-coverage.xml --recursive --output ./test/wiremock-coverage.xml --output-format xml'
+
+  - script: |
+      dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"
+    displayName: 'End analysis on SonarCloud'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')) # Do not run for PullRequests
   
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@19
@@ -85,7 +77,7 @@ jobs:
     condition: and(succeeded(), eq(variables['RUN_WHITESOURCE'], 'yes'))
  
   - script: |
-      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/coverage.opencover.xml
+      bash <(curl https://codecov.io/bash) -t $(CODECOV_TOKEN) -f ./test/wiremock-coverage.xml
     displayName: 'Upload coverage results to codecov'
   
   - task: PublishTestResults@2
