@@ -59,7 +59,7 @@ jobs:
   - task: CmdLine@2
     displayName: 'Merge coverage files'
     inputs:
-      script: 'dotnet coverage merge *.wiremock-coverage-*.xml --output ./test/wiremock-coverage.xml --output-format xml'
+      script: 'dotnet coverage merge **/wiremock-coverage-*.xml --output ./test/wiremock-coverage.xml --output-format xml'
 
   - script: |
       dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"
