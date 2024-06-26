@@ -37,27 +37,35 @@ public class WireMockOpenApiParserSettings
     public IWireMockOpenApiParserExampleValues? ExampleValues { get; set; }
 
     /// <summary>
-    /// Is a Header match case insensitive? (default is true).
+    /// Is a Header match case-insensitive?
+    /// 
+    /// Default is <c>true</c>.
     /// </summary>
     public bool HeaderPatternIgnoreCase { get; set; } = true;
 
     /// <summary>
-    /// Is a Query Parameter match case insensitive? (default is true).
+    /// Is a Query Parameter match case-insensitive?
+    ///
+    /// Default is <c>true</c>.
     /// </summary>
     public bool QueryParameterPatternIgnoreCase { get; set; } = true;
 
     /// <summary>
-    /// Is a Request Body match case insensitive? (default is true).
+    /// Is a Request Body match case-insensitive?
+    ///
+    /// Default is <c>true</c>.
     /// </summary>
     public bool RequestBodyIgnoreCase { get; set; } = true;
 
     /// <summary>
-    /// Is a ExampleValue match case insensitive? (default is true).
+    /// Is a ExampleValue match case-insensitive?
+    ///
+    /// Default is <c>true</c>.
     /// </summary>
     public bool IgnoreCaseExampleValues { get; set; } = true;
 
     /// <summary>
-    /// Are examples generated dynamically? (default is false).
+    /// Are examples generated dynamically?
     /// </summary>
-    public bool DynamicExamples { get; set; } = false;
+    public bool DynamicExamples { get; set; }
 }
