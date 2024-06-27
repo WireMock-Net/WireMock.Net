@@ -1,3 +1,10 @@
+# 1.5.59 (26 June 2024)
+- [#1127](https://github.com/WireMock-Net/WireMock.Net/pull/1127) - Made changes to accommodate breaking change in testcontainers-dotnet 3.9 [feature] contributed by [epDugas](https://github.com/epDugas)
+
+# 1.5.58 (08 June 2024)
+- [#1116](https://github.com/WireMock-Net/WireMock.Net/pull/1116) - Add some methods to the BodyModelBuilder [feature] contributed by [StefH](https://github.com/StefH)
+- [#1117](https://github.com/WireMock-Net/WireMock.Net/issues/1117) - AbstractJsonPartialMatcher: Regex Value is Uppercased when IgnoreCase is set to true [bug]
+
 # 1.5.57 (04 June 2024)
 - [#1113](https://github.com/WireMock-Net/WireMock.Net/pull/1113) - Add some Extension methods to IWireMockAdminApi [feature] contributed by [StefH](https://github.com/StefH)
 

@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Logging;
 using RestEase;
 using Stef.Validation;
 using WireMock.Client;
@@ -26,8 +25,7 @@ public sealed class WireMockContainer : DockerContainer
     /// Initializes a new instance of the <see cref="WireMockContainer" /> class.
     /// </summary>
     /// <param name="configuration">The container configuration.</param>
-    /// <param name="logger">The logger.</param>
-    public WireMockContainer(WireMockConfiguration configuration, ILogger logger) : base(configuration, logger)
+    public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
         _configuration = Guard.NotNull(configuration);
     }
