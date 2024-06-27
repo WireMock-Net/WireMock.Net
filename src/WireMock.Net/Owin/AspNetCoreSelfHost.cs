@@ -144,8 +144,6 @@ internal partial class AspNetCoreSelfHost : IOwinSelfHost
             _logger.Info("Server using .NET 5.0");
 #elif NET6_0
             _logger.Info("Server using .NET 6.0");
-#elif NET7_0
-            _logger.Info("Server using .NET 7.0");
 #elif NET8_0
             _logger.Info("Server using .NET 8.0");
 #elif NET46

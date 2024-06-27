@@ -1,6 +1,8 @@
+#if MIMEKIT
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MimeKit;
 using Stef.Validation;
 using WireMock.Util;
 
@@ -9,22 +11,20 @@ namespace WireMock.Matchers.Request;
 /// <summary>
 /// The request body MultiPart matcher.
 /// </summary>
-public class RequestMessageMultiPartMatcher : IRequestMatcher
+public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
 {
-    /// <summary>
-    /// The matchers.
-    /// </summary>
+    /// <inheritdoc />
     public IMatcher[]? Matchers { get; }
 
-    /// <summary>
-    /// The <see cref="MatchOperator"/>
-    /// </summary>
+    /// <inheritdoc />
     public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 
     /// <summary>
     /// The <see cref="MatchBehaviour"/>
     /// </summary>
     public MatchBehaviour MatchBehaviour { get; }
+
+    private readonly MimeKitUtils _mimeKitUtils = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageMultiPartMatcher"/> class.
@@ -51,9 +51,6 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-#if !MIMEKIT
-        throw new System.NotSupportedException("The MultiPartMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#else
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
@@ -62,7 +59,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
             return requestMatchResult.AddScore(GetType(), score, null);
         }
 
-        if (!MimeKitUtils.TryGetMimeMessage(requestMessage, out var message))
+        if (!_mimeKitUtils.TryGetMimeMessage(requestMessage, out MimeMessage? message))
         {
             return requestMatchResult.AddScore(GetType(), score, null);
         }
@@ -71,7 +68,7 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         {
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
-            foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
+            foreach (var mimePart in message.BodyParts.OfType<MimePart>())
             {
                 var matchesForMimePart = new List<MatchResult> { default };
                 matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
@@ -98,6 +95,6 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         }
 
         return requestMatchResult.AddScore(GetType(), score, exception);
-#endif
     }
 }
+#endif

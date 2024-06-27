@@ -8,9 +8,9 @@ using ProtoBufJsonConverter.Models;
 
 namespace WireMock.Util;
 
-internal static class ProtoBufUtils
+internal class ProtoBufUtils : IProtoBufUtils
 {
-    internal static async Task<byte[]> GetProtoBufMessageWithHeaderAsync(
+    public async Task<byte[]> GetProtoBufMessageWithHeaderAsync(
         string? protoDefinition,
         string? messageType,
         object? value,

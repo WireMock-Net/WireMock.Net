@@ -20,17 +20,16 @@ public class GraphQLSchemaDetails
     /// </summary>
     public StringPattern? SchemaAsStringPattern { get; set; }
 
-#if GRAPHQL
     /// <summary>
-    /// The GraphQL schema as a <seealso cref="GraphQL.Types.ISchema"/>.
+    /// The GraphQL schema as a "GraphQL.Types.ISchema".
     /// </summary>
-    public GraphQL.Types.ISchema? SchemaAsISchema { get; set; }
+    public object? SchemaAsISchema { get; set; }
 
     /// <summary>
     /// The GraphQL Schema.
     /// </summary>
     [JsonIgnore]
-    public AnyOf<string, StringPattern, GraphQL.Types.ISchema>? Schema
+    public AnyOf<string, StringPattern, object>? Schema
     {
         get
         {
@@ -46,13 +45,12 @@ public class GraphQLSchemaDetails
 
             if (SchemaAsISchema != null)
             {
-                return new AnyOf<string, StringPattern, GraphQL.Types.ISchema>(SchemaAsISchema);
+                return new AnyOf<string, StringPattern, object>(SchemaAsISchema);
             }
 
             return null;
         }
     }
-#endif
 
     /// <summary>
     /// The custom Scalars to define for this schema.

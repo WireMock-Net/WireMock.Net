@@ -142,11 +142,9 @@ namespace WireMock.Owin.Mappers
                     var jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
-#if PROTOBUF
                 case BodyType.ProtoBuf:
                     var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke().Text;
-                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
-#endif
+                    return await TypeLoader.Load<IProtoBufUtils>().GetProtoBufMessageWithHeaderAsync(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
 
                 case BodyType.Bytes:
                     return responseMessage.BodyData.BodyAsBytes;
