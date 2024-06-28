@@ -1,5 +1,5 @@
 ## WireMock.Net
-Lightweight Http Mocking Server for .NET, inspired by [WireMock(http://WireMock.org) from the Java landscape.
+Lightweight Http Mocking Server for .NET, inspired by WireMock.org (from the Java landscape).
 
 ### :star: Key Features
 * HTTP response stubbing, matchable on URL/Path, headers, cookies and body content patterns
@@ -11,6 +11,7 @@ Lightweight Http Mocking Server for .NET, inspired by [WireMock(http://WireMock.
 * Stateful behaviour simulation
 * Response templating / transformation using Handlebars and extensions
 * Can be used locally or in CI/CD scenarios
+* Can be used for Aspire Distributed Application testing 
 
 ### :star: Stubbing
 A core feature of WireMock.Net is the ability to return predefined HTTP responses for requests matching criteria.
@@ -31,6 +32,12 @@ WireMock.Net can be used in several ways:
 #### UnitTesting
 You can use your favorite test framework and use WireMock within your tests, see
 [Wiki : UnitTesting](https://github.com/StefH/WireMock.Net/wiki/Using-WireMock-in-UnitTests).
+
+### Unit/Integration Testing using Testcontainers.DotNet
+See [Wiki : WireMock.Net.Testcontainers](https://github.com/WireMock-Net/WireMock.Net/wiki/Using-WireMock.Net.Testcontainers) on how to build a WireMock.Net Docker container which can be used in Unit/Integration testing.
+
+### Unit/Integration Testing using an an Aspire Distributed Application
+See [Wiki : WireMock.Net.Aspire](https://github.com/WireMock-Net/WireMock.Net/wiki/Using-WireMock.Net.Aspire) on how to use WireMock.Net as an Aspire Hosted application to do Unit/Integration testing.
 
 #### As a dotnet tool
 It's simple to install WireMock.Net as (global) dotnet tool, see [Wiki : dotnet tool](https://github.com/StefH/WireMock.Net/wiki/WireMock-as-dotnet-tool).
