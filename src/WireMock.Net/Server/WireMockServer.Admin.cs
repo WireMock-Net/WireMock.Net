@@ -38,7 +38,7 @@ public partial class WireMockServer
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
     private AdminPaths? _adminPaths;
 
-    private class AdminPaths
+    private sealed class AdminPaths
     {
         private readonly string _prefix;
         private readonly string _prefixEscaped;
