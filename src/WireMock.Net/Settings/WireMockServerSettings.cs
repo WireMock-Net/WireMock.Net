@@ -323,8 +323,7 @@ public class WireMockServerSettings
 
     /// <summary>
     /// The admin path to use for accessing the Admin REST interface.
-    /// 
-    /// If not set <c>_/admin</c> is used.
+    /// If not set <c>__/admin</c> is used.
     /// </summary>
     [PublicAPI]
     public string? AdminPath { get; set; }
