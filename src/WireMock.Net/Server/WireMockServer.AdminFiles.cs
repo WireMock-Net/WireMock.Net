@@ -117,9 +117,9 @@ public partial class WireMockServer
         return ResponseMessageBuilder.Create(HttpStatusCode.OK, "File deleted.");
     }
 
-    private static string GetFileNameFromRequestMessage(IRequestMessage requestMessage)
+    private string GetFileNameFromRequestMessage(IRequestMessage requestMessage)
     {
-        return Path.GetFileName(requestMessage.Path.Substring(AdminFiles.Length + 1));
+        return Path.GetFileName(requestMessage.Path.Substring(_adminPaths!.Files.Length + 1));
     }
     #endregion
 }

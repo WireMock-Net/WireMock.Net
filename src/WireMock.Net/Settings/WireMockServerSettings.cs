@@ -245,16 +245,16 @@ public class WireMockServerSettings
     public bool CustomCertificateDefined => CertificateSettings?.IsDefined == true;
 
 #if USE_ASPNETCORE
-        /// <summary>
-        /// Client certificate mode for the server
-        /// </summary>
-        [PublicAPI]
-        public ClientCertificateMode ClientCertificateMode { get; set; }
+    /// <summary>
+    /// Client certificate mode for the server
+    /// </summary>
+    [PublicAPI]
+    public ClientCertificateMode ClientCertificateMode { get; set; }
 
-        /// <summary>
-        /// Whether to accept any client certificate
-        /// </summary>
-        public bool AcceptAnyClientCertificate { get; set; }
+    /// <summary>
+    /// Whether to accept any client certificate
+    /// </summary>
+    public bool AcceptAnyClientCertificate { get; set; }
 #endif
 
     /// <summary>
@@ -324,8 +324,8 @@ public class WireMockServerSettings
     /// <summary>
     /// The admin path to use for accessing the Admin REST interface.
     /// 
-    /// Default value is <c>/__admin</c>.
+    /// If not set <c>_/admin</c> is used.
     /// </summary>
     [PublicAPI]
-    public string AdminPath { get; set; } = "/__admin";
+    public string? AdminPath { get; set; }
 }
