@@ -320,4 +320,12 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public Dictionary<string, GraphQLSchemaDetails>? GraphQLSchemas { get; set; }
+
+    /// <summary>
+    /// The admin path to use for accessing the Admin REST interface.
+    /// 
+    /// Default value is <c>/__admin</c>.
+    /// </summary>
+    [PublicAPI]
+    public string AdminPath { get; set; } = "/__admin";
 }
