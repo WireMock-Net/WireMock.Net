@@ -1,0 +1,32 @@
+﻿{
+  Guid: 53241df5-582c-458a-a67b-6de3d1d0508e,
+  UpdatedAt: DateTime_1,
+  Title: This is my title 1,
+  Request: {
+    Path: {
+      Matchers: [
+        {
+          Name: WildcardMatcher,
+          Pattern: /bla1,
+          IgnoreCase: false
+        }
+      ]
+    },
+    Methods: [
+      POST
+    ],
+    Body: {
+      Matcher: {
+        Name: JsonPartialMatcher,
+        Pattern: {
+          test: abc
+        },
+        IgnoreCase: false,
+        Regex: false
+      }
+    }
+  },
+  Response: {
+    Body: The Response
+  }
+}
