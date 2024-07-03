@@ -108,7 +108,13 @@ public partial class WireMockAdminApiTests
 
         // Act
         var settings = await api.GetSettingsAsync().ConfigureAwait(false);
+
+        // Assert
         Check.That(settings).IsNotNull();
+
+        // Cleanup
+        server.Stop();
+        server.Dispose();
     }
 
     [Fact]

@@ -59,11 +59,12 @@ public partial class WireMockServer
         public string Scenarios => $"{_prefix}/scenarios";
         public string OpenApi => $"{_prefix}/openapi";
 
-        public RegexMatcher MappingsGuidPathMatcher =>  new ($"^{_prefixEscaped}\\/mappings\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
-        public RegexMatcher MappingsCodeGuidPathMatcher =>  new ($"^{_prefixEscaped}\\/mappings\\/code\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
-        public RegexMatcher RequestsGuidPathMatcher =>  new ($"^{_prefixEscaped}\\/requests\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
-        public RegexMatcher ScenariosNameMatcher =>  new ($"^{_prefixEscaped}\\/scenarios\\/.+$");
+        public RegexMatcher MappingsGuidPathMatcher => new($"^{_prefixEscaped}\\/mappings\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
+        public RegexMatcher MappingsCodeGuidPathMatcher => new($"^{_prefixEscaped}\\/mappings\\/code\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
+        public RegexMatcher RequestsGuidPathMatcher => new($"^{_prefixEscaped}\\/requests\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
+        public RegexMatcher ScenariosNameMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+$");
         public RegexMatcher ScenariosNameWithResetMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+\\/reset$");
+        public RegexMatcher FilesFilenamePathMatcher => new($"^{_prefixEscaped}\\/files\\/.+$");
     }
 
     #region InitAdmin
@@ -131,11 +132,11 @@ public partial class WireMockServer
         Given(Request.Create().WithPath(_adminPaths.ScenariosNameWithResetMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenarioReset));
 
         // __admin/files/{filename}
-        Given(Request.Create().WithPath(AdminFilesFilenamePathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
-        Given(Request.Create().WithPath(AdminFilesFilenamePathMatcher).UsingPut()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
-        Given(Request.Create().WithPath(AdminFilesFilenamePathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
-        Given(Request.Create().WithPath(AdminFilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
-        Given(Request.Create().WithPath(AdminFilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
+        Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
+        Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingPut()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePut));
+        Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileGet));
+        Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingHead()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileHead));
+        Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingDelete()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FileDelete));
 
         // __admin/openapi
         Given(Request.Create().WithPath($"{_adminPaths.OpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(OpenApiConvertToMappings));
