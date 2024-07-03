@@ -1,4 +1,4 @@
-name: Build with Tests
+name: Run Tests
 
 on: 
   pull_request:
@@ -10,47 +10,29 @@ on:
 
 jobs:
   windows-build-and-run:
+    name: Run Tests on Windows 
     runs-on: windows-2022
 
     env:
       IsRunningOnGitHubActions: 'true'
 
-    steps:  
+    steps:
     - uses: actions/checkout@v4
-
-    - uses: actions/setup-dotnet@v3
-      with:
-       dotnet-version: |
-         7.0.x
-         8.0.x
-              
-    - name: 'Build Unit Tests'
-      run: |
-        dotnet build './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
 
     - name: 'Run Unit Tests'
       run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
 
   linux-build-and-run:
+    name: Run Tests on Linux
     runs-on: ubuntu-latest
 
     env:
         IsRunningOnGitHubActions: 'true'
 
-    steps:  
+    steps:
     - uses: actions/checkout@v4
-
-    - uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: |
-            7.0.x
-            8.0.x
-                
-    - name: 'Build Unit Tests'
-      run: |
-        dotnet build './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
 
     - name: 'Run Unit Tests'
       run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net7.0
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0

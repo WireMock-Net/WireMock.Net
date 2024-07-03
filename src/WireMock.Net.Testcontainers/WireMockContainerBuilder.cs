@@ -138,7 +138,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         Validate();
 
-        return new WireMockContainer(DockerResourceConfiguration, TestcontainersSettings.Logger);
+        return new WireMockContainer(DockerResourceConfiguration);
     }
 
     /// <inheritdoc />
