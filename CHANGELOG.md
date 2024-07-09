@@ -1,3 +1,13 @@
+# 1.5.60 (09 July 2024)
+- [#1128](https://github.com/WireMock-Net/WireMock.Net/pull/1128) - Add Handlebars.Net.Helpers.Xslt [feature] contributed by [StefH](https://github.com/StefH)
+- [#1130](https://github.com/WireMock-Net/WireMock.Net/pull/1130) - Add AdminPath to WireMockServerSettings [feature] contributed by [StefH](https://github.com/StefH)
+- [#1131](https://github.com/WireMock-Net/WireMock.Net/pull/1131) - Add unit tests for AdminApiMappingBuilder [test] contributed by [StefH](https://github.com/StefH)
+- [#1132](https://github.com/WireMock-Net/WireMock.Net/pull/1132) - Multipart Matcher Fix [bug] contributed by [rmeshksar](https://github.com/rmeshksar)
+- [#1133](https://github.com/WireMock-Net/WireMock.Net/pull/1133) - Add unit tests for AdminApiMappingBuilder_ [test] contributed by [StefH](https://github.com/StefH)
+- [#1134](https://github.com/WireMock-Net/WireMock.Net/pull/1134) - Remove some files and folders [refactor] contributed by [StefH](https://github.com/StefH)
+- [#1119](https://github.com/WireMock-Net/WireMock.Net/issues/1119) - Error in RequestMessageMultiPartMatcher [bug]
+- [#1121](https://github.com/WireMock-Net/WireMock.Net/issues/1121) - XML transformation [feature]
+
 # 1.5.59 (26 June 2024)
 - [#1127](https://github.com/WireMock-Net/WireMock.Net/pull/1127) - Made changes to accommodate breaking change in testcontainers-dotnet 3.9 [feature] contributed by [epDugas](https://github.com/epDugas)
 
