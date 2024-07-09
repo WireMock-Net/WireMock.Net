@@ -1,8 +1,6 @@
-#if MIMEKIT
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MimeKit;
 using Stef.Validation;
 using WireMock.Util;
 
@@ -11,20 +9,22 @@ namespace WireMock.Matchers.Request;
 /// <summary>
 /// The request body MultiPart matcher.
 /// </summary>
-public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
+public class RequestMessageMultiPartMatcher : IRequestMatcher
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// The matchers.
+    /// </summary>
     public IMatcher[]? Matchers { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The <see cref="MatchOperator"/>
+    /// </summary>
     public MatchOperator MatchOperator { get; } = MatchOperator.Or;
 
     /// <summary>
     /// The <see cref="MatchBehaviour"/>
     /// </summary>
     public MatchBehaviour MatchBehaviour { get; }
-
-    private readonly MimeKitUtils _mimeKitUtils = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageMultiPartMatcher"/> class.
@@ -51,6 +51,9 @@ public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
+#if !MIMEKIT
+        throw new System.NotSupportedException("The MultiPartMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+#else
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
@@ -59,7 +62,7 @@ public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
             return requestMatchResult.AddScore(GetType(), score, null);
         }
 
-        if (!_mimeKitUtils.TryGetMimeMessage(requestMessage, out MimeMessage? message))
+        if (!MimeKitUtils.TryGetMimeMessage(requestMessage, out var message))
         {
             return requestMatchResult.AddScore(GetType(), score, null);
         }
@@ -68,23 +71,21 @@ public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
         {
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
-            foreach (var mimePart in message.BodyParts.OfType<MimePart>())
+            foreach (var mimePartMatcher in Matchers.OfType<MimePartMatcher>().ToArray())
             {
-                var matchesForMimePart = new List<MatchResult> { default };
-                matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
-
-                score = matchesForMimePart.Select(m => m.Score).Max();
-
-                if (MatchScores.IsPerfect(score))
+                score = MatchScores.Mismatch;
+                foreach (var mimeBodyPart in message.BodyParts.OfType<MimeKit.MimePart>())
                 {
-                    if (MatchOperator == MatchOperator.Or)
+                    var matchResult = mimePartMatcher.IsMatch(mimeBodyPart);
+                    if (matchResult.IsPerfect())
                     {
+                        score = MatchScores.Perfect;
                         break;
                     }
                 }
-                else
+                if ((MatchOperator == MatchOperator.Or && MatchScores.IsPerfect(score))
+                    || (MatchOperator == MatchOperator.And && !MatchScores.IsPerfect(score)))
                 {
-                    score = MatchScores.Mismatch;
                     break;
                 }
             }
@@ -95,6 +96,6 @@ public class RequestMessageMultiPartMatcher : IRequestMessageMultiPartMatcher
         }
 
         return requestMatchResult.AddScore(GetType(), score, exception);
+#endif
     }
 }
-#endif
