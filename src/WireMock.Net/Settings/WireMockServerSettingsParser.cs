@@ -45,6 +45,7 @@ public static class WireMockServerSettingsParser
             AdminAzureADTenant = parser.GetStringValue(nameof(WireMockServerSettings.AdminAzureADTenant)),
             AdminPassword = parser.GetStringValue(nameof(WireMockServerSettings.AdminPassword)),
             AdminUsername = parser.GetStringValue(nameof(WireMockServerSettings.AdminUsername)),
+            AdminPath = parser.GetStringValue(nameof(WireMockServerSettings.AdminPath), "/__admin"),
             AllowBodyForAllHttpMethods = parser.GetBoolValue(nameof(WireMockServerSettings.AllowBodyForAllHttpMethods)),
             AllowCSharpCodeMatcher = parser.GetBoolValue(nameof(WireMockServerSettings.AllowCSharpCodeMatcher)),
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue(nameof(WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse)),
