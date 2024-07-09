@@ -96,6 +96,28 @@ public partial class WireMockAdminApiTests
     }
 
     [Fact]
+    public async Task IWireMockAdminApi_GetSettingsAsync_ForDifferentAdminPath()
+    {
+        // Arrange
+        var server = WireMockServer.Start(w =>
+        {
+            w.StartAdminInterface = true;
+            w.AdminPath = "/foo/__admin";
+        });
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0] + "/foo");
+
+        // Act
+        var settings = await api.GetSettingsAsync().ConfigureAwait(false);
+
+        // Assert
+        Check.That(settings).IsNotNull();
+
+        // Cleanup
+        server.Stop();
+        server.Dispose();
+    }
+
+    [Fact]
     public async Task IWireMockAdminApi_PostSettingsAsync()
     {
         // Arrange
