@@ -1,4 +1,11 @@
-# 1.5.59 (26 June 2024)
-- #1127 Made changes to accommodate breaking change in testcontainers-dotnet 3.9 [feature]
+# 1.5.60 (09 July 2024)
+- #1128 Add Handlebars.Net.Helpers.Xslt [feature]
+- #1130 Add AdminPath to WireMockServerSettings [feature]
+- #1131 Add unit tests for AdminApiMappingBuilder [test]
+- #1132 Multipart Matcher Fix [bug]
+- #1133 Add unit tests for AdminApiMappingBuilder_ [test]
+- #1134 Remove some files and folders [refactor]
+- #1119 Error in RequestMessageMultiPartMatcher [bug]
+- #1121 XML transformation [feature]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

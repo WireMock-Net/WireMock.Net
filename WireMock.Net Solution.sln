@@ -27,7 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		.github\FUNDING.yml = .github\FUNDING.yml
 		Generate-ReleaseNotes.cmd = Generate-ReleaseNotes.cmd
-		nuget.config = nuget.config
 		PackageReadme.md = PackageReadme.md
 		PackageReleaseNotes.template = PackageReleaseNotes.template
 		PackageReleaseNotes.txt = PackageReleaseNotes.txt
@@ -106,7 +105,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{0147029F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultipartUploader", "tools\MultipartUploader\MultipartUploader.csproj", "{07C30227-ADEC-4BDE-8CDC-849D85A690BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Console.NET7.UsingNuGet", "examples\WireMock.Net.Console.NET7.UsingNuGet\WireMock.Net.Console.NET7.UsingNuGet.csproj", "{941229D6-191B-4B5E-AC81-0905EBF4F19D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NET7.UsingNuGet", "examples\WireMock.Net.Console.NET7.UsingNuGet\WireMock.Net.Console.NET7.UsingNuGet.csproj", "{941229D6-191B-4B5E-AC81-0905EBF4F19D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.NET8", "examples\WireMock.Net.Console.NET8\WireMock.Net.Console.NET8.csproj", "{1EA72C0F-92E9-486B-8FFE-53F992BFC4AA}"
 EndProject
