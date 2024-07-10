@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.6.0-preview-00</Version>
         <Description>MultiPart Mime support for WireMock.Net</Description>
         <AssemblyTitle>WireMock.Net.MimeKitLite</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>

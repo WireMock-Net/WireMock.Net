@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Version>1.6.0-preview-00</Version>
         <Description>Minimal version for WireMock.Net</Description>
         <AssemblyTitle>WireMock.Net.Minimal</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
@@ -22,12 +21,7 @@
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     </PropertyGroup>
 
-    <!-- https://github.com/aspnet/RoslynCodeDomProvider/issues/51 -->
-    <!-- This is needed else we cannot build net452 in Azure DevOps Pipeline -->
-    <!--<Target Name="CheckIfShouldKillVBCSCompiler" />-->
-
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <!--<PathMap>$(MSBuildProjectDirectory)=/</PathMap>-->
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
@@ -56,13 +50,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!--<None Include="..\WireMock.Net\**\*.cs" Exclude="..\WireMock.Net\Properties\*;..\WireMock.Net\GraphQL\**\*;..\WireMock.Net\MimeKitLite\**\*;..\WireMock.Net\ProtoBuf\**\*;..\WireMock.Net\Matchers.CSharpCode\**\*">
-            <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>-->
         <Compile Include="..\WireMock.Net\**\*.cs" Exclude="..\WireMock.Net\obj\**\*;..\WireMock.Net\bin\**\*;..\WireMock.Net\Properties\*;..\WireMock.Net\GraphQL\**\*;..\WireMock.Net\MimeKitLite\**\*;..\WireMock.Net\ProtoBuf\**\*;..\WireMock.Net\Matchers.CSharpCode\**\*">
-            <!--<Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
         </Compile>
     </ItemGroup>
 
@@ -157,10 +145,6 @@
         <PackageReference Include="Scriban.Signed" Version="5.5.0" />
     </ItemGroup>
 
-    <!--<ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
-    </ItemGroup>-->
-
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
         <PackageReference Include="Nullable" Version="1.3.1">
             <PrivateAssets>all</PrivateAssets>
@@ -186,20 +170,4 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
         <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
     </ItemGroup>
-
-    <!--<ItemGroup Condition="'$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
-        <ProjectReference Include="..\..\src\WireMock.Net.GraphQL\WireMock.Net.GraphQL.csproj" />
-    </ItemGroup>-->
-
-    <!--<ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
-        <ProjectReference Include="..\..\src\WireMock.Net.MimeKitLite\WireMock.Net.MimeKitLite.csproj" />
-    </ItemGroup>-->
-
-    <!--<ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
-        <ProjectReference Include="..\..\src\WireMock.Net.ProtoBuf\WireMock.Net.ProtoBuf.csproj" />
-    </ItemGroup>-->
-
-    <!--<ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' ">
-        <ProjectReference Include="..\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
-    </ItemGroup>-->
 </Project>
