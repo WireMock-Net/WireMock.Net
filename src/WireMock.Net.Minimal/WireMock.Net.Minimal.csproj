@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <Version>1.6.0-preview-00</Version>
         <Description>Minimal version for WireMock.Net</Description>
         <AssemblyTitle>WireMock.Net.Minimal</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
