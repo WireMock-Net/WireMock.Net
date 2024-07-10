@@ -1,4 +1,3 @@
-//#if CSHARPMATCHER
 using System;
 using System.Linq;
 using System.Reflection;
@@ -145,24 +144,24 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
             }
         }
 #elif (NET46 || NET461)
-            dynamic script;
-            try
-            {
-                script = CSScriptLibrary.CSScript.Evaluator.CompileCode(source).CreateObject("*");
-            }
-            catch (Exception ex)
-            {
-                throw new WireMockException("CSharpCodeMatcher: Unable to create compiler for WireMock.CodeHelper", ex);
-            }
-            
-            try
-            {
-                result = script.IsMatch(inputValue);
-            }
-            catch (Exception ex)
-            {
-                throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
-            }
+        dynamic script;
+        try
+        {
+            script = CSScriptLibrary.CSScript.Evaluator.CompileCode(source).CreateObject("*");
+        }
+        catch (Exception ex)
+        {
+            throw new WireMockException("CSharpCodeMatcher: Unable to create compiler for WireMock.CodeHelper", ex);
+        }
+        
+        try
+        {
+            result = script.IsMatch(inputValue);
+        }
+        catch (Exception ex)
+        {
+            throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
+        }
 
 #elif (NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET5_0_OR_GREATER)
         Assembly assembly;
@@ -194,7 +193,7 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
             throw new WireMockException("CSharpCodeMatcher: Problem calling method 'IsMatch' in WireMock.CodeHelper", ex);
         }
 #else
-            throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
+        throw new NotSupportedException("The 'CSharpCodeMatcher' cannot be used in netstandard 1.3");
 #endif
         try
         {
@@ -233,4 +232,3 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     /// <inheritdoc />
     public string Name => nameof(CSharpCodeMatcher);
 }
-//#endif
