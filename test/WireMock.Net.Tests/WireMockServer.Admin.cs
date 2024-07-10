@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NFluent;
+using WireMock.Admin.Settings;
 using WireMock.Handlers;
 using WireMock.Logging;
 using WireMock.RequestBuilders;
@@ -22,13 +23,9 @@ namespace WireMock.Net.Tests;
 public class WireMockServerAdminTests
 {
     // For for AppVeyor + OpenCover
-    private string GetCurrentFolder()
+    private static string GetCurrentFolder()
     {
-        string current = Directory.GetCurrentDirectory();
-        //if (!current.EndsWith("WireMock.Net.Tests"))
-        //    return Path.Combine(current, "test", "WireMock.Net.Tests");
-
-        return current;
+        return Directory.GetCurrentDirectory();
     }
 
     [Fact]
@@ -468,9 +465,9 @@ public class WireMockServerAdminTests
 
         Check.That(server.MappingModels.Count()).Equals(3);
 
-        Guid? guid1 = server.MappingModels.ElementAt(0).Guid;
-        Guid? guid2 = server.MappingModels.ElementAt(1).Guid;
-        Guid? guid3 = server.MappingModels.ElementAt(2).Guid;
+        var guid1 = server.MappingModels.ElementAt(0).Guid;
+        var guid2 = server.MappingModels.ElementAt(1).Guid;
+        var guid3 = server.MappingModels.ElementAt(2).Guid;
 
         Check.That(guid1).IsNotNull();
         Check.That(guid2).IsNotNull();
@@ -482,7 +479,7 @@ public class WireMockServerAdminTests
                                $"]";
 
         // Act
-        var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"http://localhost:{server.Ports[0]}/__admin/mappings"),
@@ -501,22 +498,45 @@ public class WireMockServerAdminTests
     }
 
     [Fact]
-    public async Task WireMockServer_Admin_()
+    public async Task WireMockServer_CreateClient_And_CallEndpoint()
     {
-        // given
+        // Arrange
         var server = WireMockServer.Start();
+        var client = server.CreateClient();
 
-        server.CreateClient();
+        // Act
+        await client.GetAsync($"{server.Url}/foo").ConfigureAwait(false);
 
-        // when
-        await new HttpClient().GetAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
-
-        // then
+        // Assert
         Check.That(server.LogEntries).HasSize(1);
         var requestLogged = server.LogEntries.First();
         Check.That(requestLogged.RequestMessage.Method).IsEqualTo("GET");
         Check.That(requestLogged.RequestMessage.BodyData).IsNull();
 
+        // Cleanup
         server.Stop();
+        server.Dispose();
+    }
+
+    [Fact]
+    public async Task WireMockServer_CreateClient_And_CallAdminSettingsEndpoint()
+    {
+        // Arrange
+        var server = WireMockServer.Start(w =>
+        {
+            w.StartAdminInterface = true;
+            w.AdminPath = "/adm";
+        });
+        var client = server.CreateClient();
+
+        // Act
+        var settings = await client.GetStringAsync($"{server.Url}/adm/settings").ConfigureAwait(false);
+
+        // Assert
+        settings.Should().NotBeNull();
+
+        // Cleanup
+        server.Stop();
+        server.Dispose();
     }
 }

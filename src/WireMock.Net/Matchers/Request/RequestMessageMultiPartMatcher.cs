@@ -71,23 +71,21 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         {
             var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
 
-            foreach (var mimePart in message.BodyParts.OfType<MimeKit.MimePart>())
+            foreach (var mimePartMatcher in Matchers.OfType<MimePartMatcher>().ToArray())
             {
-                var matchesForMimePart = new List<MatchResult> { default };
-                matchesForMimePart.AddRange(mimePartMatchers.Select(matcher => matcher.IsMatch(mimePart)));
-
-                score = matchesForMimePart.Select(m => m.Score).Max();
-
-                if (MatchScores.IsPerfect(score))
+                score = MatchScores.Mismatch;
+                foreach (var mimeBodyPart in message.BodyParts.OfType<MimeKit.MimePart>())
                 {
-                    if (MatchOperator == MatchOperator.Or)
+                    var matchResult = mimePartMatcher.IsMatch(mimeBodyPart);
+                    if (matchResult.IsPerfect())
                     {
+                        score = MatchScores.Perfect;
                         break;
                     }
                 }
-                else
+                if ((MatchOperator == MatchOperator.Or && MatchScores.IsPerfect(score))
+                    || (MatchOperator == MatchOperator.And && !MatchScores.IsPerfect(score)))
                 {
-                    score = MatchScores.Mismatch;
                     break;
                 }
             }
