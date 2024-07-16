@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace WireMock.Constants;
 
 internal static class WireMockConstants

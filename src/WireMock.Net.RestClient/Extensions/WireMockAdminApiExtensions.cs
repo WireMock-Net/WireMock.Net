@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Net.Http.Headers;
 using System.Text;

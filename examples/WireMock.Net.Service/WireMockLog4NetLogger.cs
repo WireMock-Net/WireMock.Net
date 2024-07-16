@@ -1,4 +1,6 @@
-﻿using System;
+// Copyright © WireMock.Net
+
+using System;
 using log4net;
 using Newtonsoft.Json;
 using Wiremock.Net.Service;

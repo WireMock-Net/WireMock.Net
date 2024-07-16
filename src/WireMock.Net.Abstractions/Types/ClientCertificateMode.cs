@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace WireMock.Types;
 
 #if NETSTANDARD1_3_OR_GREATER || NET461

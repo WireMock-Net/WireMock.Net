@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if !USE_ASPNETCORE
 using Microsoft.Owin.Hosting;
 using Owin;

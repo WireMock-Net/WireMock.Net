@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace WireMock.Net.Testcontainers.Models;
 
 internal record ContainerInfo

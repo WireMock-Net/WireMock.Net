@@ -1,4 +1,6 @@
-﻿using System;
+// Copyright © WireMock.Net
+
+using System;
 using FluentAssertions;
 using Moq;
 using WireMock.Handlers;

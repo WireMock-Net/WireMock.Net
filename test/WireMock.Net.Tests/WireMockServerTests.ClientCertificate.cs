@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if !NET451 && !NET452
 
 using System.Net;

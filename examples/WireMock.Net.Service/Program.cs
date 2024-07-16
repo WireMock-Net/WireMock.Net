@@ -1,4 +1,6 @@
-﻿using log4net.Config;
+// Copyright © WireMock.Net
+
+using log4net.Config;
 using System;
 using System.IO;
 using System.ServiceProcess;

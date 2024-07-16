@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 #if NET452
 using Microsoft.Owin;
