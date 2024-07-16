@@ -22,7 +22,7 @@ internal class RegexExtended : Regex
 
     /// <inheritdoc cref="Regex"/>
     public RegexExtended(string pattern, RegexOptions options) :
-        this(pattern, options, Regex.InfiniteMatchTimeout)
+        this(pattern, options, InfiniteMatchTimeout)
     {
     }
 

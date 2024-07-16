@@ -32,7 +32,7 @@ namespace WireMock.Owin
 #else
         public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper)
         {
-            Next = Guard.NotNull(next);
+            Next = next;
             _options = Guard.NotNull(options);
             _responseMapper = Guard.NotNull(responseMapper);
         }
