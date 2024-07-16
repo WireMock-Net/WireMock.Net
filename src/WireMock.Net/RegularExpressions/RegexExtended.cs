@@ -32,7 +32,7 @@ internal class RegexExtended : Regex
     {
     }
 
-#if !NETSTANDARD1_3
+#if !NETSTANDARD1_3 && !NET8_0_OR_GREATER
     /// <inheritdoc cref="Regex"/>
     protected RegexExtended(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) :
         base(info, context)
