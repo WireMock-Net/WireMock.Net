@@ -85,7 +85,7 @@ public partial class Request
     /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
     public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
     {
-        Guard.NotNullOrEmpty(funcs, nameof(funcs));
+        Guard.NotNullOrEmpty(funcs);
 
         _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
         return this;

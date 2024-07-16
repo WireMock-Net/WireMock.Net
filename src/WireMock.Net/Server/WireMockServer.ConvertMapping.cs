@@ -39,8 +39,8 @@ public partial class WireMockServer
     private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
     {
         Guard.NotNull(mappingModel);
-        Guard.NotNull(mappingModel.Request, nameof(mappingModel.Request));
-        Guard.NotNull(mappingModel.Response, nameof(mappingModel.Response));
+        Guard.NotNull(mappingModel.Request);
+        Guard.NotNull(mappingModel.Response);
 
         var requestBuilder = InitRequestBuilder(mappingModel.Request, true);
         if (requestBuilder == null)

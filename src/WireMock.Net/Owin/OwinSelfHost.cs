@@ -26,10 +26,9 @@ internal class OwinSelfHost : IOwinSelfHost
 
     public OwinSelfHost(IWireMockMiddlewareOptions options, HostUrlOptions urlOptions)
     {
-        Guard.NotNull(options, nameof(options));
-        Guard.NotNull(urlOptions, nameof(urlOptions));
+        Guard.NotNull(urlOptions);
 
-        _options = options;
+        _options = Guard.NotNull(options);
         _logger = options.Logger ?? new WireMockConsoleLogger();
 
         foreach (var detail in urlOptions.GetDetails())

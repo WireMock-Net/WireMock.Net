@@ -26,21 +26,15 @@ namespace WireMock.Owin
 #if !USE_ASPNETCORE
         public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper) : base(next)
         {
-            Guard.NotNull(options, nameof(options));
-            Guard.NotNull(responseMapper, nameof(responseMapper));
-
-            _options = options;
-            _responseMapper = responseMapper;
+            _options = Guard.NotNull(options);
+            _responseMapper = Guard.NotNull(responseMapper);;
         }
 #else
         public GlobalExceptionMiddleware(Next next, IWireMockMiddlewareOptions options, IOwinResponseMapper responseMapper)
         {
-            Guard.NotNull(options, nameof(options));
-            Guard.NotNull(responseMapper, nameof(responseMapper));
-
-            Next = next;
-            _options = options;
-            _responseMapper = responseMapper;
+            Next = Guard.NotNull(next);
+            _options = Guard.NotNull(options);
+            _responseMapper = Guard.NotNull(responseMapper);
         }
 #endif
 

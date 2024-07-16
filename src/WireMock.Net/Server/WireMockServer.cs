@@ -256,7 +256,7 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public static WireMockServer Start(params string[] urls)
     {
-        Guard.NotNullOrEmpty(urls, nameof(urls));
+        Guard.NotNullOrEmpty(urls);
 
         return new WireMockServer(new WireMockServerSettings
         {
@@ -522,8 +522,8 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public void SetBasicAuthentication(string username, string password)
     {
-        Guard.NotNull(username, nameof(username));
-        Guard.NotNull(password, nameof(password));
+        Guard.NotNull(username);
+        Guard.NotNull(password);
 
         _options.AuthenticationMatcher = new BasicAuthenticationMatcher(username, password);
     }

@@ -128,7 +128,8 @@ public class XPathMatcher : IStringMatcher
 
         public bool[] Evaluate(AnyOf<string, StringPattern>[] patterns, IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
-            XmlNamespaceManager? xmlNamespaceManager = GetXmlNamespaceManager(xmlNamespaceMap);
+            var xmlNamespaceManager = GetXmlNamespaceManager(xmlNamespaceMap);
+
             return patterns
                 .Select(p =>
 #if NETSTANDARD1_3
