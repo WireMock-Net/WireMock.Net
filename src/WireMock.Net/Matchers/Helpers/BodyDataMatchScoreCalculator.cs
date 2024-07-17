@@ -60,14 +60,10 @@ internal static class BodyDataMatchScoreCalculator
             }
         }
 
-        // Check if the matcher is a IStringMatcher
-        if (matcher is IStringMatcher stringMatcher)
+        // In case the matcher is a IStringMatcher and If  body is a Json or a String, use the BodyAsString to match on.
+        if (matcher is IStringMatcher stringMatcher && requestMessage.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
         {
-            // If the body is a Json or a String, use the BodyAsString to match on.
-            if (requestMessage.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
-            {
-                return stringMatcher.IsMatch(requestMessage.BodyAsString);
-            }
+            return stringMatcher.IsMatch(requestMessage.BodyAsString);
         }
 
         return default;
