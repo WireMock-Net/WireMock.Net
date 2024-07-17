@@ -111,7 +111,7 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.Perfect;
         }
 
-        if (Matchers != null && Matchers.Any())
+        if (Matchers != null)
         {
             // Return the score based on Matchers and valuesPresentInRequestMessage
             return CalculateScore(Matchers, valuesPresentInRequestMessage);
