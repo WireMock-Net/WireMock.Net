@@ -105,16 +105,16 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.Mismatch;
         }
 
-        if (Matchers != null && Matchers.Any())
-        {
-            // Return the score based on Matchers and valuesPresentInRequestMessage
-            return CalculateScore(Matchers, valuesPresentInRequestMessage);
-        }
-
         if (Matchers == null || !Matchers.Any())
         {
             // Matchers are null or not defined, and Key is present, just return Perfect.
             return MatchScores.Perfect;
+        }
+
+        if (Matchers != null && Matchers.Any())
+        {
+            // Return the score based on Matchers and valuesPresentInRequestMessage
+            return CalculateScore(Matchers, valuesPresentInRequestMessage);
         }
 
         return MatchScores.Mismatch;
