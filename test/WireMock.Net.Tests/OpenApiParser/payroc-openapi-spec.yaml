@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   version: '1'
   title: Payroc API
-  description: Api for accessing Payroc services
+  description: Api for accessing Payroc servicess
   contact:
     name: Payroc Helpdesk
     url: https://docs.payroc.com/api
