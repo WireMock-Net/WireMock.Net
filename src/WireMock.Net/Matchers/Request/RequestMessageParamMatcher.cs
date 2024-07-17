@@ -111,13 +111,8 @@ public class RequestMessageParamMatcher : IRequestMatcher
             return MatchScores.Perfect;
         }
 
-        if (Matchers != null)
-        {
-            // Return the score based on Matchers and valuesPresentInRequestMessage
-            return CalculateScore(Matchers, valuesPresentInRequestMessage);
-        }
-
-        return MatchScores.Mismatch;
+        // Return the score based on Matchers and valuesPresentInRequestMessage
+        return CalculateScore(Matchers, valuesPresentInRequestMessage);
     }
 
     private static double CalculateScore(IReadOnlyList<IStringMatcher> matchers, WireMockList<string> valuesPresentInRequestMessage)
