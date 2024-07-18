@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using FluentAssertions;
 
 namespace WireMock.Net.Aspire.Tests;

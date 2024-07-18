@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Stef.Validation;
 
 // ReSharper disable once CheckNamespace

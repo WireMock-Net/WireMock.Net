@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using Stef.Validation;

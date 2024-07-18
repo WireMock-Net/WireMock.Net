@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Net.Http.Json;
 using FluentAssertions;
 using Projects;
