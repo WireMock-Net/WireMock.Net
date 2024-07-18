@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,8 +78,7 @@ public class RequestMessageGraphQLMatcher : IRequestMatcher
 
     private static MatchResult CalculateMatchResult(IRequestMessage requestMessage, IMatcher matcher)
     {
-        // Check if the matcher is a IStringMatcher
-        // If the body is a Json or a String, use the BodyAsString to match on.
+        // In case the matcher is a IStringMatcher and the body is a Json or a String, use the BodyAsString to match on.
         if (matcher is IStringMatcher stringMatcher && requestMessage.BodyData?.DetectedBodyType is BodyType.Json or BodyType.String or BodyType.FormUrlEncoded)
         {
             return stringMatcher.IsMatch(requestMessage.BodyData.BodyAsString);

@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace WireMock.Net.OpenApiParser.Types;
 
 internal enum SchemaFormat

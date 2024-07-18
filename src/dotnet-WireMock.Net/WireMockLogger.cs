@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -47,7 +49,7 @@ public class WireMockLogger : IWireMockLogger
     /// <see cref="IWireMockLogger.Error(string, Exception)"/>
     public void Error(string formatString, Exception exception)
     {
-        _logger.LogError(formatString, exception);
+        _logger.LogError(exception, formatString);
     }
 
     /// <see cref="IWireMockLogger.DebugRequestResponse"/>

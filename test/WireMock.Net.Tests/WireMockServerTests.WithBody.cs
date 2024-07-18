@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if !NET452
 using System;
 using System.Collections.Generic;

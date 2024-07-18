@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +78,7 @@ public class XPathMatcher : IStringMatcher
             {
                 return CreateMatchResult(score);
             }
-        
+
             score = MatchScores.ToScore(xPathEvaluator.Evaluate(_patterns, XmlNamespaceMap), MatchOperator);
         }
         catch (Exception exception)
@@ -86,7 +88,7 @@ public class XPathMatcher : IStringMatcher
 
         return CreateMatchResult(score);
     }
-    
+
     private MatchResult CreateMatchResult(double score, Exception? exception = null)
     {
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
@@ -103,8 +105,8 @@ public class XPathMatcher : IStringMatcher
 
     /// <inheritdoc />
     public string Name => nameof(XPathMatcher);
-    
-    private class XPathEvaluator
+
+    private sealed class XPathEvaluator
     {
         private XmlDocument? _xmlDocument;
         private XPathNavigator? _xpathNavigator;
@@ -126,15 +128,27 @@ public class XPathMatcher : IStringMatcher
 
         public bool[] Evaluate(AnyOf<string, StringPattern>[] patterns, IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
-            XmlNamespaceManager? xmlNamespaceManager = GetXmlNamespaceManager(xmlNamespaceMap);
-            return patterns
-                .Select(p =>
+            return _xpathNavigator == null ? [] : patterns.Select(pattern => true.Equals(Evaluate(_xpathNavigator, pattern, xmlNamespaceMap))).ToArray();
+        }
+        private object Evaluate(XPathNavigator navigator, AnyOf<string, StringPattern> pattern, IEnumerable<XmlNamespace>? xmlNamespaceMap)
+        {
+            var xpath = $"boolean({pattern.GetPattern()})";
+
+            var xmlNamespaceManager = GetXmlNamespaceManager(xmlNamespaceMap);
+            if (xmlNamespaceManager == null)
+            {
 #if NETSTANDARD1_3
-                    true.Equals(_xpathNavigator.Evaluate($"boolean({p.GetPattern()})", xmlNamespaceManager)))
+                return navigator.Evaluate(xpath);
 #else
-                    true.Equals(_xpathNavigator.XPath2Evaluate($"boolean({p.GetPattern()})", xmlNamespaceManager)))
+                return navigator.XPath2Evaluate(xpath);
 #endif
-                .ToArray();
+            }
+
+#if NETSTANDARD1_3
+            return navigator.Evaluate(xpath, xmlNamespaceManager);
+#else
+            return navigator.XPath2Evaluate(xpath, xmlNamespaceManager);
+#endif
         }
 
         private XmlNamespaceManager? GetXmlNamespaceManager(IEnumerable<XmlNamespace>? xmlNamespaceMap)
@@ -145,7 +159,7 @@ public class XPathMatcher : IStringMatcher
             }
 
             var nsManager = new XmlNamespaceManager(_xpathNavigator.NameTable);
-            foreach (XmlNamespace xmlNamespace in xmlNamespaceMap)
+            foreach (var xmlNamespace in xmlNamespaceMap)
             {
                 nsManager.AddNamespace(xmlNamespace.Prefix, xmlNamespace.Uri);
             }

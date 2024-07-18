@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if !(NET452 || NET461)
 using System.Threading.Tasks;
 using VerifyTests;

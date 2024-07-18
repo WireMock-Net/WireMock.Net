@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Newtonsoft.Json;
 using Testcontainers.MsSql;
 using WireMock.Net.Testcontainers;

@@ -1,4 +1,6 @@
-﻿namespace WireMock
+// Copyright © WireMock.Net
+
+namespace WireMock
 {
     /// <summary>
     /// The registration callback.

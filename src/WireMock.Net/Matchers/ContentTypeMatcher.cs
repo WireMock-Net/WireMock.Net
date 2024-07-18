@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Net.Http.Headers;
 using AnyOfTypes;
 using WireMock.Models;

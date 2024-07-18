@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+// Copyright © WireMock.Net
+
+using Newtonsoft.Json;
 using RestEase;
 using System;
 using System.Net.Http.Headers;

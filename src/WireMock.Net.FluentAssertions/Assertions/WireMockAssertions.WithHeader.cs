@@ -1,6 +1,6 @@
+// Copyright © WireMock.Net
+
 #pragma warning disable CS1591
-using System.Collections.Generic;
-using WireMock.Types;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions;
@@ -45,7 +45,7 @@ public partial class WireMockAssertions
     {
         var (filter, condition) = BuildFilterAndCondition(request =>
         {
-            var headers = request.Headers?.ToArray() ?? new KeyValuePair<string, WireMockList<string>>[0];
+            var headers = request.Headers?.ToArray() ?? [];
 
             var matchingHeaderValues = headers.Where(h => h.Key == expectedKey).SelectMany(h => h.Value.ToArray()).ToArray();
 
@@ -119,7 +119,7 @@ public partial class WireMockAssertions
     {
         var (filter, condition) = BuildFilterAndCondition(request =>
         {
-            var headers = request.Headers?.ToArray() ?? new KeyValuePair<string, WireMockList<string>>[0];
+            var headers = request.Headers?.ToArray() ?? [];
 
             var matchingHeaderValues = headers.Where(h => h.Key == unexpectedKey).SelectMany(h => h.Value.ToArray()).ToArray();
 

@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if NET46 || NETSTANDARD2_0
 using System.Collections.Generic;
 
