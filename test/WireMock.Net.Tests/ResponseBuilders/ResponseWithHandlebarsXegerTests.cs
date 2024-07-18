@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;

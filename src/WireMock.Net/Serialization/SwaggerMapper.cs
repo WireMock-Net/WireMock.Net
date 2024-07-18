@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -307,7 +309,7 @@ internal static class SwaggerMapper
             return defaultValue;
         }
 
-        return GetPatternAsStringFromMatcher(matchers.First()) ?? defaultValue;
+        return GetPatternAsStringFromMatcher(matchers[0]) ?? defaultValue;
     }
 
     private static string? GetPatternAsStringFromMatcher(MatcherModel matcher)

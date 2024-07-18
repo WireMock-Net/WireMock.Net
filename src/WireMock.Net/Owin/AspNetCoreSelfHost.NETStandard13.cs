@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if USE_ASPNETCORE && NETSTANDARD1_3
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;

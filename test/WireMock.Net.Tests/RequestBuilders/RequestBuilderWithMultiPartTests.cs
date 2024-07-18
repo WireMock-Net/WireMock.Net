@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if MIMEKIT
 using System.Collections.Generic;
 using FluentAssertions;

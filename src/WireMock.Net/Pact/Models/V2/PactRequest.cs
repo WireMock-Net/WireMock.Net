@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #pragma warning disable CS1591
 using System.Collections.Generic;
 using WireMock.Constants;

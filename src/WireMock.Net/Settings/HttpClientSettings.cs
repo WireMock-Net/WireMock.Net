@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Security.Cryptography.X509Certificates;
 
 namespace WireMock.Settings;

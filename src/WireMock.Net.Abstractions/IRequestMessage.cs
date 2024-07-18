@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 #if NETSTANDARD1_3_OR_GREATER || NET461

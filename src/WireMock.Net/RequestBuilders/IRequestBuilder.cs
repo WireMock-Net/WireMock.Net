@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders;

@@ -32,6 +32,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**Quality** | [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=alert_status)](https://sonarcloud.io/project/issues?id=WireMock-Net_WireMock.Net) [![CodeFactor](https://www.codefactor.io/repository/github/wiremock-net/wiremock.net/badge)](https://www.codefactor.io/repository/github/wiremock-net/wiremock.net) |
 | &nbsp;&nbsp;**Sonar Bugs** | [![Sonar Bugs](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=bugs)](https://sonarcloud.io/project/issues?id=WireMock-Net_WireMock.Net&resolved=false&types=BUG) [![Sonar Code Smells](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=code_smells)](https://sonarcloud.io/project/issues?id=WireMock-Net_WireMock.Net&resolved=false&types=CODE_SMELL) |
 | &nbsp;&nbsp;**Coverage** | [![Sonar Coverage](https://sonarcloud.io/api/project_badges/measure?project=WireMock-Net_WireMock.Net&metric=coverage)](https://sonarcloud.io/component_measures?id=WireMock-Net_WireMock.Net&metric=coverage) [![codecov](https://codecov.io/gh/WireMock-Net/WireMock.Net/branch/master/graph/badge.svg)](https://codecov.io/gh/WireMock-Net/WireMock.Net)|
+| &nbsp;&nbsp;**TIOBE** | [TIOBE Quality Indicator](https://ticsdemo.tiobe.com/tiobeweb/DEMO/TqiDashboard.html#axes=Project(WireMock.Net),Sub()&metric=tqi)
 
 ### :package: NuGet packages
 

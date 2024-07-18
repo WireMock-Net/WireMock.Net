@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -20,7 +22,7 @@ internal class RegexExtended : Regex
 
     /// <inheritdoc cref="Regex"/>
     public RegexExtended(string pattern, RegexOptions options) :
-        this(pattern, options, Regex.InfiniteMatchTimeout)
+        this(pattern, options, InfiniteMatchTimeout)
     {
     }
 
@@ -30,7 +32,7 @@ internal class RegexExtended : Regex
     {
     }
 
-#if !NETSTANDARD1_3
+#if !NETSTANDARD1_3 && !NET8_0_OR_GREATER
     /// <inheritdoc cref="Regex"/>
     protected RegexExtended(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) :
         base(info, context)

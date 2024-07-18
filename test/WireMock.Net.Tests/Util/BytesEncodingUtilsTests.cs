@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Text;
 using FluentAssertions;
 using WireMock.Util;

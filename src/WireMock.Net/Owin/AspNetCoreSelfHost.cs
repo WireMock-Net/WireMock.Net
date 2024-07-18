@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if USE_ASPNETCORE
 using System;
 using System.Collections.Generic;

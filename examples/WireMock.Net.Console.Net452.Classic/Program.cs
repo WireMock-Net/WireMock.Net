@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.IO;
 using log4net.Config;
 

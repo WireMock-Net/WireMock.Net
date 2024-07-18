@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if GRAPHQL
 // ReSharper disable InconsistentNaming
 using System;

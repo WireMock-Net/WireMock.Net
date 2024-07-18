@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if PROTOBUF
 using System;
 using WireMock.Models;

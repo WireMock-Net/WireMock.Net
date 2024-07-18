@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if NETCOREAPP3_1 || NET5_0_OR_GREATER
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

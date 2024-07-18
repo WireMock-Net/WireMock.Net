@@ -1,4 +1,6 @@
-﻿namespace WireMock.Admin.Mappings
+// Copyright © WireMock.Net
+
+namespace WireMock.Admin.Mappings
 {
     /// <summary>
     /// EncodingModel

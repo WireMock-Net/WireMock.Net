@@ -1,4 +1,6 @@
-﻿namespace Wiremock.Net.Service
+// Copyright © WireMock.Net
+
+namespace Wiremock.Net.Service
 {
     partial class Installer
     {

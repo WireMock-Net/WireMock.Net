@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
 

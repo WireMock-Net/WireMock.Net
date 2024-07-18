@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-        <LangVersion>11</LangVersion>
+        <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>

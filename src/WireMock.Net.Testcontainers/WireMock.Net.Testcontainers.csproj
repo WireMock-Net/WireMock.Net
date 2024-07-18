@@ -12,7 +12,6 @@
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -30,7 +29,6 @@
         </PackageReference>
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
         <PackageReference Include="Testcontainers" Version="[3.9.0]" />
-        <PackageReference Include="JetBrains.Annotations" VersionOverride="2022.3.1" PrivateAssets="All" Version="2023.3.0" />
     </ItemGroup>
 
     <ItemGroup>
