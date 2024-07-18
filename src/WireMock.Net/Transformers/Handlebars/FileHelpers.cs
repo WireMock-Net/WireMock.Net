@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers.Attributes;
 using HandlebarsDotNet.Helpers.Enums;

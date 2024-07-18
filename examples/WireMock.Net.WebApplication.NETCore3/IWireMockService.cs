@@ -1,4 +1,6 @@
-﻿namespace WireMock.Net.WebApplication
+// Copyright © WireMock.Net
+
+namespace WireMock.Net.WebApplication
 {
     public interface IWireMockService
     {

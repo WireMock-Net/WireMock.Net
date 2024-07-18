@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using WireMock.Handlers;
 
 namespace WireMock.Transformers;

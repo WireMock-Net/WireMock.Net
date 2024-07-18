@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using Microsoft.OpenApi.Models;
 using RandomDataGenerator.FieldOptions;

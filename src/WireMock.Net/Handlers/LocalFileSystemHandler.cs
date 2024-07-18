@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Collections.Generic;
 using System.IO;
 using WireMock.Util;
@@ -72,8 +74,8 @@ public class LocalFileSystemHandler : IFileSystemHandler
     /// <inheritdoc cref="IFileSystemHandler.WriteMappingFile(string, string)"/>
     public virtual void WriteMappingFile(string path, string text)
     {
-        Guard.NotNullOrEmpty(path, nameof(path));
-        Guard.NotNull(text, nameof(text));
+        Guard.NotNullOrEmpty(path);
+        Guard.NotNull(text);
 
         File.WriteAllText(path, text);
     }
@@ -144,7 +146,7 @@ public class LocalFileSystemHandler : IFileSystemHandler
     /// <inheritdoc cref="IFileSystemHandler.ReadFileAsString"/>
     public virtual string ReadFileAsString(string filename)
     {
-        return File.ReadAllText(AdjustPathForMappingFolder(Guard.NotNullOrEmpty(filename, nameof(filename))));
+        return File.ReadAllText(AdjustPathForMappingFolder(Guard.NotNullOrEmpty(filename)));
     }
 
     /// <inheritdoc cref="IFileSystemHandler.GetUnmatchedRequestsFolder"/>

@@ -1,4 +1,6 @@
-﻿namespace MultipartUploader
+// Copyright © WireMock.Net
+
+namespace MultipartUploader
 {
     partial class Form1
     {

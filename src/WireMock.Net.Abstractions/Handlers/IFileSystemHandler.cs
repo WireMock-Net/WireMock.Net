@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using JetBrains.Annotations;
 using System.Collections.Generic;
 

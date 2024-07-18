@@ -12,7 +12,6 @@
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -27,8 +26,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="RamlToOpenApiConverter" Version="0.6.1" />
-        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.17" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
     </ItemGroup>

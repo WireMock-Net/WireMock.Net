@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Linq;
 using Stef.Validation;
 using WireMock.Admin.Mappings;

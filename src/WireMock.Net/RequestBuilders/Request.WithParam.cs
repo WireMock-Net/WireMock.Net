@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net and mock4net by Alexandre Victoor
+
 // This source file is based on mock4net by Alexandre Victoor which is licensed under the Apache 2.0 License.
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
@@ -83,7 +85,7 @@ public partial class Request
     /// <inheritdoc cref="IParamsRequestBuilder.WithParam(Func{IDictionary{string, WireMockList{string}}, bool}[])"/>
     public IRequestBuilder WithParam(params Func<IDictionary<string, WireMockList<string>>, bool>[] funcs)
     {
-        Guard.NotNullOrEmpty(funcs, nameof(funcs));
+        Guard.NotNullOrEmpty(funcs);
 
         _requestMatchers.Add(new RequestMessageParamMatcher(funcs));
         return this;

@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Greet;
 using Grpc.Net.Client;
 

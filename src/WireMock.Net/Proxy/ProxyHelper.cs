@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -92,7 +94,7 @@ internal class ProxyHelper
         return (responseMessage, newMapping);
     }
 
-    private static bool Check<T>(ProxySaveMappingSetting<T>? saveMappingSetting, Func<bool> action)
+    private static bool Check<T>(ProxySaveMappingSetting<T>? saveMappingSetting, Func<bool> action) where T : notnull
     {
         var isMatch = saveMappingSetting is null || action();
         var matchBehaviour = saveMappingSetting?.MatchBehaviour ?? MatchBehaviour.AcceptOnMatch;

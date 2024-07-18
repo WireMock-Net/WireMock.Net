@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Net;
 #if OPENAPIPARSER
 using System;

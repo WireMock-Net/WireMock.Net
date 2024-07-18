@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Threading.Tasks;
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;

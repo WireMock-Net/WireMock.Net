@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if NETSTANDARD1_3
 
 // ReSharper disable once CheckNamespace
