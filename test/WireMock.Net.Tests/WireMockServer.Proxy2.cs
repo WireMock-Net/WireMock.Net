@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using NFluent;
 using System;
 using System.Linq;

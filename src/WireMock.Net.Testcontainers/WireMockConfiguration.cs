@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;

@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Nelibur.ObjectMapper;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;

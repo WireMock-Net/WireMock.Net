@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+// Copyright © WireMock.Net
+
+using System.Threading.Tasks;
 #if !USE_ASPNETCORE
 using IRequest = Microsoft.Owin.IOwinRequest;
 #else

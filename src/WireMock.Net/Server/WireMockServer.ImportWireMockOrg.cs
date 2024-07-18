@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +25,7 @@ public partial class WireMockServer
     [PublicAPI]
     public void ReadStaticWireMockOrgMappingAndAddOrUpdate(string path)
     {
-        Guard.NotNull(path, nameof(path));
+        Guard.NotNull(path);
 
         var filenameWithoutExtension = Path.GetFileNameWithoutExtension(path);
 

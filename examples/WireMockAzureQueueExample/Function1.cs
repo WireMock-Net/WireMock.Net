@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 

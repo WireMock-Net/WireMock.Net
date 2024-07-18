@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+// Copyright © WireMock.Net
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;

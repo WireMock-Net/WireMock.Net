@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System.Collections.Generic;
 using System.Threading.Tasks;

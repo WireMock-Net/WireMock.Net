@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Generic;
 using WireMock.Matchers;
@@ -17,8 +19,8 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(string, string, bool, MatchBehaviour)"/>
     public IRequestBuilder WithCookie(string name, string pattern, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        Guard.NotNull(name, nameof(name));
-        Guard.NotNull(pattern, nameof(pattern));
+        Guard.NotNull(name);
+        Guard.NotNull(pattern);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(matchBehaviour, name, pattern, ignoreCase));
         return this;
@@ -33,8 +35,8 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(string, string[], bool, MatchBehaviour)"/>
     public IRequestBuilder WithCookie(string name, string[] patterns, bool ignoreCase = true, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        Guard.NotNull(name, nameof(name));
-        Guard.NotNull(patterns, nameof(patterns));
+        Guard.NotNull(name);
+        Guard.NotNull(patterns);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(matchBehaviour, name, ignoreCase, patterns));
         return this;
@@ -43,8 +45,8 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(string, IStringMatcher[])"/>
     public IRequestBuilder WithCookie(string name, params IStringMatcher[] matchers)
     {
-        Guard.NotNull(name, nameof(name));
-        Guard.NotNullOrEmpty(matchers, nameof(matchers));
+        Guard.NotNull(name);
+        Guard.NotNullOrEmpty(matchers);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, name, false, matchers));
         return this;
@@ -53,8 +55,8 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(string, bool, IStringMatcher[])"/>
     public IRequestBuilder WithCookie(string name, bool ignoreCase, params IStringMatcher[] matchers)
     {
-        Guard.NotNull(name, nameof(name));
-        Guard.NotNullOrEmpty(matchers, nameof(matchers));
+        Guard.NotNull(name);
+        Guard.NotNullOrEmpty(matchers);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(MatchBehaviour.AcceptOnMatch, name, ignoreCase, matchers));
         return this;
@@ -63,8 +65,8 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(string, IStringMatcher[])"/>
     public IRequestBuilder WithCookie(string name, bool ignoreCase, MatchBehaviour matchBehaviour, params IStringMatcher[] matchers)
     {
-        Guard.NotNull(name, nameof(name));
-        Guard.NotNullOrEmpty(matchers, nameof(matchers));
+        Guard.NotNull(name);
+        Guard.NotNullOrEmpty(matchers);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(matchBehaviour, name, ignoreCase, matchers));
         return this;
@@ -73,7 +75,7 @@ public partial class Request
     /// <inheritdoc cref="ICookiesRequestBuilder.WithCookie(Func{IDictionary{string, string}, bool}[])"/>
     public IRequestBuilder WithCookie(params Func<IDictionary<string, string>, bool>[] funcs)
     {
-        Guard.NotNullOrEmpty(funcs, nameof(funcs));
+        Guard.NotNullOrEmpty(funcs);
 
         _requestMatchers.Add(new RequestMessageCookieMatcher(funcs));
         return this;

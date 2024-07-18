@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers.Extensions;
 using Stef.Validation;

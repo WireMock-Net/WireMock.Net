@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace WireMock.Util;
 
 internal static class SingletonLock

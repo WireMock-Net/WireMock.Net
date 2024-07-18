@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Net.Http;
 using WireMock.Http;
 using WireMock.Settings;

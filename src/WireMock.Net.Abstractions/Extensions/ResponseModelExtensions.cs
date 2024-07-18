@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using WireMock.Admin.Mappings;
 
 namespace WireMock.Extensions;
