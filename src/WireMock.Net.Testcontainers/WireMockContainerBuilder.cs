@@ -13,7 +13,7 @@ using WireMock.Net.Testcontainers.Models;
 namespace WireMock.Net.Testcontainers;
 
 /// <summary>
-/// An specific fluent Docker container builder for WireMock.Net
+/// A specific fluent Docker container builder for WireMock.Net
 /// </summary>
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
@@ -101,6 +101,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <summary>
     /// Watch the static mapping files + folder for changes when running.
     /// </summary>
+    /// <param name="includeSubDirectories">Also look in SubDirectories.</param>
     /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
@@ -112,21 +113,20 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// Specifies the path for the (static) mapping json files.
     /// </summary>
     /// <param name="path">The path</param>
-    /// <returns></returns>
+    /// <param name="includeSubDirectories">Also look in SubDirectories.</param>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
-    public WireMockContainerBuilder WithMappings(string path)
+    public WireMockContainerBuilder WithMappings(string path, bool includeSubDirectories = false)
     {
         Guard.NotNullOrEmpty(path);
 
         var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
 
-        return WithReadStaticMappings().WithBindMount(path, _info[isWindows].MappingsPath);
+        return WithReadStaticMappings()
+            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}")
+            .WithBindMount(path, _info[isWindows].MappingsPath);
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WireMockContainerBuilder" /> class.
-    /// </summary>
-    /// <param name="dockerResourceConfiguration">The Docker resource configuration.</param>
     private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
     {
         DockerResourceConfiguration = dockerResourceConfiguration;
