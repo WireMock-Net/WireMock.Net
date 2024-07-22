@@ -1,3 +1,15 @@
+# 1.5.61 (22 July 2024)
+- [#1122](https://github.com/WireMock-Net/WireMock.Net/pull/1122) - Fix OpenApiPathsMapper [bug] contributed by [StefH](https://github.com/StefH)
+- [#1135](https://github.com/WireMock-Net/WireMock.Net/pull/1135) - Bump System.Text.Json from 4.7.2 to 8.0.4 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#1136](https://github.com/WireMock-Net/WireMock.Net/pull/1136) - Bump System.Text.Json from 8.0.0 to 8.0.4 in /src/dotnet-WireMock.Net [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#1137](https://github.com/WireMock-Net/WireMock.Net/pull/1137) - Add link to TIOBE Index on main page + fix issues [refactor] contributed by [StefH](https://github.com/StefH)
+- [#1138](https://github.com/WireMock-Net/WireMock.Net/pull/1138) - Fix some SonarCloud warnings [refactor] contributed by [StefH](https://github.com/StefH)
+- [#1141](https://github.com/WireMock-Net/WireMock.Net/pull/1141) - Update WireMockContainerBuilder.WithMappings for &quot;includeSubDirectories&quot; [feature] contributed by [StefH](https://github.com/StefH)
+- [#1142](https://github.com/WireMock-Net/WireMock.Net/pull/1142) - Make property FromConfiguredStub nullable (for WireMock.Org) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1118](https://github.com/WireMock-Net/WireMock.Net/issues/1118) - Generating mappings from Payroc open-api file gives ArgumentException: Property with the same name already exists on object [bug]
+- [#1139](https://github.com/WireMock-Net/WireMock.Net/issues/1139) - Allow WithMappings to support scanning SubDirectories when building a WireMockContainer [feature]
+- [#1140](https://github.com/WireMock-Net/WireMock.Net/issues/1140) - WireMock.Org nullable properties and defaults [bug]
+
 # 1.5.60 (09 July 2024)
 - [#1128](https://github.com/WireMock-Net/WireMock.Net/pull/1128) - Add Handlebars.Net.Helpers.Xslt [feature] contributed by [StefH](https://github.com/StefH)
 - [#1130](https://github.com/WireMock-Net/WireMock.Net/pull/1130) - Add AdminPath to WireMockServerSettings [feature] contributed by [StefH](https://github.com/StefH)
