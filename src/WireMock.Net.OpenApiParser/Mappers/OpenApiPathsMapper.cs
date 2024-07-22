@@ -193,7 +193,8 @@ internal class OpenApiPathsMapper
                     }
                     else
                     {
-                        jArray.Add(MapSchemaToObject(schema.Items, name));
+                        var arrayItem = MapSchemaToObject(schema.Items, name: null); // Set name to null to force JObject instead of JProperty
+                        jArray.Add(arrayItem);
                     }
                 }
 
@@ -219,12 +220,9 @@ internal class OpenApiPathsMapper
 
                 if (schema.AllOf.Count > 0)
                 {
-                    foreach (var property in schema.AllOf)
+                    foreach (var group in schema.AllOf.SelectMany(p => p.Properties).GroupBy(x => x.Key))
                     {
-                        foreach (var item in property.Properties)
-                        {
-                            propertyAsJObject.Add(MapPropertyAsJObject(item.Value, item.Key));
-                        }
+                        propertyAsJObject.Add(MapPropertyAsJObject(group.First().Value, group.Key));
                     }
                 }
 
