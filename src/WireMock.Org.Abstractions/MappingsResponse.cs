@@ -62,7 +62,7 @@ namespace WireMock.Org.Abstractions
         /// <summary>
         /// Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.
         /// </summary>
-        public bool FromConfiguredStub { get; set; }
+        public bool? FromConfiguredStub { get; set; }
 
         /// <summary>
         /// The base URL of the target to proxy matching requests to.
