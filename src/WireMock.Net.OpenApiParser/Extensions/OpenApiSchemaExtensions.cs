@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
@@ -16,7 +17,7 @@ internal static class OpenApiSchemaExtensions
     {
         value = false;
 
-        if (schema.Extensions.TryGetValue("x-nullable", out IOpenApiExtension e) && e is OpenApiBoolean openApiBoolean)
+        if (schema.Extensions.TryGetValue("x-nullable", out var e) && e is OpenApiBoolean openApiBoolean)
         {
             value = openApiBoolean.Value;
             return true;
@@ -27,32 +28,30 @@ internal static class OpenApiSchemaExtensions
 
     public static SchemaType GetSchemaType(this OpenApiSchema? schema)
     {
-        switch (schema?.Type)
+        if (schema == null)
         {
-            case "object":
-                return SchemaType.Object;
-
-            case "array":
-                return SchemaType.Array;
-
-            case "integer":
-                return SchemaType.Integer;
-
-            case "number":
-                return SchemaType.Number;
-
-            case "boolean":
-                return SchemaType.Boolean;
-
-            case "string":
-                return SchemaType.String;
-
-            case "file":
-                return SchemaType.File;
-
-            default:
-                return SchemaType.Unknown;
+            return SchemaType.Unknown;
         }
+
+        if (schema.Type == null)
+        {
+            if (schema.AllOf.Any() || schema.AnyOf.Any())
+            {
+                return SchemaType.Object;
+            }
+        }
+
+        return schema.Type switch
+        {
+            "object" => SchemaType.Object,
+            "array" => SchemaType.Array,
+            "integer" => SchemaType.Integer,
+            "number" => SchemaType.Number,
+            "boolean" => SchemaType.Boolean,
+            "string" => SchemaType.String,
+            "file" => SchemaType.File,
+            _ => SchemaType.Unknown
+        };
     }
 
     public static SchemaFormat GetSchemaFormat(this OpenApiSchema? schema)

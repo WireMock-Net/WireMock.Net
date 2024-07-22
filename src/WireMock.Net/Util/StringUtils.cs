@@ -11,14 +11,14 @@ namespace WireMock.Util;
 internal static class StringUtils
 {
     private static readonly string[] ValidUriSchemes =
-    {
+    [
         "ftp://",
         "http://",
         "https://"
-    };
+    ];
 
     private static readonly Func<string, (bool IsConverted, object ConvertedValue)>[] ConversionsFunctions =
-    {
+    [
         s => bool.TryParse(s, out var result) ? (true, result) : (false, s),
         s => int.TryParse(s, out var result) ? (true, result) : (false, s),
         s => long.TryParse(s, out var result) ? (true, result) : (false, s),
@@ -36,7 +36,7 @@ internal static class StringUtils
 
             return (false, s);
         }
-    };
+    ];
 
     public static (bool IsConverted, object ConvertedValue) TryConvertToKnownType(string value)
     {
