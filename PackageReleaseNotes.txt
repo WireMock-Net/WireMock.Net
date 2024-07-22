@@ -1,11 +1,13 @@
-# 1.5.60 (09 July 2024)
-- #1128 Add Handlebars.Net.Helpers.Xslt [feature]
-- #1130 Add AdminPath to WireMockServerSettings [feature]
-- #1131 Add unit tests for AdminApiMappingBuilder [test]
-- #1132 Multipart Matcher Fix [bug]
-- #1133 Add unit tests for AdminApiMappingBuilder_ [test]
-- #1134 Remove some files and folders [refactor]
-- #1119 Error in RequestMessageMultiPartMatcher [bug]
-- #1121 XML transformation [feature]
+# 1.5.61 (22 July 2024)
+- #1122 Fix OpenApiPathsMapper [bug]
+- #1135 Bump System.Text.Json from 4.7.2 to 8.0.4 in /examples/WireMock.Net.Console.Net472.Classic [dependencies]
+- #1136 Bump System.Text.Json from 8.0.0 to 8.0.4 in /src/dotnet-WireMock.Net [dependencies]
+- #1137 Add link to TIOBE Index on main page + fix issues [refactor]
+- #1138 Fix some SonarCloud warnings [refactor]
+- #1141 Update WireMockContainerBuilder.WithMappings for &quot;includeSubDirectories&quot; [feature]
+- #1142 Make property FromConfiguredStub nullable (for WireMock.Org) [bug]
+- #1118 Generating mappings from Payroc open-api file gives ArgumentException: Property with the same name already exists on object [bug]
+- #1139 Allow WithMappings to support scanning SubDirectories when building a WireMockContainer [feature]
+- #1140 WireMock.Org nullable properties and defaults [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
