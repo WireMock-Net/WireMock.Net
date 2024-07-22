@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using HandlebarsDotNet;
 
 namespace WireMock.Transformers.Handlebars;

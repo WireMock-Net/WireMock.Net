@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Text.RegularExpressions;
 using Stef.Validation;

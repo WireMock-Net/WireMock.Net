@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using Stef.Validation;

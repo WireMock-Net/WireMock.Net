@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+// Copyright © WireMock.Net
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

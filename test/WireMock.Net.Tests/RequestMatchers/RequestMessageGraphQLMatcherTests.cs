@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #if GRAPHQL
 using System.Linq;
 using FluentAssertions;

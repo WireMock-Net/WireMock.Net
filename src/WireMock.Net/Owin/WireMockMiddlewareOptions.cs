@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using System;
 using System.Collections.Concurrent;
 using WireMock.Handlers;
@@ -20,7 +22,7 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
 
     public TimeSpan? RequestProcessingDelay { get; set; }
 
-    public IStringMatcher AuthenticationMatcher { get; set; }
+    public IStringMatcher? AuthenticationMatcher { get; set; }
 
     public bool? AllowPartialMapping { get; set; }
 
@@ -50,7 +52,7 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
 #endif
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.FileSystemHandler"/>
-    public IFileSystemHandler FileSystemHandler { get; set; }
+    public IFileSystemHandler? FileSystemHandler { get; set; }
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.AllowBodyForAllHttpMethods"/>
     public bool? AllowBodyForAllHttpMethods { get; set; }

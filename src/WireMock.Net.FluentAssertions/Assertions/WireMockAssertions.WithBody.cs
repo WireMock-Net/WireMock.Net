@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 #pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,14 @@ public partial class WireMockAssertions
     }
 
     [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithBody(IStringMatcher matcher, string because = "", params object[] becauseArgs)
+    {
+        var (filter, condition) = BuildFilterAndCondition(r => r.Body, matcher);
+
+        return ExecuteAssertionWithBodyStringMatcher(matcher, because, becauseArgs, condition, filter, r => r.Body);
+    }
+
+    [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithBodyAsJson(object body, string because = "", params object[] becauseArgs)
     {
         return WithBodyAsJson(new JsonMatcher(body), because, becauseArgs);
@@ -35,25 +45,17 @@ public partial class WireMockAssertions
     }
 
     [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithBodyAsBytes(byte[] body, string because = "", params object[] becauseArgs)
-    {
-        return WithBodyAsBytes(new ExactObjectMatcher(body), because, becauseArgs);
-    }
-
-    [CustomAssertion]
-    public AndConstraint<WireMockAssertions> WithBody(IStringMatcher matcher, string because = "", params object[] becauseArgs)
-    {
-        var (filter, condition) = BuildFilterAndCondition(r => r.Body, matcher);
-
-        return ExecuteAssertionWithBodyStringMatcher(matcher, because, becauseArgs, condition, filter, r => r.Body);
-    }
-
-    [CustomAssertion]
     public AndConstraint<WireMockAssertions> WithBodyAsJson(IObjectMatcher matcher, string because = "", params object[] becauseArgs)
     {
         var (filter, condition) = BuildFilterAndCondition(r => r.BodyAsJson, matcher);
 
         return ExecuteAssertionWithBodyAsIObjectMatcher(matcher, because, becauseArgs, condition, filter, r => r.BodyAsJson);
+    }
+
+    [CustomAssertion]
+    public AndConstraint<WireMockAssertions> WithBodyAsBytes(byte[] body, string because = "", params object[] becauseArgs)
+    {
+        return WithBodyAsBytes(new ExactObjectMatcher(body), because, becauseArgs);
     }
 
     [CustomAssertion]
@@ -140,6 +142,6 @@ public partial class WireMockAssertions
     private static string? FormatBodies(IEnumerable<object?> bodies)
     {
         var valueAsArray = bodies as object[] ?? bodies.ToArray();
-        return valueAsArray.Length == 1 ? FormatBody(valueAsArray.First()) : $"[ {string.Join(", ", valueAsArray.Select(FormatBody))} ]";
+        return valueAsArray.Length == 1 ? FormatBody(valueAsArray[0]) : $"[ {string.Join(", ", valueAsArray.Select(FormatBody))} ]";
     }
 }

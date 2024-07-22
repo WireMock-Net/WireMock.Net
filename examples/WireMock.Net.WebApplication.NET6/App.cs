@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;

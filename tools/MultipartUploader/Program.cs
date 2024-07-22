@@ -1,3 +1,5 @@
+// Copyright © WireMock.Net
+
 namespace MultipartUploader;
 
 internal static class Program
