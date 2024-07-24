@@ -1,12 +1,12 @@
 // Copyright © WireMock.Net
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using AnyOfTypes;
 using JetBrains.Annotations;
-using WireMock.Extensions;
-using WireMock.Models;
 using Stef.Validation;
+using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -22,7 +22,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    private readonly IReadOnlyList<(string Key, string? Value)> _pairs;
+    private readonly IList<(string Key, string? Value)> _pairs;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FormUrlEncodedMatcher"/> class.
@@ -50,7 +50,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         [RegexPattern] AnyOf<string, StringPattern> pattern,
         bool ignoreCase = false,
         MatchOperator matchOperator = MatchOperator.Or) :
-        this(matchBehaviour, new[] { pattern }, ignoreCase, useRegexExtended, matchOperator)
+        this(matchBehaviour, new[] { pattern }, ignoreCase, matchOperator)
     {
     }
 
@@ -77,7 +77,10 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         {
             if (!QueryStringParser.TryParse(pattern, IgnoreCase, out var nameValueCollection))
             {
-                _pairs.Add(());
+                foreach (var nameValue in nameValueCollection!)
+                {
+                    _pairs.Add((nameValue.Key, nameValue.Value));
+                }
             }
         }
     }
@@ -91,19 +94,25 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
             return new MatchResult(MatchScores.Perfect);
         }
 
-        //
-        if (!QueryStringParser.TryParse(input, IgnoreCase, out var nameValueCollection))
+        if (!QueryStringParser.TryParse(input, IgnoreCase, out var inputNameValueCollection))
         {
             return new MatchResult(MatchScores.Mismatch);
         }
 
-        // IDictionary<string, string>? nameValueCollection
+        Func<string, string?, bool> equals = IgnoreCase
+            ? (value1, value2) => string.Equals(value1, value2, StringComparison.OrdinalIgnoreCase)
+            : (value1, value2) => value1 == value2;
 
-        Func<string?, bool> equals = IgnoreCase
-            ? pattern => string.Equals(pattern, input, StringComparison.OrdinalIgnoreCase)
-            : pattern => pattern == input;
+        var matches = new List<bool>();
+        foreach (var pair in _pairs)
+        {
+            var isEqual = inputNameValueCollection.ContainsKey(pair.Key) &&
+                          equals(inputNameValueCollection[pair.Key], pair.Value);
 
-        var score = MatchScores.ToScore(_values.Select(v => equals(v)).ToArray(), MatchOperator);
+            matches.Add(isEqual);
+        }
+
+        var score = MatchScores.ToScore(matches.ToArray(), MatchOperator);
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score));
     }
 
