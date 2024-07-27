@@ -147,19 +147,22 @@ internal class MappingConverter
         {
             var firstMatcher = requestMessageBodyMatcher.Matchers.FirstOrDefault();
 
-            if (firstMatcher is WildcardMatcher wildcardMatcher && wildcardMatcher.GetPatterns().Any())
+            switch (firstMatcher)
             {
-                sb.AppendLine($"        .WithBody({GetString(wildcardMatcher)})");
-            }
+                case IStringMatcher stringMatcher when stringMatcher.GetPatterns().Length > 0:
+                    sb.AppendLine($"        .WithBody({GetString(stringMatcher)})");
+                    break;
 
-            if (firstMatcher is JsonMatcher jsonMatcher)
-            {
-                var matcherType = jsonMatcher.GetType().Name;
-                sb.AppendLine($"        .WithBody(new {matcherType}(");
-                sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
-                sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
-                sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
-                sb.AppendLine(@"        ))");
+                case JsonMatcher jsonMatcher:
+                {
+                    var matcherType = jsonMatcher.GetType().Name;
+                    sb.AppendLine($"        .WithBody(new {matcherType}(");
+                    sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
+                    sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
+                    sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
+                    sb.AppendLine(@"        ))");
+                    break;
+                }
             }
         }
 
