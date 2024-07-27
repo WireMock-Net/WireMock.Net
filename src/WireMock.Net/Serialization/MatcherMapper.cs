@@ -108,6 +108,9 @@ internal class MatcherMapper
             case nameof(ContentTypeMatcher):
                 return new ContentTypeMatcher(matchBehaviour, stringPatterns, ignoreCase);
 
+            case nameof(FormUrlEncodedMatcher):
+                return new FormUrlEncodedMatcher(matchBehaviour, stringPatterns, ignoreCase);
+
             case nameof(SimMetricsMatcher):
                 SimMetricType type = SimMetricType.Levenstein;
                 if (!string.IsNullOrEmpty(matcherType) && !Enum.TryParse(matcherType, out type))
@@ -216,7 +219,7 @@ internal class MatcherMapper
     {
         if (matcher.Pattern is string patternAsString)
         {
-            return new[] { new AnyOf<string, StringPattern>(patternAsString) };
+            return [new AnyOf<string, StringPattern>(patternAsString)];
         }
 
         if (matcher.Pattern is IEnumerable<string> patternAsStringArray)
@@ -233,7 +236,7 @@ internal class MatcherMapper
         {
             var patternAsFile = matcher.PatternAsFile!;
             var pattern = _settings.FileSystemHandler.ReadFileAsString(patternAsFile);
-            return new[] { new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = patternAsFile }) };
+            return [new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = patternAsFile })];
         }
 
         return EmptyArray<AnyOf<string, StringPattern>>.Value;
