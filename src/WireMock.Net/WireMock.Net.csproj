@@ -3,7 +3,7 @@
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <AssemblyName>WireMock.Net</AssemblyName>
         <PackageId>WireMock.Net</PackageId>
@@ -38,7 +38,7 @@
         <DefineConstants>$(DefineConstants);NETSTANDARD;USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.2' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0'">
         <DefineConstants>$(DefineConstants);USE_ASPNETCORE</DefineConstants>
     </PropertyGroup>
 
@@ -50,12 +50,28 @@
         <DefineConstants>$(DefineConstants);OPENAPIPARSER</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
         <DefineConstants>$(DefineConstants);TRAILINGHEADERS</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+        <GRAPHQL>true</GRAPHQL>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);MIMEKIT</DefineConstants>
+        <MIMEKIT>true</MIMEKIT>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);PROTOBUF</DefineConstants>
+        <PROTOBUF>true</PROTOBUF>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' ">
+        <DefineConstants>$(DefineConstants);CSHARPMATCHER</DefineConstants>
+        <CSHARPMATCHER>true</CSHARPMATCHER>
     </PropertyGroup>
 
     <ItemGroup>
@@ -141,16 +157,9 @@
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0'">
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Scriban.Signed" Version="5.5.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="GraphQL" Version="7.5.0" />
-        <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
-        <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
-        <PackageReference Include="ProtoBufJsonConverter" Version="0.3.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
@@ -199,5 +208,45 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
         <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
+    </ItemGroup>
+        
+    <ItemGroup>
+        <Compile Include="..\WireMock.Net.GraphQL\**\*.cs" Exclude="..\WireMock.Net.GraphQL\obj\**\*;..\WireMock.Net.GraphQL\bin\**\*">
+            <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\WireMock.Net.MimePart\**\*.cs" Exclude="..\WireMock.Net.MimePart\obj\**\*;..\WireMock.Net.MimePart\bin\**\*">
+            <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\WireMock.Net.ProtoBuf\**\*.cs" Exclude="..\WireMock.Net.ProtoBuf\obj\**\*;..\WireMock.Net.ProtoBuf\bin\**\*">
+            <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        </Compile>
+        <Compile Include="..\WireMock.Net.Matchers.CSharpCode\**\*.cs" Exclude="..\WireMock.Net.Matchers.CSharpCode\obj\**\*;..\WireMock.Net.Matchers.CSharpCode\bin\**\*">
+            <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(GRAPHQL)' == 'true' ">
+        <PackageReference Include="GraphQL" Version="7.5.0" />
+        <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(MIMEKIT)' == 'true' ">
+        <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(PROTOBUF)' == 'true' ">
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.2.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net452' ">
+        <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="3.6.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net46' or '$(TargetFramework)' == 'net461' ">
+        <PackageReference Include="CS-Script" Version="3.30.3" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="CS-Script" Version="4.8.13" />
     </ItemGroup>
 </Project>

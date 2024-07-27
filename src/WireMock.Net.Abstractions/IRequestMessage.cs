@@ -118,13 +118,11 @@ public interface IRequestMessage
     /// </summary>
     byte[]? BodyAsBytes { get; }
 
-#if MIMEKIT
     /// <summary>
     /// The original body as MimeMessage.
     /// Convenience getter for Handlebars and WireMockAssertions.
     /// </summary>
     object? BodyAsMimeMessage { get; }
-#endif
 
     /// <summary>
     /// The detected body type. Convenience getter for Handlebars.

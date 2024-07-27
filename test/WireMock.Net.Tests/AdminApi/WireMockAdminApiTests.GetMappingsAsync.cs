@@ -1,6 +1,6 @@
 // Copyright © WireMock.Net
 
-#if !(NET452 || NET461 || NETCOREAPP3_1)
+#if PROTOBUF
 using System.Threading.Tasks;
 using RestEase;
 using VerifyXunit;

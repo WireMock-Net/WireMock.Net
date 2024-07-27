@@ -26,7 +26,7 @@ public class Program
 
     private static WireMockServer _server = null!;
 
-    static async Task Main(string[] args)
+    protected static async Task Main(string[] args)
     {
         if (!StandAloneApp.TryStart(args, out _server!, Logger))
         {

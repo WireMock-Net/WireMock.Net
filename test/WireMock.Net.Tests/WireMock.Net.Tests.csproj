@@ -3,6 +3,7 @@
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>
@@ -25,34 +26,34 @@
         <DefineConstants>NETFRAMEWORK</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <DefineConstants>$(DefineConstants);GRAPHQL;MIMEKIT;PROTOBUF</DefineConstants>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);GRAPHQL</DefineConstants>
+        <GRAPHQL>true</GRAPHQL>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);MIMEKIT</DefineConstants>
+        <MIMEKIT>true</MIMEKIT>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net47' or '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <DefineConstants>$(DefineConstants);PROTOBUF</DefineConstants>
+        <PROTOBUF>true</PROTOBUF>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' ">
         <DefineConstants>$(DefineConstants);TRAILINGHEADERS</DefineConstants>
     </PropertyGroup>
 
-    <ItemGroup>
-        <Compile Remove="Util\JsonUtilsTests.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <!-- https://stackoverflow.com/questions/59406201/filenesting-not-working-for-class-or-shared-library-projects -->
+    <!--<ItemGroup>
+        --><!-- https://stackoverflow.com/questions/59406201/filenesting-not-working-for-class-or-shared-library-projects --><!--
         <ProjectCapability Include="ConfigurableFileNesting" />
         <ProjectCapability Include="ConfigurableFileNestingFeatureEnabled" />
-    </ItemGroup>
-
-    <!--<ItemGroup>
-        <Compile Update="**\*.*.verified.txt">
-            <DependentUpon>$([System.String]::Copy((Filename)*.cs))</DependentUpon>
-        </Compile>
     </ItemGroup>-->
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
-        <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.xUnit\WireMock.Net.xUnit.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
@@ -106,7 +107,6 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
-
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
         <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
         <PackageReference Include="Grpc.Tools" Version="2.60.0">
@@ -117,7 +117,7 @@
         <Protobuf Include="Grpc\greet.proto" GrpcServices="Client" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0'">
         <ProjectReference Include="..\..\src\WireMock.Net.Testcontainers\WireMock.Net.Testcontainers.csproj" />
     </ItemGroup>
 
