@@ -1,6 +1,6 @@
 ﻿[
   {
-    Guid: Guid_1,
+    Guid: 41372914-1838-4c67-916b-b9aacdd096ce,
     UpdatedAt: 2023-01-14 15:16:17,
     Request: {
       Path: {
@@ -33,7 +33,7 @@
     }
   },
   {
-    Guid: Guid_2,
+    Guid: 98fae52e-76df-47d9-876f-2ee32e931002,
     UpdatedAt: 2023-01-14 15:16:17,
     Request: {
       Path: {
@@ -54,6 +54,78 @@
           Pattern: {
             city: Amsterdam,
             country: The Netherlands
+          },
+          IgnoreCase: false,
+          Regex: false
+        }
+      }
+    },
+    Response: {}
+  },
+  {
+    Guid: 98fae52e-76df-47d9-876f-2ee32e931003,
+    UpdatedAt: 2023-01-14 15:16:17,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /form-urlencoded,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Headers: [
+        {
+          Name: Content-Type,
+          Matchers: [
+            {
+              Name: WildcardMatcher,
+              Pattern: application/x-www-form-urlencoded,
+              IgnoreCase: true
+            }
+          ],
+          IgnoreCase: true
+        }
+      ],
+      Body: {
+        Matcher: {
+          Name: FormUrlEncodedMatcher,
+          Patterns: [
+            name=John Doe,
+            email=johndoe@example.com
+          ],
+          IgnoreCase: false,
+          MatchOperator: Or
+        }
+      }
+    },
+    Response: {}
+  },
+  {
+    Guid: 98fae52e-76df-47d9-876f-2ee32e931001,
+    UpdatedAt: 2023-01-14 15:16:17,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /users/post1,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: JsonMatcher,
+          Pattern: {
+            Request: Hello?
           },
           IgnoreCase: false,
           Regex: false

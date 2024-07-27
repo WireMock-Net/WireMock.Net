@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using AnyOfTypes;
-using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Models;
 using WireMock.Util;
@@ -34,7 +33,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         AnyOf<string, StringPattern> pattern,
         bool ignoreCase = false,
         MatchOperator matchOperator = MatchOperator.Or) :
-        this(MatchBehaviour.AcceptOnMatch, new[] { pattern }, ignoreCase, matchOperator)
+        this(MatchBehaviour.AcceptOnMatch, [pattern], ignoreCase, matchOperator)
     {
     }
 
@@ -47,10 +46,24 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public FormUrlEncodedMatcher(
         MatchBehaviour matchBehaviour,
-        [RegexPattern] AnyOf<string, StringPattern> pattern,
+        AnyOf<string, StringPattern> pattern,
         bool ignoreCase = false,
         MatchOperator matchOperator = MatchOperator.Or) :
-        this(matchBehaviour, new[] { pattern }, ignoreCase, matchOperator)
+        this(matchBehaviour, [pattern], ignoreCase, matchOperator)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FormUrlEncodedMatcher"/> class.
+    /// </summary>
+    /// <param name="patterns">The patterns.</param>
+    /// <param name="ignoreCase">Ignore the case from the pattern.</param>
+    /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
+    public FormUrlEncodedMatcher(
+        AnyOf<string, StringPattern>[] patterns,
+        bool ignoreCase = false,
+        MatchOperator matchOperator = MatchOperator.Or) :
+        this(MatchBehaviour.AcceptOnMatch, patterns, ignoreCase, matchOperator)
     {
     }
 
@@ -63,7 +76,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use. (default = "Or")</param>
     public FormUrlEncodedMatcher(
         MatchBehaviour matchBehaviour,
-        [RegexPattern] AnyOf<string, StringPattern>[] patterns,
+        AnyOf<string, StringPattern>[] patterns,
         bool ignoreCase = false,
         MatchOperator matchOperator = MatchOperator.Or)
     {
@@ -75,7 +88,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         _pairs = new List<(string, string?)>();
         foreach (var pattern in _patterns)
         {
-            if (!QueryStringParser.TryParse(pattern, IgnoreCase, out var nameValueCollection))
+            if (QueryStringParser.TryParse(pattern, IgnoreCase, out var nameValueCollection))
             {
                 foreach (var nameValue in nameValueCollection!)
                 {
@@ -123,7 +136,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     }
 
     /// <inheritdoc />
-    public virtual string Name => nameof(RegexMatcher);
+    public virtual string Name => nameof(FormUrlEncodedMatcher);
 
     /// <inheritdoc />
     public bool IgnoreCase { get; }

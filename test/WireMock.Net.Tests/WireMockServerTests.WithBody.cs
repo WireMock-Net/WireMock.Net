@@ -225,5 +225,63 @@ public partial class WireMockServerTests
 
         server.Stop();
     }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsFormUrlEncoded_Using_PostAsync_And_WithFormUrlEncodedMatcher()
+    {
+        // Arrange
+        var matcher = new FormUrlEncodedMatcher(["name=John Doe", "email=johndoe@example.com"]);
+        var server = WireMockServer.Start();
+        server.Given(
+            Request.Create()
+                .UsingPost()
+                .WithPath("/foo")
+                .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                .WithBody(matcher)
+            )
+            .RespondWith(
+                Response.Create()
+            );
+
+        server.Given(
+            Request.Create()
+                .UsingPost()
+                .WithPath("/bar")
+                .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                .WithBody(matcher)
+            )
+            .RespondWith(
+                Response.Create()
+            );
+
+        // Act 1
+        var contentOrdered = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("name", "John Doe"),
+            new KeyValuePair<string, string>("email", "johndoe@example.com")
+        });
+        var responseOrdered = await new HttpClient()
+            .PostAsync($"{server.Url}/foo", contentOrdered)
+            .ConfigureAwait(false);
+
+        // Assert 1
+        responseOrdered.StatusCode.Should().Be(HttpStatusCode.OK);
+
+
+        // Act 2
+        var contentUnordered = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("email", "johndoe@example.com"),
+            new KeyValuePair<string, string>("name", "John Doe"),
+        });
+        var responseUnordered = await new HttpClient()
+            .PostAsync($"{server.Url}/bar", contentUnordered)
+            .ConfigureAwait(false);
+
+        // Assert 2
+        responseUnordered.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        server.Stop();
+    }
 }
 #endif
