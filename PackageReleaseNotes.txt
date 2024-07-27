@@ -1,13 +1,5 @@
-# 1.5.61 (22 July 2024)
-- #1122 Fix OpenApiPathsMapper [bug]
-- #1135 Bump System.Text.Json from 4.7.2 to 8.0.4 in /examples/WireMock.Net.Console.Net472.Classic [dependencies]
-- #1136 Bump System.Text.Json from 8.0.0 to 8.0.4 in /src/dotnet-WireMock.Net [dependencies]
-- #1137 Add link to TIOBE Index on main page + fix issues [refactor]
-- #1138 Fix some SonarCloud warnings [refactor]
-- #1141 Update WireMockContainerBuilder.WithMappings for &quot;includeSubDirectories&quot; [feature]
-- #1142 Make property FromConfiguredStub nullable (for WireMock.Org) [bug]
-- #1118 Generating mappings from Payroc open-api file gives ArgumentException: Property with the same name already exists on object [bug]
-- #1139 Allow WithMappings to support scanning SubDirectories when building a WireMockContainer [feature]
-- #1140 WireMock.Org nullable properties and defaults [bug]
+# 1.5.62 (27 July 2024)
+- #1147 Add FormUrlEncodedMatcher [feature]
+- #1143 FormEncoded Request fails (404 Not Found) if key value pairs order in mapping is different from request body order [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
