@@ -115,7 +115,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Console.GrpcCl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.GraphQL", "src\WireMock.Net.GraphQL\WireMock.Net.GraphQL.csproj", "{B6269AAC-170A-4346-8B9A-444DED3D9A45}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.MimeKitLite", "src\WireMock.Net.MimeKitLite\WireMock.Net.MimeKitLite.csproj", "{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.MimePart", "src\WireMock.Net.MimePart\WireMock.Net.MimePart.csproj", "{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.ProtoBuf", "src\WireMock.Net.ProtoBuf\WireMock.Net.ProtoBuf.csproj", "{B47413AA-55D3-49A7-896A-17ADBFF72407}"
 EndProject

@@ -50,7 +50,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="..\WireMock.Net\**\*.cs" Exclude="..\WireMock.Net\obj\**\*;..\WireMock.Net\bin\**\*;..\WireMock.Net\Properties\*;..\WireMock.Net\GraphQL\**\*;..\WireMock.Net\MimeKitLite\**\*;..\WireMock.Net\ProtoBuf\**\*;..\WireMock.Net\Matchers.CSharpCode\**\*">
+        <Compile Include="..\WireMock.Net\**\*.cs" Exclude="..\WireMock.Net\obj\**\*;..\WireMock.Net\bin\**\*;..\WireMock.Net\Properties\*;..\WireMock.Net\GraphQL\**\*;..\WireMock.Net\MimePart\**\*;..\WireMock.Net\ProtoBuf\**\*;..\WireMock.Net\Matchers.CSharpCode\**\*">
         </Compile>
     </ItemGroup>
 

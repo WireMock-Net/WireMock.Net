@@ -214,7 +214,7 @@
         <Compile Include="..\WireMock.Net.GraphQL\**\*.cs" Exclude="..\WireMock.Net.GraphQL\obj\**\*;..\WireMock.Net.GraphQL\bin\**\*">
             <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
         </Compile>
-        <Compile Include="..\WireMock.Net.MimeKitLite\**\*.cs" Exclude="..\WireMock.Net.MimeKitLite\obj\**\*;..\WireMock.Net.MimeKitLite\bin\**\*">
+        <Compile Include="..\WireMock.Net.MimePart\**\*.cs" Exclude="..\WireMock.Net.MimePart\obj\**\*;..\WireMock.Net.MimePart\bin\**\*">
             <Link>%(RecursiveDir)/%(FileName)%(Extension)</Link>
         </Compile>
         <Compile Include="..\WireMock.Net.ProtoBuf\**\*.cs" Exclude="..\WireMock.Net.ProtoBuf\obj\**\*;..\WireMock.Net.ProtoBuf\bin\**\*">
