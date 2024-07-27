@@ -1,3 +1,7 @@
+# 1.5.62 (27 July 2024)
+- [#1147](https://github.com/WireMock-Net/WireMock.Net/pull/1147) - Add FormUrlEncodedMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#1143](https://github.com/WireMock-Net/WireMock.Net/issues/1143) - FormEncoded Request fails (404 Not Found) if key value pairs order in mapping is different from request body order [bug]
+
 # 1.5.61 (22 July 2024)
 - [#1122](https://github.com/WireMock-Net/WireMock.Net/pull/1122) - Fix OpenApiPathsMapper [bug] contributed by [StefH](https://github.com/StefH)
 - [#1135](https://github.com/WireMock-Net/WireMock.Net/pull/1135) - Bump System.Text.Json from 4.7.2 to 8.0.4 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
