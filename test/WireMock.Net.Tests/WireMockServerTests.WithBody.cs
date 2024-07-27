@@ -230,7 +230,7 @@ public partial class WireMockServerTests
     public async Task WireMockServer_WithBodyAsFormUrlEncoded_Using_PostAsync_And_WithFormUrlEncodedMatcher()
     {
         // Arrange
-        var matcher = new FormUrlEncodedMatcher(["name=John Doe", "email=johndoe@example.com"]);
+        var matcher = new FormUrlEncodedMatcher(["email=johndoe@example.com", "name=John Doe"]);
         var server = WireMockServer.Start();
         server.Given(
             Request.Create()

@@ -1,6 +1,5 @@
 // Copyright © WireMock.Net
 
-using System;
 using System.Collections.Generic;
 using AnyOfTypes;
 using Stef.Validation;
@@ -21,7 +20,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    private readonly List<(string Key, string? Value)> _pairs = new();
+    private readonly List<(WildcardMatcher Key, WildcardMatcher? Value)> _pairs = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FormUrlEncodedMatcher"/> class.
@@ -89,9 +88,11 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         {
             if (QueryStringParser.TryParse(pattern, IgnoreCase, out var nameValueCollection))
             {
-                foreach (var nameValue in nameValueCollection!)
+                foreach (var nameValue in nameValueCollection)
                 {
-                    _pairs.Add((nameValue.Key, nameValue.Value));
+                    var keyMatcher = new WildcardMatcher(MatchBehaviour.AcceptOnMatch, [nameValue.Key], ignoreCase, MatchOperator);
+                    var valueMatcher = new WildcardMatcher(MatchBehaviour.AcceptOnMatch, [nameValue.Value], ignoreCase, MatchOperator);
+                    _pairs.Add((keyMatcher, valueMatcher));
                 }
             }
         }
@@ -111,17 +112,24 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
             return new MatchResult(MatchScores.Mismatch);
         }
 
-        Func<string, string?, bool> equals = IgnoreCase
-            ? (value1, value2) => string.Equals(value1, value2, StringComparison.OrdinalIgnoreCase)
-            : (value1, value2) => value1 == value2;
-
         var matches = new List<bool>();
-        foreach (var pair in _pairs)
+        foreach (var inputKeyValuePair in inputNameValueCollection)
         {
-            var isEqual = inputNameValueCollection.ContainsKey(pair.Key) &&
-                          equals(inputNameValueCollection[pair.Key], pair.Value);
+            var match = false;
+            foreach (var pair in _pairs)
+            {
+                var keyMatchResult = pair.Key.IsMatch(inputKeyValuePair.Key).IsPerfect();
+                if (keyMatchResult)
+                {
+                    match = pair.Value?.IsMatch(inputKeyValuePair.Value).IsPerfect() ?? false;
+                    if (match)
+                    {
+                        break;
+                    }
+                }
+            }
 
-            matches.Add(isEqual);
+            matches.Add(match);
         }
 
         var score = MatchScores.ToScore(matches.ToArray(), MatchOperator);
