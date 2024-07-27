@@ -30,7 +30,6 @@ public class MappingBuilderTests
         VerifySettings.Init();
     }
 
-    private static readonly Guid NewGuid = new("98fae52e-76df-47d9-876f-2ee32e931d9b");
     private const string MappingGuid = "41372914-1838-4c67-916b-b9aacdd096ce";
     private static readonly DateTime UtcNow = new(2023, 1, 14, 15, 16, 17);
 
@@ -43,7 +42,8 @@ public class MappingBuilderTests
         _fileSystemHandlerMock = new Mock<IFileSystemHandler>();
 
         var guidUtilsMock = new Mock<IGuidUtils>();
-        guidUtilsMock.Setup(g => g.NewGuid()).Returns(NewGuid);
+        var startGuid = 1000;
+        guidUtilsMock.Setup(g => g.NewGuid()).Returns(() => new Guid($"98fae52e-76df-47d9-876f-2ee32e93{startGuid++}"));
 
         var dateTimeUtilsMock = new Mock<IDateTimeUtils>();
         dateTimeUtilsMock.SetupGet(d => d.UtcNow).Returns(UtcNow);
@@ -95,6 +95,13 @@ public class MappingBuilderTests
                 country = "The Netherlands"
             }))
         ).RespondWith(Response.Create());
+
+        _sut.Given(Request.Create()
+            .UsingPost()
+            .WithPath("/form-urlencoded")
+            .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+            .WithBody(new FormUrlEncodedMatcher(["name=John Doe", "email=johndoe@example.com"]))
+        ).RespondWith(Response.Create());
     }
 
     [Fact]
@@ -104,7 +111,7 @@ public class MappingBuilderTests
         var mappings = _sut.GetMappings();
 
         // Verify
-        return Verifier.Verify(mappings, VerifySettings);
+        return Verifier.Verify(mappings, VerifySettings).DontScrubGuids();
     }
 
     [Fact]
@@ -114,7 +121,7 @@ public class MappingBuilderTests
         var json = _sut.ToJson();
 
         // Verify
-        return Verifier.VerifyJson(json, VerifySettings);
+        return Verifier.VerifyJson(json, VerifySettings).DontScrubGuids();
     }
 
     [Fact]
@@ -124,7 +131,7 @@ public class MappingBuilderTests
         var code = _sut.ToCSharpCode(MappingConverterType.Server);
 
         // Verify
-        return Verifier.Verify(code, VerifySettings);
+        return Verifier.Verify(code, VerifySettings).DontScrubGuids();
     }
 
     [Fact]
@@ -134,7 +141,7 @@ public class MappingBuilderTests
         var code = _sut.ToCSharpCode(MappingConverterType.Builder);
 
         // Verify
-        return Verifier.Verify(code, VerifySettings);
+        return Verifier.Verify(code, VerifySettings).DontScrubGuids();
     }
 
     [Fact]
@@ -183,9 +190,9 @@ public class MappingBuilderTests
         _sut.SaveMappingsToFolder(null);
 
         // Verify
-        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(2));
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(2));
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(4));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(4));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(4));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 
@@ -201,8 +208,8 @@ public class MappingBuilderTests
 
         // Verify
         _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Never);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(2));
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(4));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(4));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 }
