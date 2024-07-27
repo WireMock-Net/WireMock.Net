@@ -4,9 +4,11 @@
 // For more details see 'mock4net/LICENSE.txt' and 'mock4net/readme.md' in this project root.
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Stef.Validation;
 using WireMock.Matchers.Request;
 using WireMock.Models;
+using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Settings;
 using WireMock.Types;
@@ -73,10 +75,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         Guid = guidUtils.NewGuid();
     }
 
-    /// <summary>
-    /// The respond with.
-    /// </summary>
-    /// <param name="provider">The provider.</param>
+    /// <inheritdoc />
     public void RespondWith(IResponseProvider provider)
     {
         var mapping = new Mapping
@@ -114,6 +113,48 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
+    public void ThenRespondWith(Action<IResponseBuilder> action)
+    {
+        var responseBuilder = Response.Create();
+
+        action(responseBuilder);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void ThenRespondWithOK()
+    {
+        var responseBuilder = Response.Create();
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void ThenRespondWithStatusCode(int code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void ThenRespondWithStatusCode(string code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
+    public void ThenRespondWithStatusCode(HttpStatusCode code)
+    {
+        var responseBuilder = Response.Create().WithStatusCode(code);
+
+        RespondWith(responseBuilder);
+    }
+
+    /// <inheritdoc />
     public IRespondWithAProvider WithData(object data)
     {
         Data = data;
@@ -134,6 +175,18 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
+    public IRespondWithAProvider DefineGuid(Guid guid)
+    {
+        return WithGuid(guid);
+    }
+
+    /// <inheritdoc />
+    public IRespondWithAProvider DefineGuid(string guid)
+    {
+        return WithGuid(guid);
+    }
+
+    /// <inheritdoc />
     public IRespondWithAProvider WithTitle(string title)
     {
         _title = title;
@@ -148,7 +201,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         return this;
     }
 
-    /// <see cref="IRespondWithAProvider.WithPath"/>
+    /// <inheritdoc />
     public IRespondWithAProvider WithPath(string path)
     {
         _path = path;
