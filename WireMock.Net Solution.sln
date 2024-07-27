@@ -121,6 +121,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.ProtoBuf", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Minimal", "src\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj", "{A39C689E-B94B-4BBB-A270-B5A4C2B6D179}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Common", "src\WireMock.Net.Common\WireMock.Net.Common.csproj", "{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -457,6 +459,14 @@ Global
 		{A39C689E-B94B-4BBB-A270-B5A4C2B6D179}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A39C689E-B94B-4BBB-A270-B5A4C2B6D179}.Release|x64.ActiveCfg = Release|Any CPU
 		{A39C689E-B94B-4BBB-A270-B5A4C2B6D179}.Release|x64.Build.0 = Release|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Debug|x64.Build.0 = Debug|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Release|x64.ActiveCfg = Release|Any CPU
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -505,6 +515,7 @@ Global
 		{F8B4A93E-46EF-4237-88FE-15FDAB7635D4} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{B47413AA-55D3-49A7-896A-17ADBFF72407} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{A39C689E-B94B-4BBB-A270-B5A4C2B6D179} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
+		{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}

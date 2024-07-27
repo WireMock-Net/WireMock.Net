@@ -26,12 +26,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="GraphQL" Version="7.5.0" />
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
 
-        <ProjectReference Include="..\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj" />
+        <!--<ProjectReference Include="..\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\WireMock.Net.Common\WireMock.Net.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="Nullable" Version="1.3.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>

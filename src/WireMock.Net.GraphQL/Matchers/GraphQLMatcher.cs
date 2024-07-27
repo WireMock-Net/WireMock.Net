@@ -1,6 +1,6 @@
 // Copyright © WireMock.Net
 
-#if GRAPHQL
+// #if GRAPHQL
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -202,4 +202,4 @@ public class GraphQLMatcher : IGraphQLMatcher
         return schema;
     }
 }
-#endif
+//#endif

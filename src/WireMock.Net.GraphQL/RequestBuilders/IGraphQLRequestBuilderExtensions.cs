@@ -1,6 +1,6 @@
 // Copyright © WireMock.Net
 
-#if GRAPHQL
+// #if GRAPHQL
 // ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
@@ -127,4 +127,4 @@ public static class IGraphQLRequestBuilderExtensions
         return WithGraphQLSchema(requestBuilder, body, matchBehaviour);
     }
 }
-#endif
+//#endif
