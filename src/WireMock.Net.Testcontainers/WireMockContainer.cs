@@ -2,8 +2,6 @@
 
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using RestEase;

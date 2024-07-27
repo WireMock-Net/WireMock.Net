@@ -13,7 +13,6 @@
 
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
 
         <!--https://developercommunity.visualstudio.com/content/problem/26347/unit-tests-fail-with-fileloadexception-newtonsoftj-1.html-->
@@ -70,7 +69,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
         <PackageReference Include="RestEase" Version="1.5.7" />
@@ -108,7 +106,7 @@
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
 
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
         <PackageReference Include="Grpc.Tools" Version="2.60.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -132,10 +130,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="cert.pem">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Grpc\greet.proto">
-          <GrpcServices>Client</GrpcServices>
+            <GrpcServices>Client</GrpcServices>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

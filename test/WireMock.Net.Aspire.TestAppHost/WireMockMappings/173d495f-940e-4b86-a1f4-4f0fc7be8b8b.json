@@ -1,0 +1,26 @@
+{
+    "Guid": "173d495f-940e-4b86-a1f4-4f0fc7be8b8b",
+    "Request": {
+        "Path": "/weatherforecast",
+        "Methods": [
+            "get"
+        ]
+    },
+    "Response": {
+        "BodyAsJson": [
+            {
+                "date": "2024-05-24",
+                "temperatureC": -10,
+                "summary": "Freezing"
+            },
+            {
+                "date": "2024-05-25",
+                "temperatureC": 33,
+                "summary": "Hot"
+            }
+        ],
+        "Headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}

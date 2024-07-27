@@ -1,0 +1,41 @@
+{
+    "Guid": "873d495f-940e-4b86-a1f4-4f0fc7be8b8b",
+    "Request": {
+        "Path": "/weatherforecast",
+        "Methods": [
+            "get"
+        ]
+    },
+    "Response": {
+        "BodyAsJson": [
+            {
+                "date": "2024-05-24",
+                "temperatureC": -17,
+                "summary": "Balmy"
+            },
+            {
+                "date": "2024-05-25",
+                "temperatureC": -13,
+                "summary": "Mild"
+            },
+            {
+                "date": "2024-05-26",
+                "temperatureC": 31,
+                "summary": "Bracing"
+            },
+            {
+                "date": "2024-05-27",
+                "temperatureC": 6,
+                "summary": "Hot"
+            },
+            {
+                "date": "2024-05-28",
+                "temperatureC": -2,
+                "summary": "Mild"
+            }
+        ],
+        "Headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}

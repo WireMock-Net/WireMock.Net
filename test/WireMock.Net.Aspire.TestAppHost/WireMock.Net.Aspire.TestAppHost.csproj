@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsAspireHost>true</IsAspireHost>
+
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- https://learn.microsoft.com/en-us/dotnet/aspire/extensibility/custom-resources?tabs=windows#create-library-for-resource-extension -->
+        <ProjectReference Include="..\..\src\WireMock.Net.Aspire\WireMock.Net.Aspire.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="WireMockMappings\*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Version>0.0.1-preview-05</Version>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Description>Aspire extension to start a WireMock.Net server to stub an api.</Description>
+        <AssemblyTitle>WireMock.Net.Aspire</AssemblyTitle>
+        <Authors>Stef Heyenrath</Authors>
+        <TargetFramework>net8.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.Aspire</AssemblyName>
+        <PackageId>WireMock.Net.Aspire</PackageId>
+        <PackageTags>dotnet;aspire;wiremock;extension</PackageTags>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A12}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>WireMock.Net-LogoAspire.png</PackageIcon>
+        <ApplicationIcon>../../resources/WireMock.Net-LogoAspire.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="../../resources/WireMock.Net-Logo.png" />
+        <None Include="../../resources/WireMock.Net-LogoAspire.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting" Version="8.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -931,7 +931,7 @@ public class WireMockServerProxyTests
         //Arrange
         var wireMockServerSettings = new WireMockServerSettings
         {
-            Urls = new[] { "http://localhost:9091" },
+            Urls = new[] { "http://localhost:19091" },
             ProxyAndRecordSettings = new ProxyAndRecordSettings
             {
                 Url = "http://postman-echo.com",
@@ -949,13 +949,13 @@ public class WireMockServerProxyTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri = new Uri("http://localhost:9091/post"),
+            RequestUri = new Uri("http://localhost:19091/post"),
             Content = new StringContent(requestBody)
         };
         var request2 = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri = new Uri("http://localhost:9091/post"),
+            RequestUri = new Uri("http://localhost:19091/post"),
             Content = new StringContent(requestBody)
         };
         server.ResetMappings();
