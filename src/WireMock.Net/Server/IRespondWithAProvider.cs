@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using WireMock.Models;
+using WireMock.ResponseBuilders;
 using WireMock.ResponseProviders;
+using WireMock.Settings;
 using WireMock.Types;
 
 namespace WireMock.Server;
@@ -24,6 +27,27 @@ public interface IRespondWithAProvider
     /// <param name="guid">The unique identifier.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider WithGuid(Guid guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider WithGuid(string guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider DefineGuid(Guid guid);
+
+    /// <summary>
+    /// Define a unique identifier for this mapping.
+    /// </summary>
+    /// <param name="guid">The unique identifier.</param>
+    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
+    IRespondWithAProvider DefineGuid(string guid);
 
     /// <summary>
     /// Define the TimeSettings for this mapping.
@@ -54,13 +78,6 @@ public interface IRespondWithAProvider
     IRespondWithAProvider WithPath(string path);
 
     /// <summary>
-    /// Define a unique identifier for this mapping.
-    /// </summary>
-    /// <param name="guid">The unique identifier.</param>
-    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    IRespondWithAProvider WithGuid(string guid);
-
-    /// <summary>
     /// Define the priority for this mapping.
     /// </summary>
     /// <param name="priority">The priority. (A lower value means a higher priority.)</param>
@@ -68,10 +85,42 @@ public interface IRespondWithAProvider
     IRespondWithAProvider AtPriority(int priority);
 
     /// <summary>
-    /// The respond with.
+    /// RespondWith
     /// </summary>
     /// <param name="provider">The provider.</param>
     void RespondWith(IResponseProvider provider);
+
+    /// <summary>
+    /// RespondWith
+    /// </summary>
+    /// <param name="action">The action to use the fluent <see cref="IResponseBuilder"/>.</param>
+    void ThenRespondWith(Action<IResponseBuilder> action);
+
+    /// <summary>
+    /// RespondWith a status code 200 (OK);
+    /// </summary>
+    void ThenRespondWithOK();
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void ThenRespondWithStatusCode(int code);
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void ThenRespondWithStatusCode(string code);
+
+    /// <summary>
+    /// RespondWith a status code.
+    /// By default all status codes are allowed, to change this behaviour, see <inheritdoc cref="WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse"/>.
+    /// </summary>
+    /// <param name="code">The code.</param>
+    void ThenRespondWithStatusCode(HttpStatusCode code);
 
     /// <summary>
     /// Sets the the scenario.

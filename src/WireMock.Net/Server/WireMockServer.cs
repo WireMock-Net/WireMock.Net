@@ -589,18 +589,6 @@ public partial class WireMockServer : IWireMockServer
     }
 
     /// <summary>
-    /// The given.
-    /// </summary>
-    /// <param name="requestMatcher">The request matcher.</param>
-    /// <param name="saveToFile">Optional boolean to indicate if this mapping should be saved as static mapping file.</param>
-    /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    [PublicAPI]
-    public IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false)
-    {
-        return _mappingBuilder.Given(requestMatcher, saveToFile);
-    }
-
-    /// <summary>
     /// Add a Grpc ProtoDefinition at server-level.
     /// </summary>
     /// <param name="id">Unique identifier for the ProtoDefinition.</param>
