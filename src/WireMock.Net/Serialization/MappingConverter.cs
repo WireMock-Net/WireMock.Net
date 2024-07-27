@@ -149,7 +149,7 @@ internal class MappingConverter
 
             switch (firstMatcher)
             {
-                case IStringMatcher stringMatcher when stringMatcher.GetPatterns().Any():
+                case IStringMatcher stringMatcher when stringMatcher.GetPatterns().Length > 0:
                     sb.AppendLine($"        .WithBody({GetString(stringMatcher)})");
                     break;
 

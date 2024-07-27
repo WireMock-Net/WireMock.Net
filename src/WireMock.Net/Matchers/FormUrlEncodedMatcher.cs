@@ -21,7 +21,7 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
 
-    private readonly IList<(string Key, string? Value)> _pairs;
+    private readonly List<(string Key, string? Value)> _pairs = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FormUrlEncodedMatcher"/> class.
@@ -85,7 +85,6 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
 
-        _pairs = new List<(string, string?)>();
         foreach (var pattern in _patterns)
         {
             if (QueryStringParser.TryParse(pattern, IgnoreCase, out var nameValueCollection))
