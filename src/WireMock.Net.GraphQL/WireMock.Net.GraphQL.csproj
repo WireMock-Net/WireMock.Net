@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net.Common\WireMock.Net.Common.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Shared\WireMock.Net.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

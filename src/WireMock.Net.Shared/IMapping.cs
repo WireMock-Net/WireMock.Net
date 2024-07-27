@@ -179,22 +179,3 @@ public interface IMapping
     /// <returns>The <see cref="IMapping"/>.</returns>
     IMapping WithProtoDefinition(IdOrText protoDefinition);
 }
-
-/*
-    executionConditionState">State in which the current mapping can occur. [Optional]
-    nextState">The next state which will occur after the current mapping execution. [Optional]
-    stateTimes">Only when the current state is executed this number, the next state which will occur. [Optional]
-    webhooks">The Webhooks. [Optional]
-    useWebhooksFireAndForget">Use Fire and Forget for the defined webhook(s). [Optional]
-    timeSettings">The TimeSettings. [Optional]
-    data">The data object. [Optional]
-    
- 
-    string? executionConditionState,
-    string? nextState,
-    int? stateTimes,
-    IWebhook[]? webhooks,
-    bool? useWebhooksFireAndForget,
-    ITimeSettings? timeSettings,
-    object? data,
-*/

@@ -121,7 +121,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.ProtoBuf", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Minimal", "src\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj", "{A39C689E-B94B-4BBB-A270-B5A4C2B6D179}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Common", "src\WireMock.Net.Common\WireMock.Net.Common.csproj", "{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Shared", "src\WireMock.Net.Shared\WireMock.Net.Shared.csproj", "{CFE2A17D-53FF-42B8-B27E-D0FB3ACC3589}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
