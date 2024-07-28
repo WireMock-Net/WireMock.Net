@@ -225,7 +225,7 @@ public partial class WireMockServer
         if (FileHelper.TryReadMappingFileWithRetryAndDelay(_settings.FileSystemHandler, path, out var value))
         {
             var mappingModels = DeserializeJsonToArray<MappingModel>(value);
-            if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+            if (mappingModels.Length == 1 && Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
             {
                 ConvertMappingAndRegisterAsRespondProvider(mappingModels[0], guidFromFilename, path);
             }
@@ -783,7 +783,7 @@ public partial class WireMockServer
         _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
         string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
-        if (Guid.TryParse(filenameWithoutExtension, out Guid guidFromFilename))
+        if (Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
         {
             DeleteMapping(guidFromFilename);
         }

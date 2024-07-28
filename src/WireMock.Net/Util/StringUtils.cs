@@ -23,7 +23,7 @@ internal static class StringUtils
         s => int.TryParse(s, out var result) ? (true, result) : (false, s),
         s => long.TryParse(s, out var result) ? (true, result) : (false, s),
         s => double.TryParse(s, out var result) ? (true, result) : (false, s),
-        s => Guid.TryParse(s, out var result) ? (true, result) : (false, s),
+        s => Guid.TryParseExact(s, "D", out var result) ? (true, result) : (false, s),
         s => TimeSpan.TryParse(s, out var result) ? (true, result) : (false, s),
         s => DateTime.TryParse(s, out var result) ? (true, result) : (false, s),
         s =>

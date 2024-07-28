@@ -97,7 +97,7 @@ public class StringUtilsTests
         isConverted.Should().Be(expectedConversion);
         if (isConverted)
         {
-            ((double) convertedValue).Should().BeApproximately(expectedValue, 0.01);
+            ((double)convertedValue).Should().BeApproximately(expectedValue, 0.01);
         }
         else
         {
@@ -106,6 +106,10 @@ public class StringUtilsTests
     }
 
     [Theory]
+    [InlineData("3F2504E04F8911D39A0C0305E82C3301", false)]
+    [InlineData("{3F2504E04F8911D39A0C0305E82C3301}", false)]
+    [InlineData("(3F2504E04F8911D39A0C0305E82C3301)", false)]
+    [InlineData("{0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}}", false)]
     [InlineData("3F2504E0-4F89-11D3-9A0C-0305E82C3301", true)]
     [InlineData("00000000-0000-0000-0000-000000000000", true)]
     [InlineData("3f2504e0-4f89-11d3-9a0c-0305e82c3301", true)] // Lowercase Guid

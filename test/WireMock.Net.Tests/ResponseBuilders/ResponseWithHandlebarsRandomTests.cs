@@ -105,7 +105,7 @@ public class ResponseWithHandlebarsRandomTests
     [Theory]
     [InlineData(ReplaceNodeOptions.EvaluateAndTryToConvert, JTokenType.Guid)]
     [InlineData(ReplaceNodeOptions.Evaluate, JTokenType.String)]
-    public async Task Response_ProvideResponseAsync_Handlebars_Random1_Guid(ReplaceNodeOptions options, JTokenType expected)
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_Guid(ReplaceNodeOptions options, JTokenType expected)
     {
         // Assign
         var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
@@ -114,7 +114,8 @@ public class ResponseWithHandlebarsRandomTests
             .WithBodyAsJson(new
             {
                 Guid1 = "{{Random Type=\"Guid\" Uppercase=false}}",
-                Guid2 = "{{Random Type=\"Guid\"}}"
+                Guid2 = "{{Random Type=\"Guid\"}}",
+                Guid3 = "{{ String.Replace (Random Type=\"Guid\") \"-\" \"\" }}"
             })
             .WithTransformer(options);
 
@@ -125,6 +126,27 @@ public class ResponseWithHandlebarsRandomTests
         var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
         jObject["Guid1"]!.Type.Should().Be(expected);
         jObject["Guid2"]!.Type.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task Response_ProvideResponseAsync_Handlebars_Random_StringReplaceGuid()
+    {
+        // Assign
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234"), "GET", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new
+            {
+                MyGuid = "{{ String.Replace (Random Type=\"Guid\") \"-\" \"\" }}"
+            })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        var jObject = JObject.FromObject(response.Message.BodyData!.BodyAsJson!);
+        jObject["MyGuid"]!.Type.Should().Be(JTokenType.String);
     }
 
     [Fact]
