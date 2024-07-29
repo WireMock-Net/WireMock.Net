@@ -10,24 +10,22 @@ namespace WireMock.Serialization;
 /// <summary>
 /// Creates sanitized file names for mappings
 /// </summary>
-internal class MappingFileNameSanitizer(WireMockServerSettings settings)
+internal class MappingFileNameSanitizer
 {
     private const string SpaceChar = " ";
     private const char ReplaceChar = '_';
 
-    private readonly WireMockServerSettings _settings = Guard.NotNull(settings);
-
     /// <summary>
     /// Creates sanitized file names for mappings
     /// </summary>
-    public string BuildSanitizedFileName(IMapping mapping)
+    public string BuildSanitizedFileName(IMapping mapping, ProxyAndRecordSettings? proxyAndRecordSettings)
     {
         string name;
         if (!string.IsNullOrEmpty(mapping.Title))
         {
             // remove 'Proxy Mapping for ' and an extra space character after the HTTP request method
             name = mapping.Title!.Replace(ProxyAndRecordSettings.DefaultPrefixForSavedMappingFile, string.Empty).Replace(SpaceChar, string.Empty);
-            if (_settings.ProxyAndRecordSettings?.AppendGuidToSavedMappingFile == true)
+            if (proxyAndRecordSettings?.AppendGuidToSavedMappingFile == true)
             {
                 name += $"{ReplaceChar}{mapping.Guid}";
             }
@@ -37,9 +35,9 @@ internal class MappingFileNameSanitizer(WireMockServerSettings settings)
             name = mapping.Guid.ToString();
         }
 
-        if (!string.IsNullOrEmpty(_settings.ProxyAndRecordSettings?.PrefixForSavedMappingFile))
+        if (!string.IsNullOrEmpty(proxyAndRecordSettings?.PrefixForSavedMappingFile))
         {
-            name = $"{_settings.ProxyAndRecordSettings!.PrefixForSavedMappingFile}{ReplaceChar}{name}";
+            name = $"{proxyAndRecordSettings.PrefixForSavedMappingFile}{ReplaceChar}{name}";
         }
 
         return $"{Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, ReplaceChar))}.json";
