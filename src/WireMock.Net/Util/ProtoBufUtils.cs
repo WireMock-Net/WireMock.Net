@@ -17,7 +17,6 @@ internal static class ProtoBufUtils
         string? messageType,
         object? value,
         IJsonConverter? jsonConverter = null,
-        JsonConverterOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
@@ -28,16 +27,9 @@ internal static class ProtoBufUtils
 
         var request = new ConvertToProtoBufRequest(protoDefinition, messageType, value, true);
 
-        if (jsonConverter != null)
-        {
-            request = request.WithJsonConverter(jsonConverter);
-            if (options != null)
-            {
-                request = request.WithJsonConverterOptions(options);
-            }
-        }
-
-        return await SingletonFactory<Converter>.GetInstance().ConvertAsync(request, cancellationToken).ConfigureAwait(false);
+        return await SingletonFactory<Converter>
+            .GetInstance()
+            .ConvertAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }
 #endif

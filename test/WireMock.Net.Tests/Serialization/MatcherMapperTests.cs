@@ -102,7 +102,7 @@ public class MatcherMapperTests
         // Assign
         var matcherMock = new Mock<IStringMatcher>();
         matcherMock.Setup(m => m.Name).Returns("test");
-        matcherMock.Setup(m => m.GetPatterns()).Returns(new AnyOf<string, StringPattern>[] { "p1", "p2" });
+        matcherMock.Setup(m => m.GetPatterns()).Returns(["p1", "p2"]);
 
         // Act
         var model = _sut.Map(matcherMock.Object)!;
@@ -327,7 +327,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "LinqMatcher",
-            Patterns = new[] { "p1", "p2" }
+            Patterns = ["p1", "p2"]
         };
 
         // Act
@@ -362,7 +362,7 @@ message HelloReply {
     {
         // Assign
         var pattern = "{ \"post1\": \"value1\", \"post2\": \"value2\" }";
-        var patterns = new[] { pattern };
+        object[] patterns = [pattern];
         var model = new MatcherModel
         {
             Name = "JsonMatcher",
@@ -383,7 +383,7 @@ message HelloReply {
         // Assign
         var pattern1 = "{ \"AccountIds\": [ 1, 2, 3 ] }";
         var pattern2 = "{ \"post1\": \"value1\", \"post2\": \"value2\" }";
-        var patterns = new[] { pattern1, pattern2 };
+        object[] patterns = [pattern1, pattern2];
         var model = new MatcherModel
         {
             Name = "JsonMatcher",
@@ -690,7 +690,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "CSharpCodeMatcher",
-            Patterns = new[] { "return it == \"x\";" }
+            Patterns = ["return it == \"x\";"]
         };
         var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = true });
 
@@ -716,7 +716,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "CSharpCodeMatcher",
-            Patterns = new[] { "x" }
+            Patterns = ["x"]
         };
         var sut = new MatcherMapper(new WireMockServerSettings { AllowCSharpCodeMatcher = false });
 
@@ -734,7 +734,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "ExactMatcher",
-            Patterns = new[] { "x" }
+            Patterns = ["x"]
         };
 
         // Act
@@ -751,7 +751,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "ExactMatcher",
-            Patterns = new[] { "x", "y" }
+            Patterns = ["x", "y"]
         };
 
         // Act
@@ -819,7 +819,7 @@ message HelloReply {
         var matcher = (ExactObjectMatcher)_sut.Map(model)!;
 
         // Assert
-        Check.That((byte[])matcher.Value).ContainsExactly(new byte[] { 115, 116, 101, 102 });
+        Check.That((byte[])matcher.Value).ContainsExactly(115, 116, 101, 102);
     }
 
     [Fact]
@@ -846,7 +846,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "RegexMatcher",
-            Patterns = new[] { "x", "y" },
+            Patterns = ["x", "y"],
             IgnoreCase = true,
             MatchOperator = matchOperator.ToString()
         };
@@ -871,7 +871,7 @@ message HelloReply {
         var model = new MatcherModel
         {
             Name = "WildcardMatcher",
-            Patterns = new[] { "x", "y" },
+            Patterns = ["x", "y"],
             IgnoreCase = true,
             MatchOperator = matchOperator.ToString()
         };
