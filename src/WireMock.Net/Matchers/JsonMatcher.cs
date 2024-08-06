@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Util;
 using JsonUtils = WireMock.Util.JsonUtils;
 
@@ -96,6 +97,18 @@ public class JsonMatcher : IJsonMatcher
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
+    }
+
+    /// <inheritdoc />
+    public virtual string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{CSharpFormatter.ConvertToAnonymousObjectDefinition(Value, 3)}, " + 
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(Regex)}" +
+               $")";
     }
 
     /// <summary>

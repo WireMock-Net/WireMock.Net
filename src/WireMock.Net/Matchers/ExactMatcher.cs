@@ -4,7 +4,9 @@ using System;
 using System.Linq;
 using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -86,8 +88,20 @@ public class ExactMatcher : IStringMatcher, IIgnoreCaseMatcher
     public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc />
-    public string Name => "ExactMatcher";
+    public string Name => nameof(ExactMatcher);
 
     /// <inheritdoc />
     public bool IgnoreCase { get; }
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_values)}" +
+               $")";
+    }
 }

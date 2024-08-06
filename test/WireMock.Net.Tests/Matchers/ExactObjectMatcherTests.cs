@@ -29,7 +29,7 @@ public class ExactObjectMatcherTests
         object checkValue = new byte[] { 1, 2 };
 
         // Act
-        var matcher = new ExactObjectMatcher(new byte[] { 1, 2 });
+        var matcher = new ExactObjectMatcher([1, 2]);
         var score = matcher.IsMatch(checkValue).Score;
 
         // Assert

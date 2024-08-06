@@ -30,6 +30,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Types;
+using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests.AdminApi;
@@ -38,6 +39,14 @@ namespace WireMock.Net.Tests.AdminApi;
 public partial class WireMockAdminApiTests
 {
     private static readonly VerifySettings VerifySettings = new();
+
+    private readonly Mock<IGuidUtils> _guidUtilsMock = new();
+
+    public WireMockAdminApiTests()
+    {
+        var startGuid = 1000;
+        _guidUtilsMock.Setup(g => g.NewGuid()).Returns(() => new Guid($"98fae52e-76df-47d9-876f-2ee32e93{startGuid++}"));
+    }
 
     static WireMockAdminApiTests()
     {

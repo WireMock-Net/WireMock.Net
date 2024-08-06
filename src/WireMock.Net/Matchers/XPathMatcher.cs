@@ -10,6 +10,7 @@ using WireMock.Extensions;
 using WireMock.Models;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Util;
 #if !NETSTANDARD1_3
 using Wmhelp.XPath2;
 #endif
@@ -89,11 +90,6 @@ public class XPathMatcher : IStringMatcher
         return CreateMatchResult(score);
     }
 
-    private MatchResult CreateMatchResult(double score, Exception? exception = null)
-    {
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
-    }
-
     /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
@@ -105,6 +101,23 @@ public class XPathMatcher : IStringMatcher
 
     /// <inheritdoc />
     public string Name => nameof(XPathMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"null, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
+    }
+
+    private MatchResult CreateMatchResult(double score, Exception? exception = null)
+    {
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
+    }
 
     private sealed class XPathEvaluator
     {
@@ -130,6 +143,7 @@ public class XPathMatcher : IStringMatcher
         {
             return _xpathNavigator == null ? [] : patterns.Select(pattern => true.Equals(Evaluate(_xpathNavigator, pattern, xmlNamespaceMap))).ToArray();
         }
+
         private object Evaluate(XPathNavigator navigator, AnyOf<string, StringPattern> pattern, IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
             var xpath = $"boolean({pattern.GetPattern()})";

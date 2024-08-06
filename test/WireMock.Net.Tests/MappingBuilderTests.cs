@@ -102,6 +102,13 @@ public class MappingBuilderTests
             .WithHeader("Content-Type", "application/x-www-form-urlencoded")
             .WithBody(new FormUrlEncodedMatcher(["name=John Doe", "email=johndoe@example.com"]))
         ).RespondWith(Response.Create());
+
+        _sut.Given(Request.Create()
+                .WithPath("/regex")
+                .WithParam("foo", new RegexMatcher(".*"))
+                .UsingGet()
+            )
+            .RespondWith(Response.Create());
     }
 
     [Fact]
@@ -190,9 +197,9 @@ public class MappingBuilderTests
         _sut.SaveMappingsToFolder(null);
 
         // Verify
-        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(4));
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(4));
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(4));
+        _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Exactly(5));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(mappingFolder), Times.Exactly(5));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(5));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 
@@ -208,8 +215,8 @@ public class MappingBuilderTests
 
         // Verify
         _fileSystemHandlerMock.Verify(fs => fs.GetMappingFolder(), Times.Never);
-        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(4));
-        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(4));
+        _fileSystemHandlerMock.Verify(fs => fs.FolderExists(path), Times.Exactly(5));
+        _fileSystemHandlerMock.Verify(fs => fs.WriteMappingFile(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(5));
         _fileSystemHandlerMock.VerifyNoOtherCalls();
     }
 }

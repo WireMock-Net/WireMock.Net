@@ -72,5 +72,11 @@ public class ExactObjectMatcher : IObjectMatcher
     }
 
     /// <inheritdoc />
-    public string Name => "ExactObjectMatcher";
+    public string Name => nameof(ExactObjectMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "NotImplemented";
+    }
 }

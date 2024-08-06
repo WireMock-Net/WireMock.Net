@@ -9,6 +9,7 @@ using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Json;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -136,4 +137,15 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
 
     /// <inheritdoc />
     public string Name => nameof(LinqMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
+    }
 }

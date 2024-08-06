@@ -1,5 +1,8 @@
 // Copyright © WireMock.Net
 
+using WireMock.Extensions;
+using WireMock.Util;
+
 namespace WireMock.Matchers;
 
 /// <summary>
@@ -33,5 +36,17 @@ public class JsonPartialMatcher : AbstractJsonPartialMatcher
     {
         var exactStringMatcher = new ExactMatcher(MatchBehaviour.AcceptOnMatch, IgnoreCase, MatchOperator.Or, value);
         return exactStringMatcher.IsMatch(input).IsPerfect();
+    }
+
+    /// <inheritdoc />
+    public override string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{CSharpFormatter.ConvertToAnonymousObjectDefinition(Value, 3)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(Regex)}" +
+               $")";
     }
 }

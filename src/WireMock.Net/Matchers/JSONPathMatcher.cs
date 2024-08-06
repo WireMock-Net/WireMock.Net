@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -89,7 +90,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         Exception? exception = null;
 
         // When input is null or byte[], return Mismatch.
-        if (input != null && !(input is byte[]))
+        if (input != null && input is not byte[])
         {
             try
             {
@@ -116,7 +117,18 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc />
-    public string Name => "JsonPathMatcher";
+    public string Name => nameof(JsonPathMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
+    }
 
     private double IsMatch(JToken jToken)
     {
