@@ -77,6 +77,6 @@ public class ExactObjectMatcher : IObjectMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "";
+        return "NotImplemented";
     }
 }
