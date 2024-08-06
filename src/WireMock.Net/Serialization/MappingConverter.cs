@@ -81,7 +81,7 @@ internal class MappingConverter(MatcherMapper mapper)
             sb.AppendLine($"        .WithUrl({To1Or2Arguments(urlMatcher.MatchOperator, urlMatcher.Matchers)})");
         }
 
-        foreach (var paramsMatcher in paramsMatchers)
+        foreach (var paramsMatcher in paramsMatchers.Where(pm => pm.Matchers != null))
         {
             sb.AppendLine($"        .WithParam({To2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
         }
@@ -561,7 +561,16 @@ internal class MappingConverter(MatcherMapper mapper)
 
     private static string To1Or2Arguments(MatchOperator? matchOperator, IReadOnlyList<IStringMatcher> matchers)
     {
-        return To1Or2Arguments(matchOperator, GetStringArray(matchers), string.Empty);
+        var sb = new StringBuilder();
+
+        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
+        {
+            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
+        }
+
+        sb.AppendFormat("{0}", MappingConverterUtils.ToCSharpCodeArguments(matchers));
+
+        return sb.ToString();
     }
 
     private static string To1Or2Arguments(MatchOperator? matchOperator, string[]? values, string defaultValue)

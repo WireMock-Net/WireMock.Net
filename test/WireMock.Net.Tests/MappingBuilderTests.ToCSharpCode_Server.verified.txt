@@ -2,7 +2,7 @@
 server
     .Given(Request.Create()
         .UsingMethod("GET")
-        .WithPath("/foo")
+        .WithPath(new WildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, "/foo", false, WireMock.Matchers.MatchOperator.Or))
         .WithParam("test", new LinqMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, WireMock.Matchers.MatchOperator.Or, "it.Length < 10"))
     )
     .WithGuid("41372914-1838-4c67-916b-b9aacdd096ce")
@@ -13,7 +13,7 @@ server
 server
     .Given(Request.Create()
         .UsingMethod("POST")
-        .WithPath("/users/post1")
+        .WithPath(new WildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, "/users/post1", false, WireMock.Matchers.MatchOperator.Or))
         .WithBody(new JsonMatcher(
             value: new
             {
@@ -30,7 +30,7 @@ server
 server
     .Given(Request.Create()
         .UsingMethod("POST")
-        .WithPath("/users/post2")
+        .WithPath(new WildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, "/users/post2", false, WireMock.Matchers.MatchOperator.Or))
         .WithBody(new JsonMatcher(
             value: new
             {
@@ -48,7 +48,7 @@ server
 server
     .Given(Request.Create()
         .UsingMethod("POST")
-        .WithPath("/form-urlencoded")
+        .WithPath(new WildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, "/form-urlencoded", false, WireMock.Matchers.MatchOperator.Or))
         .WithHeader("Content-Type", "application/x-www-form-urlencoded", true)
         .WithBody("name=John Doe")
     )
@@ -59,7 +59,7 @@ server
 server
     .Given(Request.Create()
         .UsingMethod("GET")
-        .WithPath("/regex")
+        .WithPath(new WildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, "/regex", false, WireMock.Matchers.MatchOperator.Or))
         .WithParam("foo", new RegexMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, ".*", false, true, WireMock.Matchers.MatchOperator.Or))
     )
     .WithGuid("98fae52e-76df-47d9-876f-2ee32e931004")
