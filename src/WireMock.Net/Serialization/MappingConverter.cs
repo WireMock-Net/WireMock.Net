@@ -72,11 +72,11 @@ internal class MappingConverter(MatcherMapper mapper)
         sb.AppendLine("    .Given(Request.Create()");
         sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
 
-        if (pathMatcher is { Matchers: { } })
+        if (pathMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithPath({To1Or2Arguments(pathMatcher.MatchOperator, pathMatcher.Matchers)})");
         }
-        else if (urlMatcher is { Matchers: { } })
+        else if (urlMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithUrl({To1Or2Arguments(urlMatcher.MatchOperator, urlMatcher.Matchers)})");
         }
@@ -86,12 +86,12 @@ internal class MappingConverter(MatcherMapper mapper)
             sb.AppendLine($"        .WithParam({To2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
         }
 
-        if (clientIPMatcher is { Matchers: { } })
+        if (clientIPMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithClientIP({ToValueArguments(GetStringArray(clientIPMatcher.Matchers))})");
         }
 
-        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
+        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers != null))
         {
             var headerBuilder = new StringBuilder($"\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true");
             if (headerMatcher.MatchOperator != MatchOperator.Or)
@@ -101,7 +101,7 @@ internal class MappingConverter(MatcherMapper mapper)
             sb.AppendLine($"        .WithHeader({headerBuilder})");
         }
 
-        foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
+        foreach (var cookieMatcher in cookieMatchers.Where(c => c.Matchers != null))
         {
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
@@ -112,7 +112,7 @@ internal class MappingConverter(MatcherMapper mapper)
         }
 
 #if GRAPHQL
-        if (requestMessageGraphQLMatcher is { Matchers: { } })
+        if (requestMessageGraphQLMatcher?.Matchers != null)
         {
             if (requestMessageGraphQLMatcher.Matchers.OfType<GraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
             {
@@ -122,7 +122,7 @@ internal class MappingConverter(MatcherMapper mapper)
 #endif
 
 #if MIMEKIT
-        if (requestMessageMultiPartMatcher is { Matchers: { } })
+        if (requestMessageMultiPartMatcher?.Matchers != null)
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
             {
@@ -132,13 +132,13 @@ internal class MappingConverter(MatcherMapper mapper)
 #endif
 
 #if PROTOBUF
-        if (requestMessageProtoBufMatcher is { Matcher: { } })
+        if (requestMessageProtoBufMatcher?.Matcher != null)
         {
             sb.AppendLine("        // .WithBodyAsProtoBuf() is not yet supported");
         }
 #endif
 
-        if (requestMessageBodyMatcher is { Matchers: { } })
+        if (requestMessageBodyMatcher?.Matchers != null)
         {
             var firstMatcher = requestMessageBodyMatcher.Matchers.FirstOrDefault();
 
@@ -304,7 +304,7 @@ internal class MappingConverter(MatcherMapper mapper)
             Response = new ResponseModel()
         };
 
-        if (methodMatcher is { Methods: { } })
+        if (methodMatcher != null)
         {
             mappingModel.Request.Methods = methodMatcher.Methods;
             mappingModel.Request.MethodsRejectOnMatch = methodMatcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null;
@@ -316,7 +316,7 @@ internal class MappingConverter(MatcherMapper mapper)
             mappingModel.Request.HttpVersion = httpVersionMatcher.HttpVersion;
         }
 
-        if (clientIPMatcher is { Matchers: { } })
+        if (clientIPMatcher?.Matchers != null)
         {
             var clientIPMatchers = _mapper.Map(clientIPMatcher.Matchers);
             mappingModel.Request.Path = new ClientIPModel
@@ -326,7 +326,7 @@ internal class MappingConverter(MatcherMapper mapper)
             };
         }
 
-        if (pathMatcher is { Matchers: { } })
+        if (pathMatcher?.Matchers != null)
         {
             var pathMatchers = _mapper.Map(pathMatcher.Matchers);
             mappingModel.Request.Path = new PathModel
@@ -335,7 +335,7 @@ internal class MappingConverter(MatcherMapper mapper)
                 MatchOperator = pathMatchers?.Length > 1 ? pathMatcher.MatchOperator.ToString() : null
             };
         }
-        else if (urlMatcher is { Matchers: { } })
+        else if (urlMatcher?.Matchers != null)
         {
             var urlMatchers = _mapper.Map(urlMatcher.Matchers);
             mappingModel.Request.Url = new UrlModel

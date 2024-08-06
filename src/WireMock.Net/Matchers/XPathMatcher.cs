@@ -10,6 +10,7 @@ using WireMock.Extensions;
 using WireMock.Models;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Util;
 #if !NETSTANDARD1_3
 using Wmhelp.XPath2;
 #endif
@@ -88,7 +89,7 @@ public class XPathMatcher : IStringMatcher
 
         return CreateMatchResult(score);
     }
-    
+
     /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
@@ -104,7 +105,13 @@ public class XPathMatcher : IStringMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "// TODO: XPathMatcher";
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"null, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
     }
 
     private MatchResult CreateMatchResult(double score, Exception? exception = null)

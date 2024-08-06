@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -119,6 +120,11 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "";
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
     }
 }

@@ -92,7 +92,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "protobuf";
+        return "NotImplemented";
     }
 
     private async Task<object?> DecodeAsync(byte[]? input, bool throwException, CancellationToken cancellationToken)

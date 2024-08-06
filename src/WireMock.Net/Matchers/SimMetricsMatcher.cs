@@ -8,6 +8,7 @@ using SimMetrics.Net.Metric;
 using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -91,7 +92,13 @@ public class SimMetricsMatcher : IStringMatcher
     /// <inheritdoc />
     public virtual string GetCSharpCodeArguments()
     {
-        return "// TODO: SimMetrics";
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{_simMetricType.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}" +
+               $")";
     }
 
     private IStringMetric GetStringMetricType()

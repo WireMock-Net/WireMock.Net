@@ -6,6 +6,7 @@ using AnyOfTypes;
 using Stef.Validation;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -73,14 +74,13 @@ public class WildcardMatcher : RegexMatcher
     /// <inheritdoc />
     public override string GetCSharpCodeArguments()
     {
-        /*
-         *MatchBehaviour matchBehaviour,
-           AnyOf<string, StringPattern>[] patterns,
-           bool ignoreCase = false,
-           MatchOperator matchOperator = MatchOperator.Or
-         */
-
-        return "wildcard"; //$"new[] {{ {string.Join(", ", _patterns.Select(p => p.GetCSharpCode()))} }}";
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}" +
+               $")";
     }
 
     private static AnyOf<string, StringPattern>[] CreateArray(AnyOf<string, StringPattern>[] patterns)

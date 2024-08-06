@@ -3,6 +3,7 @@
 #if MIMEKIT
 using System;
 using MimeKit;
+using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Matchers.Helpers;
 using WireMock.Models;
@@ -97,7 +98,7 @@ public class MimePartMatcher : IMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "";
+        return "NotImplemented";
     }
 
     private MatchResult MatchOnContent(MimePart mimePart)

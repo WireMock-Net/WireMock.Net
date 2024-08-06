@@ -2,7 +2,6 @@
 
 using System;
 using System.Reflection;
-using WireMock.Matchers;
 
 namespace WireMock.Extensions;
 
@@ -20,14 +19,4 @@ internal static class EnumExtensions
 
         return $"{type.Namespace}.{type.Name}.{enumValue}";
     }
-
-    //public static string? ToCSharpArgument(this MatchBehaviour matchBehaviour)
-    //{
-    //    return matchBehaviour == MatchBehaviour.AcceptOnMatch ? null : matchBehaviour.GetFullyQualifiedEnumValue();
-    //}
-
-    //public static string ToCSharpArgument(this MatchBehaviour? matchBehaviour)
-    //{
-    //    return (matchBehaviour ?? MatchBehaviour.AcceptOnMatch).GetFullyQualifiedEnumValue();
-    //}
 }

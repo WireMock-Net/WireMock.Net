@@ -159,7 +159,7 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "";
+        return "NotImplemented";
     }
 
     private static bool TryGetGraphQLRequest(string input, [NotNullWhen(true)] out GraphQLRequest? graphQLRequest)

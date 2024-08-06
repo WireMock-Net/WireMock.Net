@@ -3,7 +3,9 @@
 using System;
 using System.Linq;
 using AnyOfTypes;
+using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -75,6 +77,9 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     /// <inheritdoc />
     public string GetCSharpCodeArguments()
     {
-        return "";
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}" +
+               $")";
     }
 }

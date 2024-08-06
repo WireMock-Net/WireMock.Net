@@ -3,7 +3,9 @@
 using System.Net.Http.Headers;
 using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -74,4 +76,15 @@ public class ContentTypeMatcher : WildcardMatcher
 
     /// <inheritdoc />
     public override string Name => nameof(ContentTypeMatcher);
+
+    /// <inheritdoc />
+    public override string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}" +
+               $")";
+    }
 }
