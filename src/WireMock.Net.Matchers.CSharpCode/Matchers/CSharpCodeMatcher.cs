@@ -92,6 +92,12 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
     }
 
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "// TODO: CSharpCodeMatcher";
+    }
+
     private bool IsMatch(dynamic input, string pattern)
     {
         var isMatchWithString = input is string;

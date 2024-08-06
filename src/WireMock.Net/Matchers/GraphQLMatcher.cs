@@ -156,6 +156,12 @@ public class GraphQLMatcher : IStringMatcher
     /// <inheritdoc />
     public string Name => nameof(GraphQLMatcher);
 
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
+
     private static bool TryGetGraphQLRequest(string input, [NotNullWhen(true)] out GraphQLRequest? graphQLRequest)
     {
         try

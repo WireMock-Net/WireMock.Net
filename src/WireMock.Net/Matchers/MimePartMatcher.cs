@@ -60,13 +60,13 @@ public class MimePartMatcher : IMatcher
         ContentTransferEncodingMatcher = contentTransferEncodingMatcher;
         ContentMatcher = contentMatcher;
 
-        _funcs = new[]
-        {
+        _funcs =
+        [
             mp => ContentTypeMatcher?.IsMatch(GetContentTypeAsString(mp.ContentType)) ?? MatchScores.Perfect,
             mp => ContentDispositionMatcher?.IsMatch(mp.ContentDisposition.ToString().Replace("Content-Disposition: ", string.Empty)) ?? MatchScores.Perfect,
             mp => ContentTransferEncodingMatcher?.IsMatch(mp.ContentTransferEncoding.ToString().ToLowerInvariant()) ?? MatchScores.Perfect,
             MatchOnContent
-        };
+        ];
     }
 
     /// <summary>
@@ -92,6 +92,12 @@ public class MimePartMatcher : IMatcher
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
+    }
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
     }
 
     private MatchResult MatchOnContent(MimePart mimePart)

@@ -23,16 +23,11 @@ using static WireMock.Util.CSharpFormatter;
 
 namespace WireMock.Serialization;
 
-internal class MappingConverter
+internal class MappingConverter(MatcherMapper mapper)
 {
     private static readonly string AcceptOnMatch = MatchBehaviour.AcceptOnMatch.GetFullyQualifiedEnumValue();
 
-    private readonly MatcherMapper _mapper;
-
-    public MappingConverter(MatcherMapper mapper)
-    {
-        _mapper = Guard.NotNull(mapper);
-    }
+    private readonly MatcherMapper _mapper = Guard.NotNull(mapper);
 
     public string ToCSharpCode(IMapping mapping, MappingConverterSettings? settings = null)
     {
@@ -88,7 +83,7 @@ internal class MappingConverter
 
         foreach (var paramsMatcher in paramsMatchers)
         {
-            sb.AppendLine($"        .WithParam({To1Or2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
+            sb.AppendLine($"        .WithParam({To2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
         }
 
         if (clientIPMatcher is { Matchers: { } })
@@ -154,15 +149,15 @@ internal class MappingConverter
                     break;
 
                 case JsonMatcher jsonMatcher:
-                {
-                    var matcherType = jsonMatcher.GetType().Name;
-                    sb.AppendLine($"        .WithBody(new {matcherType}(");
-                    sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
-                    sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
-                    sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
-                    sb.AppendLine(@"        ))");
-                    break;
-                }
+                    {
+                        var matcherType = jsonMatcher.GetType().Name;
+                        sb.AppendLine($"        .WithBody(new {matcherType}(");
+                        sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
+                        sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
+                        sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
+                        sb.AppendLine(@"        ))");
+                        break;
+                    }
             }
         }
 
@@ -538,7 +533,7 @@ internal class MappingConverter
         return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
     }
 
-    private static string To1Or2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
+    private static string To2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
     {
         var sb = new StringBuilder($"\"{key}\", ");
 
@@ -547,7 +542,7 @@ internal class MappingConverter
             sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
         }
 
-        sb.AppendFormat("{0}", ToValueArguments(GetStringArray(matchers), string.Empty));
+        sb.AppendFormat("{0}", MappingConverterUtils.ToCSharpCodeArguments(matchers));
 
         return sb.ToString();
     }

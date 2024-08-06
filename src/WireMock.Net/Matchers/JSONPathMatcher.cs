@@ -116,7 +116,13 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
     public MatchOperator MatchOperator { get; }
 
     /// <inheritdoc />
-    public string Name => "JsonPathMatcher";
+    public string Name => nameof(JsonPathMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
 
     private double IsMatch(JToken jToken)
     {

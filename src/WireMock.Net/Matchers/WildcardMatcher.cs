@@ -70,6 +70,19 @@ public class WildcardMatcher : RegexMatcher
     /// <inheritdoc />
     public override string Name => nameof(WildcardMatcher);
 
+    /// <inheritdoc />
+    public override string GetCSharpCodeArguments()
+    {
+        /*
+         *MatchBehaviour matchBehaviour,
+           AnyOf<string, StringPattern>[] patterns,
+           bool ignoreCase = false,
+           MatchOperator matchOperator = MatchOperator.Or
+         */
+
+        return "wildcard"; //$"new[] {{ {string.Join(", ", _patterns.Select(p => p.GetCSharpCode()))} }}";
+    }
+
     private static AnyOf<string, StringPattern>[] CreateArray(AnyOf<string, StringPattern>[] patterns)
     {
         return patterns

@@ -88,6 +88,12 @@ public class SimMetricsMatcher : IStringMatcher
         return MatchBehaviourHelper.Convert(MatchBehaviour, score);
     }
 
+    /// <inheritdoc />
+    public virtual string GetCSharpCodeArguments()
+    {
+        return "// TODO: SimMetrics";
+    }
+
     private IStringMetric GetStringMetricType()
     {
         return _simMetricType switch

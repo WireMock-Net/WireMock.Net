@@ -130,7 +130,10 @@ public class MappingBuilder : IMappingBuilder
 
     private IMapping[] GetNonAdminMappings()
     {
-        return _options.Mappings.Values.Where(m => !m.IsAdminInterface).OrderBy(m => m.UpdatedAt).ToArray();
+        return _options.Mappings.Values
+            .Where(m => !m.IsAdminInterface)
+            .OrderBy(m => m.Guid)
+            .ToArray();
     }
 
     private void RegisterMapping(IMapping mapping, bool saveToFile)

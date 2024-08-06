@@ -105,4 +105,10 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
     /// Check if two strings are a match (matching can be done exact or wildcard)
     /// </summary>
     protected abstract bool IsMatch(string value, string input);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
 }

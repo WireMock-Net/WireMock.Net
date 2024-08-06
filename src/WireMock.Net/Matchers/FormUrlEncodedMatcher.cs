@@ -150,4 +150,10 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
 
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
 }

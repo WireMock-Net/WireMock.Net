@@ -33,6 +33,35 @@
     }
   },
   {
+    Guid: 98fae52e-76df-47d9-876f-2ee32e931001,
+    UpdatedAt: 2023-01-14 15:16:17,
+    Request: {
+      Path: {
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: /users/post1,
+            IgnoreCase: false
+          }
+        ]
+      },
+      Methods: [
+        POST
+      ],
+      Body: {
+        Matcher: {
+          Name: JsonMatcher,
+          Pattern: {
+            Request: Hello?
+          },
+          IgnoreCase: false,
+          Regex: false
+        }
+      }
+    },
+    Response: {}
+  },
+  {
     Guid: 98fae52e-76df-47d9-876f-2ee32e931002,
     UpdatedAt: 2023-01-14 15:16:17,
     Request: {
@@ -106,31 +135,33 @@
     Response: {}
   },
   {
-    Guid: 98fae52e-76df-47d9-876f-2ee32e931001,
+    Guid: 98fae52e-76df-47d9-876f-2ee32e931004,
     UpdatedAt: 2023-01-14 15:16:17,
     Request: {
       Path: {
         Matchers: [
           {
             Name: WildcardMatcher,
-            Pattern: /users/post1,
+            Pattern: /regex,
             IgnoreCase: false
           }
         ]
       },
       Methods: [
-        POST
+        GET
       ],
-      Body: {
-        Matcher: {
-          Name: JsonMatcher,
-          Pattern: {
-            Request: Hello?
-          },
-          IgnoreCase: false,
-          Regex: false
+      Params: [
+        {
+          Name: foo,
+          Matchers: [
+            {
+              Name: RegexMatcher,
+              Pattern: .*,
+              IgnoreCase: false
+            }
+          ]
         }
-      }
+      ]
     },
     Response: {}
   }

@@ -88,12 +88,7 @@ public class XPathMatcher : IStringMatcher
 
         return CreateMatchResult(score);
     }
-
-    private MatchResult CreateMatchResult(double score, Exception? exception = null)
-    {
-        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
-    }
-
+    
     /// <inheritdoc />
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
@@ -105,6 +100,17 @@ public class XPathMatcher : IStringMatcher
 
     /// <inheritdoc />
     public string Name => nameof(XPathMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "// TODO: XPathMatcher";
+    }
+
+    private MatchResult CreateMatchResult(double score, Exception? exception = null)
+    {
+        return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
+    }
 
     private sealed class XPathEvaluator
     {
@@ -130,6 +136,7 @@ public class XPathMatcher : IStringMatcher
         {
             return _xpathNavigator == null ? [] : patterns.Select(pattern => true.Equals(Evaluate(_xpathNavigator, pattern, xmlNamespaceMap))).ToArray();
         }
+
         private object Evaluate(XPathNavigator navigator, AnyOf<string, StringPattern> pattern, IEnumerable<XmlNamespace>? xmlNamespaceMap)
         {
             var xpath = $"boolean({pattern.GetPattern()})";

@@ -75,5 +75,11 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
             return new MatchResult(MatchScores.Mismatch, ex);
         }
     }
+
+    /// <inheritdoc />
+    public virtual string GetCSharpCodeArguments()
+    {
+        return "// TODO: AzureADAuthenticationMatcher";
+    }
 }
 #endif

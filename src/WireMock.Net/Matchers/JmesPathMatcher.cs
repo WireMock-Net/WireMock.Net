@@ -115,4 +115,10 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
 
     /// <inheritdoc />
     public string Name => nameof(JmesPathMatcher);
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
 }

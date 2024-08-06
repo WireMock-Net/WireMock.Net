@@ -3,11 +3,28 @@ server
     .Given(Request.Create()
         .UsingMethod("GET")
         .WithPath("/foo")
-        .WithParam("test", "it.Length < 10")
+        .WithParam("test", new LinqMatcher("it.Length < 10"))
     )
     .WithGuid("41372914-1838-4c67-916b-b9aacdd096ce")
     .RespondWith(Response.Create()
         .WithBody("{ msg: \"Hello world!\"}")
+    );
+
+server
+    .Given(Request.Create()
+        .UsingMethod("POST")
+        .WithPath("/users/post1")
+        .WithBody(new JsonMatcher(
+            value: new
+            {
+                Request = "Hello?"
+            },
+            ignoreCase: false,
+            regex: false
+        ))
+    )
+    .WithGuid("98fae52e-76df-47d9-876f-2ee32e931001")
+    .RespondWith(Response.Create()
     );
 
 server
@@ -41,18 +58,11 @@ server
 
 server
     .Given(Request.Create()
-        .UsingMethod("POST")
-        .WithPath("/users/post1")
-        .WithBody(new JsonMatcher(
-            value: new
-            {
-                Request = "Hello?"
-            },
-            ignoreCase: false,
-            regex: false
-        ))
+        .UsingMethod("GET")
+        .WithPath("/regex")
+        .WithParam("foo", new RegexMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, ".*", false, true, WireMock.Matchers.MatchOperator.Or))
     )
-    .WithGuid("98fae52e-76df-47d9-876f-2ee32e931001")
+    .WithGuid("98fae52e-76df-47d9-876f-2ee32e931004")
     .RespondWith(Response.Create()
     );
 

@@ -98,6 +98,12 @@ public class JsonMatcher : IJsonMatcher
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), error);
     }
 
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
+
     /// <summary>
     /// Compares the input against the matcher value
     /// </summary>

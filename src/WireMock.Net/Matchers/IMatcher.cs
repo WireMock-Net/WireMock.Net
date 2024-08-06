@@ -16,4 +16,10 @@ public interface IMatcher
     /// Gets the match behaviour.
     /// </summary>
     MatchBehaviour MatchBehaviour { get; }
+
+    /// <summary>
+    /// Get the C# code arguments.
+    /// </summary>
+    /// <returns></returns>
+    string GetCSharpCodeArguments();
 }

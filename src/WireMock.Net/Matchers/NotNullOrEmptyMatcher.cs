@@ -70,5 +70,11 @@ public class NotNullOrEmptyMatcher : IObjectMatcher, IStringMatcher
     }
 
     /// <inheritdoc />
-    public MatchOperator MatchOperator { get; } = MatchOperator.Or;
+    public MatchOperator MatchOperator => MatchOperator.Or;
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "";
+    }
 }

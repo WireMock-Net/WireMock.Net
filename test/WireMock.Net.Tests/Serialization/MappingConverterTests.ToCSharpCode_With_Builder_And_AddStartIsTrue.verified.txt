@@ -3,7 +3,7 @@ builder
     .Given(Request.Create()
         .UsingMethod("GET")
         .WithPath("test_path")
-        .WithParam("q", "42")
+        .WithParam("q", new ExactMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, false, WireMock.Matchers.MatchOperator.And, "42"))
         .WithClientIP("112.123.100.99")
         .WithHeader("h-key", "h-value", true)
         .WithCookie("c-key", "c-value", true)

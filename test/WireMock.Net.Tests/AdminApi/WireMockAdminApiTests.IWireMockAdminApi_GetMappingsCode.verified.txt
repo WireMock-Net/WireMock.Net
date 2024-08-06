@@ -2,24 +2,6 @@
 server
     .Given(Request.Create()
         .UsingMethod("POST")
-        .WithPath("/users/post1")
-        .WithBody(new JsonMatcher(
-            value: new
-            {
-                city = "Amsterdam",
-                country = "The Netherlands"
-            },
-            ignoreCase: false,
-            regex: false
-        ))
-    )
-    .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
-    .RespondWith(Response.Create()
-    );
-
-server
-    .Given(Request.Create()
-        .UsingMethod("POST")
         .WithPath("/users/post2")
         .WithBody(new JsonPartialMatcher(
             value: new
@@ -39,21 +21,9 @@ Some ""value"" in Line2")
 
 server
     .Given(Request.Create()
-        .UsingMethod("GET")
-        .WithPath("/foo1")
-        .WithParam("p1", "xyz")
-    )
-    .WithGuid("f74fd144-df53-404f-8e35-da22a640bd5f")
-    .RespondWith(Response.Create()
-        .WithStatusCode(200)
-        .WithBody("1")
-    );
-
-server
-    .Given(Request.Create()
         .UsingMethod("POST")
         .WithPath("/foo2")
-        .WithParam("p2", "abc")
+        .WithParam("p2", new ExactMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, false, WireMock.Matchers.MatchOperator.And, "abc"))
         .WithHeader("h1", "W/\"234f2q3r\"", true)
     )
     .WithGuid("4126dec8-470b-4eff-93bb-c24f83b8b1fd")
@@ -62,6 +32,24 @@ server
         .WithHeader("hk", "hv")
         .WithHeader("ETag", "W/\"168d8e\"")
         .WithBody("2")
+    );
+
+server
+    .Given(Request.Create()
+        .UsingMethod("POST")
+        .WithPath("/users/post1")
+        .WithBody(new JsonMatcher(
+            value: new
+            {
+                city = "Amsterdam",
+                country = "The Netherlands"
+            },
+            ignoreCase: false,
+            regex: false
+        ))
+    )
+    .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
+    .RespondWith(Response.Create()
     );
 
 server
@@ -106,5 +94,17 @@ multiline
 text
 "
         })
+    );
+
+server
+    .Given(Request.Create()
+        .UsingMethod("GET")
+        .WithPath("/foo1")
+        .WithParam("p1", new ExactMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, false, WireMock.Matchers.MatchOperator.And, "xyz"))
+    )
+    .WithGuid("f74fd144-df53-404f-8e35-da22a640bd5f")
+    .RespondWith(Response.Create()
+        .WithStatusCode(200)
+        .WithBody("1")
     );
 

@@ -3,7 +3,7 @@ server
     .Given(Request.Create()
         .UsingMethod("GET")
         .WithPath("/foo1")
-        .WithParam("p1", "xyz")
+        .WithParam("p1", new ExactMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, false, WireMock.Matchers.MatchOperator.And, "xyz"))
     )
     .WithGuid("90356dba-b36c-469a-a17e-669cd84f1f05")
     .RespondWith(Response.Create()
