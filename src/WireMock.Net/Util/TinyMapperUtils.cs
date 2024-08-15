@@ -1,56 +1,24 @@
 // Copyright © WireMock.Net
 
-using Nelibur.ObjectMapper;
+using Riok.Mapperly.Abstractions;
 using WireMock.Admin.Mappings;
 using WireMock.Admin.Settings;
 using WireMock.Settings;
 
 namespace WireMock.Util;
 
-internal sealed class TinyMapperUtils
+[Mapper]
+internal static partial class TinyMapperUtils
 {
-    public static TinyMapperUtils Instance { get; } = new();
+    public static partial ProxyAndRecordSettingsModel? Map(ProxyAndRecordSettings? instance);
 
-    private TinyMapperUtils()
-    {
-        TinyMapper.Bind<ProxyAndRecordSettings, ProxyAndRecordSettingsModel>();
-        TinyMapper.Bind<WebProxySettings, WebProxySettingsModel>();
-        TinyMapper.Bind<WebProxySettings, WebProxyModel>();
-        TinyMapper.Bind<ProxyUrlReplaceSettings, ProxyUrlReplaceSettingsModel>();
+    public static partial ProxyAndRecordSettings? Map(ProxyAndRecordSettingsModel? model);
 
-        TinyMapper.Bind<ProxyAndRecordSettingsModel, ProxyAndRecordSettings>();
-        TinyMapper.Bind<WebProxySettingsModel, WebProxySettings>();
-        TinyMapper.Bind<WebProxyModel, WebProxySettings>();
-        TinyMapper.Bind<ProxyUrlReplaceSettingsModel, ProxyUrlReplaceSettings>();
-    }
+    public static partial ProxyUrlReplaceSettingsModel? Map(ProxyUrlReplaceSettings? instance);
 
-    public ProxyAndRecordSettingsModel? Map(ProxyAndRecordSettings? instance)
-    {
-        return instance == null ? null : TinyMapper.Map<ProxyAndRecordSettingsModel>(instance);
-    }
+    public static partial ProxyUrlReplaceSettings? Map(ProxyUrlReplaceSettingsModel? model);
 
-    public ProxyAndRecordSettings? Map(ProxyAndRecordSettingsModel? model)
-    {
-        return model == null ? null : TinyMapper.Map<ProxyAndRecordSettings>(model);
-    }
+    public static partial WebProxyModel? Map(WebProxySettings? instance);
 
-    public ProxyUrlReplaceSettingsModel? Map(ProxyUrlReplaceSettings? instance)
-    {
-        return instance == null ? null : TinyMapper.Map<ProxyUrlReplaceSettingsModel>(instance);
-    }
-
-    public ProxyUrlReplaceSettings? Map(ProxyUrlReplaceSettingsModel? model)
-    {
-        return model == null ? null : TinyMapper.Map<ProxyUrlReplaceSettings>(model);
-    }
-
-    public WebProxyModel? Map(WebProxySettings? instance)
-    {
-        return instance == null ? null : TinyMapper.Map<WebProxyModel>(instance);
-    }
-
-    public WebProxySettings? Map(WebProxyModel? model)
-    {
-        return model == null ? null : TinyMapper.Map<WebProxySettings>(model);
-    }
+    public static partial WebProxySettings? Map(WebProxyModel? model);
 }
