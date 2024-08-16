@@ -1,3 +1,13 @@
+# 1.6.0 (16 August 2024)
+- [#1042](https://github.com/WireMock-Net/WireMock.Net/pull/1042) - Update + add fluent builder methods [feature] contributed by [StefH](https://github.com/StefH)
+- [#1109](https://github.com/WireMock-Net/WireMock.Net/pull/1109) - Add Aspire Extension [feature] contributed by [StefH](https://github.com/StefH)
+- [#1148](https://github.com/WireMock-Net/WireMock.Net/pull/1148) - Use Guid.TryParseExact with format &quot;D&quot; contributed by [StefH](https://github.com/StefH)
+- [#1157](https://github.com/WireMock-Net/WireMock.Net/pull/1157) - Fix FormUrlEncodedMatcher (MatchOperator.And) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1158](https://github.com/WireMock-Net/WireMock.Net/pull/1158) - Allow setting Content-Length header on the response [feature] contributed by [StefH](https://github.com/StefH)
+- [#720](https://github.com/WireMock-Net/WireMock.Net/issues/720) - Response Header Content-Length not available when call HEAD Method [feature]
+- [#1145](https://github.com/WireMock-Net/WireMock.Net/issues/1145) - Response is auto converting string to guid [bug]
+- [#1156](https://github.com/WireMock-Net/WireMock.Net/issues/1156) - FormUrlEncodedMatcher is not requiring to match all properties when MatchOperator.And  [bug]
+
 # 1.5.62 (27 July 2024)
 - [#1147](https://github.com/WireMock-Net/WireMock.Net/pull/1147) - Add FormUrlEncodedMatcher [feature] contributed by [StefH](https://github.com/StefH)
 - [#1143](https://github.com/WireMock-Net/WireMock.Net/issues/1143) - FormEncoded Request fails (404 Not Found) if key value pairs order in mapping is different from request body order [bug]

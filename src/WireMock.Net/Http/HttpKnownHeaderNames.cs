@@ -14,12 +14,12 @@ namespace WireMock.Http;
 /// </summary>
 internal static class HttpKnownHeaderNames
 {
-    // https://docs.microsoft.com/en-us/dotnet/api/system.net.webheadercollection.isrestricted
+    // - https://docs.microsoft.com/en-us/dotnet/api/system.net.webheadercollection.isrestricted
+    // - ContentLength is allowed per #720
     private static readonly string[] RestrictedResponseHeaders =
     {
         Accept,
         Connection,
-        ContentLength,
         ContentType,
         Date, // RFC1123Pattern
         Expect,
