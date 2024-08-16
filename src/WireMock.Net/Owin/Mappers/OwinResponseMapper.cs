@@ -37,18 +37,20 @@ namespace WireMock.Owin.Mappers
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
-        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase)
-        {
-            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() },
-            { HttpKnownHeaderNames.ContentLength, (r, v) =>
-                {
-                    if (long.TryParse(v.FirstOrDefault(), out var contentLength))
+        private static readonly IDictionary<string, Action<IResponse, bool, WireMockList<string>>> ResponseHeadersToFix =
+            new Dictionary<string, Action<IResponse, bool, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase)
+            {
+                { HttpKnownHeaderNames.ContentType, (r, _, v) => r.ContentType = v.FirstOrDefault() },
+                { HttpKnownHeaderNames.ContentLength, (r, hasBody, v) =>
                     {
-                        r.ContentLength = contentLength;
+                        // Only set the Content-Length header if the response does not have a body
+                        if (!hasBody && long.TryParse(v.FirstOrDefault(), out var contentLength))
+                        {
+                            r.ContentLength = contentLength;
+                        }
                     }
                 }
-            }
-        };
+            };
 
         /// <summary>
         /// Constructor
@@ -94,13 +96,15 @@ namespace WireMock.Owin.Mappers
                 {
                     response.StatusCode = MapStatusCode((int)responseMessage.StatusCode!);
                 }
-                else if (statusCodeType == typeof(string) && int.TryParse(responseMessage.StatusCode as string, out var statusCodeTypeAsInt))
+                else if (statusCodeType == typeof(string))
                 {
+                    // Note: this case will also match on null
+                    int.TryParse(responseMessage.StatusCode as string, out var statusCodeTypeAsInt);
                     response.StatusCode = MapStatusCode(statusCodeTypeAsInt);
                 }
             }
 
-            SetResponseHeaders(responseMessage, response);
+            SetResponseHeaders(responseMessage, bytes, response);
 
             if (bytes != null)
             {
@@ -161,7 +165,7 @@ namespace WireMock.Owin.Mappers
             return null;
         }
 
-        private static void SetResponseHeaders(IResponseMessage responseMessage, IResponse response)
+        private static void SetResponseHeaders(IResponseMessage responseMessage, byte[]? bytes, IResponse response)
         {
             // Force setting the Date header (#577)
             AppendResponseHeader(
@@ -180,7 +184,7 @@ namespace WireMock.Owin.Mappers
                 var value = item.Value;
                 if (ResponseHeadersToFix.TryGetValue(headerName, out var action))
                 {
-                    action?.Invoke(response, value);
+                    action?.Invoke(response, bytes != null, value);
                 }
                 else
                 {
@@ -207,7 +211,7 @@ namespace WireMock.Owin.Mappers
                 var value = item.Value;
                 if (ResponseHeadersToFix.TryGetValue(headerName, out var action))
                 {
-                    action?.Invoke(response, value);
+                    action?.Invoke(response, false, value);
                 }
                 else
                 {
