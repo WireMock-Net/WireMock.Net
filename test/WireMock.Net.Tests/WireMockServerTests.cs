@@ -14,6 +14,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using NFluent;
 using WireMock.Admin.Mappings;
+using WireMock.Http;
 using WireMock.Matchers;
 using WireMock.Net.Tests.Serialization;
 using WireMock.Net.Xunit;
@@ -351,7 +352,7 @@ public partial class WireMockServerTests
     //}
 
     [Fact]
-    public async Task WireMockServer_Should_exclude_restrictedResponseHeader()
+    public async Task WireMockServer_Should_Exclude_RestrictedResponseHeader()
     {
         // Assign
         string path = $"/foo_{Guid.NewGuid()}";
@@ -369,6 +370,26 @@ public partial class WireMockServerTests
         Check.That(response.Headers.Contains("Transfer-Encoding")).IsFalse();
 
         server.Stop();
+    }
+
+    [Fact] // #720
+    public async Task WireMockServer_Should_AllowResponseHeaderContentLength_For_HEAD()
+    {
+        // Assign
+        const string length = "42";
+        var path = $"/cl_{Guid.NewGuid()}";
+        using var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create().WithPath(path).UsingHead())
+            .RespondWith(Response.Create().WithHeader(HttpKnownHeaderNames.ContentLength, length));
+
+        // Act
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, path);
+        var response = await server.CreateClient().SendAsync(httpRequestMessage).ConfigureAwait(false);
+
+        // Assert
+        response.Content.Headers.GetValues(HttpKnownHeaderNames.ContentLength).Should().Contain(length);
     }
 
 #if !NET452 && !NET461
