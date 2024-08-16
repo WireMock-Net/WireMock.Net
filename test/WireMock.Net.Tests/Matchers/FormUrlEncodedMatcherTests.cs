@@ -75,4 +75,25 @@ public class FormUrlEncodedMatcherTest
         // Assert
         score.Should().Be(expected);
     }
+
+    [Fact]
+    public async Task FormUrlEncodedMatcher_IsMatch_And_MatchAllProperties()
+    {
+        // Arrange
+        var content = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("name", "John Doe"),
+            new KeyValuePair<string, string>("email", "johndoe@example.com")
+        });
+        var contentAsString = await content.ReadAsStringAsync();
+
+        // The expectation is that the matcher requires all properties to be present in the content.
+        var matcher = new FormUrlEncodedMatcher(["name=*", "email=*", "required=*"], matchOperator: MatchOperator.And);
+
+        // Act
+        var score = matcher.IsMatch(contentAsString).IsPerfect();
+
+        // Assert
+        score.Should().BeFalse();
+    }
 }

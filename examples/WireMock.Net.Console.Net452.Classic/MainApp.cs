@@ -137,7 +137,6 @@ message HelloReply {
         public static void Run()
         {
             RunOnLocal();
-            return;
 
             var mappingBuilder = new MappingBuilder();
             mappingBuilder
@@ -308,17 +307,6 @@ message HelloReply {
                 .RespondWith(Response.Create()
                     .WithBody("GraphQL is ok")
                 );
-
-            //server
-            //    .AddGraphQLSchema("my-graphql", TestSchema, customScalars)
-            //    .Given(Request.Create()
-            //        .WithPath("/graphql2")
-            //        .UsingPost()
-            //    )
-            //    .WithGraphQLSchema("my-graphql")
-            //    .RespondWith(Response.Create()
-            //        .WithBody("GraphQL is ok")
-            //    );
 #endif
 
 #if MIMEKIT
@@ -375,6 +363,15 @@ message HelloReply {
                         .WithStatusCode(500)
                         .WithBody("return 500")
                         .WithHeader("Content-Type", "text/plain")
+                );
+
+            server
+                .Given(Request.Create()
+                    .UsingHead()
+                    .WithPath("/cl")
+                )
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Length", "42")
                 );
 
             server
