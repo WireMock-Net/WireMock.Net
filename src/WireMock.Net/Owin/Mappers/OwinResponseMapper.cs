@@ -37,12 +37,17 @@ namespace WireMock.Owin.Mappers
         private readonly Encoding _utf8NoBom = new UTF8Encoding(false);
 
         // https://msdn.microsoft.com/en-us/library/78h415ay(v=vs.110).aspx
-#if !USE_ASPNETCORE
-        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
-#else
-        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase) {
-#endif
-            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() }
+        private static readonly IDictionary<string, Action<IResponse, WireMockList<string>>> ResponseHeadersToFix = new Dictionary<string, Action<IResponse, WireMockList<string>>>(StringComparer.OrdinalIgnoreCase)
+        {
+            { HttpKnownHeaderNames.ContentType, (r, v) => r.ContentType = v.FirstOrDefault() },
+            { HttpKnownHeaderNames.ContentLength, (r, v) =>
+                {
+                    if (long.TryParse(v.FirstOrDefault(), out var contentLength))
+                    {
+                        r.ContentLength = contentLength;
+                    }
+                }
+            }
         };
 
         /// <summary>
@@ -83,20 +88,16 @@ namespace WireMock.Owin.Mappers
             }
 
             var statusCodeType = responseMessage.StatusCode?.GetType();
-            switch (statusCodeType)
+            if (statusCodeType != null)
             {
-                case { } when statusCodeType == typeof(int) || statusCodeType == typeof(int?) || statusCodeType.GetTypeInfo().IsEnum:
+                if (statusCodeType == typeof(int) || statusCodeType == typeof(int?) || statusCodeType.GetTypeInfo().IsEnum)
+                {
                     response.StatusCode = MapStatusCode((int)responseMessage.StatusCode!);
-                    break;
-
-                case { } when statusCodeType == typeof(string):
-                    // Note: this case will also match on null 
-                    int.TryParse(responseMessage.StatusCode as string, out var result);
-                    response.StatusCode = MapStatusCode(result);
-                    break;
-
-                default:
-                    break;
+                }
+                else if (statusCodeType == typeof(string) && int.TryParse(responseMessage.StatusCode as string, out var statusCodeTypeAsInt))
+                {
+                    response.StatusCode = MapStatusCode(statusCodeTypeAsInt);
+                }
             }
 
             SetResponseHeaders(responseMessage, response);
@@ -183,7 +184,7 @@ namespace WireMock.Owin.Mappers
                 }
                 else
                 {
-                    // Check if this response header can be added (#148 and #227)
+                    // Check if this response header can be added (#148, #227 and #720)
                     if (!HttpKnownHeaderNames.IsRestrictedResponseHeader(headerName))
                     {
                         AppendResponseHeader(response, headerName, value.ToArray());
