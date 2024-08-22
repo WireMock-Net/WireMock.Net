@@ -1,3 +1,7 @@
+# 1.6.1 (22 August 2024)
+- [#1160](https://github.com/WireMock-Net/WireMock.Net/pull/1160) - Use default timeout for Regex [bug] contributed by [StefH](https://github.com/StefH)
+- [#1159](https://github.com/WireMock-Net/WireMock.Net/issues/1159) - RegexMatchTimeoutException when trying to parse HTTP version [bug]
+
 # 1.6.0 (16 August 2024)
 - [#1042](https://github.com/WireMock-Net/WireMock.Net/pull/1042) - Update + add fluent builder methods [feature] contributed by [StefH](https://github.com/StefH)
 - [#1109](https://github.com/WireMock-Net/WireMock.Net/pull/1109) - Add Aspire Extension [feature] contributed by [StefH](https://github.com/StefH)
