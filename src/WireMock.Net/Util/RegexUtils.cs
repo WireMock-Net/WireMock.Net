@@ -1,16 +1,14 @@
 // Copyright © WireMock.Net
 
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using WireMock.Constants;
 using WireMock.RegularExpressions;
 
 namespace WireMock.Util;
 
 internal static class RegexUtils
 {
-    private static readonly TimeSpan RegexTimeOut = new(0, 0, 10);
-
     public static Dictionary<string, string> GetNamedGroups(Regex regex, string input)
     {
         var namedGroupsDictionary = new Dictionary<string, string>();
@@ -38,11 +36,11 @@ internal static class RegexUtils
         {
             if (useRegexExtended)
             {
-                var regexExtended = new RegexExtended(pattern!, RegexOptions.None, RegexTimeOut);
+                var regexExtended = new RegexExtended(pattern!, RegexOptions.None, WireMockConstants.DefaultRegexTimeout);
                 return (true, regexExtended.IsMatch(input));
             }
 
-            var regex = new Regex(pattern, RegexOptions.None, RegexTimeOut);
+            var regex = new Regex(pattern, RegexOptions.None, WireMockConstants.DefaultRegexTimeout);
             return (true, regex.IsMatch(input));
         }
         catch

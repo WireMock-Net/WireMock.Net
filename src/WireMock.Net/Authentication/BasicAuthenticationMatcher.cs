@@ -6,12 +6,9 @@ using WireMock.Matchers;
 
 namespace WireMock.Authentication;
 
-internal class BasicAuthenticationMatcher : RegexMatcher
+internal class BasicAuthenticationMatcher(string username, string password)
+    : RegexMatcher(BuildPattern(username, password))
 {
-    public BasicAuthenticationMatcher(string username, string password) : base(BuildPattern(username, password))
-    {
-    }
-
     public override string Name => nameof(BasicAuthenticationMatcher);
 
     private static string BuildPattern(string username, string password)
