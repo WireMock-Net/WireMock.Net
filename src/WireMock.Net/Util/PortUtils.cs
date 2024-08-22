@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using WireMock.Constants;
 
 namespace WireMock.Util;
 
@@ -13,7 +14,7 @@ namespace WireMock.Util;
 /// </summary>
 internal static class PortUtils
 {
-    private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled);
+    private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled, WireMockConstants.DefaultRegexTimeout);
 
     /// <summary>
     /// Finds a free TCP port.
