@@ -1,11 +1,5 @@
-# 1.6.0 (16 August 2024)
-- #1042 Update + add fluent builder methods [feature]
-- #1109 Add Aspire Extension [feature]
-- #1148 Use Guid.TryParseExact with format &quot;D&quot;
-- #1157 Fix FormUrlEncodedMatcher (MatchOperator.And) [bug]
-- #1158 Allow setting Content-Length header on the response [feature]
-- #720 Response Header Content-Length not available when call HEAD Method [feature]
-- #1145 Response is auto converting string to guid [bug]
-- #1156 FormUrlEncodedMatcher is not requiring to match all properties when MatchOperator.And  [bug]
+# 1.6.1 (22 August 2024)
+- #1160 Use default timeout for Regex [bug]
+- #1159 RegexMatchTimeoutException when trying to parse HTTP version [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AnyOfTypes;
 using JetBrains.Annotations;
+using Stef.Validation;
+using WireMock.Constants;
 using WireMock.Extensions;
 using WireMock.Models;
 using WireMock.RegularExpressions;
-using Stef.Validation;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -39,7 +40,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
         bool ignoreCase = false,
         bool useRegexExtended = true,
         MatchOperator matchOperator = MatchOperator.Or) :
-        this(MatchBehaviour.AcceptOnMatch, new[] { pattern }, ignoreCase, useRegexExtended, matchOperator)
+        this(MatchBehaviour.AcceptOnMatch, [pattern], ignoreCase, useRegexExtended, matchOperator)
     {
     }
 
@@ -89,7 +90,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
             options |= RegexOptions.IgnoreCase;
         }
 
-        _expressions = patterns.Select(p => useRegexExtended ? new RegexExtended(p.GetPattern(), options) : new Regex(p.GetPattern(), options)).ToArray();
+        _expressions = patterns.Select(p => useRegexExtended ? new RegexExtended(p.GetPattern(), options) : new Regex(p.GetPattern(), options, WireMockConstants.DefaultRegexTimeout)).ToArray();
     }
 
     /// <inheritdoc />

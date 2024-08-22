@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Stef.Validation;
+using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.Models;
 
@@ -50,7 +51,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
             return MatchScores.Mismatch;
         }
 
-        var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase);
+        var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase, WireMockConstants.DefaultRegexTimeout);
 
         try
         {
