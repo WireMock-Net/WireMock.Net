@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnyOfTypes;
 using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
 using WireMock.Util;
 
@@ -163,4 +164,16 @@ public class FormUrlEncodedMatcher : IStringMatcher, IIgnoreCaseMatcher
 
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}" +
+               $")";
+    }
 }

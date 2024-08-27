@@ -23,16 +23,11 @@ using static WireMock.Util.CSharpFormatter;
 
 namespace WireMock.Serialization;
 
-internal class MappingConverter
+internal class MappingConverter(MatcherMapper mapper)
 {
     private static readonly string AcceptOnMatch = MatchBehaviour.AcceptOnMatch.GetFullyQualifiedEnumValue();
 
-    private readonly MatcherMapper _mapper;
-
-    public MappingConverter(MatcherMapper mapper)
-    {
-        _mapper = Guard.NotNull(mapper);
-    }
+    private readonly MatcherMapper _mapper = Guard.NotNull(mapper);
 
     public string ToCSharpCode(IMapping mapping, MappingConverterSettings? settings = null)
     {
@@ -77,26 +72,26 @@ internal class MappingConverter
         sb.AppendLine("    .Given(Request.Create()");
         sb.AppendLine($"        .UsingMethod({To1Or2Or3Arguments(methodMatcher?.MatchBehaviour, methodMatcher?.MatchOperator, methodMatcher?.Methods, HttpRequestMethod.GET)})");
 
-        if (pathMatcher is { Matchers: { } })
+        if (pathMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithPath({To1Or2Arguments(pathMatcher.MatchOperator, pathMatcher.Matchers)})");
         }
-        else if (urlMatcher is { Matchers: { } })
+        else if (urlMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithUrl({To1Or2Arguments(urlMatcher.MatchOperator, urlMatcher.Matchers)})");
         }
 
-        foreach (var paramsMatcher in paramsMatchers)
+        foreach (var paramsMatcher in paramsMatchers.Where(pm => pm.Matchers != null))
         {
-            sb.AppendLine($"        .WithParam({To1Or2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
+            sb.AppendLine($"        .WithParam({To2Or3Arguments(paramsMatcher.Key, paramsMatcher.MatchBehaviour, paramsMatcher.Matchers!)})");
         }
 
-        if (clientIPMatcher is { Matchers: { } })
+        if (clientIPMatcher?.Matchers != null)
         {
             sb.AppendLine($"        .WithClientIP({ToValueArguments(GetStringArray(clientIPMatcher.Matchers))})");
         }
 
-        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers is { }))
+        foreach (var headerMatcher in headerMatchers.Where(h => h.Matchers != null))
         {
             var headerBuilder = new StringBuilder($"\"{headerMatcher.Name}\", {ToValueArguments(GetStringArray(headerMatcher.Matchers!))}, true");
             if (headerMatcher.MatchOperator != MatchOperator.Or)
@@ -106,7 +101,7 @@ internal class MappingConverter
             sb.AppendLine($"        .WithHeader({headerBuilder})");
         }
 
-        foreach (var cookieMatcher in cookieMatchers.Where(h => h.Matchers is { }))
+        foreach (var cookieMatcher in cookieMatchers.Where(c => c.Matchers != null))
         {
             sb.AppendLine($"        .WithCookie(\"{cookieMatcher.Name}\", {ToValueArguments(GetStringArray(cookieMatcher.Matchers!))}, true)");
         }
@@ -117,7 +112,7 @@ internal class MappingConverter
         }
 
 #if GRAPHQL
-        if (requestMessageGraphQLMatcher is { Matchers: { } })
+        if (requestMessageGraphQLMatcher?.Matchers != null)
         {
             if (requestMessageGraphQLMatcher.Matchers.OfType<GraphQLMatcher>().FirstOrDefault() is { } graphQLMatcher && graphQLMatcher.GetPatterns().Any())
             {
@@ -127,7 +122,7 @@ internal class MappingConverter
 #endif
 
 #if MIMEKIT
-        if (requestMessageMultiPartMatcher is { Matchers: { } })
+        if (requestMessageMultiPartMatcher?.Matchers != null)
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
             {
@@ -137,13 +132,13 @@ internal class MappingConverter
 #endif
 
 #if PROTOBUF
-        if (requestMessageProtoBufMatcher is { Matcher: { } })
+        if (requestMessageProtoBufMatcher?.Matcher != null)
         {
             sb.AppendLine("        // .WithBodyAsProtoBuf() is not yet supported");
         }
 #endif
 
-        if (requestMessageBodyMatcher is { Matchers: { } })
+        if (requestMessageBodyMatcher?.Matchers != null)
         {
             var firstMatcher = requestMessageBodyMatcher.Matchers.FirstOrDefault();
 
@@ -154,15 +149,15 @@ internal class MappingConverter
                     break;
 
                 case JsonMatcher jsonMatcher:
-                {
-                    var matcherType = jsonMatcher.GetType().Name;
-                    sb.AppendLine($"        .WithBody(new {matcherType}(");
-                    sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
-                    sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
-                    sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
-                    sb.AppendLine(@"        ))");
-                    break;
-                }
+                    {
+                        var matcherType = jsonMatcher.GetType().Name;
+                        sb.AppendLine($"        .WithBody(new {matcherType}(");
+                        sb.AppendLine($"            value: {ConvertToAnonymousObjectDefinition(jsonMatcher.Value, 3)},");
+                        sb.AppendLine($"            ignoreCase: {ToCSharpBooleanLiteral(jsonMatcher.IgnoreCase)},");
+                        sb.AppendLine($"            regex: {ToCSharpBooleanLiteral(jsonMatcher.Regex)}");
+                        sb.AppendLine(@"        ))");
+                        break;
+                    }
             }
         }
 
@@ -309,7 +304,7 @@ internal class MappingConverter
             Response = new ResponseModel()
         };
 
-        if (methodMatcher is { Methods: { } })
+        if (methodMatcher != null)
         {
             mappingModel.Request.Methods = methodMatcher.Methods;
             mappingModel.Request.MethodsRejectOnMatch = methodMatcher.MatchBehaviour == MatchBehaviour.RejectOnMatch ? true : null;
@@ -321,7 +316,7 @@ internal class MappingConverter
             mappingModel.Request.HttpVersion = httpVersionMatcher.HttpVersion;
         }
 
-        if (clientIPMatcher is { Matchers: { } })
+        if (clientIPMatcher?.Matchers != null)
         {
             var clientIPMatchers = _mapper.Map(clientIPMatcher.Matchers);
             mappingModel.Request.Path = new ClientIPModel
@@ -331,7 +326,7 @@ internal class MappingConverter
             };
         }
 
-        if (pathMatcher is { Matchers: { } })
+        if (pathMatcher?.Matchers != null)
         {
             var pathMatchers = _mapper.Map(pathMatcher.Matchers);
             mappingModel.Request.Path = new PathModel
@@ -340,7 +335,7 @@ internal class MappingConverter
                 MatchOperator = pathMatchers?.Length > 1 ? pathMatcher.MatchOperator.ToString() : null
             };
         }
-        else if (urlMatcher is { Matchers: { } })
+        else if (urlMatcher?.Matchers != null)
         {
             var urlMatchers = _mapper.Map(urlMatcher.Matchers);
             mappingModel.Request.Url = new UrlModel
@@ -538,7 +533,7 @@ internal class MappingConverter
         return stringMatchers.SelectMany(m => m.GetPatterns()).Select(p => p.GetPattern()).ToArray();
     }
 
-    private static string To1Or2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
+    private static string To2Or3Arguments(string key, MatchBehaviour? matchBehaviour, IReadOnlyList<IStringMatcher> matchers)
     {
         var sb = new StringBuilder($"\"{key}\", ");
 
@@ -547,7 +542,7 @@ internal class MappingConverter
             sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
         }
 
-        sb.AppendFormat("{0}", ToValueArguments(GetStringArray(matchers), string.Empty));
+        sb.AppendFormat("{0}", MappingConverterUtils.ToCSharpCodeArguments(matchers));
 
         return sb.ToString();
     }
@@ -566,7 +561,16 @@ internal class MappingConverter
 
     private static string To1Or2Arguments(MatchOperator? matchOperator, IReadOnlyList<IStringMatcher> matchers)
     {
-        return To1Or2Arguments(matchOperator, GetStringArray(matchers), string.Empty);
+        var sb = new StringBuilder();
+
+        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
+        {
+            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
+        }
+
+        sb.AppendFormat("{0}", MappingConverterUtils.ToCSharpCodeArguments(matchers));
+
+        return sb.ToString();
     }
 
     private static string To1Or2Arguments(MatchOperator? matchOperator, string[]? values, string defaultValue)

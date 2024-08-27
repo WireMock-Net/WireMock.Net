@@ -47,6 +47,7 @@ message HelloReply {
                 .WithPath("/grpc/greet.Greeter/SayHello")
                 .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
             )
+            .WithGuid(_guidUtilsMock.Object.NewGuid())
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
@@ -66,6 +67,7 @@ message HelloReply {
                 .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
             )
             .WithProtoDefinition(ProtoDefinition)
+            .WithGuid(_guidUtilsMock.Object.NewGuid())
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithBodyAsProtoBuf("greet.HelloReply",
@@ -86,6 +88,7 @@ message HelloReply {
                 .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
             )
             .WithProtoDefinition("my-greeter")
+            .WithGuid(_guidUtilsMock.Object.NewGuid())
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithBodyAsProtoBuf("greet.HelloReply",
@@ -106,6 +109,7 @@ message HelloReply {
                 .WithBodyAsProtoBuf("greet.HelloRequest")
             )
             .WithProtoDefinition("my-greeter")
+            .WithGuid(_guidUtilsMock.Object.NewGuid())
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithBodyAsProtoBuf("greet.HelloReply",

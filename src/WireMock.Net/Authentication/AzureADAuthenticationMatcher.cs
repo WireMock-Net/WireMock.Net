@@ -42,7 +42,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
         return EmptyArray<AnyOf<string, StringPattern>>.Value;
     }
 
-    public MatchOperator MatchOperator { get; } = MatchOperator.Or;
+    public MatchOperator MatchOperator => MatchOperator.Or;
 
     public MatchResult IsMatch(string? input)
     {
@@ -75,6 +75,12 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
         {
             return new MatchResult(MatchScores.Mismatch, ex);
         }
+    }
+
+    /// <inheritdoc />
+    public virtual string GetCSharpCodeArguments()
+    {
+        throw new NotImplementedException();
     }
 }
 #endif

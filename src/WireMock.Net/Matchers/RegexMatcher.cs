@@ -10,6 +10,7 @@ using WireMock.Constants;
 using WireMock.Extensions;
 using WireMock.Models;
 using WireMock.RegularExpressions;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -22,6 +23,7 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
 {
     private readonly AnyOf<string, StringPattern>[] _patterns;
     private readonly Regex[] _expressions;
+    private readonly bool _useRegexExtended;
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }
@@ -77,10 +79,11 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     {
         _patterns = Guard.NotNull(patterns);
         IgnoreCase = ignoreCase;
+        _useRegexExtended = useRegexExtended;
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
 
-        RegexOptions options = RegexOptions.Compiled | RegexOptions.Multiline;
+        var options = RegexOptions.Compiled | RegexOptions.Multiline;
 
         if (ignoreCase)
         {
@@ -126,4 +129,16 @@ public class RegexMatcher : IStringMatcher, IIgnoreCaseMatcher
     /// <inheritdoc />
     public MatchOperator MatchOperator { get; }
 
+    /// <inheritdoc />
+    public virtual string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(_useRegexExtended)}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}" +
+               $")";
+    }
 }

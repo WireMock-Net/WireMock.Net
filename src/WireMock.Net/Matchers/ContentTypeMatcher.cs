@@ -2,7 +2,10 @@
 
 using System.Net.Http.Headers;
 using AnyOfTypes;
+using Stef.Validation;
+using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -19,7 +22,7 @@ public class ContentTypeMatcher : WildcardMatcher
     /// </summary>
     /// <param name="pattern">The pattern.</param>
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
-    public ContentTypeMatcher(AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(new[] { pattern }, ignoreCase)
+    public ContentTypeMatcher(AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this([pattern], ignoreCase)
     {
     }
 
@@ -29,7 +32,8 @@ public class ContentTypeMatcher : WildcardMatcher
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="pattern">The pattern.</param>
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
-    public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour, new[] { pattern }, ignoreCase)
+    public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> pattern, bool ignoreCase = false) : this(matchBehaviour,
+        [pattern], ignoreCase)
     {
     }
 
@@ -50,7 +54,7 @@ public class ContentTypeMatcher : WildcardMatcher
     /// <param name="ignoreCase">IgnoreCase (default false)</param>
     public ContentTypeMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern>[] patterns, bool ignoreCase = false) : base(matchBehaviour, patterns, ignoreCase)
     {
-        _patterns = patterns;
+        _patterns = Guard.NotNull(patterns);
     }
 
     /// <inheritdoc />
@@ -72,4 +76,15 @@ public class ContentTypeMatcher : WildcardMatcher
 
     /// <inheritdoc />
     public override string Name => nameof(ContentTypeMatcher);
+
+    /// <inheritdoc />
+    public override string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}, " +
+               $"{CSharpFormatter.ToCSharpBooleanLiteral(IgnoreCase)}" +
+               $")";
+    }
 }
