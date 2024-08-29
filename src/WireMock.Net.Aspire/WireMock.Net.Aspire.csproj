@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.1-preview-05</Version>
         <ImplicitUsings>enable</ImplicitUsings>
         <Description>Aspire extension to start a WireMock.Net server to stub an api.</Description>
         <AssemblyTitle>WireMock.Net.Aspire</AssemblyTitle>
