@@ -10,6 +10,7 @@ using Stef.Validation;
 using WireMock.Exceptions;
 using WireMock.Extensions;
 using WireMock.Models;
+using WireMock.Util;
 
 namespace WireMock.Matchers;
 
@@ -90,6 +91,17 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
         }
 
         return new MatchResult(MatchBehaviourHelper.Convert(MatchBehaviour, score), exception);
+    }
+
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return $"new {Name}" +
+               $"(" +
+               $"{MatchBehaviour.GetFullyQualifiedEnumValue()}, " +
+               $"{MatchOperator.GetFullyQualifiedEnumValue()}, " +
+               $"{MappingConverterUtils.ToCSharpCodeArguments(_patterns)}" +
+               $")";
     }
 
     private bool IsMatch(dynamic input, string pattern)

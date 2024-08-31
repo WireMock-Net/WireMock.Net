@@ -92,11 +92,17 @@ public class CustomPathParamMatcher : IStringMatcher
 
     public MatchOperator MatchOperator { get; }
 
+    /// <inheritdoc />
+    public string GetCSharpCodeArguments()
+    {
+        return "// TODO: CustomPathParamMatcher";
+    }
+
     private static string[] GetPathParts(string? path)
     {
         if (path is null)
         {
-            return new string[0];
+            return [];
         }
 
         var hashMarkIndex = path.IndexOf('#');

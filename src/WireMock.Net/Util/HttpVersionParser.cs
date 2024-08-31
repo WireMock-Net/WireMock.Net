@@ -1,8 +1,8 @@
 // Copyright © WireMock.Net
 
-using System;
 using System.Text.RegularExpressions;
 using Stef.Validation;
+using WireMock.Constants;
 
 namespace WireMock.Util;
 
@@ -11,7 +11,7 @@ namespace WireMock.Util;
 /// </summary>
 internal static class HttpVersionParser
 {
-    private static readonly Regex HttpVersionRegex = new(@"HTTP/(\d+(\.\d+)?(?!\.))", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
+    private static readonly Regex HttpVersionRegex = new(@"HTTP/(\d+(\.\d+)?(?!\.))", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled, WireMockConstants.DefaultRegexTimeout);
 
     /// <summary>
     /// Try to extract the version (as a string) from the protocol.
