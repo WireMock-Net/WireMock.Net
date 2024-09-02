@@ -40,6 +40,8 @@ message HelloReply {
     private const string ProtoDefinitionWithWellKnownTypes = @"
 syntax = ""proto3"";
 
+package communication.api.v1;
+
 import ""google/protobuf/empty.proto"";
 import ""google/protobuf/timestamp.proto"";
 import ""google/protobuf/duration.proto"";
@@ -116,6 +118,48 @@ message MyMessageDuration {
             )
             .RespondWith(Response.Create()
                 .WithBodyAsProtoBuf(ProtoDefinitionWithWellKnownTypes, "google.protobuf.Empty",
+                    new { }
+                )
+                .WithTrailingHeader("grpc-status", "0")
+                .WithTransformer()
+            );
+
+        // Act
+        var protoBuf = new ByteArrayContent(bytes);
+        protoBuf.Headers.ContentType = new MediaTypeHeaderValue("application/grpc-web");
+
+        var client = server.CreateClient();
+        var response = await client.PostAsync("/grpc/Greeter/SayNothing", protoBuf);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await response.Content.ReadAsByteArrayAsync();
+
+        Convert.ToBase64String(responseBytes).Should().Be("");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinition_WithWellKnownTypes()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+
+        using var server = WireMockServer.Start();
+
+        var id = $"proto-{Guid.NewGuid()}";
+
+        server
+            .AddProtoDefinition(id, ProtoDefinitionWithWellKnownTypes)
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/grpc/Greeter/SayNothing")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .WithProtoDefinition(id)
+            .RespondWith(Response.Create()
+                .WithBodyAsProtoBuf("google.protobuf.Empty",
                     new { }
                 )
                 .WithTrailingHeader("grpc-status", "0")
