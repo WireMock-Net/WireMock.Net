@@ -119,6 +119,7 @@ message MyMessageDuration {
                     new { }
                 )
                 .WithTrailingHeader("grpc-status", "0")
+                .WithTransformer()
             );
 
         // Act
