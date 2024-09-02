@@ -37,6 +37,26 @@ message HelloReply {
 }
 ";
 
+    private const string ProtoDefinitionWithWellKnownTypes = @"
+syntax = ""proto3"";
+
+import ""google/protobuf/empty.proto"";
+import ""google/protobuf/timestamp.proto"";
+import ""google/protobuf/duration.proto"";
+
+service Greeter {
+    rpc SayNothing (google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+message MyMessageTimestamp {
+    google.protobuf.Timestamp ts = 1;
+}
+
+message MyMessageDuration {
+    google.protobuf.Duration du = 1;
+}
+";
+
     [Theory]
     [InlineData("CgRzdGVm")]
     [InlineData("AAAAAAYKBHN0ZWY=")]
@@ -76,6 +96,43 @@ message HelloReply {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcKBWhlbGxv");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_WithWellKnownTypes()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+
+        using var server = WireMockServer.Start();
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/grpc/Greeter/SayNothing")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .RespondWith(Response.Create()
+                .WithBodyAsProtoBuf(ProtoDefinitionWithWellKnownTypes, "google.protobuf.Empty",
+                    new { }
+                )
+                .WithTrailingHeader("grpc-status", "0")
+            );
+
+        // Act
+        var protoBuf = new ByteArrayContent(bytes);
+        protoBuf.Headers.ContentType = new MediaTypeHeaderValue("application/grpc-web");
+
+        var client = server.CreateClient();
+        var response = await client.PostAsync("/grpc/Greeter/SayNothing", protoBuf);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await response.Content.ReadAsByteArrayAsync();
+
+        Convert.ToBase64String(responseBytes).Should().Be("");
 
         server.Stop();
     }
