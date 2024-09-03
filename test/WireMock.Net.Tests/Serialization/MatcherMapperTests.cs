@@ -206,7 +206,7 @@ public class MatcherMapperTests
     public void MatcherMapper_Map_Matcher_ProtoBufMatcher()
     {
         // Arrange
-        IdOrText protoDefinition = new(null, @"
+        IdOrTexts protoDefinition = new(null, @"
 syntax = ""proto3"";
 
 package greet;
@@ -235,7 +235,7 @@ message HelloReply {
 
         // Assert
         model.Name.Should().Be(nameof(ProtoBufMatcher));
-        model.Pattern.Should().Be(protoDefinition.Text);
+        model.Pattern.Should().Be(protoDefinition.Texts[0]);
         model.ProtoBufMessageType.Should().Be(messageType);
         model.ContentMatcher?.Name.Should().Be("JsonMatcher");
         model.ContentMatcher?.Pattern.Should().Be(jsonPattern);
@@ -246,7 +246,7 @@ message HelloReply {
     {
         // Arrange
         string id = "abc123";
-        IdOrText protoDefinition = new(id, @"
+        IdOrTexts protoDefinition = new(id, @"
 syntax = ""proto3"";
 
 package greet;
@@ -1127,7 +1127,7 @@ message HelloReply {
         var matcher = (ProtoBufMatcher)_sut.Map(model)!;
 
         // Assert
-        matcher.ProtoDefinition().Text.Should().Be(protoDefinition);
+        matcher.ProtoDefinition().Texts.Should().ContainSingle(protoDefinition);
         matcher.Name.Should().Be(nameof(ProtoBufMatcher));
         matcher.MessageType.Should().Be(messageType);
         matcher.Matcher?.Value.Should().Be(jsonMatcherPattern);

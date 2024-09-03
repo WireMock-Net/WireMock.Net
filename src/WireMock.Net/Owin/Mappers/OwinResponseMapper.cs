@@ -151,8 +151,8 @@ namespace WireMock.Owin.Mappers
 
 #if PROTOBUF
                 case BodyType.ProtoBuf:
-                    var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke().Text;
-                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
+                    var protoDefinitions = responseMessage.BodyData.ProtoDefinition?.Invoke().Texts;
+                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinitions, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
 #endif
 
                 case BodyType.Bytes:

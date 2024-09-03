@@ -61,7 +61,7 @@ public static class WireMockServerSettingsParser
             HandleRequestsSynchronously = parser.GetBoolValue(nameof(WireMockServerSettings.HandleRequestsSynchronously)),
             HostingScheme = parser.GetEnumValue<HostingScheme>(nameof(WireMockServerSettings.HostingScheme)),
             MaxRequestLogCount = parser.GetIntValue(nameof(WireMockServerSettings.MaxRequestLogCount)),
-            ProtoDefinitions = parser.GetObjectValueFromJson<Dictionary<string, string>>(nameof(settings.ProtoDefinitions)),
+            ProtoDefinitions = parser.GetObjectValueFromJson<Dictionary<string, string[]>>(nameof(settings.ProtoDefinitions)),
             QueryParameterMultipleValueSupport = parser.GetEnumValue<QueryParameterMultipleValueSupport>(nameof(WireMockServerSettings.QueryParameterMultipleValueSupport)),
             ReadStaticMappings = parser.GetBoolValue(nameof(WireMockServerSettings.ReadStaticMappings)),
             RequestLogExpirationDuration = parser.GetIntValue(nameof(WireMockServerSettings.RequestLogExpirationDuration)),

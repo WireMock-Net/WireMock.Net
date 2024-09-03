@@ -59,6 +59,47 @@ message MyMessageDuration {
 }
 ";
 
+    private const string ProtoDefinitionMain = @"
+syntax = ""proto3"";
+
+package greet;
+
+import ""other.proto"";
+import ""google/protobuf/empty.proto"";
+
+service Greeter {
+  rpc Nothing (google.protobuf.Empty) returns (google.protobuf.Empty);
+  
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  rpc SayOther (Other) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+}
+";
+
+    private const string ProtoDefinitionOther = @"// other.proto
+syntax = ""proto3"";
+
+package greet;
+
+message Other {
+  string name = 1;
+}
+";
+
     [Theory]
     [InlineData("CgRzdGVm")]
     [InlineData("AAAAAAYKBHN0ZWY=")]
@@ -178,6 +219,49 @@ message MyMessageDuration {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("");
+
+        server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_MultipleFiles()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+        var jsonMatcher = new JsonMatcher(new { name = "stef" });
+
+        using var server = WireMockServer.Start();
+
+        var protoFiles = new [] { ProtoDefinitionMain, ProtoDefinitionOther };
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/grpc/greet.Greeter/SayOther")
+                .WithBodyAsProtoBuf(protoFiles, "greet.Other", jsonMatcher)
+            )
+            .RespondWith(Response.Create()
+                .WithBodyAsProtoBuf(protoFiles, "greet.HelloReply",
+                    new
+                    {
+                        message = "hello"
+                    }
+                )
+                .WithTrailingHeader("grpc-status", "0")
+            );
+
+        // Act
+        var protoBuf = new ByteArrayContent(bytes);
+        protoBuf.Headers.ContentType = new MediaTypeHeaderValue("application/grpc-web");
+
+        var client = server.CreateClient();
+        var response = await client.PostAsync("/grpc/greet.Greeter/SayOther", protoBuf);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await response.Content.ReadAsByteArrayAsync();
+
+        Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcKBWhlbGxv");
 
         server.Stop();
     }

@@ -37,7 +37,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
     private double? _probability;
-    private IdOrText? _protoDefinition;
+    private IdOrTexts? _protoDefinition;
     private GraphQLSchemaDetails? _graphQLSchemaDetails;
 
     public Guid Guid { get; private set; }
@@ -351,18 +351,27 @@ internal class RespondWithAProvider : IRespondWithAProvider
     }
 
     /// <inheritdoc />
-    public IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId)
+    public IRespondWithAProvider WithProtoDefinition(params string[] protoDefinitionOrId)
     {
-        Guard.NotNullOrWhiteSpace(protoDefinitionOrId);
+        Guard.NotNull(protoDefinitionOrId);
 
-        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out var protoDefinition) == true)
+        if (protoDefinitionOrId.Length == 1)
         {
-            _protoDefinition = new (protoDefinitionOrId, protoDefinition);
+            var idOrText = protoDefinitionOrId[0];
+            if (_settings.ProtoDefinitions?.TryGetValue(idOrText, out var protoDefinitions) == true)
+            {
+                _protoDefinition = new(idOrText, protoDefinitions);
+            }
+            else
+            {
+                _protoDefinition = new(null, protoDefinitionOrId);
+            }
         }
         else
         {
             _protoDefinition = new(null, protoDefinitionOrId);
         }
+        
 
         return this;
     }

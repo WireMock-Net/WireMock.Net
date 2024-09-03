@@ -242,7 +242,7 @@ public interface IRespondWithAProvider
     /// </summary>
     /// <param name="protoDefinitionOrId">The proto definition as text or as id.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
-    IRespondWithAProvider WithProtoDefinition(string protoDefinitionOrId);
+    IRespondWithAProvider WithProtoDefinition(params string[] protoDefinitionOrId);
 
     /// <summary>
     /// Define a GraphQL Schema which is used for the request and the response.
