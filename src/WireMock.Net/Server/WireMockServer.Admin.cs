@@ -18,6 +18,7 @@ using WireMock.Http;
 using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
+using WireMock.Owin;
 using WireMock.RequestBuilders;
 using WireMock.ResponseProviders;
 using WireMock.Serialization;
@@ -321,28 +322,26 @@ public partial class WireMockServer
 
         InitSettings(_settings);
 
-        // _options
-        if (settings.GlobalProcessingDelay != null)
-        {
-            _options.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
-        }
-        _options.AllowBodyForAllHttpMethods = settings.AllowBodyForAllHttpMethods;
-        _options.AllowPartialMapping = settings.AllowPartialMapping;
-        _options.HandleRequestsSynchronously = settings.HandleRequestsSynchronously;
-        _options.MaxRequestLogCount = settings.MaxRequestLogCount;
-        _options.RequestLogExpirationDuration = settings.RequestLogExpirationDuration;
-
-        // _settings & _options
 #if USE_ASPNETCORE
         if (Enum.TryParse<CorsPolicyOptions>(settings.CorsPolicyOptions, true, out var corsPolicyOptions))
         {
             _settings.CorsPolicyOptions = corsPolicyOptions;
-            _options.CorsPolicyOptions = corsPolicyOptions;
         }
-
-        _options.ClientCertificateMode = _settings.ClientCertificateMode;
-        _options.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
 #endif
+
+        WireMockMiddlewareOptionsHelper.InitFromSettings(_settings, _options, o =>
+        {
+            if (settings.GlobalProcessingDelay != null)
+            {
+                o.RequestProcessingDelay = TimeSpan.FromMilliseconds(settings.GlobalProcessingDelay.Value);
+            }
+
+#if USE_ASPNETCORE
+            o.CorsPolicyOptions = corsPolicyOptions;
+            o.ClientCertificateMode = _settings.ClientCertificateMode;
+            o.AcceptAnyClientCertificate = _settings.AcceptAnyClientCertificate;
+#endif
+        });
 
         return ResponseMessageBuilder.Create(200, "Settings updated");
     }
