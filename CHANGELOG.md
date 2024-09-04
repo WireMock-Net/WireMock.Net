@@ -1,3 +1,10 @@
+# 1.6.2 (04 September 2024)
+- [#1152](https://github.com/WireMock-Net/WireMock.Net/pull/1152) - Update MappingConverter to correctly write the Matcher as C# code [bug] contributed by [StefH](https://github.com/StefH)
+- [#1163](https://github.com/WireMock-Net/WireMock.Net/pull/1163) - Upgrade Aspire to version 8.2.0 [feature] contributed by [StefH](https://github.com/StefH)
+- [#1166](https://github.com/WireMock-Net/WireMock.Net/pull/1166) - Also update IWireMockMiddlewareOptions when settings are updated via admin interface [bug] contributed by [StefH](https://github.com/StefH)
+- [#1151](https://github.com/WireMock-Net/WireMock.Net/issues/1151) - MappingsToCSharpCode should use RegexMatcher when specified [bug]
+- [#1164](https://github.com/WireMock-Net/WireMock.Net/issues/1164) - WithParam not working. [bug]
+
 # 1.6.1 (22 August 2024)
 - [#1160](https://github.com/WireMock-Net/WireMock.Net/pull/1160) - Use default timeout for Regex [bug] contributed by [StefH](https://github.com/StefH)
 - [#1159](https://github.com/WireMock-Net/WireMock.Net/issues/1159) - RegexMatchTimeoutException when trying to parse HTTP version [bug]
