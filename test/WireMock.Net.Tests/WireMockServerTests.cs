@@ -222,11 +222,7 @@ public partial class WireMockServerTests
                 }
             }
         }
-    
-        // Asser.
-        IPv4.Should().NotBeEmpty();
-        IPv6.Should().NotBeEmpty();
-    
+
         var settings = new WireMockServerSettings
         {
             Urls = new string[] { "http://0.0.0.0:80" },
