@@ -244,7 +244,7 @@ public partial class WireMockServerTests
         foreach (var addr in IPv6)
         {
             // Act
-            var response = await new HttpClient().GetStringAsync("http://" + addr + ":" server.Ports[0] + "/foo").ConfigureAwait(false);
+            var response = await new HttpClient().GetStringAsync("http://" + addr + ":" + server.Ports[0] + "/foo").ConfigureAwait(false);
     
             // Asser.
             response.Should().Be("x");
