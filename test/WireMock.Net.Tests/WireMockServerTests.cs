@@ -197,6 +197,7 @@ public partial class WireMockServerTests
     }
 #endif
 
+#if NET6_0_OR_GREATER
     [Fact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs()
     {
@@ -251,7 +252,7 @@ public partial class WireMockServerTests
     
         server.Stop();
     }
-
+#endif
     
     [Fact]
     public async Task WireMockServer_Should_respond_a_redirect_without_body()
