@@ -20,7 +20,6 @@ using WireMock.Exceptions;
 using WireMock.Handlers;
 using WireMock.Http;
 using WireMock.Logging;
-using WireMock.Matchers.Request;
 using WireMock.Models;
 using WireMock.Owin;
 using WireMock.RequestBuilders;
@@ -369,9 +368,10 @@ public partial class WireMockServer : IWireMockServer
             }
         }
 
-        WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options);
-
-        _options.LogEntries.CollectionChanged += LogEntries_CollectionChanged;
+        WireMockMiddlewareOptionsHelper.InitFromSettings(settings, _options, o =>
+        {
+            o.LogEntries.CollectionChanged += LogEntries_CollectionChanged;
+        });
 
         _matcherMapper = new MatcherMapper(_settings);
         _mappingConverter = new MappingConverter(_matcherMapper);
@@ -649,13 +649,11 @@ public partial class WireMockServer : IWireMockServer
     {
         if (settings.AllowBodyForAllHttpMethods == true)
         {
-            _options.AllowBodyForAllHttpMethods = _settings.AllowBodyForAllHttpMethods;
             _settings.Logger.Info("AllowBodyForAllHttpMethods is set to True");
         }
 
         if (settings.AllowOnlyDefinedHttpStatusCodeInResponse == true)
         {
-            _options.AllowOnlyDefinedHttpStatusCodeInResponse = _settings.AllowOnlyDefinedHttpStatusCodeInResponse;
             _settings.Logger.Info("AllowOnlyDefinedHttpStatusCodeInResponse is set to True");
         }
 
