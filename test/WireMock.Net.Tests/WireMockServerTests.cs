@@ -196,6 +196,72 @@ public partial class WireMockServerTests
     }
 #endif
 
+[Fact]
+public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs()
+{
+    // Arrange
+
+    List<string> IPv4 = new List<string>();
+    List<string> IPv6 = new List<string>();
+
+    foreach (NetworkInterface netInterface in NetworkInterface.GetAllNetworkInterfaces())
+    {
+        if (netInterface.OperationalStatus == OperationalStatus.Up)
+        {
+
+            IPInterfaceProperties ipProps = netInterface.GetIPProperties();
+
+            foreach (UnicastIPAddressInformation addr in ipProps.UnicastAddresses)
+            {
+                Console.WriteLine(" " + addr.Address.ToString());
+
+                if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    IPv4.Add(addr.Address.ToString());
+                }
+                else if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                {
+                    IPv6.Add($"[{addr.Address.ToString()}]");
+                }
+            }
+        }
+    }
+
+    // Asser.
+    IPv4.Should().NotBeEmpty();
+    IPv6.Should().NotBeEmpty();
+
+
+    var settings = new WireMockServerSettings
+    {
+        Urls = new string[] { "http://0.0.0.0:80" },
+    };
+    var server = WireMockServer.Start(settings);
+
+    server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+
+    foreach (var addr in IPv4)
+    {
+        // Act
+        var response = await new HttpClient().GetStringAsync($"http://{addr}:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+
+        // Asser.
+        response.Should().Be("x");
+    } 
+
+    foreach (var addr in IPv6)
+    {
+        // Act
+        var response = await new HttpClient().GetStringAsync($"http://{addr}:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+
+        // Asser.
+        response.Should().Be("x");
+    }
+
+    server.Stop();
+}
+
+    
     [Fact]
     public async Task WireMockServer_Should_respond_a_redirect_without_body()
     {
