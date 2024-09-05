@@ -237,7 +237,7 @@ public partial class WireMockServerTests
             // Act
             var response = await new HttpClient().GetStringAsync("http://" + addr + ":" + server.Ports[0] + "/foo").ConfigureAwait(false);
     
-            // Asser.
+            // Assert
             response.Should().Be("x");
         } 
     
@@ -246,7 +246,7 @@ public partial class WireMockServerTests
             // Act
             var response = await new HttpClient().GetStringAsync("http://" + addr + ":" + server.Ports[0] + "/foo").ConfigureAwait(false);
     
-            // Asser.
+            // Assert
             response.Should().Be("x");
         }
     
@@ -306,7 +306,7 @@ public partial class WireMockServerTests
         // Act
         var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
 
-        // Asser.
+        // Assert
         response.Should().Be("x");
 
         server.Stop();
@@ -332,7 +332,7 @@ public partial class WireMockServerTests
         await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
         watch.Stop();
 
-        // Asser.
+        // Assert
         watch.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(0);
 
         server.Stop();
