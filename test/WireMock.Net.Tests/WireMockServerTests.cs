@@ -199,12 +199,11 @@ public partial class WireMockServerTests
 
 #if NET6_0_OR_GREATER
     [Fact]
-    public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs()
+    public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
     {
         // Arrange
         var IPv4 = new List<string>();
-        var IPv6 = new List<string>();
-    
+
         foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
         {
             if (netInterface.OperationalStatus == OperationalStatus.Up)
@@ -215,10 +214,6 @@ public partial class WireMockServerTests
                     if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
                         IPv4.Add(addr.Address.ToString());
-                    }
-                    else if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                    {
-                        IPv6.Add($"[{addr.Address.ToString()}]");
                     }
                 }
             }
@@ -240,7 +235,41 @@ public partial class WireMockServerTests
             // Assert
             response.Should().Be("x");
         } 
+
+        server.Stop();
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+    [Fact]
+    public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
+    {
+        // Arrange
+        var IPv6 = new List<string>();
     
+        foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (netInterface.OperationalStatus == OperationalStatus.Up)
+            {
+                var ipProps = netInterface.GetIPProperties();
+                foreach (var addr in ipProps.UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    {
+                        IPv6.Add($"[{addr.Address.ToString()}]");
+                    }
+                }
+            }
+        }
+
+        var settings = new WireMockServerSettings
+        {
+            Urls = new string[] { "http://0.0.0.0:80" },
+        };
+        var server = WireMockServer.Start(settings);
+    
+        server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+
         foreach (var addr in IPv6)
         {
             // Act
