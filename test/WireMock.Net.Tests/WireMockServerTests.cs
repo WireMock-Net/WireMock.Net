@@ -17,6 +17,7 @@ using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Http;
 using WireMock.Matchers;
+using WireMock.Net.Tests.Facts;
 using WireMock.Net.Tests.Serialization;
 using WireMock.Net.Xunit;
 using WireMock.RequestBuilders;
@@ -198,7 +199,7 @@ public partial class WireMockServerTests
 #endif
 
 #if NET6_0_OR_GREATER
-    [Fact]
+    [IgnoreOnContinuousIntegrationFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
     {
         // Arrange
@@ -241,7 +242,7 @@ public partial class WireMockServerTests
 #endif
 
 #if NET6_0_OR_GREATER
-    [Fact]
+    [IgnoreOnContinuousIntegrationFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
     {
         // Arrange
