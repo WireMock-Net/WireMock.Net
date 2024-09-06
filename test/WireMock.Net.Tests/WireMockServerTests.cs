@@ -40,6 +40,16 @@ public partial class WireMockServerTests
         _testOutputHelper = testOutputHelper;
     }
 
+    private static string[] GetIPAddressesByFamily(AddressFamily addressFamily)
+    {
+        return NetworkInterface.GetAllNetworkInterfaces()
+            .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
+            .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+            .Where(addr => addr.Address.AddressFamily == addressFamily)
+            .Select(addr => addr.Address.ToString())
+            .ToArray();
+    }
+    
     [Fact]
     public void WireMockServer_Start()
     {
@@ -204,23 +214,7 @@ public partial class WireMockServerTests
     {
         // Arrange
         var port = PortUtils.FindFreeTcpPort();
-        var IPv4 = new List<string>();
-
-        foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
-        {
-            if (netInterface.OperationalStatus == OperationalStatus.Up)
-            {
-                var ipProps = netInterface.GetIPProperties();
-                foreach (var addr in ipProps.UnicastAddresses)
-                {
-                    if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        IPv4.Add(addr.Address.ToString());
-                    }
-                }
-            }
-        }
-
+        var IPv4 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetwork);
         var settings = new WireMockServerSettings
         {
             Urls = new string[] { "http://0.0.0.0:" + port },
@@ -248,23 +242,7 @@ public partial class WireMockServerTests
     {
         // Arrange
         var port = PortUtils.FindFreeTcpPort();
-        var IPv6 = new List<string>();
-    
-        foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
-        {
-            if (netInterface.OperationalStatus == OperationalStatus.Up)
-            {
-                var ipProps = netInterface.GetIPProperties();
-                foreach (var addr in ipProps.UnicastAddresses)
-                {
-                    if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                    {
-                        IPv6.Add($"[{addr.Address.ToString()}]");
-                    }
-                }
-            }
-        }
-
+        var IPv6 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetworkV6);
         var settings = new WireMockServerSettings
         {
             Urls = new string[] { "http://0.0.0.0:" + port },
@@ -276,7 +254,7 @@ public partial class WireMockServerTests
         foreach (var addr in IPv6)
         {
             // Act
-            var response = await new HttpClient().GetStringAsync("http://" + addr + ":" + server.Ports[0] + "/foo").ConfigureAwait(false);
+            var response = await new HttpClient().GetStringAsync("http://[" + addr + "]:" + server.Ports[0] + "/foo").ConfigureAwait(false);
     
             // Assert
             response.Should().Be("x");
