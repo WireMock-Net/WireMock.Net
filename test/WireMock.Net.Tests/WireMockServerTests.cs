@@ -40,16 +40,6 @@ public partial class WireMockServerTests
     {
         _testOutputHelper = testOutputHelper;
     }
-
-    private static string[] GetIPAddressesByFamily(AddressFamily addressFamily)
-    {
-        return NetworkInterface.GetAllNetworkInterfaces()
-            .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
-            .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
-            .Where(addr => addr.Address.AddressFamily == addressFamily)
-            .Select(addr => addr.Address.ToString())
-            .ToArray();
-    }
     
     [Fact]
     public void WireMockServer_Start()
@@ -210,6 +200,16 @@ public partial class WireMockServerTests
 #endif
 
 #if NET6_0_OR_GREATER
+    private static string[] GetIPAddressesByFamily(AddressFamily addressFamily)
+    {
+        return NetworkInterface.GetAllNetworkInterfaces()
+            .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
+            .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+            .Where(addr => addr.Address.AddressFamily == addressFamily)
+            .Select(addr => addr.Address.ToString())
+            .ToArray();
+    }
+    
     [IgnoreOnContinuousIntegrationFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
     {
@@ -235,9 +235,7 @@ public partial class WireMockServerTests
 
         server.Stop();
     }
-#endif
 
-#if NET6_0_OR_GREATER
     [IgnoreOnContinuousIntegrationFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
     {
