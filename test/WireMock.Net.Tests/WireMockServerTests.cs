@@ -203,6 +203,7 @@ public partial class WireMockServerTests
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
     {
         // Arrange
+        var port = PortUtils.FindFreeTcpPort();
         var IPv4 = new List<string>();
 
         foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
@@ -222,7 +223,7 @@ public partial class WireMockServerTests
 
         var settings = new WireMockServerSettings
         {
-            Urls = new string[] { "http://0.0.0.0:80" },
+            Urls = new string[] { "http://0.0.0.0:" + port },
         };
         var server = WireMockServer.Start(settings);
     
@@ -246,6 +247,7 @@ public partial class WireMockServerTests
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
     {
         // Arrange
+        var port = PortUtils.FindFreeTcpPort();
         var IPv6 = new List<string>();
     
         foreach (var netInterface in NetworkInterface.GetAllNetworkInterfaces())
@@ -265,7 +267,7 @@ public partial class WireMockServerTests
 
         var settings = new WireMockServerSettings
         {
-            Urls = new string[] { "http://0.0.0.0:80" },
+            Urls = new string[] { "http://0.0.0.0:" + port },
         };
         var server = WireMockServer.Start(settings);
     
