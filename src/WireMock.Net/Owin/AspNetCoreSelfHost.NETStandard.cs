@@ -75,8 +75,15 @@ namespace WireMock.Owin
 
         private static void Listen(KestrelServerOptions kestrelOptions, HostUrlDetails urlDetail, Action<ListenOptions> configure)
         {
+            // Listens on any IP with the given port.
+            if (urlDetail is { Port: > 0, Host: "0.0.0.0" })
+            {
+                kestrelOptions.ListenAnyIP(urlDetail.Port, configure);
+                return;
+            }
+            
             // Listens on ::1 and 127.0.0.1 with the given port.
-            if (urlDetail is { Port: > 0, Host: "localhost" or "127.0.0.1" or "0.0.0.0" or "::1" })
+            if (urlDetail is { Port: > 0, Host: "localhost" or "127.0.0.1" or "::1" })
             {
                 kestrelOptions.ListenLocalhost(urlDetail.Port, configure);
                 return;

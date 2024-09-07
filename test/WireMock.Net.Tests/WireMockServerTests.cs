@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -16,6 +18,7 @@ using NFluent;
 using WireMock.Admin.Mappings;
 using WireMock.Http;
 using WireMock.Matchers;
+using WireMock.Net.Tests.Facts;
 using WireMock.Net.Tests.Serialization;
 using WireMock.Net.Xunit;
 using WireMock.RequestBuilders;
@@ -37,7 +40,7 @@ public partial class WireMockServerTests
     {
         _testOutputHelper = testOutputHelper;
     }
-
+    
     [Fact]
     public void WireMockServer_Start()
     {
@@ -196,6 +199,70 @@ public partial class WireMockServerTests
     }
 #endif
 
+#if NET6_0_OR_GREATER
+    private static string[] GetIPAddressesByFamily(AddressFamily addressFamily)
+    {
+        return NetworkInterface.GetAllNetworkInterfaces()
+            .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
+            .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+            .Where(addr => addr.Address.AddressFamily == addressFamily)
+            .Select(addr => addr.Address.ToString())
+            .ToArray();
+    }
+    
+    [IgnoreOnContinuousIntegrationFact]
+    public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
+    {
+        // Arrange
+        var port = PortUtils.FindFreeTcpPort();
+        var IPv4 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetwork);
+        var settings = new WireMockServerSettings
+        {
+            Urls = new string[] { "http://0.0.0.0:" + port },
+        };
+        var server = WireMockServer.Start(settings);
+    
+        server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+    
+        foreach (var addr in IPv4)
+        {
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://" + addr + ":" + server.Ports[0] + "/foo").ConfigureAwait(false);
+    
+            // Assert
+            response.Should().Be("x");
+        } 
+
+        server.Stop();
+    }
+
+    [IgnoreOnContinuousIntegrationFact]
+    public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
+    {
+        // Arrange
+        var port = PortUtils.FindFreeTcpPort();
+        var IPv6 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetworkV6);
+        var settings = new WireMockServerSettings
+        {
+            Urls = new string[] { "http://0.0.0.0:" + port },
+        };
+        var server = WireMockServer.Start(settings);
+    
+        server.Given(Request.Create().WithPath("/*")).RespondWith(Response.Create().WithBody("x"));
+
+        foreach (var addr in IPv6)
+        {
+            // Act
+            var response = await new HttpClient().GetStringAsync("http://[" + addr + "]:" + server.Ports[0] + "/foo").ConfigureAwait(false);
+    
+            // Assert
+            response.Should().Be("x");
+        }
+    
+        server.Stop();
+    }
+#endif
+    
     [Fact]
     public async Task WireMockServer_Should_respond_a_redirect_without_body()
     {
@@ -248,7 +315,7 @@ public partial class WireMockServerTests
         // Act
         var response = await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
 
-        // Asser.
+        // Assert
         response.Should().Be("x");
 
         server.Stop();
@@ -274,7 +341,7 @@ public partial class WireMockServerTests
         await new HttpClient().GetStringAsync("http://localhost:" + server.Ports[0] + "/foo").ConfigureAwait(false);
         watch.Stop();
 
-        // Asser.
+        // Assert
         watch.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(0);
 
         server.Stop();
