@@ -1,8 +1,5 @@
-# 1.6.2 (04 September 2024)
-- #1152 Update MappingConverter to correctly write the Matcher as C# code [bug]
-- #1163 Upgrade Aspire to version 8.2.0 [feature]
-- #1166 Also update IWireMockMiddlewareOptions when settings are updated via admin interface [bug]
-- #1151 MappingsToCSharpCode should use RegexMatcher when specified [bug]
-- #1164 WithParam not working. [bug]
+# 1.6.3 (07 September 2024)
+- #1165 Fix listen on AnyIP for url 0.0.0.0
+- #1154 Listen on all ips [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
