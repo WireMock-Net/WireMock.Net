@@ -623,7 +623,7 @@ public partial class WireMockServer
     {
         var requestModel = DeserializeObject<RequestModel>(requestMessage);
 
-        var request = (Request)InitRequestBuilder(requestModel, false)!;
+        var request = (Request)InitRequestBuilder(requestModel);
 
         var dict = new Dictionary<ILogEntry, RequestMatchResult>();
         foreach (var logEntry in LogEntries.Where(le => !le.RequestMessage.Path.StartsWith("/__admin/")))
