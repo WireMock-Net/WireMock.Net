@@ -210,7 +210,7 @@ public partial class WireMockServerTests
             .ToArray();
     }
     
-    [IgnoreOnContinuousIntegrationFact]
+    [DockerIsRunningInLinuxContainerModeFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv4()
     {
         // Arrange
@@ -236,7 +236,7 @@ public partial class WireMockServerTests
         server.Stop();
     }
 
-    [IgnoreOnContinuousIntegrationFact]
+    [DockerIsRunningInLinuxContainerModeFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
     {
         // Arrange
