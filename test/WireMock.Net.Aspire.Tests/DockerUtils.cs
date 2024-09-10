@@ -8,10 +8,7 @@ namespace WireMock.Net.Aspire.Tests;
 [ExcludeFromCodeCoverage]
 internal static class DockerUtils
 {
-    public static bool IsDockerRunningLinuxContainerMode()
-    {
-        return IsDockerRunning() && IsLinuxContainerMode();
-    }
+    public static Lazy<bool> IsDockerRunningLinuxContainerMode => new(() => IsDockerRunning() && IsLinuxContainerMode());
 
     private static bool IsDockerRunning()
     {

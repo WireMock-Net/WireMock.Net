@@ -3,6 +3,7 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using Projects;
+using WireMock.Net.Aspire.Tests.Facts;
 using Xunit.Abstractions;
 
 namespace WireMock.Net.Aspire.Tests;
@@ -11,15 +12,9 @@ public class IntegrationTests(ITestOutputHelper output)
 {
     private record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary);
 
-    [Fact]
+    [DockerIsRunningInLinuxContainerModeFact]
     public async Task StartAppHostWithWireMockAndCreateHttpClientToCallTheMockedWeatherForecastEndpoint()
     {
-        if (!DockerUtils.IsDockerRunningLinuxContainerMode())
-        {
-            output.WriteLine("Docker is not running in Linux container mode. Skipping test.");
-            return;
-        }
-
         // Arrange
         var appHostBuilder = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
         await using var app = await appHostBuilder.BuildAsync();
@@ -44,15 +39,9 @@ public class IntegrationTests(ITestOutputHelper output)
         weatherForecasts2.Should().HaveCount(5);
     }
 
-    [Fact]
+    [DockerIsRunningInLinuxContainerModeFact]
     public async Task StartAppHostWithWireMockAndCreateWireMockAdminClientToCallTheAdminEndpoint()
     {
-        if (!DockerUtils.IsDockerRunningLinuxContainerMode())
-        {
-            output.WriteLine("Docker is not running in Linux container mode. Skipping test.");
-            return;
-        }
-
         // Arrange
         var appHostBuilder = await DistributedApplicationTestingBuilder.CreateAsync<WireMock_Net_Aspire_TestAppHost>();
         await using var app = await appHostBuilder.BuildAsync();

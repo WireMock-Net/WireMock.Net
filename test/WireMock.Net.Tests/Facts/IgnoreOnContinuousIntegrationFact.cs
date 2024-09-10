@@ -7,16 +7,16 @@ namespace WireMock.Net.Tests.Facts;
 
 public sealed class IgnoreOnContinuousIntegrationFact : FactAttribute
 {
-    private static readonly string _skipReason = "Ignore when run via CI/CD";
-    private static readonly bool _isContinuousIntegrationAzure = bool.TryParse(Environment.GetEnvironmentVariable("TF_BUILD"), out var isTF) && isTF;
-    private static readonly bool _isContinuousIntegrationGithub = bool.TryParse(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), out var isGH) && isGH;
-    private static bool IsContinuousIntegration() => _isContinuousIntegrationAzure || _isContinuousIntegrationGithub;
-    
+    private const string SkipReason = "Ignore when run via CI/CD";
+    private static readonly bool IsContinuousIntegrationAzure = bool.TryParse(Environment.GetEnvironmentVariable("TF_BUILD"), out var isTF) && isTF;
+    private static readonly bool IsContinuousIntegrationGithub = bool.TryParse(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), out var isGH) && isGH;
+    private static readonly bool IsContinuousIntegration = IsContinuousIntegrationAzure || IsContinuousIntegrationGithub;
+
     public IgnoreOnContinuousIntegrationFact()
     {
-        if (IsContinuousIntegration())
+        if (IsContinuousIntegration)
         {
-            Skip = _skipReason;
+            Skip = SkipReason;
         }
     }
 }
