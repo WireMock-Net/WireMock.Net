@@ -4,8 +4,6 @@ using WireMock.ResponseBuilders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
 if (!builder.Environment.IsProduction())
 {
     builder.Services.AddWireMockService(server =>
@@ -21,6 +19,22 @@ if (!builder.Environment.IsProduction())
 
 var app = builder.Build();
 
-app.MapControllers();
+app.MapGet("/weatherforecast", () =>
+{
+    var forecast = Enumerable.Range(1, 5).Select(index =>
+            new WeatherForecast
+            (
+                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                Random.Shared.Next(-20, 55),
+                "..."
+            ))
+        .ToArray();
+    return forecast;
+});
 
-await app.RunAsync();
+app.Run();
+
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
