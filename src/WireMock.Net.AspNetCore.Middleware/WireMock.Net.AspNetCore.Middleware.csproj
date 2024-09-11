@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Description>Middleware which can be used to host WireMock.Net as a AspNetCore Middleware in a WebApplication</Description>
+        <AssemblyTitle>WireMock.Net.AspNetCore.Middleware</AssemblyTitle>
+        <Authors>Matt Yost;Stef Heyenrath</Authors>
+        <TargetFramework>net8.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.AspNetCore.Middleware</AssemblyName>
+        <PackageId>WireMock.Net.AspNetCore.Middleware</PackageId>
+        <PackageTags>dotnet;middleware;wiremock;service;webapplication</PackageTags>
+        <ProjectGuid>{B6269AAC-170A-4346-8B9A-579DED3D9A13}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>WireMock.Net-LogoAspire.png</PackageIcon>
+        <ApplicationIcon>../../resources/WireMock.Net-LogoAspire.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="IWireMockContext.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="../../resources/WireMock.Net-Logo.png" />
+        <None Include="../../resources/WireMock.Net-LogoAspire.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+</Project>
