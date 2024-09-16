@@ -19,6 +19,7 @@ using WireMock.Util;
 
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 #else
 using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -138,7 +139,9 @@ namespace WireMock.Owin.Mappers
 
         private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage) {
             var bodyData = responseMessage.BodyData;
-            var bodyType = bodyData?.DetectedBodyTypeFromContentType ?? bodyData?.DetectedBodyType ?? BodyType.None;
+            var bodyType = bodyData?.DetectedBodyTypeFromContentType?.ToNullable()
+                        ?? bodyData?.DetectedBodyType?.ToNullable()
+                        ?? BodyType.None;
             switch (bodyType)
             {
                 case BodyType.String:

@@ -34,7 +34,9 @@ internal static class HttpRequestMessageHelper
         }
 
         var bodyData = requestMessage.BodyData;
-        var bodyType = bodyData?.DetectedBodyTypeFromContentType ?? bodyData?.DetectedBodyType ?? BodyType.None;
+        var bodyType = bodyData?.DetectedBodyTypeFromContentType?.ToNullable()
+                    ?? bodyData?.DetectedBodyType?.ToNullable()
+                    ?? BodyType.None;
         httpRequestMessage.Content = bodyType switch
         {
             BodyType.Bytes => ByteArrayContentHelper.Create(bodyData!.BodyAsBytes!, contentType),

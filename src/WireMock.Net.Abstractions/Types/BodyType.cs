@@ -47,3 +47,9 @@ public enum BodyType
     /// </summary>
     ProtoBuf
 }
+
+public static class BodyTypeExtension
+{
+    public static BodyType? ToNullable(this BodyType v)
+        => v == BodyType.None ? null : v;
+}
