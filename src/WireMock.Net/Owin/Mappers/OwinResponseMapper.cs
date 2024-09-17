@@ -139,10 +139,7 @@ namespace WireMock.Owin.Mappers
 
         private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage) {
             var bodyData = responseMessage.BodyData;
-            var bodyType = bodyData?.DetectedBodyTypeFromContentType?.ToNullable()
-                        ?? bodyData?.DetectedBodyType?.ToNullable()
-                        ?? BodyType.None;
-            switch (bodyType)
+            switch (bodyData?.GetBodyType())
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
