@@ -87,14 +87,3 @@ public interface IBodyData
     public string? ProtoBufMessageType { get; set; }
     #endregion
 }
-
-public static class IBodyDataExtension
-{
-    public static BodyType GetBodyType(this IBodyData bodyData)
-        => bodyData.DetectedBodyTypeFromContentType?.ToNullable()
-        ?? bodyData.DetectedBodyType?.ToNullable()
-        ?? BodyType.None;
-
-    static BodyType? ToNullable(this BodyType v)
-        => v == BodyType.None ? null : v;
-}
