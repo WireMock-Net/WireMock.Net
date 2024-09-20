@@ -19,6 +19,7 @@ using WireMock.Util;
 
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 #else
 using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -136,30 +137,37 @@ namespace WireMock.Owin.Mappers
             return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
         }
 
-        private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage)
-        {
-            switch (responseMessage.BodyData?.DetectedBodyType)
+        private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage) {
+            var bodyData = responseMessage.BodyData;
+            switch (bodyData?.GetBodyType())
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(responseMessage.BodyData.BodyAsString!);
+                    return (bodyData!.Encoding ?? _utf8NoBom).GetBytes(bodyData.BodyAsString!);
 
                 case BodyType.Json:
-                    var formatting = responseMessage.BodyData.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
-                    var jsonBody = JsonConvert.SerializeObject(responseMessage.BodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
-                    return (responseMessage.BodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
+                    var formatting = bodyData!.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+                    var jsonBody = JsonConvert.SerializeObject(bodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
+                    return (bodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
 #if PROTOBUF
                 case BodyType.ProtoBuf:
-                    var protoDefinition = responseMessage.BodyData.ProtoDefinition?.Invoke().Text;
-                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, responseMessage.BodyData.ProtoBufMessageType, responseMessage.BodyData.BodyAsJson).ConfigureAwait(false);
+                    var protoDefinition = bodyData!.ProtoDefinition?.Invoke().Text;
+                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, bodyData!.ProtoBufMessageType, bodyData!.BodyAsJson).ConfigureAwait(false);
 #endif
 
                 case BodyType.Bytes:
-                    return responseMessage.BodyData.BodyAsBytes;
+                    return bodyData!.BodyAsBytes;
 
                 case BodyType.File:
-                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(responseMessage.BodyData.BodyAsFile!);
+                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(bodyData!.BodyAsFile!);
+
+                case BodyType.MultiPart:
+                    _options.Logger.Warn("MultiPart body type is not handled!");
+                    break;
+
+                case BodyType.None:
+                    break;
             }
 
             return null;

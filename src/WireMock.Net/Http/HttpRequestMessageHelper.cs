@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Stef.Validation;
 using WireMock.Constants;
 using WireMock.Types;
+using WireMock.Util;
 
 namespace WireMock.Http;
 
@@ -33,12 +34,14 @@ internal static class HttpRequestMessageHelper
             MediaTypeHeaderValue.TryParse(value, out contentType);
         }
 
-        httpRequestMessage.Content = requestMessage.BodyData?.DetectedBodyType switch
+        var bodyData = requestMessage.BodyData;
+        httpRequestMessage.Content = bodyData?.GetBodyType() switch
         {
-            BodyType.Bytes => ByteArrayContentHelper.Create(requestMessage.BodyData.BodyAsBytes!, contentType),
-            BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(requestMessage.BodyData.BodyAsJson), contentType),
-            BodyType.String => StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType),
-            BodyType.FormUrlEncoded => StringContentHelper.Create(requestMessage.BodyData.BodyAsString!, contentType),
+            BodyType.Bytes => ByteArrayContentHelper.Create(bodyData!.BodyAsBytes!, contentType),
+            BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(bodyData!.BodyAsJson), contentType),
+            BodyType.String => StringContentHelper.Create(bodyData!.BodyAsString!, contentType),
+            BodyType.FormUrlEncoded => StringContentHelper.Create(bodyData!.BodyAsString!, contentType),
+
             _ => httpRequestMessage.Content
         };
 
