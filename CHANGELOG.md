@@ -1,3 +1,7 @@
+# 1.6.3 (07 September 2024)
+- [#1165](https://github.com/WireMock-Net/WireMock.Net/pull/1165) - Fix listen on AnyIP for url 0.0.0.0 contributed by [cocoon](https://github.com/cocoon)
+- [#1154](https://github.com/WireMock-Net/WireMock.Net/issues/1154) - Listen on all ips [bug]
+
 # 1.6.2 (04 September 2024)
 - [#1152](https://github.com/WireMock-Net/WireMock.Net/pull/1152) - Update MappingConverter to correctly write the Matcher as C# code [bug] contributed by [StefH](https://github.com/StefH)
 - [#1163](https://github.com/WireMock-Net/WireMock.Net/pull/1163) - Upgrade Aspire to version 8.2.0 [feature] contributed by [StefH](https://github.com/StefH)

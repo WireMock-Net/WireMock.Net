@@ -50,6 +50,26 @@ public class HttpRequestMessageHelperTests
     }
 
     [Fact]
+    public async Task HttpRequestMessageHelper_Create_TextPlain()
+    {
+        // Assign
+        var body = new BodyData
+        {
+            BodyAsString = "0123", // or 83 in decimal
+            BodyAsJson = 83,
+            DetectedBodyType = BodyType.Json,
+            DetectedBodyTypeFromContentType = BodyType.String
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
+
+        // Act
+        var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+        // Assert
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals("0123");
+    }
+
+    [Fact]
     public async Task HttpRequestMessageHelper_Create_Json()
     {
         // Assign
@@ -64,7 +84,7 @@ public class HttpRequestMessageHelperTests
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
     }
 
     [Fact]

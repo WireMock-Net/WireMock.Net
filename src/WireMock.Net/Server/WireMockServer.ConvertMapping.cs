@@ -36,17 +36,13 @@ public partial class WireMockServer
         }
     }
 
-    private Guid? ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
+    private Guid ConvertMappingAndRegisterAsRespondProvider(MappingModel mappingModel, Guid? guid = null, string? path = null)
     {
         Guard.NotNull(mappingModel);
         Guard.NotNull(mappingModel.Request);
         Guard.NotNull(mappingModel.Response);
 
-        var requestBuilder = InitRequestBuilder(mappingModel.Request, true);
-        if (requestBuilder == null)
-        {
-            return null;
-        }
+        var requestBuilder = InitRequestBuilder(mappingModel.Request);
 
         var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
 
@@ -126,9 +122,9 @@ public partial class WireMockServer
         return respondProvider.Guid;
     }
 
-    private IRequestBuilder? InitRequestBuilder(RequestModel requestModel, bool pathOrUrlRequired)
+    private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
     {
-        IRequestBuilder requestBuilder = Request.Create();
+        var requestBuilder = Request.Create();
 
         if (requestModel.ClientIP != null)
         {
@@ -146,13 +142,11 @@ public partial class WireMockServer
             }
         }
 
-        bool pathOrUrlMatchersValid = false;
         if (requestModel.Path != null)
         {
             if (requestModel.Path is string path)
             {
                 requestBuilder = requestBuilder.WithPath(path);
-                pathOrUrlMatchersValid = true;
             }
             else
             {
@@ -161,7 +155,6 @@ public partial class WireMockServer
                 {
                     var matchOperator = StringUtils.ParseMatchOperator(pathModel.MatchOperator);
                     requestBuilder = requestBuilder.WithPath(matchOperator, pathModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                    pathOrUrlMatchersValid = true;
                 }
             }
         }
@@ -170,7 +163,6 @@ public partial class WireMockServer
             if (requestModel.Url is string url)
             {
                 requestBuilder = requestBuilder.WithUrl(url);
-                pathOrUrlMatchersValid = true;
             }
             else
             {
@@ -179,15 +171,8 @@ public partial class WireMockServer
                 {
                     var matchOperator = StringUtils.ParseMatchOperator(urlModel.MatchOperator);
                     requestBuilder = requestBuilder.WithUrl(matchOperator, urlModel.Matchers.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
-                    pathOrUrlMatchersValid = true;
                 }
             }
-        }
-
-        if (pathOrUrlRequired && !pathOrUrlMatchersValid)
-        {
-            _settings.Logger.Error("Path or Url matcher is missing for this mapping, this mapping will not be added.");
-            return null;
         }
 
         if (requestModel.Methods != null)
@@ -233,7 +218,7 @@ public partial class WireMockServer
         {
             foreach (var paramModel in requestModel.Params.Where(p => p is { Matchers: { } }))
             {
-                bool ignoreCase = paramModel.IgnoreCase == true;
+                var ignoreCase = paramModel.IgnoreCase == true;
                 requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
             }
         }
@@ -253,7 +238,7 @@ public partial class WireMockServer
 
     private static IResponseBuilder InitResponseBuilder(ResponseModel responseModel)
     {
-        IResponseBuilder responseBuilder = Response.Create();
+        var responseBuilder = Response.Create();
 
         if (responseModel.Delay > 0)
         {
