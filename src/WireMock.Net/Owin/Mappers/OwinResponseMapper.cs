@@ -19,7 +19,6 @@ using WireMock.Util;
 
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 #else
 using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -143,24 +142,24 @@ namespace WireMock.Owin.Mappers
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
-                    return (bodyData!.Encoding ?? _utf8NoBom).GetBytes(bodyData.BodyAsString!);
+                    return (bodyData.Encoding ?? _utf8NoBom).GetBytes(bodyData.BodyAsString!);
 
                 case BodyType.Json:
-                    var formatting = bodyData!.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
+                    var formatting = bodyData.BodyAsJsonIndented == true ? Formatting.Indented : Formatting.None;
                     var jsonBody = JsonConvert.SerializeObject(bodyData.BodyAsJson, new JsonSerializerSettings { Formatting = formatting, NullValueHandling = NullValueHandling.Ignore });
                     return (bodyData.Encoding ?? _utf8NoBom).GetBytes(jsonBody);
 
 #if PROTOBUF
                 case BodyType.ProtoBuf:
-                    var protoDefinition = bodyData!.ProtoDefinition?.Invoke().Text;
-                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, bodyData!.ProtoBufMessageType, bodyData!.BodyAsJson).ConfigureAwait(false);
+                    var protoDefinition = bodyData.ProtoDefinition?.Invoke().Text;
+                    return await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(protoDefinition, bodyData.ProtoBufMessageType, bodyData.BodyAsJson).ConfigureAwait(false);
 #endif
 
                 case BodyType.Bytes:
-                    return bodyData!.BodyAsBytes;
+                    return bodyData.BodyAsBytes;
 
                 case BodyType.File:
-                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(bodyData!.BodyAsFile!);
+                    return _options.FileSystemHandler?.ReadResponseBodyAsFile(bodyData.BodyAsFile!);
 
                 case BodyType.MultiPart:
                     _options.Logger.Warn("MultiPart body type is not handled!");
@@ -179,10 +178,7 @@ namespace WireMock.Owin.Mappers
             AppendResponseHeader(
                 response,
                 HttpKnownHeaderNames.Date,
-                new[]
-                {
-                    DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture)
-                }
+                [ DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture) ]
             );
 
             // Set other headers

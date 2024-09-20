@@ -1,5 +1,6 @@
-﻿#if NET8_0_OR_GREATER
+// Copyright © WireMock.Net
 
+#if NET8_0_OR_GREATER
 using System;
 using System.IO;
 using System.Linq;
@@ -36,7 +37,8 @@ public sealed class ResponseWithProxyIntegrationTests(ITestOutputHelper output)
         var port = server.GetPort();
         output.WriteLine($"Server running on port {port}");
 
-        var settings = new WireMockServerSettings {
+        var settings = new WireMockServerSettings
+        {
             Port = 0,
             Logger = new TestOutputHelperWireMockLogger(output)
         };
@@ -45,7 +47,7 @@ public sealed class ResponseWithProxyIntegrationTests(ITestOutputHelper output)
                   .RespondWith(Response.Create().WithProxy($"http://localhost:{port}"));
 
         using var client = new HttpClient { BaseAddress = new Uri(mockServer.Urls[0]) };
-        using var content = new ByteArrayContent(Encoding.UTF8.GetBytes("0123"));
+        using var content = new ByteArrayContent("0123"u8.ToArray());
         content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
         // When
@@ -65,15 +67,17 @@ public sealed class ResponseWithProxyIntegrationTests(ITestOutputHelper output)
 
     sealed class TestServer(WebApplication app) : IDisposable
     {
-        Disposable disposable = new(() => { });
+        private Disposable _disposable = new(() => { });
 
-        public static TestServer New() {
+        public static TestServer New()
+        {
             var builder = WebApplication.CreateBuilder();
             builder.WebHost.ConfigureKestrel(opts => opts.ListenAnyIP(0));
 
             var app = builder.Build();
 
-            app.MapPatch("/zipcode", async (HttpRequest req) => {
+            app.MapPatch("/zipcode", async (HttpRequest req) =>
+            {
                 var memory = new MemoryStream();
                 await req.Body.CopyToAsync(memory);
                 var content = Encoding.UTF8.GetString(memory.ToArray());
@@ -87,20 +91,21 @@ public sealed class ResponseWithProxyIntegrationTests(ITestOutputHelper output)
                   .Select(x => new Uri(x).Port)
                   .First();
 
-        public async ValueTask<TestServer> Run() {
+        public async ValueTask<TestServer> Run()
+        {
             var started = new TaskCompletionSource();
             var host = app.Services.GetRequiredService<IHostApplicationLifetime>();
             host.ApplicationStarted.Register(() => started.SetResult());
             _ = Task.Run(() => app.RunAsync());
             await started.Task;
-            disposable = new(() => host.StopApplication());
+            _disposable = new(() => host.StopApplication());
             return this;
         }
 
-        public void Dispose() {
-            disposable.Dispose();
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }
-
 #endif
