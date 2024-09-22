@@ -7,7 +7,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace WireMock.Net.Aspire.TUnitTests;
+namespace WireMock.Net.TUnitTests;
 
 // ReSharper disable once InconsistentNaming
 public class TUnitTests

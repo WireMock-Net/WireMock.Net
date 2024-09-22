@@ -73,8 +73,6 @@ public sealed class TestOutputHelperWireMockLogger : IWireMockLogger
 
     private static string Format(string level, string formatString, params object[] args)
     {
-        Guard.NotNull(formatString);
-
         var message = args.Length > 0 ? string.Format(formatString, args) : formatString;
         return $"{DateTime.UtcNow} [{level}] : {message}";
     }

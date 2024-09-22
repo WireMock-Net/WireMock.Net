@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Some extensions for TUnit (ITestOutputHelper)</Description>
+        <Description>Some extensions for TUnit (TUnitLogger)</Description>
         <AssemblyTitle>WireMock.Net.TUnit</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net8.0</TargetFrameworks>
