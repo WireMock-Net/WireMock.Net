@@ -1,6 +1,5 @@
 // Copyright © WireMock.Net
 
-using WireMock.Logging;
 using WireMock.Net.TUnit;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -12,14 +11,6 @@ namespace WireMock.Net.TUnitTests;
 // ReSharper disable once InconsistentNaming
 public class TUnitTests
 {
-    private IWireMockLogger _logger = null!;
-
-    [Before(Test)]
-    public void BeforeTest(TestContext context)
-    {
-        _logger = new TUnitWireMockLogger(context.GetDefaultLogger());
-    }
-
     [Test]
     public async Task Test_TUnitWireMockLogger()
     {
@@ -28,7 +19,7 @@ public class TUnitTests
 
         using var server = WireMockServer.Start(new WireMockServerSettings
         {
-            Logger = _logger
+            Logger = new TUnitWireMockLogger(TestContext.Current!.GetDefaultLogger())
         });
 
         server
@@ -38,7 +29,7 @@ public class TUnitTests
             .RespondWith(Response.Create().WithBody("TUnit"));
 
         // Act
-        var response = await new HttpClient().GetStringAsync($"{server.Url}{path}").ConfigureAwait(false);
+        var response = await server.CreateClient().GetStringAsync($"{server.Url}{path}");
 
         // Assert
         await Assert.That(response).IsEqualTo("TUnit");
