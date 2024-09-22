@@ -131,6 +131,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Aspire.TestApp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspireApp1.AppHostOriginal", "examples-Aspire\AspireApp1.AppHostOriginal\AspireApp1.AppHostOriginal.csproj", "{C9210DA3-F390-4598-8512-349A473FE9C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.TUnit", "src\WireMock.Net.TUnit\WireMock.Net.TUnit.csproj", "{91024A93-848F-4A02-AF53-5EBE5834E23C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Aspire.TUnitTests", "test\WireMock.Net.Aspire.TUnitTests\WireMock.Net.Aspire.TUnitTests.csproj", "{FE7EEA55-2292-49C2-849E-D0750D16AF75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -317,6 +321,14 @@ Global
 		{C9210DA3-F390-4598-8512-349A473FE9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9210DA3-F390-4598-8512-349A473FE9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9210DA3-F390-4598-8512-349A473FE9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91024A93-848F-4A02-AF53-5EBE5834E23C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91024A93-848F-4A02-AF53-5EBE5834E23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91024A93-848F-4A02-AF53-5EBE5834E23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91024A93-848F-4A02-AF53-5EBE5834E23C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE7EEA55-2292-49C2-849E-D0750D16AF75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE7EEA55-2292-49C2-849E-D0750D16AF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE7EEA55-2292-49C2-849E-D0750D16AF75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE7EEA55-2292-49C2-849E-D0750D16AF75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -369,6 +381,8 @@ Global
 		{CE602F57-FEF8-4559-A9E0-6200BE1BF398} = {0BB8B634-407A-4610-A91F-11586990767A}
 		{F1B5999D-D22E-48A6-AB86-18A7876BD32E} = {0BB8B634-407A-4610-A91F-11586990767A}
 		{C9210DA3-F390-4598-8512-349A473FE9C9} = {AD474543-0715-49F2-A284-936B060BF736}
+		{91024A93-848F-4A02-AF53-5EBE5834E23C} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
+		{FE7EEA55-2292-49C2-849E-D0750D16AF75} = {0BB8B634-407A-4610-A91F-11586990767A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}

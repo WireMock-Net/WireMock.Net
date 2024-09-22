@@ -52,13 +52,14 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-1.xml"
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-xunit.xml"
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-tunit.xml"
       displayName: 'Execute WireMock.Net.Tests with Coverage'
 
   - task: CmdLine@2
     inputs:
       script: |
-          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj --configuration Debug --no-build" -f xml -o "wiremock-coverage-2.xml"
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj --configuration Debug --no-build" -f xml -o "wiremock-coverage-aspire.xml"
     displayName: 'Execute WireMock.Net.Aspire.Tests with Coverage'
 
   - task: CmdLine@2
