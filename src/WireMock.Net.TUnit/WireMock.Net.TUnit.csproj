@@ -29,7 +29,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
         <PackageReference Include="Brutal.Dev.StrongNameSigner" Version="3.5.0" />
-        <PackageReference Include="TUnit.Core" Version="0.1.807" />
+        <PackageReference Include="TUnit.Core" Version="0.1.812" />
     </ItemGroup>
 
     <ItemGroup>
