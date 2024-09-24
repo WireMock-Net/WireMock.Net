@@ -61,7 +61,7 @@ jobs:
     inputs:
       script: |
           dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-xunit.xml"
-          dotnet test ./test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj --configuration Debug --no-build --framework net8.0
+          dotnet test ./test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj --configuration Debug --no-build --framework net8.0 -- --diagnostic
           find . -path "*/TestResults/*.log" -exec cat {} +
           find . -path "*/TestResults/*.diag" -exec cat {} +
     displayName: 'Execute WireMock.Net.Tests with Coverage'
