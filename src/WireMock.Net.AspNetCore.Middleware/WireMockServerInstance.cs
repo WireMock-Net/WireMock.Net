@@ -8,7 +8,7 @@ namespace WireMock.Net.AspNetCore.Middleware;
 /// <summary>
 /// WireMockServer Instance object
 /// </summary>
-public class WireMockServerInstance
+internal class WireMockServerInstance
 {
     private readonly Action<WireMockServer> _configureAction;
     private readonly WireMockServerSettings? _settings;
@@ -43,9 +43,6 @@ public class WireMockServerInstance
     /// </summary>
     public void Stop()
     {
-        if (Instance != null && (Instance.IsStarted || Instance.IsStartedWithAdminInterface))
-        {
-            Instance.Stop();
-        }
+        Instance?.Stop();
     }
 }

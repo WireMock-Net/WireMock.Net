@@ -29,16 +29,9 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<WireMockDelegationHandler>();
 
-        if (settings is null)
-        {
-            services.AddSingleton(new WireMockServerInstance(configure));
-        }
-        else
-        {
-            services.AddSingleton(new WireMockServerInstance(configure, settings));
-        }
+        services.AddSingleton(new WireMockServerInstance(configure, settings));
 
-        services.AddSingleton<IWireMockDelegationHandlerSettings>(new WireMockDelegationHandlerSettings
+        services.AddSingleton(new WireMockDelegationHandlerSettings
         {
             AlwaysRedirect = alwaysRedirectToWireMock
         });

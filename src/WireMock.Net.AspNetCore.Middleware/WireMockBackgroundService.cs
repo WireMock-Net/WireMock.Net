@@ -7,33 +7,33 @@ using WireMock.Server;
 namespace WireMock.Net.AspNetCore.Middleware;
 
 /// <summary>
-/// <see cref="BackgroundService"/> used to start/stop the <see cref="WireMockServer"/>
+/// A <see cref="BackgroundService"/> used to start/stop the <see cref="WireMockServer"/>
 /// </summary>
-public class WireMockBackgroundService : BackgroundService
+internal class WireMockBackgroundService : BackgroundService
 {
-    private readonly WireMockServerInstance _server;
+    private readonly WireMockServerInstance _serverInstance;
 
     /// <summary>
     /// Creates a new <see cref="BackgroundService"/> using an instance
     /// of <see cref="WireMockServerInstance"/>
     /// </summary>
-    /// <param name="server"></param>
-    public WireMockBackgroundService(WireMockServerInstance server)
+    /// <param name="serverInstance"></param>
+    public WireMockBackgroundService(WireMockServerInstance serverInstance)
     {
-        _server = Guard.NotNull(server);
+        _serverInstance = Guard.NotNull(serverInstance);
     }
 
     /// <inheritdoc />
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _server.Start();
+        _serverInstance.Start();
         return Task.CompletedTask;
     }
 
     /// <inheritdoc />
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _server.Stop();
+        _serverInstance.Stop();
         return base.StopAsync(cancellationToken);
     }
 }

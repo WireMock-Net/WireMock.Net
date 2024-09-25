@@ -1,3 +1,15 @@
+# 1.6.4 (25 September 2024)
+- [#1169](https://github.com/WireMock-Net/WireMock.Net/pull/1169) - Allow mapping without Path or Url [bug] contributed by [StefH](https://github.com/StefH)
+- [#1170](https://github.com/WireMock-Net/WireMock.Net/pull/1170) - Update the .NET Aspire tests [feature] contributed by [StefH](https://github.com/StefH)
+- [#1172](https://github.com/WireMock-Net/WireMock.Net/pull/1172) - Fix JSON parsing of text/plain content type [bug] contributed by [ruxo](https://github.com/ruxo)
+- [#1177](https://github.com/WireMock-Net/WireMock.Net/pull/1177) - Unpin Testcontainers version and upgrade to version 3.10.0 [bug] contributed by [StefH](https://github.com/StefH)
+- [#1178](https://github.com/WireMock-Net/WireMock.Net/pull/1178) - Upgrade CS-Script to version 4.8.17 [feature] contributed by [StefH](https://github.com/StefH)
+- [#1179](https://github.com/WireMock-Net/WireMock.Net/pull/1179) - Add WireMock.Net.TUnit project [feature] contributed by [StefH](https://github.com/StefH)
+- [#1146](https://github.com/WireMock-Net/WireMock.Net/issues/1146) - Bump Request CS-Script 4.8.13 to 4.8.17 [feature]
+- [#1167](https://github.com/WireMock-Net/WireMock.Net/issues/1167) - Admin API fails to create a mapping with Request Header matching using WildCardMatcher [bug]
+- [#1168](https://github.com/WireMock-Net/WireMock.Net/issues/1168) - Numbers in text/plain content is parsed as JSON. [bug]
+- [#1176](https://github.com/WireMock-Net/WireMock.Net/issues/1176) - WireMock.NET TestContainer Dependency Constraint Issue [bug]
+
 # 1.6.3 (07 September 2024)
 - [#1165](https://github.com/WireMock-Net/WireMock.Net/pull/1165) - Fix listen on AnyIP for url 0.0.0.0 contributed by [cocoon](https://github.com/cocoon)
 - [#1154](https://github.com/WireMock-Net/WireMock.Net/issues/1154) - Listen on all ips [bug]

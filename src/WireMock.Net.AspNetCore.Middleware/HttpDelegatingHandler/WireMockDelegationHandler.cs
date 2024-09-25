@@ -14,7 +14,7 @@ internal class WireMockDelegationHandler : DelegatingHandler
     private readonly ILogger<WireMockDelegationHandler> _logger;
     private readonly WireMockServerInstance _server;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IWireMockDelegationHandlerSettings _settings;
+    private readonly WireMockDelegationHandlerSettings _settings;
 
     /// <summary>
     /// Creates a new instance of <see cref="WireMockDelegationHandler"/>
@@ -23,7 +23,7 @@ internal class WireMockDelegationHandler : DelegatingHandler
         ILogger<WireMockDelegationHandler> logger,
         WireMockServerInstance server,
         IHttpContextAccessor httpContextAccessor,
-        IWireMockDelegationHandlerSettings settings
+        WireMockDelegationHandlerSettings settings
     )
     {
         _server = Guard.NotNull(server);
@@ -59,7 +59,7 @@ internal class WireMockDelegationHandler : DelegatingHandler
     private bool IsWireMockStatusHeaderSetToTrue()
     {
         return
-            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_WIREMOCK_STATUS, out var values) &&
+            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_STATUS, out var values) &&
             bool.TryParse(values.ToString(), out var shouldRedirectToWireMock) &&
             shouldRedirectToWireMock;
     }
