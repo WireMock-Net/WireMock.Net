@@ -3,62 +3,63 @@
 using System;
 using Newtonsoft.Json;
 using Stef.Validation;
+using TUnit.Core.Logging;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
-using Xunit.Abstractions;
 
-namespace WireMock.Net.Xunit;
+namespace WireMock.Net.TUnit;
 
 /// <summary>
-/// When using xUnit, this class enables to log the output from WireMock.Net to the <see cref="ITestOutputHelper"/>.
+/// When using TUnit, this class enables to log the output from WireMock.Net to the <see cref="TUnitLogger"/>.
 /// </summary>
-public sealed class TestOutputHelperWireMockLogger : IWireMockLogger
+// ReSharper disable once InconsistentNaming
+public sealed class TUnitWireMockLogger : IWireMockLogger
 {
-    private readonly ITestOutputHelper _testOutputHelper;
+    private readonly TUnitLogger _tUnitLogger;
 
     /// <summary>
-    /// Create a new instance on the <see cref="TestOutputHelperWireMockLogger"/>.
+    /// Create a new instance on the <see cref="TUnitWireMockLogger"/>.
     /// </summary>
-    /// <param name="testOutputHelper">Represents a class which can be used to provide test output.</param>
-    public TestOutputHelperWireMockLogger(ITestOutputHelper testOutputHelper)
+    /// <param name="tUnitLogger">Represents a class which can be used to provide test output.</param>
+    public TUnitWireMockLogger(TUnitLogger tUnitLogger)
     {
-        _testOutputHelper = Guard.NotNull(testOutputHelper);
+        _tUnitLogger = Guard.NotNull(tUnitLogger);
     }
 
     /// <inheritdoc />
     public void Debug(string formatString, params object[] args)
     {
-        _testOutputHelper.WriteLine(Format("Debug", formatString, args));
+        _tUnitLogger.LogDebug(Format("Debug", formatString, args));
     }
 
     /// <inheritdoc />
     public void Info(string formatString, params object[] args)
     {
-        _testOutputHelper.WriteLine(Format("Info", formatString, args));
+        _tUnitLogger.LogInformation(Format("Info", formatString, args));
     }
 
     /// <inheritdoc />
     public void Warn(string formatString, params object[] args)
     {
-        _testOutputHelper.WriteLine(Format("Warning", formatString, args));
+        _tUnitLogger.LogWarning(Format("Warning", formatString, args));
     }
 
     /// <inheritdoc />
     public void Error(string formatString, params object[] args)
     {
-        _testOutputHelper.WriteLine(Format("Error", formatString, args));
+        _tUnitLogger.LogError(Format("Error", formatString, args));
     }
 
     /// <inheritdoc />
     public void Error(string formatString, Exception exception)
     {
-        _testOutputHelper.WriteLine(Format("Error", formatString, exception.Message));
+        _tUnitLogger.LogError(Format("Error", formatString, exception.Message), exception);
 
         if (exception is AggregateException ae)
         {
             ae.Handle(ex =>
             {
-                _testOutputHelper.WriteLine(Format("Error", "Exception {0}", ex.Message));
+                _tUnitLogger.LogError(Format("Error", "Exception {0}", ex.Message), exception);
                 return true;
             });
         }
@@ -68,7 +69,7 @@ public sealed class TestOutputHelperWireMockLogger : IWireMockLogger
     public void DebugRequestResponse(LogEntryModel logEntryModel, bool isAdminRequest)
     {
         var message = JsonConvert.SerializeObject(logEntryModel, Formatting.Indented);
-        _testOutputHelper.WriteLine(Format("DebugRequestResponse", "Admin[{0}] {1}", isAdminRequest, message));
+        _tUnitLogger.LogDebug(Format("DebugRequestResponse", "Admin[{0}] {1}", isAdminRequest, message));
     }
 
     private static string Format(string level, string formatString, params object[] args)

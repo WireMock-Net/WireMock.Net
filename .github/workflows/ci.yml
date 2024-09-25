@@ -20,7 +20,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: 'Execute Tests'
-      run: dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0    
+      run: |
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+        dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
 
   linux-build-and-run:
     name: Run Tests on Linux
@@ -33,7 +35,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: 'Execute Tests'
-      run: dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+      run: |
+        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+        dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
 
     - name: Install .NET Aspire workload
       run: dotnet workload install aspire
