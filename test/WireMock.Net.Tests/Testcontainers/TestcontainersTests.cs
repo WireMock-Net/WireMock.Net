@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Renci.SshNet;
 using WireMock.Net.Testcontainers;
 using Xunit;
 
