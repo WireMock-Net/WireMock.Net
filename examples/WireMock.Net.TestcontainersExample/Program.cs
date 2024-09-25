@@ -1,7 +1,6 @@
 // Copyright © WireMock.Net
 
 using Newtonsoft.Json;
-using Testcontainers.MsSql;
 using WireMock.Net.Testcontainers;
 
 namespace WireMock.Net.TestcontainersExample;
@@ -36,10 +35,5 @@ internal class Program
         Console.WriteLine("result = " + result);
 
         await container.StopAsync();
-
-        var sql = new MsSqlBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
-            .Build();
     }
 }

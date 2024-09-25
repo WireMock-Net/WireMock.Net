@@ -19,8 +19,8 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 {
     private readonly Dictionary<bool, ContainerInfo> _info = new()
     {
-        { false, new ContainerInfo("sheyenrath/wiremock.net:latest", "/app/__admin/mappings") },
-        { true, new ContainerInfo("sheyenrath/wiremock.net-windows:latest", @"c:\app\__admin\mappings") }
+        { false, new ContainerInfo("sheyenrath/wiremock.net-alpine", "/app/__admin/mappings") },
+        { true, new ContainerInfo("sheyenrath/wiremock.net-windows", @"c:\app\__admin\mappings") }
     };
 
     private const string DefaultLogger = "WireMockConsoleLogger";
@@ -48,7 +48,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
-    /// Automatically set the correct image (Linux or Windows) for WireMock which to create the container.
+    /// Automatically set the correct image for WireMock which to create the container.
+    /// For Linux this is "sheyenrath/wiremock.net-alpine:latest"
+    /// For Windows this is "sheyenrath/wiremock.net-windows:latest"
     /// </summary>
     /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
