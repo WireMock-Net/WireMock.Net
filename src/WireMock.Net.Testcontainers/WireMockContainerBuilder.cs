@@ -3,10 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
+using DotNet.Testcontainers.Images;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Net.Testcontainers.Models;
@@ -159,31 +161,23 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <inheritdoc />
     public override WireMockContainer Build()
     {
-        Validate();
-
-        return new WireMockContainer(DockerResourceConfiguration);
-    }
-
-    /// <inheritdoc />
-    protected override WireMockContainerBuilder Init()
-    {
-        var builder = base.Init();
+        var builder = this;
 
         // In case no image has been set, set the image using internal logic.
-        if (builder.DockerResourceConfiguration.Image == null)
+        if (DockerResourceConfiguration.Image == null)
         {
-            builder = builder.WithImage();
+            builder = WithImage();
         }
 
         // In case the _imageOS is not set, determine it from the Image FullName.
         if (_imageOS == null)
         {
-            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
+            if (builder.DockerResourceConfiguration.Image!.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 throw new InvalidOperationException();
             }
 
-            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (builder.DockerResourceConfiguration.Image!.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 _imageOS = OSPlatform.Windows;
             }
@@ -193,20 +187,28 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             }
         }
 
-        var waitForContainerOS = _imageOS == OSPlatform.Windows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
-        builder
-            .WithPortBinding(WireMockContainer.ContainerPort, true)
-            .WithCommand($"--WireMockLogger {DefaultLogger}")
-            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
-
         if (!string.IsNullOrEmpty(_staticMappingsPath))
         {
             builder = builder.WithBindMount(_staticMappingsPath, _info[_imageOS.Value].MappingsPath);
         }
 
-        return builder;
+        builder.Validate();
+
+        return new WireMockContainer(builder.DockerResourceConfiguration);
     }
 
+    /// <inheritdoc />
+    protected override WireMockContainerBuilder Init()
+    {
+        var builder = base.Init();
+
+        var waitForContainerOS = _imageOS == OSPlatform.Windows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
+        return builder
+            .WithPortBinding(WireMockContainer.ContainerPort, true)
+            .WithCommand($"--WireMockLogger {DefaultLogger}")
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+    }
+    
     /// <inheritdoc />
     protected override WireMockContainerBuilder Clone(IContainerConfiguration resourceConfiguration)
     {
