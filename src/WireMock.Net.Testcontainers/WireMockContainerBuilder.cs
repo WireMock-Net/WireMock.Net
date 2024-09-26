@@ -40,6 +40,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     });
 
     private OSPlatform? _imageOS;
+    private string? _staticMappingsPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
@@ -142,13 +143,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithMappings(string path, bool includeSubDirectories = false)
     {
-        Guard.NotNullOrEmpty(path);
+        _staticMappingsPath = Guard.NotNullOrEmpty(path);
 
-        _imageOS ??= _getOSAsLazy.Value.GetAwaiter().GetResult();
-
-        return WithReadStaticMappings()
-            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}")
-            .WithBindMount(path, _info[_imageOS.Value].MappingsPath);
+        return WithReadStaticMappings().WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
@@ -178,11 +175,36 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             builder = builder.WithImage();
         }
 
-        var waitForContainerOS = _imageOS is null || _imageOS == OSPlatform.Windows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
-        return builder
+        // In case the _imageOS is not set, determine it from the Image FullName.
+        if (_imageOS == null)
+        {
+            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                _imageOS = OSPlatform.Windows;
+            }
+            else
+            {
+                _imageOS = OSPlatform.Linux;
+            }
+        }
+
+        var waitForContainerOS = _imageOS == OSPlatform.Windows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
+        builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
             .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+
+        if (!string.IsNullOrEmpty(_staticMappingsPath))
+        {
+            builder = builder.WithBindMount(_staticMappingsPath, _info[_imageOS.Value].MappingsPath);
+        }
+
+        return builder;
     }
 
     /// <inheritdoc />
