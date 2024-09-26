@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -10,7 +11,7 @@ internal class Program
     private static async Task Main(string[] args)
     {
         var original = Console.ForegroundColor;
-        
+
         try
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -107,10 +108,18 @@ internal class Program
     {
         var builder = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
-            // .WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings")
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
             .WithCleanUp(true);
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            builder = builder.WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings");
+        }
+        else
+        {
+            builder = builder.WithMappings("./examples/WireMock.Net.Console.NET6/__admin/mappings");
+        }
 
         if (image != null)
         {
