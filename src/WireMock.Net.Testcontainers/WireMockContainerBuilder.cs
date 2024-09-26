@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Images;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Net.Testcontainers.Models;
@@ -38,7 +36,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         using var dockerClient = dockerClientConfig.CreateClient();
 
         var version = await dockerClient.System.GetVersionAsync();
-        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) > -1 ? OSPlatform.Windows : OSPlatform.Linux;
+        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
     });
 
     private OSPlatform? _imageOS;
@@ -172,19 +170,12 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         // In case the _imageOS is not set, determine it from the Image FullName.
         if (_imageOS == null)
         {
-            if (builder.DockerResourceConfiguration.Image!.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
+            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 throw new InvalidOperationException();
             }
 
-            if (builder.DockerResourceConfiguration.Image!.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                _imageOS = OSPlatform.Windows;
-            }
-            else
-            {
-                _imageOS = OSPlatform.Linux;
-            }
+            _imageOS = builder.DockerResourceConfiguration.Image.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
         }
 
         if (!string.IsNullOrEmpty(_staticMappingsPath))
@@ -208,7 +199,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             .WithCommand($"--WireMockLogger {DefaultLogger}")
             .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
     }
-    
+
     /// <inheritdoc />
     protected override WireMockContainerBuilder Clone(IContainerConfiguration resourceConfiguration)
     {
