@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using Stef.Validation;
 using WireMock.Server;
 using WireMock.Settings;
 
@@ -19,7 +20,7 @@ internal class WireMockServerInstance
     /// </summary>
     public WireMockServerInstance(Action<WireMockServer> configure, WireMockServerSettings? settings = null)
     {
-        _configureAction = configure;
+        _configureAction = Guard.NotNull(configure);
         _settings = settings;
     }
 

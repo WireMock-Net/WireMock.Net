@@ -33,7 +33,6 @@ internal class WireMockDelegationHandler : DelegatingHandler
     }
 
     /// <inheritdoc />
-    /// <exception cref="ArgumentNullException"></exception>
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Guard.NotNull(request);
@@ -60,8 +59,7 @@ internal class WireMockDelegationHandler : DelegatingHandler
     {
         return
             _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_REDIRECT, out var values) &&
-            bool.TryParse(values.ToString(), out var shouldRedirectToWireMock) &&
-            shouldRedirectToWireMock;
+            bool.TryParse(values.ToString(), out var shouldRedirectToWireMock) && shouldRedirectToWireMock;
     }
 
     private bool TryGetDelayHeaderValue(out int delayInMs)
