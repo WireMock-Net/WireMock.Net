@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
@@ -17,15 +18,14 @@ namespace WireMock.Net.Testcontainers;
 /// </summary>
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
-    private readonly Dictionary<bool, ContainerInfo> _info = new()
+    private const string DefaultLogger = "WireMockConsoleLogger";
+    private readonly Dictionary<OSPlatform, ContainerInfo> _info = new()
     {
-        { false, new ContainerInfo("sheyenrath/wiremock.net:latest", "/app/__admin/mappings") },
-        { true, new ContainerInfo("sheyenrath/wiremock.net-windows:latest", @"c:\app\__admin\mappings") }
+        { OSPlatform.Linux, new ContainerInfo("sheyenrath/wiremock.net-alpine", "/app/__admin/mappings") },
+        { OSPlatform.Windows, new ContainerInfo("sheyenrath/wiremock.net-windows", @"c:\app\__admin\mappings") }
     };
 
-    private const string DefaultLogger = "WireMockConsoleLogger";
-
-    private readonly Lazy<Task<bool>> _isWindowsAsLazy = new(async () =>
+    private readonly Lazy<Task<OSPlatform>> _getOSAsLazy = new(async () =>
     {
         if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
         {
@@ -36,8 +36,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         using var dockerClient = dockerClientConfig.CreateClient();
 
         var version = await dockerClient.System.GetVersionAsync();
-        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) > -1;
+        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
     });
+
+    private OSPlatform? _imageOS;
+    private string? _staticMappingsPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
@@ -48,14 +51,36 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
-    /// Automatically set the correct image (Linux or Windows) for WireMock which to create the container.
+    /// Automatically use the correct image for WireMock.
+    /// For Linux this is "sheyenrath/wiremock.net-alpine:latest"
+    /// For Windows this is "sheyenrath/wiremock.net-windows:latest"
     /// </summary>
     /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
-        return WithImage(_info[isWindows].Image);
+        _imageOS ??= _getOSAsLazy.Value.GetAwaiter().GetResult();
+        return WithImage(_imageOS.Value);
+    }
+
+    /// <summary>
+    /// Automatically use a Linux image for WireMock. This is "sheyenrath/wiremock.net-alpine:latest"
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithLinuxImage()
+    {
+        return WithImage(OSPlatform.Linux);
+    }
+
+    /// <summary>
+    /// Automatically use a Windows image for WireMock. This is "sheyenrath/wiremock.net-windows:latest"
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithWindowsImage()
+    {
+        return WithImage(OSPlatform.Windows);
     }
 
     /// <summary>
@@ -118,13 +143,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithMappings(string path, bool includeSubDirectories = false)
     {
-        Guard.NotNullOrEmpty(path);
+        _staticMappingsPath = Guard.NotNullOrEmpty(path);
 
-        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
-
-        return WithReadStaticMappings()
-            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}")
-            .WithBindMount(path, _info[isWindows].MappingsPath);
+        return WithReadStaticMappings().WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
@@ -138,9 +159,33 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     /// <inheritdoc />
     public override WireMockContainer Build()
     {
-        Validate();
+        var builder = this;
 
-        return new WireMockContainer(DockerResourceConfiguration);
+        // In case no image has been set, set the image using internal logic.
+        if (DockerResourceConfiguration.Image == null)
+        {
+            builder = WithImage();
+        }
+
+        // In case the _imageOS is not set, determine it from the Image FullName.
+        if (_imageOS == null)
+        {
+            if (builder.DockerResourceConfiguration.Image.FullName.IndexOf("wiremock.net", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            _imageOS = builder.DockerResourceConfiguration.Image.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
+        }
+
+        if (!string.IsNullOrEmpty(_staticMappingsPath))
+        {
+            builder = builder.WithBindMount(_staticMappingsPath, _info[_imageOS.Value].MappingsPath);
+        }
+
+        builder.Validate();
+
+        return new WireMockContainer(builder.DockerResourceConfiguration);
     }
 
     /// <inheritdoc />
@@ -148,14 +193,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         var builder = base.Init();
 
-        // In case no image has been set, set the image using internal logic.
-        if (builder.DockerResourceConfiguration.Image == null)
-        {
-            builder = builder.WithImage();
-        }
-
-        var isWindows = _isWindowsAsLazy.Value.GetAwaiter().GetResult();
-        var waitForContainerOS = isWindows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
+        var waitForContainerOS = _imageOS == OSPlatform.Windows ? Wait.ForWindowsContainer() : Wait.ForUnixContainer();
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
@@ -178,5 +216,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     protected override WireMockContainerBuilder Merge(WireMockConfiguration oldValue, WireMockConfiguration newValue)
     {
         return new WireMockContainerBuilder(new WireMockConfiguration(oldValue, newValue));
+    }
+
+    private WireMockContainerBuilder WithImage(OSPlatform os)
+    {
+        _imageOS = os;
+        return WithImage(_info[os].Image);
     }
 }
