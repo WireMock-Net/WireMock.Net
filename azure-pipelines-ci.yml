@@ -54,6 +54,7 @@ jobs:
       script: |
           dotnet-coverage collect "dotnet test ./test/WireMock.Net.Tests/WireMock.Net.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-xunit.xml"
           dotnet-coverage collect "dotnet test ./test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-tunit.xml"
+          dotnet-coverage collect "dotnet test ./test/WireMock.Net.Middleware.Tests/WireMock.Net.Middleware.Tests.csproj --configuration Debug --no-build --framework net8.0" -f xml -o "wiremock-coverage-middleware.xml"
     displayName: 'Execute WireMock.Net.Tests with Coverage'
 
   - task: CmdLine@2

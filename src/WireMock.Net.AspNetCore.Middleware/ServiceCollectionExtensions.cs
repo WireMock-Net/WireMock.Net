@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddWireMockService(
         this IServiceCollection services,
         Action<WireMockServer> configure,
-        bool alwaysRedirectToWireMock = false,
+        bool alwaysRedirectToWireMock = true,
         WireMockServerSettings? settings = null
     )
     {

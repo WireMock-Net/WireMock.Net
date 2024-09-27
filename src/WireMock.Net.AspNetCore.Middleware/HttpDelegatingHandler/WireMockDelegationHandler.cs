@@ -39,7 +39,7 @@ internal class WireMockDelegationHandler : DelegatingHandler
         Guard.NotNull(request);
         Guard.NotNull(_httpContextAccessor.HttpContext);
 
-        if (_settings.AlwaysRedirect || IsWireMockStatusHeaderSetToTrue())
+        if (_settings.AlwaysRedirect || IsWireMockRedirectHeaderSetToTrue())
         {
             _logger.LogDebug("Redirecting request to WireMock server");
             if (_server.Instance?.Url != null)
@@ -56,10 +56,10 @@ internal class WireMockDelegationHandler : DelegatingHandler
         return await base.SendAsync(request, cancellationToken);
     }
 
-    private bool IsWireMockStatusHeaderSetToTrue()
+    private bool IsWireMockRedirectHeaderSetToTrue()
     {
         return
-            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_STATUS, out var values) &&
+            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_REDIRECT, out var values) &&
             bool.TryParse(values.ToString(), out var shouldRedirectToWireMock) &&
             shouldRedirectToWireMock;
     }
