@@ -36,6 +36,7 @@ public class IntegrationTests
 
         var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
         request.Headers.Add("X-WireMock-Redirect", "true");
+        request.Headers.Add("X-WireMock-Response-Delay", "10");
 
         // Act
         var response = await client.SendAsync(request);
