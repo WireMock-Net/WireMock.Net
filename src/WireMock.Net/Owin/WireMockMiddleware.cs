@@ -126,7 +126,7 @@ namespace WireMock.Owin
                 if (targetMapping == null)
                 {
                     logRequest = true;
-                    _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
+                    _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found", ctx.Request);
                     response = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
                     return;
                 }
