@@ -1,3 +1,8 @@
+# 1.6.5 (28 September 2024)
+- [#1175](https://github.com/WireMock-Net/WireMock.Net/pull/1175) - Add WireMock.Net.AspNetCore.Middleware [feature] contributed by [StefH](https://github.com/StefH)
+- [#1181](https://github.com/WireMock-Net/WireMock.Net/pull/1181) - WireMock.Net.Testcontainers: Use 'sheyenrath/wiremock.net-alpine' image as default for Linux [feature] contributed by [StefH](https://github.com/StefH)
+- [#1182](https://github.com/WireMock-Net/WireMock.Net/pull/1182) - pass in the request when no matching is found to the warn logger [feature] contributed by [JasonLandbridge](https://github.com/JasonLandbridge)
+
 # 1.6.4 (25 September 2024)
 - [#1169](https://github.com/WireMock-Net/WireMock.Net/pull/1169) - Allow mapping without Path or Url [bug] contributed by [StefH](https://github.com/StefH)
 - [#1170](https://github.com/WireMock-Net/WireMock.Net/pull/1170) - Update the .NET Aspire tests [feature] contributed by [StefH](https://github.com/StefH)
@@ -54,9 +59,7 @@
 # 1.5.60 (09 July 2024)
 - [#1128](https://github.com/WireMock-Net/WireMock.Net/pull/1128) - Add Handlebars.Net.Helpers.Xslt [feature] contributed by [StefH](https://github.com/StefH)
 - [#1130](https://github.com/WireMock-Net/WireMock.Net/pull/1130) - Add AdminPath to WireMockServerSettings [feature] contributed by [StefH](https://github.com/StefH)
-- [#1131](https://github.com/WireMock-Net/WireMock.Net/pull/1131) - Add unit tests for AdminApiMappingBuilder [test] contributed by [StefH](https://github.com/StefH)
 - [#1132](https://github.com/WireMock-Net/WireMock.Net/pull/1132) - Multipart Matcher Fix [bug] contributed by [rmeshksar](https://github.com/rmeshksar)
-- [#1133](https://github.com/WireMock-Net/WireMock.Net/pull/1133) - Add unit tests for AdminApiMappingBuilder_ [test] contributed by [StefH](https://github.com/StefH)
 - [#1134](https://github.com/WireMock-Net/WireMock.Net/pull/1134) - Remove some files and folders [refactor] contributed by [StefH](https://github.com/StefH)
 - [#1119](https://github.com/WireMock-Net/WireMock.Net/issues/1119) - Error in RequestMessageMultiPartMatcher [bug]
 - [#1121](https://github.com/WireMock-Net/WireMock.Net/issues/1121) - XML transformation [feature]
@@ -141,7 +144,6 @@
 
 # 1.5.42 (09 December 2023)
 - [#1023](https://github.com/WireMock-Net/WireMock.Net/pull/1023) - Fix Mapping[] for WireMock.Org REST API [bug] contributed by [StefH](https://github.com/StefH)
-- [#1029](https://github.com/WireMock-Net/WireMock.Net/pull/1029) - Add ResponseWithHandlebarsDateTimeTests [test] contributed by [StefH](https://github.com/StefH)
 - [#1031](https://github.com/WireMock-Net/WireMock.Net/pull/1031) - Calling Reset also resets the scenarios [bug] contributed by [StefH](https://github.com/StefH)
 - [#1034](https://github.com/WireMock-Net/WireMock.Net/pull/1034) - Workaround for: Random.Generate Type=&quot;Long&quot; [bug] contributed by [StefH](https://github.com/StefH)
 - [#1021](https://github.com/WireMock-Net/WireMock.Net/issues/1021) - GetAdminMappingsResult in WireMock.Org.Abstractions should contain list of mappings [bug]
@@ -150,12 +152,9 @@
 # 1.5.41 (04 December 2023)
 - [#1012](https://github.com/WireMock-Net/WireMock.Net/pull/1012) - GraphQL - custom scalar support [feature] contributed by [StefH](https://github.com/StefH)
 - [#1018](https://github.com/WireMock-Net/WireMock.Net/pull/1018) - Add .NET 8 [feature] contributed by [StefH](https://github.com/StefH)
-- [#1020](https://github.com/WireMock-Net/WireMock.Net/pull/1020) - Add Github Action [test] contributed by [StefH](https://github.com/StefH)
 - [#984](https://github.com/WireMock-Net/WireMock.Net/issues/984) - GraphQL Schema validation with custom scalars [feature]
 
 # 1.5.40 (07 November 2023)
-- [#1009](https://github.com/WireMock-Net/WireMock.Net/pull/1009) - Add more tests for JmesPathMatchers and StringUtils.ParseMatchOperator [test] contributed by [StefH](https://github.com/StefH)
-- [#1010](https://github.com/WireMock-Net/WireMock.Net/pull/1010) - Add unit tests for HttpClient with WebProxy [test] contributed by [StefH](https://github.com/StefH)
 - [#1011](https://github.com/WireMock-Net/WireMock.Net/pull/1011) - GraphQL - add support for standard scalar types in the schema [feature] contributed by [StefH](https://github.com/StefH)
 - [#1014](https://github.com/WireMock-Net/WireMock.Net/pull/1014) - FluentAssertions - WithBody and WithBodyAsJson and WithBodyAsBytes contributed by [StefH](https://github.com/StefH)
 
@@ -167,7 +166,6 @@
 - [#1005](https://github.com/WireMock-Net/WireMock.Net/pull/1005) - Support for xml namespaces in XPathMatcher [feature] contributed by [cal-schleupen](https://github.com/cal-schleupen)
 
 # 1.5.37 (27 September 2023)
-- [#998](https://github.com/WireMock-Net/WireMock.Net/pull/998) - Add JmesPathMatcher UnitTests [test] contributed by [StefH](https://github.com/StefH)
 - [#1004](https://github.com/WireMock-Net/WireMock.Net/pull/1004) - Fix MappingModel to map IgnoreCase and RejectOnMatch for Headers, Cookies and Parameters [bug] contributed by [StefH](https://github.com/StefH)
 - [#1003](https://github.com/WireMock-Net/WireMock.Net/issues/1003) - Store Mapping per POST request ignores &quot;IgnoreCase&quot; property of HeaderModel [bug]
 
@@ -179,7 +177,6 @@
 - [#1001](https://github.com/WireMock-Net/WireMock.Net/issues/1001) - SaveUnmatchedRequests stopped working [bug]
 
 # 1.5.35 (19 August 2023)
-- [#992](https://github.com/WireMock-Net/WireMock.Net/pull/992) - Add extra unit test for WithParam multiple values comma [test] contributed by [StefH](https://github.com/StefH)
 - [#993](https://github.com/WireMock-Net/WireMock.Net/pull/993) - Update JSONPathMatcher.cs to cover the string path selection to a child contributed by [DayLightDancer](https://github.com/DayLightDancer)
 
 # 1.5.34 (04 August 2023)
@@ -205,7 +202,6 @@
 
 # 1.5.30 (28 June 2023)
 - [#959](https://github.com/WireMock-Net/WireMock.Net/pull/959) - Fixed logic for FluentAssertions WithHeader [bug] contributed by [StefH](https://github.com/StefH)
-- [#961](https://github.com/WireMock-Net/WireMock.Net/pull/961) - Add unit-test for Param MatcherModel LinqMatcher [test] contributed by [StefH](https://github.com/StefH)
 - [#962](https://github.com/WireMock-Net/WireMock.Net/pull/962) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#963](https://github.com/WireMock-Net/WireMock.Net/pull/963) - Bump System.Linq.Dynamic.Core from 1.2.23 to 1.3.0 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
 - [#958](https://github.com/WireMock-Net/WireMock.Net/issues/958) - [FluentAssertions] Should().HaveReceivedACall().WithHeader() only checks the first header with the matching key. [bug]
@@ -226,7 +222,6 @@
 - [#945](https://github.com/WireMock-Net/WireMock.Net/issues/945) - Webhook logging [feature]
 
 # 1.5.26 (25 May 2023)
-- [#938](https://github.com/WireMock-Net/WireMock.Net/pull/938) - Add more unitests for CSharpFormatter utils [test] contributed by [StefH](https://github.com/StefH)
 - [#939](https://github.com/WireMock-Net/WireMock.Net/pull/939) - WireMockMiddleware should use HandleRequestsSynchronously correctly [bug] contributed by [StefH](https://github.com/StefH)
 - [#940](https://github.com/WireMock-Net/WireMock.Net/pull/940) - Code generator improvements contributed by [cezarypiatek](https://github.com/cezarypiatek)
 - [#942](https://github.com/WireMock-Net/WireMock.Net/pull/942) - Add GetParameter method to IRequestMessage [feature] contributed by [StefH](https://github.com/StefH)
@@ -275,7 +270,6 @@
 
 # 1.5.17 (25 February 2023)
 - [#881](https://github.com/WireMock-Net/WireMock.Net/pull/881) - Add WithBodyAsJson builder method with accepts a Func [feature] contributed by [StefH](https://github.com/StefH)
-- [#882](https://github.com/WireMock-Net/WireMock.Net/pull/882) - Add example code to test HTTP Status 400 and 500 [test] contributed by [StefH](https://github.com/StefH)
 - [#890](https://github.com/WireMock-Net/WireMock.Net/pull/890) - AdminApiMappingBuilder [feature] contributed by [StefH](https://github.com/StefH)
 
 # 1.5.16 (01 February 2023)
@@ -291,7 +285,6 @@
 - [#871](https://github.com/WireMock-Net/WireMock.Net/pull/871) - Add UseWebhooksFireAndForget to Server ConvertMapping [bug] contributed by [ggradnig](https://github.com/ggradnig)
 - [#872](https://github.com/WireMock-Net/WireMock.Net/pull/872) - Fix unsubscribe from LogEntriesChanged event handler [bug] contributed by [StefH](https://github.com/StefH)
 - [#875](https://github.com/WireMock-Net/WireMock.Net/pull/875) - Fix Self referencing loop detected for property [bug] contributed by [eseneckiy](https://github.com/eseneckiy)
-- [#877](https://github.com/WireMock-Net/WireMock.Net/pull/877) - Add unit test example for Transformer Handlebars String.Append String.Join [test] contributed by [StefH](https://github.com/StefH)
 - [#701](https://github.com/WireMock-Net/WireMock.Net/issues/701) - Allow to create MappingModel from c# to be able to configure local and remote mocks similarly [feature]
 - [#867](https://github.com/WireMock-Net/WireMock.Net/issues/867) - Can I build mappings with code and save them to JSON-file without starting server [feature]
 - [#870](https://github.com/WireMock-Net/WireMock.Net/issues/870) - Can not unsubscribe from LogEntriesChanged event. [bug]
@@ -371,7 +364,6 @@
 
 # 1.5.2 (24 July 2022)
 - [#769](https://github.com/WireMock-Net/WireMock.Net/pull/769) - Bump Microsoft.AspNetCore.Server.Kestrel.Core from 2.1.3 to 2.1.7 in /examples/WireMock.Net.StandAlone.Net461 [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
-- [#770](https://github.com/WireMock-Net/WireMock.Net/pull/770) - Added some more tests for JsonMatcher + refactored some code to use nullable [test] contributed by [StefH](https://github.com/StefH)
 - [#771](https://github.com/WireMock-Net/WireMock.Net/pull/771) - JsonPartialMatcher - support Regex [feature] contributed by [StefH](https://github.com/StefH)
 
 # 1.5.1 (08 July 2022)
@@ -656,9 +648,6 @@
 # 1.2.16 (27 July 2020)
 - [#492](https://github.com/WireMock-Net/WireMock.Net/pull/492) - Mark FluentMockServer, FluentMockServerSettings, BlacklistedHeaders and BlacklistedCookies as obsolete [feature] contributed by [StefH](https://github.com/StefH)
 - [#489](https://github.com/WireMock-Net/WireMock.Net/issues/489) - Change &quot;blacklist&quot; and &quot;whitelist&quot; terms [feature]
-
-# 1.2.15 (19 July 2020)
-- [#485](https://github.com/WireMock-Net/WireMock.Net/pull/485) - Add fluent assertions for headers [test] contributed by [akamud](https://github.com/akamud)
 
 # 1.2.14 (09 July 2020)
 - [#479](https://github.com/WireMock-Net/WireMock.Net/pull/479) - An OpenApi (swagger) parser to generate MappingModel or mapping.json file [feature] contributed by [StefH](https://github.com/StefH)
@@ -960,7 +949,6 @@
 
 # 1.0.4.21 (30 November 2018)
 - [#221](https://github.com/WireMock-Net/WireMock.Net/pull/221) - Update dependencies [feature] contributed by [StefH](https://github.com/StefH)
-- [#229](https://github.com/WireMock-Net/WireMock.Net/pull/229) - Fix proxy tests [test] contributed by [StefH](https://github.com/StefH)
 - [#230](https://github.com/WireMock-Net/WireMock.Net/pull/230) - Add HandleBars Random functionality (#219) [feature] contributed by [StefH](https://github.com/StefH)
 - [#231](https://github.com/WireMock-Net/WireMock.Net/pull/231) - Use RandomDataGenerator.Net 1.0.3.0 contributed by [StefH](https://github.com/StefH)
 - [#232](https://github.com/WireMock-Net/WireMock.Net/pull/232) - Add SonarLint checks [feature] contributed by [StefH](https://github.com/StefH)
