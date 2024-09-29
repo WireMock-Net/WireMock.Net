@@ -24,7 +24,7 @@ public partial class WireMockServerTests
     private readonly string _responseFilePath = Path.Combine(Environment.CurrentDirectory, "__admin", "mappings", "responseWithTransformer.xml");
 
     [Fact]
-    public async Task WireMockServer_WithTransformer_WithBodyShouldWorkWithTransformer()
+    public async Task WireMockServer_WithTransformer_WithBody_ShouldWork()
     {
         // Arrange
         using var server = WireMockServer.Start();
@@ -45,7 +45,7 @@ public partial class WireMockServerTests
     }
 
     [Fact]
-    public async Task WireMockServer_WithTransformer_WithBodyFromFileShouldWorkWithTransformer()
+    public async Task WireMockServer_WithTransformerBefore_WithBodyFromFile_ShouldWork()
     {
         // Arrange
         using var server = WireMockServer.Start();
@@ -55,14 +55,35 @@ public partial class WireMockServerTests
                 .UsingPost())
             .ThenRespondWith(rsp => rsp
                 .WithSuccess()
-                .WithBodyFromFile(_responseFilePath)
-                .WithTransformer(transformContentFromBodyAsFile: true));
+                .WithTransformer(transformContentFromBodyAsFile: true)
+                .WithBodyFromFile(_responseFilePath));
 
         // Act
         var response = await GetResponseAsync(server, "/withbodyfromfile");
 
         // Assert
         response.Should().Contain("Hello, Stef!");
+    }
+
+    [Fact]
+    public void WireMockServer_WithTransformerAfter_WithBodyFromFile_ShouldThrow()
+    {
+        // Act
+        var act = () =>
+        {
+            using var server = WireMockServer.Start();
+            server
+                .WhenRequest(req => req
+                    .WithPath("/")
+                    .UsingPost())
+                .ThenRespondWith(rsp => rsp
+                    .WithSuccess()
+                    .WithBodyFromFile(_responseFilePath)
+                    .WithTransformer(transformContentFromBodyAsFile: true));
+        };
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("WithTransformer should be used before WithBodyFromFile.");
     }
 
     private static async Task<string> GetResponseAsync(WireMockServer server, string relativePath)
