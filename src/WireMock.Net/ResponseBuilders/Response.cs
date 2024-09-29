@@ -164,28 +164,6 @@ public partial class Response : IResponseBuilder
         return WithStatusCode((int)HttpStatusCode.NotFound);
     }
 
-    /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(bool)"/>
-    public IResponseBuilder WithTransformer(bool transformContentFromBodyAsFile)
-    {
-        return WithTransformer(TransformerType.Handlebars, transformContentFromBodyAsFile);
-    }
-
-    /// <inheritdoc cref="ITransformResponseBuilder.WithTransformer(ReplaceNodeOptions)"/>
-    public IResponseBuilder WithTransformer(ReplaceNodeOptions options)
-    {
-        return WithTransformer(TransformerType.Handlebars, false, options);
-    }
-
-    /// <inheritdoc />
-    public IResponseBuilder WithTransformer(TransformerType transformerType, bool transformContentFromBodyAsFile = false, ReplaceNodeOptions options = ReplaceNodeOptions.EvaluateAndTryToConvert)
-    {
-        UseTransformer = true;
-        TransformerType = transformerType;
-        UseTransformerForBodyAsFile = transformContentFromBodyAsFile;
-        TransformerReplaceNodeOptions = options;
-        return this;
-    }
-
     /// <inheritdoc />
     public IResponseBuilder WithDelay(TimeSpan delay)
     {
@@ -286,7 +264,7 @@ public partial class Response : IResponseBuilder
 
         if (UseTransformer)
         {
-            // Check if the body matcher is a RequestMessageProtoBufMatcher and try to to decode the byte-array to a BodyAsJson.
+            // Check if the body matcher is a RequestMessageProtoBufMatcher and try to decode the byte-array to a BodyAsJson.
             if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
             {
                 var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
