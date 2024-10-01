@@ -1,0 +1,3 @@
+﻿<xml>
+    <hello>Hello, {{XPath.Evaluate request.body "//*[local-name()='Contact']/@FirstName"}}!</hello>
+</xml>

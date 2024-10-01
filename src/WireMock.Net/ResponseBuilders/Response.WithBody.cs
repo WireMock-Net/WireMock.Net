@@ -13,6 +13,8 @@ namespace WireMock.ResponseBuilders;
 
 public partial class Response
 {
+    private bool _bodyFromFileSet;
+
     /// <inheritdoc />
     public IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
     {
@@ -77,6 +79,8 @@ public partial class Response
     public IResponseBuilder WithBodyFromFile(string filename, bool cache = true)
     {
         Guard.NotNull(filename);
+
+        _bodyFromFileSet = true;
 
         ResponseMessage.BodyData = new BodyData
         {

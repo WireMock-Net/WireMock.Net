@@ -198,7 +198,7 @@ internal class Transformer : ITransformer
 
     private JToken ReplaceSingleNode(ITransformerContext transformerContext, ReplaceNodeOptions options, string stringValue, object model)
     {
-        string transformedString = transformerContext.ParseAndRender(stringValue, model);
+        var transformedString = transformerContext.ParseAndRender(stringValue, model);
 
         if (!string.Equals(stringValue, transformedString))
         {
@@ -346,7 +346,7 @@ internal class Transformer : ITransformer
 
     private static IBodyData TransformBodyAsFile(ITransformerContext transformerContext, object model, IBodyData original, bool useTransformerForBodyAsFile)
     {
-        string transformedBodyAsFilename = transformerContext.ParseAndRender(original.BodyAsFile!, model);
+        var transformedBodyAsFilename = transformerContext.ParseAndRender(original.BodyAsFile!, model);
 
         if (!useTransformerForBodyAsFile)
         {
@@ -358,7 +358,7 @@ internal class Transformer : ITransformer
             };
         }
 
-        string text = transformerContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
+        var text = transformerContext.FileSystemHandler.ReadResponseBodyAsString(transformedBodyAsFilename);
         return new BodyData
         {
             DetectedBodyType = BodyType.String,
