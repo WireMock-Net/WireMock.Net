@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using System;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -15,6 +16,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     public string? Username { get; }
 
     public string? Password { get; }
+
+    public string? StaticMappingsPath { get; private set; }
 
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 
@@ -61,5 +64,17 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     {
         Username = BuildConfiguration.Combine(oldValue.Username, newValue.Username);
         Password = BuildConfiguration.Combine(oldValue.Password, newValue.Password);
+        StaticMappingsPath = BuildConfiguration.Combine(oldValue.StaticMappingsPath, newValue.StaticMappingsPath);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="staticMappingsPath"></param>
+    /// <returns></returns>
+    public WireMockConfiguration WithStaticMappingsPath(string staticMappingsPath)
+    {
+        StaticMappingsPath = staticMappingsPath;
+        return this;
     }
 }
