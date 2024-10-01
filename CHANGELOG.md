@@ -1,3 +1,9 @@
+# 1.6.6 (01 October 2024)
+- [#1185](https://github.com/WireMock-Net/WireMock.Net/pull/1185) - Throw exception in case WithTransformer is used after WithBodyFromFile [bug] contributed by [StefH](https://github.com/StefH)
+- [#1187](https://github.com/WireMock-Net/WireMock.Net/pull/1187) - Fix StaticMappingsPath in WireMockContainerBuilder [bug] contributed by [StefH](https://github.com/StefH)
+- [#1184](https://github.com/WireMock-Net/WireMock.Net/issues/1184) - .WithBodyFromFile() + .WithTransformer(transformContentFromBodyAsFile: true) = empty string [bug]
+- [#1186](https://github.com/WireMock-Net/WireMock.Net/issues/1186) - WithMappings path is null on Build() call [bug]
+
 # 1.6.5 (28 September 2024)
 - [#1175](https://github.com/WireMock-Net/WireMock.Net/pull/1175) - Add WireMock.Net.AspNetCore.Middleware [feature] contributed by [StefH](https://github.com/StefH)
 - [#1181](https://github.com/WireMock-Net/WireMock.Net/pull/1181) - WireMock.Net.Testcontainers: Use 'sheyenrath/wiremock.net-alpine' image as default for Linux [feature] contributed by [StefH](https://github.com/StefH)

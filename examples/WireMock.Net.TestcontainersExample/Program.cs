@@ -16,7 +16,7 @@ internal class Program
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Linux");
-            await TestAsync("sheyenrath/wiremock.net:1.6.4");
+            await TestAsync("sheyenrath/wiremock.net:1.6.5");
             await Task.Delay(1_000);
         }
         catch (Exception e)
@@ -32,7 +32,7 @@ internal class Program
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Linux Alpine");
-            await TestAsync("sheyenrath/wiremock.net-alpine:1.6.4");
+            await TestAsync("sheyenrath/wiremock.net-alpine:1.6.5");
             await Task.Delay(1_000);
         }
         catch (Exception e)
@@ -64,7 +64,7 @@ internal class Program
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("Windows");
-            await TestAsync("sheyenrath/wiremock.net-windows:1.6.4");
+            await TestAsync("sheyenrath/wiremock.net-windows:1.6.5");
             await Task.Delay(1_000);
         }
         catch (Exception e)
@@ -106,20 +106,14 @@ internal class Program
 
     private static async Task TestAsync(string? image = null)
     {
+        var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "WireMock.Net.Console.NET6", "__admin", "mappings");
+
         var builder = new WireMockContainerBuilder()
             .WithAdminUserNameAndPassword("x", "y")
+            .WithMappings(mappingsPath)
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
             .WithCleanUp(true);
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            builder = builder.WithMappings(@"C:\Dev\GitHub\WireMock.Net\examples\WireMock.Net.Console.NET6\__admin\mappings");
-        }
-        else
-        {
-            builder = builder.WithMappings("/workspaces/WireMock.Net/examples/WireMock.Net.Console.NET6/__admin/mappings");
-        }
 
         if (image != null)
         {
