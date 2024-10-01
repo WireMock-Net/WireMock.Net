@@ -118,7 +118,7 @@ internal class Program
         }
         else
         {
-            builder = builder.WithMappings("./examples/WireMock.Net.Console.NET6/__admin/mappings");
+            builder = builder.WithMappings("/workspaces/WireMock.Net/examples/WireMock.Net.Console.NET6/__admin/mappings");
         }
 
         if (image != null)

@@ -40,7 +40,6 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     });
 
     private OSPlatform? _imageOS;
-    private string? _staticMappingsPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.
@@ -143,9 +142,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithMappings(string path, bool includeSubDirectories = false)
     {
-        _staticMappingsPath = Guard.NotNullOrEmpty(path);
+        Guard.NotNullOrEmpty(path);
 
-        return WithReadStaticMappings().WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        return Merge(DockerResourceConfiguration, DockerResourceConfiguration.WithStaticMappingsPath(path))
+            .WithReadStaticMappings()
+            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
@@ -178,9 +179,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             _imageOS = builder.DockerResourceConfiguration.Image.FullName.IndexOf("windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
         }
 
-        if (!string.IsNullOrEmpty(_staticMappingsPath))
+        if (!string.IsNullOrEmpty(builder.DockerResourceConfiguration.StaticMappingsPath))
         {
-            builder = builder.WithBindMount(_staticMappingsPath, _info[_imageOS.Value].MappingsPath);
+            builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, _info[_imageOS.Value].MappingsPath);
         }
 
         builder.Validate();
