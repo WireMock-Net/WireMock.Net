@@ -23,7 +23,7 @@ internal class WeatherForecastApiMock
                         (
                             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                             Random.Shared.Next(-20, 55),
-                            summaries[Random.Shared.Next(summaries.Length)]
+                            "WireMock.Net : " + summaries[Random.Shared.Next(summaries.Length)]
                         ))
                     .ToArray())
             )
