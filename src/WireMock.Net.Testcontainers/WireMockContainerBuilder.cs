@@ -40,7 +40,6 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     });
 
     private OSPlatform? _imageOS;
-    // private string? _staticMappingsPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuilder" /> class.

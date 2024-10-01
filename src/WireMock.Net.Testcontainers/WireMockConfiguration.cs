@@ -68,13 +68,13 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     }
 
     /// <summary>
-    /// 
+    /// Set the StaticMappingsPath.
     /// </summary>
-    /// <param name="staticMappingsPath"></param>
-    /// <returns></returns>
-    public WireMockConfiguration WithStaticMappingsPath(string staticMappingsPath)
+    /// <param name="path">The path which contains the StaticMappings.</param>
+    /// <returns><see cref="WireMockConfiguration"/> </returns>
+    public WireMockConfiguration WithStaticMappingsPath(string path)
     {
-        StaticMappingsPath = staticMappingsPath;
+        StaticMappingsPath = path;
         return this;
     }
 }
