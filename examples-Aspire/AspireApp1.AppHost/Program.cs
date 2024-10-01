@@ -12,7 +12,7 @@ var apiService = builder
     .WithReadStaticMappings()
     .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);
 
-var apiService2 = builder
+var apiServiceNotUsedOnlyForDocs = builder
     .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
     .WithApiMappingBuilder(adminApiBuilder =>
     {
@@ -33,7 +33,7 @@ var apiService2 = builder
                         (
                             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                             Random.Shared.Next(-20, 55),
-                            summaries[Random.Shared.Next(summaries.Length)]
+                            "WireMock.Net : " + summaries[Random.Shared.Next(summaries.Length)]
                         ))
                     .ToArray())
             )
