@@ -1,13 +1,7 @@
-# 1.6.4 (25 September 2024)
-- #1169 Allow mapping without Path or Url [bug]
-- #1170 Update the .NET Aspire tests [feature]
-- #1172 Fix JSON parsing of text/plain content type [bug]
-- #1177 Unpin Testcontainers version and upgrade to version 3.10.0 [bug]
-- #1178 Upgrade CS-Script to version 4.8.17 [feature]
-- #1179 Add WireMock.Net.TUnit project [feature]
-- #1146 Bump Request CS-Script 4.8.13 to 4.8.17 [feature]
-- #1167 Admin API fails to create a mapping with Request Header matching using WildCardMatcher [bug]
-- #1168 Numbers in text/plain content is parsed as JSON. [bug]
-- #1176 WireMock.NET TestContainer Dependency Constraint Issue [bug]
+# 1.6.6 (01 October 2024)
+- #1185 Throw exception in case WithTransformer is used after WithBodyFromFile [bug]
+- #1187 Fix StaticMappingsPath in WireMockContainerBuilder [bug]
+- #1184 .WithBodyFromFile() + .WithTransformer(transformContentFromBodyAsFile: true) = empty string [bug]
+- #1186 WithMappings path is null on Build() call [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

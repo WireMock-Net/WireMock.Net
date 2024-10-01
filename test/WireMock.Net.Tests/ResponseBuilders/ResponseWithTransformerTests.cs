@@ -602,22 +602,21 @@ public class ResponseWithTransformerTests
         Check.That(response.Message.BodyData!.BodyAsFile).Equals(@"c:\1\test.xml");
     }
 
-    [Theory]
-    [InlineData(TransformerType.Handlebars)]
-    //[InlineData(TransformerType.Scriban)] ["c:\\["1"]\\test.xml"]
-    //[InlineData(TransformerType.ScribanDotLiquid)]
-    public async Task Response_ProvideResponse_Transformer_WithBodyAsFile_And_TransformContentFromBodyAsFile(TransformerType transformerType)
+    [Fact]
+    public async Task Response_ProvideResponse_Transformer_WithBodyAsFile_And_TransformContentFromBodyAsFile()
     {
         // Assign
         var filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
-        filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("<xml MyUniqueNumber=\"{{request.query.MyUniqueNumber}}\"></xml>");
+        filesystemHandlerMock
+            .Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()))
+            .Returns("<xml MyUniqueNumber=\"{{request.query.MyUniqueNumber}}\"></xml>");
 
         _settings.FileSystemHandler = filesystemHandlerMock.Object;
 
         var request = new RequestMessage(new UrlDetails("http://localhost/foo?MyUniqueNumber=1"), "GET", ClientIp);
 
         var responseBuilder = Response.Create()
-            .WithTransformer(transformerType, true)
+            .WithTransformer(transformContentFromBodyAsFile: true)
             .WithBodyFromFile(@"c:\\{{request.query.MyUniqueNumber}}\\test.xml");
 
         // Act

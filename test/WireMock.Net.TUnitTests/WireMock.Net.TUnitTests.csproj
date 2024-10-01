@@ -1,18 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsTestProject>true</IsTestProject>
+        <SonarQubeExclude>true</SonarQubeExclude>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="TUnit" Version="0.1.817" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="TUnit" Version="0.1.817" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WireMock.Net.TUnit\WireMock.Net.TUnit.csproj" />
-    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WireMock.Net.TUnit\WireMock.Net.TUnit.csproj" />
+        <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -10,7 +10,8 @@
         <PackageId>WireMock.Net.Tests</PackageId>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <ProjectGuid>{31DC2EF8-C3FE-467D-84BE-FB5D956E612E}</ProjectGuid>
-
+        <IsTestProject>true</IsTestProject>
+        <SonarQubeExclude>true</SonarQubeExclude>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
