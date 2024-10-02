@@ -108,9 +108,9 @@ public sealed class WireMockContainer : DockerContainer
         if (_enhancedFileSystemWatcher != null)
         {
             _enhancedFileSystemWatcher.EnableRaisingEvents = false;
-            _enhancedFileSystemWatcher.Created -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Changed -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Deleted -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Created -= FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Changed -= FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Deleted -= FileCreatedChangedOrDeleted;
 
             _enhancedFileSystemWatcher.Dispose();
             _enhancedFileSystemWatcher = null;
@@ -144,14 +144,14 @@ public sealed class WireMockContainer : DockerContainer
             {
                 IncludeSubdirectories = container._configuration.WatchStaticMappingsInSubdirectories
             };
-            _enhancedFileSystemWatcher.Created += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Changed += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Deleted += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Created += FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
             _enhancedFileSystemWatcher.EnableRaisingEvents = true;
         }
     }
 
-    private async void EnhancedFileSystemWatcherCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
+    private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
     {
         if (_adminApi == null)
         {

@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using DotNet.Testcontainers.Images;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -108,11 +109,12 @@ internal class Program
         var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "WireMock.Net.Console.NET6", "__admin", "mappings");
 
         var builder = new WireMockContainerBuilder()
-            // .WithAdminUserNameAndPassword("x", "y")
+            .WithAdminUserNameAndPassword("x", "y")
             .WithMappings(mappingsPath)
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
-            .WithCleanUp(true);
+            .WithCleanUp(true)
+            .WithImagePullPolicy(PullPolicy.Missing);
 
         if (image != null)
         {
