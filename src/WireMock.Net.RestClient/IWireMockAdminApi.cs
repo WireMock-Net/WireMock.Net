@@ -126,8 +126,8 @@ public interface IWireMockAdminApi
     /// Reload the static mappings.
     /// </summary>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
-    [Post("mappings/readStaticMappings")]
-    Task<StatusModel> ReadStaticMappingsAsync(CancellationToken cancellationToken = default);
+    [Post("mappings/reloadStaticMappings")]
+    Task<StatusModel> ReloadStaticMappingsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a mapping based on the guid

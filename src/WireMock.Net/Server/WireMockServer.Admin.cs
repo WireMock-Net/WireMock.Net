@@ -96,8 +96,8 @@ public partial class WireMockServer
         // __admin/mappings/reset
         Given(Request.Create().WithPath(_adminPaths.Mappings + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsReset));
 
-        // __admin/mappings/readStaticMappings
-        Given(Request.Create().WithPath(_adminPaths.Mappings + "/readStaticMappings").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ReadStaticMappings));
+        // __admin/mappings/reloadStaticMappings
+        Given(Request.Create().WithPath(_adminPaths.Mappings + "/reloadStaticMappings").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ReloadStaticMappings));
 
         // __admin/mappings/{guid}
         Given(Request.Create().WithPath(_adminPaths.MappingsGuidPathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
@@ -572,7 +572,7 @@ public partial class WireMockServer
         return ResponseMessageBuilder.Create(200, message);
     }
 
-    private IResponseMessage ReadStaticMappings(IRequestMessage _)
+    private IResponseMessage ReloadStaticMappings(IRequestMessage _)
     {
         ReadStaticMappings();
 

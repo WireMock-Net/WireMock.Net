@@ -158,14 +158,14 @@ public sealed class WireMockContainer : DockerContainer
             return;
         }
 
-        Logger.LogInformation("MappingFile created, changed or deleted: '{0}'. Triggering ReadStaticMappings.", args.FullPath);
+        Logger.LogInformation("MappingFile created, changed or deleted: '{0}'. Triggering ReloadStaticMappings.", args.FullPath);
         try
         {
-            await _adminApi.ReadStaticMappingsAsync();
+            await _adminApi.ReloadStaticMappingsAsync();
         }
         catch (Exception ex)
         {
-            Logger.LogWarning(ex, "Error calling /__admin/mappings/readStaticMappings");
+            Logger.LogWarning(ex, "Error calling /__admin/mappings/reloadStaticMappings");
         }
     }
 
