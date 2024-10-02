@@ -130,7 +130,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
     {
-        return WithCommand("--WatchStaticMappings true").WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        return Merge(DockerResourceConfiguration, DockerResourceConfiguration.WithWatchStaticMappings(includeSubDirectories))
+            .WithCommand("--WatchStaticMappings true")
+            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     /// <summary>

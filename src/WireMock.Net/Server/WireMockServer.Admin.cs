@@ -96,6 +96,9 @@ public partial class WireMockServer
         // __admin/mappings/reset
         Given(Request.Create().WithPath(_adminPaths.Mappings + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingsReset));
 
+        // __admin/mappings/readStaticMappings
+        Given(Request.Create().WithPath(_adminPaths.Mappings + "/readStaticMappings").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ReadStaticMappings));
+
         // __admin/mappings/{guid}
         Given(Request.Create().WithPath(_adminPaths.MappingsGuidPathMatcher).UsingGet()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingGet));
         Given(Request.Create().WithPath(_adminPaths.MappingsGuidPathMatcher).UsingPut().WithHeader(HttpKnownHeaderNames.ContentType, AdminRequestContentTypeJson)).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(MappingPut));
@@ -170,9 +173,9 @@ public partial class WireMockServer
             return;
         }
 
-        foreach (string filename in _settings.FileSystemHandler.EnumerateFiles(folder, _settings.WatchStaticMappingsInSubdirectories == true).OrderBy(f => f))
+        foreach (var filename in _settings.FileSystemHandler.EnumerateFiles(folder, _settings.WatchStaticMappingsInSubdirectories == true).OrderBy(f => f))
         {
-            _settings.Logger.Info("Reading Static MappingFile : '{0}'", filename);
+            _settings.Logger.Info("Reading Static MappingFile : '{0}'.", filename);
 
             try
             {
@@ -556,17 +559,24 @@ public partial class WireMockServer
 
         ResetScenarios();
 
-        string message = "Mappings reset";
+        var message = "Mappings reset";
         if (requestMessage.Query != null &&
             requestMessage.Query.ContainsKey(QueryParamReloadStaticMappings) &&
-            bool.TryParse(requestMessage.Query[QueryParamReloadStaticMappings].ToString(), out bool reloadStaticMappings) &&
+            bool.TryParse(requestMessage.Query[QueryParamReloadStaticMappings].ToString(), out var reloadStaticMappings) &&
             reloadStaticMappings)
         {
             ReadStaticMappings();
-            message = $"{message} and static mappings reloaded";
+            message += " and static mappings reloaded";
         }
 
         return ResponseMessageBuilder.Create(200, message);
+    }
+
+    private IResponseMessage ReadStaticMappings(IRequestMessage _)
+    {
+        ReadStaticMappings();
+
+        return ResponseMessageBuilder.Create(200, "Static Mappings reloaded");
     }
     #endregion Mappings
 
@@ -780,7 +790,7 @@ public partial class WireMockServer
     private void EnhancedFileSystemWatcherDeleted(object sender, FileSystemEventArgs args)
     {
         _settings.Logger.Info("MappingFile deleted : '{0}'", args.FullPath);
-        string filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
+        var filenameWithoutExtension = Path.GetFileNameWithoutExtension(args.FullPath);
 
         if (Guid.TryParse(filenameWithoutExtension, out var guidFromFilename))
         {

@@ -1,14 +1,18 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using RestEase;
 using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
+using WireMock.Util;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -17,9 +21,13 @@ namespace WireMock.Net.Testcontainers;
 /// </summary>
 public sealed class WireMockContainer : DockerContainer
 {
+    private const int EnhancedFileSystemWatcherTimeoutMs = 2000;
     internal const int ContainerPort = 80;
 
     private readonly WireMockConfiguration _configuration;
+
+    private IWireMockAdminApi? _adminApi;
+    private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainer" /> class.
@@ -28,6 +36,8 @@ public sealed class WireMockContainer : DockerContainer
     public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
         _configuration = Guard.NotNull(configuration);
+
+        Started += WireMockContainer_Started;
     }
 
     /// <summary>
@@ -92,11 +102,70 @@ public sealed class WireMockContainer : DockerContainer
         return client;
     }
 
+    /// <inheritdoc />
+    protected override ValueTask DisposeAsyncCore()
+    {
+        if (_enhancedFileSystemWatcher != null)
+        {
+            _enhancedFileSystemWatcher.EnableRaisingEvents = false;
+            _enhancedFileSystemWatcher.Created -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Changed -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Deleted -= EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+
+            _enhancedFileSystemWatcher.Dispose();
+            _enhancedFileSystemWatcher = null;
+        }
+
+        Started -= WireMockContainer_Started;
+
+        return base.DisposeAsyncCore();
+    }
+
     private void ValidateIfRunning()
     {
         if (State != TestcontainersStates.Running)
         {
             throw new InvalidOperationException("Unable to create HttpClient because the WireMock.Net is not yet running.");
+        }
+    }
+
+    private void WireMockContainer_Started(object sender, EventArgs e)
+    {
+        if (sender is not WireMockContainer container)
+        {
+            return;
+        }
+
+        if (container._configuration.WatchStaticMappings && !string.IsNullOrEmpty(container._configuration.StaticMappingsPath))
+        {
+            _adminApi = container.CreateWireMockAdminClient();
+
+            _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(container._configuration.StaticMappingsPath!, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+            {
+                IncludeSubdirectories = container._configuration.WatchStaticMappingsInSubdirectories
+            };
+            _enhancedFileSystemWatcher.Created += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Changed += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Deleted += EnhancedFileSystemWatcherCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+        }
+    }
+
+    private async void EnhancedFileSystemWatcherCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
+    {
+        if (_adminApi == null)
+        {
+            return;
+        }
+
+        Logger.LogInformation("MappingFile created, changed or deleted: '{0}'. Triggering ReadStaticMappings.", args.FullPath);
+        try
+        {
+            await _adminApi.ReadStaticMappingsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Error calling /__admin/mappings/readStaticMappings");
         }
     }
 

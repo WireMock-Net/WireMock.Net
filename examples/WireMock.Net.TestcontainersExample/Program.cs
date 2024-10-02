@@ -1,6 +1,5 @@
 // Copyright © WireMock.Net
 
-using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -11,6 +10,17 @@ internal class Program
     private static async Task Main(string[] args)
     {
         var original = Console.ForegroundColor;
+
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Automatic");
+            await TestAsync();
+        }
+        finally
+        {
+            Console.ForegroundColor = original;
+        }
 
         try
         {
@@ -91,17 +101,6 @@ internal class Program
         {
             Console.ForegroundColor = original;
         }
-
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Automatic");
-            await TestAsync();
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
     }
 
     private static async Task TestAsync(string? image = null)
@@ -109,7 +108,7 @@ internal class Program
         var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "WireMock.Net.Console.NET6", "__admin", "mappings");
 
         var builder = new WireMockContainerBuilder()
-            .WithAdminUserNameAndPassword("x", "y")
+            // .WithAdminUserNameAndPassword("x", "y")
             .WithMappings(mappingsPath)
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
@@ -134,6 +133,8 @@ internal class Program
         var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1));
         Console.WriteLine("logs = " + logs.Stdout);
 
+        Console.WriteLine("PublicUrl = " + container.GetPublicUrl());
+
         var restEaseApiClient = container.CreateWireMockAdminClient();
 
         var settings = await restEaseApiClient.GetSettingsAsync();
@@ -145,6 +146,12 @@ internal class Program
         var client = container.CreateClient();
         var result = await client.GetStringAsync("/static/mapping");
         Console.WriteLine("result = " + result);
+
+        if (image == null)
+        {
+            Console.WriteLine("Press any key to stop.");
+            Console.ReadKey();
+        }
 
         await container.StopAsync();
     }
