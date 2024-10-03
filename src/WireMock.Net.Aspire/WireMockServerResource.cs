@@ -1,6 +1,9 @@
 // Copyright © WireMock.Net
 
+using RestEase;
 using Stef.Validation;
+using WireMock.Client;
+using WireMock.Client.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Aspire.Hosting.ApplicationModel;
@@ -11,6 +14,8 @@ namespace Aspire.Hosting.ApplicationModel;
 public class WireMockServerResource : ContainerResource, IResourceWithServiceDiscovery
 {
     internal WireMockServerArguments Arguments { get; }
+
+    internal Lazy<IWireMockAdminApi> AdminApi => new(CreateWireMockAdminApi);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockServerResource"/> class.
@@ -29,5 +34,13 @@ public class WireMockServerResource : ContainerResource, IResourceWithServiceDis
     public EndpointReference GetEndpoint()
     {
         return new EndpointReference(this, "http");
+    }
+
+    private IWireMockAdminApi CreateWireMockAdminApi()
+    {
+        var adminApi = RestClient.For<IWireMockAdminApi>(GetEndpoint().Url);
+        return Arguments.HasBasicAuthentication ?
+            adminApi.WithAuthorization(Arguments.AdminUsername!, Arguments.AdminPassword!) :
+            adminApi;
     }
 }

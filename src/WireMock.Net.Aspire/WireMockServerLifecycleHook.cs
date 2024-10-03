@@ -3,7 +3,6 @@
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using Microsoft.Extensions.Logging;
-using RestEase;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 
@@ -28,25 +27,21 @@ internal class WireMockServerLifecycleHook(ResourceLoggerService loggerService) 
             var endpoint = wireMockServerResource.GetEndpoint();
             if (endpoint.IsAllocated)
             {
-                var adminApi = CreateWireMockAdminApi(wireMockServerResource);
-
+                var adminApi = wireMockServerResource.AdminApi.Value;
                 var logger = loggerService.GetLogger(wireMockServerResource);
-                logger.LogInformation("Checking Health status from WireMock.Net");
 
+                logger.LogInformation("Checking Health status from WireMock.Net");
                 await adminApi.WaitForHealthAsync(cancellationToken: cancellationToken);
 
-                logger.LogInformation("Calling ApiMappingBuilder to add mappings to WireMock.Net");
-                var mappingBuilder = adminApi.GetMappingBuilder();
-                await wireMockServerResource.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
+                await CallApiMappingBuilderActionAsync(logger, adminApi, wireMockServerResource);
             }
         }
     }
 
-    private static IWireMockAdminApi CreateWireMockAdminApi(WireMockServerResource resource)
+    private static async Task CallApiMappingBuilderActionAsync(ILogger logger, IWireMockAdminApi adminApi, WireMockServerResource wireMockServerResource)
     {
-        var adminApi = RestClient.For<IWireMockAdminApi>(resource.GetEndpoint().Url);
-        return resource.Arguments.HasBasicAuthentication ?
-            adminApi.WithAuthorization(resource.Arguments.AdminUsername!, resource.Arguments.AdminPassword!) :
-            adminApi;
+        logger.LogInformation("Calling ApiMappingBuilder to add mappings to WireMock.Net");
+        var mappingBuilder = adminApi.GetMappingBuilder();
+        await wireMockServerResource.Arguments.ApiMappingBuilder!.Invoke(mappingBuilder);
     }
 }
