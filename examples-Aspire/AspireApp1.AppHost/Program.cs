@@ -10,6 +10,7 @@ IResourceBuilder<WireMockServerResource> apiService = builder
     .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
     .WithMappingsPath(mappingsPath)
     .WithReadStaticMappings()
+    .WithWatchStaticMappings()
     .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);
 
 //var apiServiceUsedForDocs = builder
