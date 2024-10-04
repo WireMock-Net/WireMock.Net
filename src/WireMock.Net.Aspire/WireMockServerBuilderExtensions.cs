@@ -112,7 +112,7 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithWatchStaticMappings(this IResourceBuilder<WireMockServerResource> wiremock)
     {
-        Guard.NotNull(wiremock).Resource.Arguments.WithWatchStaticMappings = true;
+        Guard.NotNull(wiremock).Resource.Arguments.WatchStaticMappings = true;
         return wiremock;
     }
 
@@ -124,8 +124,10 @@ public static class WireMockServerBuilderExtensions
     /// <returns>A reference to the <see cref="IResourceBuilder{WireMockServerResource}"/>.</returns>
     public static IResourceBuilder<WireMockServerResource> WithMappingsPath(this IResourceBuilder<WireMockServerResource> wiremock, string mappingsPath)
     {
-        return Guard.NotNull(wiremock)
-            .WithBindMount(Guard.NotNullOrWhiteSpace(mappingsPath), DefaultLinuxMappingsPath);
+        Guard.NotNullOrWhiteSpace(mappingsPath);
+        Guard.NotNull(wiremock).Resource.Arguments.MappingsPath = mappingsPath;
+
+        return wiremock.WithBindMount(mappingsPath, DefaultLinuxMappingsPath);
     }
 
     /// <summary>
@@ -151,6 +153,17 @@ public static class WireMockServerBuilderExtensions
     /// <param name="configure">Delegate that will be invoked to configure the WireMock.Net resource.</param>
     /// <returns></returns>
     public static IResourceBuilder<WireMockServerResource> WithApiMappingBuilder(this IResourceBuilder<WireMockServerResource> wiremock, Func<AdminApiMappingBuilder, Task> configure)
+    {
+        return wiremock.WithApiMappingBuilder((adminApiMappingBuilder, _) => configure.Invoke(adminApiMappingBuilder));
+    }
+
+    /// <summary>
+    /// Use WireMock Client's AdminApiMappingBuilder to configure the WireMock.Net resource.
+    /// </summary>
+    /// <param name="wiremock">The <see cref="IResourceBuilder{WireMockServerResource}"/>.</param>
+    /// <param name="configure">Delegate that will be invoked to configure the WireMock.Net resource.</param>
+    /// <returns></returns>
+    public static IResourceBuilder<WireMockServerResource> WithApiMappingBuilder(this IResourceBuilder<WireMockServerResource> wiremock, Func<AdminApiMappingBuilder, CancellationToken, Task> configure)
     {
         Guard.NotNull(wiremock);
 

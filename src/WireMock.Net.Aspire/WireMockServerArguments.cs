@@ -50,7 +50,7 @@ public class WireMockServerArguments
     ///
     /// Default value is <c>false</c>.
     /// </summary>
-    public bool WithWatchStaticMappings { get; set; }
+    public bool WatchStaticMappings { get; set; }
 
     /// <summary>
     /// Specifies the path for the (static) mapping json files.
@@ -65,7 +65,7 @@ public class WireMockServerArguments
     /// <summary>
     /// Optional delegate that will be invoked to configure the WireMock.Net resource using the <see cref="AdminApiMappingBuilder"/>.
     /// </summary>
-    public Func<AdminApiMappingBuilder, Task>? ApiMappingBuilder { get; set; }
+    public Func<AdminApiMappingBuilder, CancellationToken, Task>? ApiMappingBuilder { get; set; }
 
     /// <summary>
     /// Converts the current instance's properties to an array of command-line arguments for starting the WireMock.Net server.
@@ -88,7 +88,7 @@ public class WireMockServerArguments
             Add(args, "--ReadStaticMappings", "true");
         }
 
-        if (WithWatchStaticMappings)
+        if (WatchStaticMappings)
         {
             Add(args, "--ReadStaticMappings", "true");
             Add(args, "--WatchStaticMappings", "true");

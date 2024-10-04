@@ -1,9 +1,11 @@
 // Copyright © WireMock.Net
 
+using Microsoft.Extensions.Logging;
 using RestEase;
 using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
+using WireMock.Util;
 
 // ReSharper disable once CheckNamespace
 namespace Aspire.Hosting.ApplicationModel;
@@ -13,9 +15,13 @@ namespace Aspire.Hosting.ApplicationModel;
 /// </summary>
 public class WireMockServerResource : ContainerResource, IResourceWithServiceDiscovery
 {
-    internal WireMockServerArguments Arguments { get; }
+    private const int EnhancedFileSystemWatcherTimeoutMs = 2000;
 
+    internal WireMockServerArguments Arguments { get; }
     internal Lazy<IWireMockAdminApi> AdminApi => new(CreateWireMockAdminApi);
+
+    private ILogger? _logger;
+    private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockServerResource"/> class.
@@ -36,11 +42,81 @@ public class WireMockServerResource : ContainerResource, IResourceWithServiceDis
         return new EndpointReference(this, "http");
     }
 
+    internal void SetLogger(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    internal async Task WaitForHealthAsync(CancellationToken cancellationToken)
+    {
+        _logger?.LogInformation("Checking Health status from WireMock.Net");
+        await AdminApi.Value.WaitForHealthAsync(cancellationToken: cancellationToken);
+    }
+
+    internal async Task CallApiMappingBuilderActionAsync(CancellationToken cancellationToken)
+    {
+        if (Arguments.ApiMappingBuilder == null)
+        {
+            return;
+        }
+
+        _logger?.LogInformation("Calling ApiMappingBuilder to add mappings to WireMock.Net");
+
+        var mappingBuilder = AdminApi.Value.GetMappingBuilder();
+        await Arguments.ApiMappingBuilder.Invoke(mappingBuilder, cancellationToken);
+    }
+
+    internal void StartWatchingStaticMappings(CancellationToken cancellationToken)
+    {
+        if (!Arguments.WatchStaticMappings || string.IsNullOrEmpty(Arguments.MappingsPath))
+        {
+            return;
+        }
+
+        cancellationToken.Register(() =>
+        {
+            if (_enhancedFileSystemWatcher != null)
+            {
+                _enhancedFileSystemWatcher.EnableRaisingEvents = false;
+                _enhancedFileSystemWatcher.Created -= FileCreatedChangedOrDeleted;
+                _enhancedFileSystemWatcher.Changed -= FileCreatedChangedOrDeleted;
+                _enhancedFileSystemWatcher.Deleted -= FileCreatedChangedOrDeleted;
+
+                _enhancedFileSystemWatcher.Dispose();
+                _enhancedFileSystemWatcher = null;
+            }
+        });
+
+        _logger?.LogInformation("Starting to watch static mappings on path: '{Path}'. ", Arguments.MappingsPath);
+
+        _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(Arguments.MappingsPath, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+        {
+            IncludeSubdirectories = true
+        };
+        _enhancedFileSystemWatcher.Created += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+    }
+
     private IWireMockAdminApi CreateWireMockAdminApi()
     {
         var adminApi = RestClient.For<IWireMockAdminApi>(GetEndpoint().Url);
         return Arguments.HasBasicAuthentication ?
             adminApi.WithAuthorization(Arguments.AdminUsername!, Arguments.AdminPassword!) :
             adminApi;
+    }
+
+    private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
+    {
+        _logger?.LogInformation("MappingFile created, changed or deleted: '{0}'. Triggering ReloadStaticMappings.", args.FullPath);
+        try
+        {
+            await AdminApi.Value.ReloadStaticMappingsAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogWarning(ex, "Error calling /__admin/mappings/reloadStaticMappings");
+        }
     }
 }

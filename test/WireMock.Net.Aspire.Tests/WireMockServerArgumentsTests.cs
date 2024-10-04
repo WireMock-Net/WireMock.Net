@@ -17,7 +17,7 @@ public class WireMockServerArgumentsTests
         args.AdminUsername.Should().BeNull();
         args.AdminPassword.Should().BeNull();
         args.ReadStaticMappings.Should().BeFalse();
-        args.WithWatchStaticMappings.Should().BeFalse();
+        args.WatchStaticMappings.Should().BeFalse();
         args.MappingsPath.Should().BeNull();
     }
 
@@ -87,7 +87,7 @@ public class WireMockServerArgumentsTests
         // Arrange
         var args = new WireMockServerArguments
         {
-            WithWatchStaticMappings = true,
+            WatchStaticMappings = true,
             ReadStaticMappings = readStaticMappings
         };
 
@@ -104,7 +104,7 @@ public class WireMockServerArgumentsTests
         // Arrange
         var args = new WireMockServerArguments
         {
-            WithWatchStaticMappings = false
+            WatchStaticMappings = false
         };
 
         // Act
