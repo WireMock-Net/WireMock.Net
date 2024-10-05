@@ -1,7 +1,6 @@
 // Copyright © WireMock.Net
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -9,7 +8,7 @@ using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
 using Stef.Validation;
-using WireMock.Net.Testcontainers.Models;
+using WireMock.Net.Testcontainers.Utils;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -19,11 +18,6 @@ namespace WireMock.Net.Testcontainers;
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
     private const string DefaultLogger = "WireMockConsoleLogger";
-    private readonly Dictionary<OSPlatform, ContainerInfo> _info = new()
-    {
-        { OSPlatform.Linux, new ContainerInfo("sheyenrath/wiremock.net-alpine", "/app/__admin/mappings") },
-        { OSPlatform.Windows, new ContainerInfo("sheyenrath/wiremock.net-windows", @"c:\app\__admin\mappings") }
-    };
 
     private readonly Lazy<Task<OSPlatform>> _getOSAsLazy = new(async () =>
     {
@@ -183,7 +177,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 
         if (!string.IsNullOrEmpty(builder.DockerResourceConfiguration.StaticMappingsPath))
         {
-            builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, _info[_imageOS.Value].MappingsPath);
+            builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, ContainerInfoProvider.Info[_imageOS.Value].MappingsPath);
         }
 
         builder.Validate();
@@ -200,7 +194,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
-            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("WireMock.Net server running"));
     }
 
     /// <inheritdoc />
@@ -224,6 +218,6 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     private WireMockContainerBuilder WithImage(OSPlatform os)
     {
         _imageOS = os;
-        return WithImage(_info[os].Image);
+        return WithImage(ContainerInfoProvider.Info[os].Image);
     }
 }

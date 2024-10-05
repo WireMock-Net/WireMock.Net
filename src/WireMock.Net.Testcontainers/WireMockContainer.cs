@@ -3,12 +3,12 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using RestEase;
-using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
@@ -35,7 +35,7 @@ public sealed class WireMockContainer : DockerContainer
     /// <param name="configuration">The container configuration.</param>
     public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
-        _configuration = Guard.NotNull(configuration);
+        _configuration = Stef.Validation.Guard.NotNull(configuration);
 
         Started += WireMockContainer_Started;
     }
@@ -102,6 +102,47 @@ public sealed class WireMockContainer : DockerContainer
         return client;
     }
 
+    /*
+    /// <summary>
+    /// Copies a test host directory or file to the container and triggers a reload of the static mappings if required.
+    /// </summary>
+    /// <param name="source">The source directory or file to be copied.</param>
+    /// <param name="target">The target directory path to copy the files to.</param>
+    /// <param name="fileMode">The POSIX file mode permission.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A task that completes when the directory or file has been copied.</returns>
+    public new async Task CopyAsync(string source, string target, UnixFileModes fileMode = Unix.FileMode644, CancellationToken ct = default)
+    {
+        await base.CopyAsync(source, target, fileMode, ct);
+
+        if (ShouldWatchStaticMappingsAndTriggerReload() && PathStartsWithContainerMappingsPath(target))
+        {
+            await ReloadStaticMappingsAsync(target, ct);
+        }
+    }
+    */
+
+    /// <summary>
+    /// Reload the static mappings.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    public async Task ReloadStaticMappingsAsync(CancellationToken cancellationToken = default)
+    {
+        if (_adminApi == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _adminApi.ReloadStaticMappingsAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Error calling /__admin/mappings/reloadStaticMappings");
+        }
+    }
+
     /// <inheritdoc />
     protected override ValueTask DisposeAsyncCore()
     {
@@ -121,6 +162,11 @@ public sealed class WireMockContainer : DockerContainer
         return base.DisposeAsyncCore();
     }
 
+    //private static bool PathStartsWithContainerMappingsPath(string value)
+    //{
+    //    return ContainerInfoProvider.Info.Values.Any(ci => value.StartsWith(ci.MappingsPath));
+    //}
+
     private void ValidateIfRunning()
     {
         if (State != TestcontainersStates.Running)
@@ -131,42 +177,38 @@ public sealed class WireMockContainer : DockerContainer
 
     private void WireMockContainer_Started(object sender, EventArgs e)
     {
-        if (sender is not WireMockContainer container)
+        if (!ShouldWatchStaticMappingsAndTriggerReload())
         {
             return;
         }
 
-        if (container._configuration.WatchStaticMappings && !string.IsNullOrEmpty(container._configuration.StaticMappingsPath))
-        {
-            _adminApi = container.CreateWireMockAdminClient();
+        _adminApi = CreateWireMockAdminClient();
 
-            _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(container._configuration.StaticMappingsPath!, "*.json", EnhancedFileSystemWatcherTimeoutMs)
-            {
-                IncludeSubdirectories = container._configuration.WatchStaticMappingsInSubdirectories
-            };
-            _enhancedFileSystemWatcher.Created += FileCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
-            _enhancedFileSystemWatcher.EnableRaisingEvents = true;
-        }
+        _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(_configuration.StaticMappingsPath!, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+        {
+            IncludeSubdirectories = _configuration.WatchStaticMappingsInSubdirectories
+        };
+        _enhancedFileSystemWatcher.Created += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+    }
+
+    private bool ShouldWatchStaticMappingsAndTriggerReload()
+    {
+        return _configuration.WatchStaticMappings &&
+               !string.IsNullOrEmpty(_configuration.StaticMappingsPath);
     }
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
     {
-        if (_adminApi == null)
-        {
-            return;
-        }
+        await ReloadStaticMappingsAsync(args.FullPath);
+    }
 
-        Logger.LogInformation("MappingFile created, changed or deleted: '{0}'. Triggering ReloadStaticMappings.", args.FullPath);
-        try
-        {
-            await _adminApi.ReloadStaticMappingsAsync();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogWarning(ex, "Error calling /__admin/mappings/reloadStaticMappings");
-        }
+    private async Task ReloadStaticMappingsAsync(string path, CancellationToken cancellationToken = default)
+    {
+        Logger.LogInformation("MappingFile created, changed or deleted: '{Path}'. Triggering ReloadStaticMappings.", path);
+        await ReloadStaticMappingsAsync(cancellationToken);
     }
 
     private Uri GetPublicUri() => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri;

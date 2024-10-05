@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using System.Runtime.InteropServices;
 using DotNet.Testcontainers.Images;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
@@ -128,12 +129,26 @@ internal class Program
 
         var container = builder.Build();
 
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                await container.CopyAsync(@"C:\temp-wiremock\__admin\mappings\StefBodyAsFileExample.json", @"c:\app\__admin\mappings");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
         await container.StartAsync();
 
         await Task.Delay(1_000);
 
-        var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1));
-        Console.WriteLine("logs = " + logs.Stdout);
+        await container.ReloadStaticMappingsAsync();
+
+        //var logs = await container.GetLogsAsync(DateTime.Now.AddDays(-1));
+        //Console.WriteLine("logs = " + logs.Stdout);
 
         Console.WriteLine("PublicUrl = " + container.GetPublicUrl());
 
@@ -143,7 +158,8 @@ internal class Program
         Console.WriteLine("settings = " + JsonConvert.SerializeObject(settings, Formatting.Indented));
 
         var mappings = await restEaseApiClient.GetMappingsAsync();
-        Console.WriteLine("mappings = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
+        var mappingsStef = mappings.Where(m => JsonConvert.SerializeObject(m.Request.Path).Contains("Stef"));
+        Console.WriteLine("mappingsStef = " + JsonConvert.SerializeObject(mappingsStef, Formatting.Indented));
 
         var client = container.CreateClient();
         var result = await client.GetStringAsync("/static/mapping");
