@@ -7,23 +7,8 @@ using System.Threading.Tasks;
 
 namespace WireMock.Net.Testcontainers.Utils;
 
-internal static class PlatformUtils
+internal static class ContainerUtils
 {
-    public static OSPlatform GetCurrentOSPlatform()
-    {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            return OSPlatform.Windows;
-        }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            return OSPlatform.Linux;
-        }
-
-        throw new NotSupportedException("The current OSPlatform is not supported.");
-    }
-
     public static Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
     {
         if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)

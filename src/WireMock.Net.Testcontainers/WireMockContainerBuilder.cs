@@ -36,7 +36,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        _imageOS ??= PlatformUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
+        _imageOS ??= ContainerUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
         return WithImage(_imageOS.Value);
     }
 

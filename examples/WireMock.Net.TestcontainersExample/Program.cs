@@ -1,5 +1,7 @@
 // Copyright © WireMock.Net
 
+using DotNet.Testcontainers.Configurations;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -129,13 +131,16 @@ internal class Program
 
         await container.StartAsync();
 
-        try
+        if (await GetImageOSAsync.Value == OSPlatform.Linux)
         {
-            await container.CopyAsync(@"C:\temp-wiremock\__admin\mappings\StefBodyAsFileExample.json", "/app/__admin/mappings");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
+            try
+            {
+                await container.CopyAsync(@"C:\temp-wiremock\__admin\mappings\StefBodyAsFileExample.json", "/app/__admin/mappings");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         Console.WriteLine("PublicUrl = " + container.GetPublicUrl());
@@ -205,4 +210,18 @@ internal class Program
 
         await container.StopAsync();
     }
+
+    private static Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
+    {
+        if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
+        {
+            throw new InvalidOperationException($"The {nameof(TestcontainersSettings.OS.DockerEndpointAuthConfig)} is null. Check if Docker is started.");
+        }
+
+        using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
+        using var dockerClient = dockerClientConfig.CreateClient();
+
+        var version = await dockerClient.System.GetVersionAsync();
+        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
+    });
 }

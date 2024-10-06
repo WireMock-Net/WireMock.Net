@@ -164,7 +164,7 @@ public sealed class WireMockContainer : DockerContainer
 
     private static async Task<bool> PathStartsWithContainerMappingsPath(string value)
     {
-        var imageOs = await PlatformUtils.GetImageOSAsync.Value;
+        var imageOs = await ContainerUtils.GetImageOSAsync.Value;
 
         return value.StartsWith(ContainerInfoProvider.Info[imageOs].MappingsPath);
     }
