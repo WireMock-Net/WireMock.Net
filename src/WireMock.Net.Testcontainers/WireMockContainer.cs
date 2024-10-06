@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using RestEase;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
+using WireMock.Net.Testcontainers.Utils;
 using WireMock.Util;
 
 namespace WireMock.Net.Testcontainers;
@@ -102,7 +104,6 @@ public sealed class WireMockContainer : DockerContainer
         return client;
     }
 
-    /*
     /// <summary>
     /// Copies a test host directory or file to the container and triggers a reload of the static mappings if required.
     /// </summary>
@@ -115,13 +116,12 @@ public sealed class WireMockContainer : DockerContainer
     {
         await base.CopyAsync(source, target, fileMode, ct);
 
-        if (ShouldWatchStaticMappingsAndTriggerReload() && PathStartsWithContainerMappingsPath(target))
+        if (_configuration.WatchStaticMappings && await PathStartsWithContainerMappingsPath(target))
         {
             await ReloadStaticMappingsAsync(target, ct);
         }
     }
-    */
-
+    
     /// <summary>
     /// Reload the static mappings.
     /// </summary>
@@ -162,10 +162,12 @@ public sealed class WireMockContainer : DockerContainer
         return base.DisposeAsyncCore();
     }
 
-    //private static bool PathStartsWithContainerMappingsPath(string value)
-    //{
-    //    return ContainerInfoProvider.Info.Values.Any(ci => value.StartsWith(ci.MappingsPath));
-    //}
+    private static async Task<bool> PathStartsWithContainerMappingsPath(string value)
+    {
+        var imageOs = await PlatformUtils.GetImageOSAsync.Value;
+
+        return value.StartsWith(ContainerInfoProvider.Info[imageOs].MappingsPath);
+    }
 
     private void ValidateIfRunning()
     {
@@ -177,12 +179,12 @@ public sealed class WireMockContainer : DockerContainer
 
     private void WireMockContainer_Started(object sender, EventArgs e)
     {
-        if (!ShouldWatchStaticMappingsAndTriggerReload())
+        _adminApi = CreateWireMockAdminClient();
+
+        if (!_configuration.WatchStaticMappings || string.IsNullOrEmpty(_configuration.StaticMappingsPath))
         {
             return;
         }
-
-        _adminApi = CreateWireMockAdminClient();
 
         _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(_configuration.StaticMappingsPath!, "*.json", EnhancedFileSystemWatcherTimeoutMs)
         {
@@ -192,12 +194,6 @@ public sealed class WireMockContainer : DockerContainer
         _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.EnableRaisingEvents = true;
-    }
-
-    private bool ShouldWatchStaticMappingsAndTriggerReload()
-    {
-        return _configuration.WatchStaticMappings &&
-               !string.IsNullOrEmpty(_configuration.StaticMappingsPath);
     }
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)

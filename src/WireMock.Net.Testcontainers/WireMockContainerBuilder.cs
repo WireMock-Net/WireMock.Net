@@ -2,7 +2,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -18,21 +17,6 @@ namespace WireMock.Net.Testcontainers;
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
     private const string DefaultLogger = "WireMockConsoleLogger";
-
-    private readonly Lazy<Task<OSPlatform>> _getOSAsLazy = new(async () =>
-    {
-        if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
-        {
-            throw new InvalidOperationException($"The {nameof(TestcontainersSettings.OS.DockerEndpointAuthConfig)} is null. Check if Docker is started.");
-        }
-
-        using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
-        using var dockerClient = dockerClientConfig.CreateClient();
-
-        var version = await dockerClient.System.GetVersionAsync();
-        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
-    });
-
     private OSPlatform? _imageOS;
 
     /// <summary>
@@ -52,7 +36,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        _imageOS ??= _getOSAsLazy.Value.GetAwaiter().GetResult();
+        _imageOS ??= PlatformUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
         return WithImage(_imageOS.Value);
     }
 

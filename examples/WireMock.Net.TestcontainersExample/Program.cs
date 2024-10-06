@@ -1,7 +1,5 @@
 // Copyright © WireMock.Net
 
-using System.Runtime.InteropServices;
-using DotNet.Testcontainers.Images;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -12,6 +10,21 @@ internal class Program
     private static async Task Main(string[] args)
     {
         var original = Console.ForegroundColor;
+
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("Copy");
+            await TestCopyAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = original;
+        }
 
         try
         {
@@ -105,6 +118,41 @@ internal class Program
         }
     }
 
+    private static async Task TestCopyAsync()
+    {
+        var builder = new WireMockContainerBuilder()
+            .WithWatchStaticMappings(true)
+            .WithAutoRemove(true)
+            .WithCleanUp(true);
+
+        var container = builder.Build();
+
+        await container.StartAsync();
+
+        try
+        {
+            await container.CopyAsync(@"C:\temp-wiremock\__admin\mappings\StefBodyAsFileExample.json", "/app/__admin/mappings");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        Console.WriteLine("PublicUrl = " + container.GetPublicUrl());
+
+        var adminClient = container.CreateWireMockAdminClient();
+
+        var mappings = await adminClient.GetMappingsAsync();
+        Console.WriteLine("mappings = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
+
+        await Task.Delay(1_000);
+
+        //Console.WriteLine("Press any key to stop.");
+        //Console.ReadKey();
+
+        await container.StopAsync();
+    }
+
     private static async Task TestAsync(string? image = null)
     {
         var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "WireMock.Net.Console.NET6", "__admin", "mappings");
@@ -114,8 +162,7 @@ internal class Program
             .WithMappings(mappingsPath)
             .WithWatchStaticMappings(true)
             .WithAutoRemove(true)
-            .WithCleanUp(true)
-            .WithImagePullPolicy(PullPolicy.Missing);
+            .WithCleanUp(true);
 
         if (image != null)
         {
@@ -129,21 +176,7 @@ internal class Program
 
         var container = builder.Build();
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            try
-            {
-                await container.CopyAsync(@"C:\temp-wiremock\__admin\mappings\StefBodyAsFileExample.json", @"c:\app\__admin\mappings");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
         await container.StartAsync();
-
-        await Task.Delay(1_000);
 
         await container.ReloadStaticMappingsAsync();
 
@@ -158,18 +191,17 @@ internal class Program
         Console.WriteLine("settings = " + JsonConvert.SerializeObject(settings, Formatting.Indented));
 
         var mappings = await restEaseApiClient.GetMappingsAsync();
-        var mappingsStef = mappings.Where(m => JsonConvert.SerializeObject(m.Request.Path).Contains("Stef"));
-        Console.WriteLine("mappingsStef = " + JsonConvert.SerializeObject(mappingsStef, Formatting.Indented));
+        Console.WriteLine("mappingsStef = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
 
         var client = container.CreateClient();
         var result = await client.GetStringAsync("/static/mapping");
         Console.WriteLine("result = " + result);
 
-        if (image == null)
-        {
-            Console.WriteLine("Press any key to stop.");
-            Console.ReadKey();
-        }
+        //if (image == null)
+        //{
+        //    Console.WriteLine("Press any key to stop.");
+        //    Console.ReadKey();
+        //}
 
         await container.StopAsync();
     }
