@@ -100,7 +100,7 @@ public class WireMockServerProxyTests
                 Url = "http://www.google.com",
                 SaveMapping = true,
                 SaveMappingToFile = false,
-                ExcludedHeaders = new[] { "Connection" } // Needed for .NET 4.5.x and 4.6.x
+                ExcludedHeaders = ["Connection"] // Needed for .NET 4.5.x and 4.6.x
             },
             StartAdminInterface = true
         };
@@ -119,7 +119,7 @@ public class WireMockServerProxyTests
         }
 
         // Assert
-        server.Mappings.Should().HaveCount(36);
+        server.Mappings.Should().HaveCount(37);
     }
 
     [Fact]

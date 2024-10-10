@@ -19,11 +19,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: 'Execute Tests'
-      run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
-        dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
-        dotnet test './test/WireMock.Net.Middleware.Tests/WireMock.Net.Middleware.Tests.csproj' -c Release --framework net8.0
+    - name: 'WireMock.Net.Tests'
+      run: dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+
+    - name: 'WireMock.Net.TUnitTests'
+      run: dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
+
+    - name: 'WireMock.Net.Middleware.Tests'
+      run: dotnet test './test/WireMock.Net.Middleware.Tests/WireMock.Net.Middleware.Tests.csproj' -c Release --framework net8.0
 
   linux-build-and-run:
     name: Run Tests on Linux
@@ -35,14 +38,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: 'Execute Tests'
-      run: |
-        dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
-        dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
-        dotnet test './test/WireMock.Net.Middleware.Tests/WireMock.Net.Middleware.Tests.csproj' -c Release --framework net8.0
+    - name: 'WireMock.Net.Tests'
+      run: dotnet test './test/WireMock.Net.Tests/WireMock.Net.Tests.csproj' -c Release --framework net8.0
+
+    - name: 'WireMock.Net.TUnitTests'
+      run: dotnet test './test/WireMock.Net.TUnitTests/WireMock.Net.TUnitTests.csproj' -c Release --framework net8.0
+
+    - name: 'WireMock.Net.Middleware.Tests'
+      run: dotnet test './test/WireMock.Net.Middleware.Tests/WireMock.Net.Middleware.Tests.csproj' -c Release --framework net8.0
 
     - name: Install .NET Aspire workload
       run: dotnet workload install aspire
 
-    - name: 'Execute .NET Aspire Tests'
+    - name: 'WireMock.Net.Aspire.Tests'
       run: dotnet test './test/WireMock.Net.Aspire.Tests/WireMock.Net.Aspire.Tests.csproj' -c Release

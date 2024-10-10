@@ -1126,5 +1126,19 @@ text
 
         server.Stop();
     }
+
+    [Fact]
+    public async Task IWireMockAdminApi_ReadStaticMappingsAsync()
+    {
+        // Arrange
+        using var server = WireMockServer.StartWithAdminInterface();
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+
+        // Act
+        var status = await api.ReloadStaticMappingsAsync().ConfigureAwait(false);
+
+        // Assert
+        status.Status.Should().Be("Static Mappings reloaded");
+    }
 }
 #endif
