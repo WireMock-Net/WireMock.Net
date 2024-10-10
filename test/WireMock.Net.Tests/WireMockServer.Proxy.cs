@@ -759,8 +759,8 @@ public class WireMockServerProxyTests
         var brokenJpegHeader = new byte[]
             {0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00};
 
-        bool HasCorrectHeader(byte[] bytes) => bytes.SequenceEqual(jpegHeader);
-        bool HasBrokenHeader(byte[] bytes) => bytes.SequenceEqual(brokenJpegHeader);
+        bool HasCorrectHeader(byte[]? bytes) => bytes?.SequenceEqual(jpegHeader) == true;
+        bool HasBrokenHeader(byte[]? bytes) => bytes?.SequenceEqual(brokenJpegHeader) == true;
 
         var serverForProxyForwarding = WireMockServer.Start();
         serverForProxyForwarding

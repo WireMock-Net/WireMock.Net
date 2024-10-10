@@ -79,7 +79,7 @@ public interface IBodyData
     /// <summary>
     /// Gets or sets the proto definition.
     /// </summary>
-    public Func<IdOrText>? ProtoDefinition { get; set; }
+    public Func<IdOrTexts>? ProtoDefinition { get; set; }
 
     /// <summary>
     /// Gets or sets the full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".

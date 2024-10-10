@@ -79,7 +79,7 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case nameof(ProtoBufMatcher):
-                return CreateProtoBufMatcher(matchBehaviour, stringPatterns[0].GetPattern(), matcherModel);
+                return CreateProtoBufMatcher(matchBehaviour, stringPatterns.GetPatterns(), matcherModel);
 #endif
             case nameof(RegexMatcher):
                 return new RegexMatcher(matchBehaviour, stringPatterns, ignoreCase, useRegexExtended, matchOperator);
@@ -211,7 +211,18 @@ internal class MatcherMapper
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
-                model.Pattern = protoBufMatcher.ProtoDefinition().Value;
+                protoBufMatcher.ProtoDefinition().Value(id => model.Pattern = id, texts =>
+                {
+                    if (texts.Count == 1)
+                    {
+                        model.Pattern = texts[0];
+                    }
+                    else
+                    {
+                        model.Patterns = texts.Cast<object>().ToArray();
+                    }
+                });
+
                 model.ProtoBufMessageType = protoBufMatcher.MessageType;
                 model.ContentMatcher = Map(protoBufMatcher.Matcher);
                 break;
@@ -278,22 +289,30 @@ internal class MatcherMapper
 #endif
 
 #if PROTOBUF
-    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, string protoDefinitionOrId, MatcherModel matcher)
+    private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, IReadOnlyList<string> protoDefinitions, MatcherModel matcher)
     {
         var objectMatcher = Map(matcher.ContentMatcher) as IObjectMatcher;
 
-        IdOrText protoDefinition;
-        if (_settings.ProtoDefinitions?.TryGetValue(protoDefinitionOrId, out var protoDefinitionFromSettings) == true)
+        IdOrTexts protoDefinitionAsIdOrTexts;
+        if (protoDefinitions.Count == 1)
         {
-            protoDefinition = new(protoDefinitionOrId, protoDefinitionFromSettings);
+            var idOrText = protoDefinitions[0];
+            if (_settings.ProtoDefinitions?.TryGetValue(idOrText, out var protoDefinitionFromSettings) == true)
+            {
+                protoDefinitionAsIdOrTexts = new(idOrText, protoDefinitionFromSettings);
+            }
+            else
+            {
+                protoDefinitionAsIdOrTexts = new(null, protoDefinitions);
+            }
         }
         else
         {
-            protoDefinition = new(null, protoDefinitionOrId);
+            protoDefinitionAsIdOrTexts = new(null, protoDefinitions);
         }
 
         return new ProtoBufMatcher(
-            () => protoDefinition,
+            () => protoDefinitionAsIdOrTexts,
             matcher!.ProtoBufMessageType!,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
             objectMatcher

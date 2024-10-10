@@ -2,6 +2,7 @@
 
 #if PROTOBUF
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ProtoBufJsonConverter;
@@ -25,9 +26,9 @@ public class ProtoBufMatcher : IProtoBufMatcher
     public MatchBehaviour MatchBehaviour { get; }
 
     /// <summary>
-    /// The Func to define The proto definition as text.
+    /// The Func to define the proto definition as id or texts.
     /// </summary>
-    public Func<IdOrText> ProtoDefinition { get; }
+    public Func<IdOrTexts> ProtoDefinition { get; }
 
     /// <summary>
     /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".
@@ -44,12 +45,12 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="ProtoBufMatcher"/> class.
     /// </summary>
-    /// <param name="protoDefinition">The proto definition.</param>
+    /// <param name="protoDefinition">The proto definition as id or text.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="matchBehaviour">The match behaviour. (default = "AcceptOnMatch")</param>
     /// <param name="matcher">The optional jsonMatcher to use to match the ProtoBuf as (json) object.</param>
     public ProtoBufMatcher(
-        Func<IdOrText> protoDefinition,
+        Func<IdOrTexts> protoDefinition,
         string messageType,
         MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch,
         IObjectMatcher? matcher = null
@@ -102,7 +103,11 @@ public class ProtoBufMatcher : IProtoBufMatcher
             return null;
         }
 
-        var request = new ConvertToObjectRequest(ProtoDefinition().Text, MessageType, input);
+        var protoDefinitions = ProtoDefinition().Texts;
+       
+        var resolver = new WireMockProtoFileResolver(protoDefinitions);
+        var request = new ConvertToObjectRequest(protoDefinitions[0], MessageType, input)
+            .WithProtoFileResolver(resolver);
 
         try
         {

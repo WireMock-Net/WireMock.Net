@@ -121,7 +121,7 @@ public class SettingsModel
     /// <summary>
     /// A list of Grpc ProtoDefinitions which can be used.
     /// </summary>
-    public Dictionary<string, string>? ProtoDefinitions { get; set; }
+    public Dictionary<string, string[]>? ProtoDefinitions { get; set; }
 
 #if NETSTANDARD1_3_OR_GREATER || NET461
     /// <summary>

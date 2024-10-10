@@ -595,12 +595,12 @@ public partial class WireMockServer : IWireMockServer
     /// <param name="protoDefinition">The ProtoDefinition as text.</param>
     /// <returns><see cref="WireMockServer"/></returns>
     [PublicAPI]
-    public WireMockServer AddProtoDefinition(string id, string protoDefinition)
+    public WireMockServer AddProtoDefinition(string id, params string[] protoDefinition)
     {
         Guard.NotNullOrWhiteSpace(id);
-        Guard.NotNullOrWhiteSpace(protoDefinition);
+        Guard.NotNullOrEmpty(protoDefinition);
 
-        _settings.ProtoDefinitions ??= new Dictionary<string, string>();
+        _settings.ProtoDefinitions ??= new Dictionary<string, string[]>();
 
         _settings.ProtoDefinitions[id] = protoDefinition;
 

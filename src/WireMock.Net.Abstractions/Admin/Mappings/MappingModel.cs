@@ -89,7 +89,7 @@ public class MappingModel
     
     /// <summary>
     /// Data Object which can be used when WithTransformer is used.
-    /// e.g. lookup an path in this object using
+    /// e.g. lookup a path in this object using
     /// <example>
     /// lookup data "1"
     /// </example>
@@ -105,4 +105,9 @@ public class MappingModel
     /// The Grpc ProtoDefinition which is used for this mapping (request and response). [Optional]
     /// </summary>
     public string? ProtoDefinition { get; set; }
+
+    /// <summary>
+    /// The Grpc ProtoDefinitions which are used for this mapping (request and response). [Optional]
+    /// </summary>
+    public string[]? ProtoDefinitions { get; set; }
 }

@@ -226,7 +226,7 @@ message HelloReply {
     public Task ToMappingModel_WithTimeSettings_ReturnsCorrectTimeSettings()
     {
         // Assign
-        var start = new DateTime(2023, 1, 14, 15, 16, 17);
+        var start = new DateTime(2023, 1, 14, 15, 16, 17, DateTimeKind.Utc);
         var ttl = 100;
         var end = start.AddSeconds(ttl);
         var request = Request.Create();
