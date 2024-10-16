@@ -52,7 +52,7 @@ public class BodyData : IBodyData
 
     #region ProtoBuf
     /// <inheritdoc />
-    public Func<IdOrText>? ProtoDefinition { get; set; }
+    public Func<IdOrTexts>? ProtoDefinition { get; set; }
 
     /// <inheritdoc />
     public string? ProtoBufMessageType { get; set; }

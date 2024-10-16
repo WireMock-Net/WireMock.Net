@@ -1,11 +1,13 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using Stef.Validation;
 using WireMock.Exceptions;
+using WireMock.Models;
 using WireMock.Types;
 using WireMock.Util;
 
@@ -223,7 +225,19 @@ public partial class Response
         JsonConverterOptions? options = null
     )
     {
-        Guard.NotNullOrWhiteSpace(protoDefinition);
+        return WithBodyAsProtoBuf([protoDefinition], messageType, value, jsonConverter, options);
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithBodyAsProtoBuf(
+        IReadOnlyList<string> protoDefinitions,
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    )
+    {
+        Guard.NotNullOrEmpty(protoDefinitions);
         Guard.NotNullOrWhiteSpace(messageType);
         Guard.NotNull(value);
 
@@ -235,7 +249,7 @@ public partial class Response
         {
             DetectedBodyType = BodyType.ProtoBuf,
             BodyAsJson = value,
-            ProtoDefinition = () => new (null, protoDefinition),
+            ProtoDefinition = () => new IdOrTexts(null, protoDefinitions),
             ProtoBufMessageType = messageType
         };
 #endif
