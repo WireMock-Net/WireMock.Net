@@ -103,4 +103,3 @@ For more details see also [Docker](https://github.com/WireMock-Net/WireMock.Net-
 
 #### HTTPS / SSL
 More details on using HTTPS (SSL) can be found here [Wiki : HTTPS](https://github.com/WireMock-Net/WireMock.Net/wiki/Using-HTTPS-(SSL))
-
