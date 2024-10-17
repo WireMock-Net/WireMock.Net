@@ -1,3 +1,13 @@
+# 1.6.7 (17 October 2024)
+- [#1161](https://github.com/WireMock-Net/WireMock.Net/pull/1161) -  Use latest ProtoBufJsonConverter to support WellKnownTypes  [bug] contributed by [StefH](https://github.com/StefH)
+- [#1190](https://github.com/WireMock-Net/WireMock.Net/pull/1190) - Bump System.Text.Json from 8.0.4 to 8.0.5 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#1194](https://github.com/WireMock-Net/WireMock.Net/pull/1194) - Upgrade System.Text.RegularExpressions to 4.3.1 to solve CVE-2019-0820 [bug] contributed by [StefH](https://github.com/StefH)
+- [#1197](https://github.com/WireMock-Net/WireMock.Net/pull/1197) - Bump System.Text.Json from 8.0.4 to 8.0.5 in /src/dotnet-WireMock.Net [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
+- [#1198](https://github.com/WireMock-Net/WireMock.Net/pull/1198) - Fix Google.Protobuf.WellKnownTypes.Value [bug] contributed by [StefH](https://github.com/StefH)
+- [#1144](https://github.com/WireMock-Net/WireMock.Net/issues/1144) - Using google.protobuf.Empty as response results in a bad gRPC response [bug]
+- [#1153](https://github.com/WireMock-Net/WireMock.Net/issues/1153) - Grpc support for multiple proto files [feature]
+- [#1193](https://github.com/WireMock-Net/WireMock.Net/issues/1193) - Snyk issue : Regular Expression Denial of Service  [bug]
+
 # 1.6.6 (01 October 2024)
 - [#1185](https://github.com/WireMock-Net/WireMock.Net/pull/1185) - Throw exception in case WithTransformer is used after WithBodyFromFile [bug] contributed by [StefH](https://github.com/StefH)
 - [#1187](https://github.com/WireMock-Net/WireMock.Net/pull/1187) - Fix StaticMappingsPath in WireMockContainerBuilder [bug] contributed by [StefH](https://github.com/StefH)
