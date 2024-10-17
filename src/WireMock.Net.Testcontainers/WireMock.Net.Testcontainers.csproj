@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <Compile Include="..\WireMock.Net\Http\HttpClientFactory2.cs" Link="Http\HttpClientFactory2.cs" />
+      <Compile Include="..\WireMock.Net\Util\EnhancedFileSystemWatcher.cs" Link="Utils\EnhancedFileSystemWatcher.cs" />
     </ItemGroup>
 
     <ItemGroup>

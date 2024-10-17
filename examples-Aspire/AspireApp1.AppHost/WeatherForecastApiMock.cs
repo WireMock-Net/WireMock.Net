@@ -4,7 +4,7 @@ namespace AspireApp1.AppHost;
 
 internal class WeatherForecastApiMock
 {
-    public static async Task BuildAsync(AdminApiMappingBuilder builder)
+    public static async Task BuildAsync(AdminApiMappingBuilder builder, CancellationToken cancellationToken)
     {
         var summaries = new[]
         {
@@ -29,7 +29,7 @@ internal class WeatherForecastApiMock
             )
         );
 
-        await builder.BuildAndPostAsync();
+        await builder.BuildAndPostAsync(cancellationToken);
     }
 }
 
