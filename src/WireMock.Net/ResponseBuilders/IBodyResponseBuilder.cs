@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
@@ -109,7 +110,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     IResponseBuilder WithBody(object body, Encoding? encoding, IJsonConverter jsonConverter, JsonConverterOptions? options = null);
 
     /// <summary>
-    /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
+    /// WithBodyAsProtoBuf : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
     /// </summary>
     /// <param name="protoDefinition">The proto definition as text.</param>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
@@ -126,7 +127,24 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     );
 
     /// <summary>
-    /// WithBody : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
+    /// WithBodyAsProtoBuf : Create a ProtoBuf byte[] response based on proto definitions, message type and the value.
+    /// </summary>
+    /// <param name="protoDefinitions">The proto definition as text.</param>
+    /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
+    /// <param name="value">The object to convert to protobuf byte[].</param>
+    /// <param name="jsonConverter">The <see cref="IJsonConverter"/> [optional]. Default value is NewtonsoftJsonConverter.</param>
+    /// <param name="options">The <see cref="JsonConverterOptions"/> [optional].</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithBodyAsProtoBuf(
+        IReadOnlyList<string> protoDefinitions,
+        string messageType,
+        object value,
+        IJsonConverter? jsonConverter = null,
+        JsonConverterOptions? options = null
+    );
+
+    /// <summary>
+    /// WithBodyAsProtoBuf : Create a ProtoBuf byte[] response based on a proto definition, message type and the value.
     /// </summary>
     /// <param name="messageType">The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".</param>
     /// <param name="value">The object to convert to protobuf byte[].</param>

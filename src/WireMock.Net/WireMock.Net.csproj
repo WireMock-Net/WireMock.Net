@@ -150,7 +150,7 @@
         <PackageReference Include="GraphQL" Version="7.5.0" />
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
-        <PackageReference Include="ProtoBufJsonConverter" Version="0.3.0" />
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.5.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
@@ -179,17 +179,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Handlebars.Net.Helpers" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.4.4" />
-        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.4.4" />
+        <PackageReference Include="Handlebars.Net.Helpers" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.DynamicLinq" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.4.6" />
+        <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.4.6" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' ">
-        <PackageReference Include="Handlebars.Net.Helpers.Xslt" Version="2.4.4" />
+        <PackageReference Include="Handlebars.Net.Helpers.Xslt" Version="2.4.6" />
     </ItemGroup>
 
     <ItemGroup>

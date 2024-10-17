@@ -23,6 +23,16 @@ public static class AnyOfExtensions
     }
 
     /// <summary>
+    /// Gets the patterns.
+    /// </summary>
+    /// <param name="values">AnyOf types</param>
+    /// <returns>string values</returns>
+    public static string[] GetPatterns(this AnyOf<string, StringPattern>[] values)
+    {
+        return values.Select(GetPattern).ToArray();
+    }
+
+    /// <summary>
     /// Converts a string-patterns to AnyOf patterns.
     /// </summary>
     /// <param name="patterns">The string patterns</param>

@@ -298,7 +298,7 @@ public class WireMockServerSettings
     public IDictionary<string, Func<MatcherModel, IMatcher>>? CustomMatcherMappings { get; set; }
 
     /// <summary>
-    /// The <see cref="JsonSerializerSettings"/> used when the a JSON response is generated.
+    /// The <see cref="JsonSerializerSettings"/> used when the JSON response is generated.
     /// </summary>
     [PublicAPI, JsonIgnore]
     public JsonSerializerSettings? JsonSerializerSettings { get; set; }
@@ -315,7 +315,7 @@ public class WireMockServerSettings
     /// A list of Grpc ProtoDefinitions which can be used.
     /// </summary>
     [PublicAPI]
-    public Dictionary<string, string>? ProtoDefinitions { get; set; }
+    public Dictionary<string, string[]>? ProtoDefinitions { get; set; }
 
     /// <summary>
     /// A list of GraphQL Schemas which can be used.

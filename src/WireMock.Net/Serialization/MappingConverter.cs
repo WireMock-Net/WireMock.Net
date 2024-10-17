@@ -273,7 +273,6 @@ internal class MappingConverter(MatcherMapper mapper)
             WhenStateIs = mapping.ExecutionConditionState,
             SetStateTo = mapping.NextState,
             Data = mapping.Data,
-            ProtoDefinition = mapping.ProtoDefinition?.Value,
             Probability = mapping.Probability,
             Request = new RequestModel
             {
@@ -303,6 +302,20 @@ internal class MappingConverter(MatcherMapper mapper)
             },
             Response = new ResponseModel()
         };
+
+        mapping.ProtoDefinition?.Value(
+            id => mappingModel.ProtoDefinition = id,
+            texts =>
+            {
+                if (texts.Count == 1)
+                {
+                    mappingModel.ProtoDefinition = texts[0];
+                }
+                else
+                {
+                    mappingModel.ProtoDefinitions = texts.ToArray();
+                }
+            });
 
         if (methodMatcher != null)
         {
@@ -491,10 +504,22 @@ internal class MappingConverter(MatcherMapper mapper)
                 break;
 
             case BodyType.ProtoBuf:
-                // If the ProtoDefinition is not defined at the MappingModel, get the ProtoDefinition from the ResponseMessage.
-                if (mappingModel.ProtoDefinition == null)
+                // If the ProtoDefinition(s) is/are not defined at the MappingModel, get the ProtoDefinition(s) from the ResponseMessage.
+                if (mappingModel.ProtoDefinition == null && mappingModel.ProtoDefinitions == null)
                 {
-                    mappingModel.Response.ProtoDefinition = response.ResponseMessage.BodyData.ProtoDefinition?.Invoke().Value;
+                    response.ResponseMessage.BodyData.ProtoDefinition?.Invoke().Value(
+                        id => mappingModel.Response.ProtoDefinition = id,
+                        texts =>
+                        {
+                            if (texts.Count == 1)
+                            {
+                                mappingModel.Response.ProtoDefinition = texts[0];
+                            }
+                            else
+                            {
+                                mappingModel.Response.ProtoDefinitions = texts.ToArray();
+                            }
+                        });
                 }
 
                 mappingModel.Response.ProtoBufMessageType = response.ResponseMessage.BodyData.ProtoBufMessageType;

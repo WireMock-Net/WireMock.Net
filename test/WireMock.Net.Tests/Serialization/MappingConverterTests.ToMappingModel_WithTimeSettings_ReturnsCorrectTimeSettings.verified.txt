@@ -2,8 +2,8 @@
   Guid: Guid_1,
   UpdatedAt: 2022-12-04 11:12:13,
   TimeSettings: {
-    Start: 2023-01-14 15:16:17,
-    End: 2023-01-14 15:17:57,
+    Start: 2023-01-14 15:16:17 Utc,
+    End: 2023-01-14 15:17:57 Utc,
     TTL: 100
   },
   Title: ,
