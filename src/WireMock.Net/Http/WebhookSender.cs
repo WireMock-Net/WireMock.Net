@@ -78,6 +78,31 @@ internal class WebhookSender
             webhookRequestUrl = webhookRequest.Url;
         }
 
+        // Add digital signatures to header (if required)
+        if (webhookRequest.UseDigitalSignatures == true)
+        {
+            if (webhookRequest.DigitalSignatures is not null)
+            {
+                foreach (var digitalSignature in webhookRequest.DigitalSignatures)
+                {
+                    var privateKey = await digitalSignature.PrivateKeyCallback();
+                    var signature = await digitalSignature.DigitalSignatureCallback(privateKey, bodyData);
+
+                    // headers may be null here
+                    headers ??= new Dictionary<string, WireMockList<string>>();
+
+                    if (headers.ContainsKey(digitalSignature.HeaderName))
+                    {
+                        headers[digitalSignature.HeaderName].Add(signature);
+                    }
+                    else
+                    {
+                        headers[digitalSignature.HeaderName] = new WireMockList<string>(signature);
+                    }
+                }
+            }
+        }
+
         // Create RequestMessage
         var requestMessage = new RequestMessage(
             new UrlDetails(webhookRequestUrl),

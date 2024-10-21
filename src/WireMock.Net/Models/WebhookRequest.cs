@@ -40,4 +40,10 @@ public class WebhookRequest : IWebhookRequest
 
     /// <inheritdoc />
     public int? MaximumRandomDelay { get; set; }
+
+    /// <inheritdoc />
+    public bool? UseDigitalSignatures { get; set; }
+
+    /// <inheritdoc />
+    public IDigitalSignature[]? DigitalSignatures { get; set; }
 }

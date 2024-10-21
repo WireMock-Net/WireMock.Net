@@ -60,4 +60,14 @@ public interface IWebhookRequest
     /// Gets or sets the maximum random delay in milliseconds.
     /// </summary>
     int? MaximumRandomDelay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the value used to determine if digital signatures are generated.
+    /// </summary>
+    bool? UseDigitalSignatures { get; set; }
+
+    /// <summary>
+    /// Gets or sets the values used generate digital signatures.
+    /// </summary>
+    IDigitalSignature[]? DigitalSignatures { get; set; }
 }
