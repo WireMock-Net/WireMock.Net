@@ -36,7 +36,7 @@ public class WireMockNullLogger : IWireMockLogger
     }
 
     /// <see cref="IWireMockLogger.Error(string, Exception)"/>
-    public void Error(string formatString, Exception exception)
+    public void Error(string message, Exception exception)
     {
         // Log nothing
     }

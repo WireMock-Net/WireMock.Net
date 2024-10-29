@@ -52,9 +52,9 @@ public class WireMockConsoleLogger : IWireMockLogger
     }
 
     /// <see cref="IWireMockLogger.Error(string, Exception)"/>
-    public void Error(string formatString, Exception exception)
+    public void Error(string message, Exception exception)
     {
-        Console.WriteLine(Format("Error", formatString, exception.Message));
+        Console.WriteLine(Format("Error", $"{message} {{0}}", exception.Message));
 
         if (exception is AggregateException ae)
         {

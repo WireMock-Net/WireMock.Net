@@ -178,9 +178,9 @@ public partial class WireMockServer
             {
                 ReadStaticMappingAndAddOrUpdate(filename);
             }
-            catch
+            catch (Exception exception)
             {
-                _settings.Logger.Error("Static MappingFile : '{0}' could not be read. This file will be skipped.", filename);
+                _settings.Logger.Error($"Static MappingFile : '{filename}' could not be read. This file will be skipped.", exception);
             }
         }
     }
