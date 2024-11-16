@@ -1,6 +1,5 @@
 // Copyright © WireMock.Net
 
-using System;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -18,6 +17,10 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     public string? Password { get; }
 
     public string? StaticMappingsPath { get; private set; }
+
+    public bool WatchStaticMappings { get; private set; }
+
+    public bool WatchStaticMappingsInSubdirectories { get; private set; }
 
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 
@@ -65,16 +68,30 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         Username = BuildConfiguration.Combine(oldValue.Username, newValue.Username);
         Password = BuildConfiguration.Combine(oldValue.Password, newValue.Password);
         StaticMappingsPath = BuildConfiguration.Combine(oldValue.StaticMappingsPath, newValue.StaticMappingsPath);
+        WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
+        WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
     }
 
     /// <summary>
     /// Set the StaticMappingsPath.
     /// </summary>
     /// <param name="path">The path which contains the StaticMappings.</param>
-    /// <returns><see cref="WireMockConfiguration"/> </returns>
+    /// <returns><see cref="WireMockConfiguration"/></returns>
     public WireMockConfiguration WithStaticMappingsPath(string path)
     {
         StaticMappingsPath = path;
+        return this;
+    }
+
+    /// <summary>
+    /// Watch the static mappings.
+    /// </summary>
+    /// <param name="includeSubDirectories">Also look in SubDirectories.</param>
+    /// <returns><see cref="WireMockConfiguration"/></returns>
+    public WireMockConfiguration WithWatchStaticMappings(bool includeSubDirectories)
+    {
+        WatchStaticMappings = true;
+        WatchStaticMappingsInSubdirectories = includeSubDirectories;
         return this;
     }
 }

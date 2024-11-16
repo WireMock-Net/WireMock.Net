@@ -72,7 +72,7 @@ public static class WireMockAdminApiExtensions
 
         if (retries >= MaxRetries)
         {
-            throw new InvalidOperationException($"The /__admin/health endpoint did not return 'Healthy' after {MaxRetries} retries and {totalWaitTime / 1000.0:0.0} seconds.");
+            throw new InvalidOperationException($"The /__admin/health endpoint did not return '{HealthStatusHealthy}' after {MaxRetries} retries and {totalWaitTime / 1000.0:0.0} seconds.");
         }
     }
 

@@ -30,6 +30,10 @@
         <None Include="../../resources/WireMock.Net-LogoAspire.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\WireMock.Net\Util\EnhancedFileSystemWatcher.cs" Link="Utils\EnhancedFileSystemWatcher.cs" />
+    </ItemGroup>
+
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>

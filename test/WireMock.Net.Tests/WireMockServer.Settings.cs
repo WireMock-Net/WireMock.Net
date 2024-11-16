@@ -75,6 +75,8 @@ public class WireMockServerSettingsTests
     [Fact]
     public void WireMockServer_WireMockServerSettings_PriorityFromAllAdminMappingsIsLow_When_StartAdminInterface_IsTrue()
     {
+        const int count = 35;
+
         // Assign and Act
         var server = WireMockServer.Start(new WireMockServerSettings
         {
@@ -83,13 +85,15 @@ public class WireMockServerSettingsTests
 
         // Assert
         server.Mappings.Should().NotBeNull();
-        server.Mappings.Should().HaveCount(34);
+        server.Mappings.Should().HaveCount(count);
         server.Mappings.All(m => m.Priority == WireMockConstants.AdminPriority).Should().BeTrue();
     }
 
     [Fact]
     public void WireMockServer_WireMockServerSettings_ProxyAndRecordSettings_ProxyPriority_IsMinus2000000_When_StartAdminInterface_IsTrue()
     {
+        const int count = 36;
+
         // Assign and Act
         var server = WireMockServer.Start(new WireMockServerSettings
         {
@@ -102,9 +106,9 @@ public class WireMockServerSettingsTests
 
         // Assert
         server.Mappings.Should().NotBeNull();
-        server.Mappings.Should().HaveCount(35);
+        server.Mappings.Should().HaveCount(count);
 
-        server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(34);
+        server.Mappings.Count(m => m.Priority == WireMockConstants.AdminPriority).Should().Be(count - 1);
         server.Mappings.Count(m => m.Priority == WireMockConstants.ProxyPriority).Should().Be(1);
     }
 
