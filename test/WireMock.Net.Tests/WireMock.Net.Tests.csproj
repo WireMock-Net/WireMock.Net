@@ -72,10 +72,10 @@
         </PackageReference>
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
-        <PackageReference Include="RestEase" Version="1.5.7" />
+        <PackageReference Include="RestEase" Version="1.6.4" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="AnyOf" Version="0.3.0" />
+        <PackageReference Include="AnyOf" Version="0.4.0" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     </ItemGroup>
 
@@ -104,7 +104,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
-        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.5.0" />
+        <PackageReference Include="JsonConverter.System.Text.Json" Version="0.7.0" />
 
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
         <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
