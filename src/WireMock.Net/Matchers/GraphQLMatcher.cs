@@ -113,16 +113,16 @@ public class GraphQLMatcher : IStringMatcher
         {
             try
             {
-                var executionResult = new DocumentExecuter().ExecuteAsync(_ =>
+                var executionResult = new DocumentExecuter().ExecuteAsync(eo =>
                 {
-                    _.ThrowOnUnhandledException = true;
+                    eo.ThrowOnUnhandledException = true;
 
-                    _.Schema = _schema;
-                    _.Query = graphQLRequest.Query;
+                    eo.Schema = _schema;
+                    eo.Query = graphQLRequest.Query;
 
                     if (graphQLRequest.Variables != null)
                     {
-                        _.Variables = new Inputs(graphQLRequest.Variables);
+                        eo.Variables = new Inputs(graphQLRequest.Variables);
                     }
                 }).GetAwaiter().GetResult();
 

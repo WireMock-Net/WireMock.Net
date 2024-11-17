@@ -107,22 +107,32 @@ public class GraphQLMatcherTests
     public void GraphQLMatcher_For_ValidSchema_And_CorrectGraphQL_UsingCustomType_Mutation_IsMatch()
     {
         // Arrange
-        const string testSchema = @"
-  scalar DateTime
-  scalar MyCustomScalar
+        // Query is provided here: https://stackoverflow.com/questions/59608833/apollo-graphql-error-query-root-type-must-be-provided
+        const string testSchema =
+            """
+              scalar DateTime
+              scalar MyCustomScalar
+            
+              type Query {
+                _empty: String  
+              }
+            
+              type Message {
+                id: ID!
+              }
+            
+              type Mutation {
+                createMessage(x: MyCustomScalar, dt: DateTime): Message
+              }
+            """;
 
-  type Message {
-    id: ID!
-  }
-
-  type Mutation {
-    createMessage(x: MyCustomScalar, dt: DateTime): Message
-  }";
-
-        var input = @"{
-    ""query"": ""mutation CreateMessage($x: MyCustomScalar!, $dt: DateTime!) { createMessage(x: $x, dt: $dt) { id } }"",
-    ""variables"": { ""x"": 100, ""dt"": ""2007-12-03T10:15:30Z"" }
-}";
+        const string input =
+            """
+            {
+                "query": "mutation CreateMessage($x: MyCustomScalar!, $dt: DateTime!) { createMessage(x: $x, dt: $dt) { id } }",
+                "variables": { "x": 100, "dt": "2007-12-03T10:15:30Z" }
+            }
+            """;
 
         var customScalars = new Dictionary<string, Type> { { "MyCustomScalar", typeof(int) } };
 
