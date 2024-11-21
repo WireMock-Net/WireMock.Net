@@ -130,6 +130,25 @@ public class ResponseWithTransformerTests
         Check.That(response.Message.BodyData!.BodyAsString).Equals("a wiremock");
     }
 
+    [Fact]
+    public async Task Response_ProvideResponse_Handlebars_BodyAsJson_PathSegments()
+    {
+        // Assign
+        var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
+        var request = new RequestMessage(urlDetails, "POST", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBodyAsJson(new { field = "prefix_{{request.PathSegments.[0]}}_postfix" })
+            .WithTransformer();
+
+        // Act
+        var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
+
+        // Assert
+        var json = (JObject)response.Message.BodyData!.BodyAsJson!;
+        Check.That(json["field"]!.Value<string>()).Equals("prefix_a_postfix");
+    }
+
     [Theory(Skip = "Invalid token `OpenBracket`")]
     [InlineData(TransformerType.Scriban)]
     [InlineData(TransformerType.ScribanDotLiquid)]
