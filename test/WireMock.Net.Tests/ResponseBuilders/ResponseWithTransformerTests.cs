@@ -130,15 +130,19 @@ public class ResponseWithTransformerTests
         Check.That(response.Message.BodyData!.BodyAsString).Equals("a wiremock");
     }
 
-    [Fact]
-    public async Task Response_ProvideResponse_Handlebars_BodyAsJson_PathSegments()
+    [Theory]
+    [InlineData("{{request.PathSegments.[0]}}", "a")]
+    [InlineData("prefix_{{request.PathSegments.[0]}}", "prefix_a")]
+    [InlineData("{{request.PathSegments.[0]}}_postfix", "a_postfix")]
+    [InlineData("prefix_{{request.PathSegments.[0]}}_postfix", "prefix_a_postfix")]
+    public async Task Response_ProvideResponse_Handlebars_BodyAsJson_PathSegments(string field, string expected)
     {
         // Assign
         var urlDetails = UrlUtils.Parse(new Uri("http://localhost/wiremock/a/b"), new PathString("/wiremock"));
         var request = new RequestMessage(urlDetails, "POST", ClientIp);
 
         var responseBuilder = Response.Create()
-            .WithBodyAsJson(new { field = "prefix_{{request.PathSegments.[0]}}_postfix" })
+            .WithBodyAsJson(new { field })
             .WithTransformer();
 
         // Act
@@ -146,7 +150,7 @@ public class ResponseWithTransformerTests
 
         // Assert
         var json = (JObject)response.Message.BodyData!.BodyAsJson!;
-        Check.That(json["field"]!.Value<string>()).Equals("prefix_a_postfix");
+        Check.That(json["field"]!.Value<string>()).Equals(expected);
     }
 
     [Theory(Skip = "Invalid token `OpenBracket`")]
