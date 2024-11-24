@@ -1,11 +1,10 @@
-# 1.6.7 (17 October 2024)
-- #1161  Use latest ProtoBufJsonConverter to support WellKnownTypes  [bug]
-- #1190 Bump System.Text.Json from 8.0.4 to 8.0.5 in /examples/WireMock.Net.Console.Net472.Classic [dependencies]
-- #1194 Upgrade System.Text.RegularExpressions to 4.3.1 to solve CVE-2019-0820 [bug]
-- #1197 Bump System.Text.Json from 8.0.4 to 8.0.5 in /src/dotnet-WireMock.Net [dependencies]
-- #1198 Fix Google.Protobuf.WellKnownTypes.Value [bug]
-- #1144 Using google.protobuf.Empty as response results in a bad gRPC response [bug]
-- #1153 Grpc support for multiple proto files [feature]
-- #1193 Snyk issue : Regular Expression Denial of Service  [bug]
+# 1.6.8 (23 November 2024)
+- #1202 Log exception when (static) mapping file cannot be read [feature]
+- #1206 Fix security issues [bug]
+- #1211 Use GraphQL 8.2.1 [feature]
+- #1213 Fix HandlebarsContext ParseAndEvaluate method [bug]
+- #1201 Mapping file parse errors are not logged to the console [feature]
+- #1209 Upgrade of GraphQL libs to the latest [feature]
+- #1212 Response Body Does Not Include Text After Path Segment [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

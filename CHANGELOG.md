@@ -1,3 +1,12 @@
+# 1.6.8 (23 November 2024)
+- [#1202](https://github.com/WireMock-Net/WireMock.Net/pull/1202) - Log exception when (static) mapping file cannot be read [feature] contributed by [StefH](https://github.com/StefH)
+- [#1206](https://github.com/WireMock-Net/WireMock.Net/pull/1206) - Fix security issues [bug] contributed by [StefH](https://github.com/StefH)
+- [#1211](https://github.com/WireMock-Net/WireMock.Net/pull/1211) - Use GraphQL 8.2.1 [feature] contributed by [StefH](https://github.com/StefH)
+- [#1213](https://github.com/WireMock-Net/WireMock.Net/pull/1213) - Fix HandlebarsContext ParseAndEvaluate method [bug] contributed by [StefH](https://github.com/StefH)
+- [#1201](https://github.com/WireMock-Net/WireMock.Net/issues/1201) - Mapping file parse errors are not logged to the console [feature]
+- [#1209](https://github.com/WireMock-Net/WireMock.Net/issues/1209) - Upgrade of GraphQL libs to the latest [feature]
+- [#1212](https://github.com/WireMock-Net/WireMock.Net/issues/1212) - Response Body Does Not Include Text After Path Segment [bug]
+
 # 1.6.7 (17 October 2024)
 - [#1161](https://github.com/WireMock-Net/WireMock.Net/pull/1161) -  Use latest ProtoBufJsonConverter to support WellKnownTypes  [bug] contributed by [StefH](https://github.com/StefH)
 - [#1190](https://github.com/WireMock-Net/WireMock.Net/pull/1190) - Bump System.Text.Json from 8.0.4 to 8.0.5 in /examples/WireMock.Net.Console.Net472.Classic [dependencies] contributed by [dependabot[bot]](https://github.com/apps/dependabot)
