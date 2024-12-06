@@ -294,6 +294,23 @@ public class JsonPartialMatcherTests
     }
 
     [Fact]
+    public void JsonPartialMatcher_IsMatch_JObjectAsStringWithDottedPropertyName()
+    {
+        // Assign 
+        var matcher = new JsonPartialMatcher("{ \"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User\" : \"Test\" }");
+
+        // Act 
+        var jObject = new JObject
+        {
+            { "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User", new JValue("Test") }
+        };
+        var match = matcher.IsMatch(jObject).Score;
+
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
+
+    [Fact]
     public void JsonPartialMatcher_IsMatch_GuidAsString()
     {
         // Assign

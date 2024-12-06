@@ -82,7 +82,7 @@ public abstract class AbstractJsonPartialMatcher : JsonMatcher
             case JTokenType.Object:
                 var nestedValues = value.ToObject<Dictionary<string, JToken>>();
                 return nestedValues?.Any() != true ||
-                       nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key)));
+                       nestedValues.All(pair => IsMatch(pair.Value, input.SelectToken(pair.Key) ?? input[pair.Key])); // First try to select based on JPath expression, else just get the value.
 
             case JTokenType.Array:
                 var valuesArray = value.ToObject<JToken[]>();
