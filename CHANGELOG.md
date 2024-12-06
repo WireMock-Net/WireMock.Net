@@ -1,4 +1,8 @@
-# 1.6.8 (23 November 2024)
+# 1.6.9 (06 December 2024)
+- [#1216](https://github.com/WireMock-Net/WireMock.Net/pull/1216) - Fix JsonPartialMatcher when using property names with dot [bug] contributed by [StefH](https://github.com/StefH)
+- [#1210](https://github.com/WireMock-Net/WireMock.Net/issues/1210) - JsonPartialMatcher fails to match on property name that JsonMatcher matches [bug]
+
+# 1.6.8 (24 November 2024)
 - [#1202](https://github.com/WireMock-Net/WireMock.Net/pull/1202) - Log exception when (static) mapping file cannot be read [feature] contributed by [StefH](https://github.com/StefH)
 - [#1206](https://github.com/WireMock-Net/WireMock.Net/pull/1206) - Fix security issues [bug] contributed by [StefH](https://github.com/StefH)
 - [#1211](https://github.com/WireMock-Net/WireMock.Net/pull/1211) - Use GraphQL 8.2.1 [feature] contributed by [StefH](https://github.com/StefH)

@@ -1,10 +1,5 @@
-# 1.6.8 (23 November 2024)
-- #1202 Log exception when (static) mapping file cannot be read [feature]
-- #1206 Fix security issues [bug]
-- #1211 Use GraphQL 8.2.1 [feature]
-- #1213 Fix HandlebarsContext ParseAndEvaluate method [bug]
-- #1201 Mapping file parse errors are not logged to the console [feature]
-- #1209 Upgrade of GraphQL libs to the latest [feature]
-- #1212 Response Body Does Not Include Text After Path Segment [bug]
+# 1.6.9 (06 December 2024)
+- #1216 Fix JsonPartialMatcher when using property names with dot [bug]
+- #1210 JsonPartialMatcher fails to match on property name that JsonMatcher matches [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
