@@ -30,8 +30,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AnyOf" Version="0.3.0" />
-        <PackageReference Include="RestEase" Version="1.5.7" />
+        <PackageReference Include="AnyOf" Version="0.4.0" />
+        <PackageReference Include="RestEase" Version="1.6.4" />
     </ItemGroup>
 
     <ItemGroup>

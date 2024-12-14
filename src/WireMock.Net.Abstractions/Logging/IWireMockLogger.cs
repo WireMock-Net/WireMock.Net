@@ -51,10 +51,10 @@ public interface IWireMockLogger
     /// <summary>
     /// Writes the message at the Error level using the specified exception. 
     /// </summary>
-    /// <param name="formatString">The format string.</param>
+    /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     [PublicAPI]
-    void Error(string formatString, Exception exception);
+    void Error(string message, Exception exception);
 
     /// <summary>
     /// Writes the LogEntryModel (LogRequestModel, LogResponseModel and more).

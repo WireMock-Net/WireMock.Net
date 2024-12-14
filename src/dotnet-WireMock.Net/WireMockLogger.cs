@@ -47,9 +47,9 @@ public class WireMockLogger : IWireMockLogger
     }
 
     /// <see cref="IWireMockLogger.Error(string, Exception)"/>
-    public void Error(string formatString, Exception exception)
+    public void Error(string message, Exception exception)
     {
-        _logger.LogError(exception, formatString);
+        _logger.LogError(exception, message);
     }
 
     /// <see cref="IWireMockLogger.DebugRequestResponse"/>

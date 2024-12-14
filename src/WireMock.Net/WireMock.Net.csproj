@@ -59,13 +59,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JsonConverter.Abstractions" Version="0.5.0" />
+        <PackageReference Include="JsonConverter.Abstractions" Version="0.7.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="NJsonSchema.Extensions" Version="0.1.0" />
         <PackageReference Include="NSwag.Core" Version="13.16.1" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
-        <PackageReference Include="JmesPath.Net" Version="1.0.125" />
-        <PackageReference Include="AnyOf" Version="0.3.0" />
+        <PackageReference Include="JmesPath.Net" Version="1.0.330" />
+        <PackageReference Include="AnyOf" Version="0.4.0" />
         <PackageReference Include="TinyMapper" Version="3.0.3" />
     </ItemGroup>
 
@@ -108,9 +108,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/697 -->
-        <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
-
         <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
@@ -147,8 +144,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <PackageReference Include="GraphQL" Version="7.5.0" />
-        <PackageReference Include="GraphQL.NewtonsoftJson" Version="7.5.0" />
+        <PackageReference Include="GraphQL.NewtonsoftJson" Version="8.2.1" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
         <PackageReference Include="ProtoBufJsonConverter" Version="0.5.0" />
     </ItemGroup>
@@ -190,6 +186,11 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' ">
         <PackageReference Include="Handlebars.Net.Helpers.Xslt" Version="2.4.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- CVE-2021-26701 and https://github.com/WireMock-Net/WireMock.Net/issues/697 -->
+        <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
     </ItemGroup>
 
     <ItemGroup>

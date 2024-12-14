@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <VersionPrefix>1.6.7-preview-03</VersionPrefix>
+        <VersionPrefix>1.6.9</VersionPrefix>
         <PackageIcon>WireMock.Net-Logo.png</PackageIcon>
         <PackageProjectUrl>https://github.com/WireMock-Net/WireMock.Net</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -43,8 +43,17 @@
         </When>
     </Choose>
 
+    <PropertyGroup>
+        <NuGetAudit>true</NuGetAudit>
+        <!--<NuGetAuditLevel>low</NuGetAuditLevel>-->
+        <NuGetAuditMode>all</NuGetAuditMode>
+    </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="All" />
+        <!-- CVE-2019-0820 -->
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+
+        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 
