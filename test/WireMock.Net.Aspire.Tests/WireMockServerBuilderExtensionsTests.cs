@@ -63,7 +63,7 @@ public class WireMockServerBuilderExtensionsTests
             AdminPassword = password,
             AdminUsername = username,
             ReadStaticMappings = true,
-            WithWatchStaticMappings = false,
+            WatchStaticMappings = false,
             MappingsPath = null,
             HttpPort = port
         });

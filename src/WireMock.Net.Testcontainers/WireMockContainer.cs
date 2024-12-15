@@ -1,14 +1,20 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.IO;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using RestEase;
-using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
+using WireMock.Net.Testcontainers.Utils;
+using WireMock.Util;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -17,9 +23,13 @@ namespace WireMock.Net.Testcontainers;
 /// </summary>
 public sealed class WireMockContainer : DockerContainer
 {
+    private const int EnhancedFileSystemWatcherTimeoutMs = 2000;
     internal const int ContainerPort = 80;
 
     private readonly WireMockConfiguration _configuration;
+
+    private IWireMockAdminApi? _adminApi;
+    private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainer" /> class.
@@ -27,7 +37,9 @@ public sealed class WireMockContainer : DockerContainer
     /// <param name="configuration">The container configuration.</param>
     public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
-        _configuration = Guard.NotNull(configuration);
+        _configuration = Stef.Validation.Guard.NotNull(configuration);
+
+        Started += WireMockContainer_Started;
     }
 
     /// <summary>
@@ -92,12 +104,107 @@ public sealed class WireMockContainer : DockerContainer
         return client;
     }
 
+    /// <summary>
+    /// Copies a test host directory or file to the container and triggers a reload of the static mappings if required.
+    /// </summary>
+    /// <param name="source">The source directory or file to be copied.</param>
+    /// <param name="target">The target directory path to copy the files to.</param>
+    /// <param name="fileMode">The POSIX file mode permission.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A task that completes when the directory or file has been copied.</returns>
+    public new async Task CopyAsync(string source, string target, UnixFileModes fileMode = Unix.FileMode644, CancellationToken ct = default)
+    {
+        await base.CopyAsync(source, target, fileMode, ct);
+
+        if (_configuration.WatchStaticMappings && await PathStartsWithContainerMappingsPath(target))
+        {
+            await ReloadStaticMappingsAsync(target, ct);
+        }
+    }
+    
+    /// <summary>
+    /// Reload the static mappings.
+    /// </summary>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    public async Task ReloadStaticMappingsAsync(CancellationToken cancellationToken = default)
+    {
+        if (_adminApi == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _adminApi.ReloadStaticMappingsAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Error calling /__admin/mappings/reloadStaticMappings");
+        }
+    }
+
+    /// <inheritdoc />
+    protected override ValueTask DisposeAsyncCore()
+    {
+        if (_enhancedFileSystemWatcher != null)
+        {
+            _enhancedFileSystemWatcher.EnableRaisingEvents = false;
+            _enhancedFileSystemWatcher.Created -= FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Changed -= FileCreatedChangedOrDeleted;
+            _enhancedFileSystemWatcher.Deleted -= FileCreatedChangedOrDeleted;
+
+            _enhancedFileSystemWatcher.Dispose();
+            _enhancedFileSystemWatcher = null;
+        }
+
+        Started -= WireMockContainer_Started;
+
+        return base.DisposeAsyncCore();
+    }
+
+    private static async Task<bool> PathStartsWithContainerMappingsPath(string value)
+    {
+        var imageOs = await ContainerUtils.GetImageOSAsync.Value;
+
+        return value.StartsWith(ContainerInfoProvider.Info[imageOs].MappingsPath);
+    }
+
     private void ValidateIfRunning()
     {
         if (State != TestcontainersStates.Running)
         {
             throw new InvalidOperationException("Unable to create HttpClient because the WireMock.Net is not yet running.");
         }
+    }
+
+    private void WireMockContainer_Started(object sender, EventArgs e)
+    {
+        _adminApi = CreateWireMockAdminClient();
+
+        if (!_configuration.WatchStaticMappings || string.IsNullOrEmpty(_configuration.StaticMappingsPath))
+        {
+            return;
+        }
+
+        _enhancedFileSystemWatcher = new EnhancedFileSystemWatcher(_configuration.StaticMappingsPath!, "*.json", EnhancedFileSystemWatcherTimeoutMs)
+        {
+            IncludeSubdirectories = _configuration.WatchStaticMappingsInSubdirectories
+        };
+        _enhancedFileSystemWatcher.Created += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
+        _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+    }
+
+    private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
+    {
+        await ReloadStaticMappingsAsync(args.FullPath);
+    }
+
+    private async Task ReloadStaticMappingsAsync(string path, CancellationToken cancellationToken = default)
+    {
+        Logger.LogInformation("MappingFile created, changed or deleted: '{Path}'. Triggering ReloadStaticMappings.", path);
+        await ReloadStaticMappingsAsync(cancellationToken);
     }
 
     private Uri GetPublicUri() => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri;

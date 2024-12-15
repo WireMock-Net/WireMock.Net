@@ -1,15 +1,13 @@
 // Copyright © WireMock.Net
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
 using Stef.Validation;
-using WireMock.Net.Testcontainers.Models;
+using WireMock.Net.Testcontainers.Utils;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -19,26 +17,6 @@ namespace WireMock.Net.Testcontainers;
 public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContainerBuilder, WireMockContainer, WireMockConfiguration>
 {
     private const string DefaultLogger = "WireMockConsoleLogger";
-    private readonly Dictionary<OSPlatform, ContainerInfo> _info = new()
-    {
-        { OSPlatform.Linux, new ContainerInfo("sheyenrath/wiremock.net-alpine", "/app/__admin/mappings") },
-        { OSPlatform.Windows, new ContainerInfo("sheyenrath/wiremock.net-windows", @"c:\app\__admin\mappings") }
-    };
-
-    private readonly Lazy<Task<OSPlatform>> _getOSAsLazy = new(async () =>
-    {
-        if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
-        {
-            throw new InvalidOperationException($"The {nameof(TestcontainersSettings.OS.DockerEndpointAuthConfig)} is null. Check if Docker is started.");
-        }
-
-        using var dockerClientConfig = TestcontainersSettings.OS.DockerEndpointAuthConfig.GetDockerClientConfiguration();
-        using var dockerClient = dockerClientConfig.CreateClient();
-
-        var version = await dockerClient.System.GetVersionAsync();
-        return version.Os.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) >= 0 ? OSPlatform.Windows : OSPlatform.Linux;
-    });
-
     private OSPlatform? _imageOS;
 
     /// <summary>
@@ -58,7 +36,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        _imageOS ??= _getOSAsLazy.Value.GetAwaiter().GetResult();
+        _imageOS ??= ContainerUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
         return WithImage(_imageOS.Value);
     }
 
@@ -130,7 +108,9 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
     {
-        return WithCommand("--WatchStaticMappings true").WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        return Merge(DockerResourceConfiguration, DockerResourceConfiguration.WithWatchStaticMappings(includeSubDirectories))
+            .WithCommand("--WatchStaticMappings true")
+            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
     }
 
     /// <summary>
@@ -181,7 +161,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
 
         if (!string.IsNullOrEmpty(builder.DockerResourceConfiguration.StaticMappingsPath))
         {
-            builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, _info[_imageOS.Value].MappingsPath);
+            builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, ContainerInfoProvider.Info[_imageOS.Value].MappingsPath);
         }
 
         builder.Validate();
@@ -198,7 +178,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return builder
             .WithPortBinding(WireMockContainer.ContainerPort, true)
             .WithCommand($"--WireMockLogger {DefaultLogger}")
-            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("By Stef Heyenrath"));
+            .WithWaitStrategy(waitForContainerOS.UntilMessageIsLogged("WireMock.Net server running"));
     }
 
     /// <inheritdoc />
@@ -222,6 +202,6 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     private WireMockContainerBuilder WithImage(OSPlatform os)
     {
         _imageOS = os;
-        return WithImage(_info[os].Image);
+        return WithImage(ContainerInfoProvider.Info[os].Image);
     }
 }

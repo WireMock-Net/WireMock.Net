@@ -2,15 +2,16 @@ using AspireApp1.AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.AspireApp1_ApiService>("apiservice");
+// IResourceBuilder<ProjectResource> apiService = builder.AddProject<Projects.AspireApp1_ApiService>("apiservice");
 
 var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "WireMockMappings");
 
-//IResourceBuilder<WireMockServerResource> apiService = builder
-//    .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
-//    .WithMappingsPath(mappingsPath)
-//    .WithReadStaticMappings()
-//    .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);
+IResourceBuilder<WireMockServerResource> apiService = builder
+    .AddWireMock("apiservice", WireMockServerArguments.DefaultPort)
+    .WithMappingsPath(mappingsPath)
+    .WithReadStaticMappings()
+    .WithWatchStaticMappings()
+    .WithApiMappingBuilder(WeatherForecastApiMock.BuildAsync);
 
 //var apiServiceUsedForDocs = builder
 //    .AddWireMock("apiservice1", WireMockServerArguments.DefaultPort)

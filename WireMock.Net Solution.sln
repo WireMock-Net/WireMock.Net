@@ -138,7 +138,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.TUnit", "src\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.TUnitTests", "test\WireMock.Net.TUnitTests\WireMock.Net.TUnitTests.csproj", "{4CD237F7-B616-46B8-872F-E49B4BBB3EAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.WebApplication", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.csproj", "{E72ADFAB-4B42-439E-B1EE-C06E504B35D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.WebApplication", "examples\WireMock.Net.WebApplication\WireMock.Net.WebApplication.csproj", "{E72ADFAB-4B42-439E-B1EE-C06E504B35D2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.AspNetCore.Middleware", "src\WireMock.Net.AspNetCore.Middleware\WireMock.Net.AspNetCore.Middleware.csproj", "{B6269AAC-170A-4346-8B9A-579DED3D9A13}"
 EndProject
