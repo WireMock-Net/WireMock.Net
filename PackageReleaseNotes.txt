@@ -1,5 +1,5 @@
-# 1.6.9 (06 December 2024)
-- #1216 Fix JsonPartialMatcher when using property names with dot [bug]
-- #1210 JsonPartialMatcher fails to match on property name that JsonMatcher matches [bug]
+# 1.6.10 (15 December 2024)
+- #1189 WireMock.Net.Testcontainers: implement watching the static mapping folder for changes [bug]
+- #1188 WithWatchStaticMappings doesn't respect new files [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
