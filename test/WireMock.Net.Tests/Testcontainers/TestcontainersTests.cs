@@ -4,9 +4,11 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
+using WireMock.Net.Tests.Facts;
 using Xunit;
 
 namespace WireMock.Net.Tests.Testcontainers;
@@ -27,7 +29,27 @@ public class TestcontainersTests
 
         await StartTestAndStopAsync(wireMockContainer);
     }
-    
+
+    // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
+    [RunOnDockerPlatformFact("Linux")]
+    public async Task WireMockContainer_Build_WithNoImageAndNetwork_And_StartAsync_and_StopAsync()
+    {
+        // Act
+        var dummyNetwork = new NetworkBuilder()
+            .WithName("Dummy Network for TestcontainersTests")
+            .WithCleanUp(true)
+            .Build();
+
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithNetwork(dummyNetwork)
+            .WithWatchStaticMappings(true)
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .Build();
+
+        await StartTestAndStopAsync(wireMockContainer);
+    }
+
     [Fact]
     public async Task WireMockContainer_Build_WithImage_And_StartAsync_and_StopAsync()
     {

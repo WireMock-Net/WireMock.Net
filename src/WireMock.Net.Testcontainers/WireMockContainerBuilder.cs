@@ -36,7 +36,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithImage()
     {
-        _imageOS ??= ContainerUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
+        _imageOS ??= TestcontainersUtils.GetImageOSAsync.Value.GetAwaiter().GetResult();
         return WithImage(_imageOS.Value);
     }
 
@@ -108,9 +108,10 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithWatchStaticMappings(bool includeSubDirectories)
     {
-        return Merge(DockerResourceConfiguration, DockerResourceConfiguration.WithWatchStaticMappings(includeSubDirectories))
-            .WithCommand("--WatchStaticMappings true")
-            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        DockerResourceConfiguration.WithWatchStaticMappings(includeSubDirectories);
+        return
+            WithCommand("--WatchStaticMappings true").
+            WithCommand("--WatchStaticMappingsInSubdirectories", includeSubDirectories);
     }
 
     /// <summary>
@@ -124,9 +125,16 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         Guard.NotNullOrEmpty(path);
 
-        return Merge(DockerResourceConfiguration, DockerResourceConfiguration.WithStaticMappingsPath(path))
-            .WithReadStaticMappings()
-            .WithCommand($"--WatchStaticMappingsInSubdirectories {includeSubDirectories}");
+        DockerResourceConfiguration.WithStaticMappingsPath(path);
+
+        return
+            WithReadStaticMappings().
+            WithCommand("--WatchStaticMappingsInSubdirectories", includeSubDirectories);
+    }
+
+    private WireMockContainerBuilder WithCommand(string param, bool value)
+    {
+        return !value ? this : WithCommand($"{param} true");
     }
 
     private WireMockContainerBuilder(WireMockConfiguration dockerResourceConfiguration) : base(dockerResourceConfiguration)
