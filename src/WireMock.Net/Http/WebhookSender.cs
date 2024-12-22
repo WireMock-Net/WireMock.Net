@@ -70,6 +70,8 @@ internal class WebhookSender
             bodyData = transformer.TransformBody(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.BodyData, webhookRequest.TransformerReplaceNodeOptions);
             headers = transformer.TransformHeaders(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Headers);
             requestUrl = transformer.TransformString(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Url);
+
+            mapping.Settings.WebhookSettings?.PostTransform(mapping, requestUrl, bodyData, headers);
         }
         else
         {
@@ -77,8 +79,6 @@ internal class WebhookSender
             headers = webhookRequest.Headers;
             requestUrl = webhookRequest.Url;
         }
-
-        mapping.Settings.WebhookSettings?.PostTransform(mapping, requestUrl, bodyData, headers);
 
         // Create RequestMessage
         var requestMessage = new RequestMessage(
