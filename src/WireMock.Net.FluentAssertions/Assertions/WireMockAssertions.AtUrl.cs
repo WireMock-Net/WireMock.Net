@@ -1,7 +1,8 @@
 // Copyright © WireMock.Net
 
 #pragma warning disable CS1591
-using System;
+using WireMock.Extensions;
+using WireMock.Matchers;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions;
@@ -11,7 +12,17 @@ public partial class WireMockAssertions
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> AtAbsoluteUrl(string absoluteUrl, string because = "", params object[] becauseArgs)
     {
-        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.AbsoluteUrl, absoluteUrl, StringComparison.OrdinalIgnoreCase));
+        _ = AtAbsoluteUrl(new ExactMatcher(true, absoluteUrl), because, becauseArgs);
+
+        return new AndWhichConstraint<WireMockAssertions, string>(this, absoluteUrl);
+    }
+
+    [CustomAssertion]
+    public AndWhichConstraint<WireMockAssertions, IStringMatcher> AtAbsoluteUrl(IStringMatcher absoluteUrlMatcher, string because = "", params object[] becauseArgs)
+    {
+        var (filter, condition) = BuildFilterAndCondition(request => absoluteUrlMatcher.IsPerfectMatch(request.AbsoluteUrl));
+
+        var absoluteUrl = absoluteUrlMatcher.GetPatterns().FirstOrDefault().GetPattern();
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -31,13 +42,23 @@ public partial class WireMockAssertions
 
         FilterRequestMessages(filter);
 
-        return new AndWhichConstraint<WireMockAssertions, string>(this, absoluteUrl);
+        return new AndWhichConstraint<WireMockAssertions, IStringMatcher>(this, absoluteUrlMatcher);
     }
 
     [CustomAssertion]
     public AndWhichConstraint<WireMockAssertions, string> AtUrl(string url, string because = "", params object[] becauseArgs)
     {
-        var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.Url, url, StringComparison.OrdinalIgnoreCase));
+        _ = AtUrl(new ExactMatcher(true, url), because, becauseArgs);
+
+        return new AndWhichConstraint<WireMockAssertions, string>(this, url);
+    }
+
+    [CustomAssertion]
+    public AndWhichConstraint<WireMockAssertions, IStringMatcher> AtUrl(IStringMatcher urlMatcher, string because = "", params object[] becauseArgs)
+    {
+        var (filter, condition) = BuildFilterAndCondition(request => urlMatcher.IsPerfectMatch(request.Url));
+
+        var url = urlMatcher.GetPatterns().FirstOrDefault().GetPattern();
 
         Execute.Assertion
             .BecauseOf(because, becauseArgs)
@@ -57,6 +78,6 @@ public partial class WireMockAssertions
 
         FilterRequestMessages(filter);
 
-        return new AndWhichConstraint<WireMockAssertions, string>(this, url);
+        return new AndWhichConstraint<WireMockAssertions, IStringMatcher>(this, urlMatcher);
     }
 }
