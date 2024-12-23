@@ -308,7 +308,7 @@ public partial class WireMockServer
         }
         else if (responseModel.HeadersRaw != null)
         {
-            foreach (string headerLine in responseModel.HeadersRaw.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string headerLine in responseModel.HeadersRaw.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries))
             {
                 int indexColon = headerLine.IndexOf(":", StringComparison.Ordinal);
                 string key = headerLine.Substring(0, indexColon).TrimStart(' ', '\t');

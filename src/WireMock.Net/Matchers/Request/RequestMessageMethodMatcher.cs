@@ -29,6 +29,14 @@ internal class RequestMessageMethodMatcher : IRequestMatcher
     /// <summary>
     /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
     /// </summary>
+    /// <param name="methods">The methods.</param>
+    public RequestMessageMethodMatcher(params string[] methods) : this(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, methods)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestMessageMethodMatcher"/> class.
+    /// </summary>
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="matchOperator">The <see cref="Matchers.MatchOperator"/> to use.</param>
     /// <param name="methods">The methods.</param>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using WireMock.Admin.Mappings;
 using WireMock.Logging;
+using WireMock.Matchers.Request;
 using WireMock.Types;
 
 namespace WireMock.Server;
@@ -27,12 +28,12 @@ public interface IWireMockServer : IDisposable
     /// <summary>
     /// Gets the request logs.
     /// </summary>
-    IEnumerable<ILogEntry> LogEntries { get; }
+    IReadOnlyList<ILogEntry> LogEntries { get; }
 
     /// <summary>
     /// Gets the mappings as MappingModels.
     /// </summary>
-    IEnumerable<MappingModel> MappingModels { get; }
+    IReadOnlyList<MappingModel> MappingModels { get; }
 
     // <summary>
     // Gets the mappings.
@@ -109,7 +110,12 @@ public interface IWireMockServer : IDisposable
     /// <param name="guid">The unique identifier.</param>
     bool DeleteMapping(Guid guid);
 
-    //IEnumerable<LogEntry> FindLogEntries([NotNull] params IRequestMatcher[] matchers);
+    /// <summary>
+    /// Search log-entries based on matchers.
+    /// </summary>
+    /// <param name="matchers">The request matchers to use.</param>
+    /// <returns>The <see cref="IReadOnlyList{ILogEntry}"/>.</returns>
+    IReadOnlyList<ILogEntry> FindLogEntries(params IRequestMatcher[] matchers);
 
     // IRespondWithAProvider Given(IRequestMatcher requestMatcher, bool saveToFile = false);
 

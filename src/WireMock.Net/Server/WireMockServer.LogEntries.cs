@@ -1,9 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using JetBrains.Annotations;
@@ -24,23 +22,20 @@ public partial class WireMockServer
         remove => _logEntriesChanged -= value;
     }
 
-    /// <inheritdoc cref="IWireMockServer.LogEntries" />
+    /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<ILogEntry> LogEntries => new ReadOnlyCollection<LogEntry>(_options.LogEntries.ToList());
+    public IReadOnlyList<ILogEntry> LogEntries => _options.LogEntries.ToArray();
 
-    /// <summary>
-    /// The search log-entries based on matchers.
-    /// </summary>
-    /// <param name="matchers">The matchers.</param>
-    /// <returns>The <see cref="IEnumerable"/>.</returns>
+
+    /// <inheritdoc />
     [PublicAPI]
-    public IEnumerable<LogEntry> FindLogEntries(params IRequestMatcher[] matchers)
+    public IReadOnlyList<ILogEntry> FindLogEntries(params IRequestMatcher[] matchers)
     {
         Guard.NotNull(matchers);
 
         var results = new Dictionary<LogEntry, RequestMatchResult>();
 
-        foreach (var log in _options.LogEntries.ToList())
+        foreach (var log in _options.LogEntries.ToArray())
         {
             var requestMatchResult = new RequestMatchResult();
             foreach (var matcher in matchers)
@@ -54,7 +49,10 @@ public partial class WireMockServer
             }
         }
 
-        return new ReadOnlyCollection<LogEntry>(results.OrderBy(x => x.Value).Select(x => x.Key).ToList());
+        return results
+            .OrderBy(x => x.Value)
+            .Select(x => x.Key)
+            .ToArray();
     }
 
     /// <inheritdoc cref="IWireMockServer.ResetLogEntries" />
