@@ -15,6 +15,7 @@ using RestEase;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -258,7 +259,7 @@ public class WireMockServerAdminTests
 
         // Assert
         var mapping = server.Mappings.First(m => !m.IsAdminInterface);
-        var request = (Request) mapping.RequestMatcher;
+        var request = (Request)mapping.RequestMatcher;
         var pathMatcher = request.GetRequestMessageMatcher<RequestMessagePathMatcher>();
         pathMatcher.Should().BeNull();
 
@@ -426,6 +427,34 @@ public class WireMockServerAdminTests
         server.LogEntries.Should().BeEmpty();
 
         server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_Admin_Logging_FindLogEntries()
+    {
+        // Assign
+        using var client = new HttpClient();
+
+        // Act
+        using var server = WireMockServer.Start();
+
+        var tasks = new[]
+        {
+            client.GetAsync($"{server.Url}/foo1"),
+            client.PostAsync($"{server.Url}/foo2", new StringContent("test")),
+            client.GetAsync($"{server.Url}/foo3")
+        };
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        // Act
+        var logEntries = server.FindLogEntries(new RequestMessageMethodMatcher("GET"));
+
+        // Assert
+        logEntries.Should().HaveCount(2);
+
+        logEntries.Single(le => le.RequestMessage.Path.EndsWith("foo1")).Should().NotBeNull();
+        logEntries.Single(le => le.RequestMessage.Path.EndsWith("foo3")).Should().NotBeNull();
     }
 
     [Fact]

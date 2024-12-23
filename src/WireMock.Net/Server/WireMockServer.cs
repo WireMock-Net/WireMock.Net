@@ -84,11 +84,11 @@ public partial class WireMockServer : IWireMockServer
     /// Gets the mappings.
     /// </summary>
     [PublicAPI]
-    public IEnumerable<IMapping> Mappings => _options.Mappings.Values.ToArray();
+    public IReadOnlyList<IMapping> Mappings => _options.Mappings.Values.ToArray();
 
     /// <inheritdoc cref="IWireMockServer.MappingModels" />
     [PublicAPI]
-    public IEnumerable<MappingModel> MappingModels => ToMappingModels();
+    public IReadOnlyList<MappingModel> MappingModels => ToMappingModels();
 
     /// <summary>
     /// Gets the scenarios.

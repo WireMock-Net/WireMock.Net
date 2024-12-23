@@ -11,7 +11,7 @@ namespace WireMock.Server;
 
 public partial class WireMockServer
 {
-    private static readonly Encoding[] FileBodyIsString = { Encoding.UTF8, Encoding.ASCII };
+    private static readonly Encoding[] FileBodyIsString = [Encoding.UTF8, Encoding.ASCII];
 
     #region Files/{filename}
     private IResponseMessage FilePost(IRequestMessage requestMessage)
