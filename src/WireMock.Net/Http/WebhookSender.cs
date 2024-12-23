@@ -46,7 +46,7 @@ internal class WebhookSender
 
         IBodyData? bodyData;
         IDictionary<string, WireMockList<string>>? headers;
-        string webhookRequestUrl;
+        string requestUrl;
         if (webhookRequest.UseTransformer == true)
         {
             ITransformer transformer;
@@ -69,18 +69,20 @@ internal class WebhookSender
 
             bodyData = transformer.TransformBody(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.BodyData, webhookRequest.TransformerReplaceNodeOptions);
             headers = transformer.TransformHeaders(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Headers);
-            webhookRequestUrl = transformer.TransformString(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Url);
+            requestUrl = transformer.TransformString(mapping, originalRequestMessage, originalResponseMessage, webhookRequest.Url);
+
+            mapping.Settings.WebhookSettings?.PostTransform(mapping, requestUrl, bodyData, headers);
         }
         else
         {
             bodyData = webhookRequest.BodyData;
             headers = webhookRequest.Headers;
-            webhookRequestUrl = webhookRequest.Url;
+            requestUrl = webhookRequest.Url;
         }
 
         // Create RequestMessage
         var requestMessage = new RequestMessage(
-            new UrlDetails(webhookRequestUrl),
+            new UrlDetails(requestUrl),
             webhookRequest.Method,
             ClientIp,
             bodyData,
@@ -91,7 +93,7 @@ internal class WebhookSender
         };
 
         // Create HttpRequestMessage
-        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, webhookRequestUrl);
+        var httpRequestMessage = HttpRequestMessageHelper.Create(requestMessage, requestUrl);
 
         // Delay (if required)
         if (TryGetDelay(webhookRequest, out var delay))

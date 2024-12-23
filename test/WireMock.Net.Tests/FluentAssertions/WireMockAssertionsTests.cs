@@ -104,6 +104,16 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
+            .AtAbsoluteUrl(new WildcardMatcher($"http://localhost:{_portUsed}/any*"));
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_AtAbsoluteUrlWilcardMAtcher_WhenACallWasMadeToAbsoluteUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
             .AtAbsoluteUrl($"http://localhost:{_portUsed}/anyurl");
     }
 
@@ -231,7 +241,7 @@ public class WireMockAssertionsTests : IDisposable
         using var client2 = server.CreateClient(handler);
 
         // Act 1
-        await client1.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        var task1 = client1.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
         {
             Headers =
             {
@@ -240,13 +250,15 @@ public class WireMockAssertionsTests : IDisposable
         });
 
         // Act 2
-        await client2.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
+        var task2 = client2.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/")
         {
             Headers =
             {
                 Authorization = new AuthenticationHeaderValue("Bearer", "validToken")
             }
         });
+
+        await Task.WhenAll(task1, task2);
 
         // Assert
         server.Should()
@@ -266,6 +278,16 @@ public class WireMockAssertionsTests : IDisposable
         _server.Should()
             .HaveReceivedACall()
             .AtUrl($"http://localhost:{_portUsed}/anyurl");
+    }
+
+    [Fact]
+    public async Task HaveReceivedACall_AtUrlWildcardMatcher_WhenACallWasMadeToUrl_Should_BeOK()
+    {
+        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+
+        _server.Should()
+            .HaveReceivedACall()
+            .AtUrl(new WildcardMatcher($"http://localhost:{_portUsed}/AN*", true));
     }
 
     [Fact]
@@ -393,11 +415,14 @@ public class WireMockAssertionsTests : IDisposable
     [Fact]
     public async Task HaveReceived2Calls_UsingDelete_WhenACallWasMadeUsingDelete_Should_BeOK()
     {
-        await _httpClient.DeleteAsync("anyurl").ConfigureAwait(false);
+        var tasks = new[]
+        {
+            _httpClient.DeleteAsync("anyurl"),
+            _httpClient.DeleteAsync("anyurl"),
+            _httpClient.GetAsync("anyurl")
+        };
 
-        await _httpClient.DeleteAsync("anyurl").ConfigureAwait(false);
-
-        await _httpClient.GetAsync("anyurl").ConfigureAwait(false);
+        await Task.WhenAll(tasks);
 
         _server.Should()
             .HaveReceived(2).Calls()
@@ -521,11 +546,14 @@ public class WireMockAssertionsTests : IDisposable
         // Act
         var httpClient = new HttpClient();
 
-        await httpClient.GetAsync($"{server.Url}/a");
+        var tasks = new[]
+        {
+            httpClient.GetAsync($"{server.Url}/a"),
+            httpClient.PostAsync($"{server.Url}/b", new StringContent("B")),
+            httpClient.PostAsync($"{server.Url}/c", new StringContent("C"))
+        };
 
-        await httpClient.PostAsync($"{server.Url}/b", new StringContent("B"));
-
-        await httpClient.PostAsync($"{server.Url}/c", new StringContent("C"));
+        await Task.WhenAll(tasks);
 
         // Assert
         server
