@@ -1,7 +1,8 @@
 // Copyright © WireMock.Net
 
-using DotNet.Testcontainers.Configurations;
 using System.Runtime.InteropServices;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
 using Newtonsoft.Json;
 using WireMock.Net.Testcontainers;
 
@@ -9,100 +10,27 @@ namespace WireMock.Net.TestcontainersExample;
 
 internal class Program
 {
+    private static readonly ConsoleColor OriginalColor = Console.ForegroundColor;
+
     private static async Task Main(string[] args)
     {
-        var original = Console.ForegroundColor;
+        await TestLinux();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("Copy");
-            await TestCopyAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestAutomatic();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("Automatic");
-            await TestAsync();
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestLinuxWithVersionTag();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Linux");
-            await TestAsync("sheyenrath/wiremock.net:1.6.5");
-            await Task.Delay(1_000);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestLinuxAlpineWithVersionTag();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Linux Alpine");
-            await TestAsync("sheyenrath/wiremock.net-alpine:1.6.5");
-            await Task.Delay(1_000);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestWindowsWithVersionTag();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("WithLinux");
-            await TestAsync("WithLinux");
-            await Task.Delay(1_000);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestWindows();
 
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Windows");
-            await TestAsync("sheyenrath/wiremock.net-windows:1.6.5");
-            await Task.Delay(1_000);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            Console.ForegroundColor = original;
-        }
+        await TestCopy();
+    }
 
+    private static async Task TestWindows()
+    {
         try
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -116,11 +44,119 @@ internal class Program
         }
         finally
         {
-            Console.ForegroundColor = original;
+            Console.ForegroundColor = OriginalColor;
         }
     }
 
-    private static async Task TestCopyAsync()
+    private static async Task TestWindowsWithVersionTag()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Windows");
+            await TestAsync("sheyenrath/wiremock.net-windows:1.6.5");
+            await Task.Delay(1_000);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestLinux()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("WithLinux");
+            await TestAsync("WithLinux");
+            await Task.Delay(1_000);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestLinuxAlpineWithVersionTag()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Linux Alpine");
+            await TestAsync("sheyenrath/wiremock.net-alpine:1.6.5");
+            await Task.Delay(1_000);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestLinuxWithVersionTag()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Linux");
+            await TestAsync("sheyenrath/wiremock.net:1.6.5");
+            await Task.Delay(1_000);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestAutomatic()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Automatic");
+            await TestAsync();
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestCopy()
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("Copy");
+            await TestWindowsCopyAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.ForegroundColor = OriginalColor;
+        }
+    }
+
+    private static async Task TestWindowsCopyAsync()
     {
         var builder = new WireMockContainerBuilder()
             .WithWatchStaticMappings(true)
@@ -152,9 +188,6 @@ internal class Program
 
         await Task.Delay(1_000);
 
-        //Console.WriteLine("Press any key to stop.");
-        //Console.ReadKey();
-
         await container.StopAsync();
     }
 
@@ -162,11 +195,18 @@ internal class Program
     {
         var mappingsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "WireMock.Net.Console.NET6", "__admin", "mappings");
 
+        var dummyNetwork = new NetworkBuilder()
+            .WithName($"Dummy Network for {image ?? "null"}")
+            .WithReuse(true)
+            .WithCleanUp(true)
+            .Build();
+
         var builder = new WireMockContainerBuilder()
+            .WithNetwork(dummyNetwork)
             .WithAdminUserNameAndPassword("x", "y")
             .WithMappings(mappingsPath)
             .WithWatchStaticMappings(true)
-            .WithAutoRemove(true)
+            // .WithAutoRemove(true)
             .WithCleanUp(true);
 
         if (image != null)
@@ -202,16 +242,10 @@ internal class Program
         var result = await client.GetStringAsync("/static/mapping");
         Console.WriteLine("result = " + result);
 
-        //if (image == null)
-        //{
-        //    Console.WriteLine("Press any key to stop.");
-        //    Console.ReadKey();
-        //}
-
         await container.StopAsync();
     }
 
-    private static Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
+    private static readonly Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
     {
         if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
         {

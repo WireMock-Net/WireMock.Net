@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace WireMock.Net.Testcontainers.Utils;
 
-internal static class ContainerUtils
+/// <summary>
+/// Some utility methods for containers.
+/// </summary>
+public static class TestcontainersUtils
 {
+    /// <summary>
+    /// Get the OS platform of the Docker image.
+    /// </summary>
     public static Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
     {
         if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
