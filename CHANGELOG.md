@@ -1,3 +1,13 @@
+# 1.6.11 (02 January 2025)
+- [#1221](https://github.com/WireMock-Net/WireMock.Net/pull/1221) - Add overloads to AtUrl and AtAbsoluteUrl which can use a IStringMatcher [feature] contributed by [StefH](https://github.com/StefH)
+- [#1222](https://github.com/WireMock-Net/WireMock.Net/pull/1222) - Fix WireMockContainerBuilder (duplicate entries) [bug] contributed by [StefH](https://github.com/StefH)
+- [#1223](https://github.com/WireMock-Net/WireMock.Net/pull/1223) - Add functionality to call a PostTransform method after the Webhook request has been transformed [feature] contributed by [StefH](https://github.com/StefH)
+- [#1224](https://github.com/WireMock-Net/WireMock.Net/pull/1224) - Add FindLogEntries to IWireMockServer [feature] contributed by [StefH](https://github.com/StefH)
+- [#1092](https://github.com/WireMock-Net/WireMock.Net/issues/1092) - FindLogEntries present in WireMockServer but not IWireMockServer [feature]
+- [#1192](https://github.com/WireMock-Net/WireMock.Net/issues/1192) - Feature: add URL assertion excluding query parameters [feature]
+- [#1204](https://github.com/WireMock-Net/WireMock.Net/issues/1204) - Supplying Values From Request for Webhook Body and Headers [feature]
+- [#1217](https://github.com/WireMock-Net/WireMock.Net/issues/1217) - Order of WireMockContainerBuilder WithX calls caused duplicate Networks in Configuration [bug]
+
 # 1.6.10 (15 December 2024)
 - [#1189](https://github.com/WireMock-Net/WireMock.Net/pull/1189) - WireMock.Net.Testcontainers: implement watching the static mapping folder for changes [bug] contributed by [StefH](https://github.com/StefH)
 - [#1188](https://github.com/WireMock-Net/WireMock.Net/issues/1188) - WithWatchStaticMappings doesn't respect new files [bug]
