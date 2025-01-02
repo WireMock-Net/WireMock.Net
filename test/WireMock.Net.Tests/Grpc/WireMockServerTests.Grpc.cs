@@ -100,6 +100,38 @@ message Other {
 }
 ";
 
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_JsonPartialWildcardMatcher()
+    {
+        // Arrange
+        var bytes = Convert.FromBase64String("CgRzdGVm");
+        var jsonMatcher = new JsonPartialWildcardMatcher(new { name = "*" });
+
+        using var server = WireMockServer.Start();
+
+        server
+            .WhenRequest(r => r
+                .UsingPost()
+                .WithPath("/grpc/greet.Greeter/SayHello")
+                .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", jsonMatcher)
+            )
+            .ThenRespondWith(r => r
+                .WithTrailingHeader("grpc-status", "0")
+            );
+
+        // Act
+        var protoBuf = new ByteArrayContent(bytes);
+        protoBuf.Headers.ContentType = new MediaTypeHeaderValue("application/grpc-web");
+
+        var client = server.CreateClient();
+        var response = await client.PostAsync("/grpc/greet.Greeter/SayHello", protoBuf);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        server.Stop();
+    }
+
     [Theory]
     [InlineData("CgRzdGVm")]
     [InlineData("AAAAAAYKBHN0ZWY=")]
@@ -232,7 +264,7 @@ message Other {
 
         using var server = WireMockServer.Start();
 
-        var protoFiles = new [] { ProtoDefinitionMain, ProtoDefinitionOther };
+        var protoFiles = new[] { ProtoDefinitionMain, ProtoDefinitionOther };
 
         server
             .Given(Request.Create()
