@@ -15,7 +15,7 @@ public static class TestcontainersUtils
     /// <summary>
     /// Get the OS platform of the Docker image.
     /// </summary>
-    public static Lazy<Task<OSPlatform>> GetImageOSAsync = new(async () =>
+    public static Lazy<Task<OSPlatform>> GetDockerImageOSAsync = new(async () =>
     {
         if (TestcontainersSettings.OS.DockerEndpointAuthConfig == null)
         {
