@@ -8,7 +8,7 @@ using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
-using WireMock.Net.Tests.Facts;
+using WireMock.Net.Testcontainers.Utils;
 using Xunit;
 
 namespace WireMock.Net.Tests.Testcontainers;
@@ -30,15 +30,22 @@ public class TestcontainersTests
         await StartTestAndStopAsync(wireMockContainer);
     }
 
-    // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
-    [RunOnDockerPlatformFact("Linux")]
+
+    [Fact]
     public async Task WireMockContainer_Build_WithNoImageAndNetwork_And_StartAsync_and_StopAsync()
     {
         // Act
-        var dummyNetwork = new NetworkBuilder()
+        var dummyNetworkBuilder = new NetworkBuilder()
             .WithName("Dummy Network for TestcontainersTests")
-            .WithCleanUp(true)
-            .Build();
+            .WithCleanUp(true);
+
+        if (await IsDockerImageOSWindows())
+        {
+            // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
+            dummyNetworkBuilder = dummyNetworkBuilder.WithCreateParameterModifier(m => m.Driver = "nat");
+        }
+
+        var dummyNetwork = dummyNetworkBuilder.Build();
 
         var wireMockContainer = new WireMockContainerBuilder()
             .WithNetwork(dummyNetwork)
@@ -61,7 +68,7 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (await IsDockerImageOSWindows())
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithWindowsImage();
         }
@@ -86,7 +93,7 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (await IsDockerImageOSWindows())
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithImage("sheyenrath/wiremock.net-windows");
         }
@@ -122,6 +129,11 @@ public class TestcontainersTests
         {
             await wireMockContainer.StopAsync();
         }
+    }
+
+    private static async Task<bool> IsDockerImageOSWindows()
+    {
+        return (await TestcontainersUtils.GetDockerImageOSAsync.Value) == OSPlatform.Windows;
     }
 }
 #endif
