@@ -1,5 +1,11 @@
-# 1.6.10 (15 December 2024)
-- #1189 WireMock.Net.Testcontainers: implement watching the static mapping folder for changes [bug]
-- #1188 WithWatchStaticMappings doesn't respect new files [bug]
+# 1.6.11 (02 January 2025)
+- #1221 Add overloads to AtUrl and AtAbsoluteUrl which can use a IStringMatcher [feature]
+- #1222 Fix WireMockContainerBuilder (duplicate entries) [bug]
+- #1223 Add functionality to call a PostTransform method after the Webhook request has been transformed [feature]
+- #1224 Add FindLogEntries to IWireMockServer [feature]
+- #1092 FindLogEntries present in WireMockServer but not IWireMockServer [feature]
+- #1192 Feature: add URL assertion excluding query parameters [feature]
+- #1204 Supplying Values From Request for Webhook Body and Headers [feature]
+- #1217 Order of WireMockContainerBuilder WithX calls caused duplicate Networks in Configuration [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
