@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Google.Protobuf.WellKnownTypes;
 using Greet;
 using Grpc.Net.Client;
 using WireMock.Matchers;
@@ -17,6 +18,7 @@ using Xunit;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.Net.Tests;
+
 public partial class WireMockServerTests
 {
     private const string ProtoDefinition = @"
@@ -183,7 +185,6 @@ message Other {
             .Given(Request.Create()
                 .UsingPost()
                 .WithPath("/grpc/Greeter/SayNothing")
-                .WithBody(new NotNullOrEmptyMatcher())
             )
             .RespondWith(Response.Create()
                 .WithBodyAsProtoBuf(ProtoDefinitionWithWellKnownTypes, "google.protobuf.Empty",
@@ -205,7 +206,7 @@ message Other {
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
-        Convert.ToBase64String(responseBytes).Should().Be("");
+        Convert.ToBase64String(responseBytes).Should().Be("AAAAAAA=");
     }
 
     [Fact]
@@ -307,7 +308,6 @@ message Other {
             .Given(Request.Create()
                 .UsingPost()
                 .WithPath("/grpc/Greeter/SayNothing")
-                .WithBody(new NotNullOrEmptyMatcher())
             )
             .WithProtoDefinition(id)
             .RespondWith(Response.Create()
@@ -329,7 +329,7 @@ message Other {
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
-        Convert.ToBase64String(responseBytes).Should().Be("");
+        Convert.ToBase64String(responseBytes).Should().Be("AAAAAAA=");
     }
 
     [Fact]
@@ -486,6 +486,119 @@ message Other {
 
         // Assert
         reply.Message.Should().Be("hello stef POST");
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_WithWellKnownTypes_Empty_UsingGrpcGeneratedClient()
+    {
+        // Arrange
+        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/greet.Greeter/SayNothing")
+            )
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithTrailingHeader("grpc-status", "0")
+                .WithBodyAsProtoBuf(definition, "google.protobuf.Empty",
+                    new { }
+                )
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+        var client = new Greeter.GreeterClient(channel);
+
+        var reply = await client.SayNothingAsync(new Empty());
+
+        // Assert
+        reply.Should().Be(new Empty());
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_WithWellKnownTypes_Timestamp_UsingGrpcGeneratedClient()
+    {
+        // Arrange
+        const int seconds = 1722301323;
+        const int nanos = 12300;
+        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/greet.Greeter/SayTimestamp")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithTrailingHeader("grpc-status", "0")
+                .WithBodyAsProtoBuf(definition, "greet.MyMessageTimestamp",
+                    new
+                    {
+                        ts = new
+                        {
+                            seconds,
+                            nanos
+                        }
+                    }
+                )
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+        var client = new Greeter.GreeterClient(channel);
+
+        var reply = await client.SayTimestampAsync(new MyMessageTimestamp { Ts = Timestamp.FromDateTime(DateTime.UtcNow) });
+
+        // Assert
+        reply.Ts.Should().Be(new Timestamp { Seconds = seconds, Nanos = nanos });
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_WithWellKnownTypes_Duration_UsingGrpcGeneratedClient()
+    {
+        // Arrange
+        const int seconds = 1722301323;
+        const int nanos = 12300;
+        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/greet.Greeter/SayDuration")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithTrailingHeader("grpc-status", "0")
+                .WithBodyAsProtoBuf(definition, "greet.MyMessageDuration",
+                    new
+                    {
+                        du = new
+                        {
+                            seconds,
+                            nanos
+                        }
+                    }
+                )
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+        var client = new Greeter.GreeterClient(channel);
+
+        var reply = await client.SayDurationAsync(new MyMessageDuration { Du = Duration.FromTimeSpan(TimeSpan.MinValue) });
+
+        // Assert
+        reply.Du.Should().Be(new Duration { Seconds = seconds, Nanos = nanos });
     }
 }
 #endif

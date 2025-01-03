@@ -146,7 +146,7 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="8.2.1" />
         <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
-        <PackageReference Include="ProtoBufJsonConverter" Version="0.6.0-preview-01" />
+        <PackageReference Include="ProtoBufJsonConverter" Version="0.6.0-preview-03" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
@@ -154,6 +154,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="System.ComponentModel" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>

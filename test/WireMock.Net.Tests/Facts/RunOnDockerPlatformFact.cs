@@ -1,11 +1,13 @@
 // Copyright © WireMock.Net
 #if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using WireMock.Net.Testcontainers.Utils;
 using Xunit;
 
 namespace WireMock.Net.Tests.Facts;
 
+[ExcludeFromCodeCoverage]
 public sealed class RunOnDockerPlatformFact : FactAttribute
 {
     public RunOnDockerPlatformFact(string platform)
