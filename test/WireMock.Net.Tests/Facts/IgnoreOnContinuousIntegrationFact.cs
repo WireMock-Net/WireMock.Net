@@ -1,10 +1,12 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace WireMock.Net.Tests.Facts;
 
+[ExcludeFromCodeCoverage]
 public sealed class IgnoreOnContinuousIntegrationFact : FactAttribute
 {
     private const string SkipReason = "Ignore when run via CI/CD";

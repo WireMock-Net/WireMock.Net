@@ -1,12 +1,12 @@
 // Copyright © WireMock.Net
 
-#pragma warning disable CS1591
 using WireMock.Extensions;
 using WireMock.Matchers;
 
 // ReSharper disable once CheckNamespace
 namespace WireMock.FluentAssertions;
 
+#pragma warning disable CS1591
 public partial class WireMockAssertions
 {
     [CustomAssertion]
