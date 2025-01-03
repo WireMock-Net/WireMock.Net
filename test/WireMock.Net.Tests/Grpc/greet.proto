@@ -7,9 +7,9 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 
 service Greeter {
+  rpc SayNothing (google.protobuf.Empty) returns (google.protobuf.Empty);
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc SayEmpty (MyMessageEmpty) returns (MyMessageEmpty);
-  rpc SayNothing (google.protobuf.Empty) returns (google.protobuf.Empty);
   rpc SayTimestamp (MyMessageTimestamp) returns (MyMessageTimestamp);
   rpc SayDuration (MyMessageDuration) returns (MyMessageDuration);
 }
