@@ -227,8 +227,8 @@ message Other {
                     {
                         ts = new
                         {
-                            seconds = 1722301323,
-                            nanos = 12300
+                            Seconds = 1722301323,
+                            Nanos = 12300
                         }
                     }
                 )
@@ -269,8 +269,8 @@ message Other {
                     {
                         du = new
                         {
-                            seconds = 1722301323,
-                            nanos = 12300
+                            Seconds = 1722301323,
+                            Nanos = 12300
                         }
                     }
                 )
@@ -539,12 +539,12 @@ message Other {
                 .WithHeader("Content-Type", "application/grpc")
                 .WithTrailingHeader("grpc-status", "0")
                 .WithBodyAsProtoBuf(definition, "greet.MyMessageTimestamp",
-                    new
+                    new MyMessageTimestamp
                     {
-                        ts = new
+                        Ts = new Timestamp
                         {
-                            seconds,
-                            nanos
+                            Seconds = seconds,
+                            Nanos = nanos
                         }
                     }
                 )
@@ -580,12 +580,12 @@ message Other {
                 .WithHeader("Content-Type", "application/grpc")
                 .WithTrailingHeader("grpc-status", "0")
                 .WithBodyAsProtoBuf(definition, "greet.MyMessageDuration",
-                    new
+                    new MyMessageDuration
                     {
-                        du = new
+                        Du = new Duration
                         {
-                            seconds,
-                            nanos
+                            Seconds = seconds,
+                            Nanos = nanos
                         }
                     }
                 )
