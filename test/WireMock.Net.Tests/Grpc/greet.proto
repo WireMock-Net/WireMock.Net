@@ -20,6 +20,12 @@ message HelloRequest {
 
 message HelloReply {
   string message = 1;
+  enum PhoneType {
+    none = 0;
+    mobile = 1;
+    home = 2;
+  }
+  PhoneType phoneType = 2;
 }
 
 message MyMessageTimestamp {

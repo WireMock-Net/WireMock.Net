@@ -1,24 +1,15 @@
 syntax = "proto3";
 
+option csharp_namespace = "NarrowIntegrationTest.Lookup";
+
 import "google/protobuf/timestamp.proto";
 
-package Policy2;
+package Policy;
 
-service PolicyService2 {	
+service PolicyService {	
     rpc GetVersion (GetVersionRequest) returns (GetVersionResponse);
-	rpc GetVersion2 (GetVersion2Request) returns (GetVersion2Response);
 }
 
-// REQUEST/RESPONSE DEFINITIONS
-
-message GetVersion2Request {
-  Client Client = 1;
-
-}
-message GetVersion2Response {
-  string Version = 1;
-
-}
 message GetVersionRequest {
   Client Client = 1;
 
@@ -26,6 +17,7 @@ message GetVersionRequest {
 message GetVersionResponse {
   string Version = 1;
   google.protobuf.Timestamp DateHired = 2;
+  Client Client = 3;
 }
 
 message Client {

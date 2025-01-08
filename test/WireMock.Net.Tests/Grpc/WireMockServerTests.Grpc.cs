@@ -10,6 +10,7 @@ using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Greet;
 using Grpc.Net.Client;
+using NarrowIntegrationTest.Lookup;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -36,6 +37,12 @@ message HelloRequest {
 
 message HelloReply {
   string message = 1;
+  enum PhoneType {
+    none = 0;
+    mobile = 1;
+    home = 2;
+  }
+  PhoneType phoneType = 2;
 }
 ";
 
@@ -599,6 +606,95 @@ message Other {
 
         // Assert
         reply.Du.Should().Be(new Duration { Seconds = seconds, Nanos = nanos });
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_Enum_UsingGrpcGeneratedClient()
+    {
+        // Arrange
+        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/greet.Greeter/SayHello")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithTrailingHeader("grpc-status", "0")
+                .WithBodyAsProtoBuf(definition, "greet.HelloReply",
+                    new HelloReply
+                    {
+                        Message = "hello",
+                        PhoneType = HelloReply.Types.PhoneType.Home
+                    }
+                )
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+        var client = new Greeter.GreeterClient(channel);
+
+        var reply = await client.SayHelloAsync(new HelloRequest());
+
+        // Assert
+        reply.Message.Should().Be("hello");
+        reply.PhoneType.Should().Be(HelloReply.Types.PhoneType.Home);
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_Enum_UsingPolicyGrpcGeneratedClient()
+    {
+        // Arrange
+        const int seconds = 1722301323;
+        const int nanos = 12300;
+        const string version = "test";
+        const string correlationId = "correlation";
+        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/policy.proto");
+
+        using var server = WireMockServer.Start(useHttp2: true);
+
+        server
+            .Given(Request.Create()
+                .UsingPost()
+                .WithPath("/Policy.PolicyService/GetVersion")
+                .WithBody(new NotNullOrEmptyMatcher())
+            )
+            .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/grpc")
+                .WithTrailingHeader("grpc-status", "0")
+                .WithBodyAsProtoBuf(definition, "NarrowIntegrationTest.Lookup.GetVersionResponse",
+                    new GetVersionResponse
+                    {
+                        Version = version,
+                        DateHired = new Timestamp
+                        {
+                            Seconds = seconds,
+                            Nanos = nanos
+                        },
+                        Client = new NarrowIntegrationTest.Lookup.Client
+                        {
+                            ClientName = NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter,
+                            CorrelationId = correlationId
+                        }
+                    }
+                )
+            );
+
+        // Act
+        var channel = GrpcChannel.ForAddress(server.Url!);
+        var client = new PolicyService.PolicyServiceClient(channel);
+
+        var reply = await client.GetVersionAsync(new GetVersionRequest());
+
+        // Assert
+        reply.Version.Should().Be(version);
+        reply.DateHired.Should().Be(new Timestamp { Seconds = seconds, Nanos = nanos });
+        reply.Client.ClientName.Should().Be(NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter);
+        reply.Client.CorrelationId.Should().Be(correlationId);
     }
 }
 #endif
