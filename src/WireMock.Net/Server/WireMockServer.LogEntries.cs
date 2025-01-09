@@ -33,9 +33,10 @@ public partial class WireMockServer
     {
         Guard.NotNull(matchers);
 
-        var results = new Dictionary<LogEntry, RequestMatchResult>();
+        var results = new Dictionary<ILogEntry, RequestMatchResult>();
 
-        foreach (var log in _options.LogEntries.ToArray())
+        var allLogEntries = LogEntries;
+        foreach (var log in allLogEntries)
         {
             var requestMatchResult = new RequestMatchResult();
             foreach (var matcher in matchers)
