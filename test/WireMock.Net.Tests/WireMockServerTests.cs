@@ -215,10 +215,10 @@ public partial class WireMockServerTests
     {
         // Arrange
         var port = PortUtils.FindFreeTcpPort();
-        var IPv4 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetwork);
+        var IPv4 = GetIPAddressesByFamily(AddressFamily.InterNetwork);
         var settings = new WireMockServerSettings
         {
-            Urls = ["http://0.0.0.0:" + port],
+            Urls = ["http://0.0.0.0:" + port]
         };
         using var server = WireMockServer.Start(settings);
 
@@ -234,15 +234,16 @@ public partial class WireMockServerTests
         }
     }
 
+#if NET8_0_OR_GREATER
     [IgnoreOnContinuousIntegrationFact]
     public async Task WireMockServer_WithUrl0000_Should_Listen_On_All_IPs_IPv6()
     {
         // Arrange
         var port = PortUtils.FindFreeTcpPort();
-        var IPv6 = GetIPAddressesByFamily(System.Net.Sockets.AddressFamily.InterNetworkV6);
+        var IPv6 = GetIPAddressesByFamily(AddressFamily.InterNetworkV6);
         var settings = new WireMockServerSettings
         {
-            Urls = ["http://0.0.0.0:" + port],
+            Urls = ["http://0.0.0.0:" + port]
         };
         using var server = WireMockServer.Start(settings);
 
@@ -257,6 +258,7 @@ public partial class WireMockServerTests
             response.Should().Be("x");
         }
     }
+#endif
 #endif
 
     [Fact]
