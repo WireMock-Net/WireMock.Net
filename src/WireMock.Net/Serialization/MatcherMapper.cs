@@ -217,7 +217,7 @@ internal class MatcherMapper
                     {
                         model.Pattern = texts[0];
                     }
-                    else
+                    else if (texts.Count > 1)
                     {
                         model.Patterns = texts.Cast<object>().ToArray();
                     }

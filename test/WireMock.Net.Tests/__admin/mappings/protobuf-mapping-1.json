@@ -1,0 +1,49 @@
+{
+  "Guid": "351f0240-bba0-4bcb-93c6-1feba0fe0001",
+  "Title": "ProtoBuf Mapping 1",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/grpc/greet.Greeter/SayHello",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "ProtoBufMatcher",
+        "Pattern": "\r\nsyntax = \"proto3\";\r\n\r\npackage greet;\r\n\r\nservice Greeter {\r\n  rpc SayHello (HelloRequest) returns (HelloReply);\r\n}\r\n\r\nmessage HelloRequest {\r\n  string name = 1;\r\n}\r\n\r\nmessage HelloReply {\r\n  string message = 1;\r\n}\r\n",
+        "ContentMatcher": {
+          "Name": "JsonPartialWildcardMatcher",
+          "Pattern": {
+            "name": "*"
+          },
+          "IgnoreCase": false,
+          "Regex": false
+        },
+        "ProtoBufMessageType": "greet.HelloRequest"
+      }
+    }
+  },
+  "Response": {
+    "BodyAsJson": {
+      "message": "hello {{request.BodyAsJson.name}}"
+    },
+    "UseTransformer": true,
+    "TransformerType": "Handlebars",
+    "TransformerReplaceNodeOptions": "EvaluateAndTryToConvert",
+    "Headers": {
+      "Content-Type": "application/grpc"
+    },
+    "TrailingHeaders": {
+      "grpc-status": "0"
+    },
+    "ProtoDefinition": "\r\nsyntax = \"proto3\";\r\n\r\npackage greet;\r\n\r\nservice Greeter {\r\n  rpc SayHello (HelloRequest) returns (HelloReply);\r\n}\r\n\r\nmessage HelloRequest {\r\n  string name = 1;\r\n}\r\n\r\nmessage HelloReply {\r\n  string message = 1;\r\n}\r\n",
+    "ProtoBufMessageType": "greet.HelloReply"
+  }
+}

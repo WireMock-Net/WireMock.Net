@@ -116,6 +116,15 @@ public partial class WireMockServer
             respondProvider.WithProbability(mappingModel.Probability.Value);
         }
 
+        if (mappingModel.ProtoDefinition != null)
+        {
+            respondProvider.WithProtoDefinition(mappingModel.ProtoDefinition);
+        }
+        else if (mappingModel.ProtoDefinitions != null)
+        {
+            respondProvider.WithProtoDefinition(mappingModel.ProtoDefinitions);
+        }
+
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
 
@@ -317,6 +326,22 @@ public partial class WireMockServer
             }
         }
 
+        if (responseModel.TrailingHeaders != null)
+        {
+            foreach (var entry in responseModel.TrailingHeaders)
+            {
+                if (entry.Value is string value)
+                {
+                    responseBuilder.WithTrailingHeader(entry.Key, value);
+                }
+                else
+                {
+                    var headers = JsonUtils.ParseJTokenToObject<string[]>(entry.Value);
+                    responseBuilder.WithTrailingHeader(entry.Key, headers);
+                }
+            }
+        }
+
         if (responseModel.BodyAsBytes != null)
         {
             responseBuilder = responseBuilder.WithBody(responseModel.BodyAsBytes, responseModel.BodyDestination, ToEncoding(responseModel.BodyEncoding));
@@ -327,7 +352,25 @@ public partial class WireMockServer
         }
         else if (responseModel.BodyAsJson != null)
         {
-            responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
+            if (responseModel.ProtoBufMessageType != null)
+            {
+                if (responseModel.ProtoDefinition != null)
+                {
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoDefinition, responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+                else if (responseModel.ProtoDefinitions != null)
+                {
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoDefinitions, responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+                else
+                {
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+            }
+            else
+            {
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
+            }
         }
         else if (responseModel.BodyAsFile != null)
         {

@@ -1,0 +1,48 @@
+{
+  "Guid": "351f0240-bba0-4bcb-93c6-1feba0fe0003",
+  "Title": "ProtoBuf Mapping 3",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/grpc3/greet.Greeter/SayHello",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "ProtoBufMatcher",
+        "ContentMatcher": {
+          "Name": "JsonPartialWildcardMatcher",
+          "Pattern": {
+            "name": "*"
+          },
+          "IgnoreCase": false,
+          "Regex": false
+        },
+        "ProtoBufMessageType": "greet.HelloRequest"
+      }
+    }
+  },
+  "Response": {
+    "BodyAsJson": {
+      "message": "hello {{request.BodyAsJson.name}}"
+    },
+    "UseTransformer": true,
+    "TransformerType": "Handlebars",
+    "TransformerReplaceNodeOptions": "EvaluateAndTryToConvert",
+    "Headers": {
+      "Content-Type": "application/grpc"
+    },
+    "TrailingHeaders": {
+      "grpc-status": "0"
+    },
+    "ProtoBufMessageType": "greet.HelloReply"
+  },
+  "ProtoDefinition": "my-greeter"
+}

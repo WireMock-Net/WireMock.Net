@@ -1,0 +1,48 @@
+{
+  "Guid": "351f0240-bba0-4bcb-93c6-1feba0fe0002",
+  "Title": "ProtoBuf Mapping 2",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/grpc2/greet.Greeter/SayHello",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "ProtoBufMatcher",
+        "ContentMatcher": {
+          "Name": "JsonPartialWildcardMatcher",
+          "Pattern": {
+            "name": "*"
+          },
+          "IgnoreCase": false,
+          "Regex": false
+        },
+        "ProtoBufMessageType": "greet.HelloRequest"
+      }
+    }
+  },
+  "Response": {
+    "BodyAsJson": {
+      "message": "hello {{request.BodyAsJson.name}}"
+    },
+    "UseTransformer": true,
+    "TransformerType": "Handlebars",
+    "TransformerReplaceNodeOptions": "EvaluateAndTryToConvert",
+    "Headers": {
+      "Content-Type": "application/grpc"
+    },
+    "TrailingHeaders": {
+      "grpc-status": "0"
+    },
+    "ProtoBufMessageType": "greet.HelloReply"
+  },
+  "ProtoDefinition": "\r\nsyntax = \"proto3\";\r\n\r\npackage greet;\r\n\r\nservice Greeter {\r\n  rpc SayHello (HelloRequest) returns (HelloReply);\r\n}\r\n\r\nmessage HelloRequest {\r\n  string name = 1;\r\n}\r\n\r\nmessage HelloReply {\r\n  string message = 1;\r\n}\r\n"
+}

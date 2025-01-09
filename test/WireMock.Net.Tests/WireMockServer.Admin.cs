@@ -15,7 +15,6 @@ using RestEase;
 using WireMock.Client;
 using WireMock.Handlers;
 using WireMock.Logging;
-using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -27,7 +26,8 @@ namespace WireMock.Net.Tests;
 
 public class WireMockServerAdminTests
 {
-    // For for AppVeyor + OpenCover
+    private const int NumStaticMappings = 10;
+
     private static string GetCurrentFolder()
     {
         return Directory.GetCurrentDirectory();
@@ -40,8 +40,8 @@ public class WireMockServerAdminTests
         string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
         server.ReadStaticMappings(folder);
 
-        Check.That(server.Mappings).HasSize(6);
-        Check.That(server.MappingModels).HasSize(6);
+        Check.That(server.Mappings).HasSize(NumStaticMappings);
+        Check.That(server.MappingModels).HasSize(NumStaticMappings);
 
         // Act
         server.ResetMappings();
@@ -220,7 +220,7 @@ public class WireMockServerAdminTests
         server.ReadStaticMappings(folder);
 
         var mappings = server.Mappings.ToArray();
-        Check.That(mappings).HasSize(6);
+        Check.That(mappings).HasSize(NumStaticMappings);
 
         server.Stop();
     }
