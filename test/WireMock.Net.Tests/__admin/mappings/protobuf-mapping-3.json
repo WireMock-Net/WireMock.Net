@@ -44,5 +44,5 @@
     },
     "ProtoBufMessageType": "greet.HelloReply"
   },
-  "ProtoDefinition": "my-greeter"
+  "ProtoDefinition": "my-greeter-351f0240-bba0-4bcb-93c6-1feba0fe0003"
 }

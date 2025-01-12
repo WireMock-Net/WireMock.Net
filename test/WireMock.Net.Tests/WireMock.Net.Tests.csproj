@@ -134,6 +134,7 @@
         </None>
         <None Update="Grpc\greet.proto">
             <GrpcServices>Client</GrpcServices>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

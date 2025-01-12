@@ -215,14 +215,16 @@ public interface IWireMockServer : IDisposable
     /// This can be used if you have 1 or more <see cref="MappingModel"/> defined and want to register these in WireMock.Net directly instead of using the fluent syntax.
     /// </summary>
     /// <param name="mappings">The MappingModels</param>
+    /// <returns><see cref="IWireMockServer"/></returns>
     IWireMockServer WithMapping(params MappingModel[] mappings);
 
     /// <summary>
     /// Register the mappings (via json string).
     /// 
-    /// This can be used if you the mappings as json string defined and want to register these in WireMock.Net directly instead of using the fluent syntax.
+    /// This can be used if you've the mappings as json string defined and want to register these in WireMock.Net directly instead of using the fluent syntax.
     /// </summary>
     /// <param name="mappings">The mapping(s) as json string.</param>
+    /// <returns><see cref="IWireMockServer"/></returns>
     IWireMockServer WithMapping(string mappings);
 
     /// <summary>
@@ -238,5 +240,5 @@ public interface IWireMockServer : IDisposable
     /// </summary>
     /// <param name="converterType">The <see cref="MappingConverterType"/></param>
     /// <returns>C# code</returns>
-    public string MappingsToCSharpCode(MappingConverterType converterType);
+    string MappingsToCSharpCode(MappingConverterType converterType);
 }

@@ -2,37 +2,18 @@
 
 #if !(NET452 || NET461 || NETCOREAPP3_1)
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
 using NFluent;
 using RestEase;
-using VerifyTests;
-using VerifyXunit;
 using WireMock.Admin.Mappings;
-using WireMock.Admin.Settings;
 using WireMock.Client;
-using WireMock.Client.Extensions;
 using WireMock.Constants;
-using WireMock.Handlers;
-using WireMock.Logging;
-using WireMock.Matchers;
 using WireMock.Models;
-using WireMock.Net.Tests.VerifyExtensions;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 using WireMock.Server;
-using WireMock.Settings;
-using WireMock.Types;
-using WireMock.Util;
 using Xunit;
 
 namespace WireMock.Net.Tests.AdminApi;
@@ -64,14 +45,9 @@ public partial class WireMockAdminApiTests
         result.EnsureSuccessStatusCode();
 
         // Assert
-        var mappings = server.Mappings
-            .Where(m => !m.IsAdminInterface)
-            .OrderBy(m => m.Title)
-            .ToArray();
-
         var mapping = await httpClient.GetStringAsync($"/__admin/mappings/{guid}");
-
-        RemoveLineContainingUpdatedAt(mapping).Should().Be(mappingsJson);
+        mapping = RemoveLineContainingUpdatedAt(mapping);
+        mapping.Should().Be(mappingsJson);
     }
 
     [Fact]

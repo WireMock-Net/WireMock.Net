@@ -296,7 +296,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         Guard.NotNull(url);
         Guard.NotNull(method);
 
-        Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
+        Webhooks = [InitWebhook(url, method, headers, useTransformer, transformerType)];
 
         if (body != null)
         {
@@ -323,7 +323,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         Guard.NotNull(url);
         Guard.NotNull(method);
 
-        Webhooks = new[] { InitWebhook(url, method, headers, useTransformer, transformerType) };
+        Webhooks = [InitWebhook(url, method, headers, useTransformer, transformerType)];
 
         if (body != null)
         {
@@ -371,7 +371,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
         {
             _protoDefinition = new(null, protoDefinitionOrId);
         }
-        
+
 
         return this;
     }

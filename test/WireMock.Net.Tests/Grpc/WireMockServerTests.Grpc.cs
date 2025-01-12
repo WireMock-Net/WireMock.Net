@@ -2,17 +2,21 @@
 
 #if PROTOBUF
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Greet;
 using Grpc.Net.Client;
+using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
 using Xunit;
 
 // ReSharper disable once CheckNamespace
@@ -128,8 +132,6 @@ message Other {
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        server.Stop();
     }
 
     [Theory]
@@ -171,8 +173,6 @@ message Other {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcKBWhlbGxv");
-
-        server.Stop();
     }
 
     [Fact]
@@ -209,8 +209,6 @@ message Other {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("");
-
-        server.Stop();
     }
 
     [Fact]
@@ -251,8 +249,6 @@ message Other {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("");
-
-        server.Stop();
     }
 
     [Fact]
@@ -294,8 +290,6 @@ message Other {
         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
         Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcKBWhlbGxv");
-
-        server.Stop();
     }
 
     [Fact]
@@ -333,8 +327,6 @@ message Other {
 
         // Assert
         reply.Message.Should().Be("hello stef POST");
-
-        server.Stop();
     }
 
     [Fact]
@@ -374,8 +366,6 @@ message Other {
 
         // Assert
         reply.Message.Should().Be("hello stef POST");
-
-        server.Stop();
     }
 
     [Fact]
@@ -410,16 +400,71 @@ message Other {
             );
 
         // Act
-        var channel = GrpcChannel.ForAddress(server.Url!);
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Url!);
+
+        // Assert
+        Then_ReplyMessage_Should_BeCorrect(reply);
+    }
+
+    [Fact(Skip = "#1233")]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    {
+        var server = Given_When_ServerStartedUsingHttp2();
+        Given_ProtoDefinition_IsAddedOnServerLevel(server);
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server);
+
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Url!);
+
+        Then_ReplyMessage_Should_BeCorrect(reply);
+    }
+
+    private static WireMockServer Given_When_ServerStartedUsingHttp2()
+    {
+        var settings = new WireMockServerSettings
+        {
+            UseHttp2 = false,
+            StartAdminInterface = true
+        };
+        return WireMockServer.Start(settings);
+    }
+
+    private static void Given_ProtoDefinition_IsAddedOnServerLevel(WireMockServer server)
+    {
+        server.AddProtoDefinition("my-greeter-351f0240-bba0-4bcb-93c6-1feba0fe0003", ReadProtoFile("greet.proto"));
+    }
+
+    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server)
+    {
+        var mappingsJson = ReadMappingFile("protobuf-mapping-3.json");
+
+        using var httpClient = server.CreateClient();
+
+        var result = await httpClient.PostAsync("/__admin/mappings", new StringContent(mappingsJson, Encoding.UTF8, WireMockConstants.ContentTypeJson));
+        result.EnsureSuccessStatusCode();
+    }
+
+    private static async Task<HelloReply> When_GrpcClient_Calls_SayHelloAsync(string address)
+    {
+        var channel = GrpcChannel.ForAddress(address);
 
         var client = new Greeter.GreeterClient(channel);
 
-        var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+        return await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+    }
 
-        // Assert
+    private static void Then_ReplyMessage_Should_BeCorrect(HelloReply reply)
+    {
         reply.Message.Should().Be("hello stef POST");
+    }
 
-        server.Stop();
+    private static string ReadMappingFile(string filename)
+    {
+        return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", filename));
+    }
+
+    private static string ReadProtoFile(string filename)
+    {
+        return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Grpc", filename));
     }
 }
 #endif
