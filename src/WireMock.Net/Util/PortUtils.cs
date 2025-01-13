@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
@@ -18,51 +19,95 @@ internal static class PortUtils
     private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled, WireMockConstants.DefaultRegexTimeout);
 
     /// <summary>
-    /// Finds a free TCP port.
+    /// Finds a random, free port to be listened on.
     /// </summary>
-    /// <remarks>see http://stackoverflow.com/questions/138043/find-the-next-tcp-port-in-net.</remarks>
+    /// <returns>A random, free port to be listened on.</returns>
+    /// <remarks>https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Internal/PortUtilities.cs</remarks>
     public static int FindFreeTcpPort()
     {
-        TcpListener? tcpListener = null;
+        // Locate a free port on the local machine by binding a socket to an IPEndPoint using IPAddress.Any and port 0.
+        // The socket will select a free port.
+        var portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         try
         {
-            tcpListener = new TcpListener(IPAddress.Loopback, 0);
-            tcpListener.Start();
-
-            return ((IPEndPoint)tcpListener.LocalEndpoint).Port;
+            var socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            portSocket.Bind(socketEndPoint);
+            socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint!;
+            return socketEndPoint.Port;
         }
         finally
         {
-            tcpListener?.Stop();
+#if !NETSTANDARD1_3
+            portSocket.Close();
+#endif
+            portSocket.Dispose();
         }
     }
 
     /// <summary>
-    /// Finds a free TCP ports.
+    /// Finds a specified number of random, free ports to be listened on.
     /// </summary>
-    /// <remarks>see http://stackoverflow.com/questions/138043/find-the-next-tcp-port-in-net.</remarks>
-    public static IReadOnlyList<int> FindFreeTcpPorts(int numPorts)
+    /// <param name="count">The number of free ports to find.</param>
+    /// <returns>A list of random, free ports to be listened on.</returns>
+    public static IReadOnlyList<int> FindFreeTcpPorts(int count)
     {
+        var sockets = Enumerable
+            .Range(0, count)
+            .Select(_ => new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            .ToArray();
+
         var freePorts = new List<int>();
 
-        TcpListener? tcpListener = null;
         try
         {
-            for (var i = 0; i < numPorts; i++)
+            foreach (var socket in sockets)
             {
-                tcpListener = new TcpListener(IPAddress.Loopback, 0);
-                tcpListener.Start();
+                var socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                socket.Bind(socketEndPoint);
+                socketEndPoint = (IPEndPoint)socket.LocalEndPoint!;
 
-                freePorts.Add(((IPEndPoint)tcpListener.LocalEndpoint).Port);
+                freePorts.Add(socketEndPoint.Port);
             }
+
+            return freePorts;
         }
         finally
         {
-            tcpListener?.Stop();
+            foreach (var socket in sockets)
+            {
+#if !NETSTANDARD1_3
+                socket.Close();
+#endif
+                socket.Dispose();
+            }
         }
-
-        return freePorts;
     }
+
+    ///// <summary>
+    ///// Finds free TCP ports.
+    ///// </summary>
+    //public static IReadOnlyList<int> FindFreeTcpPorts(int numPorts)
+    //{
+    //    var freePorts = new List<int>();
+
+    //    TcpListener? tcpListener = null;
+    //    try
+    //    {
+    //        for (var i = 0; i < numPorts; i++)
+    //        {
+    //            tcpListener = new TcpListener(IPAddress.Loopback, 0);
+    //            tcpListener.Start();
+
+    //            freePorts.Add(((IPEndPoint)tcpListener.LocalEndpoint).Port);
+    //        }
+    //    }
+    //    finally
+    //    {
+    //        tcpListener?.Stop();
+    //    }
+
+    //    return freePorts;
+    //}
 
     /// <summary>
     /// Extract the isHttps, isHttp2, protocol, host and port from a URL.
