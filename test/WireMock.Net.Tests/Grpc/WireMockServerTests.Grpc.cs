@@ -17,6 +17,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Util;
 using Xunit;
 
 // ReSharper disable once CheckNamespace
@@ -365,7 +366,7 @@ message Other {
         var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
 
         // Assert
-        reply.Message.Should().Be("hello stef POST");
+        Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
     [Fact]
@@ -406,23 +407,25 @@ message Other {
         Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
-    [Fact(Skip = "#1233")]
+    [Fact]
     public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
     {
         var server = Given_When_ServerStartedUsingHttp2();
         Given_ProtoDefinition_IsAddedOnServerLevel(server);
         await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server);
 
-        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Url!);
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
 
         Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
     private static WireMockServer Given_When_ServerStartedUsingHttp2()
     {
+        var ports = PortUtils.FindFreeTcpPorts(2);
+
         var settings = new WireMockServerSettings
         {
-            UseHttp2 = false,
+            Urls = [$"http://*:{ports[0]}/", $"grpc://*:{ports[1]}/"],
             StartAdminInterface = true
         };
         return WireMockServer.Start(settings);
@@ -430,7 +433,7 @@ message Other {
 
     private static void Given_ProtoDefinition_IsAddedOnServerLevel(WireMockServer server)
     {
-        server.AddProtoDefinition("my-greeter-351f0240-bba0-4bcb-93c6-1feba0fe0003", ReadProtoFile("greet.proto"));
+        server.AddProtoDefinition("my-greeter", ReadProtoFile("greet.proto"));
     }
 
     private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server)

@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
@@ -34,6 +35,33 @@ internal static class PortUtils
         {
             tcpListener?.Stop();
         }
+    }
+
+    /// <summary>
+    /// Finds a free TCP ports.
+    /// </summary>
+    /// <remarks>see http://stackoverflow.com/questions/138043/find-the-next-tcp-port-in-net.</remarks>
+    public static IReadOnlyList<int> FindFreeTcpPorts(int numPorts)
+    {
+        var freePorts = new List<int>();
+
+        TcpListener? tcpListener = null;
+        try
+        {
+            for (var i = 0; i < numPorts; i++)
+            {
+                tcpListener = new TcpListener(IPAddress.Loopback, 0);
+                tcpListener.Start();
+
+                freePorts.Add(((IPEndPoint)tcpListener.LocalEndpoint).Port);
+            }
+        }
+        finally
+        {
+            tcpListener?.Stop();
+        }
+
+        return freePorts;
     }
 
     /// <summary>

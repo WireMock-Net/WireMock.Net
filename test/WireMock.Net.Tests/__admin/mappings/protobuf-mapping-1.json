@@ -6,7 +6,7 @@
       "Matchers": [
         {
           "Name": "WildcardMatcher",
-          "Pattern": "/grpc/greet.Greeter/SayHello",
+          "Pattern": "/greet.Greeter/SayHello",
           "IgnoreCase": false
         }
       ]

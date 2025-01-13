@@ -6,7 +6,7 @@
       "Matchers": [
         {
           "Name": "WildcardMatcher",
-          "Pattern": "/grpc3/greet.Greeter/SayHello",
+          "Pattern": "/greet.Greeter/SayHello",
           "IgnoreCase": false
         }
       ]
@@ -22,7 +22,7 @@
           "Pattern": {
             "name": "*"
           },
-          "IgnoreCase": false,
+          "IgnoreCase": true,
           "Regex": false
         },
         "ProtoBufMessageType": "greet.HelloRequest"
@@ -31,7 +31,7 @@
   },
   "Response": {
     "BodyAsJson": {
-      "message": "hello {{request.BodyAsJson.name}}"
+      "message": "hello {{request.BodyAsJson.name}} {{request.method}}"
     },
     "UseTransformer": true,
     "TransformerType": "Handlebars",
@@ -44,5 +44,5 @@
     },
     "ProtoBufMessageType": "greet.HelloReply"
   },
-  "ProtoDefinition": "my-greeter-351f0240-bba0-4bcb-93c6-1feba0fe0003"
+  "ProtoDefinition": "my-greeter"
 }

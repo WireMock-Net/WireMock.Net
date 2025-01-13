@@ -17,7 +17,7 @@ using WireMock.Util;
 namespace WireMock.Server;
 
 /// <summary>
-/// The respond with a provider.
+/// The RespondWithAProvider.
 /// </summary>
 internal class RespondWithAProvider : IRespondWithAProvider
 {
@@ -37,7 +37,6 @@ internal class RespondWithAProvider : IRespondWithAProvider
     private int _timesInSameState = 1;
     private bool? _useWebhookFireAndForget;
     private double? _probability;
-    private IdOrTexts? _protoDefinition;
     private GraphQLSchemaDetails? _graphQLSchemaDetails;
 
     public Guid Guid { get; private set; }
@@ -47,6 +46,8 @@ internal class RespondWithAProvider : IRespondWithAProvider
     public ITimeSettings? TimeSettings { get; private set; }
 
     public object? Data { get; private set; }
+
+    public IdOrTexts? ProtoDefinition { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RespondWithAProvider"/> class.
@@ -104,9 +105,9 @@ internal class RespondWithAProvider : IRespondWithAProvider
             mapping.WithProbability(_probability.Value);
         }
 
-        if (_protoDefinition != null)
+        if (ProtoDefinition != null)
         {
-            mapping.WithProtoDefinition(_protoDefinition.Value);
+            mapping.WithProtoDefinition(ProtoDefinition.Value);
         }
 
         _registrationCallback(mapping, _saveToFile);
@@ -355,23 +356,7 @@ internal class RespondWithAProvider : IRespondWithAProvider
     {
         Guard.NotNull(protoDefinitionOrId);
 
-        if (protoDefinitionOrId.Length == 1)
-        {
-            var idOrText = protoDefinitionOrId[0];
-            if (_settings.ProtoDefinitions?.TryGetValue(idOrText, out var protoDefinitions) == true)
-            {
-                _protoDefinition = new(idOrText, protoDefinitions);
-            }
-            else
-            {
-                _protoDefinition = new(null, protoDefinitionOrId);
-            }
-        }
-        else
-        {
-            _protoDefinition = new(null, protoDefinitionOrId);
-        }
-
+        ProtoDefinition = ProtoDefinitionHelper.GetIdOrTexts(_settings, protoDefinitionOrId);
 
         return this;
     }
