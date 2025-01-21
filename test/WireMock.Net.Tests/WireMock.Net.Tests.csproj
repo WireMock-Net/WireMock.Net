@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>
@@ -113,6 +113,7 @@
         </PackageReference>
 
         <Protobuf Include="Grpc\greet.proto" GrpcServices="Client" />
+        <Protobuf Include="Grpc\policy.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
@@ -131,6 +132,10 @@
         </None>
         <None Update="cert.pem">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Grpc\policy.proto">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <GrpcServices>Client</GrpcServices>
         </None>
         <None Update="Grpc\greet.proto">
             <GrpcServices>Client</GrpcServices>

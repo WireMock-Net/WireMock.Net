@@ -1,6 +1,6 @@
 // Copyright © WireMock.Net
 
-// Copied from https://github.com/Handlebars-Net/Handlebars.Net.Helpers/blob/master/src/Handlebars.Net.Helpers.DynamicLinq
+// Copied from https://github.com/Handlebars-Net/Handlebars.Net.Helpers/blob/master/src/Handlebars.Net.Helpers.DynamicLinq which is copied from https://github.com/StefH/JsonConverter
 
 using System;
 using System.Collections;
@@ -14,9 +14,7 @@ namespace WireMock.Json;
 
 internal static class JObjectExtensions
 {
-    private class JTokenResolvers : Dictionary<JTokenType, Func<JToken, DynamicJsonClassOptions?, object?>>
-    {
-    }
+    private class JTokenResolvers : Dictionary<JTokenType, Func<JToken, DynamicJsonClassOptions?, object?>>;
 
     private static readonly JTokenResolvers Resolvers = new()
     {
@@ -180,7 +178,7 @@ internal static class JObjectExtensions
     private static IEnumerable ConvertToTypedArray(IEnumerable<object?> src, Type newType)
     {
         var method = ConvertToTypedArrayGenericMethod.MakeGenericMethod(newType);
-        return (IEnumerable)method.Invoke(null, new object[] { src })!;
+        return (IEnumerable)method.Invoke(null, [src])!;
     }
 
     private static readonly MethodInfo ConvertToTypedArrayGenericMethod = typeof(JObjectExtensions).GetMethod(nameof(ConvertToTypedArrayGeneric), BindingFlags.NonPublic | BindingFlags.Static)!;
@@ -193,7 +191,7 @@ internal static class JObjectExtensions
     public static DynamicClass CreateInstance(IList<DynamicPropertyWithValue> dynamicPropertiesWithValue, bool createParameterCtor = true)
     {
         var type = DynamicClassFactory.CreateType(dynamicPropertiesWithValue.Cast<DynamicProperty>().ToArray(), createParameterCtor);
-        var dynamicClass = (DynamicClass)Activator.CreateInstance(type);
+        var dynamicClass = (DynamicClass)Activator.CreateInstance(type)!;
         foreach (var dynamicPropertyWithValue in dynamicPropertiesWithValue.Where(p => p.Value != null))
         {
             dynamicClass.SetDynamicPropertyValue(dynamicPropertyWithValue.Name, dynamicPropertyWithValue.Value!);

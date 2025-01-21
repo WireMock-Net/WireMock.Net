@@ -26,7 +26,7 @@ internal static class ProtoBufUtils
         }
 
         var resolver = new WireMockProtoFileResolver(protoDefinitions);
-        var request = new ConvertToProtoBufRequest(protoDefinitions[0], messageType, value, true)
+        var request = new ConvertToProtoBufRequest(protoDefinitions[0], messageType!, value, true)
             .WithProtoFileResolver(resolver);
 
         return await SingletonFactory<Converter>

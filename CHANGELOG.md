@@ -1,3 +1,12 @@
+# 1.6.12 (21 January 2025)
+- [#1231](https://github.com/WireMock-Net/WireMock.Net/pull/1231) - Fix google protobuf WellKnownTypes: Empty, Duration and Timestamp [bug] contributed by [StefH](https://github.com/StefH)
+- [#1235](https://github.com/WireMock-Net/WireMock.Net/pull/1235) - Fix ArgumentException in FindLogEntries [bug] contributed by [StefH](https://github.com/StefH)
+- [#1241](https://github.com/WireMock-Net/WireMock.Net/pull/1241) - Upgrade to Handlebars.Net.Helpers 2.4.9 [bug] contributed by [StefH](https://github.com/StefH)
+- [#1227](https://github.com/WireMock-Net/WireMock.Net/issues/1227) - unable to call grpc method with namespace [bug]
+- [#1228](https://github.com/WireMock-Net/WireMock.Net/issues/1228) - how to set datetime for grpc field [bug]
+- [#1234](https://github.com/WireMock-Net/WireMock.Net/issues/1234) - FindLogEntries regression [bug]
+- [#1240](https://github.com/WireMock-Net/WireMock.Net/issues/1240) - Method 'get_Category' in type 'WireMock.Transformers.Handlebars.FileHelpers' [bug]
+
 # 1.6.11 (02 January 2025)
 - [#1221](https://github.com/WireMock-Net/WireMock.Net/pull/1221) - Add overloads to AtUrl and AtAbsoluteUrl which can use a IStringMatcher [feature] contributed by [StefH](https://github.com/StefH)
 - [#1222](https://github.com/WireMock-Net/WireMock.Net/pull/1222) - Fix WireMockContainerBuilder (duplicate entries) [bug] contributed by [StefH](https://github.com/StefH)

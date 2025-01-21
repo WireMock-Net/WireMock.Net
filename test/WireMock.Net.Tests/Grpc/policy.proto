@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option csharp_namespace = "NarrowIntegrationTest.Lookup";
+
+import "google/protobuf/timestamp.proto";
+
+package Policy;
+
+service PolicyService {	
+    rpc GetVersion (GetVersionRequest) returns (GetVersionResponse);
+}
+
+message GetVersionRequest {
+  Client Client = 1;
+
+}
+message GetVersionResponse {
+  string Version = 1;
+  google.protobuf.Timestamp DateHired = 2;
+  Client Client = 3;
+}
+
+message Client {
+  string CorrelationId = 1;
+  enum Clients {
+    Unknown = 0;
+    QMS = 1;
+    BillingCenter = 2;
+    PAS = 3;
+    Payroll = 4;
+    Portal = 5;
+    SFO = 6;
+    QuoteAndBind = 7;
+    LegacyConversion = 8;
+    BindNow = 9;
+    PaymentPortal = 10 ;
+    PricingEngine = 11;
+  }
+  Clients ClientName = 2;
+}

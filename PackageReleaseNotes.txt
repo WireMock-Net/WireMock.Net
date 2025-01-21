@@ -1,11 +1,10 @@
-# 1.6.11 (02 January 2025)
-- #1221 Add overloads to AtUrl and AtAbsoluteUrl which can use a IStringMatcher [feature]
-- #1222 Fix WireMockContainerBuilder (duplicate entries) [bug]
-- #1223 Add functionality to call a PostTransform method after the Webhook request has been transformed [feature]
-- #1224 Add FindLogEntries to IWireMockServer [feature]
-- #1092 FindLogEntries present in WireMockServer but not IWireMockServer [feature]
-- #1192 Feature: add URL assertion excluding query parameters [feature]
-- #1204 Supplying Values From Request for Webhook Body and Headers [feature]
-- #1217 Order of WireMockContainerBuilder WithX calls caused duplicate Networks in Configuration [bug]
+# 1.6.12 (21 January 2025)
+- #1231 Fix google protobuf WellKnownTypes: Empty, Duration and Timestamp [bug]
+- #1235 Fix ArgumentException in FindLogEntries [bug]
+- #1241 Upgrade to Handlebars.Net.Helpers 2.4.9 [bug]
+- #1227 unable to call grpc method with namespace [bug]
+- #1228 how to set datetime for grpc field [bug]
+- #1234 FindLogEntries regression [bug]
+- #1240 Method 'get_Category' in type 'WireMock.Transformers.Handlebars.FileHelpers' [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
