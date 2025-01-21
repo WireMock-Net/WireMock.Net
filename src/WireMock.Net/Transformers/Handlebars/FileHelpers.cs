@@ -22,7 +22,9 @@ internal class FileHelpers : BaseHelpers, IHelpers
     public string Read(Context context, string path)
     {
         var templateFunc = Context.Compile(path);
-        string transformed = templateFunc(context.Value);
+        var transformed = templateFunc(context.Value);
         return _fileSystemHandler.ReadResponseBodyAsString(transformed);
     }
+
+    public Category Category => Category.Custom;
 }
