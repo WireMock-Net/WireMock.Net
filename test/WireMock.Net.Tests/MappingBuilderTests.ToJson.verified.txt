@@ -20,8 +20,9 @@
           Name: test,
           Matchers: [
             {
-              Name: LinqMatcher,
-              Pattern: it.Length < 10
+              Name: ExactMatcher,
+              Pattern: abc,
+              IgnoreCase: false
             }
           ]
         }

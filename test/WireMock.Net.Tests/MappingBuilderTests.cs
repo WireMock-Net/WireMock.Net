@@ -69,7 +69,7 @@ public class MappingBuilderTests
 
         _sut.Given(Request.Create()
             .WithPath("/foo")
-            .WithParam("test", new LinqMatcher("it.Length < 10"))
+            .WithParam("test", new ExactMatcher("abc"))
             .UsingGet()
         )
         .WithGuid(MappingGuid)

@@ -59,8 +59,11 @@ internal class MatcherMapper
 
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
-            case nameof(LinqMatcher):
-                return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
+            case "LinqMatcher":
+                throw new NotSupportedException("It's not allowed to use the 'LinqMatcher' due to CVE.");
+
+            //case nameof(LinqMatcher):
+            //    return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
 
             case nameof(ExactMatcher):
                 return new ExactMatcher(matchBehaviour, ignoreCase, matchOperator, stringPatterns);
