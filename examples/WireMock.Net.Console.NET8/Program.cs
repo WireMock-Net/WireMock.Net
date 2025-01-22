@@ -7,7 +7,7 @@ using log4net.Config;
 using log4net.Repository;
 using WireMock.Net.ConsoleApplication;
 
-namespace WireMock.Net.Console.NETCoreApp;
+namespace WireMock.Net.Console.NET8;
 
 static class Program
 {
