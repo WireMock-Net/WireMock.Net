@@ -1,10 +1,4 @@
-# 1.6.12 (21 January 2025)
-- #1231 Fix google protobuf WellKnownTypes: Empty, Duration and Timestamp [bug]
-- #1235 Fix ArgumentException in FindLogEntries [bug]
-- #1241 Upgrade to Handlebars.Net.Helpers 2.4.9 [bug]
-- #1227 unable to call grpc method with namespace [bug]
-- #1228 how to set datetime for grpc field [bug]
-- #1234 FindLogEntries regression [bug]
-- #1240 Method 'get_Category' in type 'WireMock.Transformers.Handlebars.FileHelpers' [bug]
+# 1.7.0 (22 January 2025)
+- #1242 Disable DynamicLinq to fix CVE [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

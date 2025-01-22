@@ -1,3 +1,6 @@
+# 1.7.0 (22 January 2025)
+- [#1242](https://github.com/WireMock-Net/WireMock.Net/pull/1242) - Disable DynamicLinq to fix CVE [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.6.12 (21 January 2025)
 - [#1231](https://github.com/WireMock-Net/WireMock.Net/pull/1231) - Fix google protobuf WellKnownTypes: Empty, Duration and Timestamp [bug] contributed by [StefH](https://github.com/StefH)
 - [#1235](https://github.com/WireMock-Net/WireMock.Net/pull/1235) - Fix ArgumentException in FindLogEntries [bug] contributed by [StefH](https://github.com/StefH)
