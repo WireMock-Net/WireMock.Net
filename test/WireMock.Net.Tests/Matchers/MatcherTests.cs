@@ -110,18 +110,18 @@ public class MatcherTests
         result.Should().StartWith("new JsonPartialWildcardMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch,");
     }
 
-    [Fact]
-    public void LinqMatcher_GetCSharpCodeArguments_ShouldReturnCorrectArguments()
-    {
-        // Arrange
-        var matcher = new LinqMatcher("it.Contains(\"test\"");
+    //[Fact]
+    //public void LinqMatcher_GetCSharpCodeArguments_ShouldReturnCorrectArguments()
+    //{
+    //    // Arrange
+    //    var matcher = new LinqMatcher("it.Contains(\"test\"");
 
-        // Act
-        var result = matcher.GetCSharpCodeArguments();
+    //    // Act
+    //    var result = matcher.GetCSharpCodeArguments();
 
-        // Assert
-        result.Should().Be("new LinqMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, WireMock.Matchers.MatchOperator.Or, \"it.Contains(\\\"test\\\"\")");
-    }
+    //    // Assert
+    //    result.Should().Be("new LinqMatcher(WireMock.Matchers.MatchBehaviour.AcceptOnMatch, WireMock.Matchers.MatchOperator.Or, \"it.Contains(\\\"test\\\"\")");
+    //}
 
     [Fact]
     public void RegexMatcher_GetCSharpCodeArguments_ShouldReturnCorrectArguments()

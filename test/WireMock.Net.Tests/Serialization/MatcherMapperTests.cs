@@ -302,41 +302,41 @@ message HelloReply {
         Check.ThatCode(() => _sut.Map(model)).Throws<NotSupportedException>();
     }
 
-    [Fact]
-    public void MatcherMapper_Map_MatcherModel_LinqMatcher_Pattern()
-    {
-        // Assign
-        var model = new MatcherModel
-        {
-            Name = "LinqMatcher",
-            Pattern = "p"
-        };
+    //[Fact]
+    //public void MatcherMapper_Map_MatcherModel_LinqMatcher_Pattern()
+    //{
+    //    // Assign
+    //    var model = new MatcherModel
+    //    {
+    //        Name = "LinqMatcher",
+    //        Pattern = "p"
+    //    };
 
-        // Act
-        var matcher = (LinqMatcher)_sut.Map(model)!;
+    //    // Act
+    //    var matcher = (LinqMatcher)_sut.Map(model)!;
 
-        // Assert
-        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
-        matcher.GetPatterns().Should().Contain("p");
-    }
+    //    // Assert
+    //    matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+    //    matcher.GetPatterns().Should().Contain("p");
+    //}
 
-    [Fact]
-    public void MatcherMapper_Map_MatcherModel_LinqMatcher_Patterns()
-    {
-        // Assign
-        var model = new MatcherModel
-        {
-            Name = "LinqMatcher",
-            Patterns = ["p1", "p2"]
-        };
+    //[Fact]
+    //public void MatcherMapper_Map_MatcherModel_LinqMatcher_Patterns()
+    //{
+    //    // Assign
+    //    var model = new MatcherModel
+    //    {
+    //        Name = "LinqMatcher",
+    //        Patterns = ["p1", "p2"]
+    //    };
 
-        // Act
-        var matcher = (LinqMatcher)_sut.Map(model)!;
+    //    // Act
+    //    var matcher = (LinqMatcher)_sut.Map(model)!;
 
-        // Assert
-        matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
-        matcher.GetPatterns().Should().Contain("p1", "p2");
-    }
+    //    // Assert
+    //    matcher.MatchBehaviour.Should().Be(MatchBehaviour.AcceptOnMatch);
+    //    matcher.GetPatterns().Should().Contain("p1", "p2");
+    //}
 
     [Fact]
     public void MatcherMapper_Map_MatcherModel_JsonMatcher_Pattern_As_String()

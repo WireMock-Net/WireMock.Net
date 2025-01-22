@@ -9,7 +9,6 @@
   <ItemGroup>
     <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
     <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
-    <Compile Include="..\WireMock.Net.Console.NETCoreApp\Program.cs" Link="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>

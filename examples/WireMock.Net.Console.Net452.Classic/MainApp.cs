@@ -778,21 +778,21 @@ message HelloReply {
                 );
 
             // https://stackoverflow.com/questions/51985089/wiremock-request-matching-with-comparison-between-two-query-parameters
-            server
-                .Given(Request.Create().WithPath("/linq")
-                    .WithParam("from", new LinqMatcher("DateTime.Parse(it) > \"2018-03-01 00:00:00\"")))
-                .RespondWith(Response.Create()
-                    .WithBody("linq match !!!")
-                );
+            //server
+            //    .Given(Request.Create().WithPath("/linq")
+            //        .WithParam("from", new LinqMatcher("DateTime.Parse(it) > \"2018-03-01 00:00:00\"")))
+            //    .RespondWith(Response.Create()
+            //        .WithBody("linq match !!!")
+            //    );
 
-            server
-                .Given(Request.Create().WithPath("/linq2")
-                    .WithBody(new LinqMatcher("it.applicationId != null"))
-                    .UsingPost()
-                )
-                .RespondWith(Response.Create()
-                    .WithBody("linq2 match !!!")
-                );
+            //server
+            //    .Given(Request.Create().WithPath("/linq2")
+            //        .WithBody(new LinqMatcher("it.applicationId != null"))
+            //        .UsingPost()
+            //    )
+            //    .RespondWith(Response.Create()
+            //        .WithBody("linq2 match !!!")
+            //    );
 
             server
                 .Given(Request.Create().WithPath("/myendpoint").UsingAnyMethod())

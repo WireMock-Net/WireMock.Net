@@ -19,8 +19,8 @@ public class RequestMatchResultTests
         result1.AddScore(typeof(WildcardMatcher), 0.9, null);
 
         var result2 = new RequestMatchResult();
-        result2.AddScore(typeof(LinqMatcher), 1, null);
-        result2.AddScore(typeof(LinqMatcher), 1, null);
+        result2.AddScore(typeof(JsonMatcher), 1, null);
+        result2.AddScore(typeof(JsonMatcher), 1, null);
 
         var results = new[] { result1, result2 };
 
@@ -40,9 +40,9 @@ public class RequestMatchResultTests
         result1.AddScore(typeof(WildcardMatcher), 1, null);
 
         var result2 = new RequestMatchResult();
-        result2.AddScore(typeof(LinqMatcher), 1, null);
-        result2.AddScore(typeof(LinqMatcher), 1, null);
-        result2.AddScore(typeof(LinqMatcher), 1, null);
+        result2.AddScore(typeof(JsonMatcher), 1, null);
+        result2.AddScore(typeof(JsonMatcher), 1, null);
+        result2.AddScore(typeof(JsonMatcher), 1, null);
 
         var results = new[] { result1, result2 };
 
