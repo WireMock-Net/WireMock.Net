@@ -7,6 +7,7 @@ using AnyOfTypes;
 using SimMetrics.Net;
 using Stef.Validation;
 using WireMock.Admin.Mappings;
+using WireMock.Exceptions;
 using WireMock.Extensions;
 using WireMock.Matchers;
 using WireMock.Models;
@@ -65,7 +66,7 @@ internal class MatcherMapper
                     return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
                 }
 
-                throw new NotSupportedException("It's not allowed to use the 'LinqMatcher' because WireMockServerSettings.AllowDynamicLinq is not set to 'true'.");
+                throw new LinqMatcherNotSupportedException();
 
             case nameof(ExactMatcher):
                 return new ExactMatcher(matchBehaviour, ignoreCase, matchOperator, stringPatterns);

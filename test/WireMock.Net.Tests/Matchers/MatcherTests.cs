@@ -1,11 +1,17 @@
 using FluentAssertions;
 using WireMock.Matchers;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests.Matchers;
 
 public class MatcherTests
 {
+    public MatcherTests()
+    {
+        StaticWireMockServerSettings.AllowDynamicLinq = true;
+    }
+
     [Fact]
     public void ContentTypeMatcher_GetCSharpCodeArguments_ShouldReturnCorrectArguments()
     {

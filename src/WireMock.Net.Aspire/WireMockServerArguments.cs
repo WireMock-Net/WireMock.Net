@@ -63,6 +63,13 @@ public class WireMockServerArguments
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(AdminUsername) && !string.IsNullOrEmpty(AdminPassword);
 
     /// <summary>
+    /// Allow the use of DynamicLinq.
+    ///
+    /// Default value is <c>false</c>.
+    /// </summary>
+    public bool AllowDynamicLinq { get; set; }
+
+    /// <summary>
     /// Optional delegate that will be invoked to configure the WireMock.Net resource using the <see cref="AdminApiMappingBuilder"/>.
     /// </summary>
     public Func<AdminApiMappingBuilder, CancellationToken, Task>? ApiMappingBuilder { get; set; }
@@ -93,6 +100,11 @@ public class WireMockServerArguments
             Add(args, "--ReadStaticMappings", "true");
             Add(args, "--WatchStaticMappings", "true");
             Add(args, "--WatchStaticMappingsInSubdirectories", "true");
+        }
+
+        if (AllowDynamicLinq)
+        {
+            Add(args, "--AllowDynamicLinq", "true");
         }
 
         return args

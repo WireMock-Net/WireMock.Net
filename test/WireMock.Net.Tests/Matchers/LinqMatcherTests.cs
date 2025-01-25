@@ -1,15 +1,36 @@
 // Copyright © WireMock.Net
 
+using System;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
+using WireMock.Exceptions;
 using WireMock.Matchers;
+using WireMock.Settings;
 using Xunit;
 
 namespace WireMock.Net.Tests.Matchers;
 
 public class LinqMatcherTests
 {
+    public LinqMatcherTests()
+    {
+        StaticWireMockServerSettings.AllowDynamicLinq = true;
+    }
+
+    [Fact]
+    public void LinqMatcher_NotAllowed()
+    {
+        // Arrange
+        StaticWireMockServerSettings.AllowDynamicLinq = false;
+
+        // Act
+        Action action = () => _ = new LinqMatcher("it != null");
+
+        // Assert
+        action.Should().Throw<LinqMatcherNotSupportedException>();
+    }
+
     [Fact]
     public void LinqMatcher_For_String_SinglePattern_IsMatch_Positive()
     {

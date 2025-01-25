@@ -19,6 +19,7 @@ public class WireMockServerArgumentsTests
         args.ReadStaticMappings.Should().BeFalse();
         args.WatchStaticMappings.Should().BeFalse();
         args.MappingsPath.Should().BeNull();
+        args.AllowDynamicLinq.Should().BeFalse();
     }
 
     [Fact]
@@ -130,5 +131,21 @@ public class WireMockServerArgumentsTests
         // Assert
         commandLineArgs.Should().Contain("--AdminUserName", "admin");
         commandLineArgs.Should().Contain("--AdminPassword", "password");
+    }
+
+    [Fact]
+    public void GetArgs_ShouldIncludeAllowDynamicLinq_WhenAllowDynamicLinqIsTrue()
+    {
+        // Arrange
+        var args = new WireMockServerArguments
+        {
+            AllowDynamicLinq = true
+        };
+
+        // Act
+        var commandLineArgs = args.GetArgs();
+
+        // Assert
+        commandLineArgs.Should().Contain("--AllowDynamicLinq", "true");
     }
 }

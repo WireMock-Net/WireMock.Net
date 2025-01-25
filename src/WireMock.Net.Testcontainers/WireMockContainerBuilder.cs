@@ -91,13 +91,27 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     }
 
     /// <summary>
-    /// Defines if the static mappings should be read at startup (default set to false).
+    /// Defines if the static mappings should be read at startup.
+    ///
+    /// Default value is <c>false</c>.
     /// </summary>
     /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
     [PublicAPI]
     public WireMockContainerBuilder WithReadStaticMappings()
     {
         return WithCommand("--ReadStaticMappings true");
+    }
+
+    /// <summary>
+    /// Allow the use of DynamicLinq.
+    ///
+    /// Default value is <c>false</c>.
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder AllowDynamicLinq()
+    {
+        return WithCommand("--AllowDynamicLinq true");
     }
 
     /// <summary>

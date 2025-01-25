@@ -331,6 +331,8 @@ public partial class WireMockServer : IWireMockServer
     {
         _settings = Guard.NotNull(settings);
 
+        StaticWireMockServerSettings.AllowDynamicLinq = settings.AllowDynamicLinq;
+
         // Set default values if not provided
         _settings.Logger = settings.Logger ?? new WireMockNullLogger();
         _settings.FileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();

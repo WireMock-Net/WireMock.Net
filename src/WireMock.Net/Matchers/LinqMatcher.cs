@@ -6,9 +6,11 @@ using System.Linq.Dynamic.Core;
 using AnyOfTypes;
 using Newtonsoft.Json.Linq;
 using Stef.Validation;
+using WireMock.Exceptions;
 using WireMock.Extensions;
 using WireMock.Json;
 using WireMock.Models;
+using WireMock.Settings;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -20,6 +22,11 @@ namespace WireMock.Matchers;
 /// <inheritdoc cref="IStringMatcher"/>
 public class LinqMatcher : IObjectMatcher, IStringMatcher
 {
+    private readonly ParsingConfig _config = new()
+    {
+        AllowEqualsAndToStringMethodsOnObject = true
+    };
+
     private readonly AnyOf<string, StringPattern>[] _patterns;
 
     /// <inheritdoc />
@@ -64,6 +71,11 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         MatchOperator matchOperator = MatchOperator.Or,
         params AnyOf<string, StringPattern>[] patterns)
     {
+        if (!StaticWireMockServerSettings.AllowDynamicLinq)
+        {
+            throw new LinqMatcherNotSupportedException();
+        }
+
         _patterns = Guard.NotNull(patterns);
         MatchBehaviour = matchBehaviour;
         MatchOperator = matchOperator;
@@ -82,7 +94,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         try
         {
             // Use the Any(...) method to check if the result matches
-            score = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(pattern.GetPattern())).ToArray(), MatchOperator);
+            score = MatchScores.ToScore(_patterns.Select(pattern => queryable.Any(_config, pattern.GetPattern())).ToArray(), MatchOperator);
         }
         catch (Exception e)
         {
@@ -114,7 +126,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         try
         {
             var patternsAsStringArray = _patterns.Select(p => p.GetPattern()).ToArray();
-            var scores = patternsAsStringArray.Select(p => queryable.Any(p)).ToArray();
+            var scores = patternsAsStringArray.Select(p => queryable.Any(_config, p)).ToArray();
 
             score = MatchScores.ToScore(scores, MatchOperator);
         }
