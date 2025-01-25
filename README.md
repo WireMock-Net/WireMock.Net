@@ -21,7 +21,6 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 - [mstack.nl : gRPC / ProtoBuf Support](https://mstack.nl/blogs/wiremock-net-grpc)
 - [mstack.nl : Build and test your own .NET Aspire component](https://mstack.nl/blogs/wiremock-net-aspire-component/)
 
-
 ## :computer: Project Info
 | | |
 | --- | --- |
@@ -56,6 +55,16 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://img.shields.io/nuget/v/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
 | &nbsp;&nbsp;**WireMock.Org.RestClient** | [![NuGet Badge WireMock.Org.RestClient](https://img.shields.io/nuget/v/WireMock.Org.RestClient)](https://www.nuget.org/packages/WireMock.Org.RestClient) | [![MyGet Badge WireMock.Org.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Org.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Org.RestClient)
 
+---
+
+## :exclamation: Breaking changes
+
+### 1.7.0
+A breaking change is introduced which is related to System.Linq.Dynamic.Core DynamicLinq ([CVE](https://github.com/zzzprojects/System.Linq.Dynamic.Core/issues/867)).
+- The `LinqMatcher` is not allowed.
+- The [Handlebars.Net.Helpers.DynamicLinq](https://www.nuget.org/packages/Handlebars.Net.Helpers.DynamicLinq) package is not included anymore.
+
+---
 
 ## :memo: Development
 For the supported frameworks and build information, see [this](https://github.com/WireMock-Net/WireMock.Net/wiki/Development-Information) page.
