@@ -19,7 +19,8 @@ internal class HandlebarsContextFactory : ITransformerContextFactory
     {
         var config = new HandlebarsConfiguration
         {
-            FormatProvider = _settings.Culture
+            FormatProvider = _settings.Culture,
+            // STEF TODO DynamicLinq
         };
         var handlebars = HandlebarsDotNet.Handlebars.Create(config);
 

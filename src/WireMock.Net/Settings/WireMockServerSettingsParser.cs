@@ -50,6 +50,7 @@ public static class WireMockServerSettingsParser
             AdminPath = parser.GetStringValue(nameof(WireMockServerSettings.AdminPath), "/__admin"),
             AllowBodyForAllHttpMethods = parser.GetBoolValue(nameof(WireMockServerSettings.AllowBodyForAllHttpMethods)),
             AllowCSharpCodeMatcher = parser.GetBoolValue(nameof(WireMockServerSettings.AllowCSharpCodeMatcher)),
+            AllowDynamicLinq = parser.GetBoolValue(nameof(WireMockServerSettings.AllowDynamicLinq)),
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue(nameof(WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse)),
             AllowPartialMapping = parser.GetBoolValue(nameof(WireMockServerSettings.AllowPartialMapping)),
             Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture),

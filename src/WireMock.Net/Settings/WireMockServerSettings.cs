@@ -329,4 +329,15 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public string? AdminPath { get; set; }
+
+    /// <summary>
+    /// When set to <c>true</c>:<br></br>
+    /// - The <see cref="LinqMatcher"/> will be allowed.<br></br>
+    /// - The <see href="https://www.nuget.org/packages/Handlebars.Net.Helpers.DynamicLinq">Handlebars.Net.Helpers.DynamicLinq</see> will be enabled.<br></br>
+    /// - The use of the Equals(object obj), Equals(object objA, object objB), ReferenceEquals(object objA, object objB) and ToString() methods on the <see cref="object"/> type will be allowed.<br></br>
+    /// <br></br>
+    /// Default value is <c>false</c>.
+    /// </summary>
+    [PublicAPI]
+    public bool AllowDynamicLinq { get; set; }
 }
