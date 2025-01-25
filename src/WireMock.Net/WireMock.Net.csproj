@@ -60,8 +60,6 @@
 
     <ItemGroup>
       <Compile Remove="Json\DynamicPropertyWithValue.cs" />
-      <Compile Remove="Json\JObjectExtensions.cs" />
-      <Compile Remove="Matchers\LinqMatcher.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -189,6 +187,7 @@
         <PackageReference Include="Handlebars.Net.Helpers.Random" Version="2.4.9" />
         <PackageReference Include="Handlebars.Net.Helpers.Xeger" Version="2.4.9" />
         <PackageReference Include="Handlebars.Net.Helpers.XPath" Version="2.4.9" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0-preview-02" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' ">

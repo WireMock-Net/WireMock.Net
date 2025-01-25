@@ -33,7 +33,7 @@ public class ResponseWithHandlebarsLinqTests
         _settings.FileSystemHandler = filesystemHandlerMock.Object;
     }
 
-    [Fact(Skip = "DynamicLinq")]
+    [Fact]
     public async Task Response_ProvideResponse_Handlebars_Linq1_String0()
     {
         // Assign
@@ -55,7 +55,7 @@ public class ResponseWithHandlebarsLinqTests
         Check.That(j["x"].ToString()).Equals("/pathtest");
     }
 
-    [Fact(Skip = "DynamicLinq")]
+    [Fact]
     public async Task Response_ProvideResponse_Handlebars_Linq1_String1()
     {
         // Assign
@@ -85,7 +85,7 @@ public class ResponseWithHandlebarsLinqTests
         Check.That(j["x"].ToString()).Equals("Test_123");
     }
 
-    [Fact(Skip = "DynamicLinq")]
+    [Fact]
     public async Task Response_ProvideResponse_Handlebars_Linq1_String2()
     {
         // Assign
@@ -115,7 +115,7 @@ public class ResponseWithHandlebarsLinqTests
         Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
     }
 
-    [Fact(Skip = "DynamicLinq")]
+    [Fact]
     public async Task Response_ProvideResponse_Handlebars_Linq2_Object()
     {
         // Assign
@@ -145,7 +145,7 @@ public class ResponseWithHandlebarsLinqTests
         Check.That(j["x"].ToString()).Equals("{ N = Test_123, I = 9 }");
     }
 
-    [Fact(Skip = "DynamicLinq")]
+    [Fact]
     public void Response_ProvideResponse_Handlebars_Linq_Throws_ArgumentException()
     {
         // Assign

@@ -32,7 +32,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
     /// Initializes a new instance of the <see cref="LinqMatcher"/> class.
     /// </summary>
     /// <param name="pattern">The pattern.</param>
-    public LinqMatcher(AnyOf<string, StringPattern> pattern) : this(new[] { pattern })
+    public LinqMatcher(AnyOf<string, StringPattern> pattern) : this([pattern])
     {
     }
 
@@ -105,7 +105,7 @@ public class LinqMatcher : IObjectMatcher, IStringMatcher
         }
         catch
         {
-            jArray = input == null ? new JArray() : new JArray { JToken.FromObject(input) };
+            jArray = input == null ? [] : [JToken.FromObject(input)];
         }
 
         // Convert a single object to a Queryable JObject-list with 1 entry.

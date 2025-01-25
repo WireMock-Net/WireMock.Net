@@ -59,11 +59,13 @@ internal class MatcherMapper
 
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
 
-            case "LinqMatcher":
-                throw new NotSupportedException("It's not allowed to use the 'LinqMatcher' due to CVE.");
+            case nameof(LinqMatcher):
+                if (_settings.AllowDynamicLinq)
+                {
+                    return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
+                }
 
-            //case nameof(LinqMatcher):
-            //    return new LinqMatcher(matchBehaviour, matchOperator, stringPatterns);
+                throw new NotSupportedException("It's not allowed to use the 'LinqMatcher' because WireMockServerSettings.AllowDynamicLinq is not set to 'true'.");
 
             case nameof(ExactMatcher):
                 return new ExactMatcher(matchBehaviour, ignoreCase, matchOperator, stringPatterns);

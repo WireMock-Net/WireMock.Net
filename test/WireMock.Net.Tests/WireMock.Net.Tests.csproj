@@ -34,7 +34,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Matchers\LinqMatcherTests.cs" />
         <Compile Remove="Util\JsonUtilsTests.cs" />
     </ItemGroup>
 
